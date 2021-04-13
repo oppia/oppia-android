@@ -1,36 +1,42 @@
 {
-  "api_key": "",
+  "android_report_info_schema_version": 1,
   "app_context": {
-    "entry_point": "navigation_drawer",
+    "entry_point": {
+      "entry_point_name" : "navigation_drawer"
+    },
     "topic_progress": {},
     "text_size": "large",
-    "text_lang": "EN",
-    "audio_lang": "EN",
+    "text_language_code": "EN",
+    "audio_language_code": "EN",
     "download_and_update_only_on_wifi": true,
     "automatically_update_topics": false,
-    "is_admin": false
+    "is_admin": false,
+    "event_logs": [
+      "example",
+      "event"
+    ],
+    "logcat_logs": [
+      "example",
+      "log"
+    ]
   },
   "device_context": {
     "device_model": "example_model",
     "sdk_version": 23,
-    "device_brand": "example_brand",
     "build_fingerprint": "example_fingerprint_id",
-    "phone_type": "telephony_network_type",
-    "network_type": "wifi",
-    "device_lang": "EN"
+    "network_type": "wifi"
   },
-  "report_creation_timestamp": 1610519337000,
+  "report_submission_timestamp_sec": 1610519337,
   "system_context": {
-    "package_name": "example.package.name",
-    "package_code": "example_version_code",
-    "country_locale": "IN",
-    "language_locale": "EN"
+    "platform_version": "0.1-alpha-abcdef1234",
+    "package_version_code": 1,
+    "country_locale_code": "IN",
+    "language_locale_code": "EN"
   },
-  "user_feedback": {
+  "user_supplied_feedback": {
     "report_type": "suggestion",
     "category": "language_suggestion",
-    "feedback_list": [],
-    "user_input": "french"
+    "user_feedback_selected_items": [],
+    "user_feedback_other_text_input": "french"
   }
-
 }

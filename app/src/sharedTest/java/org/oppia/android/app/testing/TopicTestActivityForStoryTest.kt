@@ -131,10 +131,11 @@ class TopicTestActivityForStoryTest {
   fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
     launch(TopicTestActivityForStory::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      // Story 0 of the topic should be expanded.
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
-          position = 2,
+          position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -142,7 +143,6 @@ class TopicTestActivityForStoryTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

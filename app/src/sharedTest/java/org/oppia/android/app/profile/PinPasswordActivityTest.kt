@@ -19,12 +19,15 @@ import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.chaos.view.PinView
 import com.google.android.material.textfield.TextInputLayout
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -32,6 +35,7 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -92,6 +96,11 @@ import javax.inject.Singleton
 )
 class PinPasswordActivityTest {
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<PinPasswordActivity> = ActivityTestRule(
+    PinPasswordActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var context: Context
 
@@ -136,6 +145,49 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.input_pin)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
+  fun testPinPassword_pinView_hasContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withContentDescription(
+            context.resources.getString(
+              R.string.enter_your_pin
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPinPassword_configChange_pinView_hasContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.input_pin)).check(
+        matches(
+          withContentDescription(
+            context.resources.getString(
+              R.string.enter_your_pin
+            )
+          )
+        )
+      )
     }
   }
 
@@ -190,6 +242,22 @@ class PinPasswordActivityTest {
         )
       )
     }
+  }
+
+  @Test
+  fun testPinPasswordActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId,
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.pin_password_activity_title))
   }
 
   @Test
@@ -695,7 +763,27 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_show_eye_icon
+              R.drawable.ic_hide_eye_icon
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_showHideIcon_hasPasswordHiddenContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.show_hide_password_image_view))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.password_hidden_icon
             )
           )
         )
@@ -719,7 +807,30 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_showHidePassword_imageChangesToHide() {
+  fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      closeSoftKeyboard()
+      onView(withId(R.id.show_pin)).perform(click())
+      onView(withId(R.id.show_hide_password_image_view))
+        .check(
+          matches(
+            withContentDescription(
+              R.string.password_shown_icon
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -734,7 +845,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_hide_eye_icon
+              R.drawable.ic_show_eye_icon
             )
           )
         )
@@ -742,7 +853,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_showHidePassword_configChange_hideViewIsShown() {
+  fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -759,7 +870,7 @@ class PinPasswordActivityTest {
         .check(
           matches(
             withDrawable(
-              R.drawable.ic_hide_eye_icon
+              R.drawable.ic_show_eye_icon
             )
           )
         )
@@ -815,7 +926,6 @@ class PinPasswordActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
