@@ -37,6 +37,7 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
+import org.oppia.android.data.backends.gae.NetworkInterceptorTest
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
@@ -102,7 +103,6 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
-  private lateinit var retrofit: Retrofit
 
   private lateinit var mockWebServer: MockWebServer
 
@@ -149,6 +149,7 @@ class FeedbackReportManagementControllerTest {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     setUpFakeLogcatFile()
+    mockWebServer = MockWebServer()
     MockitoAnnotations.initMocks(this)
   }
 
@@ -325,21 +326,6 @@ class FeedbackReportManagementControllerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageCacheSize(): Int = 2
-  }
-
-  @Qualifier
-  annotation class OppiaRetrofit
-
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestNetworkModule {
-    @Provides
-    @Singleton
-    fun provideFeedbackReportingService(
-      @OppiaRetrofit retrofit: Retrofit
-    ): FeedbackReportingService {
-      return retrofit.create(FeedbackReportingService::class.java)
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
