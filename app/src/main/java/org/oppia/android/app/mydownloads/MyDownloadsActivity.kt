@@ -7,9 +7,11 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.mydownloads.downloads.DownloadsFragment
+import org.oppia.android.app.mydownloads.updates.UpdatesFragment
 import javax.inject.Inject
 
-/** The activity for displaying [MyDownloadsFragment]. */
+/** The activity for displaying [DownloadsFragment] and [UpdatesFragment] in a tab layout. */
 class MyDownloadsActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
@@ -28,7 +30,7 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
 
   companion object {
 
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
       "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
 
     fun createMyDownloadsActivityIntent(

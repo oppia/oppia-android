@@ -14,9 +14,6 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.databinding.MyDownloadsActivityBinding
 import javax.inject.Inject
 
-const val INTERNAL_PROFILE_ID_SAVED_KEY = "MyDownloadsActivity.internal_profile_id"
-const val IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY = "MyDownloadsActivity.is_allowed_download_access"
-
 /** The presenter for [MyDownloadsActivity]. */
 @ActivityScope
 class MyDownloadsActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {

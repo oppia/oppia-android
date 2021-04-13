@@ -16,11 +16,6 @@ import org.oppia.android.databinding.DownloadsSortbyBinding
 import org.oppia.android.databinding.DownloadsTopicCardBinding
 import javax.inject.Inject
 
-const val DELETE_DOWNLOAD_TOPIC_DIALOG_TAG =
-  "DownloadsTopicDeleteDialogFragment.delete_download_topic_dialog_tag"
-const val ADMIN_PIN_CONFIRMATION_DIALOG_TAG =
-  "DownloadsAccessDialogFragment.admin_pin_confirmation_dialog_tag"
-
 /** The presenter for [DownloadsFragment]. */
 @FragmentScope
 class DownloadsFragmentPresenter @Inject constructor(
@@ -123,17 +118,19 @@ class DownloadsFragmentPresenter @Inject constructor(
 
     // TODO(#552): orientation change, keep list sorted as per previousSortTypeIndex
 
-    binding.sortByMenu.setOnItemClickListener { parent, _, position, _ ->
+    binding.sortByMenu.setOnItemClickListener { parent, view, position, l ->
       if (previousSortTypeIndex != position) {
+        lateinit var sortedDownloadsItemViewModel: MutableList<DownloadsItemViewModel>
         when (parent.getItemAtPosition(position)) {
-          SortByItems.NEWEST -> {
-            // TODO(#552)
+          fragment.getString(SortByItems.NEWEST.value) -> {
+            // TODO(): update it with the time stamp value in the list
+            sortedDownloadsItemViewModel = sortTopicDownloadSize()
           }
-          SortByItems.ALPHABETICAL -> {
-            sortTopicAlphabetically()
+          fragment.getString(SortByItems.ALPHABETICAL.value) -> {
+            sortedDownloadsItemViewModel = sortTopicAlphabetically()
           }
-          SortByItems.DOWNLOAD_SIZE -> {
-            // TODO(#552)
+          fragment.getString(SortByItems.DOWNLOAD_SIZE.value) -> {
+            sortedDownloadsItemViewModel = sortTopicDownloadSize()
           }
         }
         previousSortTypeIndex = position
@@ -142,11 +139,12 @@ class DownloadsFragmentPresenter @Inject constructor(
           sortItemAdapter.getItem(position).toString(),
           /* filter =*/ false
         )
+        downloadsRecyclerViewAdapter.setData(sortedDownloadsItemViewModel)
       }
     }
   }
 
-  private fun sortTopicAlphabetically() {
+  private fun sortTopicAlphabetically(): MutableList<DownloadsItemViewModel> {
     val sortedTopicNameList = mutableListOf<String>()
     val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.value
     downloadsItemViewModelList?.forEach { downloadsItemViewModel ->
@@ -167,7 +165,32 @@ class DownloadsFragmentPresenter @Inject constructor(
         }
       }
     }
-    downloadsRecyclerViewAdapter.setData(sortedDownloadsItemViewModel)
+    return sortedDownloadsItemViewModel
+  }
+
+  // TODO: try to improvise this using kotlin functions
+  private fun sortTopicDownloadSize(): MutableList<DownloadsItemViewModel> {
+    val sortedTopicSizeList = mutableListOf<Long>()
+    val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.value
+    downloadsItemViewModelList?.forEach { downloadsItemViewModel ->
+      if (downloadsItemViewModel is DownloadsTopicViewModel) {
+        sortedTopicSizeList.add(downloadsItemViewModel.topicSummary.diskSizeBytes)
+      }
+    }
+    sortedTopicSizeList.sort()
+
+    val sortedDownloadsItemViewModel = mutableListOf<DownloadsItemViewModel>()
+    sortedDownloadsItemViewModel.add(downloadsItemViewModelList!![0])
+    sortedTopicSizeList.forEach { topicSize ->
+      downloadsItemViewModelList.forEach { downloadsItemViewModel ->
+        if (downloadsItemViewModel is DownloadsTopicViewModel &&
+          topicSize == downloadsItemViewModel.topicSummary.diskSizeBytes
+        ) {
+          sortedDownloadsItemViewModel.add(downloadsItemViewModel)
+        }
+      }
+    }
+    return sortedDownloadsItemViewModel
   }
 
   private fun bindDownloadsTopicCard(
@@ -205,7 +228,10 @@ class DownloadsFragmentPresenter @Inject constructor(
     val adminPin = downloadsViewModel.adminPin
     val dialogFragment = DownloadsAccessDialogFragment
       .newInstance(adminPin, allowDownloadAccess)
-    dialogFragment.showNow(fragment.childFragmentManager, ADMIN_PIN_CONFIRMATION_DIALOG_TAG)
+    dialogFragment.showNow(
+      fragment.childFragmentManager,
+      DownloadsFragment.ADMIN_PIN_CONFIRMATION_DIALOG_TAG
+    )
   }
 
   fun startTopicActivity(internalProfileId: Int, topicId: String) {
@@ -221,6 +247,9 @@ class DownloadsFragmentPresenter @Inject constructor(
   fun openDownloadTopicDeleteDialog(allowDownloadAccess: Boolean) {
     val dialogFragment = DownloadsTopicDeleteDialogFragment
       .newInstance(internalProfileId, allowDownloadAccess)
-    dialogFragment.showNow(fragment.childFragmentManager, DELETE_DOWNLOAD_TOPIC_DIALOG_TAG)
+    dialogFragment.showNow(
+      fragment.childFragmentManager,
+      DownloadsFragment.DELETE_DOWNLOAD_TOPIC_DIALOG_TAG
+    )
   }
 }

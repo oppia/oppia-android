@@ -7,8 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
-import org.oppia.android.app.mydownloads.INTERNAL_PROFILE_ID_SAVED_KEY
-import org.oppia.android.app.mydownloads.IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY
 
 /** [DialogFragment] that gives option to either cancel or delete the downloaded topic. */
 class DownloadsTopicDeleteDialogFragment : DialogFragment() {
@@ -21,8 +19,8 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
     ): DownloadsTopicDeleteDialogFragment {
       val downloadsTopicDeleteDialogFragment = DownloadsTopicDeleteDialogFragment()
       val args = Bundle()
-      args.putInt(INTERNAL_PROFILE_ID_SAVED_KEY, internalProfileId)
-      args.putBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY, allowedDownloadAccess)
+      args.putInt(DownloadsFragment.INTERNAL_PROFILE_ID_SAVED_KEY, internalProfileId)
+      args.putBoolean(DownloadsFragment.IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY, allowedDownloadAccess)
       downloadsTopicDeleteDialogFragment.arguments = args
       return downloadsTopicDeleteDialogFragment
     }
@@ -35,8 +33,9 @@ class DownloadsTopicDeleteDialogFragment : DialogFragment() {
       }
 
     // TODO(#3068): keeping these values if the controller required else can be removed
-    val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_SAVED_KEY)
-    val isAllowedDownloadAccess = args.getBoolean(IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY)
+    val internalProfileId = args.getInt(DownloadsFragment.INTERNAL_PROFILE_ID_SAVED_KEY)
+    val isAllowedDownloadAccess =
+      args.getBoolean(DownloadsFragment.IS_ALLOWED_DOWNLOAD_ACCESS_SAVED_KEY)
 
     val alertDialog = AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
