@@ -38,11 +38,6 @@ jobs:
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
-      - name: Check branch
-        uses: a-b-r-o-w-n/check-base-branch-action@32418a4d06acad92f75ab8075fb78715a22be763
-        with:
-          protected-branches: "develop"
-
   linters:
     name: Lint Tests
     runs-on: ubuntu-18.04
