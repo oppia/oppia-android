@@ -34,13 +34,14 @@ class NetworkModule {
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
   ): Retrofit {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(jsonPrefixNetworkInterceptor)
+      .addInterceptor(jsonPrefixNetworkInterceptor)
       .addInterceptor(remoteAuthNetworkInterceptor)
+      .build()
 
     return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
+      .client(client)
       .build()
   }
 
