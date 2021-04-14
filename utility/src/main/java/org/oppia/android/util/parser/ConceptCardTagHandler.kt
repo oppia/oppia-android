@@ -34,7 +34,7 @@ class ConceptCardTagHandler(
             listener.onConceptCardLinkClicked(view, skillId)
           }
         },
-        0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        /* start= */ 0, /* end= */ text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, closeIndex, spannableBuilder)
     } else consoleLogger.e("ConceptCardTagHandler", "Failed to parse concept card tag")
