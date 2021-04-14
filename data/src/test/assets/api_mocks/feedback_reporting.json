@@ -4,8 +4,7 @@
     "entry_point": {
       "entry_point_name" : "navigation_drawer"
     },
-    "topic_progress": {},
-    "text_size": "large",
+    "text_size": "large_text_size",
     "text_language_code": "EN",
     "audio_language_code": "EN",
     "only_allows_wifi_download_and_update": false,
