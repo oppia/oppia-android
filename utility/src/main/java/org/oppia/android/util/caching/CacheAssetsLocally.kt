@@ -7,16 +7,8 @@ import javax.inject.Qualifier
  */
 @Qualifier annotation class CacheAssetsLocally
 
-// TODO: move these qualifiers to their own files.
-
 /**
  * Corresponds to an injectable boolean indicating whether images (including thumbnails) should be
  * retrieved from the app's local assets.
  */
 @Qualifier annotation class LoadImagesFromAssets
-
-/**
- * Corresponds to an injectable boolean indicating whether lessons are contained in the app's local
- * assets, and that these lessons are encoded using protos.
- */
-@Qualifier annotation class LoadLessonProtosFromAssets

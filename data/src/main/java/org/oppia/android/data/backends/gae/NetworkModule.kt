@@ -33,7 +33,7 @@ class NetworkModule {
     val client = OkHttpClient.Builder()
     client.addInterceptor(NetworkInterceptor())
 
-    return retrofit2.Retrofit.Builder()
+    return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client.build())
