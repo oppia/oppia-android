@@ -93,9 +93,8 @@ class RemoteAuthNetworkInterceptorTest {
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
       unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
-    interceptedRequest?.let {
-      verifyRequestHeaders(it.headers)
-    }
+
+    verifyRequestHeaders(interceptedRequest?.headers)
   }
 
   @Test
@@ -119,9 +118,7 @@ class RemoteAuthNetworkInterceptorTest {
       unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
 
-    interceptedRequest?.let {
-      verifyRequestHeaders(it.headers)
-    }
+    verifyRequestHeaders(interceptedRequest?.headers)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -150,6 +147,10 @@ class RemoteAuthNetworkInterceptorTest {
       .addInterceptor(remoteAuthNetworkInterceptor)
       .build()
 
+    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
+    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
+    // request mocking in different ways and we want to verify the full request is executed here.
+    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(mockWebServer.url("/"))
       .addConverterFactory(MoshiConverterFactory.create())
@@ -159,7 +160,7 @@ class RemoteAuthNetworkInterceptorTest {
     topicService = retrofit.create(TopicService::class.java)
   }
 
-  private fun verifyRequestHeaders(headers: Headers) {
+  private fun verifyRequestHeaders(headers: Headers?) {
     assertThat(headers).isNotNull()
     assertThat(headers.get("api_key")).isEqualTo("test_api_key")
     assertThat(headers.get("app_package_name")).isEqualTo(context.packageName)
