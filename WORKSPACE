@@ -120,6 +120,8 @@ git_repository(
     remote = "https://github.com/oppia/CircularImageview",
 )
 
+# A custom version of Android SVG is needed since custom changes needed to be added to the library
+# to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
     commit = "6bd15f69caee3e6857fcfcd123023716b4adec1d",

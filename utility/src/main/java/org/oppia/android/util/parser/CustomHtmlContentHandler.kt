@@ -229,6 +229,6 @@ fun Attributes.getJsonStringValue(name: String): String? {
 fun Attributes.getJsonObjectValue(name: String): JSONObject? {
   // The raw content value is a JSON blob with escaped quotes.
   return try {
-    JSONObject(getValue(name).replace("&quot;", "\"").replace("\\\\", "\\"))
+    getValue(name)?.replace("&quot;", "\"")?.let { JSONObject(it) }
   } catch (e: JSONException) { return null }
 }

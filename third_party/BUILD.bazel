@@ -45,6 +45,8 @@ android_library(
     ],
 )
 
+# A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
+# library still routes through //third_party).
 android_library(
     name = "com_caverock_androidsvg",
     visibility = ["//visibility:public"],

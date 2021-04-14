@@ -6,8 +6,8 @@ import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 
-/** SvgDrawableTranscoder converts SVG to PictureDrawable. */
-class SvgDrawableTranscoder(
+/** Transcoder for [OppiaSvg]s to [BlockPictureDrawable]s. */
+class BlockSvgDrawableTranscoder(
   private val context: Context
 ) : ResourceTranscoder<OppiaSvg?, BlockPictureDrawable?> {
   override fun transcode(

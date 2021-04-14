@@ -21,7 +21,7 @@ class RepositoryGlideModule : AppGlideModule() {
     registry.register(
       OppiaSvg::class.java,
       BlockPictureDrawable::class.java,
-      SvgDrawableTranscoder(context)
+      BlockSvgDrawableTranscoder(context)
     )
 
     registry.append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())

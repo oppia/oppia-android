@@ -26,9 +26,14 @@ class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
 
   companion object {
     // Reference: https://stackoverflow.com/q/54360199.
-    val LOAD_OPPIA_SVG: Option<Boolean> =
+    private val LOAD_OPPIA_SVG: Option<Boolean> =
       Option.memory(/* key= */ "load_oppia_svg", /* defaultValue= */ false)
 
+    /**
+     * Returns a [RequestOptions] that, when applied to a Glide request, ensures that the input
+     * stream for that request is interpreted as an SVG. This must be used in SVG-based requests or
+     * they will not be loaded correctly.
+     */
     fun createLoadOppiaSvgOption(): RequestOptions =
       RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
   }

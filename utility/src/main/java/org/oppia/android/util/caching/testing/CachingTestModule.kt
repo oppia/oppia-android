@@ -22,10 +22,10 @@ class CachingTestModule {
   fun provideTopicListToCache(): List<String> = listOf()
 
   @Provides
-  @LoadImagesFromAssets
-  fun provideLoadImagesFromAssets(): Boolean = false
-
-  @Provides
   @LoadLessonProtosFromAssets
   fun provideLoadLessonProtosFromAssets(): Boolean = false
+
+  @Provides
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(): Boolean = false
 }
