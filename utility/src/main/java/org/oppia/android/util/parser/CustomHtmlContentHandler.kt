@@ -183,9 +183,9 @@ class CustomHtmlContentHandler private constructor(
 
   companion object {
     /**
-     * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageGetter] for
-     * handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom tags.
-     * All possible custom tags must be registered in the [customTagHandlers] map.
+     * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageRetriever]
+     * for handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom
+     * tags. All possible custom tags must be registered in the [customTagHandlers] map.
      */
     fun <T> fromHtml(
       html: String,

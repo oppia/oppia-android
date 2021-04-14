@@ -74,6 +74,7 @@ TEST_DEPS = [
     "//model",
     "//model:test_models",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//third_party:androidx_test_ext_junit",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",

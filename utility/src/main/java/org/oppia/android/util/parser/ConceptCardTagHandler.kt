@@ -13,7 +13,7 @@ const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 
 // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
 class ConceptCardTagHandler(
-  private val customOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener?,
+  private val listener: ConceptCardLinkClickListener,
   private val consoleLogger: ConsoleLogger
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
@@ -31,12 +31,21 @@ class ConceptCardTagHandler(
       spannableBuilder.setSpan(
         object : ClickableSpan() {
           override fun onClick(view: View) {
-            customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
+            listener.onConceptCardLinkClicked(view, skillId)
           }
         },
         0, text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, closeIndex, spannableBuilder)
     } else consoleLogger.e("ConceptCardTagHandler", "Failed to parse concept card tag")
+  }
+
+  /** Listener called when concept card links are clicked. */
+  interface ConceptCardLinkClickListener {
+    /**
+     * Called when a concept card link is called in the specified view corresponding to the
+     * specified skill ID.
+     */
+    fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 }

@@ -7,11 +7,22 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//testing:testing_test.bzl", "testing_test")
 
+# Source files that have been migrated to their own package-based libraries. Files added to this
+# list will automatically be excluded from the top-level utility library. It's recommended to use
+# globs here to ensure new files added to migrated packages don't accidentally get included in the
+# top-level module library.
+MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/testing/mockito/*.kt",
+])
+
 # Library for general-purpose testing fakes.
 kt_android_library(
     name = "testing",
     testonly = True,
-    srcs = glob(["src/main/java/org/oppia/android/testing/**/*.kt"]),
+    srcs = glob(
+        ["src/main/java/org/oppia/android/testing/**/*.kt"],
+        exclude = MIGRATED_PROD_FILES,
+    ),
     custom_package = "org.oppia.android.testing",
     manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
