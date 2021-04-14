@@ -300,7 +300,7 @@ class ConceptCardTagHandlerTest {
   }
 
   /**
-   * A fake image retriever that satisifies both the contracts of [Html.ImageGetter] and
+   * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
    * [CustomHtmlContentHandler.ImageRetriever].
    */
   interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
