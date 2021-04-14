@@ -65,6 +65,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -104,6 +105,9 @@ class ProfileRenameActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(

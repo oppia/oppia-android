@@ -1,6 +1,7 @@
 package org.oppia.android.testing
 
 import android.os.Build
+import androidx.test.espresso.accessibility.AccessibilityChecks
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -15,6 +16,7 @@ class OppiaTestRule : TestRule {
         val currentPlatform = getCurrentPlatform()
         if (currentPlatform in targetPlatforms) {
           // Only run this test if it's targeting the current platform.
+          AccessibilityChecks.enable()
           base?.evaluate()
         } else {
           // See https://github.com/junit-team/junit4/issues/116 for context.
