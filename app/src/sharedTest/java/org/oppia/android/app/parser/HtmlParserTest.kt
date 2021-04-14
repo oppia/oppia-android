@@ -246,7 +246,8 @@ class HtmlParserTest {
     val htmlResult = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
-        "<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+        "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>",
         textView
       )
     }
@@ -271,7 +272,8 @@ class HtmlParserTest {
     val htmlResult = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
-        "A<oppia-noninteractive-image filepath-with-value=\"test.png\"></oppia-noninteractive-image>",
+        "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>",
         textView
       )
     }
@@ -420,19 +422,19 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
   }
 
-  private fun <A: Activity> ActivityScenario<A>.getDimensionPixelSize(
+  private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
   ): Int {
     return runWithActivity { it.resources.getDimensionPixelSize(dimenResId) }
   }
 
-  private inline fun <A: Activity, reified V: View> ActivityScenario<A>.findViewById(
+  private inline fun <A : Activity, reified V : View> ActivityScenario<A>.findViewById(
     @IdRes viewResId: Int
   ): V {
     return runWithActivity { it.findViewById(viewResId) }
   }
 
-  private inline fun <reified V, A: Activity> ActivityScenario<A>.runWithActivity(
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
     crossinline action: (A) -> V
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.

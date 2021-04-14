@@ -19,11 +19,14 @@ class HtmlParser private constructor(
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler by lazy {
-    ConceptCardTagHandler(object : ConceptCardTagHandler.ConceptCardLinkClickListener {
-      override fun onConceptCardLinkClicked(view: View, skillId: String) {
-        customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
-      }
-    }, consoleLogger)
+    ConceptCardTagHandler(
+      object : ConceptCardTagHandler.ConceptCardLinkClickListener {
+        override fun onConceptCardLinkClicked(view: View, skillId: String) {
+          customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
+        }
+      },
+      consoleLogger
+    )
   }
   private val bulletTagHandler by lazy { BulletTagHandler() }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }

@@ -161,11 +161,11 @@ class ImageTagHandlerTest {
 
   @Test
   fun testParseHtml_withImageCardMarkup_loadsBlockImageForFilename() {
-      CustomHtmlContentHandler.fromHtml(
-        html = IMAGE_TAG_MARKUP_1,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
-      )
+    CustomHtmlContentHandler.fromHtml(
+      html = IMAGE_TAG_MARKUP_1,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithImageTagSupport
+    )
 
     verify(mockImageRetriever).loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
     assertThat(stringCaptor.value).isEqualTo("test_image1.png")
@@ -174,11 +174,11 @@ class ImageTagHandlerTest {
 
   @Test
   fun testParseHtml_withMultipleImageCardLinks_loadsBlockImagesForBoth() {
-      CustomHtmlContentHandler.fromHtml(
-        html = "$IMAGE_TAG_MARKUP_2 and $IMAGE_TAG_MARKUP_1",
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
-      )
+    CustomHtmlContentHandler.fromHtml(
+      html = "$IMAGE_TAG_MARKUP_2 and $IMAGE_TAG_MARKUP_1",
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithImageTagSupport
+    )
 
     // Verify that both images are loaded in order.
     verify(mockImageRetriever, times(2))

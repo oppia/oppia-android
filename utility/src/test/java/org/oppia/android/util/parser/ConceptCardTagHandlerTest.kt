@@ -226,7 +226,7 @@ class ConceptCardTagHandlerTest {
     // Set a custom clickable span rather than using an anchor since the latter requires an activity
     // to click on it.
     parsedHtml.setSpan(
-      object: ClickableSpan(){
+      object : ClickableSpan() {
         override fun onClick(widget: View) {}
       }, /* start= */ 0, /* end= */ 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
     )
