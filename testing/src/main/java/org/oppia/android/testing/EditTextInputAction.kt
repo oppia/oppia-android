@@ -7,6 +7,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.typeText
 import org.hamcrest.Matcher
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import javax.inject.Inject
 
 /**
