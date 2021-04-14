@@ -162,10 +162,10 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun verifyRequestHeaders(headers: Headers?) {
     assertThat(headers).isNotNull()
-    assertThat(headers.get("api_key")).isEqualTo("test_api_key")
-    assertThat(headers.get("app_package_name")).isEqualTo(context.packageName)
-    assertThat(headers.get("app_version_name")).isEqualTo("1.0")
-    assertThat(headers.get("app_version_code")).isEqualTo("1")
+    assertThat(headers?.get("api_key")).isEqualTo("test_api_key")
+    assertThat(headers?.get("app_package_name")).isEqualTo(context.packageName)
+    assertThat(headers?.get("app_version_name")).isEqualTo("1.0")
+    assertThat(headers?.get("app_version_code")).isEqualTo("1")
   }
 
   @Qualifier
