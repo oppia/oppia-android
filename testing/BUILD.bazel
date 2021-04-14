@@ -13,6 +13,9 @@ load("//testing:testing_test.bzl", "testing_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/testing/mockito/*.kt",
+    "src/main/java/org/oppia/android/testing/robolectric/*.kt",
+    "src/main/java/org/oppia/android/testing/threading/*.kt",
+    "src/main/java/org/oppia/android/testing/time/*.kt",
 ])
 
 # Library for general-purpose testing fakes.
@@ -29,6 +32,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:androidx_test_espresso_espresso-contrib",
         "//third_party:androidx_test_espresso_espresso-core",
@@ -52,6 +57,9 @@ TEST_DEPS = [
     ":dagger",
     ":testing",
     "//domain",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
     "//third_party:androidx_test_espresso_espresso-contrib",
     "//third_party:androidx_test_espresso_espresso-core",
@@ -69,8 +77,9 @@ TEST_DEPS = [
 # Qualified file paths for test classes that have been migrated over to their own packages &
 # shouldn't be defined as module-level tests.
 # keep sorted
-MIGRATED_TESTS = [
-]
+MIGRATED_TESTS = glob([
+    "src/test/java/org/oppia/android/testing/threading/*.kt",
+])
 
 [testing_test(
     name = test_file_path,
