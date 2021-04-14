@@ -3,12 +3,16 @@ package org.oppia.android.app.topic.info
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
@@ -19,19 +23,24 @@ import org.oppia.android.databinding.TopicInfoChapterListItemBinding
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.databinding.TopicInfoSkillsItemBinding
 import org.oppia.android.databinding.TopicInfoStorySummaryBinding
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */
 @FragmentScope
 class TopicInfoFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
   private val logger: ConsoleLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val networkConnectionUtil: NetworkConnectionUtil,
+  private val profileManagementController: ProfileManagementController
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
   private val topicInfoViewModel = getTopicInfoViewModel()
@@ -197,5 +206,121 @@ class TopicInfoFragmentPresenter @Inject constructor(
       }
     )
     return topicStoryList
+  }
+
+  fun showTopicDownloadDialog() {
+    profileDownloadAccessLiveData.observe(
+      fragment,
+      Observer<Boolean> { allowDownloadAccess ->
+        deviceSettingsDownloadAccessLiveData.observe(
+          fragment,
+          Observer<Boolean> { allowDownloadAndUpdateOnlyOnWifi ->
+            if (!allowDownloadAccess) {
+              // ask for admin pin
+            } else {
+              checkNetworkConnection(allowDownloadAndUpdateOnlyOnWifi)
+            }
+          }
+        )
+      }
+    )
+  }
+
+  private fun checkNetworkConnection(
+    allowDownloadAndUpdateOnlyOnWifi: Boolean
+  ) {
+    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+      NetworkConnectionUtil.ConnectionStatus.LOCAL -> {
+        // TODO() : call download topic API
+      }
+      NetworkConnectionUtil.ConnectionStatus.CELLULAR -> {
+        // check if download only on wifi is on or not for this profile
+        if (allowDownloadAndUpdateOnlyOnWifi) {
+          openTopicDownloadDialog(
+            title = R.string.cellular_data_alert_dialog_title_download_wifi_on,
+            message = R.string.cellular_data_alert_dialog_description_download_wifi_off,
+            positiveButtonText = R.string.cellular_data_alert_dialog_positive_download_wifi_off
+          )
+        } else {
+          openTopicDownloadDialog(
+            title = R.string.cellular_data_alert_dialog_title,
+            message = R.string.cellular_data_alert_dialog_description_download_wifi,
+            positiveButtonText = R.string.cellular_data_alert_dialog_positive_download_wifi
+          )
+        }
+      }
+      NetworkConnectionUtil.ConnectionStatus.NONE -> {
+        openTopicDownloadDialog(
+          title = R.string.offline_alert_dialog_title,
+          message = R.string.offline_alert_dialog_description,
+          positiveButtonText = R.string.offline_alert_dialog_positive
+        )
+      }
+    }
+  }
+
+  private fun openTopicDownloadDialog(
+    @StringRes title: Int,
+    @StringRes message: Int,
+    @StringRes positiveButtonText: Int
+  ) {
+    val previousFragment =
+      activity.supportFragmentManager.findFragmentByTag(TopicInfoFragment.TOPIC_DOWNLOAD_DIALOG_TAG)
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = TopicInfoDownloadDialogFragment.newInstance(
+      title,
+      message,
+      positiveButtonText
+    )
+    dialogFragment.showNow(
+      activity.supportFragmentManager,
+      TopicInfoFragment.TOPIC_DOWNLOAD_DIALOG_TAG
+    )
+  }
+
+  private val deviceSettingsDownloadAccessLiveData: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getDeviceSettings().toLiveData(),
+      ::processGetDeviceSettingsResult
+    )
+  }
+
+  private fun processGetDeviceSettingsResult(
+    deviceSettingsResult: AsyncResult<DeviceSettings>
+  ): Boolean {
+    if (deviceSettingsResult.isFailure()) {
+      logger.e(
+        "TopicInfoFragmentPresenter",
+        "Failed to retrieve profile",
+        deviceSettingsResult.getErrorOrNull()!!
+      )
+    }
+    return deviceSettingsResult.getOrDefault(
+      DeviceSettings.getDefaultInstance()
+    ).allowDownloadAndUpdateOnlyOnWifi
+  }
+
+  private val profileDownloadAccessLiveData: LiveData<Boolean> by lazy {
+    Transformations.map(
+      profileManagementController.getProfile(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      ).toLiveData(),
+      ::processGetProfileResult
+    )
+  }
+
+  private fun processGetProfileResult(
+    profileResult: AsyncResult<Profile>
+  ): Boolean {
+    if (profileResult.isFailure()) {
+      logger.e(
+        "TopicInfoFragmentPresenter",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance()).allowDownloadAccess
   }
 }

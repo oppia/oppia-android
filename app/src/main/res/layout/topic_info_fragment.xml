@@ -131,6 +131,7 @@
           android:layout_marginStart="32dp"
           android:layout_marginTop="24dp"
           android:layout_marginBottom="32dp"
+          android:onClick="@{viewModel::clickTopicDownload}"
           android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
           app:layout_constraintBottom_toTopOf="@id/stories_heading"
           app:layout_constraintStart_toStartOf="parent"
@@ -236,6 +237,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="32dp"
         android:paddingTop="14dp"
         android:paddingEnd="24dp"
         android:paddingBottom="14dp">
@@ -244,7 +246,6 @@
           android:id="@+id/download_image_view"
           android:layout_width="0dp"
           android:layout_height="0dp"
-          android:layout_marginStart="32dp"
           android:layout_marginEnd="10dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/download_to_play_text_view"

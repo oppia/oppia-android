@@ -11,8 +11,14 @@ import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Fragment that contains info of Topic. */
-class TopicInfoFragment : InjectableFragment() {
+class TopicInfoFragment :
+  InjectableFragment(),
+  TopicInfoDownloadDialogInterface,
+  TopicInfoListener {
   companion object {
+    internal const val TOPIC_DOWNLOAD_DIALOG_TAG =
+      "TopicInfoFragment.topic_download_dialog_tag"
+
     /** Returns a new [TopicInfoFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
       val topicInfoFragment = TopicInfoFragment()
@@ -47,5 +53,33 @@ class TopicInfoFragment : InjectableFragment() {
       internalProfileId,
       topicId
     )
+  }
+
+  override fun downloadNowWhileOnCellular(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun noDownloadWhileOnCellular(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun resumeDownloadWhileOnNetwork(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun noResumeDownloadWhileOnNetwork(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun downloadUseCellularData(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun downloadNotUseCellularData(saveUserChoice: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun onDownloadTopicClicked() {
+    topicInfoFragmentPresenter.showTopicDownloadDialog()
   }
 }

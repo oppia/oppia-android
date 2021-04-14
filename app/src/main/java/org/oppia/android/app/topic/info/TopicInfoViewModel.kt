@@ -1,7 +1,9 @@
 package org.oppia.android.app.topic.info
 
 import android.content.Context
+import android.view.View
 import androidx.databinding.ObservableField
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -13,9 +15,12 @@ import javax.inject.Inject
 /** [ViewModel] for showing topic info details. */
 @FragmentScope
 class TopicInfoViewModel @Inject constructor(
+  private val fragment: Fragment,
   private val context: Context,
   @TopicHtmlParserEntityType val entityType: String
 ) : ObservableViewModel() {
+
+  private val topicInfoListener = fragment as TopicInfoListener
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
   val topicSize = ObservableField<String>("")
@@ -51,5 +56,9 @@ class TopicInfoViewModel @Inject constructor(
 
   fun clickSeeMore() {
     isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
+  }
+
+  fun clickTopicDownload(@Suppress("UNUSED_PARAMETER") v: View) {
+    topicInfoListener.onDownloadTopicClicked()
   }
 }

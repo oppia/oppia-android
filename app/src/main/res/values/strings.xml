@@ -26,6 +26,14 @@
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
+  <string name="cellular_data_alert_dialog_description_download_wifi">You can go to Settings to Download only when connected to WiFi.</string>
+  <string name="cellular_data_alert_dialog_positive_download_wifi">Download Now</string>
+  <string name="cellular_data_alert_dialog_title_download_wifi_on">Download is paused</string>
+  <string name="cellular_data_alert_dialog_description_download_wifi_off">Your download will resume when connected to wifi Thse settings can be modified by the administrator in admin settings.</string>
+  <string name="cellular_data_alert_dialog_positive_download_wifi_off">Ok</string>
+  <string name="offline_alert_dialog_title">Download may use Mobile Data</string>
+  <string name="offline_alert_dialog_description">Download may use Mobile Data. You can go to Settings to Download only when connected to WiFi.</string>
+  <string name="offline_alert_dialog_positive">Ok</string>
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
