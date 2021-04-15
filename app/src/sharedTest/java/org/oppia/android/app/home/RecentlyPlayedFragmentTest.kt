@@ -51,6 +51,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.IntentExtras.Companion.createRecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -146,18 +147,12 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
-    return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context = context,
-      internalProfileId = internalProfileId
-    )
-  }
-
   @Test
   fun testRecentlyPlayedTestActivity_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     )
     onView(withContentDescription(R.string.navigate_up)).perform(click())
@@ -168,7 +163,8 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       onView(
@@ -195,7 +191,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -229,7 +226,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -254,7 +252,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -278,7 +277,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -308,7 +308,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -333,7 +334,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -367,7 +369,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -401,7 +404,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -435,7 +439,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -469,7 +474,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -522,7 +528,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -556,7 +563,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -579,7 +587,8 @@ class RecentlyPlayedFragmentTest {
   fun testRecentlyPlayedTestActivity_configChange_toolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -604,7 +613,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -637,7 +647,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -672,7 +683,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -707,7 +719,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -742,7 +755,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -777,7 +791,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -812,7 +827,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -843,7 +859,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -874,7 +891,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -906,7 +924,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        title = context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -923,6 +942,13 @@ class RecentlyPlayedFragmentTest {
         )
       )
     }
+  }
+
+  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int, title: String): Intent {
+    return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+      context,
+      createRecentlyPlayedActivityIntentExtras(context, internalProfileId, title)
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

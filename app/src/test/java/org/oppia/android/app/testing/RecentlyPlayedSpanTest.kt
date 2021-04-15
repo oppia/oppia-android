@@ -24,6 +24,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -115,7 +117,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -131,7 +134,12 @@ class RecentlyPlayedSpanTest {
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_tablet_hasCorrectSpanCount() {
-    launch<RecentlyPlayedActivity>(createRecentlyPlayedActivityIntent(internalProfileId)).use {
+    launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
+      )
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
@@ -147,7 +155,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_landscape_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -165,7 +174,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_landscape_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -183,7 +193,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_port_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -201,7 +212,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -219,7 +231,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_landscape_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -237,7 +250,8 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_landscape_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
+        internalProfileId,
+        context.getString(R.string.recently_played_activity)
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -250,10 +264,26 @@ class RecentlyPlayedSpanTest {
     }
   }
 
-  private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int, title: String): Intent {
+    val recentlyPlayedActivityIntentExtras = RecentlyPlayedActivityIntentExtras.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+      .setActivityTitle(
+        when (title) {
+          context.getString(R.string.stories_for_you) -> {
+            RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+          }
+          context.getString(R.string.recently_played_activity) -> {
+            RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+          }
+          else -> {
+            RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+          }
+        }
+      )
+      .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
-      profileId
+      recentlyPlayedActivityIntentExtras
     )
   }
 

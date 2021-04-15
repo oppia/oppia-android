@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +21,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.BundleMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -52,11 +55,13 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.utility.IntentExtras.Companion.createRecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -87,6 +92,8 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -537,10 +544,23 @@ class ProfileProgressFragmentTest {
       )
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
+      val bundle = Bundle()
+      bundle.putProto(
+        RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS,
+        createRecentlyPlayedActivityIntentExtras(
+          context,
+          internalProfileId,
+          context.getString(R.string.recently_played_activity)
+        )
+      )
       intended(
-        hasExtra(
-          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-          internalProfileId
+        hasExtras(
+          BundleMatchers.hasValue(
+            bundle.getProto(
+              RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS,
+              RecentlyPlayedActivityIntentExtras.getDefaultInstance()
+            )
+          )
         )
       )
     }

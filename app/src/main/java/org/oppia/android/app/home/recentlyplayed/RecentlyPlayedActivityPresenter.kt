@@ -3,13 +3,15 @@ package org.oppia.android.app.home.recentlyplayed
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras) {
     activity.setContentView(R.layout.recently_played_activity)
+    val internalProfileId = recentlyPlayedActivityIntentExtras.profileId.internalId
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
