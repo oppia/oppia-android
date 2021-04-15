@@ -69,19 +69,19 @@ class RecyclerViewMatcher {
     }
 
     /**
-     * This function verifies item displayed for a specific view
+     * Verifies that the item is displayed for a specific view
      * within the item inside RecyclerView from a specified position.
      */
     fun verifyItemDisplayedOnRecyclerView(
-      recyclerView: Int,
+      recyclerViewId: Int,
       itemPosition: Int,
-      targetView: Int
+      targetViewId: Int
     ) {
       onView(
         atPositionOnView(
-          recyclerViewId = recyclerView,
+          recyclerViewId = recyclerViewId,
           position = itemPosition,
-          targetViewId = targetView
+          targetViewId = targetViewId
         )
       ).check(matches(isDisplayed()))
     }
