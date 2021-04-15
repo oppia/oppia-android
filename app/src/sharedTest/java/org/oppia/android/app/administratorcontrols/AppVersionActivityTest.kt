@@ -108,13 +108,7 @@ class AppVersionActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val lastUpdateDateTime = context.getLastUpdateTime()
-<<<<<<< HEAD
     lastUpdateDate = getDateTime(lastUpdateDateTime)!!
-=======
-    lastUpdateDate = getDateTime(
-      dateTimeTimestamp = lastUpdateDateTime
-    )!!
->>>>>>> cd72c42f905fd11e8cbac7cc8c5a34a8af7a8398
   }
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
