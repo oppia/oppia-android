@@ -66,6 +66,7 @@
           tools:src="@tools:sample/avatars[1]" />
 
         <LinearLayout
+          android:id="@+id/topic_download_details_container"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="12dp"

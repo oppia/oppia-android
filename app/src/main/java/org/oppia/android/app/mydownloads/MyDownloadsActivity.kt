@@ -35,11 +35,11 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
 
     fun createMyDownloadsActivityIntent(
       context: Context,
-      profileId: Int?,
+      internalProfileId: Int?,
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       intent.putExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }

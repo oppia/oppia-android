@@ -96,7 +96,7 @@ class MyDownloadsActivityTest {
     activityTestRule.launchActivity(
       MyDownloadsActivity.createMyDownloadsActivityIntent(
         context = this.context.applicationContext,
-        profileId = 1,
+        internalProfileId = 1,
         isFromNavigationDrawer = true
       )
     )
