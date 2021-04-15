@@ -4,36 +4,19 @@ This library provides data to the rest of the application.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//data:data_test.bzl", "data_test")
-
-kt_android_library(
-    name = "persistent_cache_store",
-    srcs = ["src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"],
-    custom_package = "org.oppia.android.data.persistence",
-    manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":dagger",
-        "//model",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
-        "//third_party:com_github_bumptech_glide_glide",
-        "//utility",
-        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-    ],
-)
 
 # keep sorted
 TEST_DEPS = [
     ":dagger",
-    ":persistent_cache_store",
     "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+    "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//model:test_models",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//third_party:androidx_test_ext_junit",
     "//third_party:com_google_truth_truth",
     "//third_party:com_squareup_retrofit2_converter-moshi",

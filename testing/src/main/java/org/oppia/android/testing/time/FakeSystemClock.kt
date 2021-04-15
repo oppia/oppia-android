@@ -1,6 +1,7 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.time
 
 import android.os.SystemClock
+import org.oppia.android.testing.robolectric.IsOnRobolectric
 import java.lang.reflect.Method
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
