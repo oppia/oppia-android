@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.robolectric
 
 import android.os.Build
 import dagger.Module

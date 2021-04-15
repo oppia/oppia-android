@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import android.os.Build
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,15 +33,19 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * Returns whether there are any tasks known to the dispatcher that have not yet been started.
    *
    * Note that some of these tasks may be scheduled for the future. This is meant to be used in
-   * conjunction with [FakeSystemClock.advanceTime] since that along with [runCurrent] will execute
-   * all tasks up to the new time. If the time returned by [getNextFutureTaskCompletionTimeMillis]
-   * plus the current time is passed to [FakeSystemClock.advanceTime], this dispatcher guarantees
-   * that [hasPendingTasks] will return false after a call to [runCurrent] returns.
+   * conjunction with [org.oppia.android.testing.time.FakeSystemClock.advanceTime] since that along
+   * with [runCurrent] will execute all tasks up to the new time. If the time returned by
+   * [getNextFutureTaskCompletionTimeMillis] plus the current time is passed to
+   * [org.oppia.android.testing.time.FakeSystemClock.advanceTime], this dispatcher guarantees that
+   * [hasPendingTasks] will return false after a call to [runCurrent] returns.
    *
    * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
    * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in
    * response to a task from this dispatcher being executed). Cross-thread communication should be
    * managed using [TestCoroutineDispatchers], instead.
+   *
+   * Note that it's up to the implementation to define what constitutes as 'pending' as this may
+   * differ for different testing environments.
    */
   abstract fun hasPendingTasks(): Boolean
 
@@ -57,6 +61,9 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * If [runCurrent] is used, this function is guaranteed to return false after that function
    * returns. Note that the same threading caveats mentioned for [hasPendingTasks] also pertains to
    * this function.
+   *
+   * Note that it's up to the implementation to define what constitutes as 'completable' as this may
+   * differ for different testing environments.
    */
   abstract fun hasPendingCompletableTasks(): Boolean
 
@@ -66,6 +73,12 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
   /**
    * Runs all tasks currently scheduled to be run in the dispatcher, but none scheduled for the
    * future.
+   *
+   * Note that this function will definitely result in out-of-order execution regardless of when a
+   * task is scheduled if the clock has been advanced past that task's time. For this reason, it's
+   * highly recommended that callers use [getNextFutureTaskCompletionTimeMillis] in order to ensure
+   * that tasks are run in-order on this dispatcher, and among other dispatchers to ensure tasks
+   * don't inadvertently run out of order.
    *
    * @param timeout the timeout value in the specified unit after which this run attempt should fail
    * @param timeoutUnit the unit for [timeout] corresponding to how long this method should wait
@@ -77,16 +90,9 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
   )
 
   /**
-   * Runs all tasks currently scheduled, including future sheduled tasks. Normal use cases should
-   * use [TestCoroutineDispatchers], not this method. This is reserved for special cases (like
-   * isolated test dispatchers).
+   * A listener for whether the test coroutine dispatcher has become idle (that is, is not running
+   * any tasks but may have tasks scheduled).
    */
-  abstract fun runUntilIdle(
-    timeout: Long = DEFAULT_TIMEOUT_SECONDS,
-    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
-  )
-
-  /** A listener for whether the test coroutine dispatcher has become idle. */
   interface TaskIdleListener {
     /**
      * Called when the dispatcher has become non-idle. This may be called immediately after
