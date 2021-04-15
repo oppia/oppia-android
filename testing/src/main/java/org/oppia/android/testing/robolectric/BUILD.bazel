@@ -1,0 +1,34 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for Robolectric-specific utilities and configurations.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "is_on_robolectric",
+    testonly = True,
+    srcs = [
+        "IsOnRobolectric.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "RobolectricModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":is_on_robolectric",
+    ],
+)
+
+dagger_rules()

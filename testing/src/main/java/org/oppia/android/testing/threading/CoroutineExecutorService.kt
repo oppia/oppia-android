@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CoroutineDispatcher
@@ -259,7 +259,7 @@ class CoroutineExecutorService(
   }
 
   private fun dispatchAsync(command: Runnable): Deferred<*> {
-    return dispatchAsync(command.let { Callable<Unit> { it.run() } })
+    return dispatchAsync(command.let { Callable { it.run() } })
   }
 
   private fun <T> dispatchAsync(command: Callable<T>): Deferred<T> {
@@ -281,7 +281,7 @@ class CoroutineExecutorService(
     // Note: this Runnable is *probably* incorrect, but ExecutorService doesn't indicate which
     // Runnables are provided, what they should do when run, or how they tie back to submitted
     // Callables.
-    val task = Task(Runnable { runBlocking { command() } }, deferred)
+    val task = Task({ runBlocking { command() } }, deferred)
     serviceLock.withLock { pendingTasks.put(taskId, task) }
     deferred.invokeOnCompletion {
       serviceLock.withLock { pendingTasks.remove(taskId) }
@@ -354,7 +354,7 @@ class CoroutineExecutorService(
       timeoutMillis: Long,
       block: TimeoutBlock<T>
     ): T? {
-      return maybeWithTimeoutDelegated<T, T?>(timeoutMillis, block, ::withTimeoutOrNull)
+      return maybeWithTimeoutDelegated(timeoutMillis, block, ::withTimeoutOrNull)
     }
 
     private suspend fun <T : R, R> maybeWithTimeoutDelegated(
