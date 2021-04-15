@@ -9,7 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import java.io.InputStream
 
 /** Decodes an SVG internal representation from an {@link InputStream}. */
-class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
+class SvgDecoder : ResourceDecoder<InputStream?, ScalableVectorGraphic?> {
 
   override fun handles(source: InputStream, options: Options): Boolean =
     options.get(LOAD_OPPIA_SVG) ?: false
@@ -19,9 +19,9 @@ class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
     width: Int,
     height: Int,
     options: Options
-  ): Resource<OppiaSvg?> {
+  ): Resource<ScalableVectorGraphic?> {
     val svgSource = source.bufferedReader().readLines().joinToString(separator = "\n")
-    return SimpleResource(OppiaSvg(svgSource))
+    return SimpleResource(ScalableVectorGraphic(svgSource))
   }
 
   companion object {

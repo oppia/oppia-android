@@ -170,8 +170,8 @@ class CustomHtmlContentHandler private constructor(
    * Html's ImageGetter.
    */
   interface ImageRetriever {
-    /** Returns a new [Drawable] corresponding to the specified URL and [Type]. */
-    fun loadDrawable(sourceUrl: String, type: Type): Drawable
+    /** Returns a new [Drawable] corresponding to the specified image filename and [Type]. */
+    fun loadDrawable(filename: String, type: Type): Drawable
 
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
