@@ -42,7 +42,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
 import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder
-import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.BINDABLE_TEST_FRAGMENT_TAG
@@ -74,6 +73,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
