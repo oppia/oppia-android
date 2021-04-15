@@ -71,11 +71,11 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -217,9 +217,9 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_list_drop_down_icon
+          targetViewId = R.id.chapter_list_drop_down_icon
         )
       ).check(
         matches(
@@ -236,9 +236,9 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -252,9 +252,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
@@ -298,9 +298,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -317,9 +317,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 2,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -334,9 +334,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -351,9 +351,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -381,9 +381,9 @@ class TopicLessonsFragmentTest {
   private fun clickStoryItem(position: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.story_summary_recycler_view,
-        position,
-        targetViewId
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = position,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -401,14 +401,13 @@ class TopicLessonsFragmentTest {
   private fun verifyTextOnStorySummaryListItemAtPosition(itemPosition: Int, stringToMatch: String) {
     onView(
       atPosition(
-        R.id.story_summary_recycler_view,
-        itemPosition
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = itemPosition
       )
     ).check(matches(hasDescendant(withText(containsString(stringToMatch)))))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

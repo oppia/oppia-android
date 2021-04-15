@@ -31,7 +31,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
   }
 
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.profile_rename_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 

@@ -89,6 +89,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "profile_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":profile_proto"],
 )
 
@@ -129,6 +130,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "thumbnail_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":thumbnail_proto"],
 )
 
@@ -139,6 +141,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "translation_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":translation_proto"],
 )
 
@@ -177,6 +180,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "question_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":question_proto"],
 )
 
@@ -194,6 +198,7 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "topic_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":topic_proto"],
 )
 
@@ -220,13 +225,7 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         ":arguments_java_proto_lite",
-        ":profile_java_proto_lite",
-        ":question_java_proto_lite",
         ":subtitled_unicode_java_proto_lite",
-        ":thumbnail_java_proto_lite",
-        ":topic_java_proto_lite",
-        ":translation_java_proto_lite",
-        ":voiceover_java_proto_lite",
     ],
 )
 
