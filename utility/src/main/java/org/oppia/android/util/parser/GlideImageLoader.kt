@@ -60,7 +60,7 @@ class GlideImageLoader @Inject constructor(
       .intoTarget(target)
   }
 
-  private inline fun <reified T : TransformablePictureDrawable> loadSvgWithGlide(
+  private inline fun <reified T : SvgPictureDrawable> loadSvgWithGlide(
     imageUrl: String,
     target: ImageTarget<T>,
     transformations: List<ImageTransformation>

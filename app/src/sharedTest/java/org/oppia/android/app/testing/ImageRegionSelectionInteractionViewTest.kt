@@ -42,7 +42,6 @@ import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
-import org.oppia.android.app.utility.capture
 import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -61,9 +60,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.mockito.capture
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -116,14 +116,15 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
     }
   }
 
@@ -137,7 +138,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -145,7 +146,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -160,7 +161,8 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
     }
   }
 
@@ -174,7 +176,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(isDisplayed())
@@ -196,7 +198,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -204,7 +206,7 @@ class ImageRegionSelectionInteractionViewTest {
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.7f, 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
@@ -219,7 +221,8 @@ class ImageRegionSelectionInteractionViewTest {
           regionClickedEvent
         )
       )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 2"))
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
     }
   }
 
@@ -232,7 +235,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.3f, 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
@@ -243,7 +246,8 @@ class ImageRegionSelectionInteractionViewTest {
         .onClickableAreaTouched(
           capture(regionClickedEvent)
         )
-      assertThat(regionClickedEvent.value).isEqualTo(NamedRegionClickedEvent("Region 3"))
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
     }
   }
 
@@ -256,7 +260,7 @@ class ImageRegionSelectionInteractionViewTest {
           .setListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(0.0f, 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f)
       )
       onView(withId(R.id.default_selected_region)).check(
         matches(not(isDisplayed()))
@@ -267,7 +271,6 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [

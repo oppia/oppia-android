@@ -170,8 +170,8 @@ class CustomHtmlContentHandler private constructor(
    * Html's ImageGetter.
    */
   interface ImageRetriever {
-    /** Returns a new [Drawable] corresponding to the specified URL and [Type]. */
-    fun loadDrawable(sourceUrl: String, type: Type): Drawable
+    /** Returns a new [Drawable] corresponding to the specified image filename and [Type]. */
+    fun loadDrawable(filename: String, type: Type): Drawable
 
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
@@ -190,9 +190,9 @@ class CustomHtmlContentHandler private constructor(
 
   companion object {
     /**
-     * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageGetter] for
-     * handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom tags.
-     * All possible custom tags must be registered in the [customTagHandlers] map.
+     * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageRetriever]
+     * for handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom
+     * tags. All possible custom tags must be registered in the [customTagHandlers] map.
      */
     fun <T> fromHtml(
       html: String,
@@ -229,6 +229,6 @@ fun Attributes.getJsonStringValue(name: String): String? {
 fun Attributes.getJsonObjectValue(name: String): JSONObject? {
   // The raw content value is a JSON blob with escaped quotes.
   return try {
-    JSONObject(getValue(name).replace("&quot;", "\"").replace("\\\\", "\\"))
+    getValue(name)?.replace("&quot;", "\"")?.let { JSONObject(it) }
   } catch (e: JSONException) { return null }
 }
