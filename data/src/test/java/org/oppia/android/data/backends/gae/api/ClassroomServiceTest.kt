@@ -26,9 +26,6 @@ import javax.inject.Singleton
 class ClassroomServiceTest {
 
   @Inject
-  lateinit var retrofit: Retrofit
-
-  @Inject
   lateinit var mockRetrofit: MockRetrofit
 
   @Before
@@ -56,7 +53,7 @@ class ClassroomServiceTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkModule::class, RetrofitTestModule::class])
+  @Component(modules = [RetrofitTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
