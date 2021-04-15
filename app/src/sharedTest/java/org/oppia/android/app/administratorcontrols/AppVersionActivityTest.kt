@@ -108,9 +108,7 @@ class AppVersionActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val lastUpdateDateTime = context.getLastUpdateTime()
-    lastUpdateDate = getDateTime(
-      dateTimeTimeStamp = lastUpdateDateTime
-    )!!
+    lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
@@ -201,7 +199,7 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        profileId = 0
+        internalProfileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -232,10 +230,10 @@ class AppVersionActivityTest {
     return ActivityScenario.launch(intent)
   }
 
-  private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
+  private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      internalProfileId
     )
   }
 
