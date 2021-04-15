@@ -141,7 +141,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
-      ).use {
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
@@ -151,8 +151,8 @@ class TopicInfoFragmentTest {
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
-      topicId =  TEST_TOPIC_ID
-      ).use {
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_description_text_view)).check(
         matches(
@@ -171,7 +171,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
-      ).use {
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
@@ -182,7 +182,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
-      ).use {
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view))
@@ -203,7 +203,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
-      ).use {
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
@@ -216,7 +216,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
-      ).use {
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
@@ -228,7 +228,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.topic_description_text_view))
         .check(
           matches(
@@ -246,7 +246,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -264,7 +264,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -289,7 +289,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -308,7 +308,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
@@ -321,7 +321,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = RATIOS_TOPIC_ID
-      ).use {
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
