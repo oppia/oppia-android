@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 // TODO(#1274): Add thorough testing for this class.
 

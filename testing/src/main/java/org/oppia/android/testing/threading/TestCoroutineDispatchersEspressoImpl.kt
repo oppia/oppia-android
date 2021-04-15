@@ -1,9 +1,9 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import org.oppia.android.testing.TestCoroutineDispatcher.TaskIdleListener
+import org.oppia.android.testing.threading.TestCoroutineDispatcher.TaskIdleListener
 import javax.inject.Inject
 
 /**
@@ -66,7 +66,7 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
       resourceCallback = callback
     }
 
-    internal fun setToIdle() {
+    fun setToIdle() {
       resourceCallback?.onTransitionToIdle()
     }
   }
@@ -76,7 +76,7 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   ) {
     private val dispatcherRunningStates = Array(dispatchers.size) { false }
 
-    internal fun initialize() {
+    fun initialize() {
       dispatchers.forEachIndexed { index, dispatcher ->
         dispatcher.setTaskIdleListener(object : TaskIdleListener {
           override fun onDispatcherRunning() {

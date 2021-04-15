@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
@@ -7,14 +7,11 @@ import kotlinx.coroutines.Delay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.test.DelayController
-import kotlinx.coroutines.test.UncompletedCoroutinesError
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.min
 import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 
 /**
@@ -30,7 +27,7 @@ import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with
 @ExperimentalCoroutinesApi
 class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher(), Delay, DelayController {
+) : TestCoroutineDispatcher(), Delay {
 
   private val realCoroutineScope by lazy { CoroutineScope(realCoroutineDispatcher) }
   private val executingTaskCount = AtomicInteger(0)
@@ -39,29 +36,22 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
   private val taskCompletionTimes = ConcurrentHashMap<Int, Long>()
   private var taskIdleListener: TaskIdleListener? = null
 
-  @ExperimentalCoroutinesApi
-  override val currentTime: Long
-    get() = System.currentTimeMillis()
-
   override fun dispatch(context: CoroutineContext, block: Runnable) {
     val taskId = totalTaskCount.incrementAndGet()
-    taskCompletionTimes[taskId] = currentTime
+    taskCompletionTimes[taskId] = System.currentTimeMillis()
 
     // Tasks immediately will start running, so track the task immediately.
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
-    realCoroutineDispatcher.dispatch(
-      context,
-      kotlinx.coroutines.Runnable {
-        try {
-          block.run()
-        } finally {
-          executingTaskCount.decrementAndGet()
-          taskCompletionTimes.remove(taskId)
-        }
-        notifyIfIdle()
+    realCoroutineDispatcher.dispatch(context) {
+      try {
+        block.run()
+      } finally {
+        executingTaskCount.decrementAndGet()
+        taskCompletionTimes.remove(taskId)
       }
-    )
+      notifyIfIdle()
+    }
   }
 
   override fun scheduleResumeAfterDelay(
@@ -69,7 +59,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     continuation: CancellableContinuation<Unit>
   ) {
     val taskId = totalTaskCount.incrementAndGet()
-    taskCompletionTimes[taskId] = timeMillis
+    taskCompletionTimes[taskId] = System.currentTimeMillis() + timeMillis
     val block: CancellableContinuation<Unit>.() -> Unit = {
       realCoroutineDispatcher.resumeUndispatched(Unit)
     }
@@ -92,69 +82,15 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     }
   }
 
-  @ExperimentalCoroutinesApi
-  override fun advanceTimeBy(delayTimeMillis: Long): Long {
-    throw UnsupportedOperationException("Cannot advance time for real-time dispatchers")
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun advanceUntilIdle(): Long {
-    throw UnsupportedOperationException(
-      "Use TestCoroutineDispatchers.advanceUntilIdle() to ensure the dispatchers are properly " +
-        "coordinated"
-    )
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun cleanupTestCoroutines() {
-    val remainingTaskCount = executingTaskCount.get()
-    if (remainingTaskCount != 0) {
-      throw UncompletedCoroutinesError(
-        "Expected no remaining tasks for test dispatcher, but found $remainingTaskCount"
-      )
-    }
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun pauseDispatcher() {
-    throw UnsupportedOperationException("Real-time dispatchers cannot be paused/resumed")
-  }
-
-  @ExperimentalCoroutinesApi
-  override suspend fun pauseDispatcher(block: suspend () -> Unit) {
-    // There's not a clear way to handle this block while maintaining the thread of the dispatcher,
-    // so disable it for now until it's later needed.
-    throw UnsupportedOperationException()
-  }
-
-  @ExperimentalCoroutinesApi
-  override fun resumeDispatcher() {
-    throw UnsupportedOperationException("Real-time dispatchers cannot be paused/resumed")
-  }
-
-  override fun runCurrent() {
-    // Nothing to do; the queue is always continuously running.
-  }
-
   override fun runCurrent(timeout: Long, timeoutUnit: TimeUnit) {
-    // Nothing to do; the queue is always continuously running.
-  }
-
-  override fun runUntilIdle(timeout: Long, timeoutUnit: TimeUnit) {
     // Nothing to do; the queue is always continuously running.
   }
 
   override fun hasPendingTasks(): Boolean = executingTaskCount.get() != 0
 
   override fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? {
-    var nextFutureTaskTime: Long? = null
     // Find the next most recent task completion time that's after the specified time.
-    for (entry in taskCompletionTimes.entries) {
-      if (entry.value > timeMillis) {
-        nextFutureTaskTime = nextFutureTaskTime?.let { min(it, entry.value) } ?: entry.value
-      }
-    }
-    return nextFutureTaskTime
+    return taskCompletionTimes.values.filter { it > timeMillis }.minOrNull()
   }
 
   override fun hasPendingCompletableTasks(): Boolean {
