@@ -131,15 +131,20 @@ class OptionsFragmentTest {
     isFromNavigationDrawer: Boolean
   ): Intent {
     return OptionsActivity.createOptionsActivity(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      isFromNavigationDrawer
+      context = ApplicationProvider.getApplicationContext(),
+      profileId = internalProfileId,
+      isFromNavigationDrawer = isFromNavigationDrawer
     )
   }
 
   @Test
   fun testOptionsFragment_parentIsExploration_checkBackArrowNotVisible() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
@@ -147,7 +152,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_parentIsNotExploration_checkBackArrowNotVisible() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
     }
@@ -155,7 +165,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
@@ -163,7 +178,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, false)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
@@ -172,7 +192,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_clickNavigationDrawerHamburger_navigationDrawerIsOpenedSuccessfully() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.options_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
@@ -182,7 +207,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_readingTextSize_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -195,7 +225,7 @@ class OptionsFragmentTest {
 
       it.onActivity { activity ->
         activity.startActivityForResult(
-          createReadingTextSizeActivityIntent("Small"),
+          createReadingTextSizeActivityIntent(summaryValue = "Small"),
           REQUEST_CODE_TEXT_SIZE
         )
       }
@@ -204,9 +234,9 @@ class OptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.reading_text_size_text_view
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
         )
       ).check(
         matches(withText("Large"))
@@ -216,7 +246,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_audioLanguage_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -229,7 +264,7 @@ class OptionsFragmentTest {
 
       it.onActivity { activity ->
         activity.startActivityForResult(
-          createAudioLanguageActivityIntent("Hindi"),
+          createAudioLanguageActivityIntent(summaryValue = "Hindi"),
           REQUEST_CODE_AUDIO_LANGUAGE
         )
       }
@@ -238,9 +273,9 @@ class OptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_language_text_view
+          recyclerViewId = R.id.options_recyclerview,
+          position = 2,
+          targetViewId = R.id.audio_language_text_view
         )
       ).check(
         matches(withText("French"))
@@ -250,7 +285,12 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_appLanguage_testOnActivityResult() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       val resultDataIntent = Intent()
       resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
       val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
@@ -263,7 +303,7 @@ class OptionsFragmentTest {
 
       it.onActivity { activity ->
         activity.startActivityForResult(
-          createAppLanguageActivityIntent("English"),
+          createAppLanguageActivityIntent(summaryValue = "English"),
           REQUEST_CODE_APP_LANGUAGE
         )
       }
@@ -272,8 +312,9 @@ class OptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.options_recyclerview,
-          1, R.id.app_language_text_view
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
         )
       ).check(
         matches(withText("French"))
