@@ -63,7 +63,9 @@ abstract class SvgPictureDrawable(
    * when [textPaint] is null and text rendering when otherwise.
    */
   protected fun reinitialize(textPaint: TextPaint?) {
-    picture = textPaint?.let { scalableVectorGraphic.renderToTextPicture(it) } ?: scalableVectorGraphic.renderToBlockPicture()
+    picture = textPaint?.let {
+      scalableVectorGraphic.renderToTextPicture(it)
+    } ?: scalableVectorGraphic.renderToBlockPicture()
     intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
   }
 }

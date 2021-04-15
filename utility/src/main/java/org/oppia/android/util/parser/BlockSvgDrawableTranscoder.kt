@@ -6,7 +6,8 @@ import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 
 /** Transcoder for [ScalableVectorGraphic]s to [BlockPictureDrawable]s. */
-class BlockSvgDrawableTranscoder : ResourceTranscoder<ScalableVectorGraphic?, BlockPictureDrawable?> {
+class BlockSvgDrawableTranscoder :
+  ResourceTranscoder<ScalableVectorGraphic?, BlockPictureDrawable?> {
   override fun transcode(
     toTranscode: Resource<ScalableVectorGraphic?>,
     options: Options
