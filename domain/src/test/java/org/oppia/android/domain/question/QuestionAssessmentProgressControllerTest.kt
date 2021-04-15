@@ -51,6 +51,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -1156,7 +1157,8 @@ class QuestionAssessmentProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      CachingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
