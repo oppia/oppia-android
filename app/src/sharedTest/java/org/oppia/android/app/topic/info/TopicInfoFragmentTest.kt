@@ -136,6 +136,32 @@ class TopicInfoFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * testTopicInfoFragment_preview_toolbarTitle_isDisplayedCorrectly()
+   * testTopicInfoFragment_preview_tabsNotDisplayed()
+   * testTopicInfoFragment_preview_configChange_tabsNotDisplayed
+   * testTopicInfoFragment_preview_singleStoryHeadingIsDisplayed()
+   * testTopicInfoFragment_preview_multiStoryHeadingAreDisplayed()
+   * testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed()
+   * testTopicInfoFragment_preview_withoutSkills_skillHeadingIsNotDisplayed()
+   * testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed
+   * testTopicInfoFragment_preview_downloadTopicTextIsDisplayed()
+   * testTopicInfoFragment_noPreview_topicDownloadedTextIsDisplayed()
+   * testTopicInfoFragment_preview_downloadTopicIconIsDisplayed()
+   * testTopicInfoFragment_noPreview_topicDownloadedIconIsDisplayed()
+   * testTopicInfoFragment_preview_singleStory_singleChaptersListIsDisplayed()
+   * testTopicInfoFragment_preview_singleStory_expandChapter_configChange_chapterListIsDisplayed()
+   * testTopicInfoFragment_preview_multiStory_multiChapterListAreDisplayed()
+   * testTopicInfoFragment_preview_multiStory_expandChapter_configChange_chapterListAreDisplayed()
+   * testTopicInfoFragment_preview_downloadToPlayIsDisplayed()
+   * testTopicInfoFragment_preview_cellular_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_wifi_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_offline_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_cellular_clickDownload_configChange_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_wifi_clickDownload_configChange_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_offline_clickDownload_configChange_dialogIsDisplayed()
+   */
+
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
