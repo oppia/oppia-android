@@ -20,7 +20,7 @@ import javax.inject.Singleton
 class NetworkModule {
 
   @Qualifier
-  private annotation class OppiaRetrofit
+  annotation class OppiaRetrofit
 
   /**
    * Provides the Retrofit object.
