@@ -1,0 +1,18 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for common Espresso matchers & other test utilities.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "generic_view_matchers",
+    testonly = True,
+    srcs = [
+        "GenericViewMatchers.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)

@@ -683,6 +683,7 @@ TEST_DEPS = [
     ":test_deps",
     "//domain",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
     "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
