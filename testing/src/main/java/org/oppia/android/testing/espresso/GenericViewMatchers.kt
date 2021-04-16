@@ -28,9 +28,10 @@ class GenericViewMatchers {
      * filled background colors of views.
      */
     private fun withColorBackgroundMatching(
-      @Suppress("SameParameterValue") descriptionSuffix: String, colorMatcher: (Long?) -> Boolean
+      @Suppress("SameParameterValue") descriptionSuffix: String,
+      colorMatcher: (Long?) -> Boolean
     ): Matcher<View> {
-      return object: TypeSafeMatcher<View>() {
+      return object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
           description?.appendText("view has a background matching $descriptionSuffix")
         }
