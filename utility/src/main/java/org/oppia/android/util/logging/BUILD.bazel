@@ -62,82 +62,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "firebase_event_logger",
-    srcs = [
-        "firebase/FirebaseEventLogger.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":event_bundle_creator",
-        ":event_logger",
-        "//model:event_logger_java_proto_lite",
-        "//third_party:com_google_firebase_firebase-analytics",
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "firebase_exception_logger",
-    srcs = [
-        "firebase/FirebaseExceptionLogger.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":exception_logger",
-        "//third_party:com_google_firebase_firebase-crashlytics",
-    ],
-)
-
-kt_android_library(
-    name = "firebase_log_reporting_module",
-    srcs = [
-        "firebase/LogReportingModule.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":dagger",
-        ":event_bundle_creator",
-        ":firebase_event_logger",
-        ":firebase_exception_logger",
-        "//third_party:com_google_firebase_firebase-analytics",
-        "//third_party:com_google_firebase_firebase-crashlytics",
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "firebase_log_uploader",
-    srcs = [
-        "firebase/FirebaseLogUploader.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":log_uploader",
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "firebase_log_uploader_module",
-    srcs = [
-        "firebase/FirebaseLogUploaderModule.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":dagger",
-        ":firebase_log_uploader",
-        ":log_uploader",
-    ],
-)
-
-kt_android_library(
     name = "log_level",
     srcs = [
         "LogLevel.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
+    ]
 )
 
 kt_android_library(

@@ -1,0 +1,79 @@
+"""
+General purpose utilities for firebase logging.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "firebase_event_logger",
+    srcs = [
+        "FirebaseEventLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:event_logger_java_proto_lite",
+        "//third_party:com_google_firebase_firebase-analytics",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+    ],
+)
+
+kt_android_library(
+    name = "firebase_exception_logger",
+    srcs = [
+        "FirebaseExceptionLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:com_google_firebase_firebase-crashlytics",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+    ],
+)
+
+kt_android_library(
+    name = "firebase_log_reporting_module",
+    srcs = [
+        "LogReportingModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":firebase_event_logger",
+        ":firebase_exception_logger",
+        "//third_party:com_google_firebase_firebase-analytics",
+        "//third_party:com_google_firebase_firebase-crashlytics",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+    ],
+)
+
+kt_android_library(
+    name = "firebase_log_uploader",
+    srcs = [
+        "FirebaseLogUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+kt_android_library(
+    name = "firebase_log_uploader_module",
+    srcs = [
+        "FirebaseLogUploaderModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":firebase_log_uploader",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+dagger_rules()
