@@ -78,6 +78,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/options/RouteToAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/RouteToReadingTextSizeListener.kt",
+    "src/main/java/org/oppia/android/app/options/TextSizeRadioButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/audio/LanguageInterface.kt",
     "src/main/java/org/oppia/android/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
     "src/main/java/org/oppia/android/app/player/state/answerhandling/InteractionAnswerHandler.kt",
