@@ -24,6 +24,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
+  // TODO(#3098): Add dedicated tests for this class.
 
   private val imageView = this
   private var isBlurred: Boolean = false
