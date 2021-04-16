@@ -1,8 +1,10 @@
 package org.oppia.android.util.parser
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorFilter
+import android.graphics.Paint
 import android.graphics.Picture
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -14,10 +16,22 @@ import android.text.TextPaint
  * rendering methods available.
  */
 abstract class SvgPictureDrawable(
+  context: Context,
   private val scalableVectorGraphic: ScalableVectorGraphic
 ) : Drawable() {
+  // TODO(#1523): Once Glide can be orchestrated, add tests for verifying this drawable's state.
+  // TODO(#1815): Add screenshot tests to verify this drawable is rendered correctly.
+
+  /**
+   * The [Paint] that should be used when rendering this drawable. Note that the flags are based
+   * on the defaults set by Android's BitmapDrawable.
+   */
+  private val bitmapPaint by lazy { Paint(Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG) }
+  private val bitmapBlurrer by lazy { BitmapBlurrer(context) }
+
   private var picture: Picture? = null
   private var intrinsicSize = ScalableVectorGraphic.SvgSizeSpecs(width = -1f, height = -1f)
+  private var bitmap: Bitmap? = null
 
   override fun draw(canvas: Canvas) {
     // The rendering approach here is loosely based on Android's PictureDrawable.
@@ -25,15 +39,23 @@ abstract class SvgPictureDrawable(
       // Save current transformation state.
       save()
 
-      picture?.let { picture ->
-        // Apply the picture's bounds so that it's positioned/clipped correctly.
-        Rect(bounds).apply {
-          // Shift the drawable's bounds to adjust for needed vertical alignment (sometimes needed
-          // for in-line drawables). This is done here versus during size recomputing so that
-          // external changes to the bounds don't mess up the vertical shift needed for rendering.
-          offset(/* dx= */ 0, /* dy= */ intrinsicSize.verticalAlignment.toInt())
-          clipRect(this)
-          translate(left.toFloat(), top.toFloat())
+      if (scalableVectorGraphic.hasTransformations()) {
+        bitmap?.let { bitmap ->
+          drawBitmap(bitmap, /* src= */ null, bounds, bitmapPaint)
+        }
+      } else {
+        picture?.let { picture ->
+          // Apply the picture's bounds so that it's positioned/clipped correctly.
+          Rect(bounds).apply {
+            // Shift the drawable's bounds to adjust for needed vertical alignment (sometimes needed
+            // for in-line drawables). This is done here versus during size recomputing so that
+            // external changes to the bounds don't mess up the vertical shift needed for rendering.
+            offset(/* dx= */ 0, /* dy= */ intrinsicSize.verticalAlignment.toInt())
+            clipRect(this)
+            translate(left.toFloat(), top.toFloat())
+          }
+
+          drawPicture(picture)
         }
       }
 
@@ -66,6 +88,9 @@ abstract class SvgPictureDrawable(
       scalableVectorGraphic.renderToTextPicture(it)
     } ?: scalableVectorGraphic.renderToBlockPicture()
     intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
+    if (scalableVectorGraphic.hasTransformations()) {
+      recomputeBitmap()
+    }
   }
 
   private fun recomputeBitmap() {
@@ -80,7 +105,7 @@ abstract class SvgPictureDrawable(
 
   private fun transformBitmap(bitmap: Bitmap): Bitmap {
     var transformedBitmap = bitmap
-    for (imageTransformation in oppiaSvg.transformations) {
+    for (imageTransformation in scalableVectorGraphic.transformations) {
       transformedBitmap = transformBitmap(transformedBitmap, imageTransformation)
     }
     return transformedBitmap
@@ -93,4 +118,4 @@ abstract class SvgPictureDrawable(
   }
 }
 
-private fun OppiaSvg.hasTransformations() = transformations.isNotEmpty()
+private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()

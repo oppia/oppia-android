@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser
 
+import android.content.Context
 import android.graphics.Picture
 import android.text.TextPaint
 
@@ -10,8 +11,9 @@ import android.text.TextPaint
  * [computeTextPicture] must be called before this drawable can be drawn.
  */
 class TextPictureDrawable internal constructor(
+  context: Context,
   scalableVectorGraphic: ScalableVectorGraphic
-) : SvgPictureDrawable(scalableVectorGraphic) {
+) : SvgPictureDrawable(context, scalableVectorGraphic) {
   /**
    * Initializes this drawable with a text-based [Picture]. See
    * [ScalableVectorGraphic.renderToTextPicture] for specifics.

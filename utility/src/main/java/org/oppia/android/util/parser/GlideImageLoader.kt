@@ -72,7 +72,7 @@ class GlideImageLoader @Inject constructor(
       .`as`(T::class.java)
       .fitCenter()
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-      .apply(SvgDecoder.createLoadOppiaSvgOption())
+      .apply(SvgDecoder.createLoadSvgFromPipelineOption())
       .load(loadImage(imageUrl))
       .transformWithAll(transformations.toPictureGlideTransformations())
       .intoTarget(target)
@@ -99,9 +99,9 @@ class GlideImageLoader @Inject constructor(
   }
 
   private fun <T> RequestBuilder<T>.transformWithAll(
-    transformations: List<Transformation<OppiaSvg>>
+    transformations: List<Transformation<ScalableVectorGraphic>>
   ): RequestBuilder<T> {
-    transformations.forEach { transform(OppiaSvg::class.java, it) }
+    transformations.forEach { transform(ScalableVectorGraphic::class.java, it) }
     return this
   }
 
@@ -115,7 +115,7 @@ class GlideImageLoader @Inject constructor(
     }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations():
-    List<Transformation<OppiaSvg>> {
+    List<Transformation<ScalableVectorGraphic>> {
       return map {
         when (it) {
           ImageTransformation.BLUR -> pictureBitmapBlurTransformation

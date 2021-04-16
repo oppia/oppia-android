@@ -34,7 +34,7 @@ class SvgDecoder : ResourceDecoder<InputStream?, ScalableVectorGraphic?> {
      * stream for that request is interpreted as an SVG. This must be used in SVG-based requests or
      * they will not be loaded correctly.
      */
-    fun createLoadOppiaSvgOption(): RequestOptions =
+    fun createLoadSvgFromPipelineOption(): RequestOptions =
       RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
   }
 }
