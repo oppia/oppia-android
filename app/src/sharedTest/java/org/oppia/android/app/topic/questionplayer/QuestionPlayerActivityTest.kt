@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -86,6 +87,7 @@ import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_2
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -188,7 +190,7 @@ class QuestionPlayerActivityTest {
   private fun createQuestionPlayerActivityIntent(): Intent {
     return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
       context,
-      ArrayList(SKILL_ID_LIST)
+      ArrayList(SKILL_ID_LIST_0)
     )
   }
 
@@ -212,9 +214,9 @@ class QuestionPlayerActivityTest {
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       rotateToLandscape()
-
       // Option 3 is the wrong answer and should trigger showing a concept card.
       selectMultipleChoiceOption(optionPosition = 3)
+      testCoroutineDispatchers.runCurrent()
       scrollToViewType(FEEDBACK)
 
       onView(withId(R.id.feedback_text_view)).check(
@@ -340,28 +342,6 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Test
-  fun testQuestionPlayer_hintNotImmediatelyVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(not(isDisplayed()))
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
-  @Test
-  fun testQuestionPlayer_wait60Seconds_newHintAndSolVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.dot_hint)).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_newHintAndSolVisible_configChange_newHintAndSolVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
@@ -373,59 +353,19 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
-  @Test
-  fun testQuestionPlayer_wait30Seconds_configChange_wait30Seconds_newHintAndSolVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-
-      rotateToLandscape()
-
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Test
-  fun testQuestionPlayer_submitOneWrongAnswer_hintAndSolNotVisibleVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      submitWrongAnswer(SKILL_ID_0)
-      onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(not(isDisplayed()))
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC) // this tests incorrectly passes on Espresso.
-  @Test
-  fun testQuestionPlayer_submitTwoWrongAnswers_newHintAndSolVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      submitWrongAnswer(SKILL_ID_0)
-      submitWrongAnswer(SKILL_ID_0)
-      onView(withId(R.id.dot_hint)).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_newHintVisible_submitWrongAnswer_newHintAndSolVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
-      submitWrongAnswer(FRACTIONS_SKILL_ID_0)
+      submitWrongAnswer(SKILL_ID_0)
       onView(withId(R.id.dot_hint)).check(
         matches(isDisplayed())
       )
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testQuestionPlayer_newHintVisible_submitCorrectAnswer_hintAndSolNotVisible() {
+  fun testQuestionPlayer_newHintVisible_submitCorrectAnswer_hintAndSolIconNotVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       submitCorrectAnswer(FRACTIONS_SKILL_ID_0)
@@ -435,27 +375,12 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  @Test
-  fun testQuestionPlayer_newHintVisible_hintConsumed_newHintAndSolNotVisible() {
-    launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
-      openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
-      navigateBackToQuestionPlayer()
-      onView(withId(R.id.dot_hint)).check(
-        matches(not(isDisplayed()))
-      )
-    }
-  }
-
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_newHintVisible_hintConsumed_hintAndSolIconVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
         matches(isDisplayed())
@@ -463,65 +388,104 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_newHintAndSolNotVisible() {
-    launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+  fun testQuestionPlayer_unRevealedHintVisible_configChange_unRevealedHintVisible() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
-      navigateBackToQuestionPlayer()
-      submitWrongAnswer(SKILL_ID_1)
-      onView(withId(R.id.dot_hint)).check(
-        matches(not(isDisplayed()))
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      rotateToLandscape()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_clickRevelHint_configChange_revealedHintVisible() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(0, false)
+      onView(isRoot()).check(
+        matches(
+          not(
+            ViewMatchers.withSubstring("Before writing a fraction")
+          )
+        )
       )
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testQuestionPlayer_hintConsumed_wait30Seconds_newHintAndSolAvailable() {
-    launchForSkillList(SKILL_ID_LIST_1).use { // multiple hints
-      makeFirstNewHintsVisible(SKILL_ID_1)
+  fun testQuestionPlayer_revealedHintVisible_configChange_revealedHintVisible() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
-      navigateBackToQuestionPlayer()
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(
-        matches(isDisplayed())
+      clickRevealNewHintAndSol(0, false)
+      rotateToLandscape()
+      onView(isRoot()).check(
+        matches(
+          not(
+            ViewMatchers.withSubstring("Before writing a fraction")
+          )
+        )
       )
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
-  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_newHintAndSolAvailable() {
-    launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+  fun testQuestionPlayer_unRevealedHintVisible_pressBack_checkUnrevealedHintVisible() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
-      navigateBackToQuestionPlayer()
-      submitWrongAnswer(SKILL_ID_1)
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-      onView(withId(R.id.dot_hint)).check(
-        matches(isDisplayed())
+      pressBack()
+      openHintsAndSolutionDialog()
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_revealedHintVisible_pressBack_checkHintAndSolRevealed() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(0, false)
+      pressBack()
+      openHintsAndSolutionDialog()
+      onView(withId(R.id.hints_and_solution_recycler_view))
+        .inRoot(isDialog())
+        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).check(
+        matches(
+          not(
+            ViewMatchers.withSubstring("Before writing a fraction")
+          )
+        )
       )
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_revealSolution_dialogBoxVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
 
       onView(withText(context.getString(R.string.this_will_reveal_the_solution))).inRoot(isDialog())
         .check(
@@ -530,19 +494,18 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @RunOn(TestPlatform.ROBOLECTRIC)
   @Test
   fun testQuestionPlayer_revealSolution_configChange_dialogBoxVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      consumeNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
 
       rotateToLandscape()
 
@@ -550,6 +513,55 @@ class QuestionPlayerActivityTest {
         .check(
           matches(isDisplayed())
         )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_revealSolution_dialogBoxVisible_clickReveal_solutionVisible() {
+    launchForSkillList(SKILL_ID_LIST_1).use {
+      makeFirstNewHintsVisible(SKILL_ID_1)
+
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+
+      makeSecondNewHintAndSolutionVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+
+      onView(withText(context.getString(R.string.reveal))).inRoot(isDialog())
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).check(
+        matches(
+          not(
+            ViewMatchers.withSubstring("The only solution is")
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_revealSolution_dialogBoxVisible_clickCancel_solutionNotVisible() {
+    launchForSkillList(SKILL_ID_LIST_1).use {
+      makeFirstNewHintsVisible(SKILL_ID_1)
+
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+
+      makeSecondNewHintAndSolutionVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+
+      onView(withText(context.getString(R.string.cellular_data_alert_dialog_cancel_button)))
+        .inRoot(isDialog())
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("Reveal Solution")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
@@ -569,6 +581,7 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  /** simulates wait for 30 second to make the second hint and solution available on robolectric. */
   private fun makeSecondNewHintAndSolutionVisible() {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     testCoroutineDispatchers.runCurrent()
@@ -585,21 +598,25 @@ class QuestionPlayerActivityTest {
   }
 
   /**
-   * reveal hints and solution.
+   * clicks the reveal button for hints and solution.
    * for this function to work correctly it should always be called
    * after [openHintsAndSolutionDialog]
    */
-  private fun consumeNewHintAndSol(hintAndSolIndex: Int, isSolution: Boolean) {
+  private fun clickRevealNewHintAndSol(hintAndSolIndex: Int, isSolution: Boolean) {
     val buttonId = if (isSolution) R.id.reveal_solution_button else R.id.reveal_hint_button
     pressRevealHintOrSolutionButton(hintAndSolIndex, buttonId)
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** Scrolls to the hint or solution that has not been viewed yet and reveals it. */
+  /** Scrolls to the hint or solution that has not been viewed yet and clicks the reveal button. */
   private fun pressRevealHintOrSolutionButton(hintOrSolIndex: Int, @IdRes buttonId: Int) {
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(hintOrSolIndex * 2))
+      .perform(
+        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+          hintOrSolIndex * 2
+        )
+      )
     onView(CoreMatchers.allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
@@ -645,8 +662,8 @@ class QuestionPlayerActivityTest {
     scrollToViewType(NUMERIC_INPUT_INTERACTION)
     onView(withId(R.id.numeric_input_interaction_view)).perform(
       editTextInputAction.appendText("5"),
-      closeSoftKeyboard()
     )
+    closeSoftKeyboard()
     testCoroutineDispatchers.runCurrent()
 
     scrollToViewType(SUBMIT_ANSWER_BUTTON)
