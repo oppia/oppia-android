@@ -125,6 +125,12 @@ bind(
     actual = "//tools/android:compiler_annotation_processor",
 )
 
+http_archive(
+    name = "protobuf_tools",
+    strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
