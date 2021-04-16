@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.espresso
 
 import android.os.Build
 import android.view.View
