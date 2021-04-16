@@ -1,28 +1,23 @@
 package org.oppia.android.util.parser
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.ColorFilter
 import android.graphics.Picture
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.text.TextPaint
 
-// TODO: combine with TransformablePictureDrawable?
-open class SvgPictureDrawable(
-  context: Context,
-  private val oppiaSvg: OppiaSvg
-) : TransformablePictureDrawable() {
-  private val bitmapBlurrer by lazy { BitmapBlurrer(context) }
-
-  /**
-   * The [Paint] that should be used when rendering this drawable. Note that the flags are based
-   * on the defaults set by Android's BitmapDrawable.
-   */
-  private val bitmapPaint by lazy { Paint(Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG) }
-
+/**
+ * A [Drawable] for rendering [ScalableVectorGraphic]s. See subclasses for specific drawables &
+ * rendering methods available.
+ */
+abstract class SvgPictureDrawable(
+  private val scalableVectorGraphic: ScalableVectorGraphic
+) : Drawable() {
   private var picture: Picture? = null
-  private var bitmap: Bitmap? = null
-  private var intrinsicSize = IntrinsicSize(width = -1f, height = -1f)
+  private var intrinsicSize = ScalableVectorGraphic.SvgSizeSpecs(width = -1f, height = -1f)
 
   override fun draw(canvas: Canvas) {
     // The rendering approach here is loosely based on Android's PictureDrawable.
@@ -30,19 +25,15 @@ open class SvgPictureDrawable(
       // Save current transformation state.
       save()
 
-      if (oppiaSvg.hasTransformations()) {
-        bitmap?.let { bitmap ->
-          drawBitmap(bitmap, /* src= */ null, bounds, bitmapPaint)
-        }
-      } else {
-        picture?.let { picture ->
-          // Apply the picture's bounds so that it's positioned/clipped correctly.
-          bounds.apply {
-            clipRect(this)
-            translate(left.toFloat(), top.toFloat())
-          }
-
-          drawPicture(picture)
+      picture?.let { picture ->
+        // Apply the picture's bounds so that it's positioned/clipped correctly.
+        Rect(bounds).apply {
+          // Shift the drawable's bounds to adjust for needed vertical alignment (sometimes needed
+          // for in-line drawables). This is done here versus during size recomputing so that
+          // external changes to the bounds don't mess up the vertical shift needed for rendering.
+          offset(/* dx= */ 0, /* dy= */ intrinsicSize.verticalAlignment.toInt())
+          clipRect(this)
+          translate(left.toFloat(), top.toFloat())
         }
       }
 
@@ -51,26 +42,30 @@ open class SvgPictureDrawable(
     }
   }
 
-  override fun getPicture(): Picture? = picture
+  /**
+   * See the super class for specifics. Note that the returned width will not be valid until this
+   * drawable is initialized (which is the responsibility of the subclass implementation).
+   */
+  override fun getIntrinsicWidth(): Int = intrinsicSize.width.toInt()
 
-  // TODO: consider delegating initialization to the child class to better utilize inheritance.
-  override fun computeBlockPicture() {
-    picture = oppiaSvg.renderToBlockPicture()
-    recomputeIntrinsicSize { oppiaSvg.computeSizeSpecs(textPaint = null) }
-    if (oppiaSvg.hasTransformations()) recomputeBitmap()
-  }
+  /** See [getIntrinsicWidth]. */
+  override fun getIntrinsicHeight(): Int = intrinsicSize.height.toInt()
 
-  override fun computeTextPicture(textPaint: TextPaint) {
-    picture = oppiaSvg.renderToTextPicture(textPaint)
-    recomputeIntrinsicSize { oppiaSvg.computeSizeSpecs(textPaint) }
-    if (oppiaSvg.hasTransformations()) recomputeBitmap()
-  }
+  override fun setAlpha(alpha: Int) { /* Unsupported. */ }
 
-  override fun getIntrinsicSize(): IntrinsicSize = intrinsicSize
+  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
 
-  private fun recomputeIntrinsicSize(computeSizeSpecs: () -> OppiaSvg.SvgSizeSpecs) {
-    val (width, height, verticalAlignment) = computeSizeSpecs()
-    intrinsicSize = IntrinsicSize(width, height, verticalAlignment)
+  override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+  /**
+   * Re-renders the [Picture] state & intrinsic size held by this drawable, using block rendering
+   * when [textPaint] is null and text rendering when otherwise.
+   */
+  protected fun reinitialize(textPaint: TextPaint?) {
+    picture = textPaint?.let {
+      scalableVectorGraphic.renderToTextPicture(it)
+    } ?: scalableVectorGraphic.renderToBlockPicture()
+    intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
   }
 
   private fun recomputeBitmap() {

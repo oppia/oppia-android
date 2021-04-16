@@ -14,17 +14,17 @@ class RepositoryGlideModule : AppGlideModule() {
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     registry.register(
-      OppiaSvg::class.java,
+      ScalableVectorGraphic::class.java,
       TextPictureDrawable::class.java,
-      TextSvgDrawableTranscoder(context)
+      TextSvgDrawableTranscoder()
     )
     registry.register(
-      OppiaSvg::class.java,
+      ScalableVectorGraphic::class.java,
       BlockPictureDrawable::class.java,
-      SvgDrawableTranscoder(context)
+      BlockSvgDrawableTranscoder()
     )
 
-    registry.append(InputStream::class.java, OppiaSvg::class.java, SvgDecoder())
+    registry.append(InputStream::class.java, ScalableVectorGraphic::class.java, SvgDecoder())
     registry.append(
       ImageAssetFetcher::class.java,
       InputStream::class.java,

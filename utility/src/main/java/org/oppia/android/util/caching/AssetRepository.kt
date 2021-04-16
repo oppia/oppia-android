@@ -16,9 +16,9 @@ import kotlin.concurrent.withLock
 //  proto. It may also be worth keeping a version of this repository for caching audio files within
 //  certain size limits for buffering during an exploration.
 /**
- * A generic repository for access local APK asset files, and downloading remote binary files. This
- * repository aims to centralize caching management of external asset files to simplify downstream
- * code, and allow assets to be retrieved quickly and synchronously.
+ * A generic repository for accessing local APK asset files, and downloading remote binary files.
+ * This repository aims to centralize caching management of external asset files to simplify
+ * downstream code, and allow assets to be retrieved quickly and synchronously.
  */
 @Singleton
 class AssetRepository @Inject constructor(

@@ -48,12 +48,14 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -85,6 +87,8 @@ class ExplorationProgressControllerTest {
   //  - testGetCurrentState_whileSubmittingCorrectMultiChoiceAnswer_updatesToPending
   //  - testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
+
+  // TODO(#3007): Migrate this over to a new exploration so that the test can verify proto loading.
 
   @Rule
   @JvmField
@@ -1570,6 +1574,18 @@ class ExplorationProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(): Boolean = false
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1581,8 +1597,7 @@ class ExplorationProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class
+      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
