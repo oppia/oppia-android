@@ -195,6 +195,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/options/OptionsAudioLanguageViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsReadingTextSizeViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/ReadingTextSizeSelectionViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/player/audio/AudioViewModel.kt",
     "src/main/java/org/oppia/android/app/player/exploration/ExplorationViewModel.kt",
