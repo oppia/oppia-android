@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -14,6 +15,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -41,6 +43,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
@@ -245,15 +248,178 @@ class TopicInfoFragmentTest {
     }
   }
 
+  @Test
+  fun testTopicInfoFragment_preview_singleStoryIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.topic_info_story_name_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            "Matthew Goes to the Bakery"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_chapterCountIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.topic_info_story_chapter_count
+        )
+      ).check(
+        matches(
+          withText(
+            "2 Chapters"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_singleChaptersListIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_list_drop_down_icon
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "1.What is a Fraction?"
+          )
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "2.The Meaning of Equal Parts"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_configChange_singleChaptersListIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.topic_info_story_summary_recycler_view)).perform(
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          0,
+          scrollTo()
+        )
+      )
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_list_drop_down_icon
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "1.What is a Fraction?"
+          )
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "2.The Meaning of Equal Parts"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_downloadToPlayIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.download_to_play_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_to_play)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_downloadToPlayIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.download_to_play_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_to_play)
+          )
+        )
+      )
+    }
+  }
+
   /**
    * testTopicInfoFragment_noPreview_topicDownloadedTextIsDisplayed()
    * testTopicInfoFragment_preview_downloadTopicIconIsDisplayed()
    * testTopicInfoFragment_noPreview_topicDownloadedIconIsDisplayed()
-   * testTopicInfoFragment_preview_singleStory_singleChaptersListIsDisplayed()
-   * testTopicInfoFragment_preview_singleStory_expandChapter_configChange_chapterListIsDisplayed()
-   * testTopicInfoFragment_preview_multiStory_multiChapterListAreDisplayed()
-   * testTopicInfoFragment_preview_multiStory_expandChapter_configChange_chapterListAreDisplayed()
-   * testTopicInfoFragment_preview_downloadToPlayIsDisplayed()
    * testTopicInfoFragment_preview_cellular_clickDownload_dialogIsDisplayed()
    * testTopicInfoFragment_preview_wifi_clickDownload_dialogIsDisplayed()
    * testTopicInfoFragment_preview_offline_clickDownload_dialogIsDisplayed()
