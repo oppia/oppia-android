@@ -17,7 +17,7 @@ class ViewPagerAdapter(
 ) : FragmentStateAdapter(fragment) {
 
   override fun getItemCount(): Int {
-    if (!enableMyDownloads) {
+    if (enableMyDownloads) {
       return 1
     } else {
       return TopicTab.values().size
@@ -25,7 +25,7 @@ class ViewPagerAdapter(
   }
 
   override fun createFragment(position: Int): Fragment {
-    if (!enableMyDownloads) {
+    if (enableMyDownloads) {
       return TopicInfoFragment.newInstance(internalProfileId, topicId)
     } else {
       return when (TopicTab.getTabForPosition(position)) {

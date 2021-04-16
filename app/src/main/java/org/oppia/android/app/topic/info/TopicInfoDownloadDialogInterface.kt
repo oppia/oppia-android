@@ -1,8 +1,6 @@
 package org.oppia.android.app.topic.info
 
-import org.oppia.android.app.player.audio.CellularAudioDialogFragment
-
-/** Interface to check the preference regarding alert for [CellularAudioDialogFragment]. */
+/** Interface to check the preference regarding alert for [TopicInfoDownloadDialogFragment]. */
 interface TopicInfoDownloadDialogInterface {
   /**
    * If saveUserChoice is true, download topic and save preference do not show dialog again.

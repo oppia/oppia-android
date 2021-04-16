@@ -39,7 +39,7 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_practice_icon_24dp,
       R.drawable.ic_revision_icon_24dp
     )
-  private val enableMyDownloads = false
+  private val enableMyDownloads = true
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -88,7 +88,8 @@ class TopicFragmentPresenter @Inject constructor(
     val adapter =
       ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableMyDownloads)
     viewPager2.adapter = adapter
-    if (enableMyDownloads) {
+    // TODO(#2986): check if topic is already downloaded or not
+    if (!enableMyDownloads) {
       TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
         when (position) {
           0 -> {

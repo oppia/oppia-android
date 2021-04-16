@@ -25,6 +25,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -85,6 +86,8 @@ import javax.inject.Singleton
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
+private const val RATIO_TOPIC_ID = "omzF4oqgeTXd"
+private const val TOPIC_WITHOUT_SKILL_ID = "test_topic_id_2"
 
 private const val TOPIC_DESCRIPTION =
   "You'll often need to talk about part of an object or group. For example, " +
@@ -112,6 +115,9 @@ class TopicInfoFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  // TODO(#2986): add injections once #3010 gets merged
+  var enableMyDownloads: Boolean = true
+
   @Inject
   lateinit var context: Context
 
@@ -136,16 +142,110 @@ class TopicInfoFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Test
+  fun testTopicInfoFragment_preview_toolbarTitle_isDisplayedCorrectly() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Info: $TOPIC_NAME")))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_toolbarTitle_isDisplayedCorrectly() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Info: $TOPIC_NAME")))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_tabsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_tabs_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_tabsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_tabs_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStoryHeadingIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.stories_heading)).check(
+        matches(
+          withText(
+            "Story You Can Play"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_multiStoryHeadingAreDisplayed() {
+    launchTopicActivityIntent(internalProfileId, RATIO_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.stories_heading)).check(
+        matches(
+          withText(
+            "Stories You Can Play"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skills_heading)).perform(scrollTo())
+      onView(withId(R.id.skills_heading)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_skills_heading)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_withoutSkills_skillHeadingIsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TOPIC_WITHOUT_SKILL_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skills_heading)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_downloadTopicTextIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.download_story_count_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_topic)
+          )
+        )
+      )
+    }
+  }
+
   /**
-   * testTopicInfoFragment_preview_toolbarTitle_isDisplayedCorrectly()
-   * testTopicInfoFragment_preview_tabsNotDisplayed()
-   * testTopicInfoFragment_preview_configChange_tabsNotDisplayed
-   * testTopicInfoFragment_preview_singleStoryHeadingIsDisplayed()
-   * testTopicInfoFragment_preview_multiStoryHeadingAreDisplayed()
-   * testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed()
-   * testTopicInfoFragment_preview_withoutSkills_skillHeadingIsNotDisplayed()
-   * testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed
-   * testTopicInfoFragment_preview_downloadTopicTextIsDisplayed()
    * testTopicInfoFragment_noPreview_topicDownloadedTextIsDisplayed()
    * testTopicInfoFragment_preview_downloadTopicIconIsDisplayed()
    * testTopicInfoFragment_noPreview_topicDownloadedIconIsDisplayed()

@@ -13,7 +13,6 @@ import org.oppia.android.R
 class TopicInfoDownloadDialogFragment : DialogFragment() {
 
   companion object {
-
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
