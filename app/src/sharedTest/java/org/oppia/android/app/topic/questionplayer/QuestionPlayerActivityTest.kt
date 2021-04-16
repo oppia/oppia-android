@@ -125,7 +125,6 @@ private val SKILL_ID_LIST_1 = listOf(FRACTIONS_SKILL_ID_2)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
-  // TODO(#1273): add tests for Hints and Solution in Question Player.
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
