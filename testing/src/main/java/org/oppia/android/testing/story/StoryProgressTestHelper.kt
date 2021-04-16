@@ -23,14 +23,10 @@ import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_1
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.StoryProgressController
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_3
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
@@ -106,55 +102,6 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the first chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
-   * and any other nuances.
-   */
-  fun markCompletedTestTopic0Story1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks the second chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
-   * and any other nuances.
-   */
-  fun markCompletedTestTopic0Story1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Must complete prerequisite chapter first.
-    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks the third chapter of test topic 0 story 1 as completed, and any needed prerequisites.
-   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
-   * and any other nuances.
-   */
-  fun markCompletedTestTopic0Story1Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Must complete prerequisite chapter first.
-    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
-    recordCompletedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_3,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
    * Marks the only chapter of test topic 1 story 2 as completed, and any needed prerequisites.
    * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
    * and any other nuances.
@@ -179,15 +126,6 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 0's story 1 as completed. See [markCompletedTestTopic0Story0Exp0] for
-   * specifics on the parameters passed to this method, and any other nuances.
-   */
-  fun markCompletedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    // Complete last chapter (+ previous automatically).
-    markCompletedTestTopic0Story1Exp2(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
    * Marks test topic 1's story 2 as completed. See [markCompletedTestTopic0Story0Exp0] for
    * specifics on the parameters passed to this method, and any other nuances.
    */
@@ -201,7 +139,6 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markCompletedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markCompletedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
-    markCompletedTestTopic0Story1(profileId, timestampOlderThanOneWeek)
   }
 
   /**
@@ -409,61 +346,6 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the first chapter of test topic 0 story 1 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
-   */
-  fun markRecentlyPlayedTestTopic0Story1Exp0(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    recordRecentlyPlayedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks the second chapter of test topic 0 story 1 as recently played. For specifics on
-   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
-   */
-  fun markRecentlyPlayedTestTopic0Story1Exp1(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    // Must complete the previous chapter first.
-    markCompletedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_0,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
-   * Marks the third chapter of test topic 0 story 1 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
-   */
-  fun markRecentlyPlayedTestTopic0Story1Exp2(
-    profileId: ProfileId,
-    timestampOlderThanOneWeek: Boolean
-  ) {
-    // Must complete the previous chapters first.
-    markCompletedTestTopic0Story1Exp1(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
-      profileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_3,
-      timestampOlderThanOneWeek
-    )
-  }
-
-  /**
    * Marks the only chapter of test topic 1 story 2 as recently played. For specifics on parameters
    * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
    */
@@ -486,14 +368,6 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markRecentlyPlayedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markRecentlyPlayedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks test topic 0's story 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
-   */
-  fun markRecentlyPlayedTestTopic0Story1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0Story1Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**

@@ -187,6 +187,7 @@ java_lite_proto_library(
 format_import_proto_library(
     name = "topic",
     src = "src/main/proto/topic.proto",
+    visibility = ["//visibility:public"],
     deps = [
         ":subtitled_html_proto",
         ":subtitled_unicode_proto",
@@ -205,6 +206,7 @@ java_lite_proto_library(
 format_import_proto_library(
     name = "exploration",
     src = "src/main/proto/exploration.proto",
+    visibility = ["//visibility:public"],
     deps = [
         ":interaction_object_proto",
         ":subtitled_html_proto",
