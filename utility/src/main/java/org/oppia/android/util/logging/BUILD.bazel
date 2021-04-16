@@ -65,7 +65,7 @@ kt_android_library(
     name = "log_level",
     srcs = [
         "LogLevel.kt",
-    ]
+    ],
 )
 
 kt_android_library(
