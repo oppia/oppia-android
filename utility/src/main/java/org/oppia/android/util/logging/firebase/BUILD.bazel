@@ -6,7 +6,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "firebase_event_logger",
+    name = "event_logger",
     srcs = [
         "FirebaseEventLogger.kt",
     ],
@@ -21,7 +21,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "firebase_exception_logger",
+    name = "exception_logger",
     srcs = [
         "FirebaseExceptionLogger.kt",
     ],
@@ -33,15 +33,15 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "firebase_log_reporting_module",
+    name = "log_reporting_module",
     srcs = [
         "LogReportingModule.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
-        ":firebase_event_logger",
-        ":firebase_exception_logger",
+        ":event_logger",
+        ":exception_logger",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:javax_inject_javax_inject",
@@ -50,7 +50,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "firebase_log_uploader",
+    name = "log_uploader",
     srcs = [
         "FirebaseLogUploader.kt",
     ],
@@ -64,14 +64,14 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "firebase_log_uploader_module",
+    name = "log_uploader_module",
     srcs = [
         "FirebaseLogUploaderModule.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
-        ":firebase_log_uploader",
+        ":log_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
 )
