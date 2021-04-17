@@ -9,11 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockExplorationService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,9 +22,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExplorationServiceTest {
-
-  @Inject
-  lateinit var retrofit: Retrofit
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit
@@ -56,7 +51,7 @@ class ExplorationServiceTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkModule::class, RetrofitTestModule::class])
+  @Component(modules = [RetrofitTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
