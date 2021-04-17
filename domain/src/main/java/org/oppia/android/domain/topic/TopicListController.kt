@@ -73,13 +73,9 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_1 to createChapterThumbnail3(),
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5(),
-  TEST_EXPLORATION_ID_0 to createChapterThumbnail6(),
-  TEST_EXPLORATION_ID_1 to createChapterThumbnail7(),
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
-  TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
   TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
   TEST_EXPLORATION_ID_5 to createChapterThumbnail0(),
-  TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"

@@ -63,13 +63,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>Red</p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>Blue</p>"
+                  content_id: "ca_choices_3"
                 }
                 content_ids {
-                  content_id: "<p>Green</p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -91,7 +91,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>Yellooooow</p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -389,7 +389,7 @@ states {
       }
     }
     content {
-      html: "<p>Test exploration with interactions.</p>"
+      html: "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
       content_id: "content"
     }
     written_translations {
@@ -832,7 +832,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p><strong>Green</strong></p>"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -968,22 +968,22 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>3/5</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.5</p>"
+                    content_id: "ca_choices_2"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.46</p>"
+                    content_id: "ca_choices_3"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.35</p>"
+                    content_id: "ca_choices_0"
                   }
                 }
               }
@@ -1011,7 +1011,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.5/p>"
+                content_id: "ca_choices_2"
               }
             }
           }
@@ -1031,7 +1031,7 @@ states {
             key: "y"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.35</p>"
+                content_id: "ca_choices_0"
               }
             }
           }
@@ -1039,7 +1039,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.46</p>"
+                content_id: "ca_choices_3"
               }
             }
           }
@@ -1176,20 +1176,20 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>3/5</p>"
+                    content_id: "ca_choices_0"
                   }
                   content_ids {
-                    content_id: "<p>0.6</p>"
-                  }
-                }
-                content_id_lists {
-                  content_ids {
-                    content_id: "<p>0.46</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.35</p>"
+                    content_id: "ca_choices_3"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
                   }
                 }
               }
@@ -1217,7 +1217,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.6</p>"
+                content_id: "ca_choices_1"
               }
             }
           }
