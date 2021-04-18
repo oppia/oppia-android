@@ -54,6 +54,7 @@
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
+  <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Oppia Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
@@ -251,6 +252,7 @@
   <string name="onboarding_slide_3_title">Have fun!\u0020</string>
   <string name="onboarding_slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
   <string name="skip">Skip</string>
+  <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
@@ -266,6 +268,9 @@
   <string name="pin_password_forgot_message">To reset your PIN, please uninstall Oppia and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
   <string name="pin_password_play_store">Go to the play store</string>
   <string name="show_hide_password_icon">Show/Hide password icon</string>
+  <string name="password_shown_icon">Password shown icon</string>
+  <string name="password_hidden_icon">Password hidden icon</string>
+  <string name="enter_your_pin">Enter your PIN</string>
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
