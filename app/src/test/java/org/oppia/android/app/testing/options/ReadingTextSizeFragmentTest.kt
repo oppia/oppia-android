@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -14,8 +15,10 @@ import androidx.test.espresso.action.CoordinatesProvider
 import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -78,12 +81,19 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.lang.Float.compare
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val SMALL_TEXT_SIZE_SCALE = 0.8f
+private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
+private const val LARGE_TEXT_SIZE_SCALE = 1.2f
+private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
+
 private const val SMALL_TEXT_SIZE = 0
-private const val MEDIUM_TEXT_SIZE = 5
-private const val LARGE_TEXT_SIZE = 10
+private const val MEDIUM_TEXT_SIZE = 1
+private const val LARGE_TEXT_SIZE= 2
+private const val EXTRA_LARGE_TEXT_SIZE= 3
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -98,6 +108,10 @@ class ReadingTextSizeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val defaultTextSizeInFloat by lazy {
+    R.dimen.default_reading_text_size
+  }
 
   @Before
   fun setUp() {
@@ -122,9 +136,19 @@ class ReadingTextSizeFragmentTest {
   }
 
   @Test
+  fun testTextSize_iterateOverAllItemsInTexSizeRecyclerView_checkTextSizeOfIndividualItems() {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
+      checkTextSize(SMALL_TEXT_SIZE,defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE)
+      checkTextSize(MEDIUM_TEXT_SIZE,defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE)
+      checkTextSize(LARGE_TEXT_SIZE,defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE)
+      checkTextSize(EXTRA_LARGE_TEXT_SIZE,defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE)
+    }
+  }
+
+  @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testTextSize_clickTextSize_changeTextSizeToLarge_checkOptionsFragmentIsUpdatedCorrectly() {
+  fun testTextSize_loadFragment_changeTextSizeToMedium_checkOptionsFragmentIsUpdatedCorrectly() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
       updateTextSize(MEDIUM_TEXT_SIZE)
@@ -151,46 +175,57 @@ class ReadingTextSizeFragmentTest {
     )
   }
 
-  private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(
-      Tap.SINGLE,
-      CoordinatesProvider { view ->
-        val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
-        seekBar.getLocationInWindow(screenPos)
-        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
-
-        val percentagePos = (position.toFloat() / seekBar.max)
-        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height / 2f + screenPos[1]
-        val coordinates = FloatArray(2)
-        coordinates[0] = screenX
-        coordinates[1] = screenY
-        coordinates
-      },
-      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
-    )
-  }
-
-  private fun seekBarProgress(progress: Int): TypeSafeMatcher<View> {
+  private fun textViewSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
-        description?.appendText("SeekBarProgress")
+        description?.appendText("fontSize: $expectedSize")
       }
 
       override fun matchesSafely(item: View?): Boolean {
-        return (item as SeekBar).progress == progress
+        val textView = item as TextView
+        val pixels = textView.textSize
+        val actualSize = pixels/textView.resources.displayMetrics.scaledDensity
+        return expectedSize.compareTo(actualSize) == 0
       }
     }
   }
 
-  private fun checkTextSize(value: Int) {
-    onView(withId(R.id.reading_text_size_seekBar)).check(matches(seekBarProgress(value)))
+  private fun checkTextSize(index: Int) {
+    onView(
+      atPositionOnView(
+        R.id.text_size_recycler_view,
+        index,
+        R.id.text_size_radio_button
+      )
+    ).check(
+      matches(ViewMatchers.isChecked())
+    )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateTextSize(value: Int) {
-    onView(withId(R.id.reading_text_size_seekBar)).perform(clickSeekBar(value))
+  private fun checkTextSize(index: Int, size: Float) {
+    onView(
+      atPositionOnView(
+        R.id.text_size_recycler_view,
+        index,
+        R.id.text_size_text_view
+      )
+    ).check(
+      matches(textViewSize(size))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun updateTextSize(index: Int) {
+    onView(
+      atPositionOnView(
+        R.id.text_size_recycler_view,
+        index,
+        R.id.text_size_radio_button
+      )
+    ).perform(
+      click()
+    )
     testCoroutineDispatchers.runCurrent()
   }
 
