@@ -185,6 +185,7 @@
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.LessonThumbnailImageViewTestActivity"/>
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
