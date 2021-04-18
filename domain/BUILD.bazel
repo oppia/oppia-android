@@ -8,6 +8,10 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
 
+MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/testing/**/*.kt",
+])
+
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     name = "domain_assets",
     exploration_file_names = [
@@ -54,7 +58,7 @@ kt_android_library(
     name = "domain",
     srcs = glob(
         ["src/main/java/org/oppia/android/domain/**/*.kt"],
-        exclude = ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
+        exclude = MIGRATED_PROD_FILES,
     ),
     assets = glob(
         ["src/main/assets/**"],
