@@ -102,7 +102,7 @@ class ReadingTextSizeFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val defaultTextSizeInFloat by lazy {
-    R.dimen.default_reading_text_size
+    context.resources.getDimension(R.dimen.default_reading_text_size)
   }
 
   @Before
@@ -170,7 +170,7 @@ class ReadingTextSizeFragmentTest {
   private fun textViewSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
-        description?.appendText("fontSize: $expectedSize")
+        description?.appendText("TextView with fontSize: $expectedSize")
       }
 
       override fun matchesSafely(item: View?): Boolean {
