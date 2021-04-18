@@ -4,23 +4,16 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.CoordinatesProvider
-import androidx.test.espresso.action.GeneralClickAction
-import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -81,7 +74,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.lang.Float.compare
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -92,8 +84,8 @@ private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
 private const val SMALL_TEXT_SIZE = 0
 private const val MEDIUM_TEXT_SIZE = 1
-private const val LARGE_TEXT_SIZE= 2
-private const val EXTRA_LARGE_TEXT_SIZE= 3
+private const val LARGE_TEXT_SIZE = 2
+private const val EXTRA_LARGE_TEXT_SIZE = 3
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -138,10 +130,10 @@ class ReadingTextSizeFragmentTest {
   @Test
   fun testTextSize_iterateOverAllItemsInTexSizeRecyclerView_checkTextSizeOfIndividualItems() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkTextSize(SMALL_TEXT_SIZE,defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE)
-      checkTextSize(MEDIUM_TEXT_SIZE,defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE)
-      checkTextSize(LARGE_TEXT_SIZE,defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE)
-      checkTextSize(EXTRA_LARGE_TEXT_SIZE,defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE)
+      checkTextSize(SMALL_TEXT_SIZE, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE)
+      checkTextSize(MEDIUM_TEXT_SIZE, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE)
+      checkTextSize(LARGE_TEXT_SIZE, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE)
+      checkTextSize(EXTRA_LARGE_TEXT_SIZE, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE)
     }
   }
 
@@ -184,7 +176,7 @@ class ReadingTextSizeFragmentTest {
       override fun matchesSafely(item: View?): Boolean {
         val textView = item as TextView
         val pixels = textView.textSize
-        val actualSize = pixels/textView.resources.displayMetrics.scaledDensity
+        val actualSize = pixels / textView.resources.displayMetrics.scaledDensity
         return expectedSize.compareTo(actualSize) == 0
       }
     }
