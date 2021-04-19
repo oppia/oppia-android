@@ -90,7 +90,8 @@ class StringToFractionParserTest {
   fun testParser_submitTimeError_tooLong_returnsNumberTooLong() {
     val error = stringToFractionParser.getSubmitTimeError("0123456789")
       .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+    assertThat(error)
+      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
   }
 
   @Test
@@ -215,7 +216,8 @@ class StringToFractionParserTest {
 
   @Test
   fun testParser_parseFraction_parseLongMixedNumber() {
-    val parseFraction = stringToFractionParser.parseFractionFromString("1234567 1234567/1234567")
+    val parseFraction = stringToFractionParser
+      .parseFractionFromString("1234567 1234567/1234567")
     val constructedFraction = Fraction.newBuilder()
       .setWholeNumber(1234567)
       .setNumerator(1234567)
