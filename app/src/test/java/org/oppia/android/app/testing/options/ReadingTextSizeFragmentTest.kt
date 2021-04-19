@@ -12,7 +12,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -120,19 +120,27 @@ class ReadingTextSizeFragmentTest {
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
       checkSelectedTextSize(SMALL_TEXT_SIZE)
-      updateTextSize(LARGE_TEXT_SIZE)
+      clickOnTextSizeRecyclerViewItem(LARGE_TEXT_SIZE)
       rotateToLandscape()
       checkSelectedTextSize(LARGE_TEXT_SIZE)
     }
   }
 
   @Test
-  fun testTextSize_checkTextSizeOfAllFourtems_textSizeMatchedCorrectly() {
+  fun testTextSize_checkTextSizeOfAllFourItems_textSizeMatchedCorrectly() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkTextSize(SMALL_TEXT_SIZE, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE)
-      checkTextSize(MEDIUM_TEXT_SIZE, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE)
-      checkTextSize(LARGE_TEXT_SIZE, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE)
-      checkTextSize(EXTRA_LARGE_TEXT_SIZE, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE)
+      checkTextSizeOfRecyclerViewItem(
+        SMALL_TEXT_SIZE, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+      )
+      checkTextSizeOfRecyclerViewItem(
+        MEDIUM_TEXT_SIZE, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+      )
+      checkTextSizeOfRecyclerViewItem(
+        LARGE_TEXT_SIZE, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+      )
+      checkTextSizeOfRecyclerViewItem(
+        EXTRA_LARGE_TEXT_SIZE, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
+      )
     }
   }
 
@@ -142,7 +150,7 @@ class ReadingTextSizeFragmentTest {
   fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
-      updateTextSize(MEDIUM_TEXT_SIZE)
+      clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE)
       checkTextSizeLabel("Medium")
     }
   }
@@ -212,7 +220,7 @@ class ReadingTextSizeFragmentTest {
         targetViewId = R.id.text_size_text_view
       )
     ).check(
-      matches(textViewSize(size))
+      matches(matchTextViewTextSize(size))
     )
     testCoroutineDispatchers.runCurrent()
   }
