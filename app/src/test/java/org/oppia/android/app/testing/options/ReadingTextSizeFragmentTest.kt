@@ -127,7 +127,7 @@ class ReadingTextSizeFragmentTest {
   }
 
   @Test
-  fun testTextSize_iterateOverAllItemsInTexSizeRecyclerView_checkTextSizeOfIndividualItems() {
+  fun testTextSize_checkTextSizeOfAllFourtems_textSizeMatchedCorrectly() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
       checkTextSize(SMALL_TEXT_SIZE, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE)
       checkTextSize(MEDIUM_TEXT_SIZE, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE)
@@ -139,7 +139,7 @@ class ReadingTextSizeFragmentTest {
   @Test
   @Config(qualifiers = "sw600dp")
   @LooperMode(LooperMode.Mode.PAUSED)
-  fun testTextSize_loadFragment_changeTextSizeToMedium_checkOptionsFragmentIsUpdatedCorrectly() {
+  fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
       updateTextSize(MEDIUM_TEXT_SIZE)
@@ -169,13 +169,13 @@ class ReadingTextSizeFragmentTest {
   /**
    * Matcher for comparing the textSize of content inside a TextView to the expected size
    */
-  private fun textViewSize(expectedSize: Float): TypeSafeMatcher<View> {
+  private fun matchTextViewTextSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
-        description?.appendText("TextView with fontSize: $expectedSize")
+        description?.appendText("TextView with text size: $expectedSize")
       }
 
-      override fun matchesSafely(item: View?): Boolean {
+      override fun matchesSafely(item: View): Boolean {
         (item as TextView).apply {
           val pixels = textSize
           val actualSize = pixels / resources.displayMetrics.scaledDensity
@@ -196,7 +196,7 @@ class ReadingTextSizeFragmentTest {
         targetViewId = R.id.text_size_radio_button
       )
     ).check(
-      matches(ViewMatchers.isChecked())
+      matches(isChecked())
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -204,7 +204,7 @@ class ReadingTextSizeFragmentTest {
   /**
    * Check the textSize of item inside TextSizeRecyclerView
    */
-  private fun checkTextSize(index: Int, size: Float) {
+  private fun checkTextSizeOfRecyclerViewItem(index: Int, size: Float) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
@@ -220,7 +220,7 @@ class ReadingTextSizeFragmentTest {
   /**
    * Click on the item inside TextSizeRecyclerView
    */
-  private fun updateTextSize(index: Int) {
+  private fun clickOnTextSizeRecyclerViewItem(index: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
