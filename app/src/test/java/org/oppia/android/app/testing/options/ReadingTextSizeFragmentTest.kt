@@ -101,9 +101,8 @@ class ReadingTextSizeFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val defaultTextSizeInFloat by lazy {
+  private val defaultTextSizeInFloat =
     context.resources.getDimension(R.dimen.default_reading_text_size)
-  }
 
   @Before
   fun setUp() {
@@ -120,10 +119,10 @@ class ReadingTextSizeFragmentTest {
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkTextSize(SMALL_TEXT_SIZE)
+      checkSelectedTextSize(SMALL_TEXT_SIZE)
       updateTextSize(LARGE_TEXT_SIZE)
       rotateToLandscape()
-      checkTextSize(LARGE_TEXT_SIZE)
+      checkSelectedTextSize(LARGE_TEXT_SIZE)
     }
   }
 
@@ -167,6 +166,9 @@ class ReadingTextSizeFragmentTest {
     )
   }
 
+  /**
+   * Matcher for comparing the textSize of content inside a TextView to the expected size
+   */
   private fun textViewSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
@@ -174,20 +176,24 @@ class ReadingTextSizeFragmentTest {
       }
 
       override fun matchesSafely(item: View?): Boolean {
-        val textView = item as TextView
-        val pixels = textView.textSize
-        val actualSize = pixels / textView.resources.displayMetrics.scaledDensity
-        return expectedSize.compareTo(actualSize) == 0
+        (item as TextView).apply {
+          val pixels = textSize
+          val actualSize = pixels / resources.displayMetrics.scaledDensity
+          return expectedSize.compareTo(actualSize) == 0
+        }
       }
     }
   }
 
-  private fun checkTextSize(index: Int) {
+  /**
+   * Check the selected item inside TextSizeRecyclerView
+   */
+  private fun checkSelectedTextSize(index: Int) {
     onView(
       atPositionOnView(
-        R.id.text_size_recycler_view,
-        index,
-        R.id.text_size_radio_button
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_radio_button
       )
     ).check(
       matches(ViewMatchers.isChecked())
@@ -195,12 +201,15 @@ class ReadingTextSizeFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  /**
+   * Check the textSize of item inside TextSizeRecyclerView
+   */
   private fun checkTextSize(index: Int, size: Float) {
     onView(
       atPositionOnView(
-        R.id.text_size_recycler_view,
-        index,
-        R.id.text_size_text_view
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_text_view
       )
     ).check(
       matches(textViewSize(size))
@@ -208,12 +217,15 @@ class ReadingTextSizeFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  /**
+   * Click on the item inside TextSizeRecyclerView
+   */
   private fun updateTextSize(index: Int) {
     onView(
       atPositionOnView(
-        R.id.text_size_recycler_view,
-        index,
-        R.id.text_size_radio_button
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_radio_button
       )
     ).perform(
       click()

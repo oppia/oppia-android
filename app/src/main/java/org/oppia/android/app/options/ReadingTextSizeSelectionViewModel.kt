@@ -9,6 +9,9 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
+/**
+ * Text Size list view model for the recycler view in [ReadingTextSizeFragment]
+ */
 @FragmentScope
 class ReadingTextSizeSelectionViewModel @Inject constructor(
   val activity: AppCompatActivity,
