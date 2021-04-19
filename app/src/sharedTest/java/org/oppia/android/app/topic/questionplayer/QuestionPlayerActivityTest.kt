@@ -344,7 +344,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_dotHintIconVisible_configChange_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       rotateToLandscape()
       onView(withId(R.id.dot_hint)).check(
         matches(isDisplayed())
@@ -355,7 +355,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_dotHintIconVisible_submitWrongAnswer_doHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       submitWrongAnswer(SKILL_ID_0)
       onView(withId(R.id.dot_hint)).check(
         matches(isDisplayed())
@@ -366,7 +366,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_dotHintIconVisible_submitCorrectAnswer_dotHintIconNotVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       submitCorrectAnswer(FRACTIONS_SKILL_ID_0)
       onView(withId(R.id.dot_hint)).check(
         matches(not(isDisplayed()))
@@ -377,7 +377,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_dotHintIconVisible_hintConsumed_hintAndSolIconVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
@@ -390,7 +390,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_dotHintIconVisible_hintConsumed_dotHintIconNotVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
@@ -403,7 +403,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_unRevealedHintVisible_configChange_unRevealedHintVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.reveal_hint))).inRoot(isDialog())
@@ -418,7 +418,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_clickRevelHint_configChange_revealedHintVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       onView(isRoot()).check(
@@ -434,7 +434,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealedHintVisible_configChange_revealedHintVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       rotateToLandscape()
@@ -451,7 +451,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_unRevealedHintVisible_pressBack_checkUnrevealedHintVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       pressBack()
       openHintsAndSolutionDialog()
@@ -464,7 +464,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealedHintVisible_pressBack_checkHintAndSolRevealed() {
     launchForSkillList(SKILL_ID_LIST_0).use {
-      makeFirstNewHintsVisible(SKILL_ID_0)
+      makeFirstNewHintVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       pressBack()
@@ -492,7 +492,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealSolution_dialogBoxVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+      makeFirstNewHintVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
@@ -512,7 +512,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealSolution_configChange_dialogBoxVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+      makeFirstNewHintVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
@@ -534,7 +534,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealSolution_dialogBoxVisible_clickReveal_solutionVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+      makeFirstNewHintVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
@@ -561,7 +561,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testQuestionPlayer_revealSolution_dialogBoxVisible_clickCancel_solutionNotVisible() {
     launchForSkillList(SKILL_ID_LIST_1).use {
-      makeFirstNewHintsVisible(SKILL_ID_1)
+      makeFirstNewHintVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
@@ -591,7 +591,7 @@ class QuestionPlayerActivityTest {
    * this function is completely executes and this function executes
    * within 60 seconds of viewing the question.
    */
-  private fun makeFirstNewHintsVisible(skillId: String) {
+  private fun makeFirstNewHintVisible(skillId: String) {
     submitWrongAnswer(skillId)
     testCoroutineDispatchers.runCurrent()
     submitWrongAnswer(skillId)

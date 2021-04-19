@@ -327,7 +327,7 @@ class QuestionPlayerActivityLocalTest {
   fun testQuestionPlayer_hintConsumed_submitWrongAnswer_dotHintIconVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
-      makeFirstNewHintsVisible()
+      makeFirstNewHintVisible()
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
@@ -342,7 +342,7 @@ class QuestionPlayerActivityLocalTest {
   fun testQuestionPlayer_hintConsumed_wait30Seconds_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
-      makeFirstNewHintsVisible()
+      makeFirstNewHintVisible()
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
@@ -358,7 +358,7 @@ class QuestionPlayerActivityLocalTest {
   fun testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
-      makeFirstNewHintsVisible()
+      makeFirstNewHintVisible()
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
@@ -386,7 +386,7 @@ class QuestionPlayerActivityLocalTest {
    * this function is completely executes and this function executes
    * within 60 seconds of viewing the question.
    */
-  private fun makeFirstNewHintsVisible() {
+  private fun makeFirstNewHintVisible() {
     submitTwoWrongAnswersToQuestionPlayer()
     testCoroutineDispatchers.runCurrent()
   }
