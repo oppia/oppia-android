@@ -7,6 +7,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
@@ -31,6 +32,7 @@ class DownloadsViewModel @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
   lateinit var adminPin: String
+  private var sortTypeIndex: Int = 0
 
   val profileLiveData: LiveData<Profile> by lazy {
     Transformations.map(
@@ -65,6 +67,10 @@ class DownloadsViewModel @Inject constructor(
 
   fun setProfileId(internalProfileId: Int) {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
+
+  fun setSortTypeIndex(sortTypeIndex: Int) {
+    this.sortTypeIndex = sortTypeIndex
   }
 
   val downloadsViewModelLiveData: LiveData<List<DownloadsItemViewModel>> by lazy {
@@ -102,9 +108,23 @@ class DownloadsViewModel @Inject constructor(
       DownloadsSortByViewModel() as DownloadsItemViewModel
     )
 
+    var topicSummarySortedList = mutableListOf<TopicSummary>()
+    when (sortTypeIndex) {
+      0 -> {
+        // TODO(#552): update it with the time stamp value in the list
+        topicSummarySortedList = sortTopicListOnDownloadSize(downloadedTopicList.topicSummaryList)
+      }
+      1 -> {
+        topicSummarySortedList = sortTopicListAlphabetically(downloadedTopicList.topicSummaryList)
+      }
+      2 -> {
+        topicSummarySortedList = sortTopicListOnDownloadSize(downloadedTopicList.topicSummaryList)
+      }
+    }
+
     // Add the rest of the list
     downloadsItemViewModelList.addAll(
-      downloadedTopicList.topicSummaryList.map { topic ->
+      topicSummarySortedList.map { topic ->
         DownloadsTopicViewModel(
           fragment = fragment,
           topicSummary = topic,
@@ -115,5 +135,43 @@ class DownloadsViewModel @Inject constructor(
       }
     )
     return downloadsItemViewModelList
+  }
+
+  private fun sortTopicListOnDownloadSize(
+    topicSummaryList: MutableList<TopicSummary>
+  ): MutableList<TopicSummary> {
+    val sortedDownloadSizeList = mutableListOf<Long>()
+    topicSummaryList.map { topic ->
+      sortedDownloadSizeList.add(topic.diskSizeBytes)
+    }
+    sortedDownloadSizeList.sort()
+    val sortedDownloadSizeTopicList = mutableListOf<TopicSummary>()
+    sortedDownloadSizeList.map { size ->
+      topicSummaryList.map { topicSummary ->
+        if (size == topicSummary.diskSizeBytes) {
+          sortedDownloadSizeTopicList.add(topicSummary)
+        }
+      }
+    }
+    return sortedDownloadSizeTopicList
+  }
+
+  private fun sortTopicListAlphabetically(
+    topicSummaryList: MutableList<TopicSummary>
+  ): MutableList<TopicSummary> {
+    val sortedDownloadSizeList = mutableListOf<String>()
+    topicSummaryList.map { topic ->
+      sortedDownloadSizeList.add(topic.name)
+    }
+    sortedDownloadSizeList.sort()
+    val sortedDownloadSizeTopicList = mutableListOf<TopicSummary>()
+    sortedDownloadSizeList.map { name ->
+      topicSummaryList.map { topicSummary ->
+        if (name == topicSummary.name) {
+          sortedDownloadSizeTopicList.add(topicSummary)
+        }
+      }
+    }
+    return sortedDownloadSizeTopicList
   }
 }

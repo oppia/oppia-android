@@ -12,7 +12,6 @@ import org.oppia.android.R
 class DownloadsTopicDeleteDialogFragment : DialogFragment() {
 
   companion object {
-
     fun newInstance(
       internalProfileId: Int,
       allowedDownloadAccess: Boolean

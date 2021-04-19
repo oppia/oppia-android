@@ -41,7 +41,7 @@ class DownloadsFragment :
   @Inject
   lateinit var downloadsFragmentPresenter: DownloadsFragmentPresenter
 
-  private var previousSortTypeIndex: Int = -1
+  private var previousSortTypeIndex: Int = 0
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -54,7 +54,7 @@ class DownloadsFragment :
     savedInstanceState: Bundle?
   ): View? {
     if (savedInstanceState != null) {
-      previousSortTypeIndex = savedInstanceState.getInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, -1)
+      previousSortTypeIndex = savedInstanceState.getInt(CURRENT_SORT_TYPE_INDEX_SAVED_KEY, 0)
     }
     val internalProfileId = arguments?.getInt(INTERNAL_PROFILE_ID_SAVED_KEY) ?: -1
     return downloadsFragmentPresenter.handleCreateView(

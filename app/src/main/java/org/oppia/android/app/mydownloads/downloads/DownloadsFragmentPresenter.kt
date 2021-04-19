@@ -32,20 +32,20 @@ class DownloadsFragmentPresenter @Inject constructor(
 
   private lateinit var downloadsRecyclerViewAdapter: BindableAdapter<DownloadsItemViewModel>
   private lateinit var binding: DownloadsFragmentBinding
-  private var previousSortTypeIndex: Int = -1
+  private var previousSortTypeIndex: Int = 0
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
     previousSortTypeIndex: Int
-  ): View? {
+  ): View {
     binding = DownloadsFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    this.previousSortTypeIndex = if (previousSortTypeIndex == -1) 0 else previousSortTypeIndex
+    this.previousSortTypeIndex = previousSortTypeIndex
     this.internalProfileId = internalProfileId
 
     binding.apply {
@@ -53,13 +53,14 @@ class DownloadsFragmentPresenter @Inject constructor(
       this.viewModel = downloadsViewModel
     }
 
-    downloadsViewModel.setInternalProfileId(internalProfileId)
-    downloadsViewModel.setProfileId(internalProfileId)
-
     binding.downloadsRecyclerView.apply {
       downloadsRecyclerViewAdapter = createRecyclerViewAdapter()
       adapter = downloadsRecyclerViewAdapter
     }
+    downloadsViewModel.setInternalProfileId(internalProfileId)
+    downloadsViewModel.setProfileId(internalProfileId)
+    downloadsViewModel.setSortTypeIndex(previousSortTypeIndex)
+
     return binding.root
   }
 
@@ -112,18 +113,16 @@ class DownloadsFragmentPresenter @Inject constructor(
     binding.sortByMenu.inputType = 0
     binding.sortByMenu.setText(
       sortItemAdapter.getItem(previousSortTypeIndex).toString(),
-      /* filter =*/ false
+      /* filter= */ false
     )
     binding.sortByMenu.setAdapter(sortItemAdapter)
 
-    // TODO(#552): orientation change, keep list sorted as per previousSortTypeIndex
-
-    binding.sortByMenu.setOnItemClickListener { parent, view, position, l ->
+    binding.sortByMenu.setOnItemClickListener { parent, _, position, _ ->
       if (previousSortTypeIndex != position) {
         lateinit var sortedDownloadsItemViewModel: MutableList<DownloadsItemViewModel>
         when (parent.getItemAtPosition(position)) {
           fragment.getString(SortByItems.NEWEST.value) -> {
-            // TODO(): update it with the time stamp value in the list
+            // TODO(#552): update it with the time stamp value in the list
             sortedDownloadsItemViewModel = sortTopicDownloadSize()
           }
           fragment.getString(SortByItems.ALPHABETICAL.value) -> {
@@ -137,7 +136,7 @@ class DownloadsFragmentPresenter @Inject constructor(
         sortByListIndexListener.onSortByItemClicked(previousSortTypeIndex)
         binding.sortByMenu.setText(
           sortItemAdapter.getItem(position).toString(),
-          /* filter =*/ false
+          /* filter= */ false
         )
         downloadsRecyclerViewAdapter.setData(sortedDownloadsItemViewModel)
       }
@@ -168,7 +167,6 @@ class DownloadsFragmentPresenter @Inject constructor(
     return sortedDownloadsItemViewModel
   }
 
-  // TODO: try to improvise this using kotlin functions
   private fun sortTopicDownloadSize(): MutableList<DownloadsItemViewModel> {
     val sortedTopicSizeList = mutableListOf<Long>()
     val downloadsItemViewModelList = downloadsViewModel.downloadsViewModelLiveData.value
