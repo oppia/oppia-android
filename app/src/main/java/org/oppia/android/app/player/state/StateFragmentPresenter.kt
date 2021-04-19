@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,13 +95,13 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    savedInstanceState: Bundle?
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-
     binding = StateFragmentBinding.inflate(
       inflater,
       container,
@@ -112,6 +113,9 @@ class StateFragmentPresenter @Inject constructor(
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
     )
+    savedInstanceState?.let {
+      recyclerViewAssembler.restoreState(savedInstanceState)
+    }
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
@@ -151,6 +155,10 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToCurrentState()
     markExplorationAsRecentlyPlayed()
     return binding.root
+  }
+
+  fun handleOnSaveInstanceState(bundle: Bundle) {
+    recyclerViewAssembler.saveState(bundle)
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {

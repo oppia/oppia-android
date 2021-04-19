@@ -82,8 +82,14 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      savedInstanceState
     )
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    stateFragmentPresenter.handleOnSaveInstanceState(outState)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {

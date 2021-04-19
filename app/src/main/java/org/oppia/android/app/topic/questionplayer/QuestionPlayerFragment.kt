@@ -45,7 +45,12 @@ class QuestionPlayerFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container)
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    questionPlayerFragmentPresenter.handleOnSaveInstanceState(outState)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {

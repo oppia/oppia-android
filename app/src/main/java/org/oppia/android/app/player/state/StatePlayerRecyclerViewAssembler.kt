@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -26,6 +27,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerSavedHintState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -88,6 +90,8 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.parser.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -96,9 +100,15 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 /** The fragment tag corresponding to the concept card dialog fragment. */
 const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+private const val KEY_HINT_STATE = "KEY_HINT_STATE"
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+
+private const val DEFAULT_WRONG_ANSWER_COUNT = 0
+private const val DEFAULT_HINT_SEQUENCE_NUMBER = 0
+private val DEFAULT_PREVIOUS_HINT_INDEX = HelpIndex.getDefaultInstance()
+private const val DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE = false
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
@@ -161,6 +171,44 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var hasPreviousResponsesExpanded: Boolean = false
 
   val isCorrectAnswer = ObservableField<Boolean>(false)
+
+  /**
+   * Saves transient state that the assembler depends on.
+   *
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be restored via [restoreState].
+   */
+  fun saveState(bundle: Bundle) {
+    val statePlayerSavedHintState = StatePlayerSavedHintState.newBuilder().apply {
+      wrongAnswerCount = hintHandler.trackedWrongAnswerCount
+      helpIndex = hintHandler.previousHelpIndex
+      hintSequenceNumber = hintHandler.hintSequenceNumber
+      isHintVisibleInLatestState = hintHandler.isHintVisibleInLatestState
+    }.build()
+    bundle.putProto(KEY_HINT_STATE, statePlayerSavedHintState)
+  }
+
+  /**
+   * Restores transient state that the assembler depends on.
+   *
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be saved via [saveState].
+   */
+  fun restoreState(bundle: Bundle) {
+    val hintState = bundle.getProto(
+      KEY_HINT_STATE,
+      StatePlayerSavedHintState.newBuilder().apply {
+        wrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+        helpIndex = DEFAULT_PREVIOUS_HINT_INDEX
+        hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+        isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
+      }.build()
+    )
+    hintHandler.trackedWrongAnswerCount = hintState.wrongAnswerCount
+    hintHandler.previousHelpIndex = hintState.helpIndex
+    hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
+    hintHandler.isHintVisibleInLatestState = hintState.isHintVisibleInLatestState
+  }
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -750,9 +798,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = height / 2,
       minAngle = 180.0,
       maxAngle = 270.0,
-      timeToLiveMs,
+      timeToLiveMs = timeToLiveMs,
       delayMs = 0L,
-      colorsList
+      colorsList = colorsList
     )
     config.startConfettiBurst(
       confettiView,
@@ -760,9 +808,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = height / 2,
       minAngle = 270.0,
       maxAngle = 370.0,
-      timeToLiveMs,
+      timeToLiveMs = timeToLiveMs,
       delayMs = 0L,
-      colorsList
+      colorsList = colorsList
     )
   }
 
@@ -806,9 +854,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = 0f,
       minAngle = -90.0,
       maxAngle = 90.0,
-      timeToLiveMillis,
-      delayMillis,
-      colorsList
+      timeToLiveMs = timeToLiveMillis,
+      delayMs = delayMillis,
+      colorsList = colorsList
     )
     config.startConfettiBurst(
       confettiView,
@@ -816,9 +864,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       yPosition = 0f,
       minAngle = 90.0,
       maxAngle = 270.0,
-      timeToLiveMillis,
-      delayMillis,
-      colorsList
+      timeToLiveMs = timeToLiveMillis,
+      delayMs = delayMillis,
+      colorsList = colorsList
     )
   }
 
@@ -1454,20 +1502,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private var trackedWrongAnswerCount = 0
-    private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
-    private var hintSequenceNumber = 0
-    private var isHintVisibleInLatestState = false
+    var trackedWrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+    var previousHelpIndex: HelpIndex = DEFAULT_PREVIOUS_HINT_INDEX
+    var hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+    var isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
-      trackedWrongAnswerCount = 0
-      previousHelpIndex = HelpIndex.getDefaultInstance()
+      trackedWrongAnswerCount = DEFAULT_WRONG_ANSWER_COUNT
+      previousHelpIndex = DEFAULT_PREVIOUS_HINT_INDEX
       // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
       // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
       // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
-      isHintVisibleInLatestState = false
+      isHintVisibleInLatestState = DEFAULT_IS_HINT_VISIBLE_IN_LATEST_STATE
     }
 
     /** Hide hint when moving to any previous state. */

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+import "exploration.proto";
+
+// Represents savable state for the hint & solution handler in the state player.
+message StatePlayerSavedHintState {
+  // Wrong answer count in the current state.
+  int32 wrong_answer_count = 1;
+  // HelpIndex of the current state.
+  HelpIndex help_index = 2;
+  // nth hint of the current state.
+  int32 hint_sequence_number = 3;
+  // Whether the hint bulb is current visible.
+  bool is_hint_visible_in_latest_state = 4;
+}

@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.questionplayer
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +71,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
       container,
@@ -82,6 +87,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
+
+    savedInstanceState?.let {
+      recyclerViewAssembler.restoreState(savedInstanceState)
+    }
 
     binding.apply {
       lifecycleOwner = fragment
@@ -103,6 +112,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
     subscribeToCurrentQuestion()
     return binding.root
+  }
+
+  fun handleOnSaveInstanceState(bundle: Bundle) {
+    recyclerViewAssembler.saveState(bundle)
   }
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
