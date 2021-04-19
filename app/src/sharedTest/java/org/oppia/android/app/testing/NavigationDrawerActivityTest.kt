@@ -47,7 +47,6 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -352,11 +351,9 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_downloadIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -369,7 +366,6 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.DOWNLOADS)))
     }
@@ -390,7 +386,6 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withText(R.string.administrator_controls),
@@ -464,11 +459,9 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_configChange_downloadIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -481,7 +474,7 @@ class NavigationDrawerActivityTest {
         .inRoot(isDialog())
         .perform(click())
       it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.DOWNLOADS)))
     }
@@ -546,11 +539,9 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -630,17 +621,16 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
