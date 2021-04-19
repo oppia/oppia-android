@@ -19,14 +19,14 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -39,11 +39,11 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -342,7 +342,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_newHintAndSolVisible_configChange_newHintAndSolVisible() {
+  fun testQuestionPlayer_dotHintIconVisible_configChange_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       rotateToLandscape()
@@ -353,7 +353,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_newHintVisible_submitWrongAnswer_newHintAndSolVisible() {
+  fun testQuestionPlayer_dotHintIconVisible_submitWrongAnswer_doHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       submitWrongAnswer(SKILL_ID_0)
@@ -364,7 +364,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_newHintVisible_submitCorrectAnswer_hintAndSolIconNotVisible() {
+  fun testQuestionPlayer_dotHintIconVisible_submitCorrectAnswer_dotHintIconNotVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       submitCorrectAnswer(FRACTIONS_SKILL_ID_0)
@@ -375,14 +375,27 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testQuestionPlayer_newHintVisible_hintConsumed_hintAndSolIconVisible() {
+  fun testQuestionPlayer_dotHintIconVisible_hintConsumed_hintAndSolIconVisible() {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
         matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_dotHintIconVisible_hintConsumed_dotHintIconNotVisible() {
+    launchForSkillList(SKILL_ID_LIST_0).use {
+      makeFirstNewHintsVisible(SKILL_ID_0)
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+      onView(withId(R.id.dot_hint)).check(
+        matches(not(isDisplayed()))
       )
     }
   }
@@ -393,10 +406,12 @@ class QuestionPlayerActivityTest {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.reveal_hint))).inRoot(isDialog())
+        .check(matches(isDisplayed()))
       rotateToLandscape()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.reveal_hint))).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -405,11 +420,11 @@ class QuestionPlayerActivityTest {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(0, false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       onView(isRoot()).check(
         matches(
           not(
-            ViewMatchers.withSubstring("Before writing a fraction")
+            withSubstring("Before writing a fraction")
           )
         )
       )
@@ -421,12 +436,12 @@ class QuestionPlayerActivityTest {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(0, false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       rotateToLandscape()
       onView(isRoot()).check(
         matches(
           not(
-            ViewMatchers.withSubstring("Before writing a fraction")
+            withSubstring("Before writing a fraction")
           )
         )
       )
@@ -441,7 +456,8 @@ class QuestionPlayerActivityTest {
       pressBack()
       openHintsAndSolutionDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.reveal_hint))).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -450,12 +466,12 @@ class QuestionPlayerActivityTest {
     launchForSkillList(SKILL_ID_LIST_0).use {
       makeFirstNewHintsVisible(SKILL_ID_0)
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(0, false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       pressBack()
       openHintsAndSolutionDialog()
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
@@ -466,7 +482,7 @@ class QuestionPlayerActivityTest {
       onView(isRoot()).check(
         matches(
           not(
-            ViewMatchers.withSubstring("Before writing a fraction")
+            withSubstring("Before writing a fraction")
           )
         )
       )
@@ -479,12 +495,12 @@ class QuestionPlayerActivityTest {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
 
       onView(withText(context.getString(R.string.this_will_reveal_the_solution))).inRoot(isDialog())
         .check(
@@ -499,12 +515,12 @@ class QuestionPlayerActivityTest {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
 
       rotateToLandscape()
 
@@ -521,12 +537,12 @@ class QuestionPlayerActivityTest {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
 
       onView(withText(context.getString(R.string.reveal))).inRoot(isDialog())
         .perform(click())
@@ -535,7 +551,7 @@ class QuestionPlayerActivityTest {
       onView(isRoot()).check(
         matches(
           not(
-            ViewMatchers.withSubstring("The only solution is")
+            withSubstring("The only solution is")
           )
         )
       )
@@ -548,19 +564,20 @@ class QuestionPlayerActivityTest {
       makeFirstNewHintsVisible(SKILL_ID_1)
 
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0, isSolution = false)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 1, isSolution = true)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
 
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_cancel_button)))
         .inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText("Reveal Solution")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.reveal_solution))).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -569,9 +586,10 @@ class QuestionPlayerActivityTest {
   }
 
   /**
-   * Makes a new hint visible by submitting two wrong answers
-   * provided hint is available and no answer is submitted until
-   * this function is completely executes.
+   * Makes a new hint visible on robolectric by submitting two wrong answers
+   * provided hint is available, no answer is submitted until
+   * this function is completely executes and this function executes
+   * within 60 seconds of viewing the question.
    */
   private fun makeFirstNewHintsVisible(skillId: String) {
     submitWrongAnswer(skillId)
@@ -601,9 +619,9 @@ class QuestionPlayerActivityTest {
    * for this function to work correctly it should always be called
    * after [openHintsAndSolutionDialog]
    */
-  private fun clickRevealNewHintAndSol(hintAndSolIndex: Int, isSolution: Boolean) {
+  private fun clickRevealNewHintAndSolution(hintAndSolutionIndex: Int, isSolution: Boolean) {
     val buttonId = if (isSolution) R.id.reveal_solution_button else R.id.reveal_hint_button
-    pressRevealHintOrSolutionButton(hintAndSolIndex, buttonId)
+    pressRevealHintOrSolutionButton(hintAndSolutionIndex, buttonId)
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -612,11 +630,11 @@ class QuestionPlayerActivityTest {
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
       .perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+        scrollToPosition<RecyclerView.ViewHolder>(
           hintOrSolIndex * 2
         )
       )
-    onView(CoreMatchers.allOf(withId(buttonId), isDisplayed()))
+    onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
     testCoroutineDispatchers.runCurrent()

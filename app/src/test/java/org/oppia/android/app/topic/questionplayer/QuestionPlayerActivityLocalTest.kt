@@ -6,27 +6,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -258,13 +259,13 @@ class QuestionPlayerActivityLocalTest {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(CoreMatchers.not(isDisplayed()))
+        matches(not(isDisplayed()))
       )
     }
   }
 
   @Test
-  fun testQuestionPlayer_wait60Seconds_newHintAndSolVisible() {
+  fun testQuestionPlayer_wait60Seconds_dotHintIconVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
@@ -275,7 +276,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_wait30Seconds_configChange_wait30Seconds_newHintAndSolVisible() {
+  fun testQuestionPlayer_wait30Seconds_configChange_wait30Seconds_dotHintIconVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
@@ -295,7 +296,7 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       submitWrongAnswerToQuestionPlayerFractionInput()
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(CoreMatchers.not(isDisplayed()))
+        matches(not(isDisplayed()))
       )
     }
   }
@@ -306,13 +307,13 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       submitWrongAnswerToQuestionPlayerFractionInput()
       onView(withId(R.id.hints_and_solution_fragment_container)).check(
-        matches(CoreMatchers.not(isDisplayed()))
+        matches(not(isDisplayed()))
       )
     }
   }
 
   @Test
-  fun testQuestionPlayer_submitTwoWrongAnswers_newHintAndSolVisible() {
+  fun testQuestionPlayer_submitTwoWrongAnswers_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       submitTwoWrongAnswersToQuestionPlayer()
@@ -323,27 +324,27 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_newHintAndSolNotVisible() {
+  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_dotHintIconVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       makeFirstNewHintsVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
       submitWrongAnswerToQuestionPlayerFractionInput()
       onView(withId(R.id.dot_hint)).check(
-        matches(CoreMatchers.not(isDisplayed()))
+        matches(not(isDisplayed()))
       )
     }
   }
 
   @Test
-  fun testQuestionPlayer_hintConsumed_wait30Seconds_newHintAndSolAvailable() {
+  fun testQuestionPlayer_hintConsumed_wait30Seconds_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       makeFirstNewHintsVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
       testCoroutineDispatchers.runCurrent()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
@@ -354,12 +355,12 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_newHintAndSolAvailable() {
+  fun testQuestionPlayer_hintConsumed_submitWrongAnswer_wait10Seconds_dotHintIconIsVisible() {
     launchForSkillList(SKILL_ID_LIST).use {
       testCoroutineDispatchers.runCurrent()
       makeFirstNewHintsVisible()
       openHintsAndSolutionDialog()
-      clickRevealNewHintAndSol(hintAndSolIndex = 0)
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0)
       navigateBackToQuestionPlayer()
       submitWrongAnswerToQuestionPlayerFractionInput()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -380,23 +381,18 @@ class QuestionPlayerActivityLocalTest {
   }
 
   /**
-   * Makes a new hint visible by submitting two wrong answers
-   * provided hint is available and no answer is submitted until
-   * this function is completely executes.
+   * Makes a new hint visible on robolectric by submitting two wrong answers
+   * provided hint is available, no answer is submitted until
+   * this function is completely executes and this function executes
+   * within 60 seconds of viewing the question.
    */
   private fun makeFirstNewHintsVisible() {
     submitTwoWrongAnswersToQuestionPlayer()
     testCoroutineDispatchers.runCurrent()
   }
 
-  /** simulates wait for 30 second to make the second hint and solution available on robolectric. */
-  private fun makeSecondNewHintAndSolutionVisible() {
-    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-    testCoroutineDispatchers.runCurrent()
-  }
-
   private fun navigateBackToQuestionPlayer() {
-    Espresso.pressBack()
+    pressBack()
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -410,16 +406,16 @@ class QuestionPlayerActivityLocalTest {
    * For this function to work correctly it should always be called
    * after [openHintsAndSolutionDialog]
    */
-  private fun clickRevealNewHintAndSol(hintAndSolIndex: Int) {
+  private fun clickRevealNewHintAndSolution(hintAndSolutionIndex: Int) {
     onView(withId(R.id.hints_and_solution_recycler_view))
-      .inRoot(RootMatchers.isDialog())
+      .inRoot(isDialog())
       .perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          hintAndSolIndex * 2
+        scrollToPosition<RecyclerView.ViewHolder>(
+          hintAndSolutionIndex * 2
         )
       )
-    onView(CoreMatchers.allOf(withId(R.id.reveal_hint_button), isDisplayed()))
-      .inRoot(RootMatchers.isDialog())
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
       .perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -461,7 +457,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   private fun rotateToLandscape() {
-    onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+    onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
     testCoroutineDispatchers.runCurrent()
   }
 
