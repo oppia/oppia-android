@@ -332,11 +332,16 @@ class StateFragmentTest {
       typeFractionText("1/3")
       clickSubmitAnswerButton()
 
-      rotateToLandscape()
-
-      scrollToViewType(CONTENT)
       val htmlResult =
         "What fraction represents half of something?"
+      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
+        matches(
+          withText(htmlResult)
+        )
+      )
+      rotateToLandscape()
+      scrollToViewType(CONTENT)
+
       onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
         matches(
           withText(htmlResult)
@@ -352,7 +357,7 @@ class StateFragmentTest {
   //  6. Backward/forward navigation along with configuration changes to verify that you stay on the
   //     navigated state.
   @Test
-  fun testStateFragment_loadExp_moveForward_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveForward_nextStateIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -373,7 +378,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_moveForward_configChange_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveForward_configChange_nextStateIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -442,7 +447,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_nextStateIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -466,7 +471,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_configChange_stayOnTheNavigatedState() {
+  fun testStateFragment_loadExp_moveFwd_moveBackwd_moveFwd_configChange_nextStateIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -569,7 +574,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_landscape_submitAnswer_moveForward_moveBackward_answerVisible() {
+  fun testStateFragment_loadExp_configChange_submitAnswer_moveFwd_moveBckwd_answerVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -592,6 +597,24 @@ class StateFragmentTest {
   }
 
   //  8. Testing providing the wrong answer and showing hints.
+  //  9. Testing all possible invalid/error input cases for each interaction.
+  @Test
+  fun testStateFragment_loadExp_sixthState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+    launchForExploration(TEST_EXPLORATION_ID_6).use {
+      startPlayingExploration()
+      typeRatioExpression("45")
+
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
+  //      manually inspected) and are correctly functional.
+  //  11. Add tests for hints & solutions.
   @Test
   fun testStateFragment_loadExp_fractionState_submitWrongAnswerTwice_hintsVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
@@ -621,24 +644,6 @@ class StateFragmentTest {
     }
   }
 
-  //  9. Testing all possible invalid/error input cases for each interaction.
-  @Test
-  fun testStateFragment_loadExp_sixthState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_6).use {
-      startPlayingExploration()
-      typeRatioExpression("45")
-
-      clickSubmitAnswerButton()
-
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
-      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
-    }
-  }
-
-  //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
-  //      manually inspected) and are correctly functional.
-  //  11. Add tests for hints & solutions.
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
