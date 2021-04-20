@@ -87,14 +87,14 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -303,9 +303,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -331,9 +331,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -600,8 +600,8 @@ class StoryFragmentTest {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_1
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0
     )
   }
 

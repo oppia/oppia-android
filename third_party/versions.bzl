@@ -85,6 +85,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.truth:truth": "0.43",
+    "com.squareup.okhttp3:mockwebserver": "4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
@@ -100,6 +101,9 @@ HTTP_DEPENDENCY_VERSIONS = {
     "dagger": {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
+    },
+    "protobuf_tools": {
+        "version": "3.11.0",
     },
     "rules_java": {
         "sha": "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",

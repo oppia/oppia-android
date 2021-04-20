@@ -54,14 +54,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -115,7 +115,7 @@ class StoryActivityTest {
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
         topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_STORY_ID_1
+        storyId = TEST_STORY_ID_0
       )
     )
     val title = activityTestRule.activity.title
@@ -131,7 +131,7 @@ class StoryActivityTest {
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
         topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_STORY_ID_1
+        storyId = TEST_STORY_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -153,7 +153,7 @@ class StoryActivityTest {
         allOf(
           hasExtra(
             ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            TEST_EXPLORATION_ID_1
+            TEST_EXPLORATION_ID_2
           ),
           hasComponent(ExplorationActivity::class.java.name)
         )

@@ -59,10 +59,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -199,7 +199,7 @@ class AppVersionActivityTest {
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(
-        0
+        internalProfileId = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -230,10 +230,10 @@ class AppVersionActivityTest {
     return ActivityScenario.launch(intent)
   }
 
-  private fun launchAdministratorControlsActivityIntent(profileId: Int): Intent {
+  private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      internalProfileId
     )
   }
 
