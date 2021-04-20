@@ -101,8 +101,9 @@ class ReadingTextSizeFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val defaultTextSizeInFloat =
+  private val defaultTextSizeInFloat by lazy {
     context.resources.getDimension(R.dimen.default_reading_text_size)
+  }
 
   @Before
   fun setUp() {
