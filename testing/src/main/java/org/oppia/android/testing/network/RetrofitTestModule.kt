@@ -2,7 +2,7 @@ package org.oppia.android.testing.network
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.OppiaRetrofit
 import retrofit2.Retrofit
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class RetrofitTestModule {
   @Provides
   @Singleton
-  fun provideMockRetrofit(@NetworkModule.OppiaRetrofit retrofit: Retrofit): MockRetrofit {
+  fun provideMockRetrofit(@OppiaRetrofit retrofit: Retrofit): MockRetrofit {
     val behavior = NetworkBehavior.create()
     behavior.setFailurePercent(0)
 
