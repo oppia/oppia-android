@@ -8,10 +8,10 @@ import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class CompletedStoryListViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val intentFactoryShim: IntentFactoryShim,
   private val topicController: TopicController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
@@ -49,7 +49,7 @@ class CompletedStoryListViewModel @Inject constructor(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "CompletedStoryListFragment",
         "Failed to retrieve CompletedStory list: ",
         completedStoryListResult.getErrorOrNull()!!
