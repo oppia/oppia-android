@@ -20,7 +20,8 @@
         android:id="@+id/administrator_controls_fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    </LinearLayout>
+    </layout>
+   
 
     <fragment
       android:id="@+id/administrator_controls_activity_fragment_navigation_drawer"
@@ -31,4 +32,4 @@
       app:layout="@layout/drawer_fragment"
       tools:layout="@layout/drawer_fragment" />
   </androidx.drawerlayout.widget.DrawerLayout>
-</layout>
+ </LinearLayout>

@@ -17,8 +17,7 @@
     android:orientation="vertical">
 
     <include
-      android:id="@+id/add_profile_activity_toolbar"
-      layout="@layout/toolbar" />
+      android:id="@+id/add_profile_activity_toolbar" />
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -241,12 +240,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-      </ScrollView>
+      
 
       <View
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
-  </LinearLayout>
+  </linearLayout>
 </layout>

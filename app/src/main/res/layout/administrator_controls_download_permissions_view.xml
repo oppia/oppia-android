@@ -10,7 +10,6 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -51,7 +50,7 @@
         android:text="@string/administrator_controls_update_on_wifi_title"
         android:textColor="@color/oppiaPrimaryTextDark"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
 
       <TextView
         android:id="@+id/topic_update_on_wifi_description_text_view"

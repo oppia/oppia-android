@@ -22,7 +22,7 @@
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@string/administrator_controls_app_information_label"
+      android:text=" <"
       android:textColor="@color/colorPrimary"
       app:layout_constraintBottom_toTopOf="@id/app_version_text_view"
       app:layout_constraintEnd_toEndOf="parent"
@@ -47,3 +47,4 @@
       app:layout_constraintTop_toBottomOf="@id/app_information_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+<!-- This is an invalid -- comment -->

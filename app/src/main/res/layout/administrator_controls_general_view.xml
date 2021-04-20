@@ -13,8 +13,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/general_text_view"
+    <TextView android:id="@+id/general_text_view"
       style="@style/Heading5"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
@@ -29,7 +28,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+        <TextView
       android:id="@+id/edit_account_text_view"
       style="@style/Subtitle1"
       android:layout_width="match_parent"
