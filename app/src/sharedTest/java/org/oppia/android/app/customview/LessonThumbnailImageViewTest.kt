@@ -2,6 +2,7 @@ package org.oppia.android.app.customview
 
 import android.app.Application
 import android.content.Intent
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -77,17 +78,19 @@ class LessonThumbnailImageViewTest {
 
   @Test
   fun callDataBindingFunctions_thenCallInject_thumbnailIsLoadedCorrectly() {
-    LessonThumbnailImageView.injectAtStart = false
     activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageView = activityTestRule.activity
-      .findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail_image_view)
+    val lessonThumbnailImageViewHolder = activityTestRule.activity
+      .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
+
+    val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
 
     activityTestRule.runOnUiThread {
       with(lessonThumbnailImageView) {
         setEntityId("")
         setEntityType("")
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
-        injectFields()
+        lessonThumbnailImageViewHolder.addView(this)
+
         verify(imageLoader, atLeastOnce()).loadDrawable(
           imageDrawableResId = R.drawable.topic_fractions_01,
           target = ImageViewTarget(this),
@@ -99,17 +102,19 @@ class LessonThumbnailImageViewTest {
 
   @Test
   fun callInject_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
-    LessonThumbnailImageView.injectAtStart = false
     activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageView = activityTestRule.activity
-      .findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail_image_view)
+    val lessonThumbnailImageViewHolder = activityTestRule.activity
+      .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
+
+    val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
 
     activityTestRule.runOnUiThread {
       with(lessonThumbnailImageView) {
-        injectFields()
+        lessonThumbnailImageViewHolder.addView(this)
         setEntityId("")
         setEntityType("")
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
+
         verify(imageLoader, atLeastOnce()).loadDrawable(
           imageDrawableResId = R.drawable.topic_fractions_01,
           target = ImageViewTarget(this),

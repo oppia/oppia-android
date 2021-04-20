@@ -50,10 +50,6 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   @Inject
   lateinit var logger: ConsoleLogger
 
-  companion object {
-    var injectAtStart = true
-  }
-
   fun setEntityId(entityId: String) {
     this.entityId = entityId
     checkIfLoadingIsPossible()
@@ -124,8 +120,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     try {
       super.onAttachedToWindow()
-      if (injectAtStart)
-        injectFields()
+      (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
+        .createViewComponent(this).inject(this)
+      checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::logger.isInitialized)
         logger.e(
@@ -134,12 +131,6 @@ class LessonThumbnailImageView @JvmOverloads constructor(
           e
         )
     }
-  }
-
-  fun injectFields() {
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
-    checkIfLoadingIsPossible()
   }
 
   private fun getLessonDrawableResource(lessonThumbnail: LessonThumbnail): Int {

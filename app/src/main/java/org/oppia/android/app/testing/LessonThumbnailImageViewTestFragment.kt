@@ -13,7 +13,7 @@ class LessonThumbnailImageViewTestFragment : InjectableFragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     val binding = LessonThumbnailImageViewTestFragmentBinding
       .inflate(inflater, container, false)
     return binding.root
