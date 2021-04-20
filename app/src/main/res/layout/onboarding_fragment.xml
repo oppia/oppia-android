@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
+        android:contentDescription="@{viewModel.slideDotsContentDescription}"
         android:gravity="center"
         android:minHeight="48dp"
         android:orientation="horizontal"
