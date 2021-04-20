@@ -77,7 +77,7 @@ class LessonThumbnailImageViewTest {
   )
 
   @Test
-  fun callDataBindingFunctions_thenCallInject_thumbnailIsLoadedCorrectly() {
+  fun callDataBindingFunctions_thenInflateView_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
     val lessonThumbnailImageViewHolder = activityTestRule.activity
       .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
@@ -101,7 +101,7 @@ class LessonThumbnailImageViewTest {
   }
 
   @Test
-  fun callInject_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
+  fun inflateView_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
     val lessonThumbnailImageViewHolder = activityTestRule.activity
       .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
