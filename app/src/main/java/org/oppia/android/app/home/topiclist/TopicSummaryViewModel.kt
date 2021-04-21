@@ -1,6 +1,5 @@
 package org.oppia.android.app.home.topiclist
 
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
@@ -17,9 +16,6 @@ class TopicSummaryViewModel(
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
   val totalChapterCount: Int = topicSummary.totalChapterCount
-
-  @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor()
 
   private val outerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_outer_margin)
@@ -102,11 +98,6 @@ class TopicSummaryViewModel(
       }
       else -> 0
     }
-  }
-
-  @ColorInt
-  private fun retrieveBackgroundColor(): Int {
-    return topicSummary.topicThumbnail.backgroundColorRgb
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
