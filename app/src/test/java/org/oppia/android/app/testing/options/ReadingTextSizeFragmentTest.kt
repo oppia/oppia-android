@@ -82,10 +82,10 @@ private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
 private const val LARGE_TEXT_SIZE_SCALE = 1.2f
 private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
-private const val SMALL_TEXT_SIZE = 0
-private const val MEDIUM_TEXT_SIZE = 1
-private const val LARGE_TEXT_SIZE = 2
-private const val EXTRA_LARGE_TEXT_SIZE = 3
+private const val SMALL_TEXT_SIZE_INDEX = 0
+private const val MEDIUM_TEXT_SIZE_INDEX = 1
+private const val LARGE_TEXT_SIZE_INDEX = 2
+private const val EXTRA_LARGE_TEXT_SIZE_INDEX = 3
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -120,10 +120,10 @@ class ReadingTextSizeFragmentTest {
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkSelectedTextSize(SMALL_TEXT_SIZE)
-      clickOnTextSizeRecyclerViewItem(LARGE_TEXT_SIZE)
+      checkSelectedTextSize(SMALL_TEXT_SIZE_INDEX)
+      clickOnTextSizeRecyclerViewItem(LARGE_TEXT_SIZE_INDEX)
       rotateToLandscape()
-      checkSelectedTextSize(LARGE_TEXT_SIZE)
+      checkSelectedTextSize(LARGE_TEXT_SIZE_INDEX)
     }
   }
 
@@ -131,27 +131,26 @@ class ReadingTextSizeFragmentTest {
   fun testTextSize_checkTextSizeOfAllFourItems_textSizeMatchedCorrectly() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
       checkTextSizeOfRecyclerViewItem(
-        SMALL_TEXT_SIZE, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+        SMALL_TEXT_SIZE_INDEX, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
       )
       checkTextSizeOfRecyclerViewItem(
-        MEDIUM_TEXT_SIZE, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+        MEDIUM_TEXT_SIZE_INDEX, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
       )
       checkTextSizeOfRecyclerViewItem(
-        LARGE_TEXT_SIZE, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+        LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
       )
       checkTextSizeOfRecyclerViewItem(
-        EXTRA_LARGE_TEXT_SIZE, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
+        EXTRA_LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
       )
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
   fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
-      clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE)
+      clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE_INDEX)
       checkTextSizeLabel("Medium")
     }
   }
