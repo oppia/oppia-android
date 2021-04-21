@@ -1,0 +1,7 @@
+steps:
+- uses: actions/checkout@v2
+
+- name: List open pull requests
+  run: hub issue
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
