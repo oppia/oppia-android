@@ -14,4 +14,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: List open issues
-        run: gh issue list
+        run: |
+          gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
+          gh issue list
