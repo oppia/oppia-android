@@ -1,5 +1,5 @@
 
-name: Lint Code Base
+name: List codebase issues
 
 on:
   workflow_dispatch:
@@ -8,12 +8,10 @@ on:
 
 jobs:
   build:
-    name: Lint open issues
+    name: List open issues
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
       - name: List open issues
-        run: hub issue
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue list
