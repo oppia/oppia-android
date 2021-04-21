@@ -1,7 +1,19 @@
-steps:
-- uses: actions/checkout@v2
 
-- name: List open pull requests
-  run: hub issue
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+name: Lint Code Base
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    name: Lint open issues
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: List open issues
+        run: hub issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
