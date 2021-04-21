@@ -15,6 +15,6 @@ jobs:
 
       - name: List open issues
         run: |
-          gh --version
+          gh issue list
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
