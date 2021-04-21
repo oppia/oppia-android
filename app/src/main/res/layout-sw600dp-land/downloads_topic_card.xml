@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="isDeleteExpanded"
+      type="Boolean" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.mydownloads.downloads.DownloadsTopicViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/download_container"
+      android:layout_width="528dp"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_marginStart="28dp"
+      android:layout_marginTop="12dp"
+      android:layout_marginEnd="28dp"
+      android:layout_marginBottom="18dp"
+      app:cardBackgroundColor="@color/white"
+      app:cardCornerRadius="4dp"
+      app:cardElevation="4dp"
+      app:rippleColor="@color/transparent">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+          android:id="@+id/linearLayout3"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="12dp"
+          android:layout_marginEnd="12dp"
+          android:layout_marginBottom="16dp"
+          android:orientation="horizontal"
+          android:weightSum="1"
+          app:layout_constraintBottom_toTopOf="@+id/chapter_list_container"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+          <!-- TODO(#552): fix image height-->
+          <org.oppia.android.app.customview.LessonThumbnailImageView
+            android:id="@+id/topic_thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:layout_weight=".35"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:scaleType="centerInside"
+            app:entityId="@{viewModel.topicSummary.topicId}"
+            app:entityType="@{viewModel.topicEntityType}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}"
+            tools:src="@tools:sample/avatars[1]" />
+
+          <LinearLayout
+            android:id="@+id/topic_download_details_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight=".62"
+            android:gravity="center_vertical"
+            android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
+            android:orientation="vertical">
+
+            <TextView
+              android:id="@+id/story_name_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:ellipsize="end"
+              android:fontFamily="sans-serif-medium"
+              android:maxLines="1"
+              android:text="@{viewModel.topicSummary.name}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="18sp"
+              tools:text="First Test Topic First Test Topic" />
+
+            <TextView
+              android:id="@+id/chapter_count"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:fontFamily="sans-serif"
+              android:text="@{@plurals/story_count(viewModel.topicSummary.totalChapterCount, viewModel.topicSummary.totalChapterCount)}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="16sp"
+              tools:text="5 Stories" />
+
+            <TextView
+              android:id="@+id/download_size"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:fontFamily="sans-serif"
+              android:text="@{viewModel.topicSize}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="14sp"
+              android:textStyle="italic"
+              tools:text="210 kb" />
+          </LinearLayout>
+
+          <FrameLayout
+            android:id="@+id/expand_list_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_weight=".03">
+
+            <ImageView
+              android:id="@+id/chapter_list_drop_down_icon"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_gravity="center_horizontal|bottom"
+              android:contentDescription="@string/downloads_expand_card_show_delete"
+              android:src="@drawable/ic_arrow_drop_down_black_24dp"
+              app:isRotationAnimationClockwise="@{isDeleteExpanded}"
+              app:rotationAnimationAngle="@{180f}" />
+          </FrameLayout>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/chapter_list_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="@{isDeleteExpanded? View.VISIBLE : View.GONE}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent">
+
+          <View
+            android:id="@+id/topic_play_line_view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <ImageView
+            android:id="@+id/delete_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:contentDescription="@string/downloads_delete_icon_content_description"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toTopOf="@+id/delete_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topic_play_line_view" />
+
+          <TextView
+            android:id="@+id/delete_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/downloads_delete_heading"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+  </FrameLayout>
+</layout>
