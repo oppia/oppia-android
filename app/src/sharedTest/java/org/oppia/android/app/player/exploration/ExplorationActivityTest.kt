@@ -142,7 +142,6 @@ class ExplorationActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
