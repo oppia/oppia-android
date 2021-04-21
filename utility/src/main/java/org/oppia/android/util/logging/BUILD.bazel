@@ -69,11 +69,11 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "logger_module",
+    name = "prod_module",
     srcs = [
         "LoggerModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",
         ":dagger",
