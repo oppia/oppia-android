@@ -45,7 +45,6 @@ MIGRATED_SOURCE_FILES = [
 ANNOTATIONS = [
     "src/main/java/org/oppia/android/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/android/app/fragment/FragmentScope.kt",
-    "src/main/java/org/oppia/android/app/utility/ContextExtensions.kt",
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
 ]
 
@@ -574,6 +573,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 
