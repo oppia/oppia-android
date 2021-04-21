@@ -120,7 +120,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      allFiles.addAll(topicController.getAssetFileNameList(topicIdJsonArray.optString(i)))
+      allFiles.addAll(topicController.getJsonAssetFileNameList(topicIdJsonArray.optString(i)))
     }
 
     val primeAssetJobs = allFiles.map {
@@ -160,7 +160,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
         ).toSet()
       logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
-      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinarAssetDownloaded)
+      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinaryAssetDownloaded)
       val assetDownloadCount = downloadUrls.size
       primeDownloadStatus.postValue(
         PrimeAssetsStatus(currentDownloadCount.get(), assetDownloadCount)

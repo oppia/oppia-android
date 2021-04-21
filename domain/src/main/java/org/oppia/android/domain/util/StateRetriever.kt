@@ -70,12 +70,6 @@ class StateRetriever @Inject constructor(
           interactionJson.getString("id")
         )
       )
-      .addAllConfirmedUnclassifiedAnswers(
-        createAnswerGroupsFromJson(
-          interactionJson.getJSONArray("confirmed_unclassified_answers"),
-          interactionJson.getString("id")
-        )
-      )
       .setDefaultOutcome(
         createOutcomeFromJson(
           getJsonObject(interactionJson, "default_outcome")

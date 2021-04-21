@@ -95,8 +95,8 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.x-oppia-exclusive-rc02",
-    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.4",
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.4.tar.gz"],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -123,6 +123,12 @@ git_repository(
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
+)
+
+http_archive(
+    name = "protobuf_tools",
+    strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
