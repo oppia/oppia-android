@@ -15,6 +15,6 @@ jobs:
 
       - name: List open issues
         run: |
-          gh issue list
+          gh issue list --limit 500
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
