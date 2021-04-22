@@ -11,7 +11,7 @@ class LessonThumbnailImageViewTestActivity : InjectableAppCompatActivity() {
     setContentView(R.layout.lesson_thumbnail_image_view_test_activity)
 
     supportFragmentManager.beginTransaction().add(
-      R.id.mock_fragment_presenter,
+      R.id.lesson_thumbnail_image_view_test_fragment_placeholder,
       LessonThumbnailImageViewTestFragment()
     ).commitNow()
   }
