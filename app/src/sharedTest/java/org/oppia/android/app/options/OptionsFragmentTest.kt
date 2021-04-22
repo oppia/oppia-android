@@ -357,7 +357,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_configChange_selectReadingTextSize_showReadingTextSizeActivitySuccessfully() {
+  fun openOptionsActivity_configChange_selectTextSize_showReadingTextSizeActivitySuccessfully() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
