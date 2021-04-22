@@ -35,7 +35,7 @@ This is not always possible, since there might be other files relying on the sam
 2. Add the new BUILD.bazel file libraries as dependencies for the module's top-level library (these dependencies should be changed in the same library whose source files were updated in #1).
 3. Try to remove the dependencies that the new BUILD.bazel file's libraries depend on from the old libraries whose source files were changed (note that these may still be needed by existing source files in those libraries). This can be done by removing each dependency one-at-a-time and trying to rebuild the library to see if the library builds.
 
-## I'm getting a Bazel error: "Error while obtaining the sha256 checksum of."
+### I'm getting a Bazel error: "Error while obtaining the sha256 checksum of."
 
 If you are getting something similar to this:
 ```
@@ -45,3 +45,17 @@ If you are getting something similar to this:
 Error in fail: Error while obtaining the sha256 checksum of v1/https/maven.google.com/android/arch/core/common/1.1.1/common-1.1.1.jar: src/main/tools/process-wrapper-legacy.cc:80: "execvp(python, ...)": No such file or directory
 ```
 From the error trace, we see that the tool can't find python. Make sure that you have python in your PATH.
+
+### When installing the app, I see INSTALL_FAILED_VERSION_DOWNGRADE or INSTALL_FAILED_UPDATE_INCOMPATIBLE
+
+In the event that, when trying to install a Bazel-built version of the app, you see one of the following errors:
+- ``adb: failed to install bazel-bin/oppia.apk: Failure [INSTALL_FAILED_VERSION_DOWNGRADE]``
+- ``adb: failed to install bazel-bin/oppia.apk: Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE]``
+
+You will need to uninstall the existing version of the Oppia Android app and then try the installation again. You can either uninstall through the system's package menu UI, or run the following command:
+
+```
+adb shell pm uninstall org.oppia.android
+```
+
+(If the command above works correctly, you will see 'Success' in the output).
