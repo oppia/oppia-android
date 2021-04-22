@@ -54,7 +54,7 @@
           android:layout_marginBottom="4dp"
           android:adjustViewBounds="true"
           android:importantForAccessibility="no"
-          android:padding="8dp"
+          android:padding="4dp"
           android:scaleType="centerInside"
           app:entityId="@{viewModel.topicSummary.topicId}"
           app:entityType="@{viewModel.topicEntityType}"
@@ -63,6 +63,7 @@
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="@+id/story_name_text_view"
           app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}"
+          app:shapeAppearanceOverlay="@style/roundedCorners"
           tools:src="@tools:sample/avatars[1]" />
 
         <TextView
