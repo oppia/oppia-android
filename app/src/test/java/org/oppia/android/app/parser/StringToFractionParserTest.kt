@@ -257,9 +257,9 @@ class StringToFractionParserTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-        DaggerStringToFractionParserTest_TestApplicationComponent.builder()
-          .setApplication(this)
-          .build() as TestApplicationComponent
+      DaggerStringToFractionParserTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
     }
 
     fun inject(stringToFractionParserTest: StringToFractionParserTest) {
