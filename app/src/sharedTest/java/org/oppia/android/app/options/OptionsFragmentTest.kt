@@ -1,8 +1,6 @@
 package org.oppia.android.app.options
 
-import android.app.Activity
 import android.app.Application
-import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -15,17 +13,20 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -206,32 +207,13 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_readingTextSize_testOnActivityResult() {
+  fun testOptionsFragment_readingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      val resultDataIntent = Intent()
-      resultDataIntent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, "Large")
-      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
-
-      val activityMonitor = getInstrumentation().addMonitor(
-        ReadingTextSizeActivity::class.java.name,
-        activityResult,
-        true
-      )
-
-      it.onActivity { activity ->
-        activity.startActivityForResult(
-          createReadingTextSizeActivityIntent(summaryValue = "Small"),
-          REQUEST_CODE_TEXT_SIZE
-        )
-      }
-
-      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -239,77 +221,40 @@ class OptionsFragmentTest {
           targetViewId = R.id.reading_text_size_text_view
         )
       ).check(
-        matches(withText("Large"))
+        matches(withText("Medium"))
       )
     }
   }
 
   @Test
-  fun testOptionsFragment_audioLanguage_testOnActivityResult() {
+  fun testOptionsFragment_configChange_readingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      val resultDataIntent = Intent()
-      resultDataIntent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, "French")
-      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
-
-      val activityMonitor = getInstrumentation().addMonitor(
-        AudioLanguageActivity::class.java.name,
-        activityResult,
-        true
-      )
-
-      it.onActivity { activity ->
-        activity.startActivityForResult(
-          createAudioLanguageActivityIntent(summaryValue = "Hindi"),
-          REQUEST_CODE_AUDIO_LANGUAGE
-        )
-      }
-
-      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
-          position = 2,
-          targetViewId = R.id.audio_language_text_view
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
         )
       ).check(
-        matches(withText("French"))
+        matches(withText("Medium"))
       )
     }
   }
 
   @Test
-  fun testOptionsFragment_appLanguage_testOnActivityResult() {
+  fun testOptionsFragment_appLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      val resultDataIntent = Intent()
-      resultDataIntent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, "French")
-      val activityResult = ActivityResult(Activity.RESULT_OK, resultDataIntent)
-
-      val activityMonitor = getInstrumentation().addMonitor(
-        AppLanguageActivity::class.java.name,
-        activityResult,
-        true
-      )
-
-      it.onActivity { activity ->
-        activity.startActivityForResult(
-          createAppLanguageActivityIntent(summaryValue = "English"),
-          REQUEST_CODE_APP_LANGUAGE
-        )
-      }
-
-      getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 3)
-      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -317,7 +262,234 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).check(
-        matches(withText("French"))
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_configChange_appLanguageIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
+        )
+      ).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_audioLanguageIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 2,
+          targetViewId = R.id.audio_language_text_view
+        )
+      ).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_configChange_audioLanguageIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 2,
+          targetViewId = R.id.audio_language_text_view
+        )
+      ).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_selectReadingTextSize_showReadingTextSizeActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            "Medium"
+          ),
+          hasComponent(ReadingTextSizeActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_configChange_selectReadingTextSize_showReadingTextSizeActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            "Medium"
+          ),
+          hasComponent(ReadingTextSizeActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_selectAppLanguage_showAppLanguageActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            "English"
+          ),
+          hasComponent(AppLanguageActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_configChange_selectAppLanguage_showAppLanguageActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            "English"
+          ),
+          hasComponent(AppLanguageActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_selectAudioLanguage_showAudioLanguageActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 2,
+          targetViewId = R.id.audio_language_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            "English"
+          ),
+          hasComponent(AudioLanguageActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openOptionsActivity_configChange_selectAudioLanguage_showAudioLanguageActivitySuccessfully() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 2,
+          targetViewId = R.id.audio_language_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            "English"
+          ),
+          hasComponent(AudioLanguageActivity::class.java.name)
+        )
       )
     }
   }
