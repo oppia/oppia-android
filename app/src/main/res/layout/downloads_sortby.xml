@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -22,31 +23,35 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="12dp"
-      android:fontFamily="sans-serif-medium"
+      android:fontFamily="sans-serif"
       android:text="@string/sort_by"
       android:textAllCaps="true"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="20sp"
+      android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="@+id/sort_by_container"
       app:layout_constraintEnd_toStartOf="@id/sort_by_container"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@+id/sort_by_container" />
-    <!-- TODO(#552): sort_by_container should be wrap content width -->
+
     <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/sort_by_container"
       style="@style/TextInputLayoutDropDown"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:labelFor="@+id/sort_by_menu"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/sort_by_text_view"
       app:layout_constraintTop_toTopOf="parent">
 
-      <AutoCompleteTextView
+      <androidx.appcompat.widget.AppCompatAutoCompleteTextView
         android:id="@+id/sort_by_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="30dp"
+        android:dropDownWidth="wrap_content"
+        tools:ignore="LabelFor"
+        tools:text="Newest" />
     </com.google.android.material.textfield.TextInputLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

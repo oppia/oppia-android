@@ -38,101 +38,99 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-          android:id="@+id/linearLayout3"
+        <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="12dp"
+          android:layout_marginTop="16dp"
           android:layout_marginEnd="12dp"
           android:layout_marginBottom="16dp"
-          android:orientation="horizontal"
-          android:weightSum="1"
+          android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
           app:layout_constraintBottom_toTopOf="@+id/chapter_list_container"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent">
-          <!-- TODO(#552): fix image height-->
+
           <org.oppia.android.app.customview.LessonThumbnailImageView
             android:id="@+id/topic_thumbnail"
             android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:layout_weight=".35"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:adjustViewBounds="true"
             android:importantForAccessibility="no"
+            android:padding="8dp"
             android:scaleType="centerInside"
             app:entityId="@{viewModel.topicSummary.topicId}"
             app:entityType="@{viewModel.topicEntityType}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/story_name_text_view"
             app:lessonThumbnail="@{viewModel.topicSummary.topicThumbnail}"
             tools:src="@tools:sample/avatars[1]" />
 
-          <LinearLayout
-            android:id="@+id/topic_download_details_container"
+          <TextView
+            android:id="@+id/story_name_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="16dp"
-            android:layout_weight=".62"
-            android:gravity="center_vertical"
-            android:onClick="@{(v) -> viewModel.onTopicItemClicked()}"
-            android:orientation="vertical">
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:text="@{viewModel.topicSummary.name}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/topic_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="First Test Topic First Test Topic" />
 
-            <TextView
-              android:id="@+id/story_name_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:ellipsize="end"
-              android:fontFamily="sans-serif-medium"
-              android:maxLines="1"
-              android:text="@{viewModel.topicSummary.name}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="18sp"
-              tools:text="First Test Topic First Test Topic" />
+          <TextView
+            android:id="@+id/chapter_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@{@plurals/story_count(viewModel.topicSummary.totalChapterCount, viewModel.topicSummary.totalChapterCount)}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/story_name_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/story_name_text_view"
+            tools:text="5 Stories" />
 
-            <TextView
-              android:id="@+id/chapter_count"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif"
-              android:text="@{@plurals/story_count(viewModel.topicSummary.totalChapterCount, viewModel.topicSummary.totalChapterCount)}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="16sp"
-              tools:text="5 Stories" />
+          <TextView
+            android:id="@+id/download_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@{viewModel.topicSize}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/expand_list_icon"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/story_name_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/chapter_count"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="210 kb" />
 
-            <TextView
-              android:id="@+id/download_size"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif"
-              android:text="@{viewModel.topicSize}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="14sp"
-              android:textStyle="italic"
-              tools:text="210 kb" />
-          </LinearLayout>
-
-          <FrameLayout
+          <ImageView
             android:id="@+id/expand_list_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_weight=".03">
-
-            <ImageView
-              android:id="@+id/chapter_list_drop_down_icon"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_gravity="center_horizontal|bottom"
-              android:contentDescription="@string/downloads_expand_card_show_delete"
-              android:src="@drawable/ic_arrow_drop_down_black_24dp"
-              app:isRotationAnimationClockwise="@{isDeleteExpanded}"
-              app:rotationAnimationAngle="@{180f}" />
-          </FrameLayout>
-        </LinearLayout>
+            android:contentDescription="@string/downloads_expand_card_show_delete"
+            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+            app:isRotationAnimationClockwise="@{isDeleteExpanded}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/story_name_text_view"
+            app:layout_constraintVertical_bias="1.0"
+            app:rotationAnimationAngle="@{180f}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/chapter_list_container"

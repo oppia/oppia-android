@@ -47,7 +47,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.chaos.view:pinview": "1.4.4",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:glide": "4.11.0",
-    "com.google.android.material:material": "1.2.0-alpha02",
+    "com.google.android.material:material": "1.4.0-alpha02",
     "com.google.android:flexbox": "2.0.1",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",

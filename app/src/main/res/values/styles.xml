@@ -202,6 +202,8 @@
     <item name="boxCornerRadiusTopStart">0dp</item>
     <item name="boxStrokeColor">@color/oppiaPrimaryText</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
+    <item name="boxStrokeWidthFocused">@dimen/text_input_layout_stroke_width</item>
+    <item name="hintEnabled">false</item>
   </style>
 
   <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
