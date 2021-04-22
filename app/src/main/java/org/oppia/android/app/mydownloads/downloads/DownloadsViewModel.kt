@@ -30,7 +30,6 @@ class DownloadsViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
   lateinit var adminPin: String
   private var sortTypeIndex: Int = 0
 
@@ -55,7 +54,7 @@ class DownloadsViewModel @Inject constructor(
       profile.isAdmin
     }
     adminPin = adminProfile.pin
-
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return profileList.single { profile ->
       profileId == profile.id
     }
@@ -63,10 +62,6 @@ class DownloadsViewModel @Inject constructor(
 
   fun setInternalProfileId(internalProfileId: Int) {
     this.internalProfileId = internalProfileId
-  }
-
-  fun setProfileId(internalProfileId: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   fun setSortTypeIndex(sortTypeIndex: Int) {

@@ -64,8 +64,8 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
       .setTitle(R.string.downloads_access_dialog_heading)
       .setView(binding.root)
       .setMessage(R.string.downloads_access_dialog_message)
-      .setPositiveButton(R.string.admin_settings_submit, null)
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+      .setPositiveButton(R.string.downloads_access_dialog_positive, null)
+      .setNegativeButton(R.string.downloads_access_dialog_cancel) { dialog, _ ->
         dialog.dismiss()
       }
       .create()
@@ -91,7 +91,7 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
         } else {
           downloadsAccessAllowedViewModel.errorMessage.set(
             fragment.resources.getString(
-              R.string.admin_settings_incorrect
+              R.string.downloads_access_dialog_input_pin_error
             )
           )
         }

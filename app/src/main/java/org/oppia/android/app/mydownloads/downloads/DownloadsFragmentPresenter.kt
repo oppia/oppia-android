@@ -24,12 +24,10 @@ class DownloadsFragmentPresenter @Inject constructor(
 ) {
 
   private var internalProfileId: Int = -1
-
   private val sortByListIndexListener = fragment as SortByListIndexListener
 
   @Inject
   lateinit var downloadsViewModel: DownloadsViewModel
-
   private lateinit var downloadsRecyclerViewAdapter: BindableAdapter<DownloadsItemViewModel>
   private lateinit var binding: DownloadsFragmentBinding
   private var previousSortTypeIndex: Int = 0
@@ -58,7 +56,6 @@ class DownloadsFragmentPresenter @Inject constructor(
       adapter = downloadsRecyclerViewAdapter
     }
     downloadsViewModel.setInternalProfileId(internalProfileId)
-    downloadsViewModel.setProfileId(internalProfileId)
     downloadsViewModel.setSortTypeIndex(previousSortTypeIndex)
 
     return binding.root
@@ -74,20 +71,17 @@ class DownloadsFragmentPresenter @Inject constructor(
             "Encountered unexpected view model: $downloadsItemViewModel"
           )
         }
-      }
-      .registerViewDataBinder(
+      }.registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_SORT_BY,
         inflateDataBinding = DownloadsSortbyBinding::inflate,
         setViewModel = this::bindDownloadsSortBy,
         transformViewModel = { it as DownloadsSortByViewModel }
-      )
-      .registerViewDataBinder(
+      ).registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_TOPIC,
         inflateDataBinding = DownloadsTopicCardBinding::inflate,
         setViewModel = this::bindDownloadsTopicCard,
         transformViewModel = { it as DownloadsTopicViewModel }
-      )
-      .build()
+      ).build()
   }
 
   private enum class ViewType {
@@ -109,7 +103,6 @@ class DownloadsFragmentPresenter @Inject constructor(
       R.layout.downloads_sortby_menu,
       sortByItemsList
     )
-    // setting input type to zero makes AutoCompleteTextView no editable
     binding.sortByMenu.inputType = 0
     binding.sortByMenu.setText(
       sortItemAdapter.getItem(previousSortTypeIndex).toString(),

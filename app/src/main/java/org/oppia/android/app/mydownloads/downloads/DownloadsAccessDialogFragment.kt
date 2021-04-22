@@ -10,10 +10,8 @@ import javax.inject.Inject
 class DownloadsAccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
-
     internal const val ADMIN_PIN_SAVED_KEY = "DownloadsFragment.admin_pin"
     internal const val ALLOW_DOWNLOAD_ACCESS_SAVED_KEY = "DownloadsFragment.allow_download_access"
-
     fun newInstance(
       adminPin: String,
       allowDownloadAccess: Boolean

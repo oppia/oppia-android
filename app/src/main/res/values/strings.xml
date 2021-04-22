@@ -285,6 +285,9 @@
   <string name="downloads_topic_delete_dialog_delete">Delete</string>
   <string name="downloads_access_dialog_heading">Administrator Permission</string>
   <string name="downloads_access_dialog_message">Administrator\'s PIN is required to delete this topic from the device.</string>
+  <string name="downloads_access_dialog_positive">Submit</string>
+  <string name="downloads_access_dialog_cancel">Cancel</string>
+  <string name="downloads_access_dialog_input_pin_error">Incorrect Administrator PIN. Please try again.</string>
   <string name="downloads_delete_heading">DELETE</string>
   <string name="downloads_delete_icon_content_description">Delete Button</string>
   <string name="downloads_expand_card_show_delete">Show/hide delete</string>
