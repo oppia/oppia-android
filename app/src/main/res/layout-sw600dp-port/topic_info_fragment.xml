@@ -178,7 +178,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stories_heading" />
+        app:layout_constraintTop_toBottomOf="@+id/stories_heading"
+        app:list="@{viewModel.storyItemList}"/>
 
       <TextView
         android:id="@+id/skills_heading"
@@ -187,6 +188,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@string/topic_info_skills_heading"
+        android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE : View.GONE}"
         app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/topic_info_story_summary_recycler_view" />
 
@@ -199,11 +201,13 @@
         android:overScrollMode="never"
         android:paddingBottom="136dp"
         android:scrollbars="none"
+        android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE : View.GONE}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skills_heading" />
+        app:layout_constraintTop_toBottomOf="@+id/skills_heading"
+        app:list="@{viewModel.skillsItemList}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
