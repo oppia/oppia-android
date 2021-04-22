@@ -247,6 +247,7 @@
   <string name="onboarding_slide_3_title">Have fun!</string>
   <string name="onboarding_slide_3_description">Enjoy your learning adventures with our free, effective lessons.</string>
   <string name="skip">Skip</string>
+  <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>

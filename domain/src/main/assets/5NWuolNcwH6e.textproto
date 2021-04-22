@@ -1,0 +1,3910 @@
+id: "5NWuolNcwH6e"
+states {
+  key: "Explanation for order change"
+  value {
+    name: "Explanation for order change"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 392526
+            file_name: "content-en-yzejesf0qp.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>\342\200\234Good job!\342\200\235 said Uncle Berry.</p>\n\n<p>\342\200\234If you change the order of the elements\302\240in the phrase, you just have to change the order of the numbers in the ratio. Just make sure that the order of the elements in the phrase always matches the order of the numbers in the ratio.\342\200\235</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Practice 5"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Introduction"
+  value {
+    name: "Introduction"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1014867
+            file_name: "content-en-dg6agidvx.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>James loved the smoothies he made yesterday with Uncle Berry! He wanted to make some mango smoothies by himself, using the ratios from the \342\200\234Smoothies for Kids\342\200\235 recipe book.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of James smiling and holding a pink covered recipe book titled: \\&amp;quot;Smoothies for Kids!\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_113316_yo0ja6qm0g_height_318_width_343.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\302\240</p>\n\n<p>You should know the following before going on:</p>\n\n<ul>\n\t<li>\n\t<p><strong>What a \"ratio\" is</strong></p>\n\t</li>\n\t<li>\n\t<p><strong>How to write ratios using a colon, e.g. \342\200\2342:3\342\200\235.</strong></p>\n\t</li>\n</ul>\n\n<p>Also, before starting, get some paper and a pen or pencil to write with, and find a quiet place to work. Take your time and go through the story at your own pace. If you get a question wrong, read the explanation carefully and try to understand the mistake, so that you can fix it.</p>\n\n<p>Once you\342\200\231re ready, click <strong>Continue</strong> to get started!</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Review 1"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Ratio when the order is changed"
+  value {
+    name: "Ratio when the order is changed"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 305274
+            file_name: "content-en-spg36hng3l.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 137888
+            file_name: "default_outcome-en-p52sqpcela.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 47009
+            file_name: "feedback_1-en-yntip6q2rn.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 132428
+            file_name: "feedback_3-en-mq55so01e5.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Uncle Berry, I have a question,\342\200\235 said James.</p>\n\n<p>\342\200\234Asking questions is\302\240good!\" said Uncle Berry. \"What is your question?\342\200\235</p>\n\n<p>\342\200\234Well,\" said James, \"this recipe says \'The ratio of <strong>blueberry puree to strawberry puree</strong> is 1:3.\' But, if I want to say \'The ratio of <strong>strawberry puree to blueberry puree</strong> ...\'\302\240instead, what do I do?\"</p>\n\n<p>\342\200\234Excellent question,\" said Uncle Berry, \"I think you can figure that one out. What do you think you should say?\342\200\235</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Explanation for order change"
+          feedback {
+            html: "<p>Yes, that is correct! Well done.</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Ratio when the order is changed"
+          feedback {
+            html: "<p>No, that\'s not right. All that\'s happened is that the order of the items in the phrase has changed. So, how should the order of the\302\240numbers in the ratio be changed?</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Ratio when the order is changed"
+        feedback {
+          html: "<p>No, that\'s not right.\302\240The order of the items in the phrase has just been swapped. So, how should the order of the numbers in the ratio change?</p>\n\n<p>Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of <strong>strawberry</strong> <strong>puree to blueberry puree</strong> is <strong>1:3</strong>.</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of <strong>strawberry puree to blueberry puree</strong> is<strong> 3:1</strong>.</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>It\'s impossible to figure out the new ratio.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Final Test"
+  value {
+    name: "Final Test"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 929215
+            file_name: "content-en-r8sfiragha.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 306872
+            file_name: "default_outcome-en-wcfggh65if.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 337383
+            file_name: "feedback_2-en-rjgndu3ten.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 61113
+            file_name: "feedback_1-en-28ibiacu1c.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Very good!\342\200\235 said Uncle Berry, \342\200\234I think, after all that, we deserve a smoothie now!\"</p>\n\n<p>James looked through the recipe book, and found a different mixed-fruit smoothie. \342\200\234Let\342\200\231s make this one!\342\200\235 he said.</p>\n\n<p>\342\200\234All right,\" said Uncle Berry. \"Before we start making a smoothie with this recipe, maybe you can figure out one more thing! This recipe says \'Mix blueberry puree, strawberry puree, banana puree, and milk in the ratio of 3:4:2:5.\' How would you write the ratio of banana puree to blueberry puree to strawberry puree?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Happy ending"
+          feedback {
+            html: "<p>Yes, that is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:3:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Final Test"
+          feedback {
+            html: "<p>No, that is wrong. The question only asks for the ratio of <strong>banana puree</strong> to <strong>blueberry puree</strong> to <strong>strawberry puree</strong>, but you\'ve written a ratio for all four ingredients.</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:3:4:5"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Final Test"
+        feedback {
+          html: "<p>No, that is wrong. Read the question carefully, and try again. You may want to write out the ratio and the items clearly on a piece of paper, so you can see what corresponds to what.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 4"
+  value {
+    name: "Review 4"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 437279
+            file_name: "content-en-61qnu9n9ys.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 204472
+            file_name: "default_outcome-en-xudtj9fny3.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 406346
+            file_name: "feedback_2-en-4rnjwski8l.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 175216
+            file_name: "feedback_1-en-ywrgou6thi.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 244597
+            file_name: "hint_1-en-vmskbzhgob.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Here\'s a slightly trickier question.</p>\n\n<p>To make a mixed fruit smoothie, we need milk, mango puree, blueberry puree and strawberry puree, as in the picture.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 3-unit tall glass of milk place on the far left on a table, fully filled 2-unit tall glass of mango puree place on the right of milk, fully filled 2-unit tall glass of blueberry puree placed on the right of mango puree, fully filled 4-unit tall glass of strawberry puree placed on the right of blueberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181115_123053_szn8urxhmm_height_319_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\302\240</p>\n\n<p>Write down the ratio of milk to blueberry puree to strawberry puree.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 5"
+          feedback {
+            html: "<p>Well done! You\'ve\302\240remembered that you don\'t need to include information that the question doesn\'t ask for.</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:2:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 4"
+          feedback {
+            html: "<p>No, that is wrong. You\'ve written the\302\240ratio of milk to mango puree to blueberry puree to strawberry puree, but that\'s not what the question is asking for. Read it carefully, and try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:2:2:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>The question is asking for the ratio of <strong>milk</strong> to <strong>blueberry puree</strong> to <strong>strawberry puree</strong>. There are only three items in this ratio!</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 4"
+        feedback {
+          html: "<p>No, that is not correct. If you don\'t know how to solve this question, try playing the\302\240<oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 5"
+  value {
+    name: "Review 5"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 310218
+            file_name: "content-en-4ne1wifuvs.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 406764
+            file_name: "default_outcome-en-4aaf7enm4s.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 311889
+            file_name: "feedback_1-en-tkk3g412jc.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Let\'s try just one more!</p>\n\n<p>A recipe tells us that the ratio of blueberry puree to milk is 1:2. Which of the following statements are true?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "James making smoothie alone"
+          feedback {
+            html: "<p>That is correct! You\'ve remembered that a ratio represents the <strong>relative</strong> amounts of the items, not the exact amounts.</p>\n\n<p>Now, let\'s go back and see how James is doing!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 5"
+        refresher_exploration_id: "2mzzFVDLuAj8"
+        feedback {
+          html: "<p>No, that is incorrect. Actually,\302\240<strong>each</strong>\302\240of these three pictures represents the ratio 1:2.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cup of milk on the left and 2 cups of blueberry puree on the right&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155938_8twq7xxnwo_height_74_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\302\240</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 L of blueberry puree on the left and 2 L of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_160034_ftmdsux4hr_height_95_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\302\240</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2 cups of blueberry puree on the left and 4 cups of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_161602_sdz63sveqc_height_151_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>If you don\'t know why this is true, it would be a good idea to play the\302\240<oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>\302\240first!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>For any amount of blueberry puree, we need to use twice that amount of milk.</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>We need <strong>exactly</strong> 1 cup of blueberry puree and 2 cups of milk.</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>We need <strong>exactly </strong>1 liter\302\240of blueberry puree and 2 liters\302\240of milk.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>We need <strong>exactly</strong> 2 cups of blueberry puree and 4 cups of milk.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Writing ratio using words"
+  value {
+    name: "Writing ratio using words"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1171631
+            file_name: "content-en-242nblj3nj.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 334457
+            file_name: "feedback_2-en-j24llug8ra.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 357027
+            file_name: "feedback_3-en-wwn8h58794.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 87031
+            file_name: "feedback_1-en-5o0vndzfpb.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 453157
+            file_name: "feedback_4-en-nrldsylh65.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>\342\200\234Good job!\342\200\235 Uncle Berry gave James a thumbs up.</p>\n\n<p>\342\200\234Let\342\200\231s remake the mango smoothie using the correct ratio,\342\200\235 suggested Uncle Berry. He looked at\302\240James. \"Could you remind me what the ratio of the ingredients for the mango smoothie is?\342\200\235</p>\n\n<p>Confidently, James said, \342\200\234The ratio of the ingredients is 1:2 ...\342\200\235 -- and then he stopped, thought a little, and added, \342\200\234where 1 represents milk, and 2 represents mango puree.\342\200\235</p>\n\n<p>\342\200\234Haha,\342\200\235 Uncle Berry looked at James, smiling. \342\200\234Well done on trying to clarify which ingredients are represented by 1 and 2! But there\'s a shorter way to do that.\342\200\235</p>\n\n<p>What is a shorter way to correctly state the ratio of ingredients needed for the mango smoothie?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of recipe of Mango Smoothie. 1 cup of milk drawn on the left, and a text \\&amp;quot;1 cup of milk\\&amp;quot; written next to it. Image of 2 cups of mango puree drawn below the cup of milk, and a text \\&amp;quot;2 cups of mango puree\\&amp;quot; written next to the image of mango puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190207_205041_wg8gaujvld_height_393_width_490.png&amp;quot;\"></oppia-noninteractive-image>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Correct! You are doing great.</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Writing ratio using words"
+          feedback {
+            html: "<p>No, that isn\'t right. If you just say \"ingredients,\" we don\'t know which ingredient is represented by 1 and which ingredient is represented by 2. Try again.\302\240</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 2"
+          feedback {
+            html: "<p>No, that is incorrect. People don\'t use the word \'and\' when talking about ratios.</p>\n\n<p>Let\'s go back just a little bit, to an earlier question. Pay close attention to how the ratio is described.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 4
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that\'s not correct. If you say \"The ratio of mango puree to milk is 1:2\", that would be represented by this picture instead. The order matters!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;image of 1 cup of mango puree drawn on the left and text \\&amp;quot; 1 cup of mango puree\\&amp;quot; written on the right. Below the cup of mango puree image of 2 cups of milk drawn, and text \\&amp;quot;2 cups of milk\\&amp;quot; written on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190207_210028_wjvtan3nui_height_396_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Let\'s practice this skill a bit more, since it\'s quite important.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Writing ratio using words"
+        feedback {
+          html: "<p>No, that\'s not correct. Please try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of ingredients is 1:2.</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of milk and mango puree is 1:2.</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of mango puree to milk is 1:2.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of milk to mango puree is 1:2.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The ratio of mango puree and milk is 1:2.</p>"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 1"
+  value {
+    name: "Review 1"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 232472
+            file_name: "content-en-pa4xjkn8t7.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 212828
+            file_name: "default_outcome-en-ajuid49rip.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 305615
+            file_name: "feedback_2-en-p1qzuxs09w.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 48152
+            file_name: "feedback_1-en-mbo154yj6j.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 267580
+            file_name: "feedback_3-en-9ab06trs4k.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Before we join James, let\342\200\231s see if you remember what you and James learned last time.</p>\n\n<p>Write down the ratio of blueberries to oranges in the picture.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of 3 blueberries place on the left of a table and 5 oranges placed on the right of the table.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181115_122942_ohv8jcf090_height_189_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p><span></span></p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>Well done!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:5"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>Well done! That\'s correct. But, from now on, make sure to write your answer using a colon instead (i.e., <strong>3:5</strong>).</p>"
+            content_id: "feedback_3"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3 to 5"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 1"
+          feedback {
+            html: "<p>No, that\'s not right. You\'ve written the quantities in the wrong order! Don\'t worry, though -- we\302\240will learn more about that in this\302\240lesson.</p>\n\n<p>Try again by writing the numbers in the opposite order.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5 to 3"
+              }
+            }
+          }
+          rule_type: "CaseSensitiveEquals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 1"
+        feedback {
+          html: "<p>No, that is wrong. If you do not know how to solve this question, go and study the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson \\&amp;quot;What is a Ratio?\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link> first.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter a ratio here"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 2"
+  value {
+    name: "Review 2"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 168949
+            file_name: "content-en-857wpjozuj.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 183574
+            file_name: "default_outcome-en-3el8ueetq6.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 325680
+            file_name: "feedback_2-en-hsmmj4wyj6.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 59441
+            file_name: "feedback_1-en-90elluee36.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 250033
+            file_name: "feedback_3-en-vs52k9b7bm.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Great! Let\342\200\231s try another one.</p>\n\n<p>Write down the ratio of blueberry puree to milk in the picture.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of a full 2-unit tall glass of blueberry puree next to a full 6-unit tall glass of milk. Both glasses are sitting on a table.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_154240_veho1qlaee_height_432_width_490.png&amp;quot;\"></oppia-noninteractive-image>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>Yes, that is correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:6"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4:12"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:9"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>No, that\'s not right. You have written the parts of the ratio in the wrong order!\302\240Don\'t worry, we will learn more about that in this lesson.</p>\n\n<p>Try again, by changing the order of the numbers in the ratio.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:1"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "12:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "9:3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>That\'s good, but try writing your answer using a colon\302\240(\":\"). That\'s the more standard way to write ratios, and we\'ll be using it going forward, so it\'s good to get some practice with it.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "to"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 2"
+        feedback {
+          html: "<p>No, that is wrong. Try again. If you need a refresher, try playing the\302\240<oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter a ratio here"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 3"
+  value {
+    name: "Review 3"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 203221
+            file_name: "content-en-xp5t07fn7h.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 186917
+            file_name: "default_outcome-en-sq3jcffcr9.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 262572
+            file_name: "feedback_2-en-urcrvsimw1.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 75742
+            file_name: "feedback_1-en-ut8gsxttr8.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Let\342\200\231s try another one.</p>\n\n<p>Write down the ratio of milk to blueberry puree to mango puree in the picture.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 1-unit tall milk placed on the left of a table, fully filled 4-unit tall blueberry puree place on the middle of the table and fully filled 2-unit tall mango puree place on the right of the table.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181115_123034_9n4tdvudzy_height_318_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p><span></span></p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 4"
+          feedback {
+            html: "<p>That is correct! Well done.</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:4:2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>That\'s good, but try writing your answer using colons (\":\"). That\'s the more standard way to write ratios, and we\'ll be using it going forward, so it\'s good to get some practice with it.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1 to 4 to 2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 3"
+        feedback {
+          html: "<p>No, that is wrong. Try again. If you need a refresher, try playing the\302\240<oppia-noninteractive-link text-with-value=\"&amp;quot;\\&amp;quot;What is a Ratio?\\&amp;quot; lesson&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/2mzzFVDLuAj8&amp;quot;\"></oppia-noninteractive-link>.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as X:Y:Z where X, Y and Z are numbers."
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Order of number in the ratio is important"
+  value {
+    name: "Order of number in the ratio is important"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1549019
+            file_name: "content-en-j9itpen7tm.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Uncle Berry walked into the kitchen. James explained that he had mixed a 1:2 ratio of\302\240milk and mango puree by using 1 cup of mango puree and 2 cups of milk.</p>\n\n<p>\"James,\" said Uncle Berry, \"the order of elements listed in a phrase and the order of the numbers in a ratio need to be the same. When we say \'The ratio of <strong>milk to mango puree</strong> is 1:2\', since milk comes first in the phrase, and 1 comes first in the ratio, 1 represents the relative amount of milk. Similarly, 2 represents the relative amount of mango puree.\342\200\235</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of 1 cup of milk on the left, and 2 cups of mango puree on the right. Below there is a text written \\&amp;quot;ratio of milk to mango puree,\\&amp;quot; where \\&amp;quot;milk\\&amp;quot; is written right below the image of a cup of milk and \\&amp;quot;mango puree\\&amp;quot; is written right below the image of 2 cups of mango puree. Below  that ratio \\&amp;quot;1:2\\&amp;quot; is written, where \\&amp;quot;1\\&amp;quot; is right below the text \\&amp;quot;milk\\&amp;quot;, and \\&amp;quot;2\\&amp;quot; is right below the text \\&amp;quot;mango puree.\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_154134_o3x9n2pzlo_height_288_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\342\200\234On the other hand, when we say \'The ratio of <strong>mango puree to milk</strong>\302\240is 1:2\', 1 represents mango puree and 2 represents milk.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of 1 cup of mango puree on the left, and 2 cups of milk on the right. Below that is the text \\&amp;quot;ratio of mango puree to milk\\&amp;quot;, where \\&amp;quot;mango puree\\&amp;quot; is written right below the image of 1 cup of mango puree and \\&amp;quot;milk\\&amp;quot; is written right below the image of 2 cups of milk. Below that, the ratio \\&amp;quot;1:2\\&amp;quot; is written, where \\&amp;quot;1\\&amp;quot; is right below the text \\&amp;quot;mango puree\\&amp;quot;, and \\&amp;quot;2\\&amp;quot; is right below the text \\&amp;quot;milk\\&amp;quot;.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190208_173116_6kmgdi7u5p_height_285_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\342\200\234So, you need to always be aware of the order of the numbers given in the ratio,\342\200\235 said Uncle Berry.</p>\n\n<p>\342\200\234Got it!\342\200\235 said James.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Practice 1"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Congratulations"
+  value {
+    name: "Congratulations"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 281767
+            file_name: "content-en-ecp2p15i7k.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Congratulations on completing this lesson!</p>\n\n<p>Now that James has become an expert at making\302\240smoothies, he has big plans for the future. Click the card below to find out what he does next!</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 1b"
+  value {
+    name: "Practice 1b"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 233730
+            file_name: "content-en-q4xnd48c6k.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 155988
+            file_name: "default_outcome-en-ihkhaikfc7.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 51501
+            file_name: "feedback_1-en-hhej7wql8b.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 218687
+            file_name: "hint_1-en-i664siq4wd.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Now,\" said Uncle Berry, \"if the ratio of milk to blueberry puree is 2:5, what does the 5 represent?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 2"
+          feedback {
+            html: "<p>Very good!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Writing out the ratios like this\302\240might help you.</p>\n\n<blockquote>\n<p>Milk\302\240 :\302\240 \302\240Blueberry Puree</p>\n\n<p>\302\240 \302\2402\302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2405</p></blockquote>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Order of number in the ratio is important"
+        feedback {
+          html: "<p>No, that\'s not correct. Let\'s take another look at Uncle Berry\'s explanation.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of milk.</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of blueberry puree.</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The exact amount of milk.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The exact amount of blueberry puree.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 1"
+  value {
+    name: "Practice 1"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 305619
+            file_name: "content-en-lx1hi7zo1d.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 138020
+            file_name: "default_outcome-en-xb3smc3mi9.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 661301
+            file_name: "feedback_2-en-m13idfj86q.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 65292
+            file_name: "feedback_1-en-2l6g6k0oy8.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 343234
+            file_name: "feedback_3-en-1kbmvj07rm.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234All right, let\342\200\231s see if you really understand\302\240it!\" said Uncle\302\240Berry.</p>\n\n<p>\"If the ratio of milk to strawberry puree is 3:7, what does the 3 represent?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1b"
+          feedback {
+            html: "<p>Yes, that is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that is not correct.</p>\n\n<p>In the phrase, milk is written first, and\302\240strawberry puree is written second.</p>\n\n<p>In the ratio, 3 is written first, and\302\2407 is written second.</p>\n\n<p>It might be clearer if you write it like this:</p>\n\n<blockquote>\n<p>Milk\302\240 :\302\240 \302\240Strawberry\302\240Puree</p>\n\n<p>\302\240 \302\2403\302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2407</p>\n</blockquote>\n\n<p>So, what does the 3 represent?</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that is wrong. Remember that a ratio does not\302\240show the exact amount of an item. Instead, it shows the <strong>relative</strong> amount of an item compared to other items.</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Order of number in the ratio is important"
+        feedback {
+          html: "<p>That\'s OK. Let\'s take another look at Uncle Berry\'s explanation.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of milk</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of strawberry puree</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3 cups of strawberry puree</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3 cups of milk</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>I don\'t know</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 3"
+  value {
+    name: "Practice 3"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 307290
+            file_name: "feedback_2-en-quejiihixf.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 345743
+            file_name: "content-en-svpsx63wl9.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 45649
+            file_name: "feedback_1-en-p6jpbxerf8.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 174380
+            file_name: "hint_1-en-8l2i1b3jhb.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 187336
+            file_name: "hint_2-en-vqbyra3hio.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 440202
+            file_name: "default_outcome-en-ty9yfkc4zn.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Yes, that\342\200\231s right!\342\200\235 said Uncle Berry.</p>\n\n<p>\342\200\234Now, let\'s say you are mixing mango puree and milk in the ratio 6:5. Pick the picture that represents this ratio.\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Writing ratio using words"
+          feedback {
+            html: "<p>Good job!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Order of number in the ratio is important"
+          feedback {
+            html: "<p>No, that\'s not correct. Be careful with the order of the numbers! They need to match the order of the items listed.</p>\n\n<p>Let\'s take another look at Uncle Berry\'s explanation.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 4
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>The question is telling us that\302\240<strong>the\302\240ratio of mango puree to milk</strong> is<strong> 6:5</strong>.</p>"
+          content_id: "hint_1"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>You can write out the ratio like this:</p>\n\n<blockquote>\n<p>Mango Puree\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240Milk</p>\n\n<p>\302\240 \302\240 \302\240 \302\2406\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2405</p></blockquote>"
+          content_id: "hint_2"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 3"
+        feedback {
+          html: "<p>No, that is not correct. Remember, a ratio represents relative quantities, so 6:5 means that, for every 6 units of mango puree, you should have 5 units of milk,\302\240not 1 or\302\2400 units.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left, and fully filed 1-unit tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182711_us61tazrzr_height_218_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left and fully filled 5-units tall milk of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182344_eq6yk8f9yl_height_223_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 5-units tall glass of mango puree on the left, and fully filled 6-units tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_154514_mp9cuopfvl_height_220_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182434_vevph1sj01_height_222_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of milk on the left, and fully filled 5-units tall glass of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155409_d83h88tvyl_height_229_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 2"
+  value {
+    name: "Practice 2"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 443549
+            file_name: "content-en-5w7jzfn6sv.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 404674
+            file_name: "default_outcome-en-vlzm4ht6yl.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 255463
+            file_name: "feedback_2-en-gzz4uc6wlw.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 83686
+            file_name: "feedback_1-en-a1yd4w9rlr.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 507663
+            file_name: "hint_1-en-pifrexx9kv.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Correct! Now, this one is a bit trickier,\" said Uncle Berry.</p>\n\n<p>\342\200\234If the ratio of blueberry puree to strawberry puree to mango puree to milk is 3:2:1:4, what does the 1 represent?\342\200\235</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 3"
+          feedback {
+            html: "<p>Correct! Let\'s try another one.</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 2"
+          feedback {
+            html: "<p>No, that is not correct. Strawberry puree\302\240comes second in the phrase, but \"1\" comes third in the ratio. Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>It might be easier if you write:</p>\n\n<blockquote>\n<p>blueberry puree : strawberry puree : mango puree : milk</p>\n\n<p>\302\240 \302\240 \302\240 \302\240 \302\240 3\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 2\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 1\302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 4</p></blockquote>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 2"
+        feedback {
+          html: "<p>No, that is not correct. Look at the order of the elements (blueberry puree, strawberry puree, mango puree, and milk) listed, and compare them with the order of the numbers in the ratio.</p>\n\n<p>Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of blueberry puree</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of strawberry puree</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of mango puree</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>The relative amount of milk</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 5"
+  value {
+    name: "Practice 5"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 301439
+            file_name: "content-en-phkrfxifon.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 107087
+            file_name: "default_outcome-en-l7g91u08r3.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 335713
+            file_name: "feedback_2-en-qbtfbw0h9a.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 43141
+            file_name: "feedback_1-en-m49vfram5u.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 259224
+            file_name: "feedback_3-en-3mub1pelmi.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Now, let\'s see if you can answer\302\240this question,\" said Uncle Berry.</p>\n\n<p>\"If the ratio of mango puree to milk is 3:8, what is the ratio of milk to mango puree?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 6"
+          feedback {
+            html: "<p>That is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "8:3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 5"
+          feedback {
+            html: "<p>Your answer is correct, but we\'re writing ratios as X:Y, where X and Y are numbers. That\'s the most common way to write a ratio. Can you do that too?</p>\n\n<p>Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "8 to 3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 5"
+          feedback {
+            html: "<p>No, that\'s not correct. The order of the items has been swapped, so you\'ll need to change the ratio to match the new order. Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "3:8"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 5"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer in the form X:Y"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 4"
+  value {
+    name: "Practice 4"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 219520
+            file_name: "feedback_2-en-lx0rg761gv.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 741969
+            file_name: "content-en-d5q4scadvg.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 251703
+            file_name: "feedback_3-en-jkghuaumm1.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 65292
+            file_name: "feedback_1-en-rtjh5a5ndp.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 139272
+            file_name: "feedback_4-en-owce7hngcw.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_5"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 145123
+            file_name: "feedback_5-en-nasrenmcgn.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 278450
+            file_name: "default_outcome-en-8k7ul7t9fg.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of recipe of a Mango Smoothie. 1 cup of milk drawn on the left, and a text \\&amp;quot;1 cup of milk\\&amp;quot; written next to it. Image of 2 cups of mango puree drawn below the cup of milk, and a text \\&amp;quot;2 cups of mango puree\\&amp;quot; written next to the image of mango puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181115_123207_ai8011nyln_height_351_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>\n\n<p>\342\200\234Good job, James!\" said Uncle Berry. \"So, for this recipe, we can say \342\200\230The ratio of <strong>milk to mango puree</strong> is 1:2\'.\"</p>\n\n<p>\"Now, why don\'t you try writing the whole phrase by yourself? Write the ratio that the picture represents, clearly showing which number represents which element. Be sure to write it as \'the ratio of _________ puree to ________ puree is X:Y\'.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filed 5-units tall glass of blueberry puree on the left, and fully filled 4-units tall glass of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181115_123229_b6qswtvf9r_height_382_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p><span></span></p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_5"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Ratio when the order is changed"
+          feedback {
+            html: "<p>Yes, that is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "ratio of blueberry puree to mango puree is 5:4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "ratio of mango puree to blueberry puree is 4:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Your answer looks good, but please write down the full\302\240phrase starting with \"The ratio of....\".</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "blueberry puree to mango puree is 5:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "mango puree to blueberry puree is 4:5"
+              }
+            }
+          }
+          rule_type: "CaseSensitiveEquals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Your answer looks good, but make sure to\302\240write the ratio using a colon (\":\"). There should be no spaces around the colon.</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5 to 4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4 to 5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5: 4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5 : 4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5 :4"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4 :5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4 : 5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4: 5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Make sure to replace X with the correct number. Try again.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "X"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Make sure to replace Y with the correct number. Try again.</p>"
+            content_id: "feedback_5"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "Y"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 4"
+        feedback {
+          html: "<p>No, that is not correct. Make sure to enter the answer exactly as shown, and check that your spelling is correct. Try again!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as follows: The ratio of ______ to ______ is X:Y."
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 7"
+  value {
+    name: "Practice 7"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 173961
+            file_name: "feedback_2-en-9luldmof9u.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 781258
+            file_name: "solution-en-0hw5f0c78q.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 663811
+            file_name: "content-en-m3bsjv89lj.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 87032
+            file_name: "feedback_1-en-zz5d0jox2y.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 616998
+            file_name: "hint_1-en-e4kx6huxbo.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 102490
+            file_name: "default_outcome-en-l4an43i87a.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Good job! Do you want a trickier question?\342\200\235 asked Uncle Berry.</p>\n\n<p>\342\200\234Sure!\" said James.</p>\n\n<p>Uncle Berry said, \342\200\234OK, then, try this one. If the ratio of blueberry puree to milk to banana puree to dark chocolate is 2:5:6:1, what is the ratio of blueberry puree to dark chocolate to milk to banana puree?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Final Test"
+          feedback {
+            html: "<p>Excellent! You are doing great!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:1:5:6"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 7"
+          feedback {
+            html: "<p>No, your answer is incorrect. Be careful with the order of the numbers.</p>\n<p>Try again.</p>\n"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:2:5:6"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:2:6:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:5:2:6"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:5:6:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:6:2:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:6:5:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:5:1:6"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:5:6:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:6:1:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:6:5:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:1:2:6"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:1:6:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:2:1:6"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:2:6:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:6:1:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:6:2:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:1:2:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:1:5:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:2:1:5"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:2:5:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:5:1:2"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:5:2:1"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      solution {
+        interaction_id: "TextInput"
+        correct_answer {
+          correct_answer: "2:1:5:6"
+        }
+        explanation {
+          html: "<p>Let\'s write the ratio like this</p>\n\n<blockquote>\n<p>blueberry puree :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240milk\302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240banana puree :\302\240dark chocolate</p>\n\n<p>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 2\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240\302\2405\302\240 \302\240 \302\240 \302\240 \302\240 \302\240\302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 6\302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 1</p>\n</blockquote>\n\n<p>Keeping the item together with its corresponding number, we can change the order to what the question asks for. The result\302\240looks like this:</p>\n\n<blockquote>\n<p>\302\240blueberry puree :\302\240dark chocolate :\302\240 \302\240 \302\240 \302\240 \302\240 milk\302\240 \302\240 \302\240 \302\240 \302\240 : banana puree</p>\n\n<p>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 2\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 1\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2405\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2406</p>\n</blockquote>\n\n<p>So, the answer is <strong>2:1:5:6</strong>.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Try solving the question by writing it like this, so that it\'s clear\302\240which\302\240description corresponds to which number:</p>\n\n<blockquote>\n<p>blueberry puree :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240milk\302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240banana puree :\302\240dark chocolate</p>\n\n<p>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 2\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240\302\2405\302\240 \302\240 \302\240 \302\240 \302\240 \302\240\302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 6\302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 1</p>\n\n<p>\302\240</p>\n\n<p>blueberry puree :\302\240dark chocolate :\302\240 \302\240 \302\240 \302\240 \302\240 milk\302\240 \302\240 \302\240 \302\240 \302\240 : banana puree</p>\n\n<p>\302\240 \302\240 \302\240 \302\240 \302\240 ?\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240?\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 ?\302\240 \302\240 \302\240 \302\240 \302\240 \302\240:\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 ?</p></blockquote>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 7"
+        feedback {
+          html: "<p>No, that is not correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer in the form W:X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Happy ending"
+  value {
+    name: "Happy ending"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1056663
+            file_name: "content-en-nmjm67rtnm.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>James and Uncle Berry made a mixed-fruit smoothie with the recipe James chose. The smoothie was great! Now that he knows what ratios are and how to read them, James can make smoothies by himself.</p>\n\n<p>Also, James made sure to remember some important things he learned. You might want to write them down, so that you remember too!</p>\n\n<ul>\n\t<li>\n\t<p>The order of the\302\240numbers in\302\240a ratio is important. When writing a ratio, we need to clearly state which number represents which element. For example:\302\240\"The ratio of blueberry puree to strawberry puree is 2:3.\"</p>\n\t</li>\n\t<li>\n\t<p>If we\'re\302\240given a ratio, we can easily use it to calculate the\302\240ratio for the same objects arranged in a different order.</p>\n\t</li></ul>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Congratulations"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 6"
+  value {
+    name: "Practice 6"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 464027
+            file_name: "content-en-r8oagu5lu6.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 263404
+            file_name: "default_outcome-en-yxszpunjgj.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 637059
+            file_name: "feedback_2-en-dd9cnrqfad.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 41052
+            file_name: "feedback_1-en-hzep3dkjkk.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Great!\" said Uncle Berry. \"This one\'s a little more tricky.\342\200\235</p>\n\n<p>\342\200\234If the ratio of banana puree to strawberry puree to blueberry puree\302\240is 1:7:6, what is the ratio of strawberry puree to banana puree to blueberry puree?\342\200\235</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 7"
+          feedback {
+            html: "<p>Good job!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "7:1:6"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 6"
+          feedback {
+            html: "<p>No, that is not correct.</p>\n\n<p>Try solving the question by writing it like this, so that it\'s easier to see which description corresponds to which number:</p>\n\n<blockquote>\n<p><strong>banana puree : strawberry puree :\302\240blueberry puree</strong></p>\n\n<p><strong>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\2401\302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 7\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 6</strong></p>\n\n<p>\302\240</p>\n\n<p><strong>strawberry puree : banana puree : blueberry puree</strong></p>\n\n<p><strong>\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240?\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 \302\240?\302\240 \302\240 \302\240 \302\240 \302\240 \302\240 :\302\240 \302\240 \302\240 \302\240 \302\240 \302\240?</strong></p></blockquote>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:6:7"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:7:6"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:7:1"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "7:6:1"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "6:1:7"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 6"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again. Make sure to enter your answer in the form X:Y:Z, with no spaces.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer in the form X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "James making smoothie alone"
+  value {
+    name: "James making smoothie alone"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1174140
+            file_name: "content-en-f9ryb2ws8m.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 104161
+            file_name: "default_outcome-en-1usjtvkf1t.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 522539
+            file_name: "feedback_2-en-bwbc59ycje.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 73651
+            file_name: "feedback_1-en-p3a5j2km8z.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    content {
+      html: "<p>James really enjoyed the mixed fruit smoothie that he made the day before. This time, though, he wanted to make a smoothie using his favorite fruit: mango! He\302\240 picked a recipe for a mango smoothie from the recipe book.</p>\n\n<p>The recipe said:</p>\n\n<blockquote>\n<p>\342\200\234Mix milk and mango puree in the ratio 1:2.\342\200\235</p>\n</blockquote>\n\n<p>So, James mixed <strong>1 cup of mango puree </strong>and <strong>2 cups of milk</strong>, and made a mango smoothie. He then excitedly sipped some of the smoothie to taste it ... and then spat it out again.</p>\n\n<p>\342\200\234Eurrrgh!\342\200\235 James said, staring at the smoothie. \342\200\234This is too milky. Did I do something wrong?\342\200\235</p>\n\n<p>Did James do something wrong? (And why do you think that?)</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Order of number in the ratio is important"
+          feedback {
+            html: "<p>Yes, that\'s right!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "James making smoothie alone"
+          feedback {
+            html: "<p>No, that is incorrect. Look at the recipe again. The recipe says to use <strong>milk</strong> and <em>mango puree</em> in the ratio <strong>1</strong>:<em>2.\302\240</em>But James used 2 cups of milk\302\240and 1 cup of mango puree.</p>\n\n<p>Can you figure out\302\240what happened? Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Look carefully at the order of the ratio.</p>\n\n<p>It says to put milk and mango in the ratio of 1:2</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "James making smoothie alone"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>No, James did nothing wrong. He followed the recipe correctly.</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>No, James did nothing wrong. The recipe itself was wrong.</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Yes, James did something wrong. He should have used 2 cups of mango puree and 1 cup of milk instead.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Yes, James did something wrong. He should have used 2\302\240cups of mango puree and 4\302\240cups of milk instead.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "Introduction"
+objective: "Learn why the order of the numbers in a ratio is important."
+title: "Order is Important"
+language_code: "en"
