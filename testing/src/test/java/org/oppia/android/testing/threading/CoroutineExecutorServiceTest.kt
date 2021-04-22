@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.threading
 
 import android.app.Application
 import android.content.Context
@@ -28,7 +28,11 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.LooperMode
@@ -76,8 +80,12 @@ class CoroutineExecutorServiceTest {
   @Inject
   lateinit var testDispatcherFactory: TestCoroutineDispatcher.Factory
 
+  @Inject
+  lateinit var fakeSystemClock: FakeSystemClock
+
   @Mock
   lateinit var mockRunnable: Runnable
+
   @Mock
   lateinit var mockCallable: Callable<String>
 
@@ -1091,6 +1099,18 @@ class CoroutineExecutorServiceTest {
         }
       }
     }
+  }
+
+  private fun TestCoroutineDispatcher.runUntilIdle() {
+    var nextTaskTimeMillis: Long?
+    do {
+      val currentTimeMillis = fakeSystemClock.getTimeMillis()
+      runCurrent()
+      nextTaskTimeMillis = getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      if (nextTaskTimeMillis != null) {
+        fakeSystemClock.advanceTime(nextTaskTimeMillis - currentTimeMillis)
+      }
+    } while (nextTaskTimeMillis != null)
   }
 
   // TODO(#89): Move this to a common test application component.
