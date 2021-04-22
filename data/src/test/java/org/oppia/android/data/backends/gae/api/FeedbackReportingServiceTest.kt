@@ -1,6 +1,7 @@
 package org.oppia.android.data.backends.gae.api
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -8,6 +9,8 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,8 +65,18 @@ class FeedbackReportingServiceTest {
   }
 
   // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
+  // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkModule::class, RetrofitTestModule::class])
+  @Component(modules = [TestModule::class, NetworkModule::class, RetrofitTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
