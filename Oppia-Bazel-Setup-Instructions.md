@@ -33,7 +33,7 @@ bazel build //:oppia
 #### Building + installing the app
 
 ```
-bazel mobile-install //:oppia
+bazel build //:oppia && adb install -r bazel-bin/oppia.apk
 ```
 
 #### Running specific module (app) Robolectric tests
