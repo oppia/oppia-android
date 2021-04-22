@@ -18,11 +18,11 @@
     android:overScrollMode="never"
     android:paddingBottom="128dp"
     android:scrollbars="none"
-    tools:listitem="@layout/downloads_topic_card"
     app:data="@{viewModel.downloadsViewModelLiveData}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    tools:listitem="@layout/downloads_topic_card" />
 </layout>

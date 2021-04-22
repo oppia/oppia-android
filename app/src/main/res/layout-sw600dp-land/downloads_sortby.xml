@@ -53,8 +53,8 @@
           android:id="@+id/sort_by_menu"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:dropDownWidth="wrap_content"
           android:drawablePadding="30dp"
+          android:dropDownWidth="wrap_content"
           tools:ignore="LabelFor"
           tools:text="Newest" />
       </com.google.android.material.textfield.TextInputLayout>
