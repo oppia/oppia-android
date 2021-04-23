@@ -1,9 +1,5 @@
 package org.oppia.android.app.topic
 
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import org.hamcrest.CoreMatchers.not
-import dagger.Module
-import dagger.Provides
 import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -25,7 +22,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -253,7 +253,6 @@ class TopicFragmentTest {
         TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab = true)
       onView(withText(practiceTab.name)).check(doesNotExist())
     }
-
   }
 
   @Test
