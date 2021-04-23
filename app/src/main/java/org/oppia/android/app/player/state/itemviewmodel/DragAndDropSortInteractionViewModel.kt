@@ -50,15 +50,15 @@ class DragAndDropSortInteractionViewModel(
 
   val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
 
-  private var isAnswerAvailable = ObservableField<Boolean>(false)
+  private val isAnswerAvailable = ObservableField(false)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */null,
-            /* inputAnswerAvailable= */true
+            pendingAnswerError = null,
+            inputAnswerAvailable = true
           )
         }
       }

@@ -20,7 +20,6 @@ import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
 import org.oppia.android.app.model.RuleSpec
-import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
