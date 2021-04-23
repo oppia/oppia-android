@@ -74,6 +74,7 @@ TEST_DEPS = [
     "//model",
     "//model:test_models",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",

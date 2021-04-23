@@ -32,7 +32,7 @@ class UrlImageParser private constructor(
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val imageLoader: ImageLoader
-) : Html.ImageGetter {
+) : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever {
   /**
    * This method is called when the HTML parser encounters an <img> tag.
    * @param urlString : urlString argument is the string from the "src" attribute.
@@ -50,6 +50,14 @@ class UrlImageParser private constructor(
       imageLoader.loadBitmap("$gcsPrefix/$gcsResourceName/$imageUrl", CustomImageTarget(target))
     }
     return urlDrawable
+  }
+
+  override fun loadDrawable(
+    sourceUrl: String,
+    type: CustomHtmlContentHandler.ImageRetriever.Type
+  ): Drawable {
+    // TODO(#2942): Add support for block & inline image loading.
+    return getDrawable(sourceUrl)
   }
 
   private inner class BitmapTarget(urlDrawable: UrlDrawable) : CustomImageTarget<Bitmap>(
