@@ -20,13 +20,13 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-/** Tests for [NetworkInterceptor] */
+/** Tests for [JsonPrefixNetworkInterceptorTest] */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class NetworkInterceptorTest {
+class JsonPrefixNetworkInterceptorTest {
 
   @Inject
-  lateinit var networkInterceptor: NetworkInterceptor
+  lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
 
   @Before
   fun setUp() {
@@ -40,7 +40,7 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXssiPrefix(
+      jsonPrefixNetworkInterceptor.removeXssiPrefix(
         loadUnformattedFakeJson(
           "dummy_response_with_xssi_prefix.json"
         )
@@ -56,7 +56,7 @@ class NetworkInterceptorTest {
   @Test
   fun testNetworkInterceptor_withoutXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      networkInterceptor.removeXssiPrefix(
+      jsonPrefixNetworkInterceptor.removeXssiPrefix(
         loadUnformattedFakeJson(
           "dummy_response_without_xssi_prefix.json"
         )
@@ -78,7 +78,7 @@ class NetworkInterceptorTest {
   private fun formatJson(rawJson: String): String = JSONObject(rawJson).toString()
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkInterceptorTest_TestApplicationComponent.builder()
+    DaggerJsonPrefixNetworkInterceptorTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -109,7 +109,6 @@ class NetworkInterceptorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkInterceptorTest: NetworkInterceptorTest)
-    fun inject(networkInterceptor: NetworkInterceptor)
+    fun inject(jsonPrefixNetworkInterceptorTest: JsonPrefixNetworkInterceptorTest)
   }
 }

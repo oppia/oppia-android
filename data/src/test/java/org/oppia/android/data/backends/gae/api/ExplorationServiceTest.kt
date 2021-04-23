@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.testing.network.MockExplorationService
 import org.robolectric.annotation.LooperMode
@@ -27,7 +27,7 @@ class ExplorationServiceTest {
   @Before
   fun setUp() {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
+    client.addInterceptor(JsonPrefixNetworkInterceptor())
 
     retrofit = retrofit2.Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
