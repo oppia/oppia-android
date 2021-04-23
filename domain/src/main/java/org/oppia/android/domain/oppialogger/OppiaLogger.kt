@@ -55,13 +55,13 @@ class OppiaLogger @Inject constructor(
     consoleLogger.d(tag, msg, tr)
   }
 
-  /** Logs a info message with the specified tag. See [ConsoleLogger.i] for more context */
+  /** Logs an info message with the specified tag. See [ConsoleLogger.i] for more context */
   fun i(tag: String, msg: String) {
     consoleLogger.i(tag, msg)
   }
 
   /**
-   * Logs a info message with the specified tag, message and exception. See [ConsoleLogger.i] for
+   * Logs an info message with the specified tag, message and exception. See [ConsoleLogger.i] for
    * more context
    */
   fun i(tag: String, msg: String, tr: Throwable) {
@@ -81,13 +81,13 @@ class OppiaLogger @Inject constructor(
     consoleLogger.w(tag, msg, tr)
   }
 
-  /** Logs a error message with the specified tag. See [ConsoleLogger.e] for more context */
+  /** Logs an error message with the specified tag. See [ConsoleLogger.e] for more context */
   fun e(tag: String, msg: String) {
     consoleLogger.e(tag, msg)
   }
 
   /**
-   * Logs a error message with the specified tag, message and exception. See [ConsoleLogger.e] for
+   * Logs an error message with the specified tag, message and exception. See [ConsoleLogger.e] for
    * more context
    */
   fun e(tag: String, msg: String, tr: Throwable?) {
