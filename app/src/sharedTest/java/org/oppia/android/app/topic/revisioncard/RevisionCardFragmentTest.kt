@@ -1,21 +1,32 @@
 package org.oppia.android.app.topic.revisioncard
 
+import android.text.style.ClickableSpan
+import android.view.View
+import android.widget.TextView
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import android.text.Spannable
 import android.app.Application
 import android.content.Context
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.espresso.UiController
+import org.hamcrest.Matcher
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import org.hamcrest.CoreMatchers.containsString
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -34,7 +45,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -186,21 +196,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            withText(
-              "Description of subtopic is here."
-            )
-          )
-        )
-      onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            not(
-              containsRichText()
-            )
-          )
-        )
+        .check(matches(withText(containsString("Description of subtopic is here."))))
     }
   }
 
@@ -215,13 +211,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_return_button))
-        .check(
-          matches(
-            withText(
-              R.string.return_to_topic
-            )
-          )
-        )
+        .check(matches(withText(R.string.return_to_topic)))
     }
   }
 
@@ -236,8 +226,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+      onView(withId(R.id.revision_card_toolbar_title)).check(matches(withText("What is Fraction?")))
     }
   }
 
@@ -253,21 +242,7 @@ class RevisionCardFragmentTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            withText(
-              "Description of subtopic is here."
-            )
-          )
-        )
-      onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            not(
-              containsRichText()
-            )
-          )
-        )
+        .check(matches(withText(containsString("Description of subtopic is here."))))
     }
   }
 
@@ -283,13 +258,77 @@ class RevisionCardFragmentTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.revision_card_return_button))
-        .check(
-          matches(
-            withText(
-              R.string.return_to_topic
-            )
-          )
-        )
+        .check(matches(withText(R.string.return_to_topic)))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_showsLinkTextForConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(withText(containsString("Learn more")))
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_landscape_showsLinkTextForConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(withText(containsString("Learn more")))
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_clickConceptCardLinkText_opensConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Given a picture divided into unequal parts"))))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_landscape_clickConceptCardLinkText_opensConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Given a picture divided into unequal parts"))))
     }
   }
 
@@ -297,6 +336,47 @@ class RevisionCardFragmentTest {
   fun tearDown() {
     Intents.release()
   }
+
+  /** See the version in StateFragmentTest for documentation details. */
+  @Suppress("SameParameterValue")
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  /** See the version in StateFragmentTest for documentation details. */
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
+    text: String
+  ): ClickableSpan? = find { text in it.first }?.second
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
