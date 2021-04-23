@@ -12,8 +12,20 @@ import com.caverock.androidsvg.utils.RenderOptionsBase
  *
  * [SvgPictureDrawable] should be used to render instances of this class.
  */
-class ScalableVectorGraphic(svgSource: String) {
-  private val parsedSvg by lazy { SVG.getFromString(svgSource) }
+class ScalableVectorGraphic {
+  private val parsedSvg: Lazy<SVG>
+  val transformations: List<ImageTransformation>
+
+  /** Constructs a new [ScalableVectorGraphic] from the specified SVG source code. */
+  constructor(svgSource: String) {
+    parsedSvg = lazy { SVG.getFromString(svgSource) }
+    transformations = listOf()
+  }
+
+  private constructor(parsedSvg: SVG, transformations: List<ImageTransformation>) {
+    this.parsedSvg = lazy { parsedSvg }
+    this.transformations = transformations.distinct()
+  }
 
   /**
    * Returns the [SvgSizeSpecs] corresponding to this SVG, based on the specified [textPaint]. If a
@@ -24,14 +36,15 @@ class ScalableVectorGraphic(svgSource: String) {
   internal fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
     return if (textPaint != null) {
       val options = RenderOptionsBase().textPaint(textPaint)
-      val width = parsedSvg.getDocumentWidth(options)
-      val height = parsedSvg.getDocumentHeight(options)
-      val verticalAlignment = adjustAlignmentForAndroid(parsedSvg.getVerticalAlignment(options))
+      val width = parsedSvg.value.getDocumentWidth(options)
+      val height = parsedSvg.value.getDocumentHeight(options)
+      val verticalAlignment =
+        adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
       SvgSizeSpecs(width, height, verticalAlignment)
     } else {
       val options = RenderOptionsBase()
-      val width = parsedSvg.getDocumentWidth(options)
-      val height = parsedSvg.getDocumentHeight(options)
+      val width = parsedSvg.value.getDocumentWidth(options)
+      val height = parsedSvg.value.getDocumentHeight(options)
       SvgSizeSpecs(width, height, verticalAlignment = 0f)
     }
   }
@@ -44,7 +57,7 @@ class ScalableVectorGraphic(svgSource: String) {
     return computeSizeSpecs(textPaint).let { (width, height, _) ->
       val options =
         RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
-      parsedSvg.renderToPicture(options)
+      parsedSvg.value.renderToPicture(options)
     }
   }
 
@@ -52,7 +65,14 @@ class ScalableVectorGraphic(svgSource: String) {
    * Returns an Android [Picture] including the draw instructions for rendering this SVG in a block
    * or standalone format (that is, it's not meant to be rendered within text).
    */
-  fun renderToBlockPicture(): Picture = parsedSvg.renderToPicture()
+  fun renderToBlockPicture(): Picture = parsedSvg.value.renderToPicture()
+
+  /**
+   * Returns a new [ScalableVectorGraphic] that will be transformed by the specified
+   * transformations. Any existing transformations on the graphic will also be included.
+   */
+  fun transform(transformations: List<ImageTransformation>): ScalableVectorGraphic =
+    ScalableVectorGraphic(parsedSvg.value, this.transformations + transformations)
 
   // It seems that vertical alignment needs to be halved to work in Android's coordinate system as
   // compared with SVGs. This might be due to SVGs seemingly using an origin in the middle of the

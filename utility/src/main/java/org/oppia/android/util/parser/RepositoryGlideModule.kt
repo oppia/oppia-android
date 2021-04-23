@@ -16,12 +16,12 @@ class RepositoryGlideModule : AppGlideModule() {
     registry.register(
       ScalableVectorGraphic::class.java,
       TextPictureDrawable::class.java,
-      TextSvgDrawableTranscoder()
+      TextSvgDrawableTranscoder(context)
     )
     registry.register(
       ScalableVectorGraphic::class.java,
       BlockPictureDrawable::class.java,
-      BlockSvgDrawableTranscoder()
+      BlockSvgDrawableTranscoder(context)
     )
 
     registry.append(InputStream::class.java, ScalableVectorGraphic::class.java, SvgDecoder())
