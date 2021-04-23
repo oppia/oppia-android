@@ -6,6 +6,7 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -30,7 +31,9 @@ class TextInputStartsWithRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
-    val normalizedAnswer = answer.normalizeWhitespace()
-    return input.normalizedStringsList.any { normalizedAnswer.startsWith(it.normalizeWhitespace()) }
+    val normalizedAnswer = answer.normalizeWhitespace().toLowerCase(Locale.getDefault())
+    return input.normalizedStringsList.any {
+      normalizedAnswer.startsWith(it.normalizeWhitespace().toLowerCase(Locale.getDefault()))
+    }
   }
 }
