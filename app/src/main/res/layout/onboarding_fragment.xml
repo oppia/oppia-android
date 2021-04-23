@@ -55,7 +55,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
         android:accessibilityTraversalAfter="@id/onboarding_fragment_next_image_view"
-        android:contentDescription="@{@string/onboarding_slide_dots_content_description(viewModel.slideNumber + 1)}"
+        android:contentDescription="@{String.format(@string/onboarding_slide_dots_content_description((viewModel.slideNumber + 1), viewModel.totalNumberOfSlides))}"
         android:gravity="center"
         android:minHeight="48dp"
         android:orientation="horizontal"
