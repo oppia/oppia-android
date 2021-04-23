@@ -19,6 +19,7 @@
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/topic_info_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingBottom="112dp">
@@ -36,6 +37,7 @@
         app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
 
       <FrameLayout
+        android:id="@+id/thumbnail_gradient_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/thumbnail_gradient"
@@ -122,7 +124,10 @@
         android:layout_height="20dp"
         android:layout_marginStart="120dp"
         android:layout_marginTop="24dp"
+        android:onClick="@{viewModel::clickTopicDownload}"
         android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? @id/stories_heading : ConstraintSet.UNSET}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 
@@ -162,6 +167,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@{@plurals/story_play_heading(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+        android:visibility="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? View.VISIBLE : View.GONE}"
         app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/download_story_count_text_view"
         tools:text="Stories you can play" />
@@ -175,11 +181,12 @@
         android:overScrollMode="never"
         android:paddingBottom="36dp"
         android:scrollbars="none"
+        android:visibility="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? View.VISIBLE : View.GONE}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stories_heading"
-        app:list="@{viewModel.storyItemList}"/>
+        app:list="@{viewModel.storyItemList}" />
 
       <TextView
         android:id="@+id/skills_heading"
@@ -188,7 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@string/topic_info_skills_heading"
-        android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.topic.subtopicList.size() != 0 &amp;&amp; viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? View.VISIBLE: View.GONE}"
         app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/topic_info_story_summary_recycler_view" />
 
@@ -201,13 +208,13 @@
         android:overScrollMode="never"
         android:paddingBottom="136dp"
         android:scrollbars="none"
-        android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.topic.subtopicList.size() != 0 &amp;&amp; viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? View.VISIBLE: View.GONE}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skills_heading"
-        app:list="@{viewModel.skillsItemList}"/>
+        app:list="@{viewModel.skillsItemList}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>

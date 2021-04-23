@@ -46,7 +46,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val enableMyDownloads = false
+  private val enableMyDownloads = true
   private val isTopicDownloaded = false
 
   fun handleCreateView(
@@ -71,7 +71,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       adapter = createSkillRecyclerViewAdapter()
     }
     binding.topicInfoStorySummaryRecyclerView.apply {
-      this!!.adapter = createStoryRecyclerViewAdapter()
+      this.adapter = createStoryRecyclerViewAdapter()
     }
     return binding.root
   }
@@ -136,7 +136,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
         controlSeeMoreTextVisibility()
         topicInfoViewModel.enableMyDownloads.set(enableMyDownloads)
         topicInfoViewModel.isTopicDownloaded.set(isTopicDownloaded)
-        if (!isTopicDownloaded) {
+        if (enableMyDownloads && !isTopicDownloaded) {
           topicInfoViewModel.skillsItemList.set(extractTopicSkillList(topic.subtopicList))
           topicInfoViewModel.storyItemList.set(extractTopicStorySummaryList(topic.storyList))
         }

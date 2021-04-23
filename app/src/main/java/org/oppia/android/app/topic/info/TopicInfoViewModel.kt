@@ -31,7 +31,7 @@ class TopicInfoViewModel @Inject constructor(
   val isSeeMoreVisible = ObservableField<Boolean>(true)
   val skillsItemList = ObservableField<List<TopicInfoSkillItemViewModel>>()
   val storyItemList = ObservableField<List<TopicInfoStoryItemViewModel>>()
-  val enableMyDownloads = ObservableField<Boolean>(false)
+  val enableMyDownloads = ObservableField<Boolean>(true)
   val isTopicDownloaded = ObservableField<Boolean>(false)
 
   fun calculateTopicSizeWithUnit() {

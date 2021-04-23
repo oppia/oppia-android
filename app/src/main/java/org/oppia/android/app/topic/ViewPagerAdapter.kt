@@ -13,11 +13,12 @@ class ViewPagerAdapter(
   private val internalProfileId: Int,
   private val topicId: String,
   private val storyId: String,
-  private val enableMyDownloads: Boolean
+  private val enableMyDownloads: Boolean,
+  private val isTopicDownloaded: Boolean
 ) : FragmentStateAdapter(fragment) {
 
   override fun getItemCount(): Int {
-    if (enableMyDownloads) {
+    if (enableMyDownloads && !isTopicDownloaded) {
       return 1
     } else {
       return TopicTab.values().size
@@ -25,7 +26,7 @@ class ViewPagerAdapter(
   }
 
   override fun createFragment(position: Int): Fragment {
-    if (enableMyDownloads) {
+    if (enableMyDownloads && !isTopicDownloaded) {
       return TopicInfoFragment.newInstance(internalProfileId, topicId)
     } else {
       return when (TopicTab.getTabForPosition(position)) {

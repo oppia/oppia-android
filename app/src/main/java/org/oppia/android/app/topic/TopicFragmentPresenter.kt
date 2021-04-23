@@ -39,6 +39,11 @@ class TopicFragmentPresenter @Inject constructor(
       R.drawable.ic_practice_icon_24dp,
       R.drawable.ic_revision_icon_24dp
     )
+
+  // TODO(3082): Remove this variable with the one, received from Home Activity
+  private val isTopicDownloaded = false
+
+  // TODO(3082): Replace this variable with the injected annotation
   private val enableMyDownloads = true
 
   fun handleCreateView(
@@ -72,6 +77,7 @@ class TopicFragmentPresenter @Inject constructor(
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
+    viewModel.isTopicDownloaded = isTopicDownloaded
     viewModel.enableMyDownloads = enableMyDownloads
     binding.viewModel = viewModel
 
@@ -86,10 +92,17 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableMyDownloads)
+      ViewPagerAdapter(
+        fragment,
+        internalProfileId,
+        topicId,
+        storyId,
+        enableMyDownloads,
+        isTopicDownloaded
+      )
     viewPager2.adapter = adapter
-    // TODO(#2986): check if topic is already downloaded or not
-    if (!enableMyDownloads) {
+    // TODO(#3072): check if topic is already downloaded or not
+    if (!(enableMyDownloads && !isTopicDownloaded)) {
       TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
         when (position) {
           0 -> {
