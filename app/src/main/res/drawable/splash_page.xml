@@ -4,6 +4,6 @@
   <item>
     <bitmap
       android:gravity="center"
-      android:src="@drawable/oppia_png_logo" />
+      android:src="@drawable/oppia_logo_bitmap" />
   </item>
 </layer-list>
