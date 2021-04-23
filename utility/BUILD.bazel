@@ -13,10 +13,13 @@ load("//utility:utility_test.bzl", "utility_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
+    "src/main/java/org/oppia/android/util/gcsresource/*.kt",
     "src/main/java/org/oppia/android/util/profile/*.kt",
     "src/main/java/org/oppia/android/util/datetime/*.kt",
+    "src/main/java/org/oppia/android/util/extensions/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
+    "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
 android_library(
@@ -49,12 +52,16 @@ kt_android_library(
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:com_google_guava_guava",
+        "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//tools:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/threading:concurrent_collections",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
 
@@ -67,12 +74,17 @@ TEST_DEPS = [
     "//model",
     "//model:test_models",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/mockito",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_test_ext_junit",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

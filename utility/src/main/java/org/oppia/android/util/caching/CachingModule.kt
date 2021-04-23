@@ -18,10 +18,10 @@ class CachingModule {
   fun provideTopicListToCache() = listOf(FRACTIONS_TOPIC, RATIOS_TOPIC)
 
   @Provides
-  @LoadImagesFromAssets
-  fun provideLoadImagesFromAssets(): Boolean = true
+  @LoadLessonProtosFromAssets
+  fun provideLoadLessonProtosFromAssets(): Boolean = false
 
   @Provides
-  @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = true
+  @LoadImagesFromAssets
+  fun provideLoadImagesFromAssets(): Boolean = false
 }

@@ -1,6 +1,7 @@
 package org.oppia.android.domain.topic
 
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import org.oppia.android.app.model.ConceptCard
 import org.oppia.android.app.model.ConceptCardList
@@ -25,81 +26,85 @@ class ConceptCardRetriever @Inject constructor(
    * Returns a [ConceptCard] corresponding to the specified skill ID, loaded from the filesystem.
    */
   fun loadConceptCard(skillId: String): ConceptCard {
-    return if (loadLessonProtosFromAssets) {
+    val conceptCard = if (loadLessonProtosFromAssets) {
       val conceptCardList =
         assetRepository.loadProtoFromLocalAssets(
           assetName = "skills",
           baseMessage = ConceptCardList.getDefaultInstance()
         )
-      return conceptCardList.conceptCardsList.find { it.skillId == skillId }
-        ?: error("Failed to load concept card for skill: $skillId")
+      conceptCardList.conceptCardsList.find { it.skillId == skillId }
     } else loadConceptCardFromJson(skillId)
+    return conceptCard ?: error("Failed to load concept card for skill: $skillId")
   }
 
-  private fun loadConceptCardFromJson(skillId: String): ConceptCard {
-    val skillData = getSkillJsonObject(skillId)
-    if (skillData.length() <= 0) {
-      return ConceptCard.getDefaultInstance()
-    }
-    val skillContents = skillData.getJSONObject("skill_contents")
-    val workedExamplesList = createWorkedExamplesFromJson(
-      skillContents.getJSONArray(
-        "worked_examples"
+  private fun loadConceptCardFromJson(skillId: String): ConceptCard? {
+    try {
+      val skillData = getSkillJsonObject(skillId)
+      if (skillData.length() <= 0) {
+        return ConceptCard.getDefaultInstance()
+      }
+      val skillContents = skillData.getJSONObject("skill_contents")
+      val workedExamplesList = createWorkedExamplesFromJson(
+        skillContents.getJSONArray(
+          "worked_examples"
+        )
       )
-    )
 
-    val recordedVoiceoverMapping = hashMapOf<String, VoiceoverMapping>()
-    recordedVoiceoverMapping["explanation"] = createRecordedVoiceoversFromJson(
-      skillContents
-        .optJSONObject("recorded_voiceovers")
-        .optJSONObject("voiceovers_mapping")
-        .optJSONObject(
-          skillContents.optJSONObject("explanation").optString("content_id")
-        )!!
-    )
-    for (workedExample in workedExamplesList) {
-      recordedVoiceoverMapping[workedExample.contentId] = createRecordedVoiceoversFromJson(
+      val recordedVoiceoverMapping = hashMapOf<String, VoiceoverMapping>()
+      recordedVoiceoverMapping["explanation"] = createRecordedVoiceoversFromJson(
         skillContents
           .optJSONObject("recorded_voiceovers")
           .optJSONObject("voiceovers_mapping")
-          .optJSONObject(workedExample.contentId)
+          .optJSONObject(
+            skillContents.optJSONObject("explanation").optString("content_id")
+          )!!
       )
-    }
+      for (workedExample in workedExamplesList) {
+        recordedVoiceoverMapping[workedExample.contentId] = createRecordedVoiceoversFromJson(
+          skillContents
+            .optJSONObject("recorded_voiceovers")
+            .optJSONObject("voiceovers_mapping")
+            .optJSONObject(workedExample.contentId)
+        )
+      }
 
-    val writtenTranslationMapping = hashMapOf<String, TranslationMapping>()
-    writtenTranslationMapping["explanation"] = createWrittenTranslationFromJson(
-      skillContents
-        .optJSONObject("written_translations")
-        .optJSONObject("translations_mapping")
-        .optJSONObject(
-          skillContents.optJSONObject("explanation").optString("content_id")
-        )!!
-    )
-    for (workedExample in workedExamplesList) {
-      writtenTranslationMapping[workedExample.contentId] = createWrittenTranslationFromJson(
+      val writtenTranslationMapping = hashMapOf<String, TranslationMapping>()
+      writtenTranslationMapping["explanation"] = createWrittenTranslationFromJson(
         skillContents
           .optJSONObject("written_translations")
           .optJSONObject("translations_mapping")
-          .optJSONObject(workedExample.contentId)
+          .optJSONObject(
+            skillContents.optJSONObject("explanation").optString("content_id")
+          )!!
       )
-    }
+      for (workedExample in workedExamplesList) {
+        writtenTranslationMapping[workedExample.contentId] = createWrittenTranslationFromJson(
+          skillContents
+            .optJSONObject("written_translations")
+            .optJSONObject("translations_mapping")
+            .optJSONObject(workedExample.contentId)
+        )
+      }
 
-    return ConceptCard.newBuilder()
-      .setSkillId(skillData.getString("id"))
-      .setSkillDescription(skillData.getString("description"))
-      .setExplanation(
-        SubtitledHtml.newBuilder()
-          .setHtml(skillContents.getJSONObject("explanation").getString("html"))
-          .setContentId(
-            skillContents.getJSONObject("explanation").getString(
-              "content_id"
-            )
-          ).build()
-      )
-      .addAllWorkedExample(workedExamplesList)
-      .putAllWrittenTranslation(writtenTranslationMapping)
-      .putAllRecordedVoiceover(recordedVoiceoverMapping)
-      .build()
+      return ConceptCard.newBuilder()
+        .setSkillId(skillData.getString("id"))
+        .setSkillDescription(skillData.getString("description"))
+        .setExplanation(
+          SubtitledHtml.newBuilder()
+            .setHtml(skillContents.getJSONObject("explanation").getString("html"))
+            .setContentId(
+              skillContents.getJSONObject("explanation").getString(
+                "content_id"
+              )
+            ).build()
+        )
+        .addAllWorkedExample(workedExamplesList)
+        .putAllWrittenTranslation(writtenTranslationMapping)
+        .putAllRecordedVoiceover(recordedVoiceoverMapping)
+        .build()
+    } catch (e: JSONException) {
+      return null
+    }
   }
 
   private fun getSkillJsonObject(skillId: String): JSONObject {
@@ -118,15 +123,19 @@ class ConceptCardRetriever @Inject constructor(
   private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
     val workedExampleList = mutableListOf<SubtitledHtml>()
     for (i in 0 until workedExampleData.length()) {
-      workedExampleList.add(
-        SubtitledHtml.newBuilder()
-          .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
-          .setHtml(workedExampleData.getJSONObject(i).getString("html"))
-          .build()
-      )
+      val workedExampleJson = workedExampleData.getJSONObject(i)
+      // The question part of worked examples is not currently supported by the app.
+      workedExampleList += createSubtitledHtml(workedExampleJson.getJSONObject("explanation"))
     }
     return workedExampleList
   }
+
+  private fun createSubtitledHtml(
+    subtitledHtmlJson: JSONObject
+  ): SubtitledHtml = SubtitledHtml.newBuilder().apply {
+    contentId = subtitledHtmlJson.getString("content_id")
+    html = subtitledHtmlJson.getString("html")
+  }.build()
 
   private fun createWrittenTranslationFromJson(
     translationMappingJsonObject: JSONObject?
