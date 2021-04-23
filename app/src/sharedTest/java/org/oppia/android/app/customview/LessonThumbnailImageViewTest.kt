@@ -4,17 +4,15 @@ import android.app.Application
 import android.content.Intent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -27,6 +25,7 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.LessonThumbnailImageViewTestActivity
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -44,6 +43,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -54,9 +54,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.parser.ImageViewTarget
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
@@ -83,6 +81,7 @@ class LessonThumbnailImageViewTest {
       .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
+    lessonThumbnailImageView.id = R.id.lesson_thumbnail
 
     activityTestRule.runOnUiThread {
       with(lessonThumbnailImageView) {
@@ -91,11 +90,8 @@ class LessonThumbnailImageViewTest {
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
         lessonThumbnailImageViewHolder.addView(this)
 
-        verify(imageLoader, atLeastOnce()).loadDrawable(
-          imageDrawableResId = R.drawable.topic_fractions_01,
-          target = ImageViewTarget(this),
-          transformations = listOf()
-        )
+        onView(withId(lessonThumbnailImageView.id))
+          .check(matches(withDrawable(R.drawable.topic_fractions_01)))
       }
     }
   }
@@ -107,6 +103,7 @@ class LessonThumbnailImageViewTest {
       .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
+    lessonThumbnailImageView.id = R.id.lesson_thumbnail
 
     activityTestRule.runOnUiThread {
       with(lessonThumbnailImageView) {
@@ -115,11 +112,8 @@ class LessonThumbnailImageViewTest {
         setEntityType("")
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
 
-        verify(imageLoader, atLeastOnce()).loadDrawable(
-          imageDrawableResId = R.drawable.topic_fractions_01,
-          target = ImageViewTarget(this),
-          transformations = listOf()
-        )
+        onView(withId(lessonThumbnailImageView.id))
+          .check(matches(withDrawable(R.drawable.topic_fractions_01)))
       }
     }
   }
@@ -134,7 +128,7 @@ class LessonThumbnailImageViewTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
@@ -167,13 +161,5 @@ class LessonThumbnailImageViewTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  /** Provides test dependencies (including a mock for [ImageLoader] to capture its operations). */
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideMockImageLoader() = Mockito.mock(ImageLoader::class.java)
   }
 }
