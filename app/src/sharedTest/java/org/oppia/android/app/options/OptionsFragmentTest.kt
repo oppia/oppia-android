@@ -84,6 +84,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+  "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
+private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+  "AppLanguageActivity.app_language_preference_summary_value"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
+  "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+
+
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -354,7 +362,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.Companion.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -383,7 +391,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.Companion.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -411,7 +419,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -440,7 +448,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -468,7 +476,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.Companion.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
@@ -497,7 +505,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.Companion.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
