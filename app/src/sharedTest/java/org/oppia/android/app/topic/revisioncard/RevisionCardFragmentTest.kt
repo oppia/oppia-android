@@ -1,5 +1,12 @@
 package org.oppia.android.app.topic.revisioncard
 
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
+import dagger.Module
+import dagger.Provides
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
@@ -181,7 +188,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+        .check(matches(withText("What is a Fraction?")))
     }
   }
 
@@ -226,7 +233,8 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.revision_card_toolbar_title)).check(matches(withText("What is Fraction?")))
+      onView(withId(R.id.revision_card_toolbar_title))
+        .check(matches(withText("What is a Fraction?")))
     }
   }
 
@@ -378,11 +386,31 @@ class RevisionCardFragmentTest {
     text: String
   ): ClickableSpan? = find { text in it.first }?.second
 
+  @Module
+  class TestModule {
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -390,7 +418,7 @@ class RevisionCardFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
