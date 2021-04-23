@@ -17,9 +17,9 @@ message FeedbackReportingDatabase {
 // Corresponds to an entire feedback report with user reported information and collected app,
 // device, and build information.
 message FeedbackReport {
-  // The date as a Unix timestamp for when the report was created. This is an int32 for seconds instead
-  // of an int64 msec to match the backend storage datetime object.
-  int32 report_creation_timestamp_sec = 1;
+  // The date as a Unix timestamp for when the report was submitted on the Android device. This is
+  // an int32 for seconds instead of an int64 msec to match the backend storage datetime object.
+  int32 report_submission_timestamp_sec = 1;
   // The information supplied by the user in a feedback report.
   UserSuppliedFeedback user_supplied_info = 2;
   // Information collected about the user's physical device.

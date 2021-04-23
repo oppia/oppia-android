@@ -104,7 +104,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseStringAns_uppercaseStringInput_sameCaseInsensitive_answerDoesNotMatch() {
+  fun testLowercaseStringAns_uppercaseStringInput_sameCaseInsensitive_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE_INPUT_SET)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -112,7 +112,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
       inputs = inputs
     )
 
-    assertThat(matches).isFalse()
+    // The check should be case-insensitive.
+    assertThat(matches).isTrue()
   }
 
   @Test
@@ -128,7 +129,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseStringAns_uppercaseStringInput_differentStrings_answerDoesNotMatch() {
+  fun testLowercaseStringAns_uppercaseStringInput_differentStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE_INPUT_SET)
 
     val matches = inputStartsWithRuleClassifier.matches(
@@ -136,7 +137,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
       inputs = inputs
     )
 
-    assertThat(matches).isFalse()
+    // The check should be case-insensitive.
+    assertThat(matches).isTrue()
   }
 
   @Test

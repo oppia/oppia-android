@@ -1265,10 +1265,12 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.fraction)
-      .isEqualTo(Fraction.newBuilder().apply {
-        numerator = 1
-        denominator = 2
-      }.build())
+      .isEqualTo(
+        Fraction.newBuilder().apply {
+          numerator = 1
+          denominator = 2
+        }.build()
+      )
   }
 
   @Test
@@ -1542,17 +1544,21 @@ class ExplorationProgressControllerTest {
 
   private fun submitPrototypeState2Answer() {
     // Second state: Fraction input. Correct answer: 1/2.
-    submitFractionAnswer(Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
-    }.build())
+    submitFractionAnswer(
+      Fraction.newBuilder().apply {
+        numerator = 1
+        denominator = 2
+      }.build()
+    )
   }
 
   private fun submitWrongAnswerForPrototypeState2() {
-    submitFractionAnswer(Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 3
-    }.build())
+    submitFractionAnswer(
+      Fraction.newBuilder().apply {
+        numerator = 1
+        denominator = 3
+      }.build()
+    )
   }
 
   private fun submitPrototypeState3Answer() {
@@ -1577,9 +1583,11 @@ class ExplorationProgressControllerTest {
 
   private fun submitPrototypeState7Answer() {
     // Seventh state: Ratio input. Correct answer: 4:5.
-    submitRatioInputAnswer(RatioExpression.newBuilder().apply {
-      addAllRatioComponent(listOf(4, 5))
-    }.build())
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 5))
+      }.build()
+    )
   }
 
   private fun submitPrototypeState8Answer() {
@@ -1675,58 +1683,78 @@ class ExplorationProgressControllerTest {
     createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
 
   private fun createFractionAnswer(fraction: Fraction): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      this.fraction = fraction
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        this.fraction = fraction
+      }.build()
+    )
   }
 
   private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      nonNegativeInt = choiceIndex
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        nonNegativeInt = choiceIndex
+      }.build()
+    )
   }
 
   private fun createItemSelectionAnswer(contentIds: List<String>): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-        addAllContentIds(contentIds.map { choice ->
-          TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
-        })
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+          addAllContentIds(
+            contentIds.map { choice ->
+              TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
+            }
+          )
+        }.build()
       }.build()
-    }.build())
+    )
   }
 
   private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      real = numericAnswer
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        real = numericAnswer
+      }.build()
+    )
   }
 
   private fun createRatioInputAnswer(ratioExpression: RatioExpression): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      this.ratioExpression = ratioExpression
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        this.ratioExpression = ratioExpression
+      }.build()
+    )
   }
 
   private fun createTextInputAnswer(textAnswer: String): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      normalizedString = textAnswer
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        normalizedString = textAnswer
+      }.build()
+    )
   }
 
   private fun createDragAndDropAnswer(selectedChoicesLists: List<List<String>>): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      listOfSetsOfTranslatableHtmlContentIds =
-        ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
-          addAllContentIdLists(selectedChoicesLists.map { choices ->
-            SetOfTranslatableHtmlContentIds.newBuilder().apply {
-              addAllContentIds(choices.map { choice ->
-                TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
-              })
-            }.build()
-          })
-        }.build()
-    }.build())
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        listOfSetsOfTranslatableHtmlContentIds =
+          ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+            addAllContentIdLists(
+              selectedChoicesLists.map { choices ->
+                SetOfTranslatableHtmlContentIds.newBuilder().apply {
+                  addAllContentIds(
+                    choices.map { choice ->
+                      TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
+                    }
+                  )
+                }.build()
+              }
+            )
+          }.build()
+      }.build()
+    )
   }
 
   private fun createImageRegionAnswer(
@@ -1734,15 +1762,17 @@ class ExplorationProgressControllerTest {
     clickY: Float,
     clickedRegion: String
   ): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().apply {
-      clickOnImage = ClickOnImage.newBuilder().apply {
-        clickPosition = Point2d.newBuilder().apply {
-          x = clickX
-          y = clickY
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        clickOnImage = ClickOnImage.newBuilder().apply {
+          clickPosition = Point2d.newBuilder().apply {
+            x = clickX
+            y = clickY
+          }.build()
+          addClickedRegions(clickedRegion)
         }.build()
-        addClickedRegions(clickedRegion)
       }.build()
-    }.build())
+    )
   }
 
   private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
@@ -1753,7 +1783,7 @@ class ExplorationProgressControllerTest {
    * Verifies that the specified live data provides at least one successful operation. This will
    * change test-wide mock state, and synchronizes background execution.
    */
-  private fun <T: Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
+  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
     reset(mockAsyncResultLiveDataObserver)
     liveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()

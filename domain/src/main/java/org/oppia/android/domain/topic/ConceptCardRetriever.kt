@@ -149,7 +149,7 @@ class ConceptCardRetriever @Inject constructor(
       val language = languages.next()
       val translationJson = translationMappingJsonObject.optJSONObject(language)
       val translation = Translation.newBuilder()
-        .setHtml(translationJson.optString("html"))
+        .setHtml(translationJson.optString("translation"))
         .setNeedsUpdate(translationJson.optBoolean("needs_update"))
         .build()
       translationMappingBuilder.putTranslationMapping(language, translation)

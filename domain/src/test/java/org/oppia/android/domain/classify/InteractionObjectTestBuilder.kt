@@ -43,9 +43,11 @@ object InteractionObjectTestBuilder {
     vararg contentIds: String
   ): InteractionObject = InteractionObject.newBuilder().apply {
     setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-      addAllContentIds(contentIds.map { contentId ->
-        TranslatableHtmlContentId.newBuilder().apply { this.contentId = contentId }.build()
-      })
+      addAllContentIds(
+        contentIds.map { contentId ->
+          TranslatableHtmlContentId.newBuilder().apply { this.contentId = contentId }.build()
+        }
+      )
     }.build()
   }.build()
 
@@ -54,13 +56,19 @@ object InteractionObjectTestBuilder {
   ): InteractionObject = InteractionObject.newBuilder().apply {
     listOfSetsOfTranslatableHtmlContentIds =
       ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
-        addAllContentIdLists(contentIdsLists.map { contentIds ->
-          SetOfTranslatableHtmlContentIds.newBuilder().apply {
-            addAllContentIds(contentIds.map { contentId ->
-              TranslatableHtmlContentId.newBuilder().apply { this.contentId = contentId }.build()
-            })
-          }.build()
-        })
+        addAllContentIdLists(
+          contentIdsLists.map { contentIds ->
+            SetOfTranslatableHtmlContentIds.newBuilder().apply {
+              addAllContentIds(
+                contentIds.map { contentId ->
+                  TranslatableHtmlContentId.newBuilder().apply {
+                    this.contentId = contentId
+                  }.build()
+                }
+              )
+            }.build()
+          }
+        )
       }.build()
   }.build()
 
