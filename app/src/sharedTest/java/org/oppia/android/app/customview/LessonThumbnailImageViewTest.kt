@@ -2,7 +2,7 @@ package org.oppia.android.app.customview
 
 import android.app.Application
 import android.content.Intent
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -80,7 +80,7 @@ class LessonThumbnailImageViewTest {
   fun callDataBindingFunctions_thenInflateView_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
     val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
+      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
 
@@ -104,7 +104,7 @@ class LessonThumbnailImageViewTest {
   fun inflateView_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
     val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<LinearLayout>(R.id.lesson_thumbnail_image_view_holder)
+      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
 

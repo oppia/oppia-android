@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
+/** Test-only activity for verifying behaviors of LessonThumbnailImageView. */
 class LessonThumbnailImageViewTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
