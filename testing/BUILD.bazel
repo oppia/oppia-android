@@ -12,6 +12,7 @@ load("//testing:testing_test.bzl", "testing_test")
 # globs here to ensure new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/testing/mockito/*.kt",
     "src/main/java/org/oppia/android/testing/robolectric/*.kt",
     "src/main/java/org/oppia/android/testing/threading/*.kt",
     "src/main/java/org/oppia/android/testing/time/*.kt",
