@@ -90,7 +90,7 @@ concept_cards {
 }
 concept_cards {
   skill_id: "test_skill_id_2"
-  skill_description: "A different skill in a different topic Another important skill"
+  skill_description: "A different skill in a different topic"
   explanation {
     html: "Explanation without rich text."
     content_id: "explanation"
@@ -236,7 +236,7 @@ concept_cards {
 }
 concept_cards {
   skill_id: "NGZ89uMw0IGV"
-  skill_description: "Ratios Skill 1"
+  skill_description: "Derive a ratio from a description or a picture"
   explanation {
     html: "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let\'s say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
     content_id: "explanation"
