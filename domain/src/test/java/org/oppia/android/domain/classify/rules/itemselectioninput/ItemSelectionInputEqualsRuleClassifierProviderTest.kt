@@ -18,6 +18,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [ItemsSelectionInputEqualsRuleClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
