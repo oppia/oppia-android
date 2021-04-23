@@ -105,6 +105,7 @@ TEST_DEPS = [
     ":domain",
     ":interaction_object_test_builder",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//model",
     "//testing",
