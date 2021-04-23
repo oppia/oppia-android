@@ -6,7 +6,12 @@ import android.content.Context
 
 /** Returns the current app version name. */
 fun Context.getVersionName(): String {
-  return this.packageManager.getPackageInfo(this.packageName, /* flags=*/ 0).versionName
+  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionName
+}
+
+/** Returns the current app version code. */
+fun Context.getVersionCode(): Int {
+  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionCode
 }
 
 /** Returns the time at which the app was last updated. */
