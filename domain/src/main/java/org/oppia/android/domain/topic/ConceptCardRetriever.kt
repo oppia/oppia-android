@@ -123,15 +123,19 @@ class ConceptCardRetriever @Inject constructor(
   private fun createWorkedExamplesFromJson(workedExampleData: JSONArray): List<SubtitledHtml> {
     val workedExampleList = mutableListOf<SubtitledHtml>()
     for (i in 0 until workedExampleData.length()) {
-      workedExampleList.add(
-        SubtitledHtml.newBuilder()
-          .setContentId(workedExampleData.getJSONObject(i).getString("content_id"))
-          .setHtml(workedExampleData.getJSONObject(i).getString("html"))
-          .build()
-      )
+      val workedExampleJson = workedExampleData.getJSONObject(i)
+      // The question part of worked examples is not currently supported by the app.
+      workedExampleList += createSubtitledHtml(workedExampleJson.getJSONObject("explanation"))
     }
     return workedExampleList
   }
+
+  private fun createSubtitledHtml(
+    subtitledHtmlJson: JSONObject
+  ): SubtitledHtml = SubtitledHtml.newBuilder().apply {
+    contentId = subtitledHtmlJson.getString("content_id")
+    html = subtitledHtmlJson.getString("html")
+  }.build()
 
   private fun createWrittenTranslationFromJson(
     translationMappingJsonObject: JSONObject?
