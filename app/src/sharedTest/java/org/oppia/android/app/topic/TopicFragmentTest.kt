@@ -1,5 +1,9 @@
 package org.oppia.android.app.topic
 
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import org.hamcrest.CoreMatchers.not
+import dagger.Module
+import dagger.Provides
 import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -111,8 +115,6 @@ class TopicFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
@@ -121,12 +123,9 @@ class TopicFragmentTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
@@ -135,6 +134,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnToolbarNavigationButton_closeActivity() {
+    initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -147,6 +147,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_container)).perform(click()).check(matches(isDisplayed()))
     }
@@ -154,6 +155,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
@@ -163,6 +165,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withText(TopicTab.getTabForPosition(position = 0, enablePracticeTab).name)).check(
         matches(
@@ -178,6 +181,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
@@ -185,6 +189,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
@@ -197,6 +202,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabSelected() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = LESSON_TAB_POSITION)
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
@@ -205,6 +211,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
@@ -219,7 +226,39 @@ class TopicFragmentTest {
   }
 
   @Test
+  fun testTopicFragment_practiceTabEnabled_practiceTopicTabIsDisplayedInTabLayout() {
+    initializeApplicationComponent(practiceTabIsEnabled = true)
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      val practiceTab =
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab)
+      onView(withText(practiceTab.name)).check(
+        matches(
+          isDescendantOfA(
+            withId(
+              R.id.topic_tabs_container
+            )
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicFragment_practiceTabDisabled_practiceTopicTabIsNotDisplayedInTabLayout() {
+    initializeApplicationComponent(practiceTabIsEnabled = false)
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      // Unconditionally retrieve the practice tab name since this test is verifying that it's not
+      // enabled.
+      val practiceTab =
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab = true)
+      onView(withText(practiceTab.name)).check(doesNotExist())
+    }
+
+  }
+
+  @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
@@ -228,6 +267,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -243,6 +283,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
@@ -251,6 +292,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -266,6 +308,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTab() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
       clickTabAtPosition(position = INFO_TAB_POSITION)
@@ -275,6 +318,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -291,6 +335,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnLessonsTab_configChange_showsSameTabAndItsContent() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
@@ -308,6 +353,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -332,6 +378,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -349,6 +396,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_configChange_showsDefaultTabAndItsContent() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -365,6 +413,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    initializeApplicationComponent()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
       FRACTIONS_TOPIC_ID,
@@ -481,11 +530,36 @@ class TopicFragmentTest {
     )
   }
 
+  private fun initializeApplicationComponent(practiceTabIsEnabled: Boolean = true) {
+    TestModule.checkIfPracticeTabIsEnabled = { practiceTabIsEnabled }
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Module
+  class TestModule {
+    companion object {
+      // Note that a lambda is used here since primitive types (like booleans) can't be lateinit,
+      // and defaulting the boolean can inadvertently enable actual state in the test (i.e. both
+      // 'true' and 'false' mean something other than "not yet initialized").
+      lateinit var checkIfPracticeTabIsEnabled: () -> Boolean
+    }
+
+    @Provides
+    @EnablePracticeTab
+    @Singleton
+    fun provideEnablePracticeTab(): Boolean = checkIfPracticeTabIsEnabled()
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -498,7 +572,7 @@ class TopicFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
