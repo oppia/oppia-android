@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data></data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/stories_heading"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="16dp"
+      android:fontFamily="sans-serif-medium"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="Fractions" />
+
+    <TextView
+      android:id="@+id/textView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      android:fontFamily="sans-serif"
+      android:text="Download is paused"
+      android:textColor="@color/accessible_light_grey"
+      android:textSize="14sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="@+id/stories_heading"
+      app:layout_constraintTop_toBottomOf="@+id/stories_heading" />
+
+    <View
+      android:id="@+id/view_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="8dp"
+      android:background="#EEEEEE"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView"
+      app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+      android:id="@+id/play_state_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="32dp"
+      android:src="@drawable/ic_resume"
+      app:layout_constraintBottom_toBottomOf="@+id/play_state_text"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/play_state_text" />
+
+    <TextView
+      android:id="@+id/play_state_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="20dp"
+      android:layout_marginTop="26dp"
+      android:fontFamily="sans-serif"
+      android:text="Resume"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toEndOf="@+id/play_state_icon"
+      app:layout_constraintTop_toBottomOf="@+id/view_divider" />
+
+    <ImageView
+      android:id="@+id/remove_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_delete"
+      app:layout_constraintBottom_toBottomOf="@+id/remove_download_text"
+      app:layout_constraintStart_toStartOf="@+id/play_state_icon"
+      app:layout_constraintTop_toTopOf="@+id/remove_download_text" />
+
+    <TextView
+      android:id="@+id/remove_download_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="20dp"
+      android:layout_marginTop="26dp"
+      android:fontFamily="sans-serif"
+      android:text="Remove Download"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toEndOf="@+id/remove_icon"
+      app:layout_constraintTop_toBottomOf="@+id/play_state_text" />
+
+    <ImageView
+      android:id="@+id/close_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_close"
+      app:layout_constraintBottom_toBottomOf="@+id/close_text"
+      app:layout_constraintStart_toStartOf="@+id/play_state_icon"
+      app:layout_constraintTop_toTopOf="@+id/close_text" />
+
+    <TextView
+      android:id="@+id/close_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="20dp"
+      android:layout_marginTop="26dp"
+      android:layout_marginBottom="26dp"
+      android:fontFamily="sans-serif"
+      android:text="Close"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toEndOf="@+id/close_icon"
+      app:layout_constraintTop_toBottomOf="@+id/remove_download_text" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

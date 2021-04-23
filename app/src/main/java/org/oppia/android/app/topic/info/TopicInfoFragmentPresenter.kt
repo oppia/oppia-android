@@ -215,11 +215,16 @@ class TopicInfoFragmentPresenter @Inject constructor(
         deviceSettingsDownloadAccessLiveData.observe(
           fragment,
           Observer<Boolean> { allowDownloadAndUpdateOnlyOnWifi ->
-            if (!allowDownloadAccess) {
+            TopicInfoDownloadBottomSheetDialogFragment.newInstance(
+              "Fractions"
+            ).apply {
+              show(fragment.parentFragmentManager, "tag")
+            }
+            /*if (!allowDownloadAccess) {
               // ask for admin pin
             } else {
               checkNetworkConnection(allowDownloadAndUpdateOnlyOnWifi)
-            }
+            }*/
           }
         )
       }
