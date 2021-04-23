@@ -139,7 +139,9 @@ class SplashActivityTest {
   fun testOpenApp_initial_expirationEnabled_beforeExpDate_intentsToOnboardingFlow() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
-    setAutoAppExpirationDate(dateStringAfterToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringAfterToday()
+    )
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -152,7 +154,9 @@ class SplashActivityTest {
   fun testOpenApp_initial_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
-    setAutoAppExpirationDate(dateStringBeforeToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringBeforeToday()
+    )
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -167,7 +171,9 @@ class SplashActivityTest {
   fun testOpenApp_initial_expirationEnabled_afterExpDate_clickOnCloseDialog_endsActivity() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
-    setAutoAppExpirationDate(dateStringBeforeToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringBeforeToday()
+    )
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -184,7 +190,9 @@ class SplashActivityTest {
   fun testOpenApp_initial_expirationDisabled_afterExpDate_intentsToOnboardingFlow() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = false)
-    setAutoAppExpirationDate(dateStringBeforeToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringBeforeToday()
+    )
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -199,7 +207,9 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
-    setAutoAppExpirationDate(dateStringAfterToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringAfterToday()
+    )
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -214,7 +224,9 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
-    setAutoAppExpirationDate(dateStringBeforeToday())
+    setAutoAppExpirationDate(
+      dateString = dateStringBeforeToday()
+    )
 
     activityTestRule.launchActivity(null)
     testCoroutineDispatchers.advanceUntilIdle()
