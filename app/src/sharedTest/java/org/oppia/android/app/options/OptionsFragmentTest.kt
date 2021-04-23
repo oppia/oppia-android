@@ -91,7 +91,6 @@ private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
 private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
   "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
 
-
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
