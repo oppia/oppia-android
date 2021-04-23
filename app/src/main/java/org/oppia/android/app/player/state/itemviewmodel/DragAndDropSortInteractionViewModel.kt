@@ -95,7 +95,6 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-
     val item = _choiceItems[indexFrom]
     _choiceItems.removeAt(indexFrom)
     _choiceItems.add(indexTo, item)

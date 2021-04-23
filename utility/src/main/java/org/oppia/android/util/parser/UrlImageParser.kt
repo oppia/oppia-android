@@ -22,7 +22,6 @@ import javax.inject.Inject
 import kotlin.math.max
 
 // TODO(#169): Replace this with exploration asset downloader.
-// TODO(#277): Add test cases for loading image.
 
 /** UrlImage Parser for android TextView to load Html Image tag. */
 class UrlImageParser private constructor(
@@ -42,17 +41,18 @@ class UrlImageParser private constructor(
     return loadDrawable(urlString, ImageRetriever.Type.BLOCK_IMAGE)
   }
 
-  override fun loadDrawable(sourceUrl: String, type: ImageRetriever.Type): Drawable {
-    val imagePath = String.format(imageDownloadUrlTemplate, entityType, entityId, sourceUrl)
+  override fun loadDrawable(filename: String, type: ImageRetriever.Type): Drawable {
+    val imagePath = String.format(imageDownloadUrlTemplate, entityType, entityId, filename)
     val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
     val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     val isSvg = imageUrl.endsWith("svg", ignoreCase = true)
     val adjustedType = if (type == ImageRetriever.Type.INLINE_TEXT_IMAGE && !isSvg) {
       // Treat non-svg in-line images as block, instead, since only SVG is supported.
-      consoleLogger.w("UrlImageParser", "Forcing image $sourceUrl to block image")
+      consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
       ImageRetriever.Type.BLOCK_IMAGE
     } else type
+
     return when (adjustedType) {
       ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
         imageLoader.loadTextSvg(
@@ -117,10 +117,7 @@ class UrlImageParser private constructor(
       val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
-          val boundsAndAlignment = computeBounds(drawable, viewWidth)
-          proxyDrawable.initialize(
-            drawable, boundsAndAlignment.bounds, boundsAndAlignment.verticalAlignment
-          )
+          proxyDrawable.initialize(drawable, computeBounds(drawable, viewWidth))
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
         }
@@ -134,7 +131,7 @@ class UrlImageParser private constructor(
      * Returns the bounds and/or alignment of the specified drawable, given the current text view's
      * width.
      */
-    protected abstract fun computeBounds(drawable: D, viewWidth: Int): BoundsAndAlignment
+    protected abstract fun computeBounds(drawable: D, viewWidth: Int): Rect
 
     /**
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
@@ -144,7 +141,7 @@ class UrlImageParser private constructor(
       targetConfiguration: TargetConfiguration
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
-      override fun computeBounds(drawable: D, viewWidth: Int): BoundsAndAlignment {
+      override fun computeBounds(drawable: D, viewWidth: Int): Rect {
         val layoutParams = htmlContentTextView.layoutParams
         val maxAvailableWidth = if (layoutParams.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
           // Assume that wrap_content cases means that the view cannot exceed its parent's width
@@ -186,10 +183,10 @@ class UrlImageParser private constructor(
           // be 200.
           val multipleFactor = if (drawableHeight >= drawableWidth) {
             // If height is greater then the width, multipleFactor value is determined by height.
-            (maximumImageSize.toFloat() / drawableHeight.toFloat())
+            (maximumImageSize.toFloat() / drawableHeight)
           } else {
             // If height is greater then the width, multipleFactor value is determined by width.
-            (maximumImageSize.toFloat() / drawableWidth.toFloat())
+            (maximumImageSize.toFloat() / drawableWidth)
           }
           drawableHeight *= multipleFactor
           drawableWidth *= multipleFactor
@@ -202,10 +199,8 @@ class UrlImageParser private constructor(
         val drawableTop = 0f
         val drawableRight = drawableLeft + drawableWidth
         val drawableBottom = drawableTop + drawableHeight
-        return BoundsAndAlignment(
-          bounds = Rect(
-            drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
-          )
+        return Rect(
+          drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
         )
       }
 
@@ -250,13 +245,9 @@ class UrlImageParser private constructor(
       override fun computeBounds(
         drawable: TextPictureDrawable,
         viewWidth: Int
-      ): BoundsAndAlignment {
+      ): Rect {
         drawable.computeTextPicture(htmlContentTextView.paint)
-        val (drawableWidth, drawableHeight, verticalAlignment) = drawable.getIntrinsicSize()
-        return BoundsAndAlignment(
-          bounds = Rect(0, 0, drawableWidth.toInt(), drawableHeight.toInt()),
-          verticalAlignment = verticalAlignment
-        )
+        return Rect(/* left= */ 0, /* top= */ 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
       }
 
       companion object {
@@ -264,18 +255,6 @@ class UrlImageParser private constructor(
         fun create(targetConfiguration: TargetConfiguration) = TextSvgTarget(targetConfiguration)
       }
     }
-
-    /** Temporary structure to convey both bounds and alignment for a loaded drawable. */
-    protected data class BoundsAndAlignment(
-      /** The bounds in which the drawable should be displayed and positioned. */
-      val bounds: Rect,
-      /**
-       * Any vertical adjustments that should be made to the drawable. Note that this is
-       * intentionally separate from [bounds] so that the system is free to change bounds, if
-       * needed, for alignment.
-       */
-      val verticalAlignment: Float = 0f
-    )
 
     /**
      * Configures a [AutoAdjustingImageTarget]. See the specified parameters for what needs to be
@@ -299,20 +278,17 @@ class UrlImageParser private constructor(
    */
   private class ProxyDrawable : Drawable() {
     private var drawable: Drawable? = null
-    private var verticalAlignment: Float = 0f
 
-    fun initialize(drawable: Drawable, bounds: Rect, verticalAlignment: Float) {
+    /** Initializes the drawable with the specified root [Drawable] and [bounds]. */
+    fun initialize(drawable: Drawable, bounds: Rect) {
       this.drawable = drawable
       this.bounds = bounds
-      this.verticalAlignment = verticalAlignment
     }
 
     override fun draw(canvas: Canvas) {
       val currentDrawable = drawable
       drawable?.apply {
         bounds = this@ProxyDrawable.bounds
-        bounds.top += verticalAlignment.toInt()
-        bounds.bottom += verticalAlignment.toInt()
       }
       currentDrawable?.draw(canvas)
     }
@@ -331,6 +307,7 @@ class UrlImageParser private constructor(
     }
   }
 
+  /** Factory to create new [UrlImageParser]s. This is injectable in any component. */
   class Factory @Inject constructor(
     private val context: Context,
     @DefaultGcsPrefix private val gcsPrefix: String,
@@ -338,6 +315,20 @@ class UrlImageParser private constructor(
     private val imageLoader: ImageLoader,
     private val consoleLogger: ConsoleLogger
   ) {
+    /**
+     * Creates a new [UrlImageParser] based on the specified settings.
+     *
+     * @param htmlContentTextView the [TextView] that will contain [Drawable]s loaded by the
+     *     returned [UrlImageParser]. The [TextView]'s paint and size settings will affect the
+     *     drawable (which means text resizing or other layout changes may cause slight "jittering"
+     *     effects as images are automatically adjusted in subsequent layout & draw steps after the
+     *     [TextView] changes).
+     * @param gcsResourceName the GCS resource bucket that should be used when loading images
+     * @param entityType the entity type corresponding to loaded images (such as explorations)
+     * @param entityId the ID of the entity for retrieving images (such as an exploration ID)
+     * @param imageCenterAlign whether to center-align block images within the [TextView]
+     * @return the new [UrlImageParser] configured with the provided parameters
+     */
     fun create(
       htmlContentTextView: TextView,
       gcsResourceName: String,

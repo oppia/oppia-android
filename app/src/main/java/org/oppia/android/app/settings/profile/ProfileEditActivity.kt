@@ -8,6 +8,8 @@ import javax.inject.Inject
 
 const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
 const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
+const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
+  "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
 /** Activity that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
@@ -30,7 +32,7 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    profileEditActivityPresenter.handleOnCreate()
+    profileEditActivityPresenter.handleOnCreate(savedInstanceState)
   }
 
   override fun onSupportNavigateUp(): Boolean {
@@ -54,5 +56,10 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       startActivity(intent)
     }
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    profileEditActivityPresenter.handleOnSaveInstanceState(outState)
   }
 }

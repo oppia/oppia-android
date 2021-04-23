@@ -9,7 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import java.io.InputStream
 
 /** Decodes an SVG internal representation from an {@link InputStream}. */
-class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
+class SvgDecoder : ResourceDecoder<InputStream?, ScalableVectorGraphic?> {
 
   override fun handles(source: InputStream, options: Options): Boolean =
     options.get(LOAD_OPPIA_SVG) ?: false
@@ -19,17 +19,22 @@ class SvgDecoder : ResourceDecoder<InputStream?, OppiaSvg?> {
     width: Int,
     height: Int,
     options: Options
-  ): Resource<OppiaSvg?> {
+  ): Resource<ScalableVectorGraphic?> {
     val svgSource = source.bufferedReader().readLines().joinToString(separator = "\n")
-    return SimpleResource(OppiaSvg(svgSource))
+    return SimpleResource(ScalableVectorGraphic(svgSource))
   }
 
   companion object {
     // Reference: https://stackoverflow.com/q/54360199.
-    val LOAD_OPPIA_SVG: Option<Boolean> =
+    private val LOAD_OPPIA_SVG: Option<Boolean> =
       Option.memory(/* key= */ "load_oppia_svg", /* defaultValue= */ false)
 
-    fun createLoadOppiaSvgOption(): RequestOptions =
+    /**
+     * Returns a [RequestOptions] that, when applied to a Glide request, ensures that the input
+     * stream for that request is interpreted as an SVG. This must be used in SVG-based requests or
+     * they will not be loaded correctly.
+     */
+    fun createLoadSvgFromPipelineOption(): RequestOptions =
       RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
   }
 }

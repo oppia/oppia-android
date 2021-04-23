@@ -31,6 +31,6 @@ class TextInputContainsRuleClassifierProvider @Inject constructor(
 
   override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
     val normalizedAnswer = answer.normalizeWhitespace()
-    return input.normalizedStringsList.any { it.normalizeWhitespace().contains(normalizedAnswer) }
+    return input.normalizedStringsList.any { normalizedAnswer.contains(it.normalizeWhitespace()) }
   }
 }
