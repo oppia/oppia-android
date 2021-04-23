@@ -195,9 +195,11 @@ class StateRetriever @Inject constructor() {
     return voiceoverMappingJson.keys().asSequence().associateWith { contentId ->
       val voiceoverJson = voiceoverMappingJson.getJSONObject(contentId)
       VoiceoverMapping.newBuilder().apply {
-        putAllVoiceoverMapping(voiceoverJson.keys().asSequence().associateWith { languageCode ->
-          createVoiceoverFromJson(voiceoverJson.getJSONObject(languageCode))
-        })
+        putAllVoiceoverMapping(
+          voiceoverJson.keys().asSequence().associateWith { languageCode ->
+            createVoiceoverFromJson(voiceoverJson.getJSONObject(languageCode))
+          }
+        )
       }.build()
     }
   }
@@ -214,9 +216,11 @@ class StateRetriever @Inject constructor() {
     val inputJsonObject = ruleSpecJson.getJSONObject("inputs")
     return RuleSpec.newBuilder().apply {
       ruleType = ruleSpecJson.getString("rule_type")
-      putAllInput(inputJsonObject.keys().asSequence().associateWith { inputName ->
-        createExactInputFromJson(inputJsonObject, inputName, interactionId, ruleType)
-      })
+      putAllInput(
+        inputJsonObject.keys().asSequence().associateWith { inputName ->
+          createExactInputFromJson(inputJsonObject, inputName, interactionId, ruleType)
+        }
+      )
     }.build()
   }
 

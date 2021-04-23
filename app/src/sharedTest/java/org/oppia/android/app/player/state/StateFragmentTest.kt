@@ -1471,7 +1471,10 @@ class StateFragmentTest {
   }
 
   private fun clickSelection(
-    optionPosition: Int, targetClickViewId: Int, expectedText: String, targetTextViewId: Int
+    optionPosition: Int,
+    targetClickViewId: Int,
+    expectedText: String,
+    targetTextViewId: Int
   ) {
     scrollToViewType(SELECTION_INTERACTION)
     onView(
