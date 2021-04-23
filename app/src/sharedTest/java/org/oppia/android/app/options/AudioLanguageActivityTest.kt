@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import org.oppia.android.app.topic.PracticeTabModule
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -122,7 +123,7 @@ class AudioLanguageActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
