@@ -552,6 +552,37 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testOnboardingFragment_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_moveToSlide2_bottomDots_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
@@ -559,7 +590,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3)
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
           )
         )
       )
@@ -575,7 +606,7 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3)
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
           )
         )
       )
