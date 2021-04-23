@@ -25,7 +25,7 @@ public final class ConstraintLayoutAdapters {
     ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
     ConstraintSet constraintSet = new ConstraintSet();
     constraintSet.clone(constraintLayout);
-    if(constraintToId == ConstraintSet.UNSET) {
+    if (constraintToId == ConstraintSet.UNSET) {
       constraintSet.clear(constraintToId);
     } else {
       constraintSet.connect(view.getId(), ConstraintSet.BOTTOM, constraintToId, ConstraintSet.TOP);
