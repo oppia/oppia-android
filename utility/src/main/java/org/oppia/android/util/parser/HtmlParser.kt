@@ -30,6 +30,7 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { BulletTagHandler() }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
+  private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -84,6 +85,7 @@ class HtmlParser private constructor(
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
+    handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }

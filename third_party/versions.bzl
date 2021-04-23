@@ -43,7 +43,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
     "com.android.support:support-annotations": "28.0.0",
-    "com.caverock:androidsvg-aar": "1.4",
     "com.chaos.view:pinview": "1.4.4",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",

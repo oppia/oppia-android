@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
+import org.xml.sax.helpers.AttributesImpl
 import kotlin.reflect.KClass
 
 /** Tests for [CustomHtmlContentHandler]. */
@@ -164,8 +165,81 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
   }
 
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valueMissing_returnsNull() {
+    val attributes = AttributesImpl()
+
+    val value = attributes.getJsonStringValue("missing_attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valuePresent_returnsValue() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "value")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isEqualTo("value")
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valueWithEscapedQuotes_returnsValueWithoutQuotes() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;value&quot;")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isEqualTo("value")
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_valueMissing_returnsNull() {
+    val attributes = AttributesImpl()
+
+    val value = attributes.getJsonObjectValue("missing_attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_invalidJson_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "{")
+
+    val value = attributes.getJsonObjectValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_quotedAndEscapedJson_returnsValidJsonObject() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(
+      name = "attrib",
+      value = "{&quot;key&quot;:&quot;value with \\\\frac{1}{2}&quot;}"
+    )
+
+    val jsonObject = attributes.getJsonObjectValue("attrib")
+
+    assertThat(jsonObject).isNotNull()
+    assertThat(jsonObject?.has("key")).isTrue()
+    assertThat(jsonObject?.getString("key")).isEqualTo("value with \\frac{1}{2}")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
+
+  private fun AttributesImpl.addAttribute(name: String, value: String) {
+    addAttribute(
+      /* uri= */ null,
+      /* localName= */ null,
+      /* qName= */ name,
+      /* type= */ "string",
+      value
+    )
+  }
 
   private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false

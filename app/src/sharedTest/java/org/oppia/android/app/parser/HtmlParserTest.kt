@@ -67,6 +67,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -79,10 +80,10 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.CustomBulletSpan
-import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParser
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -108,6 +109,9 @@ class HtmlParserTest {
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Inject
   @field:DefaultResourceBucketName
@@ -152,6 +156,7 @@ class HtmlParserTest {
           "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
         textView
       )
+      textView.text = htmlResult
       return@runWithActivity textView to htmlResult
     }
     assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
@@ -285,6 +290,56 @@ class HtmlParserTest {
     // Verify that the image span does not start/end with a space since there is other text present.
     assertThat(htmlResult.toString()).startsWith("A")
     assertThat(htmlResult.toString()).doesNotContain(" ")
+  }
+
+  @Test
+  fun testHtmlContent_withPngImage_loadsBitmap() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    val loadedBitmaps = testGlideImageLoader.getLoadedBitmaps()
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBitmaps.first()).contains("test.png")
+  }
+
+  @Test
+  fun testHtmlContent_withSvgImage_loadsBlockSvg() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "A<oppia-noninteractive-image filepath-with-value=\"test.svg\">" +
+          "</oppia-noninteractive-image>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    val loadedBlockImages = testGlideImageLoader.getLoadedBlockSvgs()
+    assertThat(loadedBlockImages).hasSize(1)
+    assertThat(loadedBlockImages.first()).contains("test.svg")
   }
 
   @Test
@@ -422,6 +477,33 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
   }
 
+  @Test
+  fun testHtmlContent_withMathTag_loadsTextSvg() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-math math_content-with-value=\"{" +
+          "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;,&amp;quot;" +
+          "svg_filename&amp;quot;:&amp;quot;math_image1.svg&amp;quot;}\">" +
+          "</oppia-noninteractive-math>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    val loadedInlineImages = testGlideImageLoader.getLoadedTextSvgs()
+    assertThat(loadedInlineImages).hasSize(1)
+    assertThat(loadedInlineImages.first()).contains("math_image1.svg")
+  }
+
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
   ): Int {
@@ -463,7 +545,7 @@ class HtmlParserTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,

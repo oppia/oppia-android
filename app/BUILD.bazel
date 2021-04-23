@@ -634,7 +634,7 @@ kt_android_library(
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",

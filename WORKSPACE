@@ -120,6 +120,14 @@ git_repository(
     remote = "https://github.com/oppia/CircularImageview",
 )
 
+# A custom version of Android SVG is needed since custom changes needed to be added to the library
+# to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
+git_repository(
+    name = "androidsvg",
+    commit = "6bd15f69caee3e6857fcfcd123023716b4adec1d",
+    remote = "https://github.com/oppia/androidsvg",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
@@ -136,6 +144,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    fetch_sources = True,
     repositories = DAGGER_REPOSITORIES + [
         "https://bintray.com/bintray/jcenter",
         "https://jcenter.bintray.com/",

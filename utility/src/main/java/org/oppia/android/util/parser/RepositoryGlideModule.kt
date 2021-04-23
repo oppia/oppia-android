@@ -1,12 +1,10 @@
 package org.oppia.android.util.parser
 
 import android.content.Context
-import android.graphics.drawable.PictureDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
-import com.caverock.androidsvg.SVG
 import org.oppia.android.util.caching.AssetRepository
 import java.io.InputStream
 
@@ -15,12 +13,22 @@ import java.io.InputStream
 class RepositoryGlideModule : AppGlideModule() {
   override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    registry.register(SVG::class.java, PictureDrawable::class.java, SvgDrawableTranscoder())
-      .append(InputStream::class.java, SVG::class.java, SvgDecoder())
-      .append(
-        ImageAssetFetcher::class.java,
-        InputStream::class.java,
-        RepositoryModelLoader.Factory()
-      )
+    registry.register(
+      ScalableVectorGraphic::class.java,
+      TextPictureDrawable::class.java,
+      TextSvgDrawableTranscoder()
+    )
+    registry.register(
+      ScalableVectorGraphic::class.java,
+      BlockPictureDrawable::class.java,
+      BlockSvgDrawableTranscoder()
+    )
+
+    registry.append(InputStream::class.java, ScalableVectorGraphic::class.java, SvgDecoder())
+    registry.append(
+      ImageAssetFetcher::class.java,
+      InputStream::class.java,
+      RepositoryModelLoader.Factory()
+    )
   }
 }
