@@ -638,9 +638,9 @@ kt_android_library(
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
-        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )
 
