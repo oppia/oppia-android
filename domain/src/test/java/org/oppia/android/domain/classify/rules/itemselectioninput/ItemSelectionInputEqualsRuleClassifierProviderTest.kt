@@ -9,8 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfHtmlString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -18,26 +17,20 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [ItemSelectionInputEqualsRuleClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class ItemsSelectionInputEqualsRuleClassifierProviderTest {
+class ItemSelectionInputEqualsRuleClassifierProviderTest {
 
-  private val TEST_HTML_STRING_SET_LOWERCASE = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("item ab")
-  )
-  private val TEST_HTML_STRING_SET_UPPERCASE = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("item AB")
-  )
-  private val TEST_HTML_STRING_SET_MIXED_LOWERCASE = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("item Aa ")
-  )
-  private val TEST_HTML_STRING_SET_MIXED_UPPERCASE = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("item Bb")
-  )
-  private val NON_NEGATIVE_VALUE_3 = createSetOfHtmlString(
-    InteractionObjectTestBuilder.createHtmlStringList("3AB")
-  )
+  private val TEST_HTML_STRING_SET_LOWERCASE = createSetOfTranslatableHtmlContentIds("item ab")
+  private val TEST_HTML_STRING_SET_UPPERCASE = createSetOfTranslatableHtmlContentIds("item AB")
+  private val TEST_HTML_STRING_SET_MIXED_LOWERCASE =
+    createSetOfTranslatableHtmlContentIds("item Aa ")
+  private val TEST_HTML_STRING_SET_MIXED_UPPERCASE =
+    createSetOfTranslatableHtmlContentIds("item Bb")
+  private val NON_NEGATIVE_VALUE_3 = createSetOfTranslatableHtmlContentIds("3AB")
 
   @Inject
   internal lateinit var itemSelectionInputEqualsRuleClassifierProvider:
@@ -173,7 +166,7 @@ class ItemsSelectionInputEqualsRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerItemsSelectionInputEqualsRuleClassifierProviderTest_TestApplicationComponent
+    DaggerItemSelectionInputEqualsRuleClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
@@ -191,6 +184,6 @@ class ItemsSelectionInputEqualsRuleClassifierProviderTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: ItemsSelectionInputEqualsRuleClassifierProviderTest)
+    fun inject(test: ItemSelectionInputEqualsRuleClassifierProviderTest)
   }
 }
