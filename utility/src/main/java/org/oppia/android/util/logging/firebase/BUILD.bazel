@@ -12,7 +12,6 @@ kt_android_library(
         "FirebaseExceptionLogger.kt",
         "FirebaseLogUploader.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//model:event_logger_java_proto_lite",
         "//third_party:androidx_work_work-runtime",
