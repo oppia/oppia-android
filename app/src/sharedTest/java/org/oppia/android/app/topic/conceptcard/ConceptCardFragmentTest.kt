@@ -19,6 +19,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
@@ -57,11 +59,15 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -243,11 +249,31 @@ class ConceptCardFragmentTest {
     }
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -255,7 +281,7 @@ class ConceptCardFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
