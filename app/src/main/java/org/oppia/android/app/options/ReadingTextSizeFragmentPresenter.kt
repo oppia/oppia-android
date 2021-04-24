@@ -35,8 +35,9 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
     readingTextSizeSelectionViewModel.selectedTextSize.value = fontSize
 
     binding.readingTextSizeToolbar?.setNavigationOnClickListener {
+      val message = readingTextSizeSelectionViewModel.selectedTextSize.value
       val intent = Intent()
-      intent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, fontSize)
+      intent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, message)
       (fragment.activity as ReadingTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)
       (fragment.activity as ReadingTextSizeActivity).finish()
     }
@@ -61,13 +62,17 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       ).build()
   }
 
-  fun updateTextSize(textSize: String) {
+  private fun updateTextSize(textSize: String) {
     // The first branch of (when) will be used in the case of multipane
-    readingTextSizeSelectionViewModel.selectedTextSize.value = textSize
     when (val parentActivity = fragment.activity) {
       is OptionsActivity -> parentActivity.optionActivityPresenter.updateReadingTextSize(textSize)
       is ReadingTextSizeActivity ->
         parentActivity.readingTextSizeActivityPresenter.setSelectedReadingTextSize(textSize)
     }
+  }
+
+  fun onTextSizeSelected(selectedTextSize: String) {
+    readingTextSizeSelectionViewModel.selectedTextSize.value = selectedTextSize
+    updateTextSize(selectedTextSize)
   }
 }

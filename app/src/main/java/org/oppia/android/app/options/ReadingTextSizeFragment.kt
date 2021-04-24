@@ -57,6 +57,6 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
   }
 
   override fun onTextSizeSelected(selectedTextSize: String) {
-    readingTextSizeFragmentPresenter.updateTextSize(selectedTextSize)
+    readingTextSizeFragmentPresenter.onTextSizeSelected(selectedTextSize)
   }
 }
