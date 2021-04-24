@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
