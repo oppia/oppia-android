@@ -2,7 +2,6 @@ package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.PictureDrawable
 import androidx.annotation.DrawableRes
 
 /** Represents transformations for images loaded using [ImageLoader]. */
@@ -29,9 +28,19 @@ interface ImageLoader {
    * is an asynchronous operation, and may take a while if the image needs to be downloaded from the
    * internet. Optional [transformations] may be applied to the image.
    */
-  fun loadSvg(
+  fun loadBlockSvg(
     imageUrl: String,
-    target: ImageTarget<PictureDrawable>,
+    target: ImageTarget<BlockPictureDrawable>,
+    transformations: List<ImageTransformation> = listOf()
+  )
+
+  /**
+   * Same as [loadBlockSvg] except this specifically loads a [TextPictureDrawable] which can be rendered
+   * in-line with text.
+   */
+  fun loadTextSvg(
+    imageUrl: String,
+    target: ImageTarget<TextPictureDrawable>,
     transformations: List<ImageTransformation> = listOf()
   )
 
