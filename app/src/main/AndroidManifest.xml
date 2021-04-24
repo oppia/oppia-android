@@ -22,10 +22,10 @@
       android:value="false" />
     <meta-data
       android:name="automatic_app_expiration_enabled"
-      android:value="false" />
+      android:value="true" />
     <meta-data
       android:name="expiration_date"
-      android:value="2020-09-01" />
+      android:value="2021-10-31" />
 
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"

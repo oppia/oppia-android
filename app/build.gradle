@@ -12,8 +12,8 @@ android {
     applicationId "org.oppia.android"
     minSdkVersion 19
     targetSdkVersion 29
-    versionCode 1
-    versionName "1.0"
+    versionCode 5
+    versionName "0.5-alpha-0dbe671eb8"
     multiDexEnabled true
     testInstrumentationRunner "org.oppia.android.testing.OppiaTestRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
