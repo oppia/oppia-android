@@ -14,11 +14,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.State
-import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -32,15 +33,20 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val DRAG_DROP_TEST_EXPLORATION_NAME = "test_exp_id_4.json"
-const val IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME = "image_click_input_exploration.json"
-const val RATIO_TEST_EXPLORATION_NAME = "ratio_input_exploration.json"
+private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
+private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+private const val TEST_EXPLORATION_ID_5 = "13"
 
 /** Tests for [StateRetriever]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class StateRetrieverTest {
+  private val DRAG_DROP_CHOICE_CONTENT_ID_0 = createXlatableContentId(contentId = "ca_choices_0")
+  private val DRAG_DROP_CHOICE_CONTENT_ID_1 = createXlatableContentId(contentId = "ca_choices_1")
+  private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
+  private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
 
   @Inject
   lateinit var stateRetriever: StateRetriever
@@ -55,10 +61,11 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingRuleSpec() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -67,35 +74,36 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithValueAtX() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
-    val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrdering")
 
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOf<StringList>(
-          createHtmlStringList("<p>yesterday</p>"),
-          createHtmlStringList("<p>I bought</p>"),
-          createHtmlStringList("<p>a camera at the store</p>"),
-          createHtmlStringList("<p>to photograph the parade.</p>")
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEqualToOrdering")
+    val contentIdListSet = ListOfSetsOfTranslatableHtmlContentIds.newBuilder()
+      .addAllContentIdLists(
+        listOf(
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_2),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_0),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_1),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_3)
         )
       )
       .build()
-
     val dragDropInputIsEqualToOrderingValue =
-      InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-
+      InteractionObject.newBuilder()
+        .setListOfSetsOfTranslatableHtmlContentIds(contentIdListSet)
+        .build()
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputIsEqualToOrderingValue)
   }
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYRuleSpec() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -104,38 +112,39 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtY() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
-    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
 
+    val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
     val dragDropInputHasElementXAtPositionYValue =
       InteractionObject.newBuilder().setNonNegativeInt(4).build()
-
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXAtPositionYWithValueAtX() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXAtPositionY")
-
     val dragDropInputHasElementXAtPositionYValue =
-      InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
-
+      InteractionObject.newBuilder()
+        .setTranslatableHtmlContentId(DRAG_DROP_CHOICE_CONTENT_ID_0)
+        .build()
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionRuleSpec() { // ktlint-disable max-line-length
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+  fun testParseState_dragDrop_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionSpec() {
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -143,30 +152,30 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithIsEqualToOrderingWithOneItemAtIncorrectPositionWithValueAtX() { // ktlint-disable max-line-length
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+  fun testParseState_dragDrop_parsesRuleWithIsEqualToOrderingWith1ItemAtIncorrectPosWithXValue() {
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = lookUpRuleSpec(
       state,
       "IsEqualToOrderingWithOneItemAtIncorrectPosition"
     )
-
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOf<StringList>(
-          createHtmlStringList("<p>I bought</p>"),
-          createHtmlStringList("<p>a camera at the store</p>"),
-          createHtmlStringList("<p>yesterday</p>"),
-          createHtmlStringList("<p>to photograph the parade.</p>")
+    val contentIdListSet = ListOfSetsOfTranslatableHtmlContentIds.newBuilder()
+      .addAllContentIdLists(
+        listOf(
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_0),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_1),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_2),
+          crateSetOfContentIds(DRAG_DROP_CHOICE_CONTENT_ID_3)
         )
       )
       .build()
-
     val dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue =
-      InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-
+      InteractionObject.newBuilder()
+        .setListOfSetsOfTranslatableHtmlContentIds(contentIdListSet)
+        .build()
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(
       dragDropInputIsEqualToOrderingWithOneItemAtIncorrectPositionValue
     )
@@ -174,10 +183,11 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementYRuleSpec() {
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -185,39 +195,42 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtX() { // ktlint-disable max-line-length
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+  fun testParseState_withDragDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtX() {
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
-      InteractionObject.newBuilder().setNormalizedString("<p>I bought</p>").build()
-
+      InteractionObject.newBuilder()
+        .setTranslatableHtmlContentId(DRAG_DROP_CHOICE_CONTENT_ID_0)
+        .build()
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
-  fun testParseState_withDragAndDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtY() { // ktlint-disable max-line-length
-    val state = createStateFromJson(
-      "DragDropSortInput",
-      DRAG_DROP_TEST_EXPLORATION_NAME
+  fun testParseState_withDragDropInteraction_parsesRuleWithHasElementXBeforeElementWithValueAtY() {
+    val state = loadStateFromJson(
+      stateName = "DragDropSortInput",
+      explorationName = TEST_EXPLORATION_ID_4
     )
     val ruleSpecMap = lookUpRuleSpec(state, "HasElementXBeforeElementY")
 
     val dragDropInputHasElementXAtPositionYValue =
-      InteractionObject.newBuilder().setNormalizedString("<p>to photograph the parade.</p>").build()
-
+      InteractionObject.newBuilder()
+        .setTranslatableHtmlContentId(DRAG_DROP_CHOICE_CONTENT_ID_3)
+        .build()
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(dragDropInputHasElementXAtPositionYValue)
   }
 
   @Test
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleIsInRegionRuleSpec() {
-    val state = createStateFromJson(
-      "ImageClickInput",
-      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "ImageClickInput",
+      explorationName = TEST_EXPLORATION_ID_5
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -226,26 +239,25 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsInRegionWithValueAtX() {
-    val state = createStateFromJson(
-      "ImageClickInput",
-      IMAGE_REGION_SELECTION_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "ImageClickInput",
+      explorationName = TEST_EXPLORATION_ID_5
     )
+
     val ruleSpecMap = lookUpRuleSpec(state, "IsInRegion")
-
-    val regionString = "Region1"
-
+    val regionString = "Mercury"
     val imageRegionSelectionIsInRegionValue =
       InteractionObject.newBuilder().setNormalizedString(regionString).build()
-
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(imageRegionSelectionIsInRegionValue)
   }
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesRuleEqualsRuleSpec() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -254,26 +266,25 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withRatioInputSelectionInteraction_parsesRuleWithEqualsWithValueAtX() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = lookUpRuleSpec(state, "Equals")
-
     val expectedInputRatio = createRatio(listOf(4, 5))
-
     val expectedInputInteractionObject =
       InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
-
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
   }
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesRuleIsEquivalentRuleSpec() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -282,26 +293,25 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsEquivalentWithValueAtX() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalent")
-
     val expectedInputRatio = createRatio(listOf(8, 10))
-
     val expectedInputInteractionObject =
       InteractionObject.newBuilder().setRatioExpression(expectedInputRatio).build()
-
     assertThat(ruleSpecMap.inputMap["x"]).isEqualTo(expectedInputInteractionObject)
   }
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesRuleHasNumberOfTermsEqualToRuleSpec() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
       .associateBy(RuleSpec::getRuleType)
@@ -310,59 +320,72 @@ class StateRetrieverTest {
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesCustomizationArgPlaceholderText() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val customizationArgName = state.interaction.getCustomizationArgsOrThrow("placeholder")
     assertThat(customizationArgName.subtitledUnicode.unicodeStr).isEqualTo("Enter in format of x:y")
   }
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesCustomizationArgNumberOfTerms() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val customizationArgName = state.interaction.getCustomizationArgsOrThrow("numberOfTerms")
     assertThat(customizationArgName.signedInt).isEqualTo(0)
   }
 
   @Test
   fun testParseState_withRatioInputInteraction_parsesRuleWithHasNumberOfTermsEqualToWithValueAtY() {
-    val state = createStateFromJson(
-      "RatioExpressionInput",
-      RATIO_TEST_EXPLORATION_NAME
+    val state = loadStateFromJson(
+      stateName = "RatioInput",
+      explorationName = TEST_EXPLORATION_ID_2
     )
+
     val ruleSpecMap = lookUpRuleSpec(state, "HasNumberOfTermsEqualTo")
-
     val expectedNumberOfTerms = 3
-
     val expectedInputInteractionObject =
       InteractionObject.newBuilder().setNonNegativeInt(expectedNumberOfTerms).build()
-
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
   }
 
-  private fun lookUpRuleSpec(state: State, ruleSpecName: String): RuleSpec {
+  /**
+   * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
+   * if one cannot be found.
+   */
+  private fun lookUpRuleSpec(state: State, ruleType: String): RuleSpec {
     return state.interaction.answerGroupsList
       .flatMap(AnswerGroup::getRuleSpecsList)
-      .find { it.ruleType == ruleSpecName }!!
+      .find { it.ruleType == ruleType } ?: error("Failed to find rule type: $ruleType")
   }
 
-  private fun createHtmlStringList(vararg items: String): StringList {
-    return StringList.newBuilder().addAllHtml(items.toList()).build()
+  private fun createXlatableContentId(contentId: String): TranslatableHtmlContentId =
+    TranslatableHtmlContentId.newBuilder().apply {
+      this.contentId = contentId
+    }.build()
+
+  private fun crateSetOfContentIds(
+    vararg items: TranslatableHtmlContentId
+  ): SetOfTranslatableHtmlContentIds {
+    return SetOfTranslatableHtmlContentIds.newBuilder().addAllContentIds(items.toList()).build()
   }
 
   private fun createRatio(items: List<Int>): RatioExpression {
     return RatioExpression.newBuilder().addAllRatioComponent(items).build()
   }
 
-  private fun createStateFromJson(stateName: String, explorationName: String): State {
-    val json = jsonAssetRetriever.loadJsonFromAsset(explorationName)
+  private fun loadStateFromJson(stateName: String, explorationName: String): State {
+    val json = jsonAssetRetriever.loadJsonFromAsset("$explorationName.json")
     return stateRetriever.createStateFromJson(
       stateName,
-      json?.getJSONObject("exploration")?.getJSONObject("states")?.getJSONObject(stateName)
+      checkNotNull(
+        json?.getJSONObject("exploration")?.getJSONObject("states")?.getJSONObject(stateName)
+      )
     )
   }
 

@@ -45,6 +45,16 @@ android_library(
     ],
 )
 
+# A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
+# library still routes through //third_party).
+android_library(
+    name = "com_caverock_androidsvg",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@androidsvg//androidsvg",
+    ],
+)
+
 android_library(
     name = "robolectric_android-all",
     visibility = ["//visibility:public"],
@@ -60,5 +70,17 @@ java_library(
     exports = [
         "//third_party:com_squareup_moshi_moshi-kotlin",
         "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
+    ],
+)
+
+# Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
+# can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
+# Android assets which java_library targets do not export.
+java_library(
+    name = "glide_compiler",
+    exported_plugins = ["//tools:glide_compiler_plugin"],
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_github_bumptech_glide_compiler",
     ],
 )
