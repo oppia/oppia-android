@@ -8,5 +8,5 @@ import dagger.Provides
 class PracticeTabModule {
   @Provides
   @EnablePracticeTab
-  fun provideEnablePracticeTab(): Boolean = true
+  fun provideEnablePracticeTab(): Boolean = false
 }

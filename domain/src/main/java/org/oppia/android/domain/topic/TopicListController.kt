@@ -444,6 +444,15 @@ class TopicListController @Inject constructor(
     return TimeUnit.MILLISECONDS.toDays(oppiaClock.getCurrentTimeMs() - this.lastPlayedTimestamp)
   }
 
+  private val REAL_PLACE_VALUES_TOPIC_ID = "iX9kYCjnouWN"
+  private val REAL_MULTIPLICATION_TOPIC_ID = "C4fqwrvqWpRm"
+  private val REAL_FRACTIONS_TOPIC_ID = "0abdeaJhmfPm"
+  private val REAL_RATIOS_TOPIC_ID = "5g0nxGUmx5J5"
+
+  // Not yet released/available to the app (and thus shouldn't be dependencies below since they can't be played).
+  private val REAL_DIVISION_TOPIC_ID = "qW12maD4hiA8"
+  private val REAL_ADDITION_AND_SUBTRACTION_TOPIC_ID = "sWBXKH4PZcK6"
+
   // TODO(#2550): Remove hardcoded order of topics. Compute list of suggested stories from backend structures
   /**
    * Returns a list of topic IDs for which the specified topic ID expects to be completed before
@@ -453,17 +462,19 @@ class TopicListController @Inject constructor(
     // The comments describe the correct dependencies, but those might not be available until the
     // topic is introduced into the app.
     return when (topicId) {
-      // TEST_TOPIC_ID_0 (depends on Fractions)
-      TEST_TOPIC_ID_0 -> listOf(FRACTIONS_TOPIC_ID)
-      // TEST_TOPIC_ID_1 (depends on TEST_TOPIC_ID_0,Ratios)
-      TEST_TOPIC_ID_1 -> listOf(TEST_TOPIC_ID_0, RATIOS_TOPIC_ID)
+      // Place values depends on nothing since it's the first set of lessons to play.
+      REAL_PLACE_VALUES_TOPIC_ID -> listOf()
       // Fractions (depends on A+S, Multiplication, Division)
-      FRACTIONS_TOPIC_ID -> listOf()
+      REAL_FRACTIONS_TOPIC_ID -> listOf(REAL_MULTIPLICATION_TOPIC_ID)
       // Ratios (depends on A+S, Multiplication, Division)
-      RATIOS_TOPIC_ID -> listOf()
+      REAL_RATIOS_TOPIC_ID -> listOf(REAL_MULTIPLICATION_TOPIC_ID)
       // Addition and Subtraction (depends on Place Values)
-      // Multiplication (depends on Addition and Subtraction)
+      REAL_ADDITION_AND_SUBTRACTION_TOPIC_ID -> listOf(REAL_PLACE_VALUES_TOPIC_ID)
+      // Multiplication (depends on Addition and Subtraction); depend instead on Place Values as a
+      // poor proxy for A+S since that topic isn't yet available in the app.
+      REAL_MULTIPLICATION_TOPIC_ID -> listOf(REAL_PLACE_VALUES_TOPIC_ID)
       // Division (depends on Multiplication)
+      REAL_DIVISION_TOPIC_ID -> listOf(REAL_MULTIPLICATION_TOPIC_ID)
       // Expressions and Equations (depends on A+S, Multiplication, Division)
       // Decimals (depends on A+S, Multiplication, Division)
       else -> listOf()

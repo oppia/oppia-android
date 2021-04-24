@@ -55,8 +55,8 @@ android_binary(
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
         "targetSdkVersion": "29",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
+        "versionCode": "5",
+        "versionName": "0.5-alpha-0dbe671eb8",
     },
     multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
     deps = [
