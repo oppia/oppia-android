@@ -12,7 +12,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
@@ -31,7 +30,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.options.APP_LANGUAGE
 import org.oppia.android.app.options.AppLanguageActivity
-import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -77,6 +75,7 @@ private const val ENGLISH = 0
 private const val FRENCH = 1
 private const val HINDI = 2
 private const val CHINESE = 3
+private const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -97,30 +96,46 @@ class AppLanguageFragmentTest {
     setUpTestApplicationComponent()
     Intents.init()
     profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   @Test
-  fun testAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+  fun testAppLanguage_selectedLanguageIsEnglish() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      selectLanguage(FRENCH)
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testAppLanguage_changeConfiguration_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
       rotateToLandscape()
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testAppLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
       checkSelectedLanguage(FRENCH)
     }
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAppLanguage_clickAppLanguage_changeAppLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      selectChangeAppLanguage()
-      selectLanguage(HINDI)
-      checkAppLanguage("Hindi")
+  fun testAppLanguage_changeLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
+      rotateToLandscape()
+      checkSelectedLanguage(FRENCH)
     }
   }
 
@@ -140,19 +155,6 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun selectChangeAppLanguage() {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        1,
-        R.id.app_language_item_layout
-      )
-    ).perform(
-      click()
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
   private fun selectLanguage(index: Int) {
     onView(
       atPositionOnView(
@@ -166,34 +168,11 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun checkAppLanguage(appLanguage: String) {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        1,
-        R.id.app_language_text_view
-      )
-    ).check(
-      matches(withText(appLanguage))
-    )
-  }
-
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       APP_LANGUAGE,
       summaryValue
-    )
-  }
-
-  private fun createOptionActivityIntent(
-    internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
-  ): Intent {
-    return OptionsActivity.createOptionsActivity(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      isFromNavigationDrawer
     )
   }
 
