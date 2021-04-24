@@ -39,6 +39,16 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "oppia_retrofit",
+    srcs = [
+        "OppiaRetrofit.kt",
+    ],
+    deps = [
+        ":dagger",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "NetworkModule.kt",
@@ -48,6 +58,7 @@ kt_android_library(
         ":dagger",
         ":network_interceptors",
         ":network_settings",
+        ":oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//third_party:com_squareup_retrofit2_converter-moshi",
     ],
