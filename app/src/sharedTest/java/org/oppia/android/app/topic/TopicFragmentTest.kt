@@ -256,6 +256,22 @@ class TopicFragmentTest {
   }
 
   @Test
+  fun testTopicFragment_practiceTabDisabled_configChange_practiceTopicTabIsNotDisplayed() {
+    initializeApplicationComponent(practiceTabIsEnabled = false)
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Unconditionally retrieve the practice tab name since this test is verifying that it's not
+      // enabled.
+      val practiceTab =
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab = true)
+      // The tab should still not be visible even after a configuration change.
+      onView(withText(practiceTab.name)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
