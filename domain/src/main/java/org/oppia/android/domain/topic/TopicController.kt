@@ -356,7 +356,7 @@ class TopicController @Inject constructor(
         name = topicRecord.name
         description = topicRecord.description
         addAllStory(stories)
-        topicThumbnail = topicRecord.topicThumbnail
+        topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
         diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
         addAllSubtopic(subtopics)
         topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
@@ -425,7 +425,7 @@ class TopicController @Inject constructor(
       .setName(topicData.getString("topic_name"))
       .setDescription(topicData.getString("topic_description"))
       .addAllStory(storySummaryList)
-      .setTopicThumbnail(createTopicThumbnail(topicData))
+      .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)

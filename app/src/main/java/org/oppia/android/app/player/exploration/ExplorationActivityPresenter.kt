@@ -262,7 +262,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
     if (ephemeralStateResult.isFailure()) {
       oppiaLogger.e(
-        "StateFragment",
+        "ExplorationActivity",
         "Failed to retrieve answer outcome",
         ephemeralStateResult.getErrorOrNull()!!
       )

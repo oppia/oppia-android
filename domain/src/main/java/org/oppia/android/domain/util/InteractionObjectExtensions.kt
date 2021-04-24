@@ -22,11 +22,18 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.SIGNED_INT
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 
-/** Returns a parsable string representation of a user-submitted answer version of this [InteractionObject]. */
+/**
+ * Returns a parsable string representation of a user-submitted answer version of this
+ * [InteractionObject].
+ */
 fun InteractionObject.toAnswerString(): String {
   return when (checkNotNull(objectTypeCase)) {
     NORMALIZED_STRING -> normalizedString
@@ -41,14 +48,18 @@ fun InteractionObject.toAnswerString(): String {
     IMAGE_WITH_REGIONS -> imageWithRegions.toAnswerString()
     CLICK_ON_IMAGE -> clickOnImage.toAnswerString()
     RATIO_EXPRESSION -> ratioExpression.toAnswerString()
-    // TODO(#2985): Add support for these object types.
-    TRANSLATABLE_HTML_CONTENT_ID,
-    SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-    LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-    TRANSLATABLE_SET_OF_NORMALIZED_STRING,
+    TRANSLATABLE_HTML_CONTENT_ID -> translatableHtmlContentId.toAnswerString()
+    SET_OF_TRANSLATABLE_HTML_CONTENT_IDS -> setOfTranslatableHtmlContentIds.toAnswerString()
+    LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS ->
+      listOfSetsOfTranslatableHtmlContentIds.toAnswerString()
+    TRANSLATABLE_SET_OF_NORMALIZED_STRING -> translatableSetOfNormalizedString.toAnswerString()
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
+
+/** Returns the set of content IDs corresponding to this container. */
+fun SetOfTranslatableHtmlContentIds.getContentIdSet(): Set<String> =
+  contentIdsList.map(TranslatableHtmlContentId::getContentId).toSet()
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/NumberWithUnitsObjectFactory.ts#L50
 private fun NumberWithUnits.toAnswerString(): String {
@@ -102,4 +113,20 @@ private fun Fraction.toAnswerString(): String {
   val positiveFractionString = if (mixedString.isNotEmpty()) mixedString else fractionString
   val negativeString = if (isNegative) "-" else ""
   return if (positiveFractionString.isNotEmpty()) "$negativeString$positiveFractionString" else "0"
+}
+
+private fun TranslatableHtmlContentId.toAnswerString(): String {
+  return "content_id=$contentId"
+}
+
+private fun SetOfTranslatableHtmlContentIds.toAnswerString(): String {
+  return contentIdsList.joinToString()
+}
+
+private fun ListOfSetsOfTranslatableHtmlContentIds.toAnswerString(): String {
+  return contentIdListsList.joinToString { "[${it.toAnswerString()}]" }
+}
+
+private fun TranslatableSetOfNormalizedString.toAnswerString(): String {
+  return normalizedStringsList.joinToString()
 }

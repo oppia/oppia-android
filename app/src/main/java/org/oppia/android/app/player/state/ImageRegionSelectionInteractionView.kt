@@ -82,7 +82,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, imageUrl)
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
+      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this))
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
     }

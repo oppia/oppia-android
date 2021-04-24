@@ -24,6 +24,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
+  // TODO(#3098): Add dedicated tests for this class.
 
   private val imageView = this
   private var isBlurred: Boolean = false
@@ -84,7 +85,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   }
 
   private fun loadLessonThumbnail() {
-    var transformations = if (isBlurred) {
+    val transformations = if (isBlurred) {
       listOf(ImageTransformation.BLUR)
     } else {
       listOf()
@@ -98,7 +99,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
         transformations
       )
     }
-    imageView.setBackgroundColor(lessonThumbnail.backgroundColorRgb)
+    imageView.setBackgroundColor(
+      (0xff000000L or lessonThumbnail.backgroundColorRgb.toLong()).toInt()
+    )
   }
 
   /** Loads an image using Glide from [filename]. */
@@ -111,7 +114,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     )
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this), transformations)
+      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)
     }
