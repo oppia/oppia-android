@@ -63,4 +63,3 @@ android_binary(
         "//app",
     ],
 )
-1
