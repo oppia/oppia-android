@@ -9,7 +9,7 @@ import javax.inject.Singleton
 /**
  * Private mutable class that stores a grade as a fraction.
  */
-private class MutableFractionGrade(var numerator: BigDecimal, var denominator: BigDecimal)
+private class MutableFractionGrade(var numerator: Int, var denominator: Int)
 
 /**
  * Private class that computes the state of the user's performance at the end of a practice session.
@@ -19,9 +19,9 @@ private class MutableFractionGrade(var numerator: BigDecimal, var denominator: B
 @Singleton
 internal
 class QuestionAssessmentCalculation @Inject constructor(
-  @ViewHintPenalty private val viewHintPenalty: Double,
-  @WrongAnswerPenalty private val wrongAnswerPenalty: Double,
-  @MaxScorePerQuestion private val maxScorePerQuestion: Double
+  @ViewHintScorePenalty private val viewHintPenalty: Int,
+  @WrongAnswerScorePenalty private val wrongAnswerPenalty: Int,
+  @MaxScorePerQuestion private val maxScorePerQuestion: Int
 ) {
   private lateinit var skillIdList: List<String>
   private lateinit var questionSessionMetrics: List<QuestionSessionMetrics>
@@ -36,7 +36,7 @@ class QuestionAssessmentCalculation @Inject constructor(
     this.skillIdList = skillIdList
     this.questionSessionMetrics = questionSessionMetrics
     this.totalScore =
-      MutableFractionGrade(0.toBigDecimal(), questionSessionMetrics.size.toBigDecimal())
+      MutableFractionGrade(0, 0)
     createScorePerSkillMapping()
   }
 
@@ -44,7 +44,7 @@ class QuestionAssessmentCalculation @Inject constructor(
   private fun createScorePerSkillMapping() {
     scorePerSkillMapping = mutableMapOf()
     for (skillId in skillIdList) {
-      scorePerSkillMapping[skillId] = MutableFractionGrade(0.toBigDecimal(), 0.toBigDecimal())
+      scorePerSkillMapping[skillId] = MutableFractionGrade(0, 0)
     }
   }
 
@@ -52,23 +52,23 @@ class QuestionAssessmentCalculation @Inject constructor(
   private fun calculateScores() {
     for (questionMetric in questionSessionMetrics) {
       val totalHintsPenalty =
-        questionMetric.numberOfHintsUsed.toBigDecimal() * viewHintPenalty.toBigDecimal()
+        questionMetric.numberOfHintsUsed * viewHintPenalty
       val totalWrongAnswerPenalty =
-        (questionMetric.numberOfAnswersSubmitted - 1)
-          .toBigDecimal() * wrongAnswerPenalty.toBigDecimal()
-      var questionScore = 0.toBigDecimal()
+        (questionMetric.numberOfAnswersSubmitted - 1) * wrongAnswerPenalty
+      var questionScore = 0
       if (!questionMetric.didViewSolution) {
         questionScore =
           maxOf(
-            maxScorePerQuestion.toBigDecimal() - totalHintsPenalty - totalWrongAnswerPenalty,
+            maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty,
             questionScore
           )
       }
       this.totalScore.numerator += questionScore
+      this.totalScore.denominator += maxScorePerQuestion
       for (linkedSkillId in questionMetric.question.linkedSkillIdsList) {
         if (!scorePerSkillMapping.containsKey(linkedSkillId)) continue
         scorePerSkillMapping[linkedSkillId]!!.numerator += questionScore
-        scorePerSkillMapping[linkedSkillId]!!.denominator += 1.toBigDecimal()
+        scorePerSkillMapping[linkedSkillId]!!.denominator += maxScorePerQuestion
       }
     }
   }
@@ -76,25 +76,25 @@ class QuestionAssessmentCalculation @Inject constructor(
   /** Compute the overall score as well as the score and mastery per skill. */
   internal fun computeAll(): UserAssessmentPerformance {
     calculateScores()
-    // TODO(#3067): create mastery calculations method
+    // TODO(#3067): Create mastery calculations method
 
     // Set up the return values
     var finalScore = FractionGrade.newBuilder().apply {
-      numerator = totalScore.numerator.toDouble()
-      denominator = totalScore.denominator.toDouble()
+      numerator = totalScore.numerator.toDouble() / 10
+      denominator = totalScore.denominator.toDouble() / 10
     }.build()
 
     var finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
     for (score in scorePerSkillMapping) {
-      if (score.value.denominator != 0.toBigDecimal()) { // Exclude entries with denominator of 0
+      if (score.value.denominator != 0) { // Exclude entries with denominator of 0
         finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
-          numerator = score.value.numerator.toDouble()
-          denominator = score.value.denominator.toDouble()
+          numerator = score.value.numerator.toDouble() / 10
+          denominator = score.value.denominator.toDouble() / 10
         }.build()
       }
     }
 
-    // TODO(#3067): set up finalMasteryPerSkillMapping
+    // TODO(#3067): Set up finalMasteryPerSkillMapping
     var finalMasteryPerSkillMapping = mapOf<String, Double>()
 
     return UserAssessmentPerformance.newBuilder().apply {
