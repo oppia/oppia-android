@@ -2,7 +2,6 @@ package org.oppia.android.domain.question
 
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.UserAssessmentPerformance
-import java.math.BigDecimal
 import javax.inject.Inject
 import javax.inject.Singleton
 
