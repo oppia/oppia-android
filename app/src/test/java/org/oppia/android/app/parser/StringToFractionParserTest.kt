@@ -97,6 +97,12 @@ class StringToFractionParserTest {
   }
 
   @Test
+  fun testParser_submitTimeError_wholeNegativeNumber_returnsValid() {
+    val error = stringToFractionParser.getSubmitTimeError("-777")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
   fun testParser_submitTimeError_mixedNumber_returnsValid() {
     val error = stringToFractionParser.getSubmitTimeError("11 22/33")
     assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
