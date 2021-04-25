@@ -73,99 +73,211 @@ class StringToFractionParserTest {
   }
 
   @Test
-  fun testParser_submitTimeError_returnsValid() {
+  fun testParser_submitTimeError_regularFraction_returnsValid() {
     val error = stringToFractionParser.getSubmitTimeError("1/2")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo(null)
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
   }
 
   @Test
-  fun testParser_submitTimeError_extraSpaces_returnsValid() {
-    val error = stringToFractionParser.getSubmitTimeError(" 1   / 2 ")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo(null)
-  }
-
-  @Test
-  fun testParser_submitTimeError_tooLong_returnsNumberTooLong() {
-    val error = stringToFractionParser.getSubmitTimeError("0123456789")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error)
-      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+  fun testParser_submitTimeError_regularNegativeFractionWithExtraSpaces_returnsValid() {
+    val error = stringToFractionParser.getSubmitTimeError(" -1   / 2 ")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
   }
 
   @Test
   fun testParser_submitTimeError_atLengthLimit_returnsValid() {
     val error = stringToFractionParser.getSubmitTimeError("1234567/1234567")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo(null)
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_submitTimeError_wholeNumber_returnsValid() {
+    val error = stringToFractionParser.getSubmitTimeError("888")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_submitTimeError_mixedNumber_returnsValid() {
+    val error = stringToFractionParser.getSubmitTimeError("11 22/33")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_submitTimeError_returnsNumberTooLong() {
+    val error = stringToFractionParser.getSubmitTimeError("0123456789")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.NUMBER_TOO_LONG)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+  }
+
+  @Test
+  fun testParser_submitTimeError_returnsInvalidFormat() {
+    val error = stringToFractionParser.getSubmitTimeError("jdhfc")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
   }
 
   @Test
   fun testParser_submitTimeError_returnsDivisionByZero() {
     val error = stringToFractionParser.getSubmitTimeError("123/0")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please do not put 0 in the denominator")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.DIVISION_BY_ZERO)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
   }
 
   @Test
   fun testParser_submitTimeError_ambiguousSpacing_returnsInvalidFormat() {
     val error = stringToFractionParser.getSubmitTimeError("1 2 3/4")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
   }
 
   @Test
   fun testParser_submitTimeError_emptyString_returnsInvalidFormat() {
     val error = stringToFractionParser.getSubmitTimeError("")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+  }
+
+  @Test
+  fun testParser_realTimeError_regularFraction_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("2/3")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_regularNegativeFraction_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("-2/3")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_wholeNumber_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("4")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_wholeNegativeNumber_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("-4")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_mixedNumber_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("5 2/3")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_mixedNegativeNumber_returnsValid() {
+    val error = stringToFractionParser.getRealTimeAnswerError("-5 2/3")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.VALID)
+  }
+
+  @Test
+  fun testParser_realTimeError_returnsInvalidFormat() {
+    val error = stringToFractionParser.getRealTimeAnswerError("/23/")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+  }
+
+  @Test
+  fun testParser_realTimeError_returnsInvalidChars() {
+    val error = stringToFractionParser.getRealTimeAnswerError("abc")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_CHARS)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
   }
 
   @Test
   fun testParser_realTimeError_noNumerator_returnsInvalidFormat() {
     val error = stringToFractionParser.getRealTimeAnswerError("/3")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
   }
 
   @Test
   fun testParser_realTimeError_severalSlashes_returnsInvalidFormat() {
     val error = stringToFractionParser.getRealTimeAnswerError("1/3/8")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
   }
 
   @Test
   fun testParser_realTimeError_severalDashes_returnsInvalidFormat() {
     val error = stringToFractionParser.getRealTimeAnswerError("-1/-3")
-      .getErrorMessageFromStringRes(context)
-    assertThat(error).isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+
+    val errorMessage = error.getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
   }
 
   @Test
-  fun testParser_parseFractionFromString_incorrectFraction_throwsException() {
+  fun testParser_parseFraction_divisionByZero() {
+    val parseFraction = stringToFractionParser.parseFraction("8/0")
+    val parseFractionFromString = stringToFractionParser.parseFractionFromString("8/0")
+    val constructedFraction = Fraction.newBuilder().apply {
+      numerator = 8
+    }.build()
+    assertThat(parseFractionFromString).isEqualTo(constructedFraction)
+    assertThat(parseFraction).isEqualTo(constructedFraction)
+  }
+
+  @Test
+  fun testParser_parseFraction_invalidFormat() {
+    val parseFraction = stringToFractionParser.parseFraction("7 1/2 4/5")
+    assertThat(parseFraction).isEqualTo(null)
+
+    val exception = assertThrows(IllegalArgumentException::class) {
+      stringToFractionParser.parseFractionFromString("7 1/2 4/5")
+    }
+    assertThat(exception).hasMessageThat().contains("Incorrectly formatted fraction: 7 1/2 4/5")
+  }
+
+  @Test
+  fun testParser_parseFraction_invalidChars() {
+    val parseFraction = stringToFractionParser.parseFraction("abc")
+    assertThat(parseFraction).isEqualTo(null)
+
     val exception = assertThrows(IllegalArgumentException::class) {
       stringToFractionParser.parseFractionFromString("abc")
     }
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Incorrectly formatted fraction: abc")
-  }
-
-  @Test
-  fun testParser_parseFraction_incorrectFraction_returnsNull() {
-    val parseFraction = stringToFractionParser.parseFraction("abc")
-    assertThat(parseFraction).isEqualTo(null)
+    assertThat(exception).hasMessageThat().contains("Incorrectly formatted fraction: abc")
   }
 
   @Test
   fun testParser_parseFraction_parseRegularFraction() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("1/2")
     val parseFraction = stringToFractionParser.parseFraction("1/2")
-    val constructedFraction = Fraction.newBuilder()
-      .setNumerator(1)
-      .setDenominator(2).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 2
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -174,10 +286,11 @@ class StringToFractionParserTest {
   fun testParser_parseFraction_parseRegularNegativeFraction() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("-8/4")
     val parseFraction = stringToFractionParser.parseFraction("-8/4")
-    val constructedFraction = Fraction.newBuilder()
-      .setIsNegative(true)
-      .setNumerator(8)
-      .setDenominator(4).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      isNegative = true
+      numerator = 8
+      denominator = 4
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -186,10 +299,11 @@ class StringToFractionParserTest {
   fun testParser_parseFraction_parseWholeNumber() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("7")
     val parseFraction = stringToFractionParser.parseFraction("7")
-    val constructedFraction = Fraction.newBuilder()
-      .setWholeNumber(7)
-      .setNumerator(0)
-      .setDenominator(1).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      wholeNumber = 7
+      numerator = 0
+      denominator = 1
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -198,11 +312,12 @@ class StringToFractionParserTest {
   fun testParser_parseFraction_parseWholeNegativeNumber() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("-7")
     val parseFraction = stringToFractionParser.parseFraction("-7")
-    val constructedFraction = Fraction.newBuilder()
-      .setIsNegative(true)
-      .setWholeNumber(7)
-      .setNumerator(0)
-      .setDenominator(1).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      isNegative = true
+      wholeNumber = 7
+      numerator = 0
+      denominator = 1
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -211,10 +326,11 @@ class StringToFractionParserTest {
   fun testParser_parseFraction_parseMixedNumber() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("1 3/4")
     val parseFraction = stringToFractionParser.parseFraction("1 3/4")
-    val constructedFraction = Fraction.newBuilder()
-      .setWholeNumber(1)
-      .setNumerator(3)
-      .setDenominator(4).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      wholeNumber = 1
+      numerator = 3
+      denominator = 4
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -223,11 +339,12 @@ class StringToFractionParserTest {
   fun testParser_parseFraction_parseNegativeMixedNumber() {
     val parseFractionFromString = stringToFractionParser.parseFractionFromString("-123 456/7")
     val parseFraction = stringToFractionParser.parseFraction("-123 456/7")
-    val constructedFraction = Fraction.newBuilder()
-      .setIsNegative(true)
-      .setWholeNumber(123)
-      .setNumerator(456)
-      .setDenominator(7).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      isNegative = true
+      wholeNumber = 123
+      numerator = 456
+      denominator = 7
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
@@ -238,10 +355,11 @@ class StringToFractionParserTest {
       .parseFractionFromString("1234567 1234567/1234567")
     val parseFraction = stringToFractionParser
       .parseFraction("1234567 1234567/1234567")
-    val constructedFraction = Fraction.newBuilder()
-      .setWholeNumber(1234567)
-      .setNumerator(1234567)
-      .setDenominator(1234567).build()
+    val constructedFraction = Fraction.newBuilder().apply {
+      wholeNumber = 1234567
+      numerator = 1234567
+      denominator = 1234567
+    }.build()
     assertThat(parseFractionFromString).isEqualTo(constructedFraction)
     assertThat(parseFraction).isEqualTo(constructedFraction)
   }
