@@ -22,6 +22,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationTestActivity
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -40,9 +41,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -151,7 +152,6 @@ class PlayerSplitScreenTesting {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -167,7 +167,7 @@ class PlayerSplitScreenTesting {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

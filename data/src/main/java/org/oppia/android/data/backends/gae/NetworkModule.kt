@@ -29,14 +29,19 @@ class NetworkModule {
   @OppiaRetrofit
   @Provides
   @Singleton
-  fun provideRetrofitInstance(): Retrofit {
+  fun provideRetrofitInstance(
+    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
+    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+  ): Retrofit {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
+      .addInterceptor(jsonPrefixNetworkInterceptor)
+      .addInterceptor(remoteAuthNetworkInterceptor)
+      .build()
 
-    return retrofit2.Retrofit.Builder()
+    return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
+      .client(client)
       .build()
   }
 
@@ -68,4 +73,10 @@ class NetworkModule {
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
     return retrofit.create(FeedbackReportingService::class.java)
   }
+
+  // Provides the API key to use in authenticating remote messages sent or received. This will be
+  // replaced with a secret key in production.
+  @Provides
+  @NetworkApiKey
+  fun provideNetworkApiKey(): String = ""
 }

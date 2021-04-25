@@ -25,7 +25,7 @@ fun <K, V> ConcurrentQueueMap<K, V>.dequeue(key: K, value: V): Boolean {
 }
 
 /** Returns the [ConcurrentLinkedQueue] corresponding to the specified key in a thread-safe way. */
-internal fun <K, V> ConcurrentQueueMap<K, V>.getQueue(key: K): ConcurrentLinkedQueue<V> {
+fun <K, V> ConcurrentQueueMap<K, V>.getQueue(key: K): ConcurrentLinkedQueue<V> {
   // NB: This is a pre-24 compatible alternative to computeIfAbsent. See: https://stackoverflow.com/a/40665232.
   val queue: ConcurrentLinkedQueue<V>? = get(key)
   if (queue == null) {

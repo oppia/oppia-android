@@ -5,6 +5,8 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
@@ -14,15 +16,21 @@ import javax.inject.Inject
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class ExplorationRetriever @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever
+  private val stateRetriever: StateRetriever,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */
   fun loadExploration(explorationId: String): Exploration {
-    val explorationObject =
-      jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
-        ?: return Exploration.getDefaultInstance()
-    return loadExplorationFromAsset(explorationObject)
+    return if (loadLessonProtosFromAssets) {
+      assetRepository.loadProtoFromLocalAssets(explorationId, Exploration.getDefaultInstance())
+    } else {
+      val explorationObject =
+        jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
+          ?: return Exploration.getDefaultInstance()
+      loadExplorationFromAsset(explorationObject)
+    }
   }
 
   // Returns an exploration given an assetName
