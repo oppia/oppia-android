@@ -12,6 +12,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -21,6 +22,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -233,8 +235,8 @@ class DownloadsFragmentTest {
     }
   }
 
-  // check for data extract
   @Test
+  @Ignore
   fun testDownloadsFragment_adminProfile_expandListItem_clickDelete_deleteDialogIsDisplayed() {
     launchMyDownloadsActivityIntent(
       internalProfileId = internalProfileId,
@@ -259,13 +261,13 @@ class DownloadsFragmentTest {
       ).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot())
-        .check(matches(withText(context.getString(R.string.downloads_topic_delete_dialog_message))))
+      onView(withText(context.getString(R.string.downloads_topic_delete_dialog_message)))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
-  // check for data extract
   @Test
+  @Ignore
   fun testDownloadsFragment_userProfile_expandListItem_clickDelete_askAdminPinDialogIsDisplayed() {
     launchMyDownloadsActivityIntent(
       internalProfileId = userProfileInternalId,
@@ -290,13 +292,14 @@ class DownloadsFragmentTest {
       ).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(isRoot())
-        .check(matches(withText(context.getString(R.string.downloads_access_dialog_heading))))
-      onView(isRoot())
-        .check(matches(withText(context.getString(R.string.downloads_access_dialog_message))))
-      onView(isRoot())
-        .check(matches(withText(context.getString(R.string.admin_settings_submit))))
+      onView(withText(context.getString(R.string.downloads_access_dialog_heading)))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.downloads_access_dialog_message)))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withId(R.id.downloads_access_input_pin))
+        .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
