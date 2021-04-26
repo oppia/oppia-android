@@ -34,7 +34,6 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [RemoteAuthNetworkInterceptor] */
@@ -99,6 +98,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withIncorrectHeaders_setsCorrectHeaders() {
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
     val request = Request.Builder()
       .url(mockWebServer.url("/"))
       .addHeader("api_key", "wrong_api_key")
@@ -111,7 +111,6 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(request.header("app_version_name")).isEqualTo("wrong_version_name")
     assertThat(request.header("app_version_code")).isEqualTo("wrong_version_code")
 
-    mockWebServer.enqueue(MockResponse().setBody("{}"))
     client.newCall(request).execute()
     val interceptedRequest = mockWebServer.takeRequest(
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
@@ -167,9 +166,6 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(headers?.get("app_version_name")).isEqualTo("1.0")
     assertThat(headers?.get("app_version_code")).isEqualTo("1")
   }
-
-  @Qualifier
-  annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module

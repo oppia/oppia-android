@@ -18,7 +18,7 @@ def data_test(name, filtered_tests, deps, **kwargs):
     oppia_android_module_level_test(
         name = name,
         filtered_tests = filtered_tests,
-        deps = deps,
+        deps = deps + ["//data:data_test_assets"],
         custom_package = "org.oppia.android.data",
         test_manifest = "src/test/AndroidManifest.xml",
         assets = native.glob(["src/test/assets/**"]),

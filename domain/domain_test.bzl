@@ -18,7 +18,7 @@ def domain_test(name, filtered_tests, deps):
     oppia_android_module_level_test(
         name = name,
         filtered_tests = filtered_tests,
-        deps = deps,
+        deps = deps + ["//data:data_test_assets"],
         custom_package = "org.oppia.android.domain",
         test_manifest = "src/test/AndroidManifest.xml",
     )

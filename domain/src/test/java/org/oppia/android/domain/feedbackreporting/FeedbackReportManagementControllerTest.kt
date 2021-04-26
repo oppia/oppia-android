@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.JsonAdapter
@@ -38,6 +40,7 @@ import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -60,8 +63,11 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -99,9 +105,14 @@ class FeedbackReportManagementControllerTest {
   @Captor
   lateinit var reportStoreResultCaptor: ArgumentCaptor<AsyncResult<FeedbackReportingDatabase>>
 
-  private lateinit var mockWebServer: MockWebServer
+  @field:[Inject MockServer]
+  lateinit var mockWebServer: MockWebServer
 
-  private lateinit var client: OkHttpClient
+  @field:[Inject OppiaRetrofit]
+  lateinit var retrofit: Retrofit
+
+  @field:[Inject OkhttpClient]
+  lateinit var client: OkHttpClient
 
   private val languageSuggestionText = "french"
 
@@ -143,8 +154,9 @@ class FeedbackReportManagementControllerTest {
   fun setUp() {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
+    setUpApplicationForContext()
+//    setUpRetrofit()
     setUpFakeLogcatFile()
-    mockWebServer = MockWebServer()
     MockitoAnnotations.initMocks(this)
   }
 
@@ -154,9 +166,8 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitFeedbackReport_withNetwork_sendsNetworkRequest_isSuccessful() {
+  fun testController_submitFeedbackReport_withNetwork_successfullySendsRequestToServer() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
     val gaeFeedbackReport = createMockGaeFeedbackReport()
@@ -165,13 +176,29 @@ class FeedbackReportManagementControllerTest {
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
       unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
+    assertThat(request).isNotNull()
     request?.let {
       assertThat(it.body).isEqualTo(gaeFeedbackReport)
     }
   }
 
   @Test
-  fun testController_submitFeedbackReport_withNetwork_doesNotSendRemoteToStore() {
+  fun testController_submitFeedbackReport_withoutNetwork_doesNotSendRequestToServer() {
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+
+    assertThat(mockWebServer.requestCount).isEqualTo(1)
+
+    val request = mockWebServer.takeRequest(
+      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
+    )
+    assertThat(request).isNull()
+  }
+
+  @Test
+  fun testController_submitFeedbackReport_withNetwork_doesNotSaveReportToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
 
@@ -188,7 +215,7 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitFeedbackReport_withNoNetwork_sendsReportsToStore() {
+  fun testController_submitFeedbackReport_withoutNetwork_savesReportToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
 
@@ -207,7 +234,7 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitMultipleFeedbackReports_withNoNetwork_sendsAllReportsToStore() {
+  fun testController_submitMultipleFeedbackReports_withoutNetwork_savesAllReportsToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
@@ -274,6 +301,44 @@ class FeedbackReportManagementControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun setUpApplicationForContext() {
+    // The package manager is shadowed in order to specify the package version name and package
+    // version code so that the controller can correctly fetch and set these values in the feedback
+    // report.
+    val packageManager = Shadows.shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageInfo.versionName = "1.0"
+    packageInfo.versionCode = 1
+    packageManager.installPackage(packageInfo)
+  }
+
+  private fun setUpRetrofit() {
+    mockWebServer = MockWebServer()
+    client = OkHttpClient.Builder()
+      .build()
+
+    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
+    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
+    // request mocking in different ways and we want to verify the full request is executed here.
+    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
+    retrofit = retrofit2.Retrofit.Builder()
+      .baseUrl(mockWebServer.url("/"))
+      .addConverterFactory(MoshiConverterFactory.create())
+      .client(client)
+      .build()
+    val feedbackReportingService = retrofit.create(FeedbackReportingService::class.java)
+
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(feedbackReportingService)
+  }
+
   private fun setUpFakeLogcatFile() {
     // Creates a fake logcat file in this directory so that the controller being tested has a file to
     // read when recording the logcat events.
@@ -311,6 +376,44 @@ class FeedbackReportManagementControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  annotation class OppiaRetrofit
+
+  annotation class MockServer
+
+  annotation class OkhttpClient
+
+  @Module
+  class TestNetworkModule {
+    @Provides
+    @Singleton
+    @MockServer
+    fun provideMockWebServer(): MockWebServer {
+      return MockWebServer()
+    }
+
+    @Provides
+    @Singleton
+    @OkhttpClient
+    fun provideClientInstance(): OkHttpClient {
+      return OkHttpClient.Builder()
+        .build()
+    }
+
+    @Provides
+    @Singleton
+    @OppiaRetrofit
+    fun provideRetrofitInstance(
+      @MockServer mockWebServer: MockWebServer,
+      @OkhttpClient client: OkHttpClient
+    ): Retrofit {
+      return retrofit2.Retrofit.Builder()
+        .baseUrl(mockWebServer.url("/"))
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestLogStorageModule {
@@ -329,6 +432,7 @@ class FeedbackReportManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class, NetworkModule::class,
+      TestNetworkModule::class,
       FakeOppiaClockModule::class, FeedbackReportingModule::class
     ]
   )
@@ -341,6 +445,7 @@ class FeedbackReportManagementControllerTest {
     }
 
     fun inject(feedbackReportManagementControllerTest: FeedbackReportManagementControllerTest)
+    fun inject(feedbackREportingService: FeedbackReportingService)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -352,6 +457,10 @@ class FeedbackReportManagementControllerTest {
 
     fun inject(feedbackReportManagementControllerTest: FeedbackReportManagementControllerTest) {
       component.inject(feedbackReportManagementControllerTest)
+    }
+
+    fun inject(feedbackReportingService: FeedbackReportingService) {
+      component.inject(feedbackReportingService)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
