@@ -216,7 +216,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
           fragment,
           Observer<Boolean> { allowDownloadAndUpdateOnlyOnWifi ->
             TopicInfoDownloadBottomSheetDialogFragment.newInstance(
-              "Fractions"
+              topicInfoViewModel.topic.get()!!.name
             ).apply {
               show(fragment.parentFragmentManager, "tag")
             }

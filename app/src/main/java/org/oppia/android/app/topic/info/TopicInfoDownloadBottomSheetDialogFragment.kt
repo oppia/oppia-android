@@ -10,7 +10,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** [BottomSheetDialogFragment] that shows the status of downloading. */
-class TopicInfoDownloadBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class TopicInfoDownloadBottomSheetDialogFragment : BottomSheetDialogFragment(),
+  TopicInfoBottomSheetListener {
 
   companion object {
     const val TOPIC_NAME = "TOPIC_NAME"
@@ -49,5 +50,21 @@ class TopicInfoDownloadBottomSheetDialogFragment : BottomSheetDialogFragment() {
     val fragmentComponent =
       (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
     fragmentComponent.inject(this)
+  }
+
+  override fun closeSheet() {
+    dismiss()
+  }
+
+  override fun resumeDownload() {
+    // TODO(#3082): resume downloading
+  }
+
+  override fun pauseDownload() {
+    // TODO(#3082): pause downloading
+  }
+
+  override fun removeDownload() {
+    // TODO(#3082): stop downloading
   }
 }

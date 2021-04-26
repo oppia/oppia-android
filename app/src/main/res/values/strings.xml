@@ -58,6 +58,12 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="topic_download_sheet_close">Close</string>
+  <string name="topic_download_sheet_play_state_resume">Resume</string>
+  <string name="topic_download_sheet_play_state_pause">Pause</string>
+  <string name="topic_download_sheet_play_state_paused">Download is paused.</string>
+  <string name="topic_download_sheet_play_state_resumed">Download in progress&#8230; %1$d&#x0025;</string>
+  <string name="topic_download_sheet_remove_download">Remove Download</string>
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
