@@ -10,7 +10,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** [BottomSheetDialogFragment] that shows the status of downloading. */
-class TopicInfoDownloadBottomSheetDialogFragment : BottomSheetDialogFragment(),
+class TopicInfoDownloadBottomSheetDialogFragment :
+  BottomSheetDialogFragment(),
   TopicInfoBottomSheetListener {
 
   companion object {
