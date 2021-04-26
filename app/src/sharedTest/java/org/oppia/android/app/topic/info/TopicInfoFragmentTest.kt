@@ -45,6 +45,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -67,13 +68,13 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -430,7 +431,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
@@ -438,7 +442,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_description_text_view)).check(
         matches(
@@ -454,7 +461,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
@@ -462,7 +472,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view))
@@ -480,7 +493,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
@@ -490,7 +506,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
@@ -499,12 +518,15 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view))
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              lineCount = 5
             )
           )
         )
@@ -514,7 +536,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -529,7 +554,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -541,7 +569,7 @@ class TopicInfoFragmentTest {
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              lineCount = 5
             )
           )
         )
@@ -551,7 +579,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -567,7 +598,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
@@ -577,7 +611,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -649,7 +686,7 @@ class TopicInfoFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -13,6 +13,7 @@ class ViewPagerAdapter(
   private val internalProfileId: Int,
   private val topicId: String,
   private val storyId: String,
+  private val enablePracticeTab: Boolean,
   private val enableMyDownloads: Boolean,
   private val isTopicDownloaded: Boolean
 ) : FragmentStateAdapter(fragment) {
@@ -21,7 +22,7 @@ class ViewPagerAdapter(
     if (enableMyDownloads && !isTopicDownloaded) {
       return 1
     } else {
-      return TopicTab.values().size
+      return TopicTab.getTabCount(enablePracticeTab)
     }
   }
 
@@ -29,7 +30,7 @@ class ViewPagerAdapter(
     if (enableMyDownloads && !isTopicDownloaded) {
       return TopicInfoFragment.newInstance(internalProfileId, topicId)
     } else {
-      return when (TopicTab.getTabForPosition(position)) {
+      return when (TopicTab.getTabForPosition(position, enablePracticeTab)) {
         TopicTab.INFO -> {
           TopicInfoFragment.newInstance(internalProfileId, topicId)
         }

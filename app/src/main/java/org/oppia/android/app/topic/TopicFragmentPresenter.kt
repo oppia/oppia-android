@@ -25,20 +25,14 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  @EnablePracticeTab private val enablePracticeTab: Boolean
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
-  private val tabIcons =
-    intArrayOf(
-      R.drawable.ic_info_icon_24dp,
-      R.drawable.ic_lessons_icon_24dp,
-      R.drawable.ic_practice_icon_24dp,
-      R.drawable.ic_revision_icon_24dp
-    )
 
   // TODO(3082): Remove this variable with the one, received from Home Activity
   private val isTopicDownloaded = false
@@ -97,6 +91,7 @@ class TopicFragmentPresenter @Inject constructor(
         internalProfileId,
         topicId,
         storyId,
+        enablePracticeTab,
         enableMyDownloads,
         isTopicDownloaded
       )
@@ -104,24 +99,9 @@ class TopicFragmentPresenter @Inject constructor(
     // TODO(#3072): check if topic is already downloaded or not
     if (!(enableMyDownloads && !isTopicDownloaded)) {
       TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-        when (position) {
-          0 -> {
-            tab.text = fragment.getString(R.string.info)
-            tab.icon = ContextCompat.getDrawable(activity, tabIcons[0])
-          }
-          1 -> {
-            tab.text = fragment.getString(R.string.lessons)
-            tab.icon = ContextCompat.getDrawable(activity, tabIcons[1])
-          }
-          2 -> {
-            tab.text = fragment.getString(R.string.practice)
-            tab.icon = ContextCompat.getDrawable(activity, tabIcons[2])
-          }
-          3 -> {
-            tab.text = fragment.getString(R.string.revision)
-            tab.icon = ContextCompat.getDrawable(activity, tabIcons[3])
-          }
-        }
+        val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
+        tab.text = fragment.getString(topicTab.tabLabelResId)
+        tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       }.attach()
     }
     if (!isConfigChanged && topicId.isNotEmpty()) {
