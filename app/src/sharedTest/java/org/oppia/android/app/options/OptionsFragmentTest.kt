@@ -84,13 +84,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
-  "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
-private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
-  "AppLanguageActivity.app_language_preference_summary_value"
-private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
-  "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
-
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -192,7 +185,7 @@ class OptionsFragmentTest {
         isFromNavigationDrawer = false
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
     }
@@ -242,8 +235,7 @@ class OptionsFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -285,8 +277,7 @@ class OptionsFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -328,8 +319,7 @@ class OptionsFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -343,7 +333,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivitySuccessfully() {
+  fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -361,7 +351,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            OptionsFragment.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -371,15 +361,14 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_configChange_clickTextSize_opensReadingTextSizeActivitySuccessfully() {
+  fun openOptionsActivity_configChange_clickTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -390,7 +379,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            OptionsFragment.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -400,7 +389,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivitySuccessfully() {
+  fun openOptionsActivity_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -418,7 +407,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            OptionsFragment.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -428,15 +417,14 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivitySuccessfully() {
+  fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -447,7 +435,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            OptionsFragment.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -457,7 +445,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_clickAudioLanguage_opensAudioLanguageActivitySuccessfully() {
+  fun openOptionsActivity_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -475,7 +463,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            OptionsFragment.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
@@ -485,15 +473,14 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_configChange_clickAudioLanguage_opensAudioLanguageActivitySuccessfully() {
+  fun openOptionsActivity_configChange_clickAudioLanguage_opensAudioLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
+      rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
@@ -504,13 +491,18 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            OptionsFragment.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
       )
     }
+  }
+
+  private fun rotateToLandscape() {
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun ActivityScenario<OptionsActivity>.openNavigationDrawer() {

@@ -9,15 +9,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,8 +27,8 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.options.AUDIO_LANGUAGE
+import org.oppia.android.app.options.AppLanguageActivity
 import org.oppia.android.app.options.AudioLanguageActivity
-import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -96,32 +93,40 @@ class AudioLanguageFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
     profileTestHelper.initializeProfiles()
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
-  }
-
   @Test
-  fun testAudioLanguage_changeLanguageToHindi_changeConfiguration_checkHindiLanguageIsSelected() {
-    launch<AudioLanguageActivity>(createDefaultAudioActivityIntent("French")).use {
-      selectLanguage(HINDI)
-      rotateToLandscape()
-      checkSelectedLanguage(HINDI)
+  fun testAudioLanguage_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
     }
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_loadFragment_changeAudioLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      selectChangeAudioLanguage()
-      selectLanguage(CHINESE)
-      checkAudioLanguage("Chinese")
+  fun testAudioLanguage_configChange_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      rotateToLandscape()
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
+      checkSelectedLanguage(FRENCH)
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
+      rotateToLandscape()
+      checkSelectedLanguage(FRENCH)
     }
   }
 
@@ -130,17 +135,6 @@ class AudioLanguageFragmentTest {
       ApplicationProvider.getApplicationContext(),
       AUDIO_LANGUAGE,
       summaryValue
-    )
-  }
-
-  private fun createOptionActivityIntent(
-    internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
-  ): Intent {
-    return OptionsActivity.createOptionsActivity(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      isFromNavigationDrawer
     )
   }
 
@@ -171,31 +165,6 @@ class AudioLanguageFragmentTest {
       )
     ).check(matches(isChecked()))
     testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun selectChangeAudioLanguage() {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        2,
-        R.id.audio_laguage_item_layout
-      )
-    ).perform(
-      click()
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun checkAudioLanguage(audioLanguage: String) {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        2,
-        R.id.audio_language_text_view
-      )
-    ).check(
-      matches(withText(audioLanguage))
-    )
   }
 
   private fun setUpTestApplicationComponent() {

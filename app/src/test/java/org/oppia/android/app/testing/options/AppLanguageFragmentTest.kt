@@ -9,7 +9,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -75,7 +74,6 @@ private const val ENGLISH = 0
 private const val FRENCH = 1
 private const val HINDI = 2
 private const val CHINESE = 3
-private const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -94,7 +92,6 @@ class AppLanguageFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -102,7 +99,6 @@ class AppLanguageFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   @Test
@@ -113,7 +109,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguage_changeConfiguration_selectedLanguageIsEnglish() {
+  fun testAppLanguage_configChange_selectedLanguageIsEnglish() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
       rotateToLandscape()
       checkSelectedLanguage(ENGLISH)
@@ -130,7 +126,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguage_changeLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+  fun testAppLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
       checkSelectedLanguage(ENGLISH)
       selectLanguage(FRENCH)

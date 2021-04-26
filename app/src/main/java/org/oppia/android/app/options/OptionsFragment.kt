@@ -25,6 +25,13 @@ class OptionsFragment : InjectableFragment() {
   lateinit var optionsFragmentPresenter: OptionsFragmentPresenter
 
   companion object {
+    const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+      "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
+    const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+      "AppLanguageActivity.app_language_preference_summary_value"
+    const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
+      "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+
     fun newInstance(
       isMultipane: Boolean,
       isFirstOpen: Boolean,
