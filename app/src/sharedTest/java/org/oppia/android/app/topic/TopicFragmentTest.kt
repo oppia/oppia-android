@@ -25,7 +25,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -168,9 +167,14 @@ class TopicFragmentTest {
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(position = 0,
-        enablePracticeTab = enablePracticeTab
-      ).name)).check(
+      onView(
+        withText(
+          TopicTab.getTabForPosition(
+            position = 0,
+            enablePracticeTab = enablePracticeTab
+          ).name
+        )
+      ).check(
         matches(
           isDescendantOfA(
             withId(
@@ -233,7 +237,8 @@ class TopicFragmentTest {
     initializeApplicationComponent(practiceTabIsEnabled = true)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION,
+        TopicTab.getTabForPosition(
+          position = PRACTICE_TAB_POSITION,
           enablePracticeTab = enablePracticeTab
         )
       onView(withText(practiceTab.name)).check(
