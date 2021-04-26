@@ -155,7 +155,6 @@ class FeedbackReportManagementControllerTest {
     networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     setUpApplicationForContext()
-//    setUpRetrofit()
     setUpFakeLogcatFile()
     MockitoAnnotations.initMocks(this)
   }
@@ -185,10 +184,8 @@ class FeedbackReportManagementControllerTest {
   @Test
   fun testController_submitFeedbackReport_withoutNetwork_doesNotSendRequestToServer() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
-    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
-
-    assertThat(mockWebServer.requestCount).isEqualTo(1)
 
     val request = mockWebServer.takeRequest(
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
@@ -320,25 +317,6 @@ class FeedbackReportManagementControllerTest {
     packageManager.installPackage(packageInfo)
   }
 
-  private fun setUpRetrofit() {
-    mockWebServer = MockWebServer()
-    client = OkHttpClient.Builder()
-      .build()
-
-    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
-    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
-    // request mocking in different ways and we want to verify the full request is executed here.
-    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    retrofit = retrofit2.Retrofit.Builder()
-      .baseUrl(mockWebServer.url("/"))
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
-    val feedbackReportingService = retrofit.create(FeedbackReportingService::class.java)
-
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(feedbackReportingService)
-  }
-
   private fun setUpFakeLogcatFile() {
     // Creates a fake logcat file in this directory so that the controller being tested has a file to
     // read when recording the logcat events.
@@ -380,8 +358,6 @@ class FeedbackReportManagementControllerTest {
 
   annotation class MockServer
 
-  annotation class OkhttpClient
-
   @Module
   class TestNetworkModule {
     @Provides
@@ -393,24 +369,24 @@ class FeedbackReportManagementControllerTest {
 
     @Provides
     @Singleton
-    @OkhttpClient
-    fun provideClientInstance(): OkHttpClient {
-      return OkHttpClient.Builder()
-        .build()
-    }
-
-    @Provides
-    @Singleton
     @OppiaRetrofit
     fun provideRetrofitInstance(
-      @MockServer mockWebServer: MockWebServer,
-      @OkhttpClient client: OkHttpClient
+      @MockServer mockWebServer: MockWebServer
     ): Retrofit {
+      val client = OkHttpClient.Builder()
+        .build()
+
       return retrofit2.Retrofit.Builder()
         .baseUrl(mockWebServer.url("/"))
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client)
         .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
+      return retrofit.create(FeedbackReportingService::class.java)
     }
   }
 
@@ -431,8 +407,7 @@ class FeedbackReportManagementControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class, NetworkModule::class,
-      TestNetworkModule::class,
+      TestDispatcherModule::class, TestLogStorageModule::class, TestNetworkModule::class,
       FakeOppiaClockModule::class, FeedbackReportingModule::class
     ]
   )
