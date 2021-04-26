@@ -9,7 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -17,31 +19,31 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [TextInputEqualsRuleClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputEqualsRuleClassifierProviderTest {
 
-  private val STRING_VALUE_TEST_UPPERCASE =
-    InteractionObjectTestBuilder.createString(value = "TEST")
+  private val STRING_VALUE_TEST_UPPERCASE = createString(value = "TEST")
+  private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
+  private val STRING_VALUE_TEST_DIFFERENT_VALUE = createString(value = "string")
+  private val STRING_VALUE_TEST_SINGLE_SPACES = createString(value = "test a lot")
+  private val STRING_VALUE_THIS = createString(value = "this")
+  private val STRING_VALUE_A_TEST = createString(value = "a test")
+  private val STRING_VALUE_NOT_A_TEST = createString(value = "not a test")
+  private val INT_VALUE_TEST_NON_NEGATIVE = createNonNegativeInt(value = 1)
 
-  private val STRING_VALUE_TEST_LOWERCASE =
-    InteractionObjectTestBuilder.createString(value = "test")
-
-  private val STRING_VALUE_TEST_DIFFERENT_VALUE =
-    InteractionObjectTestBuilder.createString(value = "string")
-
-  private val STRING_VALUE_TEST_EXTRA_SPACES =
-    InteractionObjectTestBuilder.createString(value = "test  a  lot  ")
-
-  private val STRING_VALUE_TEST_SINGLE_SPACES =
-    InteractionObjectTestBuilder.createString(value = "test a lot")
-
-  private val STRING_VALUE_TEST_NO_SPACES =
-    InteractionObjectTestBuilder.createString(value = "testalot")
-
-  private val INT_VALUE_TEST_NON_NEGATIVE =
-    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
+  private val STRING_VALUE_TEST_UPPERCASE_INPUT_SET =
+    createTranslatableSetOfNormalizedString("TEST")
+  private val STRING_VALUE_TEST_LOWERCASE_INPUT_SET =
+    createTranslatableSetOfNormalizedString("test")
+  private val STRING_VALUE_TEST_EXTRA_SPACES_INPUT_SET =
+    createTranslatableSetOfNormalizedString("test  a  lot  ")
+  private val STRING_VALUE_TEST_NO_SPACES_INPUT_SET =
+    createTranslatableSetOfNormalizedString("testalot")
+  private val MULTIPLE_STRING_VALUE_INPUT_SET =
+    createTranslatableSetOfNormalizedString("this", "is", "a test")
 
   @Inject
   internal lateinit var textInputEqualsRuleClassifierProvider:
@@ -57,8 +59,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_stringInput_sameExactString_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
+  fun testStringAnswer_stringInput_sameExactString_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE_INPUT_SET)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
@@ -67,8 +69,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testCapitalStringAnswer_lowercaseStringInput_sameCaseInsensitiveString_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
+  fun testCapitalStringAnswer_lowercaseStringInput_sameCaseInsensitiveString_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE_INPUT_SET)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_UPPERCASE, inputs = inputs)
@@ -77,8 +79,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testLowercaseStringAnswer_capitalStringInput_sameCaseInsensitiveString_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE)
+  fun testLowercaseStringAnswer_capitalStringInput_sameCaseInsensitiveString_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE_INPUT_SET)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs)
@@ -87,8 +89,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_stringInput_sameStringDifferentSpaces_bothValuesMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACES)
+  fun testStringAnswer_stringInput_sameStringDifferentSpaces_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_EXTRA_SPACES_INPUT_SET)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
@@ -97,8 +99,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_stringInput_differentStrings_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
+  fun testStringAnswer_stringInput_differentStrings_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE_INPUT_SET)
 
     val matches = inputEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_DIFFERENT_VALUE,
@@ -109,8 +111,8 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
-  fun testStringAnswer_stringNoSpacesInput_differentStrings_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACES)
+  fun testStringAnswer_stringNoSpacesInput_differentStrings_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_NO_SPACES_INPUT_SET)
 
     val matches =
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_SINGLE_SPACES, inputs = inputs)
@@ -119,8 +121,44 @@ class TextInputEqualsRuleClassifierProviderTest {
   }
 
   @Test
+  fun testStringAnswer_multiStringInput_answerCorrespondsToOne_answerMatches() {
+    val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
+
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = STRING_VALUE_THIS,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_multiStringInput_answerCorrespondsToDifferentOne_answerMatches() {
+    val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
+
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = STRING_VALUE_A_TEST,
+      inputs = inputs
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_multiStringInput_answerDoesNotCorrespondsToAny_answerDoesNotMatch() {
+    val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
+
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = STRING_VALUE_NOT_A_TEST,
+      inputs = inputs
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
   fun testStringAnswer_missingInput_throwsException() {
-    val inputs = mapOf("y" to STRING_VALUE_TEST_LOWERCASE)
+    val inputs = mapOf("y" to STRING_VALUE_TEST_LOWERCASE_INPUT_SET)
 
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(answer = STRING_VALUE_TEST_LOWERCASE, inputs = inputs)
@@ -141,7 +179,7 @@ class TextInputEqualsRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type NORMALIZED_STRING")
+      .contains("Expected input value to be of type TRANSLATABLE_SET_OF_NORMALIZED_STRING")
   }
 
   private fun setUpTestApplicationComponent() {

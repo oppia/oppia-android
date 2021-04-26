@@ -114,22 +114,22 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>yesterday</p>"
+                    content_id: "ca_choices_2"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>I bought</p>"
+                    content_id: "ca_choices_0"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>a camera at the store</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>to photograph the parade.</p>"
+                    content_id: "ca_choices_3"
                   }
                 }
               }
@@ -157,7 +157,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>I bought</p>"
+                content_id: "ca_choices_0"
               }
             }
           }
@@ -177,7 +177,7 @@ states {
             key: "y"
             value {
               translatable_html_content_id {
-                content_id: "<p>to photograph the parade.</p>"
+                content_id: "ca_choices_3"
               }
             }
           }
@@ -185,7 +185,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>I bought</p>"
+                content_id: "ca_choices_0"
               }
             }
           }
@@ -207,22 +207,22 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>I bought</p>"
+                    content_id: "ca_choices_0"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>a camera at the store</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>yesterday</p>"
+                    content_id: "ca_choices_2"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>to photograph the parade.</p>"
+                    content_id: "ca_choices_3"
                   }
                 }
               }

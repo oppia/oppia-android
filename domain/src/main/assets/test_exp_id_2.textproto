@@ -63,13 +63,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>Red</p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>Blue</p>"
+                  content_id: "ca_choices_3"
                 }
                 content_ids {
-                  content_id: "<p>Green</p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -91,7 +91,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>Yellooooow</p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -285,6 +285,16 @@ states {
       }
     }
     recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+      }
+    }
+    recorded_voiceovers {
       key: "content"
       value {
       }
@@ -300,6 +310,16 @@ states {
     }
     written_translations {
       key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
       value {
       }
     }
@@ -334,6 +354,23 @@ states {
             }
           }
           rule_type: "IsExactlyEqualTo"
+        }
+      }
+      solution {
+        interaction_id: "FractionInput"
+        correct_answer {
+          denominator: 2
+          numerator: 1
+        }
+        explanation {
+          html: "<p>Half of something has one part in the numerator for every two parts in the denominator.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Remember that two halves, when added together, make one whole.</p>"
+          content_id: "hint_1"
         }
       }
       default_outcome {
@@ -389,7 +426,7 @@ states {
       }
     }
     content {
-      html: "<p>Test exploration with interactions.</p>"
+      html: "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
       content_id: "content"
     }
     written_translations {
@@ -634,8 +671,8 @@ states {
             key: "x"
             value {
               ratio_expression {
-                ratio_component: 8
-                ratio_component: 10
+                ratio_component: 4
+                ratio_component: 5
               }
             }
           }
@@ -655,8 +692,8 @@ states {
             key: "x"
             value {
               ratio_expression {
-                ratio_component: 4
-                ratio_component: 5
+                ratio_component: 8
+                ratio_component: 10
               }
             }
           }
@@ -832,7 +869,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p><strong>Green</strong></p>"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -968,22 +1005,22 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>3/5</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.5</p>"
+                    content_id: "ca_choices_2"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.46</p>"
+                    content_id: "ca_choices_3"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.35</p>"
+                    content_id: "ca_choices_0"
                   }
                 }
               }
@@ -1011,7 +1048,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.5/p>"
+                content_id: "ca_choices_2"
               }
             }
           }
@@ -1031,7 +1068,7 @@ states {
             key: "y"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.35</p>"
+                content_id: "ca_choices_0"
               }
             }
           }
@@ -1039,7 +1076,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.46</p>"
+                content_id: "ca_choices_3"
               }
             }
           }
@@ -1176,20 +1213,20 @@ states {
               list_of_sets_of_translatable_html_content_ids {
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>3/5</p>"
+                    content_id: "ca_choices_0"
                   }
                   content_ids {
-                    content_id: "<p>0.6</p>"
-                  }
-                }
-                content_id_lists {
-                  content_ids {
-                    content_id: "<p>0.46</p>"
+                    content_id: "ca_choices_1"
                   }
                 }
                 content_id_lists {
                   content_ids {
-                    content_id: "<p>0.35</p>"
+                    content_id: "ca_choices_3"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
                   }
                 }
               }
@@ -1217,7 +1254,7 @@ states {
             key: "x"
             value {
               translatable_html_content_id {
-                content_id: "<p>0.6</p>"
+                content_id: "ca_choices_1"
               }
             }
           }

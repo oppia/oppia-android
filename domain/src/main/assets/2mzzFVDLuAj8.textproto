@@ -4407,10 +4407,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -4432,7 +4432,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -4445,7 +4445,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -4467,10 +4467,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 piece of white chocolate. On the right, there is 2 by 2 piece of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_020001_rm6t5klmjv_height_126_width_352.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -4492,10 +4492,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -5131,13 +5131,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>For every glass of banana puree, we need 2 glasses of milk.</p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<p>We can make this smoothie\302\240using 3 glasses of banana puree\302\240and 6 glasses of milk.</p>"
+                  content_id: "ca_choices_4"
                 }
               }
             }
@@ -5159,7 +5159,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>The smoothie must contain<strong>\302\240exactly</strong>\302\2401 glass of banana puree and 2 glasses of milk.</p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -5181,7 +5181,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>We can make this smoothie by\302\240mixing 2 cups of milk and 4 cups of banana puree.</p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -5203,10 +5203,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<p>For every glass of banana puree, we need 2 glasses of milk.</p>"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -5228,7 +5228,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>We can make this smoothie\302\240using 3 glasses of banana puree\302\240and 6 glasses of milk.</p>"
+                  content_id: "ca_choices_4"
                 }
               }
             }
@@ -5480,13 +5480,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -5508,10 +5508,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_2"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_4"
                 }
               }
             }
@@ -5533,13 +5533,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
