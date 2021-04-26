@@ -168,7 +168,9 @@ class TopicFragmentTest {
   fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(position = 0, enablePracticeTab).name)).check(
+      onView(withText(TopicTab.getTabForPosition(position = 0,
+        enablePracticeTab = enablePracticeTab
+      ).name)).check(
         matches(
           isDescendantOfA(
             withId(
@@ -231,7 +233,9 @@ class TopicFragmentTest {
     initializeApplicationComponent(practiceTabIsEnabled = true)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION,
+          enablePracticeTab = enablePracticeTab
+        )
       onView(withText(practiceTab.name)).check(
         matches(
           isDescendantOfA(
