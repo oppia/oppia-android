@@ -31,6 +31,7 @@ import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -176,7 +177,8 @@ class StateFragmentAccessibilityTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

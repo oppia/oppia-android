@@ -55,6 +55,7 @@ import org.oppia.android.app.testing.BindableAdapterTestDataModel.StringModel
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.android.app.testing.BindableAdapterTestViewModel
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForLiveDataWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
@@ -708,7 +709,8 @@ class BindableAdapterTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

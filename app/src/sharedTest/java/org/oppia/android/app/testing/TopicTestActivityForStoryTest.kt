@@ -32,6 +32,8 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.EnablePracticeTab
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.domain.classify.InteractionsModule
@@ -81,6 +83,10 @@ class TopicTestActivityForStoryTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -103,7 +109,7 @@ class TopicTestActivityForStoryTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
+            TopicTab.getTabForPosition(position = 1, enablePracticeTab).name
           )
         )
       )
@@ -160,7 +166,8 @@ class TopicTestActivityForStoryTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

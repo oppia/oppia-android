@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.InputType
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -38,8 +39,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -81,6 +85,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
@@ -105,18 +110,17 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_6
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.EditTextInputAction
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -125,7 +129,10 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -864,49 +871,39 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testContentCard_forDemoExploration_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_0).use {
+  fun testContentCard_forPrototypeExploration_withCustomOppiaTags_displaysParsedHtml() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       scrollToViewType(CONTENT)
 
-      val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning " +
-          "activities that can be continually improved over time.\n\nIncidentally, do you " +
-          "know where the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
-        matches(
-          withText(htmlResult)
-        )
-      )
+      verifyContentContains("Test exploration with interactions.")
     }
   }
 
   @Test
-  fun testContentCard_forDemoExploration_changeConfig_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_0).use {
+  fun testContentCard_forPrototypeExploration_changeConfig_withCustomTags_displaysParsedHtml() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
       scrollToViewType(CONTENT)
 
-      val htmlResult =
-        "Hi, welcome to Oppia! is a tool that helps you create interactive learning activities " +
-          "that can be continually improved over time.\n\nIncidentally, do you know where " +
-          "the name 'Oppia' comes from?"
-      onView(atPositionOnView(R.id.state_recycler_view, 0, R.id.content_text_view)).check(
-        matches(
-          withText(htmlResult)
-        )
-      )
+      verifyContentContains("Test exploration with interactions.")
     }
   }
 
   @Test
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_6).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      typeRatioExpression("4:5")
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
 
+      typeRatioExpression("4:5")
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
@@ -918,7 +915,10 @@ class StateFragmentTest {
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -939,7 +939,10 @@ class StateFragmentTest {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       rotateToLandscape()
       startPlayingExploration()
-      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -959,7 +962,10 @@ class StateFragmentTest {
   fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -979,7 +985,10 @@ class StateFragmentTest {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       rotateToLandscape()
       startPlayingExploration()
-      selectMultipleChoiceOption(optionPosition = 3) // No, pieces must be the same size.
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -991,6 +1000,240 @@ class StateFragmentTest {
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(matches(withText(containsString("Identify the numerator and denominator"))))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_initialStateIsContinueInteraction() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      // Verify that the initial state is the continue interaction.
+      verifyViewTypeIsPresent(CONTINUE_INTERACTION)
+      verifyContentContains("Test exploration with interactions")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      // Continue interaction.
+      playThroughPrototypeState1()
+
+      // Verify that the user is now on the second state.
+      verifyViewTypeIsPresent(FRACTION_INPUT_INTERACTION)
+      verifyContentContains("What fraction represents half of something?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // Fraction interaction.
+      playThroughPrototypeState2()
+
+      // Verify that the user is now on the third state.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyContentContains("Which bird can sustain flight for long periods of time?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Multiple choice interaction.
+      playThroughPrototypeState3()
+
+      // Verify that the user is now on the fourth state.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyContentContains("What color does the 'G' in 'RGB' correspond to?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Single selection item selection.
+      playThroughPrototypeState4()
+
+      // Verify that the user is now on the fifth state.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyContentContains("What are the primary colors of light?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Multi-selection item selection.
+      playThroughPrototypeState5()
+
+      // Verify that the user is now on the sixth state.
+      verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
+      verifyContentContains("What is 11 times 11?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+
+      // Numeric input interaction.
+      playThroughPrototypeState6()
+
+      // Verify that the user is now on the seventh state.
+      verifyViewTypeIsPresent(RATIO_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("The ratio of the two numbers is:")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+
+      // Ratio input interaction.
+      playThroughPrototypeState7()
+
+      // Verify that the user is now on the eighth state.
+      verifyViewTypeIsPresent(TEXT_INPUT_INTERACTION)
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+
+      // Text input interaction.
+      playThroughPrototypeState8()
+
+      // Verify that the user is now on the ninth state.
+      verifyViewTypeIsPresent(DRAG_DROP_SORT_INTERACTION)
+      verifyContentContains("Sort the following in descending order.")
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      playThroughPrototypeState9()
+
+      // Verify that the user is now on the tenth state.
+      verifyViewTypeIsPresent(DRAG_DROP_SORT_INTERACTION)
+      verifyContentContains("putting equal items in the same position")
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      playThroughPrototypeState9()
+
+      // Drag and drop interaction with grouping.
+      playThroughPrototypeState10()
+
+      // Verify that the user is now on the eleventh and final state.
+      verifyViewTypeIsPresent(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+    }
+  }
+
+  @Test
+  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+
+      // Play to state 2 to access the fraction input interaction.
+      playThroughPrototypeState1()
+
+      // Verify that fraction input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_textViewHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+
+      // Play to state 7 to access the ratio input interaction.
+      playThroughPrototypeState6()
+
+      // Verify that ratio input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
     }
   }
 
@@ -1036,46 +1279,62 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun playThroughPrototypeExploration() {
+  private fun playThroughPrototypeState1() {
     // First state: Continue interaction.
     clickContinueInteractionButton()
+  }
 
+  private fun playThroughPrototypeState2() {
     // Second state: Fraction input. Correct answer: 1/2.
     typeFractionText("1/2")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
 
+  private fun playThroughPrototypeState3() {
     // Third state: Multiple choice. Correct answer: Eagle.
-    selectMultipleChoiceOption(optionPosition = 2)
+    selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
     clickContinueNavigationButton()
+  }
 
+  private fun playThroughPrototypeState4() {
     // Fourth state: Item selection (radio buttons). Correct answer: Green.
-    selectMultipleChoiceOption(optionPosition = 0)
+    selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
     clickContinueNavigationButton()
+  }
 
-    // Fourth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
-    selectItemSelectionCheckbox(optionPosition = 0)
-    selectItemSelectionCheckbox(optionPosition = 2)
-    selectItemSelectionCheckbox(optionPosition = 3)
+  private fun playThroughPrototypeState5() {
+    // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+    selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+    selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+    selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
 
-    // Fifth state: Numeric input. Correct answer: 121.
+  private fun playThroughPrototypeState6() {
+    // Sixth state: Numeric input. Correct answer: 121.
     typeNumericInput("121")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
 
-    // Sixth state: Ratio input. Correct answer: 4:5.
+  private fun playThroughPrototypeState7() {
+    // Seventh state: Ratio input. Correct answer: 4:5.
     typeRatioExpression("4:5")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
 
-    // Seventh state: Text input. Correct answer: finnish.
+  private fun playThroughPrototypeState8() {
+    // Eighth state: Text input. Correct answer: finnish.
     typeTextInput("finnish")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
 
-    // Eighth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+  private fun playThroughPrototypeState9() {
+    // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     dragAndDropItem(fromPosition = 0, toPosition = 3)
     clickSubmitAnswerButton()
     onView(
@@ -1086,8 +1345,10 @@ class StateFragmentTest {
       )
     ).check(matches(withText("3/5")))
     clickContinueNavigationButton()
+  }
 
-    // Ninth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging
+  private fun playThroughPrototypeState10() {
+    // Tenth state: Drag Drop Sort with grouping. Correct answer: Merge First Two and after merging
     // move 2nd item to 3rd position.
     mergeDragAndDropItems(position = 1)
     unlinkDragAndDropItems(position = 1)
@@ -1102,6 +1363,19 @@ class StateFragmentTest {
       )
     ).check(matches(withText("0.6")))
     clickContinueNavigationButton()
+  }
+
+  private fun playThroughPrototypeExploration() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+    playThroughPrototypeState7()
+    playThroughPrototypeState8()
+    playThroughPrototypeState9()
+    playThroughPrototypeState10()
   }
 
   private fun rotateToLandscape() {
@@ -1138,12 +1412,22 @@ class StateFragmentTest {
     typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
   }
 
-  private fun selectMultipleChoiceOption(optionPosition: Int) {
-    clickSelection(optionPosition, targetViewId = R.id.multiple_choice_radio_button)
+  private fun selectMultipleChoiceOption(optionPosition: Int, expectedOptionText: String) {
+    clickSelection(
+      optionPosition,
+      targetClickViewId = R.id.multiple_choice_radio_button,
+      expectedText = expectedOptionText,
+      targetTextViewId = R.id.multiple_choice_content_text_view
+    )
   }
 
-  private fun selectItemSelectionCheckbox(optionPosition: Int) {
-    clickSelection(optionPosition, targetViewId = R.id.item_selection_checkbox)
+  private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {
+    clickSelection(
+      optionPosition,
+      targetClickViewId = R.id.item_selection_checkbox,
+      expectedText = expectedOptionText,
+      targetTextViewId = R.id.item_selection_contents_text_view
+    )
   }
 
   private fun dragAndDropItem(fromPosition: Int, toPosition: Int) {
@@ -1227,13 +1511,26 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickSelection(optionPosition: Int, targetViewId: Int) {
+  private fun clickSelection(
+    optionPosition: Int,
+    targetClickViewId: Int,
+    expectedText: String,
+    targetTextViewId: Int
+  ) {
     scrollToViewType(SELECTION_INTERACTION)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetViewId
+        targetViewId = targetTextViewId
+      )
+    ).check(matches(withText(containsString(expectedText))))
+    // Then, click on it.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = optionPosition,
+        targetViewId = targetClickViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -1256,6 +1553,22 @@ class StateFragmentTest {
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyContentContains(expectedHtml: String) {
+    scrollToViewType(CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
+    // Attempting to scroll to the specified view type is sufficient to verify that it's present.
+    scrollToViewType(viewType)
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
@@ -1394,10 +1707,30 @@ class StateFragmentTest {
     return find { text in it.first }?.second
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
@@ -1405,12 +1738,12 @@ class StateFragmentTest {
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      LogStorageModule::class, CachingTestModule::class, PrimeTopicAssetsControllerModule::class,
+      LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
       LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      MyDownloadsModule::class
+      PracticeTabModule::class, MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -73,13 +73,9 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_1 to createChapterThumbnail3(),
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5(),
-  TEST_EXPLORATION_ID_0 to createChapterThumbnail6(),
-  TEST_EXPLORATION_ID_1 to createChapterThumbnail7(),
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
-  TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
   TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
   TEST_EXPLORATION_ID_5 to createChapterThumbnail0(),
-  TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
@@ -232,7 +228,7 @@ class TopicListController @Inject constructor(
       .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
-      .setTopicThumbnail(createTopicThumbnail(jsonObject))
+      .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
       .setTopicPlayAvailability(topicPlayAvailability)
       .build()
   }
@@ -299,7 +295,7 @@ class TopicListController @Inject constructor(
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
-      .setLessonThumbnail(createTopicThumbnail(jsonObject))
+      .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))
       .build()
   }
 
@@ -739,12 +735,11 @@ class TopicListController @Inject constructor(
   }
 }
 
-internal fun createTopicThumbnail(topicJsonObject: JSONObject): LessonThumbnail {
+internal fun createTopicThumbnailFromJson(topicJsonObject: JSONObject): LessonThumbnail {
   val topicId = topicJsonObject.optString("topic_id")
   val thumbnailBgColor = topicJsonObject.optString("thumbnail_bg_color")
   val thumbnailFilename = topicJsonObject.optString("thumbnail_filename")
-
-  return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+  return if (thumbnailFilename.isNotNullOrEmpty() && thumbnailBgColor.isNotNullOrEmpty()) {
     LessonThumbnail.newBuilder()
       .setThumbnailFilename(thumbnailFilename)
       .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
@@ -753,6 +748,18 @@ internal fun createTopicThumbnail(topicJsonObject: JSONObject): LessonThumbnail 
     TOPIC_THUMBNAILS.getValue(topicId)
   } else {
     createDefaultTopicThumbnail()
+  }
+}
+
+internal fun createTopicThumbnailFromProto(
+  topicId: String,
+  lessonThumbnail: LessonThumbnail
+): LessonThumbnail {
+  val thumbnailFilename = lessonThumbnail.thumbnailFilename
+  return when {
+    thumbnailFilename.isNotNullOrEmpty() -> lessonThumbnail
+    TOPIC_THUMBNAILS.containsKey(topicId) -> TOPIC_THUMBNAILS.getValue(topicId)
+    else -> createDefaultTopicThumbnail()
   }
 }
 
@@ -909,3 +916,7 @@ internal fun createChapterThumbnail9(): LessonThumbnail {
     .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
+
+private fun String?.isNullOrEmpty(): Boolean = this == null || this.isEmpty() || this == "null"
+
+private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()

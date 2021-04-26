@@ -12,15 +12,14 @@ class ViewPagerAdapter(
   fragment: Fragment,
   private val internalProfileId: Int,
   private val topicId: String,
-  private val storyId: String
+  private val storyId: String,
+  private val enablePracticeTab: Boolean
 ) : FragmentStateAdapter(fragment) {
 
-  override fun getItemCount(): Int {
-    return TopicTab.values().size
-  }
+  override fun getItemCount(): Int = TopicTab.getTabCount(enablePracticeTab)
 
   override fun createFragment(position: Int): Fragment {
-    return when (TopicTab.getTabForPosition(position)) {
+    return when (TopicTab.getTabForPosition(position, enablePracticeTab)) {
       TopicTab.INFO -> {
         TopicInfoFragment.newInstance(internalProfileId, topicId)
       }

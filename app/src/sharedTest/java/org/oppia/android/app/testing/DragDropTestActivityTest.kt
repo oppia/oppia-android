@@ -30,6 +30,7 @@ import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
@@ -190,7 +191,8 @@ class DragDropTestActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, MyDownloadsModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
