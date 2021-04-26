@@ -4,5 +4,4 @@ description: "A topic considering the various implications of having especially 
 canonical_story_ids: "test_story_id_2"
 is_published: true
 topic_thumbnail {
-  background_color_rgb: 16741119
 }

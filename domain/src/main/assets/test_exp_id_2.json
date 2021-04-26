@@ -1,117 +1,111 @@
 {
+  "exploration_id": "test_exp_id_2",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 1,
+  "record_playthrough_probability": 0.0,
   "exploration": {
-    "language_code": "en",
-    "param_specs": {},
+    "init_state_name": "Continue",
     "param_changes": [],
-    "title": "Prototype Exploration",
+    "param_specs": {},
     "states": {
       "ItemSelectionMulti": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What are the primary colors of light?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "NumberInput",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<b>Correct!</b>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": [
-                      "<p>Red</p>",
-                      "<p>Blue</p>",
-                      "<p>Green</p>"
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "outcome": {
-                "dest": "ItemSelectionMulti",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>'Yellow' is considered a primary color in the RYB color spectrum, but that doesn't correspond to light. Try again!</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "ContainsAtLeastOneOf": [
-                  {
-                    "x": [
-                      "<p>Yellooooow</p>"
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "ItemSelectionInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>Red</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Yellow</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Green</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>Blue</p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<p>Orange</p>",
-                  "content_id": "ca_choices_4"
-                },
-                {
-                  "html": "<p>Purple</p>",
-                  "content_id": "ca_choices_5"
-                }
-              ]
+              "value": [{
+                "html": "<p>Red</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Yellow</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Green</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>Blue</p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<p>Orange</p>",
+                "content_id": "ca_choices_4"
+              }, {
+                "html": "<p>Purple</p>",
+                "content_id": "ca_choices_5"
+              }]
             },
             "minAllowableSelectionCount": {
-              "value": 1
+              "value": 1.0
             },
             "maxAllowableSelectionCount": {
-              "value": 3
+              "value": 3.0
             }
           },
-          "id": "ItemSelectionInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_3", "ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<b>Correct!</b>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_1"]
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMulti",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>'Yellow' is considered a primary color in the RYB color spectrum, but that doesn't correspond to light. Try again!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "ItemSelectionMulti",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>That's not quite right. Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {},
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -122,80 +116,71 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_2": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>What are the primary colors of light?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "MultipleChoice": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Which bird can sustain flight for long periods of time?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "ItemSelectionMinOne",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! Eagles can sustain flight.</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": 2
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>Penguin</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Chicken</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Eagle</p>",
-                  "content_id": "ca_choices_2"
-                }
-              ]
+              "value": [{
+                "html": "<p>Penguin</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Chicken</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Eagle</p>",
+                "content_id": "ca_choices_2"
+              }]
             }
           },
-          "id": "MultipleChoiceInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMinOne",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! Eagles can sustain flight.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "MultipleChoice",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -205,53 +190,17 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>Which bird can sustain flight for long periods of time?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "Fractions": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What fraction represents half of something?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "MultipleChoice",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsExactlyEqualTo": [
-                  {
-                    "f": {
-                      "wholeNumber": 0,
-                      "denominator": 2,
-                      "numerator": 1,
-                      "isNegative": false
-                    }
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "FractionInput",
           "customization_args": {
             "allowNonzeroIntegerPart": {
               "value": true
@@ -269,65 +218,117 @@
               "value": false
             }
           },
-          "id": "FractionInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 1,
+                  "denominator": 2
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "MultipleChoice",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Fractions",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>That answer isn't correct. Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Remember that two halves, when added together, make one whole.</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": {
+              "isNegative": false,
+              "wholeNumber": 0,
+              "numerator": 1,
+              "denominator": 2
+            },
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>Half of something has one part in the numerator for every two parts in the denominator.</p>"
+            }
+          }
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "hint_1": {},
+            "solution": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
           "translations_mapping": {
             "feedback_1": {},
+            "hint_1": {},
+            "solution": {},
             "content": {},
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>What fraction represents half of something?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "Continue": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [],
+          "id": "Continue",
           "customization_args": {
             "buttonText": {
               "value": "Continue"
             }
           },
-          "id": "Continue",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [],
           "default_outcome": {
             "dest": "Fractions",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": ""
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -336,105 +337,98 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>Test exploration with interactions.</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "NumberInput": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What is 11 times 11?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "RatioInput",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": 121
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "outcome": {
-                "dest": "NumberInput",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Not quite. It's actually larger than that. Try again.</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsLessThan": [
-                  {
-                    "x": 121
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "outcome": {
-                "dest": "NumberInput",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Not quite. It's less than that.</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsGreaterThan": [
-                  {
-                    "x": 121
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
-          "customization_args": {},
           "id": "NumericInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "customization_args": {},
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "RatioInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsLessThan",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Not quite. It's actually larger than that. Try again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsGreaterThan",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Not quite. It's less than that.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "NumberInput",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Something went wrong. The answer is 121--try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -446,103 +440,20 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>What is 11 times 11?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "RatioInput": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "RatioInput",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>No this doesn't seem correct</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "HasNumberOfTermsEqualTo": [
-                  {
-                    "y": 3
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "outcome": {
-                "dest": "Text",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Correct</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": [
-                      8,
-                      10
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "outcome": {
-                "dest": "Text",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Correct</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsEquivalent": [
-                  {
-                    "x": [
-                      4,
-                      5
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "RatioExpressionInput",
           "customization_args": {
             "numberOfTerms": {
-              "value": 0
+              "value": 0.0
             },
             "placeholder": {
               "value": {
@@ -551,19 +462,86 @@
               }
             }
           },
-          "id": "RatioExpressionInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "HasNumberOfTermsEqualTo",
+              "inputs": {
+                "y": 3
+              }
+            }],
+            "outcome": {
+              "dest": "RatioInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>No this doesn't seem correct</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": [4, 5]
+              }
+            }],
+            "outcome": {
+              "dest": "Text",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Correct</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsEquivalent",
+              "inputs": {
+                "x": [8, 10]
+              }
+            }],
+            "outcome": {
+              "dest": "Text",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Correct</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "RatioInput",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not correct</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -575,53 +553,20 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "Text": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>In which language does Oppia mean 'to learn'?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "DragDropNoGroup",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": "finnish"
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1
+              "value": 1.0
             },
             "placeholder": {
               "value": {
@@ -630,19 +575,49 @@
               }
             }
           },
-          "id": "TextInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["finnish"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Text",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not quite. Try again (or maybe use a search engine).</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -652,87 +627,77 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>In which language does Oppia mean 'to learn'?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "ItemSelectionMinOne": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What color does the 'G' in 'RGB' correspond to?</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "ItemSelectionMulti",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "Equals": [
-                  {
-                    "x": [
-                      "<p><strong>Green</strong></p>"
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+          "id": "ItemSelectionInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p><strong>Green</strong></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p><strong>Red</strong></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p><strong>Blue</strong></p>",
-                  "content_id": "ca_choices_2"
-                }
-              ]
+              "value": [{
+                "html": "<p><strong>Green</strong></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p><strong>Red</strong></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p><strong>Blue</strong></p>",
+                "content_id": "ca_choices_2"
+              }]
             },
             "minAllowableSelectionCount": {
-              "value": 1
+              "value": 1.0
             },
             "maxAllowableSelectionCount": {
-              "value": 1
+              "value": 1.0
             }
           },
-          "id": "ItemSelectionInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0"]
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMulti",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "ItemSelectionMinOne",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not quite. Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -742,145 +707,119 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>What color does the 'G' in 'RGB' correspond to?</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "DragDropNoGroup": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Sort the following in descending order.</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "DragDropGroup",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's correct</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsEqualToOrdering": [
-                  {
-                    "x": [
-                      [
-                        "<p>3/5</p>"
-                      ],
-                      [
-                        "<p>0.5</p>"
-                      ],
-                      [
-                        "<p>0.46</p>"
-                      ],
-                      [
-                        "<p>0.35</p>"
-                      ]
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Seems like you did the ascending order</p>"
-                },
-                "dest": "DragDropNoGroup",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "HasElementXAtPositionY": [
-                  {
-                    "y": 1,
-                    "x": "<p>0.5/p>"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>This does not seem right to me</p>"
-                },
-                "dest": "DragDropNoGroup",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "HasElementXBeforeElementY": [
-                  {
-                    "y": "<p>0.35</p>",
-                    "x": "<p>0.46</p>"
-                  }
-                ]
-              }
-            }
-          ],
+          "id": "DragAndDropSortInput",
           "customization_args": {
             "allowMultipleItemsInSamePosition": {
               "value": false
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<p>0.35</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>3/5</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>0.5</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>0.46</p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>0.35</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>3/5</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>0.5</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>0.46</p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "id": "DragAndDropSortInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEqualToOrdering",
+              "inputs": {
+                "x": [["ca_choices_1"], ["ca_choices_2"], ["ca_choices_3"], ["ca_choices_0"]]
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropGroup",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXAtPositionY",
+              "inputs": {
+                "y": 1,
+                "x": "ca_choices_2"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the ascending order</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXBeforeElementY",
+              "inputs": {
+                "y": "ca_choices_0",
+                "x": "ca_choices_3"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>This does not seem right to me</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "DragDropNoGroup",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not quite. Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -892,122 +831,99 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "content": {},
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>Sort the following in descending order.</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "DragDropGroup": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "outcome": {
-                "dest": "End",
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's correct</p>"
-                },
-                "missing_prerequisite_skill_id": null,
-                "refresher_exploration_id": null
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsEqualToOrdering": [
-                  {
-                    "x": [
-                      [
-                        "<p>3/5</p>",
-                        "<p>0.6</p>"
-                      ],
-                      [
-                        "<p>0.46</p>"
-                      ],
-                      [
-                        "<p>0.35</p>"
-                      ]
-                    ]
-                  }
-                ]
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Seems like you did the ascending order</p>"
-                },
-                "dest": "DragDropGroup",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "HasElementXAtPositionY": [
-                  {
-                    "y": 1,
-                    "x": "<p>0.6</p>"
-                  }
-                ]
-              }
-            }
-          ],
+          "id": "DragAndDropSortInput",
           "customization_args": {
             "allowMultipleItemsInSamePosition": {
               "value": true
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<p>3/5</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>0.6</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>0.35</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>0.46</p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>3/5</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>0.6</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>0.35</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>0.46</p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "id": "DragAndDropSortInput",
-          "hints": [],
-          "confirmed_unclassified_answers": [],
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEqualToOrdering",
+              "inputs": {
+                "x": [["ca_choices_0", "ca_choices_1"], ["ca_choices_3"], ["ca_choices_2"]]
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXAtPositionY",
+              "inputs": {
+                "y": 1,
+                "x": "ca_choices_1"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropGroup",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the ascending order</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "DragDropGroup",
-            "labelled_as_correct": false,
-            "param_changes": [],
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not quite. Try again.</p>"
             },
-            "missing_prerequisite_skill_id": null,
-            "refresher_exploration_id": null
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": null,
+            "missing_prerequisite_skill_id": null
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {},
+            "feedback_2": {},
+            "feedback_3": {},
+            "feedback_1": {},
+            "default_outcome": {}
           }
         },
         "written_translations": {
@@ -1019,57 +935,45 @@
             "default_outcome": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "content": {},
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "default_outcome": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       },
       "End": {
+        "content": {
+          "content_id": "content",
+          "html": "Congratulations, you have finished!"
+        },
         "param_changes": [],
-        "classifier_model_id": null,
-        "solicit_answer_details": false,
         "interaction": {
-          "solution": null,
-          "answer_groups": [],
+          "id": "EndExploration",
           "customization_args": {
             "recommendedExplorationIds": {
               "value": []
             }
           },
-          "id": "EndExploration",
+          "answer_groups": [],
+          "default_outcome": null,
           "hints": [],
-          "confirmed_unclassified_answers": [],
-          "default_outcome": null
+          "solution": null
+        },
+        "classifier_model_id": null,
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
         },
         "written_translations": {
           "translations_mapping": {
             "content": {}
           }
         },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "content": {}
-          }
-        },
-        "content": {
-          "content_id": "content",
-          "html": "Congratulations, you have finished!"
-        }
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       }
     },
     "objective": "Demonstrate core interactions used in the Oppia prototype.",
-    "init_state_name": "Continue"
-  },
-  "exploration_id": "test_exp_id_2",
-  "states_schema_version": 39,
-  "version": 1
+    "language_code": "en",
+    "correctness_feedback_enabled": false,
+    "title": "Prototype Exploration"
+  }
 }

@@ -1394,10 +1394,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>For every 1 unit of white chocolate, there should be twice that amount of\302\240dark chocolate.</p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -1419,10 +1419,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>There should\302\240be exactly 1 piece of white chocolate and 2 pieces of dark chocolate.</p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>There should always be 1 bar of white chocolate and 2 bars of dark chocolate.</p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -1444,7 +1444,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>I don\'t know!</p>"
+                  content_id: "ca_choices_4"
                 }
               }
             }
@@ -1466,7 +1466,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>For every 1 unit of white chocolate, there should be twice that amount of\302\240dark chocolate.</p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -1479,7 +1479,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>For any amount of white chocolate, there should be twice that amount of dark chocolate.</p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -1971,10 +1971,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -1996,7 +1996,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-unit tall glass fully filled with mango puree. On the right there are 5 1-unit tall glasses, fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161900_jw61qt7ott_height_163_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -2009,7 +2009,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 2-units tall glass fully filled with milk. On the right, there is 5-units tall glass fully filled with strawberry puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_161944_fqdts0567o_height_259_width_392.png&amp;quot;\"></oppia-noninteractive-image>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -2259,10 +2259,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -2284,7 +2284,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 9 glasses of blueberry puree. On the right side, there are 6 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223529_oeltknb8z8_height_178_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_2"
                 }
               }
             }
@@ -2306,7 +2306,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 4 glasses of blueberry puree. On the right side, there are 5 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223617_h010ya3h8y_height_183_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -2328,10 +2328,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left side, there are 6 glasses of blueberry puree. On the right side, there are 9 glasses of mango puree. The glasses are all same size.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223511_cx7j3xq7qq_height_172_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there are four glasses of blueberry puree. On the right, there are 6 glasses of mango puree. The glasses are all same size&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_223455_z2b5likty7_height_182_width_392.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -2550,10 +2550,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>8:2</p>\n"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>12:3</p>\n"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -2575,10 +2575,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>16:2</p>\n"
+                  content_id: "ca_choices_2"
                 }
                 content_ids {
-                  content_id: "<p>20:4</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -2600,7 +2600,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>8:2</p>\n"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -2613,7 +2613,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>12:3</p>\n"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -3520,10 +3520,10 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>1:4</p>\n"
+                  content_id: "ca_choices_0"
                 }
                 content_ids {
-                  content_id: "<p>4:16</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -3545,7 +3545,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>1:4</p>\n"
+                  content_id: "ca_choices_0"
                 }
               }
             }
@@ -3558,7 +3558,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>4:16</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -3925,13 +3925,13 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>6:9:12</p>\n"
+                  content_id: "ca_choices_1"
                 }
                 content_ids {
-                  content_id: "<p>10:15:20</p>\n"
+                  content_id: "ca_choices_3"
                 }
                 content_ids {
-                  content_id: "<p>12:18:24</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -3953,7 +3953,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>12:18:24</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -3966,7 +3966,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>6:9:12</p>\n"
+                  content_id: "ca_choices_1"
                 }
               }
             }
@@ -3979,7 +3979,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>10:15:20</p>\n"
+                  content_id: "ca_choices_3"
                 }
               }
             }
@@ -4001,7 +4001,7 @@ states {
             value {
               set_of_translatable_html_content_ids {
                 content_ids {
-                  content_id: "<p>4:5:6</p>\n"
+                  content_id: "ca_choices_0"
                 }
               }
             }
