@@ -3,13 +3,27 @@ package org.oppia.android.app.mydownloads.downloads
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -17,10 +31,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -99,221 +118,221 @@ class DownloadsFragmentTest {
    * .
    */
 
-  /* @Test
-   fun testDownloadsFragment_sortByTitle_isDisplayedCorrectly() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(withId(R.id.sort_by_text_view))
-         .check(matches(withText(context.getString(R.string.sort_by))))
-     }
-   }
+  @Test
+  fun testDownloadsFragment_sortByTitle_isDisplayedCorrectly() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.sort_by_text_view))
+        .check(matches(withText(context.getString(R.string.sort_by))))
+    }
+  }
 
-   @Test
-   fun testDownloadsFragment_sortByDropDown_newestIsDefault() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 0,
-           targetViewId = R.id.sort_by_menu
-         )
-       ).check(matches(withText(context.getString(R.string.downloads_sort_by_newest))))
-     }
-   }
+  @Test
+  fun testDownloadsFragment_sortByDropDown_newestIsDefault() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 0,
+          targetViewId = R.id.sort_by_menu
+        )
+      ).check(matches(withText(context.getString(R.string.downloads_sort_by_newest))))
+    }
+  }
 
-   @Test
-   fun testDownloadsFragment_dropDown_selectAlphabetically_configChange_alphabeticallyIsSelected() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 0,
-           targetViewId = R.id.sort_by_menu
-         )
-       ).perform(click())
-       testCoroutineDispatchers.runCurrent()
+  @Test
+  fun testDownloadsFragment_dropDown_selectAlphabetically_configChange_alphabeticallyIsSelected() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 0,
+          targetViewId = R.id.sort_by_menu
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-       onView(withText(context.getString(R.string.downloads_sort_by_alphabetically)))
-         .inRoot(isPlatformPopup())
-         .perform(click())
+      onView(withText(context.getString(R.string.downloads_sort_by_alphabetically)))
+        .inRoot(isPlatformPopup())
+        .perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 0,
-           targetViewId = R.id.sort_by_menu
-         )
-       ).check(matches(withText(context.getString(R.string.downloads_sort_by_alphabetically))))
-     }
-   }
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 0,
+          targetViewId = R.id.sort_by_menu
+        )
+      ).check(matches(withText(context.getString(R.string.downloads_sort_by_alphabetically))))
+    }
+  }
 
-   @Test
-   fun testDownloadsFragment_expandListItem_deleteIconIsDisplayed() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.expand_list_icon
-         )
-       ).perform(click())
+  @Test
+  fun testDownloadsFragment_expandListItem_deleteIconIsDisplayed() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.delete_image_view
-         )
-       ).check(matches(withDrawable(R.drawable.ic_delete)))
-     }
-   }
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.delete_image_view
+        )
+      ).check(matches(withDrawable(R.drawable.ic_delete)))
+    }
+  }
 
-   @Test
-   fun testDownloadsFragment_expandListItem_deleteTitleIsDisplayed() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.expand_list_icon
-         )
-       ).perform(click())
+  @Test
+  fun testDownloadsFragment_expandListItem_deleteTitleIsDisplayed() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.delete_text_view
-         )
-       ).check(matches(withText(context.getString(R.string.downloads_delete_heading))))
-     }
-   }
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.delete_text_view
+        )
+      ).check(matches(withText(context.getString(R.string.downloads_delete_heading))))
+    }
+  }
 
-   // check for data extract
-   @Test
-   fun testDownloadsFragment_adminProfile_expandListItem_clickDelete_deleteDialogIsDisplayed() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.expand_list_icon
-         )
-       ).perform(click())
+  // check for data extract
+  @Test
+  fun testDownloadsFragment_adminProfile_expandListItem_clickDelete_deleteDialogIsDisplayed() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.delete_image_view
-         )
-       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.delete_image_view
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(isRoot())
-         .check(matches(withText(context.getString(R.string.downloads_topic_delete_dialog_message))))
-     }
-   }
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot())
+        .check(matches(withText(context.getString(R.string.downloads_topic_delete_dialog_message))))
+    }
+  }
 
-   // check for data extract
-   @Test
-   fun testDownloadsFragment_userProfile_expandListItem_clickDelete_askAdminPinDialogIsDisplayed() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = userProfileInternalId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.expand_list_icon
-         )
-       ).perform(click())
+  // check for data extract
+  @Test
+  fun testDownloadsFragment_userProfile_expandListItem_clickDelete_askAdminPinDialogIsDisplayed() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = userProfileInternalId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.delete_image_view
-         )
-       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.delete_image_view
+        )
+      ).perform(click())
 
-       testCoroutineDispatchers.runCurrent()
-       onView(isRoot())
-         .check(matches(withText(context.getString(R.string.downloads_access_dialog_heading))))
-       onView(isRoot())
-         .check(matches(withText(context.getString(R.string.downloads_access_dialog_message))))
-       onView(isRoot())
-         .check(matches(withText(context.getString(R.string.admin_settings_submit))))
-       onView(withId(R.id.downloads_access_input_pin))
-         .check(matches(isDisplayed()))
-     }
-   }
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot())
+        .check(matches(withText(context.getString(R.string.downloads_access_dialog_heading))))
+      onView(isRoot())
+        .check(matches(withText(context.getString(R.string.downloads_access_dialog_message))))
+      onView(isRoot())
+        .check(matches(withText(context.getString(R.string.admin_settings_submit))))
+      onView(withId(R.id.downloads_access_input_pin))
+        .check(matches(isDisplayed()))
+    }
+  }
 
-   @Test
-   fun testDownloadsFragment_clickFirstTopicCard_opensTopicActivity() {
-     launchMyDownloadsActivityIntent(
-       internalProfileId = internalProfileId,
-       isFromNavigationDrawer = false
-     ).use {
-       testCoroutineDispatchers.runCurrent()
-       onView(
-         atPositionOnView(
-           recyclerViewId = R.id.downloads_recycler_view,
-           position = 1,
-           targetViewId = R.id.topic_download_details_container
-         )
-       ).perform(click())
+  @Test
+  fun testDownloadsFragment_clickFirstTopicCard_opensTopicActivity() {
+    launchMyDownloadsActivityIntent(
+      internalProfileId = internalProfileId,
+      isFromNavigationDrawer = false
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.downloads_recycler_view,
+          position = 1,
+          targetViewId = R.id.topic_download_details_container
+        )
+      ).perform(click())
 
-       intended(hasComponent(TopicActivity::class.java.name))
-       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-     }
-   }
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+    }
+  }
 
-   private fun launchMyDownloadsActivityIntent(
-     internalProfileId: Int,
-     isFromNavigationDrawer: Boolean,
-   ): ActivityScenario<MyDownloadsActivity> {
-     val intent =
-       MyDownloadsActivity.createMyDownloadsActivityIntent(
-         ApplicationProvider.getApplicationContext(),
-         internalProfileId,
-         isFromNavigationDrawer
-       )
-     return ActivityScenario.launch(intent)
-   }*/
+  private fun launchMyDownloadsActivityIntent(
+    internalProfileId: Int,
+    isFromNavigationDrawer: Boolean,
+  ): ActivityScenario<MyDownloadsActivity> {
+    val intent =
+      MyDownloadsActivity.createMyDownloadsActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        isFromNavigationDrawer
+      )
+    return ActivityScenario.launch(intent)
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
