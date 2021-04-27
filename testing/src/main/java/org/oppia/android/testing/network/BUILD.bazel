@@ -41,7 +41,6 @@ kt_android_library(
     ],
 )
 
-
 kt_android_library(
     name = "retrofit_module",
     srcs = [
