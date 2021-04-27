@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.InputType
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -38,6 +39,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -82,6 +84,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
@@ -1196,6 +1199,43 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+
+      // Play to state 2 to access the fraction input interaction.
+      playThroughPrototypeState1()
+
+      // Verify that fraction input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_textViewHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+
+      // Play to state 7 to access the ratio input interaction.
+      playThroughPrototypeState6()
+
+      // Verify that ratio input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
+    }
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
@@ -1701,7 +1741,8 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
-      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
