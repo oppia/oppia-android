@@ -1,5 +1,5 @@
 """
-Utility to change the color of Status Bar.
+Utilities for managing the Android status bar.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
