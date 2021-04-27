@@ -1,6 +1,7 @@
 package org.oppia.android.app.story
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +17,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -33,6 +37,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -50,14 +55,14 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -80,7 +85,17 @@ class StoryActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var context: Context
+
   private val internalProfileId = 0
+
+  @get:Rule
+  val activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
+    StoryActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
@@ -96,12 +111,28 @@ class StoryActivityTest {
   }
 
   @Test
+  fun testStoryActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createStoryActivityIntent(
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID_0,
+        storyId = TEST_STORY_ID_0
+      )
+    )
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
+  }
+
+  @Test
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_1
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID_0,
+        storyId = TEST_STORY_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -123,7 +154,7 @@ class StoryActivityTest {
         allOf(
           hasExtra(
             ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            TEST_EXPLORATION_ID_1
+            TEST_EXPLORATION_ID_2
           ),
           hasComponent(ExplorationActivity::class.java.name)
         )
@@ -141,15 +172,14 @@ class StoryActivityTest {
     storyId: String
   ): Intent {
     return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      topicId,
-      storyId
+      context = ApplicationProvider.getApplicationContext(),
+      internalProfileId = internalProfileId,
+      topicId = topicId,
+      storyId = storyId
     )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -166,7 +196,7 @@ class StoryActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

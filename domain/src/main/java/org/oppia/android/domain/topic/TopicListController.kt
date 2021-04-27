@@ -13,16 +13,21 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -59,7 +64,6 @@ val STORY_THUMBNAILS = mapOf(
   RATIOS_STORY_ID_0 to createStoryThumbnail1(),
   RATIOS_STORY_ID_1 to createStoryThumbnail2(),
   TEST_STORY_ID_0 to createStoryThumbnail3(),
-  TEST_STORY_ID_1 to createStoryThumbnail4(),
   TEST_STORY_ID_2 to createStoryThumbnail5()
 )
 val EXPLORATION_THUMBNAILS = mapOf(
@@ -69,13 +73,9 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_1 to createChapterThumbnail3(),
   RATIOS_EXPLORATION_ID_2 to createChapterThumbnail4(),
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5(),
-  TEST_EXPLORATION_ID_0 to createChapterThumbnail6(),
-  TEST_EXPLORATION_ID_1 to createChapterThumbnail7(),
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
-  TEST_EXPLORATION_ID_3 to createChapterThumbnail9(),
   TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
   TEST_EXPLORATION_ID_5 to createChapterThumbnail0(),
-  TEST_EXPLORATION_ID_6 to createChapterThumbnail0()
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
@@ -91,7 +91,9 @@ class TopicListController @Inject constructor(
   private val topicController: TopicController,
   private val storyProgressController: StoryProgressController,
   private val dataProviders: DataProviders,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
 
   /**
@@ -123,6 +125,23 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicList(): TopicList {
+    return if (loadLessonProtosFromAssets) {
+      val topicIdList =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "topics",
+          baseMessage = TopicIdList.getDefaultInstance()
+        )
+      return TopicList.newBuilder().apply {
+        // Only include topics currently playable in the topic list.
+        addAllTopicSummary(
+          topicIdList.topicIdsList.map { createTopicSummary(it) }
+            .filter { it.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW }
+        )
+      }.build()
+    } else loadTopicListFromJson()
+  }
+
+  private fun loadTopicListFromJson(): TopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
@@ -155,9 +174,32 @@ class TopicListController @Inject constructor(
   }
 
   private fun createTopicSummary(topicId: String): TopicSummary {
-    val topicJson =
-      jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    return createTopicSummaryFromJson(topicId, topicJson)
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+      val storyRecords = topicRecord.canonicalStoryIdsList.map {
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = it,
+          baseMessage = StoryRecord.getDefaultInstance()
+        )
+      }
+      TopicSummary.newBuilder().apply {
+        this.topicId = topicId
+        name = topicRecord.name
+        totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
+        topicThumbnail = topicRecord.topicThumbnail
+        topicPlayAvailability = if (topicRecord.isPublished) {
+          TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
+        } else {
+          TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
+        }
+      }.build()
+    } else {
+      createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
+    }
   }
 
   private fun createUpcomingTopicSummary(topicId: String): UpcomingTopic {
@@ -185,7 +227,7 @@ class TopicListController @Inject constructor(
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
-      .setTopicThumbnail(createTopicThumbnail(jsonObject))
+      .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
       .setTopicPlayAvailability(topicPlayAvailability)
       .build()
   }
@@ -212,7 +254,7 @@ class TopicListController @Inject constructor(
       .setName(jsonObject.getString("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
-      .setLessonThumbnail(createTopicThumbnail(jsonObject))
+      .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))
       .build()
   }
 
@@ -450,16 +492,35 @@ class TopicListController @Inject constructor(
   private fun computeSuggestedStories(
     topicProgressList: List<TopicProgress>
   ): List<PromotedStory> {
-    val recommendedStories = mutableListOf<PromotedStory>()
+    return if (loadLessonProtosFromAssets) {
+      val topicIdList =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = "topics",
+          baseMessage = TopicIdList.getDefaultInstance()
+        )
+      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList.topicIdsList)
+    } else computeSuggestedStoriesFromJson(topicProgressList)
+  }
+
+  private fun computeSuggestedStoriesFromJson(
+    topicProgressList: List<TopicProgress>
+  ): List<PromotedStory> {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
-
-    // The list of started or completed topic IDs.
-    val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
     // All topics that could potentially be recommended.
     val topicIdList =
       (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
+    return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList)
+  }
+
+  private fun computeSuggestedStoriesForTopicIds(
+    topicProgressList: List<TopicProgress>,
+    topicIdList: List<String>
+  ): List<PromotedStory> {
+    val recommendedStories = mutableListOf<PromotedStory>()
+    // The list of started or completed topic IDs.
+    val startedTopicIds = topicProgressList.map(TopicProgress::getTopicId)
     // The list of topic IDs that qualify for being recommended.
     val unstartedTopicIdList = topicIdList.filterNot { startedTopicIds.contains(it) }
 
@@ -484,9 +545,7 @@ class TopicListController @Inject constructor(
       if (topicId !in impliedFinishedTopicIds &&
         impliedFinishedTopicIds.containsAll(dependentTopicIds)
       ) {
-        createRecommendedStoryFromAssets(topicId)?.let {
-          recommendedStories.add(it)
-        }
+        loadRecommendedStory(topicId)?.let(recommendedStories::add)
       }
     }
     return recommendedStories
@@ -535,7 +594,43 @@ class TopicListController @Inject constructor(
     return (transitiveDependencies + directDependencies).toSet()
   }
 
-  private fun createRecommendedStoryFromAssets(topicId: String): PromotedStory? {
+  private fun loadRecommendedStory(topicId: String): PromotedStory? {
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+      if (!topicRecord.isPublished || topicRecord.canonicalStoryIdsCount == 0) {
+        // Do not recommend unpublished topics, or topics without stories (which shouldn't happen).
+        return null
+      }
+      // Only recommend the first story of unstarted topics.
+      val firstStoryId = topicRecord.canonicalStoryIdsList.first()
+      val storyRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = firstStoryId,
+          baseMessage = StoryRecord.getDefaultInstance()
+        )
+      return PromotedStory.newBuilder().apply {
+        storyId = firstStoryId
+        storyName = storyRecord.storyName
+        this.topicId = topicId
+        topicName = topicRecord.name
+        completedChapterCount = 0
+        totalChapterCount = storyRecord.chaptersCount
+        lessonThumbnail = storyRecord.storyThumbnail
+        isTopicLearned = false
+        // Only populate next chapter information if there is a next chapter.
+        storyRecord.chaptersList.firstOrNull()?.let {
+          nextChapterName = it.title
+          explorationId = it.explorationId
+        }
+      }.build()
+    } else loadRecommendedStoryFromJson(topicId)
+  }
+
+  private fun loadRecommendedStoryFromJson(topicId: String): PromotedStory? {
     val topicJson = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")
     if (topicJson!!.optString("topic_name").isNullOrEmpty()) {
       return null
@@ -599,12 +694,11 @@ class TopicListController @Inject constructor(
   }
 }
 
-internal fun createTopicThumbnail(topicJsonObject: JSONObject): LessonThumbnail {
+internal fun createTopicThumbnailFromJson(topicJsonObject: JSONObject): LessonThumbnail {
   val topicId = topicJsonObject.optString("topic_id")
   val thumbnailBgColor = topicJsonObject.optString("thumbnail_bg_color")
   val thumbnailFilename = topicJsonObject.optString("thumbnail_filename")
-
-  return if (thumbnailFilename.isNotEmpty() && thumbnailBgColor.isNotEmpty()) {
+  return if (thumbnailFilename.isNotNullOrEmpty() && thumbnailBgColor.isNotNullOrEmpty()) {
     LessonThumbnail.newBuilder()
       .setThumbnailFilename(thumbnailFilename)
       .setBackgroundColorRgb(Color.parseColor(thumbnailBgColor))
@@ -613,6 +707,18 @@ internal fun createTopicThumbnail(topicJsonObject: JSONObject): LessonThumbnail 
     TOPIC_THUMBNAILS.getValue(topicId)
   } else {
     createDefaultTopicThumbnail()
+  }
+}
+
+internal fun createTopicThumbnailFromProto(
+  topicId: String,
+  lessonThumbnail: LessonThumbnail
+): LessonThumbnail {
+  val thumbnailFilename = lessonThumbnail.thumbnailFilename
+  return when {
+    thumbnailFilename.isNotNullOrEmpty() -> lessonThumbnail
+    TOPIC_THUMBNAILS.containsKey(topicId) -> TOPIC_THUMBNAILS.getValue(topicId)
+    else -> createDefaultTopicThumbnail()
   }
 }
 
@@ -769,3 +875,7 @@ internal fun createChapterThumbnail9(): LessonThumbnail {
     .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
+
+private fun String?.isNullOrEmpty(): Boolean = this == null || this.isEmpty() || this == "null"
+
+private fun String?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
