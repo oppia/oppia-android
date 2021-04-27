@@ -13,7 +13,7 @@ class AdministratorControlsAccountActionsViewModel(
 ) : AdministratorControlsItemViewModel() {
 
   fun onLogOutClicked() {
-    LogoutDialogFragment().showNow(
+    LogoutDialogFragment.newInstance().showNow(
       fragment.requireActivity().supportFragmentManager,
       TAG_LOGOUT_DIALOG
     )

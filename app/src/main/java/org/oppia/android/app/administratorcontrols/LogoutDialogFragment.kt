@@ -10,6 +10,12 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 /** [DialogFragment] that gives option to either cancel or logout from current profile. */
 class LogoutDialogFragment : DialogFragment() {
 
+  companion object {
+    fun newInstance(): LogoutDialogFragment {
+      return LogoutDialogFragment()
+    }
+  }
+
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     return AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
       .setMessage(R.string.log_out_dialog_message)
