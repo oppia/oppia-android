@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -401,20 +400,20 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  private val keyboardVisibilityListener = ViewTreeObserver.OnGlobalLayoutListener {
-    val diff = binding.root.rootView.height - binding.root.height
-    val threshold = 200 * activity.resources.displayMetrics.density // represents 200 dp
-    val isKeyboardVisible = diff > threshold
-    questionViewModel.isKeyboardVisible.set(isKeyboardVisible)
-  }
+//  private val keyboardVisibilityListener = ViewTreeObserver.OnGlobalLayoutListener {
+//    val diff = binding.root.rootView.height - binding.root.height
+//    val threshold = 200 * activity.resources.displayMetrics.density // represents 200 dp
+//    val isKeyboardVisible = diff > threshold
+//    questionViewModel.isKeyboardVisible.set(isKeyboardVisible)
+//  }
 
-  fun addKeyboardVisibilityListener() {
-    binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardVisibilityListener)
-  }
-
-  fun removeKeyboardVisibilityListener() {
-    binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardVisibilityListener)
-  }
+//  fun addKeyboardVisibilityListener() {
+//    binding.root.viewTreeObserver.addOnGlobalLayoutListener(keyboardVisibilityListener)
+//  }
+//
+//  fun removeKeyboardVisibilityListener() {
+//    binding.root.viewTreeObserver.removeOnGlobalLayoutListener(keyboardVisibilityListener)
+//  }
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,

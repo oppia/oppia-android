@@ -87,13 +87,13 @@ class QuestionPlayerFragment :
   override fun onHintAvailable(helpIndex: HelpIndex) =
     questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 
-  override fun onResume() {
-    super.onResume()
-    questionPlayerFragmentPresenter.addKeyboardVisibilityListener()
-  }
-
-  override fun onPause() {
-    super.onPause()
-    questionPlayerFragmentPresenter.removeKeyboardVisibilityListener()
-  }
+//  override fun onResume() {
+//    super.onResume()
+//    questionPlayerFragmentPresenter.addKeyboardVisibilityListener()
+//  }
+//
+//  override fun onPause() {
+//    super.onPause()
+//    questionPlayerFragmentPresenter.removeKeyboardVisibilityListener()
+//  }
 }
