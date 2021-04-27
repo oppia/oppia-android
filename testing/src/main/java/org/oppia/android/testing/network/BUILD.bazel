@@ -41,4 +41,19 @@ kt_android_library(
     ],
 )
 
+
+kt_android_library(
+    name = "retrofit_module",
+    srcs = [
+        "RetrofitModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":oppia_retrofit",
+        ":prod_module",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+    ],
+)
+
 dagger_rules()
