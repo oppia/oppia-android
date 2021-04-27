@@ -43,6 +43,7 @@ kt_android_library(
     srcs = [
         "OppiaRetrofit.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
     ],
