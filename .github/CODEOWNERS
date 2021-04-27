@@ -26,13 +26,6 @@
 # Codeowners ownership (for adding/changing/removing code owners).
 .github/CODEOWNERS @oppia/owners
 
-# Bazel build files.
-WORKSPACE @BenHenning
-*.bzl @BenHenning
-*.bazel @BenHenning
-.bazelrc @BenHenning
-/tools/android/ @BenHenning
-
 # Gradle build files.
 *.gradle @BenHenning
 gradle.properties @BenHenning
@@ -191,3 +184,14 @@ NOTICE @BenHenning
 
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
+
+#####################################################################################
+#                                global overrides                                   #
+#####################################################################################
+
+# Bazel build files. This is added after everything else to ensure Bazel files are always reviewed by the same people.
+WORKSPACE @BenHenning
+*.bzl @BenHenning
+*.bazel @BenHenning
+.bazelrc @BenHenning
+/tools/android/ @BenHenning
