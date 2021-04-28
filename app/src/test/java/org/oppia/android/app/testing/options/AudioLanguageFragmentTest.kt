@@ -119,7 +119,6 @@ class AudioLanguageFragmentTest {
     }
   }
 
-
   @Test
   fun testAudioLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
     launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
