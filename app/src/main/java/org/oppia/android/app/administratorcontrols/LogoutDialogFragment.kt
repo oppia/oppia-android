@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.profile.ProfileChooserActivity
 
-/** [DialogFragment] that gives option to either cancel or logout from current profile. */
+/** [DialogFragment] that gives option to either cancel or log out from current profile. */
 class LogoutDialogFragment : DialogFragment() {
 
   companion object {
