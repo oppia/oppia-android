@@ -27,6 +27,6 @@ class WalkthroughTopicSummaryViewModel(
 
   @ColorInt
   private fun retrieveBackgroundColor(): Int {
-    return topicSummary.topicThumbnail.backgroundColorRgb
+    return (0xff000000L or topicSummary.topicThumbnail.backgroundColorRgb.toLong()).toInt()
   }
 }
