@@ -14,7 +14,7 @@ import java.util.Objects
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
-  val promotedItemList: List<PromotedListItemViewModel>,
+  val promotedItemList: List<PromotedCarouselItemViewModel>,
   private val promotedActivityList: PromotedActivityList
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener

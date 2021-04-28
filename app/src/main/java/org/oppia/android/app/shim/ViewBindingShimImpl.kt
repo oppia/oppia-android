@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
-import org.oppia.android.app.home.promotedlist.PromotedListItemViewModel
+import org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
@@ -18,7 +18,7 @@ import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
-import org.oppia.android.databinding.PromotedListItemCardBinding
+import org.oppia.android.databinding.PromotedCarouselItemCardBinding
 import org.oppia.android.util.parser.HtmlParser
 import javax.inject.Inject
 
@@ -38,17 +38,17 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
-    return PromotedListItemCardBinding.inflate(
+    return PromotedCarouselItemCardBinding.inflate(
       LayoutInflater.from(parent.context), parent, attachToParent
     ).root
   }
 
   override fun providePromotedStoryViewModel(
     view: View,
-    viewModel: PromotedListItemViewModel
+    viewModel: PromotedCarouselItemViewModel
   ) {
     val binding =
-      DataBindingUtil.findBinding<PromotedListItemCardBinding>(view)!!
+      DataBindingUtil.findBinding<PromotedCarouselItemCardBinding>(view)!!
     binding.viewModel = viewModel
   }
 

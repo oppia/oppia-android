@@ -58,14 +58,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PromotedListItemViewModel] data. */
+/** Tests for [PromotedCarouselItemViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PromotedListItemViewModelTest.TestApplication::class,
+  application = PromotedCarouselItemViewModelTest.TestApplication::class,
   manifest = Config.NONE
 )
-class PromotedListItemViewModelTest {
+class PromotedCarouselItemViewModelTest {
 
   @Inject
   lateinit var context: Context
@@ -181,14 +181,14 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModelProfile1 = PromotedListItemViewModel(
+        val promotedListItemViewModelProfile1 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedListItemViewModelProfile2 = PromotedListItemViewModel(
+        val promotedListItemViewModelProfile2 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 2,
           totalStoryCount = 3,
@@ -208,14 +208,14 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModelStoryCount2 = PromotedListItemViewModel(
+        val promotedListItemViewModelStoryCount2 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 2,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedListItemViewModelStoryCount3 = PromotedListItemViewModel(
+        val promotedListItemViewModelStoryCount3 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -235,14 +235,14 @@ class PromotedListItemViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedListItemViewModelEntity1 = PromotedListItemViewModel(
+        val promotedListItemViewModelEntity1 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_1",
           promotedStory = promotedStory1
         )
-        val promotedListItemViewModelEntity2 = PromotedListItemViewModel(
+        val promotedListItemViewModelEntity2 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -263,14 +263,14 @@ class PromotedListItemViewModelTest {
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         assertThat(promotedStory1.equals(promotedStory2)).isFalse()
 
-        val promotedListItemViewModelStory1 = PromotedListItemViewModel(
+        val promotedListItemViewModelStory1 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1
         )
-        val promotedListItemViewModelStory2 = PromotedListItemViewModel(
+        val promotedListItemViewModelStory2 = PromotedCarouselItemViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
@@ -325,8 +325,8 @@ class PromotedListItemViewModelTest {
 
   private fun createBasicPromotedListItemViewModel(
     activity: AppCompatActivity
-  ): PromotedListItemViewModel {
-    return PromotedListItemViewModel(
+  ): PromotedCarouselItemViewModel {
+    return PromotedCarouselItemViewModel(
       activity = activity,
       internalProfileId = 1,
       totalStoryCount = 3,
@@ -358,17 +358,17 @@ class PromotedListItemViewModelTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(promotedListItemViewModelTest: PromotedListItemViewModelTest)
+    fun inject(promotedListItemViewModelTest: PromotedCarouselItemViewModelTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPromotedListItemViewModelTest_TestApplicationComponent.builder()
+      DaggerPromotedCarouselItemViewModelTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(promotedListItemViewModelTest: PromotedListItemViewModelTest) {
+    fun inject(promotedListItemViewModelTest: PromotedCarouselItemViewModelTest) {
       component.inject(promotedListItemViewModelTest)
     }
 

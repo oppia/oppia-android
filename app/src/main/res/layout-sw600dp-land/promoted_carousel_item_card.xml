@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.promotedlist.PromotedListItemViewModel" />
+      type="org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView

@@ -50,7 +50,7 @@ class PromotedStoryListView @JvmOverloads constructor(
    *
    * @param newDataList the new list of stories to present
    */
-  fun setPromotedStoryList(newDataList: List<PromotedListItemViewModel>?) {
+  fun setPromotedStoryList(newDataList: List<PromotedCarouselItemViewModel>?) {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -66,8 +66,8 @@ class PromotedStoryListView @JvmOverloads constructor(
     }
   }
 
-  private fun createAdapter(): BindableAdapter<PromotedListItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<PromotedListItemViewModel>()
+  private fun createAdapter(): BindableAdapter<PromotedCarouselItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder.newBuilder<PromotedCarouselItemViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.providePromotedStoryCardInflatedView(

@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
-import org.oppia.android.app.home.promotedlist.PromotedListItemViewModel
+import org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
@@ -99,7 +99,7 @@ interface ViewBindingShim {
   /** Handles binding inflation for [PromotedStoryListView] and returns the view model. */
   fun providePromotedStoryViewModel(
     view: View,
-    viewModel: PromotedListItemViewModel
+    viewModel: PromotedCarouselItemViewModel
   )
 
   /** Handles binding inflation for [ComingSoonTopicsListView]. */

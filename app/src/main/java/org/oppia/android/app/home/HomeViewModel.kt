@@ -9,7 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
-import org.oppia.android.app.home.promotedlist.PromotedListItemViewModel
+import org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
@@ -153,12 +153,12 @@ class HomeViewModel(
 
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to the the [PromotedStoryListViewModel] displayed
-   * for this profile (see [PromotedListItemViewModel]), or an empty list if the profile does not have any
+   * for this profile (see [PromotedCarouselItemViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
   private fun computePromotedStoryViewModelList(
     promotedStoryList: PromotedStoryList
-  ): List<PromotedListItemViewModel> {
+  ): List<PromotedCarouselItemViewModel> {
     with(promotedStoryList) {
       val storyList = when {
         suggestedStoryList.isNotEmpty() -> {
@@ -183,7 +183,7 @@ class HomeViewModel(
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
       return sortedStoryList.take(promotedStoryListLimit)
         .map { promotedStory ->
-          PromotedListItemViewModel(
+          PromotedCarouselItemViewModel(
             activity,
             internalProfileId,
             sortedStoryList.size,

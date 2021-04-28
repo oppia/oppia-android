@@ -14,7 +14,7 @@ import java.util.Objects
 // TODO(#283): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-class PromotedListItemViewModel(
+class PromotedCarouselItemViewModel(
   private val activity: AppCompatActivity,
   private val internalProfileId: Int,
   private val totalStoryCount: Int,
@@ -48,7 +48,7 @@ class PromotedListItemViewModel(
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
   override fun equals(other: Any?): Boolean {
-    return other is PromotedListItemViewModel &&
+    return other is PromotedCarouselItemViewModel &&
       other.internalProfileId == this.internalProfileId &&
       other.totalStoryCount == this.totalStoryCount &&
       other.entityType == this.entityType &&
