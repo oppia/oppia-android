@@ -62,8 +62,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:scaleType="center"
             android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
+            android:scaleType="center"
             android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp : @drawable/ic_audio_streaming_off_24dp}"
             android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
