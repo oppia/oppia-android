@@ -153,18 +153,6 @@ class AudioFragmentTest {
     )
   }
 
-  @Test
-  fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
-    addMediaInfo()
-    launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(
-        internalProfileId
-      )
-    ).use {
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("en")))
-    }
-  }
-
   // TODO(#2417): Re-enable once this test passes on robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
