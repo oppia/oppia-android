@@ -210,6 +210,48 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
+    setupAudioForFraction()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+    setupAudioForFraction()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player))
+        .perform(click())
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_on))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
   fun testExploration_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(

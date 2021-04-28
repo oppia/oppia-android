@@ -451,4 +451,6 @@
   <string name="revision_card_activity_title">Skill revision page</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
+  <string name="audio_player_on">Audio, ON</string>
+  <string name="audio_player_off">Audio, OFF</string>
 </resources>
