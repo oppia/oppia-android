@@ -45,7 +45,7 @@
       style="@style/AudioSeekBar"
       android:layout_width="0dp"
       android:layout_height="26dp"
-      android:layout_marginStart="16dp"
+      android:layout_marginStart="4dp"
       android:max="@{viewModel.durationLiveData}"
       android:maxHeight="4dp"
       android:minWidth="180dp"
