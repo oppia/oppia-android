@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -643,7 +644,15 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi-en")))
+      onView(
+        allOf(
+          withId(R.id.audio_language_icon),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      ).perform(click())
+      onView(withText("Hinglish"))
+        .inRoot(isDialog())
+        .check(matches(isChecked()))
     }
     explorationDataController.stopPlayingExploration()
   }
