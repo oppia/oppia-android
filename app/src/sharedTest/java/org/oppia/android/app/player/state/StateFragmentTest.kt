@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.InputType
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -38,6 +39,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -1194,6 +1196,43 @@ class StateFragmentTest {
 
       // Verify that the user is now on the eleventh and final state.
       verifyViewTypeIsPresent(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+    }
+  }
+
+  @Test
+  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+
+      // Play to state 2 to access the fraction input interaction.
+      playThroughPrototypeState1()
+
+      // Verify that fraction input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_textViewHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+
+      // Play to state 7 to access the ratio input interaction.
+      playThroughPrototypeState6()
+
+      // Verify that ratio input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
     }
   }
 
