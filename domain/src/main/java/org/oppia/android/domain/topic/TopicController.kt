@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
@@ -17,14 +18,19 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -83,7 +89,9 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
 
   /**
@@ -335,11 +343,33 @@ class TopicController @Inject constructor(
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
-    return createTopicFromJson(topicId)
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+      val subtopics = topicRecord.subtopicIdsList.map { loadSubtopic(topicId, it) }
+      val stories = topicRecord.canonicalStoryIdsList.map { loadStorySummary(it) }
+      return Topic.newBuilder().apply {
+        this.topicId = topicId
+        name = topicRecord.name
+        description = topicRecord.description
+        addAllStory(stories)
+        topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
+        diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
+        addAllSubtopic(subtopics)
+        topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
+          if (topicRecord.isPublished) availableToPlayNow = true else availableToPlayInFuture = true
+        }.build()
+      }.build()
+    } else createTopicFromJson(topicId)
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
-    return createStorySummaryFromJson(topicId, storyId)
+    return if (loadLessonProtosFromAssets) {
+      loadStorySummary(storyId)
+    } else createStorySummaryFromJson(topicId, storyId)
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
@@ -395,11 +425,24 @@ class TopicController @Inject constructor(
       .setName(topicData.getString("topic_name"))
       .setDescription(topicData.getString("topic_description"))
       .addAllStory(storySummaryList)
-      .setTopicThumbnail(createTopicThumbnail(topicData))
-      .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
+      .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
+      .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
       .build()
+  }
+
+  private fun loadSubtopic(topicId: String, subtopicId: Int): Subtopic {
+    val subtopicRecord = assetRepository.loadProtoFromLocalAssets(
+      assetName = "${topicId}_$subtopicId",
+      baseMessage = SubtopicRecord.getDefaultInstance()
+    )
+    return Subtopic.newBuilder().apply {
+      this.subtopicId = subtopicId
+      title = subtopicRecord.subtopicTitle
+      addAllSkillIds(subtopicRecord.skillIdsList)
+      subtopicThumbnail = subtopicRecord.subtopicThumbnail
+    }.build()
   }
 
   /**
@@ -429,14 +472,36 @@ class TopicController @Inject constructor(
     return subtopicList
   }
 
-  private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
+  private fun computeTopicSizeBytes(constituentFiles: List<String>): Int {
     // TODO(#169): Compute this based on protos & the combined topic package.
-    // TODO(#386): Incorporate audio & image files in this computation.
-    return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong)
-      .reduceRight(Long::plus)
+    // TODO(#386): Incorporate image files in this computation.
+    return constituentFiles.map { file ->
+      if (loadLessonProtosFromAssets) {
+        assetRepository.getLocalAssetProtoSize(file)
+      } else {
+        jsonAssetRetriever.getAssetSize(file)
+      }
+    }.sum()
   }
 
-  internal fun getAssetFileNameList(topicId: String): List<String> {
+  private fun getProtoAssetFileNameList(topicId: String): List<String> {
+    val topicRecord =
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = topicId,
+        baseMessage = TopicRecord.getDefaultInstance()
+      )
+    val storyRecords = topicRecord.canonicalStoryIdsList.map { storyId ->
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = storyId,
+        baseMessage = StoryRecord.getDefaultInstance()
+      )
+    }
+    return storyRecords.flatMap { storyRecord: StoryRecord ->
+      storyRecord.chaptersList.map(ChapterRecord::getExplorationId) + storyRecord.storyId
+    } + topicRecord.subtopicIdsList.map { "${topicId}_$it" } + listOf("skills", topicId)
+  }
+
+  internal fun getJsonAssetFileNameList(topicId: String): List<String> {
     val assetFileNameList = mutableListOf<String>()
     assetFileNameList.add("questions.json")
     assetFileNameList.add("skills.json")
@@ -503,6 +568,30 @@ class TopicController @Inject constructor(
         )
       )
       .build()
+  }
+
+  private fun loadStorySummary(storyId: String): StorySummary {
+    val storyRecord =
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = storyId,
+        baseMessage = StoryRecord.getDefaultInstance()
+      )
+    return StorySummary.newBuilder().apply {
+      this.storyId = storyId
+      storyName = storyRecord.storyName
+      storyThumbnail = storyRecord.storyThumbnail
+      addAllChapter(
+        storyRecord.chaptersList.map { chapterRecord ->
+          ChapterSummary.newBuilder().apply {
+            explorationId = chapterRecord.explorationId
+            name = chapterRecord.title
+            summary = chapterRecord.outline
+            chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
+            chapterThumbnail = chapterRecord.chapterThumbnail
+          }.build()
+        }
+      )
+    }.build()
   }
 
   private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {

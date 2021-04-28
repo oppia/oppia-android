@@ -44,6 +44,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -63,9 +64,9 @@ import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
-import org.oppia.android.testing.EditTextInputAction
-import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -511,7 +512,7 @@ class QuestionPlayerActivityLocalTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

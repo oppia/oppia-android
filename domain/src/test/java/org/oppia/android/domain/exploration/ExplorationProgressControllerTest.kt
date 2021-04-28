@@ -2,6 +2,7 @@ package org.oppia.android.domain.exploration
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,18 +20,25 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
-import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -44,15 +52,20 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_0
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -64,6 +77,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
+import java.lang.AssertionError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -72,14 +86,15 @@ import javax.inject.Singleton
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** Tests for [ExplorationProgressController]. */
+@Suppress("SameParameterValue") // To avoid ignorable warnings for test helper methods.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationProgressControllerTest.TestApplication::class)
 class ExplorationProgressControllerTest {
   // TODO(#114): Add much more thorough tests for the integration pathway.
 
-  // TODO(#59): Once AsyncDataSubscriptionManager can be replaced with a fake, add the following tests once careful
-  //  testing timing can be controlled:
+  // TODO(#59): Once AsyncDataSubscriptionManager can be replaced with a fake, add the following
+  //  tests once careful testing timing can be controlled:
   //  - testMoveToNext_whileSubmittingAnswer_failsWithError
   //  - testGetCurrentState_whileSubmittingCorrectMultiChoiceAnswer_updatesToPending
   //  - testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
@@ -96,9 +111,6 @@ class ExplorationProgressControllerTest {
   lateinit var explorationProgressController: ExplorationProgressController
 
   @Inject
-  lateinit var explorationRetriever: ExplorationRetriever
-
-  @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Inject
@@ -111,7 +123,7 @@ class ExplorationProgressControllerTest {
   lateinit var mockCurrentStateLiveDataObserver2: Observer<AsyncResult<EphemeralState>>
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any?>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
@@ -158,7 +170,8 @@ class ExplorationProgressControllerTest {
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // An invalid exploration is not known until it's fully loaded, and that's observed via getCurrentState.
+    // An invalid exploration is not known until it's fully loaded, and that's observed via
+    // getCurrentState.
     verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
@@ -178,13 +191,13 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isFailure()).isTrue()
     assertThat(currentStateResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
-      .contains("invalid_exp_id.json")
+      .contains("invalid_exp_id")
   }
 
   @Test
   fun testPlayExploration_valid_returnsSuccess() {
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -199,10 +212,11 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
-    // The second-to-latest result stays pending since the exploration was loading (the actual result is the fully
-    // loaded exploration). This is only true if the observer begins before starting to load the exploration.
+    // The second-to-latest result stays pending since the exploration was loading (the actual
+    // result is the fully loaded exploration). This is only true if the observer begins before
+    // starting to load the exploration.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeast(2)
@@ -213,8 +227,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
-    val exploration = getTestExploration5()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
@@ -225,43 +238,35 @@ class ExplorationProgressControllerTest {
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess())
-      .isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
-      .isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
-      .isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
-      .isEqualTo(exploration.initStateName)
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo("Continue")
   }
 
   @Test
   fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() {
-    val exploration = getTestExploration5()
     // Start with playing an invalid exploration.
     playExploration("invalid_exp_id")
     endExploration()
 
     // Then a valid one.
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
+    // The latest result should correspond to the valid ID, and the progress controller should
+    // gracefully recover.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess())
-      .isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
-      .isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
-      .isFalse()
-    assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
-      .isEqualTo(exploration.initStateName)
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
+    assertThat(currentStateResultCaptor.value.getOrThrow().state.name).isEqualTo("Continue")
   }
 
   @Test
@@ -280,11 +285,11 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_withoutFinishingPrevious_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
     // Try playing another exploration without finishing the previous one.
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -301,25 +306,23 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     // Start with playing a valid exploration, then stop.
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
     endExploration()
 
     // Then another valid one.
-    playExploration(TEST_EXPLORATION_ID_1)
+    playExploration(TEST_EXPLORATION_ID_4)
 
-    // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
+    // The latest result should correspond to the valid ID, and the progress controller should
+    // gracefully recover.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess())
-      .isTrue()
-    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase)
-      .isEqualTo(PENDING_STATE)
-    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState)
-      .isFalse()
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(currentStateResultCaptor.value.getOrThrow().stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentStateResultCaptor.value.getOrThrow().hasPreviousState).isFalse()
     assertThat(currentStateResultCaptor.value.getOrThrow().state.name)
-      .isEqualTo(getTestExploration6().initStateName)
+      .isEqualTo("DragDropSortInput")
   }
 
   @Test
@@ -344,7 +347,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_whileLoading_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -365,10 +368,11 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -383,10 +387,11 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -397,13 +402,14 @@ class ExplorationProgressControllerTest {
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).isEqualTo("Yes!")
+    assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
 
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -419,12 +425,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefFeedbackAndNewStateTransition() {
+  fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefFeedbackAndSameStateTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -434,8 +441,8 @@ class ExplorationProgressControllerTest {
       atLeastOnce()
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
-    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).contains("Hm, it certainly looks like it")
+    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
+    assertThat(answerOutcome.feedback.html).contains("Try again.")
   }
 
   @Test
@@ -443,33 +450,8 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-
-    submitMultipleChoiceAnswer(0)
-
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount)
-      .isEqualTo(1)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(0)
-    assertThat(currentState.completedState.getAnswer(0).feedback.html)
-      .isEqualTo("Yes!")
-  }
-
-  @Test
-  fun testGetCurrentState_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() {
-    val currentStateLiveData =
-      explorationProgressController.getCurrentState().toLiveData()
-    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(2)
 
@@ -480,45 +462,63 @@ class ExplorationProgressControllerTest {
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase)
-      .isEqualTo(PENDING_STATE)
-    assertThat(currentState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(
-        2
-      )
-    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html)
-      .contains("Have another go?")
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(1)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Correct!")
   }
 
   @Test
-  fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswer(2)
+  fun testGetCurrentState_afterSubmittingWrongMultiChoiceAnswer_updatesPendingState() {
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(0)
 
-    // Verify that the current state updates. It should now be completed with both the wrong and correct answers.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount)
-      .isEqualTo(2)
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(2)
-    assertThat(currentState.completedState.getAnswer(0).feedback.html)
-      .contains("Have another go?")
-    assertThat(currentState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(currentState.pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt)
       .isEqualTo(0)
-    assertThat(currentState.completedState.getAnswer(1).feedback.html)
-      .isEqualTo("Yes!")
+    assertThat(currentState.pendingState.getWrongAnswer(0).feedback.html).contains("Try again.")
+  }
+
+  @Test
+  fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeMultipleChoiceState()
+    submitMultipleChoiceAnswer(0)
+
+    submitMultipleChoiceAnswer(2)
+
+    // Verify that the current state updates. It should now be completed with both the wrong and
+    // correct answers.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(0)
+    assertThat(currentState.completedState.getAnswer(0).feedback.html).contains("Try again.")
+    assertThat(currentState.completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
+      .isEqualTo(2)
+    assertThat(currentState.completedState.getAnswer(1).feedback.html).contains("Correct!")
   }
 
   @Test
@@ -537,7 +537,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -552,7 +552,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -569,8 +569,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswer(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    submitPrototypeState1Answer()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -585,8 +585,8 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswer(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    submitPrototypeState1Answer()
 
     moveToNextState()
 
@@ -596,15 +596,15 @@ class ExplorationProgressControllerTest {
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.name).isEqualTo("What language")
+    assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
   }
 
   @Test
   fun testMoveToNext_afterMovingFromCompletedState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswer(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    submitPrototypeState1Answer()
     moveToNextState()
 
     // Try skipping past the current state.
@@ -639,7 +639,7 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -656,7 +656,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -674,8 +674,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onCompletedInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswer(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    submitPrototypeState1Answer()
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -693,15 +693,16 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that we can navigate to the previous state since the current state is complete and not initial.
+    // Verify that we can navigate to the previous state since the current state is complete and not
+    // initial.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
@@ -711,28 +712,29 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
 
-    // Since the answer submission and forward navigation should work (see earlier tests), verify that the move to the
-    // previous state does return us back to the initial exploration state (which is now completed).
+    // Since the answer submission and forward navigation should work (see earlier tests), verify
+    // that the move to the previous state does return us back to the initial exploration state
+    // (which is now completed).
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.name).isEqualTo("Welcome!")
+    assertThat(currentState.state.name).isEqualTo("Continue")
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
   }
 
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
     val moveToStateResult =
@@ -740,8 +742,8 @@ class ExplorationProgressControllerTest {
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // The first previous navigation should succeed (see above), but the second will fail since we're back at the
-    // initial state.
+    // The first previous navigation should succeed (see above), but the second will fail since
+    // we're back at the initial state.
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
     assertThat(asyncResultCaptor.value.getErrorOrNull())
@@ -752,8 +754,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeTextInputState()
 
     val result =
       explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
@@ -767,42 +769,41 @@ class ExplorationProgressControllerTest {
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).contains("Yes! Oppia is the Finnish word for learn.")
+    assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
 
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeTextInputState()
 
     val result =
       explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that the answer was wrong, and that there's no handler for it so the default outcome is returned.
+    // Verify that the answer was wrong, and that there's no handler for it so the default outcome
+    // is returned.
     verify(
       mockAsyncAnswerOutcomeObserver,
       atLeastOnce()
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
-    assertThat(answerOutcome.feedback.html).contains("Sorry, nope")
+    assertThat(answerOutcome.feedback.html).contains("Not quite.")
   }
 
   @Test
-  fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
+  fun testSubmitAnswer_forFractionInput_wrongAnswer_returnsDefaultOutcome_hasHint() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeFractionInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    submitWrongAnswerForPrototypeState2()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -812,17 +813,19 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
     val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
-    assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
-    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+    assertThat(answerAndFeedback.userAnswer.answer.fraction.numerator).isEqualTo(1)
+    assertThat(answerAndFeedback.userAnswer.answer.fraction.denominator).isEqualTo(3)
+    assertThat(answerAndFeedback.feedback.html).contains("Try again.")
     val hintAndSolution = currentState.state.interaction.getHint(0)
-    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+    assertThat(hintAndSolution.hintContent.html).contains("Remember that two halves")
   }
 
   @Test
   fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     verify(
@@ -833,9 +836,9 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
     val result = explorationProgressController.submitHintIsRevealed(
-      currentState.state,
-      true,
-      0
+      state = currentState.state,
+      hintIsRevealed = true,
+      hintIndex = 0,
     )
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
@@ -843,7 +846,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
 
     val hintAndSolution = currentState.state.interaction.getHint(0)
-    assertThat(hintAndSolution.hintContent.html).contains("Start by finding the denominator")
+    assertThat(hintAndSolution.hintContent.html).contains("Remember that two halves")
 
     // Verify that the current state updates. Hint revealed is true.
     verify(
@@ -859,8 +862,9 @@ class ExplorationProgressControllerTest {
   @Test
   fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     verify(
@@ -890,15 +894,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeFractionInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    submitWrongAnswerForPrototypeState2()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -908,28 +910,21 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
 
-    val hint1 = currentState.state.interaction.getHint(0)
-    assertThat(hint1.hintContent.html)
-      .contains("Start by finding the denominator")
-    val hint2 = currentState.state.interaction.getHint(1)
-    assertThat(hint2.hintContent.html)
-      .contains("Next, find the numerator by counting the number of selected parts.")
-    val hint3 = currentState.state.interaction.getHint(2)
-    assertThat(hint3.hintContent.html)
-      .contains("Always be careful about what you're counting. The question will have clues!")
+    val hint = currentState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html).contains("Remember that two halves")
 
     val solution = currentState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("3")
+    assertThat(solution.correctAnswer.numerator).isEqualTo(1)
+    assertThat(solution.correctAnswer.denominator).isEqualTo(2)
     assertThat(solution.explanation.html)
-      .contains("The denominator of a fraction is the second number in the fraction.")
+      .contains("Half of something has one part in the numerator for every two parts")
   }
 
   @Test
   fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeTextInputState()
 
     val result =
       explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
@@ -947,51 +942,49 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.completedState.answerCount).isEqualTo(1)
     val answerAndFeedback = currentState.completedState.getAnswer(0)
     assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Finnish")
-    assertThat(answerAndFeedback.feedback.html).contains("Yes! Oppia is the Finnish word")
+    assertThat(answerAndFeedback.feedback.html).contains("Correct!")
   }
 
   @Test
   fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeTextInputState()
 
     val result =
       explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that the current state updates. The submitted answer should have a textual version that is a verbatim
-    // version of the user-submitted answer.
+    // Verify that the current state updates. The submitted answer should have a textual version
+    // that is a verbatim version of the user-submitted answer.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.completedState.answerCount)
-      .isEqualTo(1)
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.completedState.answerCount).isEqualTo(1)
     val answerAndFeedback = currentState.completedState.getAnswer(0)
     assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
       .isEqualTo(UserAnswer.TextualAnswerCase.PLAIN_ANSWER)
-    assertThat(answerAndFeedback.userAnswer.plainAnswer)
-      .isEqualTo("Finnish  ")
+    assertThat(answerAndFeedback.userAnswer.plainAnswer).isEqualTo("Finnish  ")
   }
 
   @Test
-  fun testGetCurrentState_secondState_submitWrongAnswer_updatePendingState() {
+  fun testGetCurrentState_eighthState_submitWrongAnswer_updatePendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeTextInputState()
 
     val result =
       explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -1002,7 +995,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.pendingState.wrongAnswerCount).isEqualTo(1)
     val answerAndFeedback = currentState.pendingState.getWrongAnswer(0)
     assertThat(answerAndFeedback.userAnswer.answer.normalizedString).isEqualTo("Klingon")
-    assertThat(answerAndFeedback.feedback.html).contains("Sorry, nope")
+    assertThat(answerAndFeedback.feedback.html).contains("Not quite.")
   }
 
   @Test
@@ -1010,8 +1003,8 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
     moveToNextState()
@@ -1023,7 +1016,7 @@ class ExplorationProgressControllerTest {
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.name).isEqualTo("What language")
+    assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
   }
 
@@ -1032,9 +1025,9 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswer("Finnish") // Submit the answer but do not proceed to the next state.
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    submitPrototypeState2Answer() // Submit the answer but do not proceed to the next state.
 
     moveToNextState()
     moveToPreviousState()
@@ -1046,16 +1039,16 @@ class ExplorationProgressControllerTest {
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.name).isEqualTo("What language")
+    assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
   }
 
   @Test
   fun testGetCurrentState_afterMoveToPrev_onThirdState_newObserver_receivesCompletedSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0) // First state -> second
-    submitTextInputAnswerAndMoveToNextState("Finnish") // Second state -> third
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
 
     // Move to the previous state and register a new observer.
     moveToPreviousState() // Third state -> second
@@ -1064,14 +1057,15 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
     testCoroutineDispatchers.runCurrent()
 
-    // The new observer should observe the completed second state since it's the current pending state.
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
     verify(
       mockCurrentStateLiveDataObserver2,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.name).isEqualTo("What language")
+    assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
   }
 
@@ -1081,7 +1075,7 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
     // The initial state should not have a next state.
     verify(
@@ -1097,12 +1091,12 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
-    submitMultipleChoiceAnswer(0)
+    submitPrototypeState1Answer()
 
-    // Simply completing the current state should not result in there being a next state since the user hasn't proceeded
-    // to the following state, yet.
+    // Simply completing the current state should not result in there being a next state since the
+    // user hasn't proceeded to the following state, yet.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -1116,9 +1110,9 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playThroughPrototypeState1AndMoveToNextState()
 
     // The current state should have a previous state.
     verify(
@@ -1134,8 +1128,8 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
 
@@ -1153,8 +1147,8 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
     moveToNextState()
@@ -1171,13 +1165,10 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeNumericInputState()
 
-    val result = explorationProgressController.submitAnswer(
-      createNumericInputAnswer(121.0)
-    )
+    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1188,15 +1179,14 @@ class ExplorationProgressControllerTest {
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).contains("Yes, that's correct: 11 times 11 is 121.")
+    assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
 
   @Test
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
+    playExploration(TEST_EXPLORATION_ID_2)
+    navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(
       createNumericInputAnswer(122.0)
@@ -1211,20 +1201,16 @@ class ExplorationProgressControllerTest {
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
-    assertThat(answerOutcome.feedback.html).contains("You are actually very close.")
+    assertThat(answerOutcome.feedback.html).contains("It's less than that.")
   }
 
   @Test
   fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121.0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    // The first state of the exploration is the Continue interaction.
 
-    val result = explorationProgressController.submitAnswer(
-      createContinueButtonAnswer()
-    )
+    val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1239,18 +1225,15 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testGetCurrentState_fifthState_isTerminalState() {
+  fun testGetCurrentState_eleventhState_isTerminalState() {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121.0)
+    playExploration(TEST_EXPLORATION_ID_2)
 
-    submitContinueButtonAnswerAndMoveToNextState()
+    playThroughPrototypeExploration()
 
-    // Verify that the fifth state is terminal.
+    // Verify that the last state is terminal.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -1265,36 +1248,36 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
 
     moveToPreviousState()
 
-    // Verify that the current state is the second state, and is completed. It should also have the previously submitted
-    // answer, allowing learners to potentially view past answers.
+    // Verify that the current state is the second state, and is completed. It should also have the
+    // previously submitted answer, allowing learners to potentially view past answers.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
-    assertThat(currentState.state.name)
-      .isEqualTo("What language")
-    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.normalizedString)
-      .isEqualTo("Finnish")
+    assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(currentState.state.name).isEqualTo("Fractions")
+    assertThat(currentState.completedState.getAnswer(0).userAnswer.answer.fraction)
+      .isEqualTo(
+        Fraction.newBuilder().apply {
+          numerator = 1
+          denominator = 2
+        }.build()
+      )
   }
 
   @Test
   fun testMoveToNext_onFinalState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121.0)
-    submitContinueButtonAnswerAndMoveToNextState()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeExploration()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -1314,10 +1297,9 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_1)
-    submitContinueButtonAnswerAndMoveToNextState()
-    submitMultipleChoiceAnswerAndMoveToNextState(3) // Those were all the questions I had!
-    submitContinueButtonAnswerAndMoveToNextState()
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
+    moveToNextState()
 
     // Verify that we're now on the final state.
     verify(
@@ -1335,13 +1317,12 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_1)
-    submitContinueButtonAnswerAndMoveToNextState()
-    submitMultipleChoiceAnswerAndMoveToNextState(0) // How do your explorations work?
-    submitTextInputAnswerAndMoveToNextState("Oppia Otter") // Can I ask your name?
-    submitContinueButtonAnswerAndMoveToNextState()
-    submitMultipleChoiceAnswerAndMoveToNextState(3) // Those were all the questions I had!
-    submitContinueButtonAnswerAndMoveToNextState()
+    // Click on Jupiter before Saturn to take a slightly different (valid) path through the
+    // exploration. (Note that this does not include actual branching).
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
+    submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
+    moveToNextState()
 
     // Verify that a different path can also result in reaching the end state.
     verify(
@@ -1358,12 +1339,12 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playThroughExploration5()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeExploration()
+    endExploration()
 
-    playExploration(TEST_EXPLORATION_ID_1)
-    submitContinueButtonAnswerAndMoveToNextState()
-    // Those were all the questions I had!
-    submitMultipleChoiceAnswerAndMoveToNextState(3)
+    playExploration(TEST_EXPLORATION_ID_5)
+    submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
 
     // Verify that we're on the second-to-last state of the second exploration.
     verify(
@@ -1374,7 +1355,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     // This state is not in the other test exp.
-    assertThat(currentState.state.name).isEqualTo("End Card")
+    assertThat(currentState.state.name).isEqualTo("ImageClickInput")
   }
 
   @Test
@@ -1392,8 +1373,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
     val moveToStateResult =
@@ -1431,15 +1412,7 @@ class ExplorationProgressControllerTest {
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("invalid_exp_id.json")
-  }
-
-  private fun getTestExploration5(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_0)
-  }
-
-  private fun getTestExploration6(): Exploration {
-    return explorationRetriever.loadExploration(TEST_EXPLORATION_ID_1)
+    assertThat(exception).hasMessageThat().contains("invalid_exp_id")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1447,9 +1420,10 @@ class ExplorationProgressControllerTest {
   }
 
   /**
-   * Creates a blank subscription to the current state to ensure that requests to load the exploration complete,
-   * otherwise post-load operations may fail. An observer is required since the current mediator live data
-   * implementation will only lazily load data based on whether there's an active subscription.
+   * Creates a blank subscription to the current state to ensure that requests to load the
+   * exploration complete, otherwise post-load operations may fail. An observer is required since
+   * the current mediator live data implementation will only lazily load data based on whether
+   * there's an active subscription.
    */
   private fun subscribeToCurrentStateToAllowExplorationToLoad() {
     explorationProgressController.getCurrentState()
@@ -1458,96 +1432,371 @@ class ExplorationProgressControllerTest {
   }
 
   private fun playExploration(explorationId: String) {
-    explorationDataController.startPlayingExploration(explorationId)
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
-    explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun submitTextInputAnswer(textAnswer: String) {
-    explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer))
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun submitNumericInputAnswer(numericAnswer: Double) {
-    explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(explorationDataController.startPlayingExploration(explorationId))
   }
 
   private fun submitContinueButtonAnswer() {
-    explorationProgressController.submitAnswer(createContinueButtonAnswer())
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createContinueButtonAnswer())
+    )
   }
 
-  private fun submitMultipleChoiceAnswerAndMoveToNextState(choiceIndex: Int) {
-    submitMultipleChoiceAnswer(choiceIndex)
-    moveToNextState()
+  private fun submitFractionAnswer(fraction: Fraction) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createFractionAnswer(fraction))
+    )
   }
 
-  private fun submitTextInputAnswerAndMoveToNextState(textAnswer: String) {
-    submitTextInputAnswer(textAnswer)
-    moveToNextState()
+  private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
+    )
   }
 
-  private fun submitNumericInputAnswerAndMoveToNextState(numericAnswer: Double) {
-    submitNumericInputAnswer(numericAnswer)
-    moveToNextState()
+  private fun submitItemSelectionAnswer(vararg contentIds: String) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createItemSelectionAnswer(contentIds.toList()))
+    )
   }
 
-  private fun submitContinueButtonAnswerAndMoveToNextState() {
+  private fun submitNumericInputAnswer(numericAnswer: Double) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
+    )
+  }
+
+  private fun submitRatioInputAnswer(ratioExpression: RatioExpression) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createRatioInputAnswer(ratioExpression))
+    )
+  }
+
+  private fun submitTextInputAnswer(@Suppress("SameParameterValue") textAnswer: String) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer))
+    )
+  }
+
+  private fun submitDragAndDropAnswer(vararg selectedChoicesLists: List<String>) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(
+        createDragAndDropAnswer(selectedChoicesLists.toList())
+      )
+    )
+  }
+
+  private fun submitImageRegionAnswer(clickX: Float, clickY: Float, clickedRegion: String) {
+    verifyOperationSucceeds(
+      explorationProgressController.submitAnswer(
+        createImageRegionAnswer(clickX, clickY, clickedRegion)
+      )
+    )
+  }
+
+  private fun playThroughPrototypeExploration() {
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    playThroughPrototypeState6AndMoveToNextState()
+    playThroughPrototypeState7AndMoveToNextState()
+    playThroughPrototypeState8AndMoveToNextState()
+    playThroughPrototypeState9AndMoveToNextState()
+    playThroughPrototypeState10AndMoveToNextState()
+  }
+
+  private fun navigateToPrototypeFractionInputState() {
+    // Fraction input is the second state of the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+  }
+
+  private fun navigateToPrototypeMultipleChoiceState() {
+    // Multiple choice is the third state of the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+  }
+
+  private fun navigateToPrototypeNumericInputState() {
+    // Numeric input is the sixth state of the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+  }
+
+  private fun navigateToPrototypeTextInputState() {
+    // Text input is the eighth state of the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    playThroughPrototypeState6AndMoveToNextState()
+    playThroughPrototypeState7AndMoveToNextState()
+  }
+
+  private fun submitPrototypeState1Answer() {
+    // First state: Continue interaction.
     submitContinueButtonAnswer()
+  }
+
+  private fun submitPrototypeState2Answer() {
+    // Second state: Fraction input. Correct answer: 1/2.
+    submitFractionAnswer(
+      Fraction.newBuilder().apply {
+        numerator = 1
+        denominator = 2
+      }.build()
+    )
+  }
+
+  private fun submitWrongAnswerForPrototypeState2() {
+    submitFractionAnswer(
+      Fraction.newBuilder().apply {
+        numerator = 1
+        denominator = 3
+      }.build()
+    )
+  }
+
+  private fun submitPrototypeState3Answer() {
+    // Third state: Multiple choice. Correct answer: Eagle (second third choice).
+    submitMultipleChoiceAnswer(choiceIndex = 2)
+  }
+
+  private fun submitPrototypeState4Answer() {
+    // Fourth state: Item selection (radio buttons). Correct answer: Green (first choice).
+    submitItemSelectionAnswer("ca_choices_0")
+  }
+
+  private fun submitPrototypeState5Answer() {
+    // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+    submitItemSelectionAnswer("ca_choices_0", "ca_choices_3", "ca_choices_2")
+  }
+
+  private fun submitPrototypeState6Answer() {
+    // Sixth state: Numeric input. Correct answer: 121.
+    submitNumericInputAnswer(121.0)
+  }
+
+  private fun submitPrototypeState7Answer() {
+    // Seventh state: Ratio input. Correct answer: 4:5.
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 5))
+      }.build()
+    )
+  }
+
+  private fun submitPrototypeState8Answer() {
+    // Eighth state: Text input. Correct answer: finnish.
+    submitTextInputAnswer("finnish")
+  }
+
+  private fun submitPrototypeState9Answer() {
+    // Ninth state: Drag Drop Sort. Initial configuration: ca_choices_0, ca_choices_1, ca_choices_2,
+    // ca_choices_3. Correct answer: Move 1st item to 4th position.
+    submitDragAndDropAnswer(
+      listOf("ca_choices_1"),
+      listOf("ca_choices_2"),
+      listOf("ca_choices_3"),
+      listOf("ca_choices_0"),
+    )
+  }
+
+  private fun submitPrototypeState10Answer() {
+    // Tenth state: Drag Drop Sort. Initial configuration: ca_choices_0, ca_choices_1, ca_choices_2,
+    // ca_choices_3. Correct answer: Move 1st item to 4th position. Correct answer: Merge first two
+    // then move 2nd item to 3rd position.
+    submitDragAndDropAnswer(
+      listOf("ca_choices_0", "ca_choices_1"),
+      listOf("ca_choices_3"),
+      listOf("ca_choices_2"),
+    )
+  }
+
+  private fun playThroughPrototypeState1AndMoveToNextState() {
+    submitPrototypeState1Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState2AndMoveToNextState() {
+    submitPrototypeState2Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState3AndMoveToNextState() {
+    submitPrototypeState3Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState4AndMoveToNextState() {
+    submitPrototypeState4Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState5AndMoveToNextState() {
+    submitPrototypeState5Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState6AndMoveToNextState() {
+    submitPrototypeState6Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState7AndMoveToNextState() {
+    submitPrototypeState7Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState8AndMoveToNextState() {
+    submitPrototypeState8Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState9AndMoveToNextState() {
+    submitPrototypeState9Answer()
+    moveToNextState()
+  }
+
+  private fun playThroughPrototypeState10AndMoveToNextState() {
+    submitPrototypeState10Answer()
     moveToNextState()
   }
 
   private fun moveToNextState() {
-    explorationProgressController.moveToNextState()
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(explorationProgressController.moveToNextState())
   }
 
   private fun moveToPreviousState() {
-    explorationProgressController.moveToPreviousState()
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(explorationProgressController.moveToPreviousState())
   }
 
   private fun endExploration() {
-    explorationDataController.stopPlayingExploration()
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(explorationDataController.stopPlayingExploration())
   }
 
-  private fun playThroughExploration5() {
-    playExploration(TEST_EXPLORATION_ID_0)
-    submitMultipleChoiceAnswerAndMoveToNextState(0)
-    submitTextInputAnswerAndMoveToNextState("Finnish")
-    submitNumericInputAnswerAndMoveToNextState(121.0)
-    submitContinueButtonAnswerAndMoveToNextState()
-    endExploration()
+  private fun createContinueButtonAnswer() =
+    createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+
+  private fun createFractionAnswer(fraction: Fraction): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        this.fraction = fraction
+      }.build()
+    )
   }
 
   private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
     return convertToUserAnswer(
-      InteractionObject.newBuilder().setNonNegativeInt(choiceIndex).build()
+      InteractionObject.newBuilder().apply {
+        nonNegativeInt = choiceIndex
+      }.build()
+    )
+  }
+
+  private fun createItemSelectionAnswer(contentIds: List<String>): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+          addAllContentIds(
+            contentIds.map { choice ->
+              TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
+            }
+          )
+        }.build()
+      }.build()
+    )
+  }
+
+  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        real = numericAnswer
+      }.build()
+    )
+  }
+
+  private fun createRatioInputAnswer(ratioExpression: RatioExpression): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        this.ratioExpression = ratioExpression
+      }.build()
     )
   }
 
   private fun createTextInputAnswer(textAnswer: String): UserAnswer {
-    val answer = InteractionObject.newBuilder().setNormalizedString(textAnswer)
-      .build()
-    return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(textAnswer).build()
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        normalizedString = textAnswer
+      }.build()
+    )
   }
 
-  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
-    return convertToUserAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
+  private fun createDragAndDropAnswer(selectedChoicesLists: List<List<String>>): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        listOfSetsOfTranslatableHtmlContentIds =
+          ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+            addAllContentIdLists(
+              selectedChoicesLists.map { choices ->
+                SetOfTranslatableHtmlContentIds.newBuilder().apply {
+                  addAllContentIds(
+                    choices.map { choice ->
+                      TranslatableHtmlContentId.newBuilder().apply { contentId = choice }.build()
+                    }
+                  )
+                }.build()
+              }
+            )
+          }.build()
+      }.build()
+    )
+  }
+
+  private fun createImageRegionAnswer(
+    clickX: Float,
+    clickY: Float,
+    clickedRegion: String
+  ): UserAnswer {
+    return convertToUserAnswer(
+      InteractionObject.newBuilder().apply {
+        clickOnImage = ClickOnImage.newBuilder().apply {
+          clickPosition = Point2d.newBuilder().apply {
+            x = clickX
+            y = clickY
+          }.build()
+          addClickedRegions(clickedRegion)
+        }.build()
+      }.build()
+    )
   }
 
   private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
-  private fun createContinueButtonAnswer() =
-    createTextInputAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
+  /**
+   * Verifies that the specified live data provides at least one successful operation. This will
+   * change test-wide mock state, and synchronizes background execution.
+   */
+  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      if (isFailure()) {
+        throw AssertionError("Operation failed", getErrorOrNull())
+      }
+      assertThat(isSuccess()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
+  }
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -1569,6 +1818,19 @@ class ExplorationProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.

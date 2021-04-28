@@ -15,6 +15,9 @@ private const val KEY_SKILL_ID = "SKILL_ID"
 class ConceptCardFragment : InjectableDialogFragment() {
 
   companion object {
+    /** The fragment tag corresponding to the concept card dialog fragment. */
+    const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
+
     /**
      * Creates a new instance of a DialogFragment to display content
      * @param skillId Used in TopicController to get correct concept card data.
