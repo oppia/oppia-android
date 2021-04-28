@@ -132,7 +132,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedListItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/promotedlist/PromotedCarouselItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
