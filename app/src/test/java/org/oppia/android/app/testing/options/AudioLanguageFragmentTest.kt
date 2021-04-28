@@ -71,12 +71,10 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val NO_AUDIO = 0
 private const val ENGLISH = 1
 private const val FRENCH = 2
-private const val HINDI = 3
-private const val CHINESE = 4
 
+/** Tests for [AudioLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
@@ -113,6 +111,16 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAudioLanguage_tabletConfig_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      testCoroutineDispatchers.runCurrent()
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+
+  @Test
   fun testAudioLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
     launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
       checkSelectedLanguage(ENGLISH)
@@ -127,6 +135,17 @@ class AudioLanguageFragmentTest {
       checkSelectedLanguage(ENGLISH)
       selectLanguage(FRENCH)
       rotateToLandscape()
+      checkSelectedLanguage(FRENCH)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAudioLanguage_configChange_changeLanguageToFrench_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+      testCoroutineDispatchers.runCurrent()
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
       checkSelectedLanguage(FRENCH)
     }
   }

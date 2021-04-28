@@ -208,7 +208,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_readingTextSizeIsDisplayed() {
+  fun testOptionsFragment_defaultReadingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -229,7 +229,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_configChange_readingTextSizeIsDisplayed() {
+  fun testOptionsFragment_configChange_defaultReadingTextSizeIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -250,7 +250,29 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_appLanguageIsDisplayed() {
+  @Config(qualifiers = "sw600dp")
+  fun testOptionsFragment_tabletConfig_defaultReadingTextSizeIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
+        )
+      ).check(
+        matches(withText("Medium"))
+      )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_defaultAppLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -271,7 +293,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_configChange_appLanguageIsDisplayed() {
+  fun testOptionsFragment_configChange_defaultAppLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -292,7 +314,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_audioLanguageIsDisplayed() {
+  fun testOptionsFragment_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -313,7 +335,7 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun testOptionsFragment_configChange_audioLanguageIsDisplayed() {
+  fun testOptionsFragment_configChange_defaultAudioLanguageIsDisplayed() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
