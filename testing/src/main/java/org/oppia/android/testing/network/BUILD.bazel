@@ -43,13 +43,16 @@ kt_android_library(
 
 kt_android_library(
     name = "retrofit_module",
+    testonly = True,
     srcs = [
         "RetrofitTestModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
-        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//third_party:com_squareup_retrofit2_retrofit-mock",
     ],
 )
 
