@@ -159,8 +159,8 @@ class FeedbackReportManagementController @Inject constructor(
       ReportTypeCase.SUGGESTION -> {
         val suggestion = userSuppliedFeedback.suggestion
         return GaeUserSuppliedFeedback(
-          reportType = reportType.name,
-          category = suggestion.suggestionCategory.name,
+          reportType = reportType.name.toLowerCase(),
+          category = suggestion.suggestionCategory.name.toLowerCase(),
           userFeedbackSelectedItems = null,
           userFeedbackOtherTextInput = suggestion.userSubmittedSuggestion
         )
@@ -171,8 +171,8 @@ class FeedbackReportManagementController @Inject constructor(
       ReportTypeCase.CRASH -> {
         val crash = userSuppliedFeedback.crash
         return GaeUserSuppliedFeedback(
-          reportType = reportType.name,
-          category = crash.crashLocation.name,
+          reportType = reportType.name.toLowerCase(),
+          category = crash.crashLocation.name.toLowerCase(),
           userFeedbackSelectedItems = null,
           userFeedbackOtherTextInput = crash.crashExplanation
         )
@@ -239,8 +239,8 @@ class FeedbackReportManagementController @Inject constructor(
       )
     }
     return GaeUserSuppliedFeedback(
-      reportType = reportTypeName,
-      category = category,
+      reportType = reportTypeName.toLowerCase(),
+      category = category.toLowerCase(),
       userFeedbackSelectedItems = optionsList,
       userFeedbackOtherTextInput = userInput
     )
@@ -266,7 +266,7 @@ class FeedbackReportManagementController @Inject constructor(
       deviceModel = deviceContext.deviceModel,
       sdkVersion = deviceContext.sdkVersion,
       buildFingerprint = deviceContext.buildFingerprint,
-      networkType = deviceContext.networkType.name
+      networkType = deviceContext.networkType.name.toLowerCase()
     )
   }
 
@@ -276,7 +276,7 @@ class FeedbackReportManagementController @Inject constructor(
   ): GaeFeedbackReportingAppContext {
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
-      textSize = appContext.textSize.name,
+      textSize = appContext.textSize.name.toLowerCase(),
       textLanguageCode = appContext.textLanguage.toLanguageCode().toLanguageCodeString(),
       audioLanguageCode = appContext.audioLanguage.toLanguageCode().toLanguageCodeString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
@@ -319,7 +319,7 @@ class FeedbackReportManagementController @Inject constructor(
       )
     }
     return GaeFeedbackReportingEntryPoint(
-      entryPointName = appContext.entryPointCase.name,
+      entryPointName = appContext.entryPointCase.name.toLowerCase(),
       topicId = topicId,
       storyId = storyId,
       explorationId = explorationId,

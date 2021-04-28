@@ -39,7 +39,6 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
-import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -108,12 +107,6 @@ class FeedbackReportManagementControllerTest {
   @field:[Inject MockServer]
   lateinit var mockWebServer: MockWebServer
 
-  @field:[Inject OppiaRetrofit]
-  lateinit var retrofit: Retrofit
-
-  @field:[Inject OkhttpClient]
-  lateinit var client: OkHttpClient
-
   private val languageSuggestionText = "french"
 
   private val appContext = FeedbackReportingAppContext.newBuilder()
@@ -169,15 +162,19 @@ class FeedbackReportManagementControllerTest {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
-    val gaeFeedbackReport = createMockGaeFeedbackReport()
+    // The feedback_reporting_unformatted.json is the same as the feedback_reporting.json, in the
+    // format used in the request body of reports sent in network requests.
+    val feedbackReportUnformattedJson = ApiMockLoader.getFakeJson(
+      "feedback_reporting_unformatted.json"
+    )
 
     val request = mockWebServer.takeRequest(
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
       unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
-    assertThat(request).isNotNull()
     request?.let {
-      assertThat(it.body).isEqualTo(gaeFeedbackReport)
+      assertThat(it.method).isEqualTo("POST")
+      assertThat(it.body.readUtf8()).isEqualTo(feedbackReportUnformattedJson)
     }
   }
 
@@ -196,6 +193,8 @@ class FeedbackReportManagementControllerTest {
 
   @Test
   fun testController_submitFeedbackReport_withNetwork_doesNotSaveReportToStore() {
+    // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
 
@@ -385,7 +384,9 @@ class FeedbackReportManagementControllerTest {
 
     @Provides
     @Singleton
-    fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
+    fun provideFeedbackReportingService(
+      @OppiaRetrofit retrofit: Retrofit
+    ): FeedbackReportingService {
       return retrofit.create(FeedbackReportingService::class.java)
     }
   }
