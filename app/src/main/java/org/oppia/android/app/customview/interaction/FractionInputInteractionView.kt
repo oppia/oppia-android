@@ -16,7 +16,7 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 // TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
 //  digits="0123456789/-"
 //  hint="Write fraction here."
-//  inputType="date"
+//  inputType="text"
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
