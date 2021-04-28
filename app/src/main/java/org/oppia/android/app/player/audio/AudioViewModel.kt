@@ -91,12 +91,10 @@ class AudioViewModel @Inject constructor(
     when {
       selectedLanguageCode.isEmpty() && languages.any {
         it == defaultLanguage
-      } -> {
-        setAudioLanguageCode(defaultLanguage)
-      }
-      languages.any { it == selectedLanguageCode } -> {
-        setAudioLanguageCode(selectedLanguageCode)
-      }
+      } -> setAudioLanguageCode(
+        defaultLanguage
+      )
+      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
         languageSelectionShown = true
