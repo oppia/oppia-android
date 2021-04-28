@@ -55,6 +55,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -77,14 +78,14 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -499,8 +500,8 @@ class HomeActivityTest {
    * # Logic for recommendation system
    *
    * We always recommend the next topic that all dependencies are completed for. If a topic with
-   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is already done.
-   * In the same way, finishing test topic 2 means there's nothing else to recommend.
+   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is
+   * already done. In the same way, finishing test topic 2 means there's nothing else to recommend.
    */
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
@@ -513,7 +514,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -525,23 +526,23 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
-      scrollToPositionOfPromotedList(position = 1)
+      scrollToPositionOfPromotedList(position = 0)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Second Test Topic"
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Fractions"
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
     }
   }
@@ -825,7 +826,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "5 Lessons"
+        stringToMatch = "2 Lessons"
       )
     }
   }
@@ -1449,7 +1450,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

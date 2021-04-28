@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
+import org.xml.sax.helpers.AttributesImpl
 import kotlin.reflect.KClass
 
 /** Tests for [CustomHtmlContentHandler]. */
@@ -27,13 +28,13 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageGetter: Html.ImageGetter
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "", imageGetter = mockImageGetter, customTagHandlers = mapOf()
+        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -43,7 +44,9 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_standardBoldHtml_returnsStringWithBoldSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "<strong>Text</strong>", imageGetter = mockImageGetter, customTagHandlers = mapOf()
+        html = "<strong>Text</strong>",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -54,11 +57,11 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withImage_callsImageGetter() {
     CustomHtmlContentHandler.fromHtml(
       html = "<img src=\"test_source.png\"></img>",
-      imageGetter = mockImageGetter,
+      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 
-    verify(mockImageGetter).getDrawable(anyString())
+    verify(mockImageRetriever).getDrawable(anyString())
   }
 
   @Test
@@ -68,7 +71,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
       )
 
@@ -83,7 +86,7 @@ class CustomHtmlContentHandlerTest {
 
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-      imageGetter = mockImageGetter,
+      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
     )
 
@@ -102,7 +105,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf()
       )
 
@@ -114,7 +117,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
         )
@@ -132,7 +135,7 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = "<outer-tag>some <inner-tag>other</inner-tag> content</outer-tag>",
-        imageGetter = mockImageGetter,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
@@ -151,7 +154,8 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString, imageGetter = mockImageGetter,
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
         )
@@ -161,8 +165,81 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
   }
 
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valueMissing_returnsNull() {
+    val attributes = AttributesImpl()
+
+    val value = attributes.getJsonStringValue("missing_attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valuePresent_returnsValue() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "value")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isEqualTo("value")
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonStringValue_valueWithEscapedQuotes_returnsValueWithoutQuotes() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "&quot;value&quot;")
+
+    val value = attributes.getJsonStringValue("attrib")
+
+    assertThat(value).isEqualTo("value")
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_valueMissing_returnsNull() {
+    val attributes = AttributesImpl()
+
+    val value = attributes.getJsonObjectValue("missing_attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_invalidJson_returnsNull() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(name = "attrib", value = "{")
+
+    val value = attributes.getJsonObjectValue("attrib")
+
+    assertThat(value).isNull()
+  }
+
+  @Test
+  fun testAttributeHelpers_getJsonObjectValue_quotedAndEscapedJson_returnsValidJsonObject() {
+    val attributes = AttributesImpl()
+    attributes.addAttribute(
+      name = "attrib",
+      value = "{&quot;key&quot;:&quot;value with \\\\frac{1}{2}&quot;}"
+    )
+
+    val jsonObject = attributes.getJsonObjectValue("attrib")
+
+    assertThat(jsonObject).isNotNull()
+    assertThat(jsonObject?.has("key")).isTrue()
+    assertThat(jsonObject?.getString("key")).isEqualTo("value with \\frac{1}{2}")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
+
+  private fun AttributesImpl.addAttribute(name: String, value: String) {
+    addAttribute(
+      /* uri= */ null,
+      /* localName= */ null,
+      /* qName= */ name,
+      /* type= */ "string",
+      value
+    )
+  }
 
   private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false
@@ -178,7 +255,8 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -203,9 +281,16 @@ class CustomHtmlContentHandlerTest {
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
-      output: Editable
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }
   }
+
+  /**
+   * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
+   * [CustomHtmlContentHandler.ImageRetriever].
+   */
+  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
 }
