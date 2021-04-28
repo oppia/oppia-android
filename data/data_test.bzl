@@ -8,7 +8,6 @@ load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
 def data_test(name, filtered_tests, deps, **kwargs):
     """
     Creates individual tests for test files in the data module.
-
     Args:
         name: str. The relative path to the Kotlin test file.
         filtered_tests: list of str. The test files that should not have tests defined for them.
@@ -21,7 +20,5 @@ def data_test(name, filtered_tests, deps, **kwargs):
         deps = deps + ["//data:data_test_assets"],
         custom_package = "org.oppia.android.data",
         test_manifest = "src/test/AndroidManifest.xml",
-        assets = native.glob(["src/test/assets/**"]),
-        assets_dir = "src/test/assets/",
         **kwargs
     )

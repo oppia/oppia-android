@@ -174,7 +174,8 @@ class FeedbackReportManagementControllerTest {
     )
     request?.let {
       assertThat(it.method).isEqualTo("POST")
-      assertThat(it.body.readUtf8()).isEqualTo(feedbackReportUnformattedJson)
+      // Append newline to the request body to match new line at the end of the JSON file.
+      assertThat(it.body.readUtf8() + "\n").isEqualTo(feedbackReportUnformattedJson)
     }
   }
 
