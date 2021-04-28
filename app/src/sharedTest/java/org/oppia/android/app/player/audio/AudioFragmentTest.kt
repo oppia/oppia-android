@@ -188,6 +188,46 @@ class AudioFragmentTest {
   }
 
   @Test
+  fun testAudioFragment_seekbar_hasContentDescription() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_progress_seek_bar))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.audio_player_seekbar_content_description)
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_languageIcon_hasContentDescription() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_language_icon))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.audio_language_icon_content_description)
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testAudioFragment_openFragment_showsFragment() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
