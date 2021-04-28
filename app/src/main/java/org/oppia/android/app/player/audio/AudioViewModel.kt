@@ -33,6 +33,8 @@ class AudioViewModel @Inject constructor(
   private var autoPlay = false
   private var hasFeedback = false
 
+  val showError = ObservableField(false)
+
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
 
@@ -89,25 +91,29 @@ class AudioViewModel @Inject constructor(
     when {
       selectedLanguageCode.isEmpty() && languages.any {
         it == defaultLanguage
-      } -> setAudioLanguageCode(
-        defaultLanguage
-      )
-      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
+      } -> {
+        setAudioLanguageCode(defaultLanguage)
+      }
+      languages.any { it == selectedLanguageCode } -> {
+        setAudioLanguageCode(selectedLanguageCode)
+      }
       languages.isNotEmpty() -> {
         autoPlay = false
         languageSelectionShown = true
-        val languageCode = if (languages.contains("en")) {
-          "en"
+        if (languages.contains("en")) {
+          val languageCode = "en"
+          setAudioLanguageCode(languageCode)
         } else {
-          languages.first()
+          showError.set(true)
+          audioPlayerController.pause()
         }
-        setAudioLanguageCode(languageCode)
       }
     }
   }
 
   /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
+    showError.set(false)
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
     audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))

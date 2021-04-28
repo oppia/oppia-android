@@ -3,18 +3,40 @@ package org.oppia.android.app.databinding;
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
+
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
 import org.oppia.android.R;
 import org.oppia.android.util.system.OppiaDateTimeFormatter;
 
-/** Holds all custom binding adapters that bind to [TextView]. */
+/**
+ * Holds all custom binding adapters that bind to [TextView].
+ */
 public final class TextViewBindingAdapters {
 
-  /** Binds date text with relative time. */
+  /**
+   * Binds adapter for setting error message for audio player.
+   */
+  @BindingAdapter("audio:error")
+  public static void setAudioPlayerError(@NonNull TextView textView, String languageCode) {
+    if (languageCode != null && !languageCode.isEmpty()) {
+      Locale locale = new Locale(languageCode);
+      String languageName = locale.getDisplayLanguage(locale);
+      textView.setText(textView.getContext().getString(
+          R.string.audio_not_available_error,
+          languageName
+      ));
+    }
+  }
+
+  /**
+   * Binds date text with relative time.
+   */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
@@ -29,7 +51,9 @@ public final class TextViewBindingAdapters {
     ));
   }
 
-  /** Binds last used with relative timestamp. */
+  /**
+   * Binds last used with relative timestamp.
+   */
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
     String profileLastUsed = textView.getContext().getString(R.string.profile_last_used);

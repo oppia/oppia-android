@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:audio="http://schemas.android.com/tools">
 
   <data>
 
@@ -38,6 +39,7 @@
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
       android:padding="8dp"
       android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
+      android:visibility="@{viewModel.showError ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -57,6 +59,7 @@
       android:splitTrack="false"
       android:thumb="@drawable/seekbar_thumb"
       android:thumbOffset="16dp"
+      android:visibility="@{viewModel.showError ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/audio_language_icon"
       app:layout_constraintStart_toEndOf="@+id/play_pause_audio_icon"
@@ -79,5 +82,21 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      style="@style/Subtitle2"
+      android:layout_width="0dp"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="4dp"
+      android:textColor="@color/white"
+      android:visibility="@{viewModel.showError ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/audio_language_icon"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      audio:error="@{viewModel.currentLanguageCode}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
