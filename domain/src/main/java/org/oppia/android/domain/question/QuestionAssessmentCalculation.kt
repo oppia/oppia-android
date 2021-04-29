@@ -4,20 +4,24 @@ import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.UserAssessmentPerformance
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.max
 
 /**
  * Private mutable class that stores a grade as a fraction.
  */
-private class MutableFractionGrade(var numerator: Int, var denominator: Int)
+private class MutableFractionGrade(
+  internal var pointsReceived: Int,
+  internal var totalPointsAvailable: Int
+)
 
 /**
  * Private class that computes the state of the user's performance at the end of a practice session.
  * This class can exist across multiple training session instances, but calling code is responsible
- * for ensuring it is properly reset.
+ * for ensuring it is properly reset. This class is not thread-safe, so it is the calling code's
+ * responsibility to synchronize access to this class.
  */
 @Singleton
-internal
-class QuestionAssessmentCalculation @Inject constructor(
+internal class QuestionAssessmentCalculation @Inject constructor(
   @ViewHintScorePenalty private val viewHintPenalty: Int,
   @WrongAnswerScorePenalty private val wrongAnswerPenalty: Int,
   @MaxScorePerQuestion private val maxScorePerQuestion: Int
@@ -34,8 +38,7 @@ class QuestionAssessmentCalculation @Inject constructor(
   ) {
     this.skillIdList = skillIdList
     this.questionSessionMetrics = questionSessionMetrics
-    this.totalScore =
-      MutableFractionGrade(0, 0)
+    this.totalScore = MutableFractionGrade(0, 0)
     createScorePerSkillMapping()
   }
 
@@ -53,21 +56,17 @@ class QuestionAssessmentCalculation @Inject constructor(
       val totalHintsPenalty =
         questionMetric.numberOfHintsUsed * viewHintPenalty
       val totalWrongAnswerPenalty =
-        (questionMetric.numberOfAnswersSubmitted - 1) * wrongAnswerPenalty
-      var questionScore = 0
-      if (!questionMetric.didViewSolution) {
-        questionScore =
-          maxOf(
-            maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty,
-            questionScore
-          )
-      }
-      this.totalScore.numerator += questionScore
-      this.totalScore.denominator += maxScorePerQuestion
+        max((questionMetric.numberOfAnswersSubmitted - 1), 0) * wrongAnswerPenalty
+      val questionScore =
+        if (questionMetric.didViewSolution) 0
+        else max(maxScorePerQuestion - totalHintsPenalty - totalWrongAnswerPenalty, 0)
+      this.totalScore.pointsReceived += questionScore
+      this.totalScore.totalPointsAvailable += maxScorePerQuestion
       for (linkedSkillId in questionMetric.question.linkedSkillIdsList) {
-        if (!scorePerSkillMapping.containsKey(linkedSkillId)) continue
-        scorePerSkillMapping[linkedSkillId]!!.numerator += questionScore
-        scorePerSkillMapping[linkedSkillId]!!.denominator += maxScorePerQuestion
+        scorePerSkillMapping[linkedSkillId]?.let {
+          it.pointsReceived += questionScore
+          it.totalPointsAvailable += maxScorePerQuestion
+        }
       }
     }
   }
@@ -78,23 +77,23 @@ class QuestionAssessmentCalculation @Inject constructor(
     // TODO(#3067): Create mastery calculations method
 
     // Set up the return values
-    var finalScore = FractionGrade.newBuilder().apply {
-      numerator = totalScore.numerator.toDouble() / 10
-      denominator = totalScore.denominator.toDouble() / 10
+    val finalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = totalScore.pointsReceived.toDouble() / maxScorePerQuestion
+      totalPointsAvailable = totalScore.totalPointsAvailable.toDouble() / maxScorePerQuestion
     }.build()
 
-    var finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
+    val finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
     for (score in scorePerSkillMapping) {
-      if (score.value.denominator != 0) { // Exclude entries with denominator of 0
+      if (score.value.totalPointsAvailable != 0) { // Exclude entries with denominator of 0
         finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
-          numerator = score.value.numerator.toDouble() / 10
-          denominator = score.value.denominator.toDouble() / 10
+          pointsReceived = score.value.pointsReceived.toDouble() / maxScorePerQuestion
+          totalPointsAvailable = score.value.totalPointsAvailable.toDouble() / maxScorePerQuestion
         }.build()
       }
     }
 
     // TODO(#3067): Set up finalMasteryPerSkillMapping
-    var finalMasteryPerSkillMapping = mapOf<String, Double>()
+    val finalMasteryPerSkillMapping = mapOf<String, Double>()
 
     return UserAssessmentPerformance.newBuilder().apply {
       totalFractionScore = finalScore

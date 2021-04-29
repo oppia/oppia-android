@@ -84,8 +84,8 @@ message AnsweredQuestionOutcome {
 
 // A user's grade for a practice session represented as a fraction.
 message FractionGrade {
-   double numerator = 1;
-   double denominator = 2;
+   double points_received = 1;
+   double total_points_available = 2;
 }
 
 // The final score and mastery calculations of the user after completing a training session. This is an ephemeral data

@@ -1042,8 +1042,8 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
-      numerator = 2.0
-      denominator = 3.0
+      pointsReceived = 2.0
+      totalPointsAvailable = 3.0
     }.build()
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
@@ -1097,8 +1097,8 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
-      numerator = 2.0
-      denominator = 3.0
+      pointsReceived = 2.0
+      totalPointsAvailable = 3.0
     }.build()
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
@@ -1150,8 +1150,8 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
-      numerator = 2.4
-      denominator = 3.0
+      pointsReceived = 2.4
+      totalPointsAvailable = 3.0
     }.build()
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
@@ -1181,8 +1181,8 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
-      numerator = 3.0
-      denominator = 3.0
+      pointsReceived = 3.0
+      totalPointsAvailable = 3.0
     }.build()
 
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
@@ -1253,16 +1253,16 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
-      numerator = 1.5
-      denominator = 3.0
+      pointsReceived = 1.5
+      totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      numerator = 1.5
-      denominator = 2.0
+      pointsReceived = 1.5
+      totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
-      numerator = 0.0
-      denominator = 1.0
+      pointsReceived = 0.0
+      totalPointsAvailable = 1.0
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
@@ -1346,16 +1346,16 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
-      numerator = 0.0
-      denominator = 3.0
+      pointsReceived = 0.0
+      totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      numerator = 0.0
-      denominator = 2.0
+      pointsReceived = 0.0
+      totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
-      numerator = 0.0
-      denominator = 1.0
+      pointsReceived = 0.0
+      totalPointsAvailable = 1.0
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
@@ -1425,16 +1425,16 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
-      numerator = 2.6
-      denominator = 3.0
+      pointsReceived = 2.6
+      totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      numerator = 1.6
-      denominator = 2.0
+      pointsReceived = 1.6
+      totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
-      numerator = 1.0
-      denominator = 1.0
+      pointsReceived = 1.0
+      totalPointsAvailable = 1.0
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
@@ -1496,16 +1496,16 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
-      numerator = 2.7
-      denominator = 3.0
+      pointsReceived = 2.7
+      totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      numerator = 1.7
-      denominator = 2.0
+      pointsReceived = 1.7
+      totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
-      numerator = 1.0
-      denominator = 1.0
+      pointsReceived = 1.0
+      totalPointsAvailable = 1.0
     }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
