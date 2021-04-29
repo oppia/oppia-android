@@ -42,7 +42,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "retrofit_module",
+    name = "test_module",
     testonly = True,
     srcs = [
         "RetrofitTestModule.kt",
