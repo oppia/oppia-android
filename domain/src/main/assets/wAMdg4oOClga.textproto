@@ -1,0 +1,19 @@
+story_id: "wAMdg4oOClga"
+story_name: "Ratios: Part 1"
+story_thumbnail {
+  background_color_rgb: 11786481
+}
+chapters {
+  exploration_id: "2mzzFVDLuAj8"
+  chapter_thumbnail {
+    background_color_rgb: 14061432
+  }
+  title: "What is a Ratio?"
+}
+chapters {
+  exploration_id: "5NWuolNcwH6e"
+  chapter_thumbnail {
+    background_color_rgb: 14088824
+  }
+  title: "Order is important"
+}

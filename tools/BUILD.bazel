@@ -1,0 +1,27 @@
+"""
+Custom Java/Android tools needed by the Oppia Android build pipeline. Note that many of these are
+automatically set up in Gradle, or just require adding targets to 'kapt'. Bazel requires a bit more
+work since kapt isn't directly supported, but Java annotation processors can be initiated using
+java_plugin.
+"""
+
+load("@rules_java//java:defs.bzl", "java_plugin")
+
+java_plugin(
+    name = "moshi_annotation_processor_plugin",
+    generates_api = True,
+    processor_class = "com.squareup.moshi.kotlin.codegen.JsonClassCodegenProcessor",
+    visibility = ["//third_party:__pkg__"],
+    deps = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
+    ],
+)
+
+java_plugin(
+    name = "glide_compiler_plugin",
+    generates_api = True,
+    processor_class = "com.bumptech.glide.annotation.compiler.GlideAnnotationProcessor",
+    visibility = ["//third_party:__pkg__"],
+    deps = ["//third_party:com_github_bumptech_glide_compiler"],
+)

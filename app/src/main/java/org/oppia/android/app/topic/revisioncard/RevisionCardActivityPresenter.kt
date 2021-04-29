@@ -92,6 +92,9 @@ class RevisionCardActivityPresenter @Inject constructor(
     }
   }
 
+  /** Dismisses the concept card fragment if it's currently active in this activity. */
+  fun dismissConceptCard() = getReviewCardFragment()?.dismissConceptCard()
+
   private fun subscribeToSubtopicTitle() {
     subtopicLiveData.observe(
       activity,

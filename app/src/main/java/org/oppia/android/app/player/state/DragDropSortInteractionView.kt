@@ -97,7 +97,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
-            viewModel.htmlContent.htmlList.size > 1
+            viewModel.htmlContent.contentIdsList.size > 1
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
             isAccessibilityEnabled
           viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)
