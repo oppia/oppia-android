@@ -57,14 +57,9 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val progressLock = ReentrantLock()
-  @Inject internal lateinit var scoreCalculator: QuestionAssessmentCalculation
+  @Inject internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
-  private val userAssessmentPerformanceDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(
-      "user_assessment_performance",
-      this::retrieveUserAssessmentPerformanceAsync
-    )
 
   internal fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>
@@ -335,13 +330,20 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> =
     progressLock.withLock {
-      scoreCalculator.initialize(skillIdList, progress.questionSessionMetrics)
-      return userAssessmentPerformanceDataProvider
+      return dataProviders.createInMemoryDataProviderAsync(
+        "user_assessment_performance") {
+        (this::retrieveUserAssessmentPerformanceAsync)(skillIdList)
+      }
     }
 
-  private suspend fun retrieveUserAssessmentPerformanceAsync():
-    AsyncResult<UserAssessmentPerformance> =
-      progressLock.withLock { AsyncResult.success(scoreCalculator.computeAll()) }
+  private suspend fun retrieveUserAssessmentPerformanceAsync(skillIdList: List<String>):
+    AsyncResult<UserAssessmentPerformance> {
+    progressLock.withLock {
+      val scoreCalculator =
+        scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
+      return AsyncResult.success(scoreCalculator.computeAll())
+    }
+  }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
