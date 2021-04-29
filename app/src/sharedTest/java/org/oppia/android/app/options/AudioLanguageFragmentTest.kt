@@ -1,4 +1,4 @@
-package org.oppia.android.app.testing.options
+package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
@@ -26,9 +26,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.AUDIO_LANGUAGE
-import org.oppia.android.app.options.AppLanguageActivity
-import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
