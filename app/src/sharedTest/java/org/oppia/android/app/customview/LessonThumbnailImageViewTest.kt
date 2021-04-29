@@ -91,11 +91,10 @@ class LessonThumbnailImageViewTest {
         setEntityType("")
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
         lessonThumbnailImageViewHolder.addView(this)
-
-        onView(withId(lessonThumbnailImageView.id))
-          .check(matches(withDrawable(R.drawable.topic_fractions_01)))
       }
     }
+    onView(withId(lessonThumbnailImageView.id))
+      .check(matches(withDrawable(R.drawable.topic_fractions_01)))
   }
 
   @Test
@@ -113,11 +112,10 @@ class LessonThumbnailImageViewTest {
         setEntityId("")
         setEntityType("")
         setLessonThumbnail(LessonThumbnail.getDefaultInstance())
-
-        onView(withId(lessonThumbnailImageView.id))
-          .check(matches(withDrawable(R.drawable.topic_fractions_01)))
       }
     }
+    onView(withId(lessonThumbnailImageView.id))
+      .check(matches(withDrawable(R.drawable.topic_fractions_01)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
