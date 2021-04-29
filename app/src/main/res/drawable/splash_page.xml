@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:drawable="@color/oppiaPrimaryLight" />
-  <item>
+  <item android:bottom="@dimen/splash_screen_logo_margin_bottom">
     <bitmap
       android:gravity="center"
       android:src="@drawable/oppia_logo_bitmap" />

@@ -4,7 +4,7 @@
   <item
     android:width="@dimen/splash_screen_logo_width"
     android:height="@dimen/splash_screen_logo_height"
+    android:bottom="@dimen/splash_screen_logo_margin_bottom"
     android:drawable="@drawable/oppia_logo_svg"
-    android:gravity="center"
-    android:top="@dimen/splash_screen_logo_margin_top" />
+    android:gravity="center" />
 </layer-list>
