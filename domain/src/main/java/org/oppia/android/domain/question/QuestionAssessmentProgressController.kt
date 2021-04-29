@@ -344,7 +344,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
         return AsyncResult.success(scoreCalculator.computeAll())
       }
-  }
+    }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
