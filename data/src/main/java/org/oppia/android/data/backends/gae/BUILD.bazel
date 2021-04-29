@@ -23,16 +23,6 @@ kt_android_library(
     ],
 )
 
-android_library(
-    name = "data_test_assets",
-    testonly = True,
-    assets = glob(["src/test/assets/**"]),
-    assets_dir = "src/test/assets/",
-    visibility = ["//:oppia_testing_visibility"],
-    custom_package = "org.oppia.android.data",
-    manifest = "src/test/AndroidManifest.xml",
-)
-
 kt_android_library(
     name = "network_settings",
     srcs = [
