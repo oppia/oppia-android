@@ -3,7 +3,6 @@ package org.oppia.android.domain.question
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.UserAssessmentPerformance
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.max
 
 /**
