@@ -327,6 +327,9 @@
   <dimen name="profile_chooser_add_view_circular_image_margin_top_profile_already_added">48dp</dimen>
   <dimen name="profile_chooser_profile_view_circular_image_margin_top_profile_already_added">48dp</dimen>
   <dimen name="state_fragment_padding_top_audio_bar_visible">48dp</dimen>
+  <dimen name="mydownloads_tab_indicator_height">2dp</dimen>
+  <dimen name="mydownloads_tab_margin_start">0dp</dimen>
+  <dimen name="mydownloads_tab_margin_end">0dp</dimen>
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>

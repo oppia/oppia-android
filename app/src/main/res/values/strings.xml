@@ -288,7 +288,7 @@
   <string name="downloads_access_dialog_positive">Submit</string>
   <string name="downloads_access_dialog_cancel">Cancel</string>
   <string name="downloads_access_dialog_input_pin_error">Incorrect Administrator PIN. Please try again.</string>
-  <string name="downloads_delete_heading">DELETE</string>
+  <string name="downloads_delete_heading">Delete</string>
   <string name="downloads_delete_icon_content_description">Delete Button</string>
   <string name="downloads_expand_card_show_delete">Show/hide delete</string>
   <string name="my_downloads_activity_title">My Downloads</string>

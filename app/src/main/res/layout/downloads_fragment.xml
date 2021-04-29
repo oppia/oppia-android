@@ -16,7 +16,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:overScrollMode="never"
-    android:paddingBottom="128dp"
+    android:paddingBottom="108dp"
     android:scrollbars="none"
     app:data="@{viewModel.downloadsViewModelLiveData}"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

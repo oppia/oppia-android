@@ -127,6 +127,10 @@
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
 
+  <dimen name="mydownloads_tab_indicator_height">4dp</dimen>
+  <dimen name="mydownloads_tab_margin_start">64dp</dimen>
+  <dimen name="mydownloads_tab_margin_end">64dp</dimen>
+
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
   <dimen name="content_item_exploration_split_view_margin_top">40dp</dimen>
