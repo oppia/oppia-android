@@ -112,19 +112,19 @@ class DownloadsFragmentPresenter @Inject constructor(
 
     binding.sortByMenu.setOnItemClickListener { parent, _, position, _ ->
       if (previousSortTypeIndex != position) {
-        lateinit var sortedDownloadsItemViewModel: MutableList<DownloadsItemViewModel>
-        when (parent.getItemAtPosition(position)) {
-          fragment.getString(SortByItems.NEWEST.value) -> {
-            // TODO(#552): update it with the time stamp value in the list
-            sortedDownloadsItemViewModel = sortTopicDownloadSize()
+        val sortedDownloadsItemViewModel: MutableList<DownloadsItemViewModel> =
+          when (SortByItems.values()[position]) {
+            SortByItems.NEWEST -> {
+              // TODO(#552): update it with the time stamp value in the list
+              sortTopicDownloadSize()
+            }
+            SortByItems.ALPHABETICAL -> {
+              sortTopicAlphabetically()
+            }
+            SortByItems.DOWNLOAD_SIZE -> {
+              sortTopicDownloadSize()
+            }
           }
-          fragment.getString(SortByItems.ALPHABETICAL.value) -> {
-            sortedDownloadsItemViewModel = sortTopicAlphabetically()
-          }
-          fragment.getString(SortByItems.DOWNLOAD_SIZE.value) -> {
-            sortedDownloadsItemViewModel = sortTopicDownloadSize()
-          }
-        }
         previousSortTypeIndex = position
         sortByListIndexListener.onSortByItemClicked(previousSortTypeIndex)
         binding.sortByMenu.setText(
