@@ -26,12 +26,9 @@
       <TextView
         android:id="@+id/sort_by_text_view"
         style="@style/Subtitle1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:text="@string/sort_by"
         android:textAllCaps="true"
-        android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintBottom_toBottomOf="@+id/sort_by_container"
         app:layout_constraintEnd_toStartOf="@id/sort_by_container"
         app:layout_constraintHorizontal_bias="1.0"
@@ -50,8 +47,6 @@
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
           android:id="@+id/sort_by_menu"
           style="@style/Subtitle2"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:drawablePadding="30dp"
           android:drawableTint="@color/oppiaPrimaryText"
           android:dropDownWidth="wrap_content"
@@ -59,7 +54,6 @@
           android:paddingTop="10dp"
           android:paddingEnd="60dp"
           android:paddingBottom="10dp"
-          android:textColor="@color/oppiaPrimaryText"
           tools:text="Newest" />
       </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
