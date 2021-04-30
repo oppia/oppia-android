@@ -1020,7 +1020,7 @@ class QuestionAssessmentProgressControllerTest {
       .isEqualTo(1)
     val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(hintAndSolution.correctAnswer.correctAnswer)
-      .isEqualTo("3")
+      .isEqualTo("3.0")
     // view question 2 solution
     questionAssessmentProgressController.submitSolutionIsRevealed(
       ephemeralQuestion.ephemeralState.state
@@ -1071,7 +1071,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(hintAndSolution.getHint(0).hintContent.html)
       .contains("<p>Hint text will appear here</p>")
     assertThat(hintAndSolution.solution.correctAnswer.correctAnswer)
-      .isEqualTo("3")
+      .isEqualTo("3.0")
     // view question 2 hint
     questionAssessmentProgressController.submitHintIsRevealed(
       ephemeralQuestion.ephemeralState.state, true, 0
@@ -1288,9 +1288,6 @@ class QuestionAssessmentProgressControllerTest {
     var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
       .isEqualTo(1)
-    var solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .contains("<p>The number of pieces of cake I want.</p>")
     // view question 1 solution
     questionAssessmentProgressController.submitSolutionIsRevealed(
       ephemeralQuestion.ephemeralState.state
@@ -1307,9 +1304,9 @@ class QuestionAssessmentProgressControllerTest {
     ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
       .isEqualTo(1)
-    solution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    var solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("3")
+      .isEqualTo("3.0")
     // view question 2 solution
     questionAssessmentProgressController.submitSolutionIsRevealed(
       ephemeralQuestion.ephemeralState.state

@@ -7,18 +7,51 @@ import kotlin.math.max
 
 /**
  * Private class that computes the state of the user's performance at the end of a practice session.
- * This class can exist across multiple training session instances, but calling code is responsible
- * for ensuring it is properly reset. This class is not thread-safe, so it is the calling code's
- * responsibility to synchronize access to this class.
+ * This class is not thread-safe, so it is the calling code's responsibility to synchronize access
+ * to this class.
  */
-internal class QuestionAssessmentCalculation constructor(
+internal class QuestionAssessmentCalculation private constructor(
   private val viewHintPenalty: Int,
   private val wrongAnswerPenalty: Int,
   private val maxScorePerQuestion: Int,
   private val questionSessionMetrics: List<QuestionSessionMetrics>,
-  private val totalScore: MutableFractionGrade,
-  private val scorePerSkillMapping: MutableMap<String, MutableFractionGrade>
+  private val skillIdList: List<String>
 ) {
+  private val totalScore: MutableFractionGrade by lazy {
+    MutableFractionGrade()
+  }
+
+  private val scorePerSkillMapping: Map<String, MutableFractionGrade> by lazy {
+    skillIdList.associateWith { MutableFractionGrade() }
+  }
+
+  /** Compute the overall score as well as the score and mastery per skill. */
+  internal fun computeAll(): UserAssessmentPerformance {
+    calculateScores()
+    // TODO(#3067): Create mastery calculations method
+
+    // Set up the return values
+    val finalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = totalScore.pointsReceived.toDouble() / maxScorePerQuestion
+      totalPointsAvailable = totalScore.totalPointsAvailable.toDouble() / maxScorePerQuestion
+    }.build()
+
+    val finalScorePerSkillMapping = scorePerSkillMapping.filter { (_, fractionGrade) ->
+      fractionGrade.totalPointsAvailable != 0
+    }.mapValues { (_, fractionGrade) ->
+      FractionGrade.newBuilder().apply {
+        pointsReceived = fractionGrade.pointsReceived.toDouble() / maxScorePerQuestion
+        totalPointsAvailable = fractionGrade.totalPointsAvailable.toDouble() / maxScorePerQuestion
+      }.build()
+    }
+
+    return UserAssessmentPerformance.newBuilder().apply {
+      totalFractionScore = finalScore
+      putAllFractionScorePerSkillMapping(finalScorePerSkillMapping)
+      // TODO(#3067): Set up finalMasteryPerSkillMapping
+    }.build()
+  }
+
   /** Calculate the user's overall score and score per skill for this practice session. */
   private fun calculateScores() {
     for (questionMetric in questionSessionMetrics) {
@@ -40,48 +73,13 @@ internal class QuestionAssessmentCalculation constructor(
     }
   }
 
-  /** Compute the overall score as well as the score and mastery per skill. */
-  internal fun computeAll(): UserAssessmentPerformance {
-    calculateScores()
-    // TODO(#3067): Create mastery calculations method
-
-    // Set up the return values
-    val finalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = totalScore.pointsReceived.toDouble() / maxScorePerQuestion
-      totalPointsAvailable = totalScore.totalPointsAvailable.toDouble() / maxScorePerQuestion
-    }.build()
-
-    val finalScorePerSkillMapping = mutableMapOf<String, FractionGrade>()
-    for (score in scorePerSkillMapping) {
-      if (score.value.totalPointsAvailable != 0) { // Exclude entries with denominator of 0
-        finalScorePerSkillMapping[score.key] = FractionGrade.newBuilder().apply {
-          pointsReceived = score.value.pointsReceived.toDouble() / maxScorePerQuestion
-          totalPointsAvailable = score.value.totalPointsAvailable.toDouble() / maxScorePerQuestion
-        }.build()
-      }
-    }
-
-    // TODO(#3067): Set up finalMasteryPerSkillMapping
-    val finalMasteryPerSkillMapping = mapOf<String, Double>()
-
-    return UserAssessmentPerformance.newBuilder().apply {
-      totalFractionScore = finalScore
-      putAllFractionScorePerSkillMapping(finalScorePerSkillMapping)
-      putAllMasteryPerSkillMapping(finalMasteryPerSkillMapping)
-    }.build()
-  }
-
-  /**
-   * Mutable class that stores a grade as a fraction.
-   */
-  class MutableFractionGrade(
-    internal var pointsReceived: Int,
-    internal var totalPointsAvailable: Int
+  /** Mutable class that stores a grade as a fraction. */
+  internal class MutableFractionGrade(
+    internal var pointsReceived: Int = 0,
+    internal var totalPointsAvailable: Int = 0
   )
 
-  /**
-   * Factory to create a new [QuestionAssessmentCalculation].
-   */
+  /** Factory to create a new [QuestionAssessmentCalculation]. */
   class Factory @Inject constructor(
     @ViewHintScorePenalty private val viewHintPenalty: Int,
     @WrongAnswerScorePenalty private val wrongAnswerPenalty: Int,
@@ -98,20 +96,12 @@ internal class QuestionAssessmentCalculation constructor(
       skillIdList: List<String>,
       questionSessionMetrics: List<QuestionSessionMetrics>
     ): QuestionAssessmentCalculation {
-      // Set up the data structures needed for computing the user's scores
-      val totalScore = MutableFractionGrade(0, 0)
-      val scorePerSkillMapping = mutableMapOf<String, MutableFractionGrade>()
-      for (skillId in skillIdList) {
-        scorePerSkillMapping[skillId] = MutableFractionGrade(0, 0)
-      }
-
       return QuestionAssessmentCalculation(
         viewHintPenalty,
         wrongAnswerPenalty,
         maxScorePerQuestion,
         questionSessionMetrics,
-        totalScore,
-        scorePerSkillMapping
+        skillIdList
       )
     }
   }
