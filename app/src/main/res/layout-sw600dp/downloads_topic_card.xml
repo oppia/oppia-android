@@ -16,18 +16,19 @@
       type="org.oppia.android.app.mydownloads.downloads.DownloadsTopicViewModel" />
   </data>
 
-  <LinearLayout
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
       android:id="@+id/download_container"
       android:layout_width="528dp"
       android:layout_height="wrap_content"
+      android:layout_gravity="center"
       android:layout_marginStart="28dp"
-      android:layout_marginTop="16dp"
+      android:layout_marginTop="8dp"
       android:layout_marginEnd="28dp"
+      android:layout_marginBottom="8dp"
       app:cardBackgroundColor="@color/white"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp"
@@ -178,5 +179,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-  </LinearLayout>
+  </FrameLayout>
 </layout>
