@@ -171,7 +171,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/downloads_delete_heading"
             android:textAllCaps="true"
-            android:textColor="#727272"
+            android:textColor="@color/deleteTopicDownloadText"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
