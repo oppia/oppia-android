@@ -84,7 +84,7 @@ class AdministratorControlsActivity :
 
   override fun showLogoutDialog() {
     LogoutDialogFragment.newInstance()
-      .showNow(supportFragmentManager, LogoutDialogFragment.LOGOUT_DIALOG_FRAGMENT)
+      .showNow(supportFragmentManager, LogoutDialogFragment.TAG_LOGOUT_DIALOG_FRAGMENT)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

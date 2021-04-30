@@ -11,7 +11,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 class LogoutDialogFragment : DialogFragment() {
 
   companion object {
-    const val LOGOUT_DIALOG_FRAGMENT = "LOGOUT_DIALOG_FRAGMENT"
+    const val TAG_LOGOUT_DIALOG_FRAGMENT = "TAG_LOGOUT_DIALOG_FRAGMENT"
 
     fun newInstance(): LogoutDialogFragment {
       return LogoutDialogFragment()
