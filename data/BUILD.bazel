@@ -4,7 +4,6 @@ This library provides data to the rest of the application.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//data:data_test.bzl", "data_test")
 
 android_library(
