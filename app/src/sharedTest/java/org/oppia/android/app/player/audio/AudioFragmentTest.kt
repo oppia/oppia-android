@@ -41,7 +41,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -79,7 +78,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -151,28 +149,6 @@ class AudioFragmentTest {
       context,
       profileId
     )
-  }
-
-  // TODO(#2417): Re-enable once this test passes on robolectric
-  @RunOn(TestPlatform.ESPRESSO)
-  @Test
-  fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
-    addMediaInfo()
-    profileTestHelper.addOnlyAdminProfile()
-    val data = profileManagementController.updateAudioLanguage(
-      profileId,
-      AudioLanguage.HINDI_AUDIO_LANGUAGE
-    ).toLiveData()
-    launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(
-        internalProfileId
-      )
-    ).use {
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi")))
-    }
   }
 
   @Test
