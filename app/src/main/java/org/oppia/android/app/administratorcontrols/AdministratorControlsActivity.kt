@@ -16,7 +16,6 @@ const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
 const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
-const val LOGOUT_DIALOG_FRAGMENT = "LOGOUT_DIALOG_FRAGMENT"
 
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity :
@@ -84,7 +83,8 @@ class AdministratorControlsActivity :
   }
 
   override fun showLogoutDialog() {
-    LogoutDialogFragment.newInstance().showNow(supportFragmentManager, LOGOUT_DIALOG_FRAGMENT)
+    LogoutDialogFragment.newInstance()
+      .showNow(supportFragmentManager, LogoutDialogFragment.LOGOUT_DIALOG_FRAGMENT)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

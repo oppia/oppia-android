@@ -11,6 +11,8 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 class LogoutDialogFragment : DialogFragment() {
 
   companion object {
+    const val LOGOUT_DIALOG_FRAGMENT = "LOGOUT_DIALOG_FRAGMENT"
+
     fun newInstance(): LogoutDialogFragment {
       return LogoutDialogFragment()
     }
@@ -23,7 +25,6 @@ class LogoutDialogFragment : DialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         startActivity(intent)
       }.create()
