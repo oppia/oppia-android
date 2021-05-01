@@ -161,7 +161,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -197,11 +197,11 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -225,18 +225,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
           R.id.test_recycler_view,
-          1
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
           R.id.test_recycler_view,
-          2
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -260,7 +260,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -283,11 +283,11 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -311,18 +311,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
           R.id.test_recycler_view,
-          1
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
           R.id.test_recycler_view,
-          2
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -373,7 +373,7 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(R.id.test_recycler_view, position = 0)).check(matches(withText("initial")))
     }
   }
 
@@ -396,7 +396,12 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
@@ -417,7 +422,7 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(R.id.test_recycler_view, position = 0)).check(matches(withText("initial")))
     }
   }
 
@@ -440,46 +445,51 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(bindableAdapterTest = this)
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewBinder(
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewBinder(
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return SingleTypeBuilder
+      .newBuilder<BindableAdapterTestDataModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
     lifecycleOwner: Fragment
@@ -496,42 +506,42 @@ class BindableAdapterTest {
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewBinder(
-          viewType = ViewModelType.STRING,
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .registerViewBinder(
-          viewType = ViewModelType.INT,
-          inflateView = this::inflateTextViewForIntWithoutDataBinding,
-          bindView = this::bindTextViewForIntWithoutDataBinding
-        )
-        .build()
-    }
+    return MultiTypeBuilder
+      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      .registerViewBinder(
+        viewType = ViewModelType.STRING,
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding
+      )
+      .registerViewBinder(
+        viewType = ViewModelType.INT,
+        inflateView = this::inflateTextViewForIntWithoutDataBinding,
+        bindView = this::bindTextViewForIntWithoutDataBinding
+      )
+      .build()
+  }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter():
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.STRING,
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.INT,
-          inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.LIVE_DATA,
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    return MultiTypeBuilder
+      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.STRING,
+        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
+      )
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.INT,
+        inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
+      )
+      .registerViewDataBinderWithSameModelType(
+        viewType = ViewModelType.LIVE_DATA,
+        inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
+      )
+      .build()
+  }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
     lifecycleOwner: Fragment
@@ -560,7 +570,7 @@ class BindableAdapterTest {
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
+      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */false
     ) as TextView
   }
 
