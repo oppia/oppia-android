@@ -19,5 +19,5 @@ internal data class QuestionSessionMetrics(val question: Question) {
    * question. These skill IDs identify which skills the user needs to work on, based on which
    * misconceptions the user had when they submitted wrong answers for this question.
    */
-  var taggedSkillIds: MutableList<String> = mutableListOf()
+  var taggedMisconceptionSkillIds: MutableList<String> = mutableListOf()
 }

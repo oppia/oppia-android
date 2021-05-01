@@ -61,7 +61,7 @@ internal class QuestionAssessmentProgress {
     val currentQuestionIndex = getCurrentQuestionIndex()
     questionSessionMetrics[currentQuestionIndex].numberOfAnswersSubmitted++
     if (taggedSkillId != null) {
-      questionSessionMetrics[currentQuestionIndex].taggedSkillIds.add(taggedSkillId)
+      questionSessionMetrics[currentQuestionIndex].taggedMisconceptionSkillIds.add(taggedSkillId)
     }
   }
 
