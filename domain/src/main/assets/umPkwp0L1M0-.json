@@ -108,312 +108,275 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 10
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 10
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test A",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're ready to learn more! <br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're ready to learn more! <br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 6,
-                      "denominator": 10
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 6,
+                  "denominator": 10
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Oops, read the question carefully!</p><p>6/10 is the fraction of the cake that has any kind of fruits on it. But that's not what Mr. Baker is asking for.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Oops, read the question carefully!</p><p>6/10 is the fraction of the cake that has any kind of fruits on it. But that's not what Mr. Baker is asking for.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 12,
-                      "denominator": 21
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 12,
+                  "denominator": 21
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Oops, read the question carefully!</p><p>12/21 is the fraction of fruits on the cake that are mangoes. But that's not what Mr. Baker is asking for. (He's talking about the fraction of the <strong>cake</strong>, not the fraction of the total number of fruits.)</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Oops, read the question carefully!</p><p>12/21 is the fraction of fruits on the cake that are mangoes. But that's not what Mr. Baker is asking for. (He's talking about the fraction of the <strong>cake</strong>, not the fraction of the total number of fruits.)</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 9,
-                      "denominator": 21
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 9,
+                  "denominator": 21
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>Oops, read the question carefully!</p><p>9/21 is the fraction of fruits on the cake that are red cherries. But that's not what Mr. Baker is asking for. (He's talking about the fraction of the <strong>cake</strong>, not the fraction of the total number of fruits. Also, he's talking about the mangoes and not the cherries.)<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>Oops, read the question carefully!</p><p>9/21 is the fraction of fruits on the cake that are red cherries. But that's not what Mr. Baker is asking for. (He's talking about the fraction of the <strong>cake</strong>, not the fraction of the total number of fruits. Also, he's talking about the mangoes and not the cherries.)<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 4,
-                      "denominator": 10
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 4,
+                  "denominator": 10
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>Oops, read the question carefully!</p><p>4/10 is the fraction of the cake that has nothing on it. But that's not what Mr. Baker is asking for.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>Oops, read the question carefully!</p><p>4/10 is the fraction of the cake that has nothing on it. But that's not what Mr. Baker is asking for.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 7,
-                      "denominator": 3
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 7,
+                  "denominator": 3
                 }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p><p>In your answer, the <strong>denominator</strong> is the number of pieces of cake with mangoes on them. But, from Mr. Baker's explanation, the denominator should be the<strong> total number</strong> of equal parts that the cake is divided into.</p><p>Let's take a moment to learn that again properly. You'll need it later.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p><p>In your answer, the <strong>denominator</strong> is the number of pieces of cake with mangoes on them. But, from Mr. Baker's explanation, the denominator should be the<strong> total number</strong> of equal parts that the cake is divided into.</p><p>Let's take a moment to learn that again properly. You'll need it later.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 7
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 7
                 }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_7",
-                  "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p><p>In your answer, the <strong>denominator</strong> is the number of pieces of cake with no mangoes on them. But, from Mr. Baker's explanation, the denominator should be the<strong> total number</strong> of equal parts that the cake is divided into.</p><p>Let's take a moment to learn that again properly. You'll need it later!<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p><p>In your answer, the <strong>denominator</strong> is the number of pieces of cake with no mangoes on them. But, from Mr. Baker's explanation, the denominator should be the<strong> total number</strong> of equal parts that the cake is divided into.</p><p>Let's take a moment to learn that again properly. You'll need it later!<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 6
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_8",
-                  "html": "<p>Oops, read the question carefully!</p><p>3/6 is the fraction of cake slices that have mangoes, out of all the slices that have fruits on them.</p><p>But that's not what Mr. Baker is asking for. He's talking about the fraction of the <strong>whole</strong> <strong>cake</strong> -- not just the part of the cake that has fruits on it. Try again?</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>Oops, read the question carefully!</p><p>3/6 is the fraction of cake slices that have mangoes, out of all the slices that have fruits on them.</p><p>But that's not what Mr. Baker is asking for. He's talking about the fraction of the <strong>whole</strong> <strong>cake</strong> -- not just the part of the cake that has fruits on it. Try again?</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 10
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_9",
-                  "html": "<p>No, that's not right. You've got the denominator correct, but you need to count the number of selected pieces carefully. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 10
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_9",
+                "html": "<p>No, that's not right. You've got the denominator correct, but you need to count the number of selected pieces carefully. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 10
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_10",
-                  "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p>\n<p>In your answer, the numerator is the total number of pieces of cake. But, from Mr. Baker's explanation, the <strong>second</strong> (or <strong>bottom</strong>) number of the fraction (the <strong>denominator</strong>) should represent the <strong>total number</strong> of equal parts.</p>\n<p>Let's take a moment to learn that again properly. You'll need it later!</p>\n"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 10
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_10",
+                "html": "<p>Oops, it looks like you've forgotten how to write a fraction.</p>\n<p>In your answer, the numerator is the total number of pieces of cake. But, from Mr. Baker's explanation, the <strong>second</strong> (or <strong>bottom</strong>) number of the fraction (the <strong>denominator</strong>) should represent the <strong>total number</strong> of equal parts.</p>\n<p>Let's take a moment to learn that again properly. You'll need it later!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 12
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_11",
-                  "html": "<p>No, read the question carefully. The question asks for the <strong>fraction of the cake</strong>, so the denominator of the fraction should be the number of equal parts that the<strong> cake</strong> is divided into.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 12
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_11",
+                "html": "<p>No, read the question carefully. The question asks for the <strong>fraction of the cake</strong>, so the denominator of the fraction should be the number of equal parts that the<strong> cake</strong> is divided into.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_12",
-                  "html": "<p>No, that's not right. The question asks for the <strong>fraction of the cake</strong>, so the denominator of the fraction should be the total number of equal parts that the<strong> cake</strong> is divided into. Be careful to count this correctly.</p><p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 3
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_12",
+                "html": "<p>No, that's not right. The question asks for the <strong>fraction of the cake</strong>, so the denominator of the fraction should be the total number of equal parts that the<strong> cake</strong> is divided into. Be careful to count this correctly.</p><p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 10",
             "feedback": {
@@ -425,26 +388,22 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Start by finding the denominator. The denominator is the total number of equal parts that the whole cake is divided into.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>Next, find the numerator by counting the number of selected parts.</p><p>In this case, it's the number of parts that have mangoes (the orange pieces) on them. Make sure to count carefully!</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>Always be careful about what you're counting. The question will have clues!</p><p>Here, we're looking at a fraction of the <strong>cake</strong>.<strong> </strong>So, we should be counting pieces of the cake, not the individual fruits.<br></p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Start by finding the denominator. The denominator is the total number of equal parts that the whole cake is divided into.</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Next, find the numerator by counting the number of selected parts.</p><p>In this case, it's the number of parts that have mangoes (the orange pieces) on them. Make sure to count carefully!</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Always be careful about what you're counting. The question will have clues!</p><p>Here, we're looking at a fraction of the <strong>cake</strong>.<strong> </strong>So, we should be counting pieces of the cake, not the individual fruits.<br></p>"
+            }
+          }],
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
@@ -1072,106 +1031,93 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 4,
-                      "denominator": 6
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEquivalentTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 4,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test B",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, well done!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, well done!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 6
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test A second try",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's the fraction of the roti that was burnt. But that's not the fraction that Mr. Baker is asking for. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A second try",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's the fraction of the roti that was burnt. But that's not the fraction that Mr. Baker is asking for. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 6
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Final Test A second try",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>You've got the denominator correct, but the numerator is wrong. Make sure to correctly count the number of pieces with dhal on them. The dhal is the yellow sauce on top of the roti.</p><p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 6
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A second try",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>You've got the denominator correct, but the numerator is wrong. Make sure to correctly count the number of pieces with dhal on them. The dhal is the yellow sauce on top of the roti.</p><p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 4
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Final Test A second try",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not correct. You've got the right numerator, but the denominator of your fraction is wrong. Try again, and make sure to count the <strong>total</strong> number of pieces of roti correctly this time.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 4
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A second try",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. You've got the right numerator, but the denominator of your fraction is wrong. Try again, and make sure to count the <strong>total</strong> number of pieces of roti correctly this time.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Recap Writing Fractions",
             "feedback": {
@@ -1183,38 +1129,32 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Remember that a fraction has a numerator and a denominator. It is written as</p><p>         Numerator / Denominator</p><p>The denominator is the<strong> total </strong>number of equal pieces that the roti is divided into. Can you figure that out?</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>The roti is divided into 6 pieces, so the denominator is 6.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>This means that the answer is:  <strong>something / 6</strong></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_4",
-                "html": "<p>The numerator is the number of <strong>selected</strong> pieces. In this case, it's the number of pieces with dhal on them. (We don't care about the pieces which are burnt, since the question only asks about the pieces with dhal on them.)</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_5",
-                "html": "<p>There are 4 pieces with dhal on them, so the numerator is 4.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Remember that a fraction has a numerator and a denominator. It is written as</p><p>         Numerator / Denominator</p><p>The denominator is the<strong> total </strong>number of equal pieces that the roti is divided into. Can you figure that out?</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>The roti is divided into 6 pieces, so the denominator is 6.</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>This means that the answer is:  <strong>something / 6</strong></p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>The numerator is the number of <strong>selected</strong> pieces. In this case, it's the number of pieces with dhal on them. (We don't care about the pieces which are burnt, since the question only asks about the pieces with dhal on them.)</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_5",
+              "html": "<p>There are 4 pieces with dhal on them, so the numerator is 4.</p>"
+            }
+          }],
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
@@ -1777,54 +1717,44 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>One fifth</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Two fifths</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Three fifths</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>Four fifths</p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<p>Five fifths</p>",
-                  "content_id": "ca_choices_4"
-                }
-              ]
+              "value": [{
+                "html": "<p>One fifth</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Two fifths</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Three fifths</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>Four fifths</p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<p>Five fifths</p>",
+                "content_id": "ca_choices_4"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're ready for the next step. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're ready for the next step. </p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Parts of a whole",
             "feedback": {
@@ -1836,14 +1766,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>When you divide something into <strong>five</strong> equal parts, each part is called a <strong>fifth.</strong></p><p><strong><br></strong></p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into five equal pieces, one shaded blue.&amp;quot;\" caption-with-value=\"&amp;quot;The shaded part is a fifth of the circle.&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180108_000843_fe40j1havk_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image><p><strong><br></strong></p><p>How many fifths are in the <strong>last</strong> picture that Mr. Baker drew?<br></p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>When you divide something into <strong>five</strong> equal parts, each part is called a <strong>fifth.</strong></p><p><strong><br></strong></p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle divided into five equal pieces, one shaded blue.&amp;quot;\" caption-with-value=\"&amp;quot;The shaded part is a fifth of the circle.&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180108_000843_fe40j1havk_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image><p><strong><br></strong></p><p>How many fifths are in the <strong>last</strong> picture that Mr. Baker drew?<br></p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -2144,172 +2072,144 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>7/2<br></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>9/2</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>2/7</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>7/9<br></p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<p>2/9<br></p>",
-                  "content_id": "ca_choices_4"
-                },
-                {
-                  "html": "<p>9/7<br></p>",
-                  "content_id": "ca_choices_5"
-                },
-                {
-                  "html": "<p>2/5</p>",
-                  "content_id": "ca_choices_6"
-                },
-                {
-                  "html": "<p>5/2</p>",
-                  "content_id": "ca_choices_7"
-                }
-              ]
+              "value": [{
+                "html": "<p>7/2<br></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>9/2</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>2/7</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>7/9<br></p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<p>2/9<br></p>",
+                "content_id": "ca_choices_4"
+              }, {
+                "html": "<p>9/7<br></p>",
+                "content_id": "ca_choices_5"
+              }, {
+                "html": "<p>2/5</p>",
+                "content_id": "ca_choices_6"
+              }, {
+                "html": "<p>5/2</p>",
+                "content_id": "ca_choices_7"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out fractions confirmation",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>You got it! </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out fractions confirmation",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>You got it! </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 0
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 7
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that isn't correct.</p><p>In your answer, the second number is 2, which is the number of (darker) <strong>parts we</strong> <strong>want</strong>. But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\", which is not the same thing.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 7
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that isn't correct.</p><p>In your answer, the second number is 2, which is the number of (darker) <strong>parts we</strong> <strong>want</strong>. But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\", which is not the same thing.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 3
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 4
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right.</p><p>In your answer, the second number is 9. But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\". The cake has 7 parts in total, so this answer is wrong.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 4
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right.</p><p>In your answer, the second number is 9. But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\". The cake has 7 parts in total, so this answer is wrong.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 6
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that is not correct.</p><p>In your answer, the second number of the fraction is 5. This is the number of parts we <strong>don't want. </strong>But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\", which is not the same thing.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 6
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that is not correct.</p><p>In your answer, the second number of the fraction is 5. This is the number of parts we <strong>don't want. </strong>But Mr. Baker said \"the second number tells us the <strong>total number</strong> of equal parts\", which is not the same thing.</p><p>Read Mr. Baker's explanation carefully one more time, and make sure you understand it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 5
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right.</p><p>In your answer, the first number is 9. But Mr. Baker said \"the first number tells us <strong>how many</strong> parts we want\". We want the darker parts, and there are only 2 darker pieces, so the answer 9/7 is wrong.</p><p>Read Mr. Baker's explanation again carefully, and make sure you understand it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 5
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right.</p><p>In your answer, the first number is 9. But Mr. Baker said \"the first number tells us <strong>how many</strong> parts we want\". We want the darker parts, and there are only 2 darker pieces, so the answer 9/7 is wrong.</p><p>Read Mr. Baker's explanation again carefully, and make sure you understand it.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Writing out Fractions",
             "feedback": {
@@ -2321,26 +2221,22 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Here is the important part of Mr. Baker's explanation of how to write a fraction:</p><ul><li>The first number tells us <strong>how many </strong>parts we want.</li><li>The second number tells us the <strong>total number</strong> of equal parts.</li></ul><p>Can you use this to answer the question?</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>What is the <strong>total</strong> number of equal parts that the whole<strong> </strong>cake is divided into? That should be the <strong>second</strong> number in the fraction.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>The <strong>whole </strong>cake is divided into 7 equal parts, so 7 is the second number in the fraction.</p><p>So, the fraction must be: ?/7. Can you figure out the first number?</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Here is the important part of Mr. Baker's explanation of how to write a fraction:</p><ul><li>The first number tells us <strong>how many </strong>parts we want.</li><li>The second number tells us the <strong>total number</strong> of equal parts.</li></ul><p>Can you use this to answer the question?</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>What is the <strong>total</strong> number of equal parts that the whole<strong> </strong>cake is divided into? That should be the <strong>second</strong> number in the fraction.</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>The <strong>whole </strong>cake is divided into 7 equal parts, so 7 is the second number in the fraction.</p><p>So, the fraction must be: ?/7. Can you figure out the first number?</p>"
+            }
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -2762,84 +2658,74 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalentTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 4,
-                      "denominator": 6
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEquivalentTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 4,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Ending",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's correct!<br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Ending",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct!<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 6
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test A second try",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's the fraction of the roti that was burnt. But that's not the fraction that Mr. Baker is asking for...<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A second try",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's the fraction of the roti that was burnt. But that's not the fraction that Mr. Baker is asking for...<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 6
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Final Test A second try",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>You've got the denominator correct, but the numerator is wrong. Make sure to correctly count the number of pieces with dhal on them. The dhal is the yellow sauce on top of the roti.</p><p>Let's try again!<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 6
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test A second try",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>You've got the denominator correct, but the numerator is wrong. Make sure to correctly count the number of pieces with dhal on them. The dhal is the yellow sauce on top of the roti.</p><p>Let's try again!<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Final Test A second try",
             "feedback": {
@@ -3051,35 +2937,31 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 12
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 12
                 }
-              ],
-              "outcome": {
-                "dest": "Ending",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct, well done! That was a hard one!<br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Ending",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct, well done! That was a hard one!<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Final Test B second try",
             "feedback": {
@@ -3227,84 +3109,74 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 3,
-                      "denominator": 8
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 3,
+                  "denominator": 8
                 }
-              ],
-              "outcome": {
-                "dest": "Ending",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that's right. Well done! <br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Ending",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right. Well done! <br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 4,
-                      "denominator": 8
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 4,
+                  "denominator": 8
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test C",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Oops, read the question carefully!</p><p>Mr. Baker is asking about the fraction of the cake that contains chocolate chips. The colour of the pieces does not matter! Try again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test C",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Oops, read the question carefully!</p><p>Mr. Baker is asking about the fraction of the cake that contains chocolate chips. The colour of the pieces does not matter! Try again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 8
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Oops, it looks like you've forgotten what the parts of a fraction are.</p><p>Let's look at the explanation again, and try to remember them!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 8
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Oops, it looks like you've forgotten what the parts of a fraction are.</p><p>Let's look at the explanation again, and try to remember them!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Final Test C",
             "feedback": {
@@ -3501,68 +3373,57 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>The number of chosen parts.<br></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>The number of equal parts that the whole cake is divided into.<br></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>I can\u2019t remember!<br></p>",
-                  "content_id": "ca_choices_2"
-                }
-              ]
+              "value": [{
+                "html": "<p>The number of chosen parts.<br></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>The number of equal parts that the whole cake is divided into.<br></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>I can\u2019t remember!<br></p>",
+                "content_id": "ca_choices_2"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! Let's try another. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! Let's try another. </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No worries. Let's go back one step and see what the numbers in the fraction tell us.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No worries. Let's go back one step and see what the numbers in the fraction tell us.<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Writing out Fractions",
             "feedback": {
@@ -3727,94 +3588,79 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>Three sevenths<br></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Four sevenths<br></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Five sevenths<br></p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>Seven fourths<br></p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>Three sevenths<br></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Four sevenths<br></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Five sevenths<br></p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>Seven fourths<br></p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! Let's try another. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! Let's try another. </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not correct. A <strong>fourth</strong> is what you get when you cut a cake into <strong>four</strong> equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Picture showing a fourth&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180203_233120_jb8ggw0hf9_height_195_width_196.png&amp;quot;\"></oppia-noninteractive-image><p>So, the answer is <strong>not</strong> \"7 fourths\". Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. A <strong>fourth</strong> is what you get when you cut a cake into <strong>four</strong> equal parts:</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Picture showing a fourth&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180203_233120_jb8ggw0hf9_height_195_width_196.png&amp;quot;\"></oppia-noninteractive-image><p>So, the answer is <strong>not</strong> \"7 fourths\". Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. \"Three sevenths\" is the amount of the cake that is <strong>less</strong> <strong>dark</strong>.</p><p>What fraction of the cake is shaded <strong>darker </strong>(almost black)<strong>?</strong></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. \"Three sevenths\" is the amount of the cake that is <strong>less</strong> <strong>dark</strong>.</p><p>What fraction of the cake is shaded <strong>darker </strong>(almost black)<strong>?</strong></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 1",
             "feedback": {
@@ -3826,14 +3672,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>The cake is divided into <strong>seven</strong> equal parts. Each part is called a <strong>seventh</strong>.</p><p>How many sevenths are shaded darker? You can just count them.<br></p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>The cake is divided into <strong>seven</strong> equal parts. Each part is called a <strong>seventh</strong>.</p><p>How many sevenths are shaded darker? You can just count them.<br></p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -4065,209 +3909,185 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 12
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 12
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test C",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that's right. Well done, that was tricky!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test C",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right. Well done, that was tricky!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 7,
-                      "denominator": 12
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 7,
+                  "denominator": 12
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test B second try",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Oops, read Mr. Baker's question carefully. Your answer is the fraction of the cake that has cherries, but we're looking for the fraction of cake that <strong>does NOT </strong>have cherries! Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B second try",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Oops, read Mr. Baker's question carefully. Your answer is the fraction of the cake that has cherries, but we're looking for the fraction of cake that <strong>does NOT </strong>have cherries! Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 12,
-                      "denominator": 12
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 12,
+                  "denominator": 12
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test B second try",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, 12/12 is the number of pieces of cake which have chocolate chips. But that's not what Mr. Baker is asking for. Read the question and try again -- you can do this!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B second try",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, 12/12 is the number of pieces of cake which have chocolate chips. But that's not what Mr. Baker is asking for. Read the question and try again -- you can do this!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 9
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 9
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test B second try",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. Mr. Baker is asking for a \"fraction of a cake\". So, the denominator should represent the <strong>entire </strong>cake, not just the part of the cake that has mangoes on it.</p><p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B second try",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. Mr. Baker is asking for a \"fraction of a cake\". So, the denominator should represent the <strong>entire </strong>cake, not just the part of the cake that has mangoes on it.</p><p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 9,
-                      "denominator": 12
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 9,
+                  "denominator": 12
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test B second try",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>You're almost right. That's the fraction of the cake with mangoes and chocolate chips. But read the question again -- it looks like you've forgotten to include the part about there <strong>NOT</strong> being cherries. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B second try",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>You're almost right. That's the fraction of the cake with mangoes and chocolate chips. But read the question again -- it looks like you've forgotten to include the part about there <strong>NOT</strong> being cherries. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 12
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Final Test B second try",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>You've got the denominator right, but you haven't counted the number of pieces with both mangoes and chocolate chips (but no cherries) correctly. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 12
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test B second try",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>You've got the denominator right, but you haven't counted the number of pieces with both mangoes and chocolate chips (but no cherries) correctly. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 7
-                    }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 7,
-                      "denominator": 5
-                    }
-                  }
-                },
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 12
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 7
                 }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_7",
-                  "html": "<p>Oops, it looks like you've forgotten what the parts of a fraction are! Let's go and revise that, since it'll be useful later.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 7,
+                  "denominator": 5
+                }
+              }
+            }, {
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 12
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>Oops, it looks like you've forgotten what the parts of a fraction are! Let's go and revise that, since it'll be useful later.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Final Test B second try",
             "feedback": {
@@ -4279,38 +4099,32 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>To do this question, you'll need to count very carefully. Double-check your work, and use a pencil and paper to take notes if you need to.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>The denominator of the fraction is the <strong>total </strong>number of pieces of cake.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>There are 12 pieces of cake, so the denominator is 12.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_4",
-                "html": "<p>The numerator is trickier. We want to know what fraction of the cake \"has chocolate chips AND mangoes, but NOT cherries\u201d. </p><p>So, we need to count the number of pieces that have chocolate chips and mangoes (the orange pieces), but not cherries. That gives us the numerator.<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_5",
-                "html": "<p>Which pieces only have orange fruits and black dots, but no red fruits? There are exactly 5 of them. So the numerator is 5.<br></p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>To do this question, you'll need to count very carefully. Double-check your work, and use a pencil and paper to take notes if you need to.</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>The denominator of the fraction is the <strong>total </strong>number of pieces of cake.</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>There are 12 pieces of cake, so the denominator is 12.</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>The numerator is trickier. We want to know what fraction of the cake \"has chocolate chips AND mangoes, but NOT cherries\u201d. </p><p>So, we need to count the number of pieces that have chocolate chips and mangoes (the orange pieces), but not cherries. That gives us the numerator.<br></p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_5",
+              "html": "<p>Which pieces only have orange fruits and black dots, but no red fruits? There are exactly 5 of them. So the numerator is 5.<br></p>"
+            }
+          }],
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
@@ -4827,94 +4641,79 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into eight equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005823_g1asgsfffe_height_105_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005850_j227cn4ims_height_107_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005900_eyfj4jqnz0_height_105_width_104.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 5 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005920_u4qln0stnq_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into eight equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005823_g1asgsfffe_height_105_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 3 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005850_j227cn4ims_height_107_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 6 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005900_eyfj4jqnz0_height_105_width_104.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake divided into 5 equal pieces, with 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_005920_u4qln0stnq_height_106_width_106.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Writing out Fractions",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're ready for the next step. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Writing out Fractions",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're ready for the next step. </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Parts of a whole",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. In your answer, the cake is divided into <strong>eight </strong>(8)<strong> </strong>equal parts, so each part is called an <strong>eighth</strong>. </p><p>Three of the parts are red. So, the picture in your answer shows <strong>three eighths</strong>.</p><p>Let's go back and learn this again!<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }],
+            "outcome": {
+              "dest": "Parts of a whole",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. In your answer, the cake is divided into <strong>eight </strong>(8)<strong> </strong>equal parts, so each part is called an <strong>eighth</strong>. </p><p>Three of the parts are red. So, the picture in your answer shows <strong>three eighths</strong>.</p><p>Let's go back and learn this again!<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Parts of a whole",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. In your answer, the cake is divided into six (6) equal parts, so each part is called a <strong>sixth</strong>. Good!</p><p>But, four of the parts are yellow. So, the picture in your answer shows <strong>four </strong>sixths.</p><p>Let's go back and learn this again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Parts of a whole",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. In your answer, the cake is divided into six (6) equal parts, so each part is called a <strong>sixth</strong>. Good!</p><p>But, four of the parts are yellow. So, the picture in your answer shows <strong>four </strong>sixths.</p><p>Let's go back and learn this again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Parts of a whole",
             "feedback": {
@@ -5126,150 +4925,131 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 6
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 6",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're doing great.<br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 6",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're doing great.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 1,
-                      "denominator": 6
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 1,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. 1/6 is the fraction represented by the unshaded white part. But what fraction is represented by the <strong>shaded</strong>, brown part?</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. 1/6 is the fraction represented by the unshaded white part. But what fraction is represented by the <strong>shaded</strong>, brown part?</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 5
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts we want.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that we don't want.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 5
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts we want.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that we don't want.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's wrong. In your answer, the second number is 1, which is the number of parts we don't want.</p><p>But Mr. Baker didn't say that! He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's wrong. In your answer, the second number is 1, which is the number of parts we don't want.</p><p>But Mr. Baker didn't say that! He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 7
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. In your answer, the second number is 7.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing, not 7.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 7
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. In your answer, the second number is 7.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing, not 7.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 6
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>No, that's not right.</p>\n\n<p>You've got the bottom number (6) correct! The shape is divided into 6 equal parts.</p>\n\n<p>But the number on the top is wrong. If you've forgotten what it's supposed to represent, refer back to Mr. Baker's explanation.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 6
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not right.</p>\n\n<p>You've got the bottom number (6) correct! The shape is divided into 6 equal parts.</p>\n\n<p>But the number on the top is wrong. If you've forgotten what it's supposed to represent, refer back to Mr. Baker's explanation.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 5",
             "feedback": {
@@ -5565,273 +5345,241 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 1,
-                      "denominator": 6
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 1,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're ready for the next question. <br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're ready for the next question. <br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 5,
-                      "denominator": 6
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 5,
+                  "denominator": 6
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that fraction represents the <strong>unshaded</strong> white part. But we want the fraction corresponding to the <strong>shaded</strong> part. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that fraction represents the <strong>unshaded</strong> white part. But we want the fraction corresponding to the <strong>shaded</strong> part. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 2,
-                      "denominator": 5
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 2,
+                  "denominator": 5
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, 2/5 was just an example that explains how to type the fraction. But you need to answer the original question! Look at the picture again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, 2/5 was just an example that explains how to type the fraction. But you need to answer the original question! Look at the picture again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 1,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 1,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's the <strong>number</strong> of shaded pieces, but the question is asking for a <strong>fraction</strong>. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's the <strong>number</strong> of shaded pieces, but the question is asking for a <strong>fraction</strong>. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 5,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 5,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's the <strong>number</strong> of unshaded pieces. But the question is asking for a <strong>fraction</strong>. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's the <strong>number</strong> of unshaded pieces. But the question is asking for a <strong>fraction</strong>. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 6,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 6,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>No, that's the <strong>total number</strong> of pieces. But the question is asking for a <strong>fraction</strong>.<strong> </strong>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's the <strong>total number</strong> of pieces. But the question is asking for a <strong>fraction</strong>.<strong> </strong>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 5
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_7",
-                  "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts we don't want.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the <strong>second </strong>number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 5
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts we don't want.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the <strong>second </strong>number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_8",
-                  "html": "<p>No, that's not right. In your answer, the second number is 1, which is the number of <strong>parts we want</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the <strong>second </strong>number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that we don't want.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>No, that's not right. In your answer, the second number is 1, which is the number of <strong>parts we want</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the <strong>second </strong>number tells us the <strong>total number of equal parts</strong>\". This covers <strong>all</strong> the parts, including the parts that we don't want.</p><p>Let's take a look again at Mr. Baker's explanation and try to remember it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 7
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_9",
-                  "html": "<p>No, that's not right. In your answer, the second number is 7.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 7
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_9",
+                "html": "<p>No, that's not right. In your answer, the second number is 7.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_10",
-                  "html": "<p>No, that's not right. In your answer, the second number is 2.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_10",
+                "html": "<p>No, that's not right. In your answer, the second number is 2.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number of equal parts</strong>\". There are 6 equal parts in the drawing.</p><p>Let's take another look at Mr. Baker's explanation, and try to remember it.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_11",
-                  "html": "<p>No, that's not correct. That answer is a whole number, but the question is asking for a <strong>fraction</strong>. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_11",
+                "html": "<p>No, that's not correct. That answer is a whole number, but the question is asking for a <strong>fraction</strong>. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 4",
             "feedback": {
@@ -5843,32 +5591,27 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>You'll need to enter your answer as a number, then \"/\", then another number.</p><p><strong>Example:</strong> if you want to type 2/5, you should press \"2\", then \"/\", then \"5\".</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>Here is the important part of Mr. Baker's explanation of how to write a fraction:</p><ul><li>The first number tells us <strong>how many </strong>parts we want.</li><li>The second number tells us the <strong>total number</strong> of equal parts.</li></ul><p>Can you use this to answer the question?<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>The first part of the fraction is the number of selected pieces. In the picture, how many pieces are selected?</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_4",
-                "html": "<p>The second number is the <strong>total</strong> number of pieces. This always includes <strong>all</strong> the pieces, both the ones that are selected, and the ones that aren't selected.<br></p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>You'll need to enter your answer as a number, then \"/\", then another number.</p><p><strong>Example:</strong> if you want to type 2/5, you should press \"2\", then \"/\", then \"5\".</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Here is the important part of Mr. Baker's explanation of how to write a fraction:</p><ul><li>The first number tells us <strong>how many </strong>parts we want.</li><li>The second number tells us the <strong>total number</strong> of equal parts.</li></ul><p>Can you use this to answer the question?<br></p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>The first part of the fraction is the number of selected pieces. In the picture, how many pieces are selected?</p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_4",
+              "html": "<p>The second number is the <strong>total</strong> number of pieces. This always includes <strong>all</strong> the pieces, both the ones that are selected, and the ones that aren't selected.<br></p>"
+            }
+          }],
           "solution": {
             "answer_is_exclusive": true,
             "correct_answer": {
@@ -6418,123 +6161,107 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 4,
-                      "denominator": 9
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 4,
+                  "denominator": 9
                 }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's right. Well done!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's right. Well done!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 8
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right -- the second number in your answer is wrong. Make sure you count the total number of pieces correctly!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 8
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right -- the second number in your answer is wrong. Make sure you count the total number of pieces correctly!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 4
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. In your answer, the second number is 4, which is the number of <strong>selected parts</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number </strong>of equal parts\". This covers <strong>all</strong> the parts, including the parts that aren't selected.</p><p>Let's look at Mr. Baker's explanation again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 4
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. In your answer, the second number is 4, which is the number of <strong>selected parts</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number </strong>of equal parts\". This covers <strong>all</strong> the parts, including the parts that aren't selected.</p><p>Let's look at Mr. Baker's explanation again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasDenominatorEqualTo",
-                  "inputs": {
-                    "x": 5
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts that are <strong>not selected</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number </strong>of equal parts\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's look at Mr. Baker's explanation again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasDenominatorEqualTo",
+              "inputs": {
+                "x": 5
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. In your answer, the second number is 5, which is the number of parts that are <strong>not selected</strong>.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the second number tells us the <strong>total number </strong>of equal parts\". This covers <strong>all</strong> the parts, including the parts that are selected.</p><p>Let's look at Mr. Baker's explanation again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumeratorEqualTo",
-                  "inputs": {
-                    "x": 9
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. In your answer, the first number is 9, which is the total number of parts.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the first number tells us the number of parts we <strong>want</strong>\".</p><p>Let's look at Mr. Baker's explanation again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasNumeratorEqualTo",
+              "inputs": {
+                "x": 9
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. In your answer, the first number is 9, which is the total number of parts.</p><p>But that's not what Mr. Baker said. He said that, in a fraction, \"the first number tells us the number of parts we <strong>want</strong>\".</p><p>Let's look at Mr. Baker's explanation again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 7",
             "feedback": {
@@ -6795,116 +6522,98 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 2 parts out of 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020906_5dizjtea2a_height_109_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Hexagon with two parts out of three shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020932_ljahkydugd_height_111_width_127.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pentagon with two parts out of 5 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020945_ew72108wha_height_117_width_121.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle with three parts out of five shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021046_66vaun0ucf_height_115_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Square with 2 parts out of 4 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020906_5dizjtea2a_height_109_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Hexagon with two parts out of three shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020932_ljahkydugd_height_111_width_127.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pentagon with two parts out of 5 shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_020945_ew72108wha_height_117_width_121.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Circle with three parts out of five shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021046_66vaun0ucf_height_115_width_114.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're doing great! Let's continue to build on this knowledge. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're doing great! Let's continue to build on this knowledge. </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. Remember what Mr. Baker said: the second part of the fraction represents the <strong>total</strong> number of pieces, so there should be 3 equal pieces in total. But this shape has 5 equal pieces.</p><p>Let's take another look at Mr. Baker's explanation.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Remember what Mr. Baker said: the second part of the fraction represents the <strong>total</strong> number of pieces, so there should be 3 equal pieces in total. But this shape has 5 equal pieces.</p><p>Let's take another look at Mr. Baker's explanation.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. Remember what Mr. Baker said: the second part of the fraction represents the <strong>total</strong> number of pieces, so there should be 3 equal pieces in total. But this shape has 4 equal pieces.</p><p>Let's take another look at Mr. Baker's explanation.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Remember what Mr. Baker said: the second part of the fraction represents the <strong>total</strong> number of pieces, so there should be 3 equal pieces in total. But this shape has 4 equal pieces.</p><p>Let's take another look at Mr. Baker's explanation.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Recap Writing Fractions",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. That shape has 5 equal pieces, and 3 of the pieces are shaded, so its fraction is 3/5.</p><p>Let's try to understand the different parts of a fraction again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3
+              }
+            }],
+            "outcome": {
+              "dest": "Recap Writing Fractions",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. That shape has 5 equal pieces, and 3 of the pieces are shaded, so its fraction is 3/5.</p><p>Let's try to understand the different parts of a fraction again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 6",
             "feedback": {
@@ -6916,14 +6625,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Try figuring out, and writing down, the fraction corresponding to each picture. You can use a pen and paper for this.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Try figuring out, and writing down, the fraction corresponding to each picture. You can use a pen and paper for this.</p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -7178,181 +6885,141 @@
               "value": 1.0
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;3/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021716_ktjv8g47pv_height_137_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;2/7 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021746_mvwucxl1e8_height_132_width_105.png&amp;quot;\"></oppia-noninteractive-image>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You are doing great. </p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You are doing great. </p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0"
-                    ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>That's right, but there is more than one correct answer. Make sure to select <strong>all the correct answers</strong> before submitting.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0"]
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's right, but there is more than one correct answer. Make sure to select <strong>all the correct answers</strong> before submitting.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. Remember what Mr. Baker said: the numerator is always the<strong> first</strong> number, and the denominator is the <strong>second </strong>number.</p><p>So, 3/7 has a <strong>numerator</strong> of 3, not a denominator of 3. Let's go back and read the explanation again.<br></p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_1"]
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Remember what Mr. Baker said: the numerator is always the<strong> first</strong> number, and the denominator is the <strong>second </strong>number.</p><p>So, 3/7 has a <strong>numerator</strong> of 3, not a denominator of 3. Let's go back and read the explanation again.<br></p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>If you're stuck, remember that you need to select <strong>all</strong> the correct answers <strong>before </strong>submitting. There may be more than one correct answer.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>If you're stuck, remember that you need to select <strong>all</strong> the correct answers <strong>before </strong>submitting. There may be more than one correct answer.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. Your answer includes 3/7, but 3/7 has a <strong>numerator</strong> of 3. Remember what Mr. Baker said: the numerator is the <strong>first</strong> number in the fraction.</p><p>Let's go back and look again at Mr. Baker's explanation of numerators and denominators.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_1"]
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. Your answer includes 3/7, but 3/7 has a <strong>numerator</strong> of 3. Remember what Mr. Baker said: the numerator is the <strong>first</strong> number in the fraction.</p><p>Let's go back and look again at Mr. Baker's explanation of numerators and denominators.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that's not right. It seems odd that your answer contains the picture representing 2/7 ... there isn't even a 3 in that fraction!</p><p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 9",
             "feedback": {
@@ -7364,26 +7031,22 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>There is more than one correct answer.<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>Remember what Mr. Baker said:</p><p>\"The <strong>numerator</strong> is always the first or top number, the number of pieces we want. The <strong>denominator</strong> is always the second or bottom number, the total number of pieces the whole is divided into.\"<br></p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_3",
-                "html": "<p>Here is an example: in 5/6, the numerator is 5, and the denominator is 6.</p><p>Can you figure out the numerators and denominators for the given fractions? Write them all down first, then select the ones with denominator 3.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>There is more than one correct answer.<br></p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Remember what Mr. Baker said:</p><p>\"The <strong>numerator</strong> is always the first or top number, the number of pieces we want. The <strong>denominator</strong> is always the second or bottom number, the total number of pieces the whole is divided into.\"<br></p>"
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_3",
+              "html": "<p>Here is an example: in 5/6, the numerator is 5, and the denominator is 6.</p><p>Can you figure out the numerators and denominators for the given fractions? Write them all down first, then select the ones with denominator 3.</p>"
+            }
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -7759,30 +7422,26 @@
         "interaction": {
           "id": "NumericInput",
           "customization_args": {},
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 9.0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! Keep it up! <br></p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 9.0
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! Keep it up! <br></p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Numerator and Denominator",
             "feedback": {
@@ -8004,142 +7663,127 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 8,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 8,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 8",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! You're doing great.</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 8",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! You're doing great.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 28,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
-                },
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 2,
-                      "denominator": 8
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 28,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. The question is asking for the <strong>denominator</strong> of the fraction, not the whole fraction. Look at the examples again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
-              },
-              "tagged_skill_misconception_id": null
-            },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 2,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+              }
+            }, {
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 2,
+                  "denominator": 8
                 }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. Your answer is the first number in the fraction, but the denominator should be the <strong>second</strong> number.</p><p>Look at Mr. Baker's explanation and the examples again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. The question is asking for the <strong>denominator</strong> of the fraction, not the whole fraction. Look at the examples again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 6,
-                      "numerator": 0,
-                      "denominator": 1
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 2,
+                  "numerator": 0,
+                  "denominator": 1
                 }
-              ],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not right. That is the number of parts that are not selected, which doesn't appear in the fraction at all. But Mr. Baker said that the <strong>denominator</strong> should be the <strong>second</strong> number of the fraction.</p><p>Look at the examples again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Your answer is the first number in the fraction, but the denominator should be the <strong>second</strong> number.</p><p>Look at Mr. Baker's explanation and the examples again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [],
-              "outcome": {
-                "dest": "Numerator and Denominator",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. Read Mr. Baker's explanation carefully, and look at the examples again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 6,
+                  "numerator": 0,
+                  "denominator": 1
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not right. That is the number of parts that are not selected, which doesn't appear in the fraction at all. But Mr. Baker said that the <strong>denominator</strong> should be the <strong>second</strong> number of the fraction.</p><p>Look at the examples again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [],
+            "outcome": {
+              "dest": "Numerator and Denominator",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. Read Mr. Baker's explanation carefully, and look at the examples again.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Numerator and Denominator",
             "feedback": {
@@ -8151,14 +7795,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Take a careful look at this part of Mr. Baker's explanation:</p><p>     \"The <strong>denominator</strong> is always the <strong>second</strong> or bottom number, the <strong>total</strong> number of equal parts. For example, in 1/6, the denominator is 6. And, in 3/4, the denominator is 4.\"</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Take a careful look at this part of Mr. Baker's explanation:</p><p>     \"The <strong>denominator</strong> is always the <strong>second</strong> or bottom number, the <strong>total</strong> number of equal parts. For example, in 1/6, the denominator is 6. And, in 3/4, the denominator is 4.\"</p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,

@@ -1,18 +1,13 @@
 {
-  "canonical_story_dicts": [
-    {
-      "thumbnail_bg_color": "#B3D8F1",
-      "description": "",
-      "title": "Matthew Goes to the Bakery",
-      "node_titles": [
-        "What is a Fraction?",
-        "The Meaning of Equal Parts"
-      ],
-      "thumbnail_filename": "",
-      "published": false,
-      "id": "wANbh4oOClga"
-    }
-  ],
+  "canonical_story_dicts": [{
+    "thumbnail_bg_color": "#B3D8F1",
+    "description": "",
+    "title": "Matthew Goes to the Bakery",
+    "node_titles": ["What is a Fraction?", "The Meaning of Equal Parts"],
+    "thumbnail_filename": "",
+    "published": false,
+    "id": "wANbh4oOClga"
+  }],
   "uncategorized_skill_ids": [],
   "additional_story_dicts": [],
   "topic_name": "Fractions",
@@ -25,48 +20,30 @@
     "UxTGIJqaHMLa": "Identify the numerator and denominator of a fraction.",
     "B39yK4cbHZYI": "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
   },
-  "subtopics": [
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "B39yK4cbHZYI"
-      ],
-      "id": 1,
-      "thumbnail_filename": "",
-      "title": "What is a Fraction?"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 2,
-      "thumbnail_filename": "",
-      "title": "Fractions of a group"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "5RM9KPfQxobH",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 3,
-      "thumbnail_filename": "",
-      "title": "Mixed Numbers"
-    },
-    {
-      "thumbnail_bg_color": "#FF72FF",
-      "skill_ids": [
-        "B39yK4cbHZYI",
-        "5RM9KPfQxobH",
-        "UxTGIJqaHMLa"
-      ],
-      "id": 4,
-      "thumbnail_filename": "",
-      "title": "Adding Fractions"
-    }
-  ],
+  "subtopics": [{
+    "thumbnail_bg_color": "#FF72FF",
+    "skill_ids": ["5RM9KPfQxobH", "B39yK4cbHZYI"],
+    "id": 1,
+    "thumbnail_filename": "",
+    "title": "What is a Fraction?"
+  }, {
+    "thumbnail_bg_color": "#FF72FF",
+    "skill_ids": ["B39yK4cbHZYI", "UxTGIJqaHMLa"],
+    "id": 2,
+    "thumbnail_filename": "",
+    "title": "Fractions of a group"
+  }, {
+    "thumbnail_bg_color": "#FF72FF",
+    "skill_ids": ["5RM9KPfQxobH", "UxTGIJqaHMLa"],
+    "id": 3,
+    "thumbnail_filename": "",
+    "title": "Mixed Numbers"
+  }, {
+    "thumbnail_bg_color": "#FF72FF",
+    "skill_ids": ["B39yK4cbHZYI", "5RM9KPfQxobH", "UxTGIJqaHMLa"],
+    "id": 4,
+    "thumbnail_filename": "",
+    "title": "Adding Fractions"
+  }],
   "published": true
 }

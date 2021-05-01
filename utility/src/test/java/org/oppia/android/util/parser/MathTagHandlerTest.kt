@@ -65,17 +65,12 @@ class MathTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
-  @Captor
-  lateinit var stringCaptor: ArgumentCaptor<String>
-  @Captor
-  lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
+  @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var context: Context
+  @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithMathSupport: Map<String, CustomTagHandler>

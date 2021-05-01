@@ -22,20 +22,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
-import kotlin.Boolean
-import kotlin.Comparator
-import kotlin.IllegalStateException
-import kotlin.Int
-import kotlin.Long
-import kotlin.Suppress
-import kotlin.Unit
-import kotlin.apply
-import kotlin.check
 import kotlin.concurrent.withLock
 import kotlin.coroutines.CoroutineContext
-import kotlin.getValue
-import kotlin.lazy
-import kotlin.to
 
 // TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
 //  off of the internal coroutine API.
@@ -155,10 +143,8 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
   private fun flushTaskQueueNonBlocking(currentTimeMillis: Long) {
     // Note that '{}' is used instead of a semicolon since ktlint may incorrectly remove semicolons
     // in valid cases. See #3052 for context.
-    while (flushActiveTaskQueue(currentTimeMillis)) {
-    }
-    while (lock.withLock { isDispatcherActive() }) {
-    }
+    while (flushActiveTaskQueue(currentTimeMillis)) {}
+    while (lock.withLock { isDispatcherActive() }) {}
     maybeNotifyNewState()
   }
 

@@ -1,19 +1,17 @@
 {
-  "story_nodes": [
-    {
-      "description": "Learning about oppia app in Other Interesting Story",
-      "exploration_id": "test_exp_id_4",
-      "destination_node_ids": [],
-      "thumbnail_filename": "",
-      "outline_is_finalized": false,
-      "id": "node_1",
-      "prerequisite_skill_ids": [],
-      "thumbnail_bg_color": "#D68F78",
-      "outline": "",
-      "title": "Fifth Exploration",
-      "acquired_skill_ids": []
-    }
-  ],
+  "story_nodes": [{
+    "description": "Learning about oppia app in Other Interesting Story",
+    "exploration_id": "test_exp_id_4",
+    "destination_node_ids": [],
+    "thumbnail_filename": "",
+    "outline_is_finalized": false,
+    "id": "node_1",
+    "prerequisite_skill_ids": [],
+    "thumbnail_bg_color": "#D68F78",
+    "outline": "",
+    "title": "Fifth Exploration",
+    "acquired_skill_ids": []
+  }],
   "story_title": "Other Interesting Story",
   "story_description": ""
 }

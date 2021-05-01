@@ -63,19 +63,13 @@ class ConceptCardTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
-  @Mock
-  lateinit var mockConceptCardLinkClickListener: ConceptCardLinkClickListener
-  @Captor
-  lateinit var viewCaptor: ArgumentCaptor<View>
-  @Captor
-  lateinit var stringCaptor: ArgumentCaptor<String>
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Mock lateinit var mockConceptCardLinkClickListener: ConceptCardLinkClickListener
+  @Captor lateinit var viewCaptor: ArgumentCaptor<View>
+  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var context: Context
+  @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithConceptCardSupport: Map<String, CustomTagHandler>

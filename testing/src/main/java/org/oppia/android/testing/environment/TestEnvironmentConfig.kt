@@ -1,6 +1,6 @@
 package org.oppia.android.testing.environment
 
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** Utility class that provides details on the local test environment configuration. */

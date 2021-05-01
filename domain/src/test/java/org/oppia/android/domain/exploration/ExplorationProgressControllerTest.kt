@@ -77,6 +77,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
+import java.lang.AssertionError
 import javax.inject.Inject
 import javax.inject.Singleton
 

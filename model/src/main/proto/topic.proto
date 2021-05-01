@@ -280,7 +280,7 @@ message PromotedActivityList {
 // recommended stories.
 message PromotedStoryList {
   // Ongoing stories from within the last 7 days.
-  repeated PromotedStory recently_played_story = 1;
+  repeated PromotedStory recently_played_story   = 1;
 
   // Other ongoing stories from longer than 7 days ago.
   repeated PromotedStory older_played_story = 2;

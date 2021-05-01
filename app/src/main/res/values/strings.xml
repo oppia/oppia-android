@@ -437,7 +437,9 @@
     description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020
   </string>
-  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
+  <string
+    name="ratio_default_hint_text"
+    description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
   <string name="smallest_text_size_content_description">Smallest text size</string>

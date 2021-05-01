@@ -28,89 +28,73 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:1"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that's right. Well done!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right. Well done!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3"]
                 }
-              ],
-              "outcome": {
-                "dest": "writing ratio of 2 quanitites",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not right. Uncle Berry is asking for the ratio of mango puree to strawberry puree. So you can just focus on those two ingredients, and ignore the milk.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "writing ratio of 2 quanitites",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not right. Uncle Berry is asking for the ratio of mango puree to strawberry puree. So you can just focus on those two ingredients, and ignore the milk.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:2"]
                 }
-              ],
-              "outcome": {
-                "dest": "writing ratio of 2 quanitites",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not correct. You've got the right numbers, but remember that the order matters! Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "writing ratio of 2 quanitites",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. You've got the right numbers, but remember that the order matters! Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "writing ratio of 2 quanitites",
             "feedback": {
@@ -261,116 +245,95 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:3"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio with 3 quantities",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>\n"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio with 3 quantities",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2 to 3"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2 to 3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>That's right! But remember to write your answer as X:Y, where X and Y are numbers. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's right! But remember to write your answer as X:Y, where X and Y are numbers. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3:2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3:2"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not correct. Remember that, in a ratio, the order matters. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. Remember that, in a ratio, the order matters. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 10",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not correct. You should only be considering the blueberry puree and the milk. Ignore all the other ingredients.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2-unit tall glass of mango puree, 1-unit tall glass of strawberry puree, and 3-unit tall glass of milk in the recipe book. And 2-unit tall glass of blueberry puree hand drawn next to the picture. Big cross on the mango and strawberry purees.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_164034_i1f5hwfy1r_height_362_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p><span></span></p>\n\n<p>Try again. You can do it!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 10",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. You should only be considering the blueberry puree and the milk. Ignore all the other ingredients.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2-unit tall glass of mango puree, 1-unit tall glass of strawberry puree, and 3-unit tall glass of milk in the recipe book. And 2-unit tall glass of blueberry puree hand drawn next to the picture. Big cross on the mango and strawberry purees.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_164034_i1f5hwfy1r_height_362_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p><span></span></p>\n\n<p>Try again. You can do it!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 10",
             "feedback": {
@@ -382,14 +345,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Since you are asked for ratio of blueberry puree and milk, you just need to consider those ingredients. You can ignore the rest!</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;(2-unit tall glass of mango puree: Big cross on the image), (1-unit tall glass of strabweery puree: Big cross on the image), 3-unit tall glass of milk, 2-unit tall glass of blueberry puree hand drawn next to the pictures&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190203_165927_uk01f6ftxm_height_373_width_490.png&amp;quot;\"></oppia-noninteractive-image>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Since you are asked for ratio of blueberry puree and milk, you just need to consider those ingredients. You can ignore the rest!</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;(2-unit tall glass of mango puree: Big cross on the image), (1-unit tall glass of strabweery puree: Big cross on the image), 3-unit tall glass of milk, 2-unit tall glass of blueberry puree hand drawn next to the pictures&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190203_165927_uk01f6ftxm_height_373_width_490.png&amp;quot;\"></oppia-noninteractive-image>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -639,62 +600,51 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:4:3:2"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:4:3:2"]
                 }
-              ],
-              "outcome": {
-                "dest": "Happy ending",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Well done. You found the right answer! Now James can make his smoothie :-)</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Happy ending",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Well done. You found the right answer! Now James can make his smoothie :-)</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:4:3:1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:4:3:1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>You've written the ratio of milk to blueberry puree to strawberry puree to <strong>banana puree</strong>, but the question is asking for something different. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>You've written the ratio of milk to blueberry puree to strawberry puree to <strong>banana puree</strong>, but the question is asking for something different. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Final Test",
             "feedback": {
@@ -706,14 +656,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>The question asks for four ingredients, so you should have four parts in your ratio.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>The question asks for four ingredients, so you should have four parts in your ratio.</p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -852,160 +800,127 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:1:3"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:1:3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Final Test",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Good job! That's the correct answer.</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Final Test",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Good job! That's the correct answer.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio with 3 quantities",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>You've written the ratio for only mango puree and strawberry puree. But read the question carefully -- you've forgotten the part representing milk! Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio with 3 quantities",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>You've written the ratio for only mango puree and strawberry puree. But read the question carefully -- you've forgotten the part representing milk! Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:3"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio with 3 quantities",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>You've written the ratio for only strawberry puree and milk. But read the question correctly -- you've forgotten about the mango puree! Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio with 3 quantities",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>You've written the ratio for only strawberry puree and milk. But read the question correctly -- you've forgotten about the mango puree! Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:2:3"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:3:2"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:3:1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3:1:2"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3:2:1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:2:3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio with 3 quantities",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not correct. Remember that order matters. Your ratio should follow the order given in the question. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:3:2"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:3:1"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3:1:2"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3:2:1"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio with 3 quantities",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. Remember that order matters. Your ratio should follow the order given in the question. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Writing ratio with 3 quantities",
             "feedback": {
@@ -1240,203 +1155,163 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:3"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>Yes, that is correct!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>Yes, that is correct!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2 : 3"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2: 3"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2 :3"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2 : 3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that is correct!</p>\n\n<p>Just a note: when typing ratios, <strong>don't include any spaces</strong> between the numbers and the colon (\":\"). For example, you would type \"2:3\" rather than \"2 : 3\" or \"2: 3\".</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2: 3"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2 :3"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that is correct!</p>\n\n<p>Just a note: when typing ratios, <strong>don't include any spaces</strong> between the numbers and the colon (\":\"). For example, you would type \"2:3\" rather than \"2 : 3\" or \"2: 3\".</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3:2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3:2"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio in colon notation",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that is incorrect. Be careful with the order of the numbers.</p>\n\n<p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio in colon notation",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that is incorrect. Be careful with the order of the numbers.</p>\n\n<p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "to"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["to"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio in colon notation",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Read the question carefully! You should write your answer as X:Y, where X and Y are numbers.</p>\n\n<p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio in colon notation",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Read the question carefully! You should write your answer as X:Y, where X and Y are numbers.</p>\n\n<p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "X"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "Y"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["X"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio in colon notation",
-                "feedback": {
-                  "content_id": "feedback_7",
-                  "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["Y"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio in colon notation",
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        ":"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": [":"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio in colon notation",
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>No, that is not correct. Look carefully at the amounts that James is trading, and make sure that you have the correct numbers. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio in colon notation",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>No, that is not correct. Look carefully at the amounts that James is trading, and make sure that you have the correct numbers. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Writing ratio in colon notation",
             "feedback": {
@@ -1755,72 +1630,60 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>The <strong>exact </strong>number of objects of each type.</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>The <strong>total number</strong> of objects we are trading.</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>The <strong>relative </strong>relationship between the amounts of different things.</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>I don\u2019t remember!</p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>The <strong>exact </strong>number of objects of each type.</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>The <strong>total number</strong> of objects we are trading.</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>The <strong>relative </strong>relationship between the amounts of different things.</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>I don\u2019t remember!</p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Ratio shows relative relationship 2",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Good job!</p>\n"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Ratio shows relative relationship 2",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Good job!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Definition of ratio",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>That's OK, but let's take a moment to revise what a ratio represents. This is an important concept, so we need to understand it well.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3
+              }
+            }],
+            "outcome": {
+              "dest": "Definition of ratio",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's OK, but let's take a moment to revise what a ratio represents. This is an important concept, so we need to understand it well.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Definition of ratio",
             "feedback": {
@@ -2139,198 +2002,157 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2 to 5"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:5"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "\"2 to 5\""
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2 to 5"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Good job!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:5"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["\"2 to 5\""]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Good job!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5 to 2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5 to 2"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not correct. Be careful with the order of the numbers.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. Be careful with the order of the numbers.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2to5"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2 to5"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2to 5"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2to5"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>You're alsmot correct! Just make sure to get the spaces correct. There should be one space after the first number, and one space after the word \"to\".</p>\n\n<p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2 to5"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2to 5"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>You're alsmot correct! Just make sure to get the spaces correct. There should be one space after the first number, and one space after the word \"to\".</p>\n\n<p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "X"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "Y"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["X"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["Y"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "to"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["to"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 1",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that isn't right. Look carefully at how many marbles and how many oranges are traded.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 1",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that isn't right. Look carefully at how many marbles and how many oranges are traded.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 1",
             "feedback": {
@@ -2586,204 +2408,159 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "50:20"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5:2"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["50:20"]
                 }
-              ],
-              "outcome": {
-                "dest": "Fruit purees",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>\n\n<p>We can represent the ratio as 50:20 or 5:2, because we only care about the <strong>relative</strong> amounts. Both answers are correct.</p>\n\n<p>In particular, 5:2 is also correct because, every time James trades 5 marbles, he gets 2 strawberries back (and he can repeat this ten times to trade 50 marbles and get 20 strawberries back).</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5:2"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Fruit purees",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>\n\n<p>We can represent the ratio as 50:20 or 5:2, because we only care about the <strong>relative</strong> amounts. Both answers are correct.</p>\n\n<p>In particular, 5:2 is also correct because, every time James trades 5 marbles, he gets 2 strawberries back (and he can repeat this ten times to trade 50 marbles and get 20 strawberries back).</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "50 to 20"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "CaseSensitiveEquals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5 to 2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["50 to 20"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>The ratio is correct! But, from now on, make sure to write your answer using a colon. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "CaseSensitiveEquals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5 to 2"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>The ratio is correct! But, from now on, make sure to write your answer using a colon. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "20:50"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:5"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["20:50"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, you've got the order wrong. In ratios, the order matters! Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:5"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, you've got the order wrong. In ratios, the order matters! Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "50: 20"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "50 :20"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "50 : 20"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5: 2"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5 :2"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "5 : 2"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["50: 20"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>That's the correct ratio, but it needs a tiny fix: when typing ratios, you don't need to write a space before or after the colon. Can you type your answer again, without any spaces?</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["50 :20"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["50 : 20"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5: 2"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5 :2"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["5 : 2"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>That's the correct ratio, but it needs a tiny fix: when typing ratios, you don't need to write a space before or after the colon. Can you type your answer again, without any spaces?</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 3",
             "feedback": {
@@ -2955,198 +2732,157 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3 to 1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3:1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "\"3 to 1\""
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3 to 1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Writing ratio in colon notation",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That is correct! You are doing great!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3:1"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["\"3 to 1\""]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Writing ratio in colon notation",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That is correct! You are doing great!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1 to 3"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1 to 3"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that's not correct. Be careful with the order of the numbers in the ratio.</p>\n\n<p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that's not correct. Be careful with the order of the numbers in the ratio.</p>\n\n<p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3to1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "CaseSensitiveEquals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3 to1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "CaseSensitiveEquals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "3to 1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3to1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>You've got the correct numbers! Just be careful with the spacing. There should be one space after the \"3\", and one space after the \"to\".</p>\n\n<p>Try writing the answer again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "CaseSensitiveEquals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3 to1"]
+                }
+              }
+            }, {
+              "rule_type": "CaseSensitiveEquals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["3to 1"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>You've got the correct numbers! Just be careful with the spacing. There should be one space after the \"3\", and one space after the \"to\".</p>\n\n<p>Try writing the answer again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "X"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "Y"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["X"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["Y"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>No, that's not right. You need to replace X and Y with the correct numbers so that the ratio is correct.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "to"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["to"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 2",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that is not correct. Look carefully at how many marbles and how many apples are traded. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 2",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that is not correct. Look carefully at how many marbles and how many apples are traded. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 2",
             "feedback": {
@@ -3339,138 +3075,111 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:1"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:1/2"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:0.5"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 6",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>\n"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:1/2"]
+                }
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:0.5"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 6",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "StartsWith",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "StartsWith",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that is not correct. The left side of a ratio doesn't always have to be 1. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that is not correct. The left side of a ratio doesn't always have to be 1. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2: 1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2: 1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>Make sure to type the ratio without any spaces. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>Make sure to type the ratio without any spaces. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>That's a good start, but you've got the wrong amount of banana puree. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>That's a good start, but you've got the wrong amount of banana puree. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 5",
             "feedback": {
@@ -3642,73 +3351,59 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:4"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "2:8"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:4"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 5",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! The ratio is still 1:4, because although the glasses are bigger, we still have four times as much strawberry puree as milk.</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["2:8"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 5",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! The ratio is still 1:4, because although the glasses are bigger, we still have four times as much strawberry puree as milk.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Contains",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "to"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Contains",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["to"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Please write your answer as X:Y, where X and Y are numbers. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Please write your answer as X:Y, where X and Y are numbers. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 4",
             "feedback": {
@@ -3720,14 +3415,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Remember, the exact amounts of milk and strawberry puree are not important. What's important is their amounts <strong>relative</strong> to each other.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Remember, the exact amounts of milk and strawberry puree are not important. What's important is their amounts <strong>relative</strong> to each other.</p>"
             }
-          ],
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -3863,135 +3556,103 @@
               "value": 1.0
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 piece of white chocolate. On the right, there is 2 by 2 piece of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_020001_rm6t5klmjv_height_126_width_352.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 piece of white chocolate. On the right, there is 2 by 2 piece of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_020001_rm6t5klmjv_height_126_width_352.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1",
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 8",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Good job!</p>\n"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_1", "ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 8",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Good job!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1"
-                    ]
-                  }
-                },
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>You've got one of the answers right! But be sure to choose <strong>all</strong> correct answers. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_1"]
+              }
+            }, {
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>You've got one of the answers right! But be sure to choose <strong>all</strong> correct answers. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not correct. One of your answers represents a ratio of 1:2. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. One of your answers represents a ratio of 1:2. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_1"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that's not correct. Remember, a ratio does not represent the exact number. So, it's not necessarily true that there is exactly 1 piece of white chocolate.</p>\n\n<p>Instead, a ratio always represents a <strong>relative </strong>relationship. So, in this case, what matters is: <em>for every</em> 1 piece of white chocolate, there should be 3 pieces of dark chocolate. </p>\n\n<p>See if you can use this information to figure out the answer!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_1"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that's not correct. Remember, a ratio does not represent the exact number. So, it's not necessarily true that there is exactly 1 piece of white chocolate.</p>\n\n<p>Instead, a ratio always represents a <strong>relative </strong>relationship. So, in this case, what matters is: <em>for every</em> 1 piece of white chocolate, there should be 3 pieces of dark chocolate. </p>\n\n<p>See if you can use this information to figure out the answer!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 7",
             "feedback": {
@@ -4003,20 +3664,17 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>There is more than one correct answer.</p>"
-              }
-            },
-            {
-              "hint_content": {
-                "content_id": "hint_2",
-                "html": "<p>Make sure to think \"relatively\". For every 1 unit of white chocolate, there must be 3 units of dark chocolate.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>There is more than one correct answer.</p>"
             }
-          ],
+          }, {
+            "hint_content": {
+              "content_id": "hint_2",
+              "html": "<p>Make sure to think \"relatively\". For every 1 unit of white chocolate, there must be 3 units of dark chocolate.</p>"
+            }
+          }],
           "solution": null
         },
         "classifier_model_id": null,
@@ -4209,120 +3867,101 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 3-unit wide glass filled with apple puree. On the right there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162731_mcvshd7ssy_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 3-unit wide glass filled with apple puree. On the right, there is 1-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162744_35at2mhlgv_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1-unit wide glass filled with apple puree. On the right, there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162758_zhu65vaxgg_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 1-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162818_gzvytjmdne_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 2-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_210847_55i3yqso0y_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_4"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 3-unit wide glass filled with apple puree. On the right there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162731_mcvshd7ssy_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 3-unit wide glass filled with apple puree. On the right, there is 1-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162744_35at2mhlgv_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1-unit wide glass filled with apple puree. On the right, there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162758_zhu65vaxgg_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 1-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162818_gzvytjmdne_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 2-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_210847_55i3yqso0y_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_4"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 7",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Good job!</p>\n"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 0
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 7",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Good job!</p>\n"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 1
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Ratio shows relative relationship 2",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>No, that represents a ratio of orange puree to milk that is 3:1. You want a ratio of 3:2.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 1
+              }
+            }],
+            "outcome": {
+              "dest": "Ratio shows relative relationship 2",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>No, that represents a ratio of orange puree to milk that is 3:1. You want a ratio of 3:2.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Ratio shows relative relationship 2",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that represents a ratio of orange puree to milk that is 1:2. But you should be choosing the image that shows a ratio of 3:2.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "Ratio shows relative relationship 2",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that represents a ratio of orange puree to milk that is 1:2. But you should be choosing the image that shows a ratio of 3:2.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Ratio shows relative relationship 2",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>No, that represents a ratio of orange puree to milk of 1:3. That's not the same as what the question is asking for.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again! Take your time, and try to really understand what he is telling James.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3
+              }
+            }],
+            "outcome": {
+              "dest": "Ratio shows relative relationship 2",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>No, that represents a ratio of orange puree to milk of 1:3. That's not the same as what the question is asking for.</p>\n\n<p>It looks like you might need a quick refresher on what a ratio is. Let's go back a few steps and learn from Uncle Berry again! Take your time, and try to really understand what he is telling James.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 6",
             "feedback": {
@@ -4491,155 +4130,120 @@
               "value": 1.0
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<p>For every glass of banana puree, we need 2 glasses of milk.</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>We can make this smoothie by mixing 2 cups of milk and 4 cups of banana puree.</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>The smoothie must contain<strong> exactly</strong> 1 glass of banana puree and 2 glasses of milk.</p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<p>We can make this smoothie using 3 glasses of banana puree and 6 glasses of milk.</p>",
-                  "content_id": "ca_choices_4"
-                }
-              ]
+              "value": [{
+                "html": "<p>For every glass of banana puree, we need 2 glasses of milk.</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>We can make this smoothie by mixing 2 cups of milk and 4 cups of banana puree.</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>The smoothie must contain<strong> exactly</strong> 1 glass of banana puree and 2 glasses of milk.</p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<p>We can make this smoothie using 3 glasses of banana puree and 6 glasses of milk.</p>",
+                "content_id": "ca_choices_4"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_1",
-                      "ca_choices_4"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "writing ratio of 2 quanitites",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that's right! You got it!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_1", "ca_choices_4"]
+              }
+            }],
+            "outcome": {
+              "dest": "writing ratio of 2 quanitites",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that's right! You got it!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Ratio shows relative relationship 2",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not right. Remember, ratios always show a <strong>relative</strong> relationship, not the exact amounts. Let's look at Uncle Berry's explanation again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Ratio shows relative relationship 2",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not right. Remember, ratios always show a <strong>relative</strong> relationship, not the exact amounts. Let's look at Uncle Berry's explanation again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>Oops, be careful! The <strong>order of the items in the ratio is important</strong>, but one answer choice has the ingredients in the wrong order. Make sure you don't pick that one.</p>\n\n<p>Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>Oops, be careful! The <strong>order of the items in the ratio is important</strong>, but one answer choice has the ingredients in the wrong order. Make sure you don't pick that one.</p>\n\n<p>Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "DoesNotContainAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1",
-                      "ca_choices_0"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>That's a good start, but you've got only some of the answers right. Be sure to pick <strong>all </strong>the correct answers. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "DoesNotContainAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_1", "ca_choices_0"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's a good start, but you've got only some of the answers right. Be sure to pick <strong>all </strong>the correct answers. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "DoesNotContainAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_4"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>That's a good start, but make sure to pick <strong>all </strong>the correct answers.<strong> </strong>Remember, ratios represent a <strong>relative</strong> relationship, so it's possible to have any amount of banana puree you like, as long as you have the correct amount of milk to go with it.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "DoesNotContainAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_4"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>That's a good start, but make sure to pick <strong>all </strong>the correct answers.<strong> </strong>Remember, ratios represent a <strong>relative</strong> relationship, so it's possible to have any amount of banana puree you like, as long as you have the correct amount of milk to go with it.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 9",
             "feedback": {
@@ -4829,109 +4433,82 @@
               "value": 1.0
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                  "content_id": "ca_choices_4"
-                }
-              ]
+              "value": [{
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
+                "content_id": "ca_choices_4"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_1",
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 9",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>That's correct, well done! You're really good at this!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_1", "ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 9",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>That's correct, well done! You're really good at this!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_2",
-                      "ca_choices_4"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 8",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not correct. You've included some pictures that show ratios that are <strong>not</strong> 1:6. </p>\n\n<p>Remember, ratios indicate <strong>relative</strong> relationships. So, make sure that, for every 1 unit of thing A, you have 6 units of thing B.</p>\n\n<p>Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_2", "ca_choices_4"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 8",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. You've included some pictures that show ratios that are <strong>not</strong> 1:6. </p>\n\n<p>Remember, ratios indicate <strong>relative</strong> relationships. So, make sure that, for every 1 unit of thing A, you have 6 units of thing B.</p>\n\n<p>Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_1",
-                      "ca_choices_3"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Practice 8",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Hmm, you've got some of them right, but there are more. Make sure to click <strong>all </strong>the correct answers!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_1", "ca_choices_3"]
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 8",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Hmm, you've got some of them right, but there are more. Make sure to click <strong>all </strong>the correct answers!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 8",
             "feedback": {
@@ -5208,89 +4785,73 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1:4"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1:4"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 4",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Yes, that is correct!</p>"
-                },
-                "labelled_as_correct": true,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 4",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Yes, that is correct!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "1 to 4"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["1 to 4"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3.5",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Those are the correct numbers, but make sure to write your answer using a colon (\":\") from now on. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3.5",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Those are the correct numbers, but make sure to write your answer using a colon (\":\") from now on. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "4:1"
-                      ]
-                    }
-                  }
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["4:1"]
                 }
-              ],
-              "outcome": {
-                "dest": "Practice 3.5",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>No, that's not correct. Be careful with the ordering. The question is asking about the ratio of milk to strawberry puree, but 4:1 is the ratio of strawberry puree to milk. The order matters!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "Practice 3.5",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>No, that's not correct. Be careful with the ordering. The question is asking about the ratio of milk to strawberry puree, but 4:1 is the ratio of strawberry puree to milk. The order matters!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Practice 3.5",
             "feedback": {

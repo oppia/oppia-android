@@ -1,34 +1,29 @@
 {
-  "story_nodes": [
-    {
-      "description": "Matthew learns about fractions.",
-      "exploration_id": "umPkwp0L1M0-",
-      "destination_node_ids": [
-        "node_2"
-      ],
-      "thumbnail_filename": "",
-      "outline_is_finalized": false,
-      "id": "node_1",
-      "prerequisite_skill_ids": [],
-      "thumbnail_bg_color": "#D68F78",
-      "outline": "This is outline/summary for <b>What is a Fraction?</b>",
-      "title": "What is a Fraction?",
-      "acquired_skill_ids": []
-    },
-    {
-      "description": "Matthew learns about equal parts in fractions.",
-      "exploration_id": "MjZzEVOG47_1",
-      "destination_node_ids": [],
-      "thumbnail_filename": "",
-      "outline_is_finalized": false,
-      "id": "node_2",
-      "prerequisite_skill_ids": [],
-      "thumbnail_bg_color": "#D678F8",
-      "outline": "This is outline/summary for <b>The Meaning of Equal Parts</b>",
-      "title": "The Meaning of Equal Parts",
-      "acquired_skill_ids": []
-    }
-  ],
+  "story_nodes": [{
+    "description": "Matthew learns about fractions.",
+    "exploration_id": "umPkwp0L1M0-",
+    "destination_node_ids": ["node_2"],
+    "thumbnail_filename": "",
+    "outline_is_finalized": false,
+    "id": "node_1",
+    "prerequisite_skill_ids": [],
+    "thumbnail_bg_color": "#D68F78",
+    "outline": "This is outline/summary for <b>What is a Fraction?</b>",
+    "title": "What is a Fraction?",
+    "acquired_skill_ids": []
+  }, {
+    "description": "Matthew learns about equal parts in fractions.",
+    "exploration_id": "MjZzEVOG47_1",
+    "destination_node_ids": [],
+    "thumbnail_filename": "",
+    "outline_is_finalized": false,
+    "id": "node_2",
+    "prerequisite_skill_ids": [],
+    "thumbnail_bg_color": "#D678F8",
+    "outline": "This is outline/summary for <b>The Meaning of Equal Parts</b>",
+    "title": "The Meaning of Equal Parts",
+    "acquired_skill_ids": []
+  }],
   "story_title": "Matthew Goes to the Bakery",
   "story_description": ""
 }

@@ -69,8 +69,7 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
     // Spin the test thread until the dispatcher has finished. Note that '{}' is used instead of a
     // semicolon since ktlint may incorrectly remove semicolons in valid cases. See #3052 for
     // context.
-    while (backgroundTestDispatcher.hasPendingTasks()) {
-    }
+    while (backgroundTestDispatcher.hasPendingTasks()) {}
   }
 
   override fun ensureFutureTasksAreScheduled() {

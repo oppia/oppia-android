@@ -88,12 +88,9 @@ import javax.inject.Singleton
 )
 class WalkthroughTopicListFragmentTest {
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var testEnvironmentConfig: TestEnvironmentConfig
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
   @Before
   fun setUp() {

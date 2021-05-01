@@ -1,17 +1,13 @@
 {
-  "canonical_story_dicts": [
-    {
-      "thumbnail_bg_color": "#B378F1",
-      "description": "",
-      "title": "Other Interesting Story",
-      "node_titles": [
-        "Fifth Exploration"
-      ],
-      "thumbnail_filename": "",
-      "published": true,
-      "id": "test_story_id_2"
-    }
-  ],
+  "canonical_story_dicts": [{
+    "thumbnail_bg_color": "#B378F1",
+    "description": "",
+    "title": "Other Interesting Story",
+    "node_titles": ["Fifth Exploration"],
+    "thumbnail_filename": "",
+    "published": true,
+    "id": "test_story_id_2"
+  }],
   "uncategorized_skill_ids": [],
   "additional_story_dicts": [],
   "topic_name": "Second Test Topic",

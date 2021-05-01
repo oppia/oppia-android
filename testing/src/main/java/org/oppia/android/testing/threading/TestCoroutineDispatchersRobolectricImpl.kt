@@ -3,7 +3,7 @@ package org.oppia.android.testing.threading
 import org.oppia.android.testing.time.FakeSystemClock
 import java.lang.reflect.Method
 import java.time.Duration
-import java.util.*
+import java.util.TreeSet
 import javax.inject.Inject
 
 /**

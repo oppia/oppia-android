@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
-import java.util.*
+import java.util.Objects
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(

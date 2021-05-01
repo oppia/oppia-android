@@ -31,6 +31,7 @@ import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -50,7 +51,7 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule

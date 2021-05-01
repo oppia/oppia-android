@@ -48,8 +48,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.HelpActivity"
-      android:label="@string/help_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/help_activity_title" />
     <activity
       android:name=".app.home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -179,8 +179,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
-      android:label="@string/revision_card_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/revision_card_activity_title" />
     <activity
       android:name=".app.topic.TopicActivity"
       android:label="@string/topic_page"

@@ -19,32 +19,25 @@
           "id": "ItemSelectionInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>Red</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Yellow</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Green</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>Blue</p>",
-                  "content_id": "ca_choices_3"
-                },
-                {
-                  "html": "<p>Orange</p>",
-                  "content_id": "ca_choices_4"
-                },
-                {
-                  "html": "<p>Purple</p>",
-                  "content_id": "ca_choices_5"
-                }
-              ]
+              "value": [{
+                "html": "<p>Red</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Yellow</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Green</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>Blue</p>",
+                "content_id": "ca_choices_3"
+              }, {
+                "html": "<p>Orange</p>",
+                "content_id": "ca_choices_4"
+              }, {
+                "html": "<p>Purple</p>",
+                "content_id": "ca_choices_5"
+              }]
             },
             "minAllowableSelectionCount": {
               "value": 1.0
@@ -53,58 +46,45 @@
               "value": 3.0
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0",
-                      "ca_choices_3",
-                      "ca_choices_2"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "NumberInput",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<b>Correct!</b>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0", "ca_choices_3", "ca_choices_2"]
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<b>Correct!</b>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "ContainsAtLeastOneOf",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_1"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "ItemSelectionMulti",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>'Yellow' is considered a primary color in the RYB color spectrum, but that doesn't correspond to light. Try again!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "ContainsAtLeastOneOf",
+              "inputs": {
+                "x": ["ca_choices_1"]
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMulti",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>'Yellow' is considered a primary color in the RYB color spectrum, but that doesn't correspond to light. Try again!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "ItemSelectionMulti",
             "feedback": {
@@ -149,46 +129,38 @@
           "id": "MultipleChoiceInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p>Penguin</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>Chicken</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>Eagle</p>",
-                  "content_id": "ca_choices_2"
-                }
-              ]
+              "value": [{
+                "html": "<p>Penguin</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>Chicken</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>Eagle</p>",
+                "content_id": "ca_choices_2"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 2
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "ItemSelectionMinOne",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct! Eagles can sustain flight.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 2
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMinOne",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct! Eagles can sustain flight.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "MultipleChoice",
             "feedback": {
@@ -246,35 +218,31 @@
               "value": false
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsExactlyEqualTo",
-                  "inputs": {
-                    "f": {
-                      "isNegative": false,
-                      "wholeNumber": 0,
-                      "numerator": 1,
-                      "denominator": 2
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsExactlyEqualTo",
+              "inputs": {
+                "f": {
+                  "isNegative": false,
+                  "wholeNumber": 0,
+                  "numerator": 1,
+                  "denominator": 2
                 }
-              ],
-              "outcome": {
-                "dest": "MultipleChoice",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "MultipleChoice",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Fractions",
             "feedback": {
@@ -286,14 +254,12 @@
             "refresher_exploration_id": null,
             "missing_prerequisite_skill_id": null
           },
-          "hints": [
-            {
-              "hint_content": {
-                "content_id": "hint_1",
-                "html": "<p>Remember that two halves, when added together, make one whole.</p>"
-              }
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Remember that two halves, when added together, make one whole.</p>"
             }
-          ],
+          }],
           "solution": {
             "answer_is_exclusive": false,
             "correct_answer": {
@@ -383,74 +349,64 @@
         "interaction": {
           "id": "NumericInput",
           "customization_args": {},
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": 121.0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "RatioInput",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "RatioInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsLessThan",
-                  "inputs": {
-                    "x": 121.0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "NumberInput",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Not quite. It's actually larger than that. Try again.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsLessThan",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Not quite. It's actually larger than that. Try again.</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsGreaterThan",
-                  "inputs": {
-                    "x": 121.0
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "NumberInput",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Not quite. It's less than that.</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsGreaterThan",
+              "inputs": {
+                "x": 121.0
+              }
+            }],
+            "outcome": {
+              "dest": "NumberInput",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Not quite. It's less than that.</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "NumberInput",
             "feedback": {
@@ -506,80 +462,64 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasNumberOfTermsEqualTo",
-                  "inputs": {
-                    "y": 3
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "RatioInput",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>No this doesn't seem correct</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "HasNumberOfTermsEqualTo",
+              "inputs": {
+                "y": 3
+              }
+            }],
+            "outcome": {
+              "dest": "RatioInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>No this doesn't seem correct</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      4,
-                      5
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Text",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Correct</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": [4, 5]
+              }
+            }],
+            "outcome": {
+              "dest": "Text",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Correct</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsEquivalent",
-                  "inputs": {
-                    "x": [
-                      8,
-                      10
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "Text",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Correct</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsEquivalent",
+              "inputs": {
+                "x": [8, 10]
+              }
+            }],
+            "outcome": {
+              "dest": "Text",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Correct</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "RatioInput",
             "feedback": {
@@ -635,35 +575,29 @@
               }
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": {
-                      "contentId": "<unknown>",
-                      "normalizedStrSet": [
-                        "finnish"
-                      ]
-                    }
-                  }
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["finnish"]
                 }
-              ],
-              "outcome": {
-                "dest": "DragDropNoGroup",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "Text",
             "feedback": {
@@ -706,20 +640,16 @@
           "id": "ItemSelectionInput",
           "customization_args": {
             "choices": {
-              "value": [
-                {
-                  "html": "<p><strong>Green</strong></p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p><strong>Red</strong></p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p><strong>Blue</strong></p>",
-                  "content_id": "ca_choices_2"
-                }
-              ]
+              "value": [{
+                "html": "<p><strong>Green</strong></p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p><strong>Red</strong></p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p><strong>Blue</strong></p>",
+                "content_id": "ca_choices_2"
+              }]
             },
             "minAllowableSelectionCount": {
               "value": 1.0
@@ -728,32 +658,26 @@
               "value": 1.0
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "Equals",
-                  "inputs": {
-                    "x": [
-                      "ca_choices_0"
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "ItemSelectionMulti",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>Correct!</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": ["ca_choices_0"]
+              }
+            }],
+            "outcome": {
+              "dest": "ItemSelectionMulti",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "ItemSelectionMinOne",
             "feedback": {
@@ -799,109 +723,81 @@
               "value": false
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<p>0.35</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>3/5</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>0.5</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>0.46</p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>0.35</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>3/5</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>0.5</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>0.46</p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrdering",
-                  "inputs": {
-                    "x": [
-                      [
-                        "ca_choices_1"
-                      ],
-                      [
-                        "ca_choices_2"
-                      ],
-                      [
-                        "ca_choices_3"
-                      ],
-                      [
-                        "ca_choices_0"
-                      ]
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "DragDropGroup",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's correct</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEqualToOrdering",
+              "inputs": {
+                "x": [["ca_choices_1"], ["ca_choices_2"], ["ca_choices_3"], ["ca_choices_0"]]
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropGroup",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXAtPositionY",
-                  "inputs": {
-                    "y": 1,
-                    "x": "ca_choices_2"
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "DragDropNoGroup",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Seems like you did the ascending order</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXAtPositionY",
+              "inputs": {
+                "y": 1,
+                "x": "ca_choices_2"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the ascending order</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXBeforeElementY",
-                  "inputs": {
-                    "y": "ca_choices_0",
-                    "x": "ca_choices_3"
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "DragDropNoGroup",
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>This does not seem right to me</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXBeforeElementY",
+              "inputs": {
+                "y": "ca_choices_0",
+                "x": "ca_choices_3"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropNoGroup",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>This does not seem right to me</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "DragDropNoGroup",
             "feedback": {
@@ -951,84 +847,61 @@
               "value": true
             },
             "choices": {
-              "value": [
-                {
-                  "html": "<p>3/5</p>",
-                  "content_id": "ca_choices_0"
-                },
-                {
-                  "html": "<p>0.6</p>",
-                  "content_id": "ca_choices_1"
-                },
-                {
-                  "html": "<p>0.35</p>",
-                  "content_id": "ca_choices_2"
-                },
-                {
-                  "html": "<p>0.46</p>",
-                  "content_id": "ca_choices_3"
-                }
-              ]
+              "value": [{
+                "html": "<p>3/5</p>",
+                "content_id": "ca_choices_0"
+              }, {
+                "html": "<p>0.6</p>",
+                "content_id": "ca_choices_1"
+              }, {
+                "html": "<p>0.35</p>",
+                "content_id": "ca_choices_2"
+              }, {
+                "html": "<p>0.46</p>",
+                "content_id": "ca_choices_3"
+              }]
             }
           },
-          "answer_groups": [
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "IsEqualToOrdering",
-                  "inputs": {
-                    "x": [
-                      [
-                        "ca_choices_0",
-                        "ca_choices_1"
-                      ],
-                      [
-                        "ca_choices_3"
-                      ],
-                      [
-                        "ca_choices_2"
-                      ]
-                    ]
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "End",
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>That's correct</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEqualToOrdering",
+              "inputs": {
+                "x": [["ca_choices_0", "ca_choices_1"], ["ca_choices_3"], ["ca_choices_2"]]
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>That's correct</p>"
               },
-              "tagged_skill_misconception_id": null
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
             },
-            {
-              "rule_specs": [
-                {
-                  "rule_type": "HasElementXAtPositionY",
-                  "inputs": {
-                    "y": 1,
-                    "x": "ca_choices_1"
-                  }
-                }
-              ],
-              "outcome": {
-                "dest": "DragDropGroup",
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>Seems like you did the ascending order</p>"
-                },
-                "labelled_as_correct": false,
-                "param_changes": [],
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null
+            "tagged_skill_misconception_id": null
+          }, {
+            "rule_specs": [{
+              "rule_type": "HasElementXAtPositionY",
+              "inputs": {
+                "y": 1,
+                "x": "ca_choices_1"
+              }
+            }],
+            "outcome": {
+              "dest": "DragDropGroup",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>Seems like you did the ascending order</p>"
               },
-              "tagged_skill_misconception_id": null
-            }
-          ],
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": null,
+              "missing_prerequisite_skill_id": null
+            },
+            "tagged_skill_misconception_id": null
+          }],
           "default_outcome": {
             "dest": "DragDropGroup",
             "feedback": {

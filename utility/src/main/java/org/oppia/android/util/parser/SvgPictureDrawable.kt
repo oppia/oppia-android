@@ -73,11 +73,9 @@ abstract class SvgPictureDrawable(
   /** See [getIntrinsicWidth]. */
   override fun getIntrinsicHeight(): Int = intrinsicSize.height.toInt()
 
-  override fun setAlpha(alpha: Int) { /* Unsupported. */
-  }
+  override fun setAlpha(alpha: Int) { /* Unsupported. */ }
 
-  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */
-  }
+  override fun setColorFilter(colorFilter: ColorFilter?) { /* Unsupported. */ }
 
   override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 

@@ -32,7 +32,6 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineScope by lazy { CoroutineScope(realCoroutineDispatcher) }
   private val executingTaskCount = AtomicInteger(0)
   private val totalTaskCount = AtomicInteger(0)
-
   /** Map of task ID (based on [totalTaskCount]) to the time in millis when that task will run. */
   private val taskCompletionTimes = ConcurrentHashMap<Int, Long>()
   private var taskIdleListener: TaskIdleListener? = null

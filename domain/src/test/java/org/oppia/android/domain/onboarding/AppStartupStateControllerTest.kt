@@ -48,7 +48,8 @@ import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 

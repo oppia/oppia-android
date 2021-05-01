@@ -2,7 +2,7 @@
   "android_report_info_schema_version": 1,
   "app_context": {
     "entry_point": {
-      "entry_point_name": "navigation_drawer"
+      "entry_point_name" : "navigation_drawer"
     },
     "topic_progress": {},
     "text_size": "large",

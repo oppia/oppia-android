@@ -35,12 +35,9 @@ class UrlImageParserTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var urlImageParserFactory: UrlImageParser.Factory
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var urlImageParserFactory: UrlImageParser.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private lateinit var testView: TextView
   private lateinit var urlImageParser: UrlImageParser

@@ -28,8 +28,7 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {

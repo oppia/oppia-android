@@ -75,7 +75,8 @@ import org.robolectric.annotation.LooperMode
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -32,7 +32,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 

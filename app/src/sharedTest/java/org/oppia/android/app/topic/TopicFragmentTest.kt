@@ -25,6 +25,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
