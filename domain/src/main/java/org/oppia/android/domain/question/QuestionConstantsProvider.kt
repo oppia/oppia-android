@@ -20,6 +20,9 @@ annotation class WrongAnswerScorePenalty
 @Qualifier
 annotation class MaxScorePerQuestion
 
+@Qualifier
+annotation class InternalScoreMultiplyFactor
+
 /** Provider to return any constants required during the training session. */
 @Module
 class QuestionModule {
@@ -42,4 +45,8 @@ class QuestionModule {
   @Provides
   @MaxScorePerQuestion
   fun provideMaxScorePerQuestion(): Int = 10
+
+  @Provides
+  @InternalScoreMultiplyFactor
+  fun provideInternalScoreMultiplyFactor(): Int = 10
 }

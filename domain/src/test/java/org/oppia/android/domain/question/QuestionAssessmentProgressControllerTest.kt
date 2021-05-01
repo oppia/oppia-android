@@ -1656,6 +1656,10 @@ class QuestionAssessmentProgressControllerTest {
     @Provides
     @MaxScorePerQuestion
     fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
   }
 
   // TODO(#89): Move this to a common test application component.
