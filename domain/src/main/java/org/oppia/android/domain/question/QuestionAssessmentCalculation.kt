@@ -1,10 +1,8 @@
 package org.oppia.android.domain.question
 
 import org.oppia.android.app.model.FractionGrade
-import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.UserAssessmentPerformance
 import javax.inject.Inject
-import kotlin.math.max
 
 /**
  * Private class that computes the state of the user's performance at the end of a practice session.
