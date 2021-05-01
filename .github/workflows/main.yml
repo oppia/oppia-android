@@ -132,3 +132,20 @@ jobs:
         with:
           name: app reports
           path: app/build/reports
+
+  espresso_test:
+    name: App Module Espresso Tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
+
+      - name: Run instrumentation tests
+          uses: reactivecircus/android-emulator-runner@v2
+          with:
+            api-level: 29
+            script: ./gradlew connectedCheck --full-stacktrace
