@@ -290,7 +290,6 @@ class StringToFractionParserTest {
     val expectedFraction = Fraction.newBuilder().apply {
       numerator = 8
       denominator = 0
-
     }.build()
     assertThat(parseFractionFromString).isEqualTo(expectedFraction)
     assertThat(parseFraction).isEqualTo(expectedFraction)
