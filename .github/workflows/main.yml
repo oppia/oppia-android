@@ -145,7 +145,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
 
       - name: Run instrumentation tests
-          uses: reactivecircus/android-emulator-runner@v2.14.3
-          with:
-            api-level: 29
-            script: ./gradlew app:connectedCheck --full-stacktrace
+        uses: reactivecircus/android-emulator-runner@v2.14.3
+        with:
+          api-level: 29
+          script: ./gradlew app:connectedCheck --full-stacktrace
