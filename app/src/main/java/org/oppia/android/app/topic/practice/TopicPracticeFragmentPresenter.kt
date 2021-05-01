@@ -24,6 +24,7 @@ import javax.inject.Inject
 /** The presenter for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
@@ -73,8 +74,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicPracticeItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory
+      .create<TopicPracticeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL

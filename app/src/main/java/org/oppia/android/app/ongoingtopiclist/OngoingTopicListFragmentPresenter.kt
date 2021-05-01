@@ -17,7 +17,8 @@ import javax.inject.Inject
 class OngoingTopicListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<OngoingTopicListViewModel>
+  private val viewModelProvider: ViewModelProvider<OngoingTopicListViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: OngoingTopicListFragmentBinding
@@ -56,8 +57,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<OngoingTopicItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<OngoingTopicItemViewModel>()
+    return singleTypeBuilderFactory.create<OngoingTopicItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = OngoingTopicItemBinding::inflate,
         setViewModel = OngoingTopicItemBinding::setViewModel

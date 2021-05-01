@@ -18,6 +18,7 @@ private const val VIEW_TYPE_STORY_ITEM = 2
 
 /** Adapter to bind StorySummary to [RecyclerView] inside [TopicLessonsFragment]. */
 class StorySummaryAdapter(
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val itemList: MutableList<TopicLessonsItemViewModel>,
   private val expandedChapterListIndexListener: ExpandedChapterListIndexListener,
   private var currentExpandedChapterListIndex: Int?
@@ -145,8 +146,7 @@ class StorySummaryAdapter(
     }
 
     private fun createRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<ChapterSummaryViewModel>()
+      return singleTypeBuilderFactory.create<ChapterSummaryViewModel>()
         .registerViewDataBinderWithSameModelType(
           inflateDataBinding = LessonsChapterViewBinding::inflate,
           setViewModel = LessonsChapterViewBinding::setViewModel

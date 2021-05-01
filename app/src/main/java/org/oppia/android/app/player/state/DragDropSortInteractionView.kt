@@ -29,7 +29,7 @@ import javax.inject.Inject
 class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
+  defStyleAttr: Int = 0,
 ) : RecyclerView(context, attrs, defStyleAttr) {
   // For disabling grouping of items by default.
   private var isMultipleItemsInSamePositionAllowed: Boolean = false
@@ -51,6 +51,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   @Inject
   lateinit var viewBindingShim: ViewBindingShim
+
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
@@ -79,8 +82,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<DragDropInteractionContentViewModel>()
+    return singleTypeBuilderFactory
+      .create<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           viewBindingShim.provideDragDropSortInteractionInflatedView(
@@ -107,8 +110,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 
   private fun createNestedAdapter(): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
+    return singleTypeBuilderFactory.create<String>()
       .registerViewBinder(
         inflateView = { parent ->
           viewBindingShim.provideDragDropSingleItemInflatedView(

@@ -38,6 +38,7 @@ import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
@@ -114,8 +115,8 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory
+      .create<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER

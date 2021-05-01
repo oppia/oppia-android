@@ -21,6 +21,7 @@ import javax.inject.Inject
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
 class OnboardingFragmentPresenter @Inject constructor(
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
@@ -87,8 +88,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OnboardingViewPagerViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory
+      .create<OnboardingViewPagerViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is OnboardingSlideViewModel -> ViewType.ONBOARDING_MIDDLE_SLIDE
           is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE

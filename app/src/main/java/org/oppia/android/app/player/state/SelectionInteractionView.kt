@@ -43,6 +43,9 @@ class SelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var bindingInterface: ViewBindingShim
 
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+
   private lateinit var entityId: String
 
   override fun onAttachedToWindow() {
@@ -69,8 +72,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
     return when (selectionItemInputType) {
       SelectionItemInputType.CHECKBOXES ->
-        BindableAdapter.SingleTypeBuilder
-          .newBuilder<SelectionInteractionContentViewModel>()
+        singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
               bindingInterface.provideSelectionInteractionViewInflatedView(
@@ -92,8 +94,7 @@ class SelectionInteractionView @JvmOverloads constructor(
           )
           .build()
       SelectionItemInputType.RADIO_BUTTONS ->
-        BindableAdapter.SingleTypeBuilder
-          .newBuilder<SelectionInteractionContentViewModel>()
+        singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
               bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(

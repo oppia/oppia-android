@@ -31,6 +31,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   @Inject
   lateinit var logger: ConsoleLogger
 
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
@@ -67,7 +70,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<ComingSoonTopicsViewModel>()
+    return singleTypeBuilderFactory.create<ComingSoonTopicsViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.provideComingSoonTopicViewInflatedView(

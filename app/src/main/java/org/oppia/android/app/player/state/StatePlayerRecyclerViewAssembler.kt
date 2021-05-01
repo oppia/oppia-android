@@ -854,6 +854,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+    multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val htmlParserFactory: HtmlParser.Factory,
     private val resourceBucketName: String,
     private val entityType: String,
@@ -865,9 +867,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
-      StateItemViewModel::viewType
-    )
+    private val adapterBuilder = multiTypeBuilderFactory.create(StateItemViewModel::viewType)
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1070,8 +1070,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<StringList>()
+      return singleTypeBuilderFactory.create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1092,8 +1091,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<String>()
+      return singleTypeBuilderFactory.create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(
@@ -1348,8 +1346,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets.
        */
-      fun create(resourceBucketName: String, entityType: String): Builder {
+      fun create(
+        resourceBucketName: String,
+        entityType: String,
+        singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+        multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+      ): Builder {
         return Builder(
+          singleTypeBuilderFactory,
+          multiTypeBuilderFactory,
           htmlParserFactory,
           resourceBucketName,
           entityType,
