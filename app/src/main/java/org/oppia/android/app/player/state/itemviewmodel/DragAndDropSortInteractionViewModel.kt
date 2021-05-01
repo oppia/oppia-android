@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -28,26 +32,33 @@ class DragAndDropSortInteractionViewModel(
   private val allowMultipleItemsInSamePosition: Boolean by lazy {
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
-  private val choiceStrings: List<String> by lazy {
+  private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
     interaction.customizationArgsMap["choices"]
       ?.schemaObjectList
       ?.schemaObjectList
-      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
       ?: listOf()
   }
 
-  val choiceItems: ArrayList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, this)
+  private val contentIdHtmlMap: Map<String, String> =
+    choiceSubtitledHtmls.associate { subtitledHtml ->
+      subtitledHtml.contentId to subtitledHtml.html
+    }
 
-  var isAnswerAvailable = ObservableField<Boolean>(false)
+  private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
+    computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this)
+
+  val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
+
+  private val isAnswerAvailable = ObservableField(false)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-            /* pendingAnswerError= */null,
-            /* inputAnswerAvailable= */true
+            pendingAnswerError = null,
+            inputAnswerAvailable = true
           )
         }
       }
@@ -60,14 +71,14 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    val item = choiceItems[indexFrom]
-    choiceItems.removeAt(indexFrom)
-    choiceItems.add(indexTo, item)
+    val item = _choiceItems[indexFrom]
+    _choiceItems.removeAt(indexFrom)
+    _choiceItems.add(indexTo, item)
 
     // Update the data of item moved for every drag if merge icons are displayed.
     if (allowMultipleItemsInSamePosition) {
-      choiceItems[indexFrom].itemIndex = indexFrom
-      choiceItems[indexTo].itemIndex = indexTo
+      _choiceItems[indexFrom].itemIndex = indexFrom
+      _choiceItems[indexTo].itemIndex = indexTo
     }
     adapter.notifyItemMoved(indexFrom, indexTo)
   }
@@ -75,7 +86,7 @@ class DragAndDropSortInteractionViewModel(
   override fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     // Update the data list if once drag is complete and merge icons are displayed.
     if (allowMultipleItemsInSamePosition) {
-      (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+      (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
     }
   }
 
@@ -84,25 +95,29 @@ class DragAndDropSortInteractionViewModel(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
+    val item = _choiceItems[indexFrom]
+    _choiceItems.removeAt(indexFrom)
+    _choiceItems.add(indexTo, item)
 
-    val item = choiceItems[indexFrom]
-    choiceItems.removeAt(indexFrom)
-    choiceItems.add(indexTo, item)
+    _choiceItems[indexFrom].itemIndex = indexFrom
+    _choiceItems[indexTo].itemIndex = indexTo
 
-    choiceItems[indexFrom].itemIndex = indexFrom
-    choiceItems[indexTo].itemIndex = indexTo
-
-    (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+    (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
   override fun getPendingAnswer(): UserAnswer {
     val userAnswerBuilder = UserAnswer.newBuilder()
-    val listItems = choiceItems.map { it.htmlContent }
-    userAnswerBuilder.listOfHtmlAnswers = convertItemsToAnswer(listItems)
+    val selectedLists = _choiceItems.map { it.htmlContent }
+    val userStringLists = _choiceItems.map { it.computeStringList() }
+    userAnswerBuilder.listOfHtmlAnswers = convertItemsToAnswer(userStringLists)
     userAnswerBuilder.answer =
-      InteractionObject.newBuilder().setListOfSetsOfHtmlString(
-        ListOfSetsOfHtmlStrings.newBuilder().addAllSetOfHtmlStrings(listItems).build()
-      ).build()
+      InteractionObject.newBuilder().apply {
+        listOfSetsOfTranslatableHtmlContentIds =
+          ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+            _choiceItems.map { }
+            addAllContentIdLists(selectedLists)
+          }.build()
+      }.build()
     return userAnswerBuilder.build()
   }
 
@@ -122,63 +137,71 @@ class DragAndDropSortInteractionViewModel(
     itemIndex: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    val item = choiceItems[itemIndex]
-    val nextItem = choiceItems[itemIndex + 1]
-    nextItem.htmlContent = StringList.newBuilder().addAllHtml(nextItem.htmlContent.htmlList)
-      .addAllHtml(item.htmlContent.htmlList)
-      .build()
-    choiceItems[itemIndex + 1] = nextItem
+    val item = _choiceItems[itemIndex]
+    val nextItem = _choiceItems[itemIndex + 1]
+    nextItem.htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+      addAllContentIds(nextItem.htmlContent.contentIdsList)
+      addAllContentIds(item.htmlContent.contentIdsList)
+    }.build()
+    _choiceItems[itemIndex + 1] = nextItem
 
-    choiceItems.removeAt(itemIndex)
+    _choiceItems.removeAt(itemIndex)
 
-    choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
+    _choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
       dragDropInteractionContentViewModel.itemIndex = index
-      dragDropInteractionContentViewModel.listSize = choiceItems.size
+      dragDropInteractionContentViewModel.listSize = _choiceItems.size
     }
     // to update the content of grouped item
-    (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+    (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
   fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    val item = choiceItems[itemIndex]
-    choiceItems.removeAt(itemIndex)
-    item.htmlContent.htmlList.forEach {
-      choiceItems.add(
+    val item = _choiceItems[itemIndex]
+    _choiceItems.removeAt(itemIndex)
+    item.htmlContent.contentIdsList.forEach { contentId ->
+      _choiceItems.add(
         itemIndex,
         DragDropInteractionContentViewModel(
-          StringList.newBuilder()
-            .addHtml(it)
-            .build(),
-          /* itemIndex= */ 0,
-          /* listSize= */ 0,
-          /* dragAndDropSortInteractionViewModel= */this
+          contentIdHtmlMap = contentIdHtmlMap,
+          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+            addContentIds(contentId)
+          }.build(),
+          itemIndex = 0,
+          listSize = 0,
+          dragAndDropSortInteractionViewModel = this
         )
       )
     }
 
-    choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
+    _choiceItems.forEachIndexed { index, dragDropInteractionContentViewModel ->
       dragDropInteractionContentViewModel.itemIndex = index
-      dragDropInteractionContentViewModel.listSize = choiceItems.size
+      dragDropInteractionContentViewModel.listSize = _choiceItems.size
     }
     // to update the list
-    (adapter as BindableAdapter<*>).setDataUnchecked(choiceItems)
+    (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>,
+      contentIdHtmlMap: Map<String, String>,
+      choiceStrings: List<SubtitledHtml>,
       dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel
-    ): ArrayList<DragDropInteractionContentViewModel> {
-      val itemList = ArrayList<DragDropInteractionContentViewModel>()
-      itemList += choiceStrings.mapIndexed { index, choiceString ->
+    ): MutableList<DragDropInteractionContentViewModel> {
+      return choiceStrings.mapIndexed { index, subtitledHtml ->
         DragDropInteractionContentViewModel(
-          htmlContent = StringList.newBuilder().addHtml(choiceString).build(),
+          contentIdHtmlMap = contentIdHtmlMap,
+          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+            addContentIds(
+              TranslatableHtmlContentId.newBuilder().apply {
+                contentId = subtitledHtml.contentId
+              }
+            )
+          }.build(),
           itemIndex = index,
           listSize = choiceStrings.size,
           dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel
         )
-      }
-      return itemList
+      }.toMutableList()
     }
   }
 }

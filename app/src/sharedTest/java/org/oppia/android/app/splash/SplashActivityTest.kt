@@ -37,6 +37,7 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -56,10 +57,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -74,8 +75,7 @@ import org.robolectric.annotation.LooperMode
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -287,7 +287,7 @@ class SplashActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

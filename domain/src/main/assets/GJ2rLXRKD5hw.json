@@ -9,8 +9,8 @@
         "The Meaning of Equal Parts"
       ],
       "thumbnail_filename": "",
-      "id": "wANbh4oOClga",
-      "published": false
+      "published": false,
+      "id": "wANbh4oOClga"
     }
   ],
   "uncategorized_skill_ids": [],
@@ -18,8 +18,8 @@
   "topic_name": "Fractions",
   "topic_description": "You'll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or some of the eggs in a box might have broken. In these lessons, you'll learn to use fractions to describe situations like these.",
   "topic_id": "GJ2rLXRKD5hw",
-  "version": 1,
-  "published": true,
+  "thumbnail_bg_color": null,
+  "thumbnail_filename": null,
   "skill_descriptions": {
     "5RM9KPfQxobH": "Given a picture divided into unequal parts, write the fraction.",
     "UxTGIJqaHMLa": "Identify the numerator and denominator of a fraction.",
@@ -67,5 +67,6 @@
       "thumbnail_filename": "",
       "title": "Adding Fractions"
     }
-  ]
+  ],
+  "published": true
 }

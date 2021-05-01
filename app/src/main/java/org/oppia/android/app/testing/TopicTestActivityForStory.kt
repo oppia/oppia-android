@@ -12,7 +12,7 @@ import org.oppia.android.app.topic.TopicActivityPresenter
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class TopicTestActivityForStory :
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
-      storyId = TEST_STORY_ID_1
+      storyId = TEST_STORY_ID_0
     )
   }
 

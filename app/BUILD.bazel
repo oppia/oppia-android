@@ -45,7 +45,6 @@ MIGRATED_SOURCE_FILES = [
 ANNOTATIONS = [
     "src/main/java/org/oppia/android/app/activity/ActivityScope.kt",
     "src/main/java/org/oppia/android/app/fragment/FragmentScope.kt",
-    "src/main/java/org/oppia/android/app/utility/ContextExtensions.kt",
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
 ]
 
@@ -481,6 +480,8 @@ android_library(
         ":view_models",
         ":views",
         "//model",
+        "//model:interaction_object_java_proto_lite",
+        "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_core_core",
@@ -510,6 +511,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model",
+        "//model:question_java_proto_lite",
+        "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
     ],
 )
@@ -567,6 +570,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 
@@ -591,6 +595,7 @@ android_library(
         ":resources",
         ":view_models",
         "//model",
+        "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_constraintlayout_constraintlayout",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
@@ -617,6 +622,7 @@ kt_android_library(
         ":resources",
         ":view_models",
         ":views",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//model",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
@@ -628,11 +634,13 @@ kt_android_library(
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )
 
@@ -657,7 +665,6 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/DrawableMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/EspressoTestsMatchers.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/FontSizeMatcher.kt",
-        "src/sharedTest/java/org/oppia/android/app/utility/MockitoKotlinHelper.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/OrientationChangeAction.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
@@ -677,6 +684,15 @@ TEST_DEPS = [
     ":test_deps",
     "//domain",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:konfetti_view_matcher",
+    "//testing/src/main/java/org/oppia/android/testing/mockito",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
+    "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_annotation_annotation",
     "//third_party:androidx_databinding_databinding-adapters",
     "//third_party:androidx_databinding_databinding-common",

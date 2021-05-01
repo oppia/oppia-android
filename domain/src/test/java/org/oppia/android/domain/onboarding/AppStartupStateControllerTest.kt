@@ -31,10 +31,10 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -48,8 +48,7 @@ import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
