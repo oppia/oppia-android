@@ -161,7 +161,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -197,11 +197,11 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, position = 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, position = 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -225,17 +225,17 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
@@ -260,7 +260,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -283,11 +283,11 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, position = 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, position = 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -311,17 +311,17 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, position = 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
@@ -373,7 +373,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, position = 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -398,7 +402,7 @@ class BindableAdapterTest {
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 0
         )
       ).check(matches(withText("new value")))
@@ -422,7 +426,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, position = 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -447,7 +455,7 @@ class BindableAdapterTest {
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
       onView(
         atPosition(
-          R.id.test_recycler_view,
+          recyclerViewId = R.id.test_recycler_view,
           position = 0
         )
       ).check(matches(withText("new value")))
@@ -455,7 +463,7 @@ class BindableAdapterTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(bindableAdapterTest = this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter():
@@ -570,7 +578,7 @@ class BindableAdapterTest {
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */false
+      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
     ) as TextView
   }
 
