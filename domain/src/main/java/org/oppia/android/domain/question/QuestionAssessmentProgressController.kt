@@ -328,14 +328,14 @@ class QuestionAssessmentProgressController @Inject constructor(
    * This method should only be called at the end of a practice session, after all the questions
    * have been completed.
    */
-  fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> =
-    progressLock.withLock {
-      return dataProviders.createInMemoryDataProviderAsync(
-        "user_assessment_performance"
-      ) {
-        (this::retrieveUserAssessmentPerformanceAsync)(skillIdList)
-      }
+  fun calculateScoresAndMasteryDegrees(skillIdList: List<String>):
+    DataProvider<UserAssessmentPerformance> = progressLock.withLock {
+    return dataProviders.createInMemoryDataProviderAsync(
+      "user_assessment_performance"
+    ) {
+      (this::retrieveUserAssessmentPerformanceAsync)(skillIdList)
     }
+  }
 
   private suspend fun retrieveUserAssessmentPerformanceAsync(skillIdList: List<String>):
     AsyncResult<UserAssessmentPerformance> {

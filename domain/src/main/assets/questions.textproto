@@ -2220,6 +2220,11 @@ questions {
       }
     }
     recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
       key: "ca_placeholder_0"
       value {
       }
@@ -2250,6 +2255,11 @@ questions {
     }
     written_translations {
       key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
       value {
       }
     }
@@ -2285,6 +2295,25 @@ questions {
               translatable_set_of_normalized_string {
                 content_id: "<unknown>"
                 normalized_strings: "1/4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        outcome {
+          feedback {
+            html: "<p>Try again!</p>"
+            content_id: "feedback_2"
+          }
+          labelled_as_correct: false
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "123/456"
               }
             }
           }

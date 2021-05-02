@@ -100,7 +100,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockScoreCalculationsLiveDataObserver:
+  lateinit var mockScoreAndMasteryLiveDataObserver:
     Observer<AsyncResult<UserAssessmentPerformance>>
 
   @Mock
@@ -125,7 +125,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Captor
-  lateinit var scoreCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
+  lateinit var performanceCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
 
   @Captor
   lateinit var asyncNullableResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
@@ -1033,14 +1033,14 @@ class QuestionAssessmentProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_2)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.0
       totalPointsAvailable = 3.0
@@ -1088,14 +1088,14 @@ class QuestionAssessmentProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_2)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.0
       totalPointsAvailable = 3.0
@@ -1141,14 +1141,14 @@ class QuestionAssessmentProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_2)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.4
       totalPointsAvailable = 3.0
@@ -1172,14 +1172,14 @@ class QuestionAssessmentProgressControllerTest {
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_2)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 3.0
       totalPointsAvailable = 3.0
@@ -1244,14 +1244,14 @@ class QuestionAssessmentProgressControllerTest {
     submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 1.5
       totalPointsAvailable = 3.0
@@ -1334,14 +1334,14 @@ class QuestionAssessmentProgressControllerTest {
     submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 0.0
       totalPointsAvailable = 3.0
@@ -1413,14 +1413,14 @@ class QuestionAssessmentProgressControllerTest {
     submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 2.6
       totalPointsAvailable = 3.0
@@ -1484,14 +1484,14 @@ class QuestionAssessmentProgressControllerTest {
     submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
     // check the computed score
-    subscribeToScoreCalculations(TEST_SKILL_ID_LIST_01)
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
+    ).onChanged(performanceCalculationCaptor.capture())
 
-    val userAssessmentPerformance = scoreCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 2.7
       totalPointsAvailable = 3.0
@@ -1512,6 +1512,358 @@ class QuestionAssessmentProgressControllerTest {
       .isEqualTo(skill1Score)
   }
 
+  @Test
+  fun solutionViewedForAllQuestions_returnMaxMasteryLossPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 wrong answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    val ephemeralQuestion1 = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion1.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    // view question 1 solution
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion1.ephemeralState.state
+    )
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 wrong answer
+    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    val ephemeralQuestion2 = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion2.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    // view question 2 solution
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion2.ephemeralState.state
+    )
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 wrong answer
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    val ephemeralQuestion3 = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion3.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    // view question 3 solution
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion3.ephemeralState.state
+    )
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = -0.2
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun correctAnswerOnFirstTryForAllQuestions_returnMaxMasteryGainPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.2
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun hintsAndSolutionsViewedWithWrongAnswers_noMisconceptions_returnDifferingMasteryDegrees() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 wrong answers
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 wrong answer
+    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    val ephemeralQuestion1 = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion1.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    val hint = ephemeralQuestion1.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Hint text will appear here</p>")
+    // view question 2 hint
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion1.ephemeralState.state, true, 0
+    )
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 wrong answer
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    val ephemeralQuestion2 = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion2.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+    val solution = ephemeralQuestion2.ephemeralState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer)
+      .isEqualTo("1/2")
+    // view question 3 solution
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion2.ephemeralState.state
+    )
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.03
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun maxMasteryLossPerQuestionSurpassed_returnMaxMasteryLossForQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 wrong answers (surpass max mastery loss lower bound for this question)
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    submitTextInputAnswerAndMoveToNextQuestion("3/4")
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.2
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point11ForLinkedSkill() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 wrong answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(1)
+
+    // view question 1 hint 0
+    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Hint text will appear here</p>")
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 0
+    )
+
+    // view question 1 hint 1
+    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(1)
+    assertThat(hint.hintContent.html)
+      .contains("<p>Second hint text will appear here</p>")
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 1
+    )
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 3 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed score
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.11
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun wrongAnswersAllSubmittedWithMisconception_onlyMisconceptionSkillIdMasteryDegreesAffected() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 0 wrong answers
+    submitTextInputAnswerAndMoveToNextQuestion("123/456")
+    submitTextInputAnswerAndMoveToNextQuestion("123/456")
+
+    // submit question 0 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.3
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun someWrongAnswersSubmittedWithTaggedMisconceptionSkillId() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // submit question 1 correct answer
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+
+    // submit question 2 correct answer
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+
+    // submit question 0 wrong answers
+    submitTextInputAnswerAndMoveToNextQuestion("4/5")
+    submitTextInputAnswerAndMoveToNextQuestion("123/456")
+
+    // submit question 0 correct answer
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+
+    // check the computed mastery degrees
+    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+
+    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val skill0Mastery = 0.25
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1528,9 +1880,9 @@ class QuestionAssessmentProgressControllerTest {
       .observeForever(mockCurrentQuestionLiveDataObserver)
   }
 
-  private fun subscribeToScoreCalculations(skillIdList: List<String>) {
-    questionAssessmentProgressController.calculateScores(skillIdList).toLiveData()
-      .observeForever(mockScoreCalculationsLiveDataObserver)
+  private fun subscribeToScoreAndMasteryCalculations(skillIdList: List<String>) {
+    questionAssessmentProgressController.calculateScoresAndMasteryDegrees(skillIdList).toLiveData()
+      .observeForever(mockScoreAndMasteryLiveDataObserver)
   }
 
   private fun startTrainingSession(skillIdList: List<String>) {
