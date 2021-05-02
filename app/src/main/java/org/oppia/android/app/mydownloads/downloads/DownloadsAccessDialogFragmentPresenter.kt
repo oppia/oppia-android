@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.utility.AlertDialogHelper
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.DownloadsAccessDialogBinding
@@ -60,15 +61,44 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    val dialog = AlertDialog.Builder(fragment.requireContext(), R.style.AlertDialogTheme)
-      .setTitle(R.string.downloads_access_dialog_heading)
-      .setView(binding.root)
-      .setMessage(R.string.downloads_access_dialog_message)
-      .setPositiveButton(R.string.downloads_access_dialog_positive, null)
-      .setNegativeButton(R.string.downloads_access_dialog_cancel) { dialog, _ ->
-        dialog.dismiss()
+    val dialog = AlertDialogHelper.getAlertDialog(
+      context = activity,
+      view = binding.root,
+      title = R.string.admin_settings_heading,
+      message = R.string.admin_settings_sub,
+      positiveButtonText = R.string.admin_settings_submit,
+      negativeButtonText = R.string.admin_settings_cancel
+    ) { dialog, buttonId ->
+      when (buttonId) {
+        AlertDialog.BUTTON_POSITIVE -> {
+          when {
+            binding.downloadsAccessInputPinEditText.text.toString() == adminPin -> {
+              dialog.dismiss()
+              downloadsTopicDeleteInterface.showDownloadsTopicDeleteDialogFragment(
+                allowDownloadAccess
+              )
+            }
+            binding.downloadsAccessInputPinEditText.text.toString().isNotEmpty() -> {
+              downloadsAccessAllowedViewModel.errorMessage.set(
+                fragment.resources.getString(
+                  R.string.downloads_access_dialog_input_pin_error
+                )
+              )
+            }
+            else -> {
+              downloadsAccessAllowedViewModel.errorMessage.set(
+                fragment.resources.getString(
+                  R.string.downloads_access_dialog_input_pin_empty_error
+                )
+              )
+            }
+          }
+        }
+        AlertDialog.BUTTON_NEGATIVE -> {
+          dialog.dismiss()
+        }
       }
-      .create()
+    }
 
     binding.downloadsAccessInputPinEditText.setOnEditorActionListener { _, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE ||
@@ -77,25 +107,6 @@ class DownloadsAccessDialogFragmentPresenter @Inject constructor(
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
       }
       false
-    }
-
-    // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
-    dialog.setOnShowListener {
-      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        if (binding.downloadsAccessInputPinEditText.text?.isEmpty()!!) {
-          return@setOnClickListener
-        }
-        if (binding.downloadsAccessInputPinEditText.text.toString() == adminPin) {
-          dialog.dismiss()
-          downloadsTopicDeleteInterface.showDownloadsTopicDeleteDialogFragment(allowDownloadAccess)
-        } else {
-          downloadsAccessAllowedViewModel.errorMessage.set(
-            fragment.resources.getString(
-              R.string.downloads_access_dialog_input_pin_error
-            )
-          )
-        }
-      }
     }
     return dialog
   }

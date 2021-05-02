@@ -95,7 +95,7 @@ class DownloadsFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = viewModel
     val sortByItemsList = mutableListOf<String>()
-    SortByItems.values().forEach {
+    enumValues<SortByItems>().forEach {
       sortByItemsList.add(fragment.getString(it.value))
     }
     val sortItemAdapter = ArrayAdapter(
