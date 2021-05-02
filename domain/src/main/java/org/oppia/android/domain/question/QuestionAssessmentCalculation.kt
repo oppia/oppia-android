@@ -97,8 +97,8 @@ internal class QuestionAssessmentCalculation private constructor(
       val hintsPenalty = numberOfHintsUsed * viewHintPenaltyForMastery
       val wrongAnswersPenalty =
         Collections.frequency(taggedMisconceptionSkillIds, skillId) * wrongAnswerPenaltyForMastery +
-          (getAdjustedWrongAnswerCount() - taggedMisconceptionSkillIds.size)
-            .coerceAtLeast(0) * wrongAnswerPenaltyForMastery
+          (getAdjustedWrongAnswerCount() - taggedMisconceptionSkillIds.size).coerceAtLeast(0) *
+          wrongAnswerPenaltyForMastery
       (maxMasteryGainPerQuestion - hintsPenalty - wrongAnswersPenalty).coerceAtLeast(
         maxMasteryLossPerQuestion
       )
