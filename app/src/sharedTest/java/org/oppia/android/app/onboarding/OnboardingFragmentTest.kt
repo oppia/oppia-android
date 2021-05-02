@@ -1,6 +1,7 @@
 package org.oppia.android.app.onboarding
 
 import android.app.Application
+import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -95,6 +96,9 @@ class OnboardingFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -543,6 +547,68 @@ class OnboardingFragmentTest {
         matches(
           withContentDescription(
             R.string.next_arrow
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_moveToSlide1_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_moveToSlide2_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_moveToSlide2_bottomDots_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.slide_dots_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
           )
         )
       )
