@@ -63,6 +63,7 @@ class OppiaLoggerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    ShadowLog.reset()
   }
 
   @Inject
@@ -76,7 +77,6 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logVerboseMessage_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.v(TEST_VERBOSE_LOG_TAG, TEST_VERBOSE_LOG_MSG)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_VERBOSE_LOG_TAG)
@@ -86,19 +86,16 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logVerboseMessageWithException_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.v(TEST_VERBOSE_LOG_TAG, TEST_VERBOSE_LOG_MSG, TEST_VERBOSE_EXCEPTION)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_VERBOSE_LOG_TAG)
-    assertThat(log.msg).isEqualTo(
-      "$TEST_VERBOSE_LOG_MSG\n${Log.getStackTraceString(TEST_VERBOSE_EXCEPTION)}"
-    )
+    assertThat(log.msg).contains(TEST_VERBOSE_LOG_MSG)
+    assertThat(log.msg).contains(Log.getStackTraceString(TEST_VERBOSE_EXCEPTION))
     assertThat(log.type).isEqualTo(Log.VERBOSE)
   }
 
   @Test
   fun testConsoleLogger_logDebugMessage_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.d(TEST_DEBUG_LOG_TAG, TEST_DEBUG_LOG_MSG)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_DEBUG_LOG_TAG)
@@ -108,19 +105,16 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logDebugMessageWithException_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.d(TEST_DEBUG_LOG_TAG, TEST_DEBUG_LOG_MSG, TEST_DEBUG_EXCEPTION)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_DEBUG_LOG_TAG)
-    assertThat(log.msg).isEqualTo(
-      "$TEST_DEBUG_LOG_MSG\n${Log.getStackTraceString(TEST_DEBUG_EXCEPTION)}"
-    )
+    assertThat(log.msg).contains(TEST_DEBUG_LOG_MSG)
+    assertThat(log.msg).contains(Log.getStackTraceString(TEST_DEBUG_EXCEPTION))
     assertThat(log.type).isEqualTo(Log.DEBUG)
   }
 
   @Test
   fun testConsoleLogger_logInfoMessage_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.i(TEST_INFO_LOG_TAG, TEST_INFO_LOG_MSG)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_INFO_LOG_TAG)
@@ -130,19 +124,16 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logInfoMessageWithException_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.i(TEST_INFO_LOG_TAG, TEST_INFO_LOG_MSG, TEST_INFO_EXCEPTION)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_INFO_LOG_TAG)
-    assertThat(log.msg).isEqualTo(
-      "$TEST_INFO_LOG_MSG\n${Log.getStackTraceString(TEST_INFO_EXCEPTION)}"
-    )
+    assertThat(log.msg).contains(TEST_INFO_LOG_MSG)
+    assertThat(log.msg).contains(Log.getStackTraceString(TEST_INFO_EXCEPTION))
     assertThat(log.type).isEqualTo(Log.INFO)
   }
 
   @Test
   fun testConsoleLogger_logWarnMessage_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.w(TEST_WARN_LOG_TAG, TEST_WARN_LOG_MSG)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_WARN_LOG_TAG)
@@ -152,19 +143,16 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logWarnMessageWithException_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.w(TEST_WARN_LOG_TAG, TEST_WARN_LOG_MSG, TEST_WARN_EXCEPTION)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_WARN_LOG_TAG)
-    assertThat(log.msg).isEqualTo(
-      "$TEST_WARN_LOG_MSG\n${Log.getStackTraceString(TEST_WARN_EXCEPTION)}"
-    )
+    assertThat(log.msg).contains(TEST_WARN_LOG_MSG)
+    assertThat(log.msg).contains(Log.getStackTraceString(TEST_WARN_EXCEPTION))
     assertThat(log.type).isEqualTo(Log.WARN)
   }
 
   @Test
   fun testConsoleLogger_logErrorMessage_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.e(TEST_ERROR_LOG_TAG, TEST_ERROR_LOG_MSG)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_ERROR_LOG_TAG)
@@ -174,13 +162,11 @@ class OppiaLoggerTest {
 
   @Test
   fun testConsoleLogger_logErrorMessageWithException_checkLoggedMessageIsCorrect() {
-    ShadowLog.reset()
     oppiaLogger.e(TEST_ERROR_LOG_TAG, TEST_ERROR_LOG_MSG, TEST_ERROR_EXCEPTION)
     val log = ShadowLog.getLogs().last()
     assertThat(log.tag).isEqualTo(TEST_ERROR_LOG_TAG)
-    assertThat(log.msg).isEqualTo(
-      "$TEST_ERROR_LOG_MSG\n${Log.getStackTraceString(TEST_ERROR_EXCEPTION)}"
-    )
+    assertThat(log.msg).contains(TEST_ERROR_LOG_MSG)
+    assertThat(log.msg).contains(Log.getStackTraceString(TEST_ERROR_EXCEPTION))
     assertThat(log.type).isEqualTo(Log.ERROR)
   }
 
