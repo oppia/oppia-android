@@ -174,9 +174,10 @@
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topic_info_story_summary_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="36dp"
@@ -184,7 +185,7 @@
         android:visibility="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? View.VISIBLE : View.GONE}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/stories_heading"
         app:list="@{viewModel.storyItemList}" />
 
@@ -201,9 +202,10 @@
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/skills_recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="120dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="136dp"
@@ -212,7 +214,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/download_status_image_view"
         app:layout_constraintTop_toBottomOf="@+id/skills_heading"
         app:list="@{viewModel.skillsItemList}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
