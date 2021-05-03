@@ -1,24 +1,24 @@
-## Installation
-
-Install `buf` from [here](https://buf.build/docs/installation). 
+# Installation
+Once you had completed all the [installation steps](https://github.com/oppia/oppia-android/wiki#prerequisites), you will be having a `buf` file in your `opensource/oppia-android-tools` folder.<br>
+**Note: Currently, Buf is not available for windows.**
 
 ## Commands
 
-* `buf --version` - to check the version of the buf you had installed
-* `buf --help` - help command of buf
-* `buf check lint --input=model/src/main/proto --input-config buf.yaml` - this is where we do lint check
-
+* Check the version of the buf. As of now on GitHub Actions, we are using `0.37.1`.<br>
+`../oppia-android-tools/YOUR_BUF_FILE_NAME --version`
+* Lint check<br>
+`buf lint --config buf.yaml`
 
 ## Configuration File 
 
-We have a configuration file `buf.yaml` in the root of the project. Following is the list of things we are checking and list of things we are excluding from our check.
+We have a configuration file `buf.yaml` at the root of the project. Following is the list of things we are checking and the list of things we are excluding from our check.
 
 #### Checking:
 * `DIRECTORY_SAME_PACKAGE` checks that all files in a given directory are in the same package.
    * All proto files should be in the same package
 
 * `PACKAGE_SAME_DIRECTORY` checks that all files with a given package are in the same directory.
-   * All proto files with same package name should be in same directory
+   * All proto files with the same package name should be in the same directory
 
 * `PACKAGE_SAME_JAVA_MULTIPLE_FILES` checks that all files with a given package have the same value for the java_multiple_files option.
    * All proto files should have the same value `option java_multiple_files = true;`
@@ -38,8 +38,8 @@ We have a configuration file `buf.yaml` in the root of the project. Following is
 * `IMPORT_NO_WEAK` checks that imports are not weak.
    * Import should not be declared as `weak`, example - `import weak "x.y.proto"`
 
-* `PACKAGE_DEFINED` checks that all files with have a package defined.
-   * All proto files must have a package name specify in it, example - `package model;`
+* `PACKAGE_DEFINED` checks that all files have a package defined.
+   * All proto files must have a package name specify in it, for example - `package model;`
 
 * `ENUM_PASCAL_CASE` checks that enums are PascalCase.
    * Enum name should be in pascal case, example - `AudioLanguage`
@@ -54,20 +54,20 @@ We have a configuration file `buf.yaml` in the root of the project. Following is
    * Message should be in Pascal case, example - `ProfileAvatar`
 
 * `ONEOF_LOWER_SNAKE_CASE` checks that oneof names are lower_snake_case.
-   * Oneof should be lower snake case
+   * Oneof should be a lower snake case
 
 * `PACKAGE_LOWER_SNAKE_CASE` checks that packages are lower_snake.case.
    * Package should be lower snake case, example - `model`
 
-* `ENUM_ZERO_VALUE_SUFFIX` checks that enum zero values are suffixed with `_UNSPECIFIED` (suffix is configurable).
+* `ENUM_ZERO_VALUE_SUFFIX` checks that enum zero values are suffixed with `_UNSPECIFIED` (the suffix is configurable).
    * All the enum whose value is zero should be suffixed with `_UNSPECIFIED`, example - `AUDIO_LANGUAGE_UNSPECIFIED = 0;`
 
 * `FILE_LOWER_SNAKE_CASE` checks that filenames are lower_snake_case.
-   * All the proto file names are should be in lower snake case, example - `topic.proto`
+   * All the proto file names are should be in lower snake case, for example - `topic.proto`
 
 #### Excluding:
-* `PACKAGE_DIRECTORY_MATCH` checks that all files with are in a directory that matches their package name.
-   *  this verifies that all files that declare a given package foo.bar.baz.v1 are in the directory foo/bar/baz/v1 relative to the root
+* `PACKAGE_DIRECTORY_MATCH` checks that all files are in a directory that matches their package name.
+   *  this verifies that all files that declare a given package foo.bar.baz.v1 is in the directory foo/bar/baz/v1 relative to the root
 
 * `ENUM_VALUE_PREFIX` checks that enum values are prefixed with `ENUM_NAME_UPPER_SNAKE_CASE`.
    * `enum Foo { FOO_ONE = 0; }`
