@@ -141,8 +141,8 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:0.43',
-      'org.robolectric:annotations:4.3',
-      'org.robolectric:robolectric:4.3',
+      'org.robolectric:annotations:4.4',
+      'org.robolectric:robolectric:4.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
@@ -158,7 +158,7 @@ dependencies {
       'com.google.truth:truth:0.43',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.3',
+      'org.robolectric:annotations:4.4',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies

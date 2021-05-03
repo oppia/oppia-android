@@ -44,6 +44,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -63,12 +64,12 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -128,6 +129,23 @@ class HelpFragmentTest {
     ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
     }
   }
 
@@ -269,7 +287,6 @@ class HelpFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -286,7 +303,7 @@ class HelpFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
