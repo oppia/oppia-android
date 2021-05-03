@@ -116,19 +116,19 @@ class StringToFractionParserTest {
     assertThat(errorMessage).isNull()
   }
 
-//  @Test
-//  fun testParser_submitTimeError_tenDigitNumber_returnsNumberTooLong() {
-//    val error = stringToFractionParser.getSubmitTimeError("0123456789")
-//    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.NUMBER_TOO_LONG)
-//  }
+  @Test
+  fun testParser_submitTimeError_tenDigitNumber_returnsNumberTooLong() {
+    val error = stringToFractionParser.getSubmitTimeError("0123456789")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.NUMBER_TOO_LONG)
+  }
 
-//  @Test
-//  fun testParser_submitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
-//    val errorMessage = stringToFractionParser.getSubmitTimeError("0123456789")
-//      .getErrorMessageFromStringRes(context)
-//    assertThat(errorMessage)
-//      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
-//  }
+  @Test
+  fun testParser_submitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
+    val errorMessage = stringToFractionParser.getSubmitTimeError("0123456789")
+      .getErrorMessageFromStringRes(context)
+    assertThat(errorMessage)
+      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+  }
 
   @Test
   fun testParser_submitTimeError_nonDigits_returnsInvalidFormat() {
