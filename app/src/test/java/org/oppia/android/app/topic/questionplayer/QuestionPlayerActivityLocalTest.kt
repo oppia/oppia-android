@@ -2,8 +2,10 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
+import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -16,6 +18,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -23,10 +26,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.core.IsNot.not
@@ -42,6 +47,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -583,32 +590,31 @@ class QuestionPlayerActivityLocalTest {
 
   @Test
   fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickReveal_solutionVisible() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
+    launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       makeFirstNewHintVisible()
-
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
       navigateBackToQuestionPlayer()
+      testCoroutineDispatchers.runCurrent()
 
       makeSecondNewHintAndSolutionVisible()
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
-
-      onView(withText(context.getString(R.string.reveal))).inRoot(isDialog())
-        .perform(click())
-
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.reveal_solution))).inRoot(isDialog()).check(
-        matches(not(isDisplayed()))
-      )
+
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(ViewMatchers.withSubstring("Explanation"))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickCancel_solutionNotVisible() {
-    launchForQuestionPlayer(SKILL_ID_LIST).use {
+    launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       makeFirstNewHintVisible()
@@ -621,17 +627,90 @@ class QuestionPlayerActivityLocalTest {
       openHintsAndSolutionDialog()
       clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
 
-      onView(withText(context.getString(R.string.cellular_data_alert_dialog_cancel_button)))
-        .inRoot(isDialog())
-        .perform(click())
+      clickCancelInRevealSolutionDialog(scenario)
 
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.reveal_solution))).inRoot(isDialog())
-        .check(
-          matches(isDisplayed())
-        )
+      onView(ViewMatchers.withSubstring("Explanation"))
+        .inRoot(isDialog())
+        .check(matches(not(isDisplayed())))
     }
   }
+
+  @Test
+  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickReveal_revealSolutionIsVisible() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      makeFirstNewHintVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+      testCoroutineDispatchers.runCurrent()
+
+      makeSecondNewHintAndSolutionVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
+      testCoroutineDispatchers.runCurrent()
+
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withId(R.id.reveal_solution_button))
+        .inRoot(isDialog())
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickCancel_revealSolutionIsNotVisible() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      makeFirstNewHintVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+      testCoroutineDispatchers.runCurrent()
+
+      makeSecondNewHintAndSolutionVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
+      testCoroutineDispatchers.runCurrent()
+
+      clickCancelInRevealSolutionDialog(scenario)
+
+      onView(withId(R.id.reveal_solution_button))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_viewSolution_submitWrongAnswer_wait60Seconds_dotHintIconIsNotVisible() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      makeFirstNewHintVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
+      navigateBackToQuestionPlayer()
+      testCoroutineDispatchers.runCurrent()
+
+      makeSecondNewHintAndSolutionVisible()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 1, isSolution = true)
+      testCoroutineDispatchers.runCurrent()
+
+      clickConfirmRevealSolutionButton(scenario)
+
+      navigateBackToQuestionPlayer()
+      submitWrongAnswerToQuestionPlayerFractionInput()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+
+      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+
+
+    }
+  }
+
 
   private fun launchForQuestionPlayer(
     skillIdList: ArrayList<String>
@@ -661,6 +740,50 @@ class QuestionPlayerActivityLocalTest {
   private fun submitTwoWrongAnswersToQuestionPlayer() {
     submitWrongAnswerToQuestionPlayerFractionInput()
     submitWrongAnswerToQuestionPlayerFractionInput()
+  }
+
+  private fun clickConfirmRevealSolutionButton(
+    activityScenario: ActivityScenario<QuestionPlayerActivity>
+  ) {
+    // See https://github.com/robolectric/robolectric/issues/5158 for context. It seems Robolectric
+    // has some issues interacting with alert dialogs. In this case, it finds and presses the button
+    // with Espresso view actions, but that button click doesn't actually lead to the click listener
+    // being called.
+    activityScenario.onActivity { activity ->
+      val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_DIALOG
+      )
+      val revealSolutionDialogFragment =
+        hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
+          TAG_REVEAL_SOLUTION_DIALOG
+        ) as? DialogFragment
+      val positiveButton =
+        revealSolutionDialogFragment?.dialog
+          ?.findViewById<View>(android.R.id.button1)
+      Truth.assertThat(checkNotNull(positiveButton).performClick()).isTrue()
+    }
+  }
+
+  private fun clickCancelInRevealSolutionDialog(
+    activityScenario: ActivityScenario<QuestionPlayerActivity>
+  ) {
+    // See https://github.com/robolectric/robolectric/issues/5158 for context. It seems Robolectric
+    // has some issues interacting with alert dialogs. In this case, it finds and presses the button
+    // with Espresso view actions, but that button click doesn't actually lead to the click listener
+    // being called.
+    activityScenario.onActivity { activity ->
+      val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_DIALOG
+      )
+      val revealSolutionDialogFragment =
+        hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
+          TAG_REVEAL_SOLUTION_DIALOG
+        ) as? DialogFragment
+      val negativeButton =
+        revealSolutionDialogFragment?.dialog
+          ?.findViewById<View>(android.R.id.button2)
+      Truth.assertThat(checkNotNull(negativeButton).performClick()).isTrue()
+    }
   }
 
   /**
