@@ -212,7 +212,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
-    setupAudioForFraction()
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -232,7 +232,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
-    setupAudioForFraction()
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -244,8 +244,7 @@ class ExplorationActivityTest {
       explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_audio_player))
-        .perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
         .check(matches(withContentDescription(context.getString(R.string.audio_player_on))))
     }
@@ -254,7 +253,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
-    setupAudioForFraction()
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -266,10 +265,8 @@ class ExplorationActivityTest {
       explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_audio_player))
-        .perform(click())
-      onView(withId(R.id.action_audio_player))
-        .perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
         .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
     }
@@ -289,8 +286,7 @@ class ExplorationActivityTest {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.menu_help)))
-        .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help))).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -629,7 +625,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
-    setupAudioForFraction()
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -826,7 +822,7 @@ class ExplorationActivityTest {
     }
   }
 
-  private fun setupAudioForFraction() {
+  private fun setUpAudioForFractionLesson() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
