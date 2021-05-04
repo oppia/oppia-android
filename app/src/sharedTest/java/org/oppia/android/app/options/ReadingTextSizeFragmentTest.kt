@@ -118,26 +118,26 @@ class ReadingTextSizeFragmentTest {
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkSelectedTextSize(SMALL_TEXT_SIZE_INDEX)
+      verifyItemIsCheckedInTextSizeRecyclerView(SMALL_TEXT_SIZE_INDEX)
       clickOnTextSizeRecyclerViewItem(LARGE_TEXT_SIZE_INDEX)
       rotateToLandscape()
-      checkSelectedTextSize(LARGE_TEXT_SIZE_INDEX)
+      verifyItemIsCheckedInTextSizeRecyclerView(LARGE_TEXT_SIZE_INDEX)
     }
   }
 
   @Test
   fun testTextSize_checkTextSizeOfAllFourItems_textSizeMatchedCorrectly() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkTextSizeOfRecyclerViewItem(
+      matchTextSizeOfTextSizeRecyclerViewItem(
         SMALL_TEXT_SIZE_INDEX, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
       )
-      checkTextSizeOfRecyclerViewItem(
+      matchTextSizeOfTextSizeRecyclerViewItem(
         MEDIUM_TEXT_SIZE_INDEX, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
       )
-      checkTextSizeOfRecyclerViewItem(
+      matchTextSizeOfTextSizeRecyclerViewItem(
         LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
       )
-      checkTextSizeOfRecyclerViewItem(
+      matchTextSizeOfTextSizeRecyclerViewItem(
         EXTRA_LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
       )
     }
@@ -194,7 +194,7 @@ class ReadingTextSizeFragmentTest {
   /**
    * Check the selected item inside TextSizeRecyclerView
    */
-  private fun checkSelectedTextSize(index: Int) {
+  private fun verifyItemIsCheckedInTextSizeRecyclerView(index: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
@@ -210,7 +210,7 @@ class ReadingTextSizeFragmentTest {
   /**
    * Check the textSize of item inside TextSizeRecyclerView
    */
-  private fun checkTextSizeOfRecyclerViewItem(index: Int, size: Float) {
+  private fun matchTextSizeOfTextSizeRecyclerViewItem(index: Int, size: Float) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
