@@ -37,19 +37,19 @@
         android:id="@+id/drag_drop_accessible_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp">
 
         <ImageButton
           android:id="@+id/drag_drop_move_up_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
-          android:contentDescription="@string/move_item_up"
+          android:contentDescription="@{viewModel.itemIndex == 0 ? @string/up_button_disabled : @string/move_item_up_content_description(viewModel.itemIndex)}"
           android:enabled="@{viewModel.itemIndex != 0}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleUpMovement(adapter)}"
+          android:paddingTop="12dp"
           android:src="@drawable/ic_arrow_up_black_24dp"
           android:tint="@{dragDropMoveUpItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
           app:layout_constraintBottom_toBottomOf="parent"
@@ -58,14 +58,15 @@
 
         <ImageButton
           android:id="@+id/drag_drop_move_down_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
-          android:contentDescription="@string/move_item_down"
+          android:contentDescription="@{viewModel.itemIndex == viewModel.listSize-1 ? @string/down_button_disabled : @string/move_item_down_content_description(viewModel.itemIndex + 1)}"
           android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleDownMovement(adapter)}"
+          android:paddingTop="12dp"
           android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
           android:tint="@{dragDropMoveDownItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}" />
       </LinearLayout>
@@ -84,14 +85,11 @@
 
     <ImageButton
       android:id="@+id/drag_drop_content_group_item"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/drag_drop_content_group_item_margin"
-      android:layout_marginEnd="8dp"
-      android:layout_marginBottom="8dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:background="?attr/selectableItemBackground"
       android:clickable="true"
-      android:contentDescription="@string/link_to_item_below"
+      android:contentDescription="@{@string/link_to_item_below(viewModel.itemIndex + 1)}"
       android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
@@ -103,10 +101,8 @@
 
     <ImageButton
       android:id="@+id/drag_drop_content_unlink_items"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:background="?attr/selectableItemBackground"
       android:clickable="true"
       android:contentDescription="@string/unlink_items"
