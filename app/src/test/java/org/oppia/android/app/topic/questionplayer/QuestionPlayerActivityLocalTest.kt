@@ -31,7 +31,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.BaseMatcher
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.core.IsNot.not
@@ -589,7 +588,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickReveal_solutionVisible() {
+  fun testQuestionPlayer_clickRevealSolution_dialogVisible_clickReveal_solutionVisible() {
     launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -613,7 +612,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickCancel_solutionNotVisible() {
+  fun testQuestionPlayer_clickRevealSolution_dialogVisible_clickCancel_solutionNotVisible() {
     launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -636,7 +635,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickReveal_revealSolutionIsVisible() {
+  fun testQuestionPlayer_clickRevealSolution_dialogVisible_clickReveal_revealSolutionIsVisible() {
     launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -660,7 +659,7 @@ class QuestionPlayerActivityLocalTest {
   }
 
   @Test
-  fun testQuestionPlayer_clickRevealSolution_dialogBoxVisible_clickCancel_revealSolutionIsNotVisible() {
+  fun testQuestionPlayer_clickRevealSolution_dialogVisible_clickCancel_revealSolutionNotVisible() {
     launchForQuestionPlayer(SKILL_ID_LIST).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -706,7 +705,6 @@ class QuestionPlayerActivityLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
-
     }
   }
 
