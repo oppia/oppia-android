@@ -15,6 +15,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -83,6 +86,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
+private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+  "AppLanguageActivity.app_language_preference_title"
+private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -320,6 +328,60 @@ class OptionsFragmentTest {
       ).check(
         matches(withText("French"))
       )
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          0,
+          R.id.reading_text_size_item_layout
+        )
+      ).perform(
+        click()
+      )
+      intended(hasComponent(ReadingTextSizeActivity::class.java.name))
+      intended(hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE))
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          1,
+          R.id.app_language_item_layout
+        )
+      ).perform(
+        click()
+      )
+      intended(hasComponent(AppLanguageActivity::class.java.name))
+      intended(hasExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE))
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          R.id.options_recyclerview,
+          2,
+          R.id.audio_laguage_item_layout
+        )
+      ).perform(
+        click()
+      )
+      intended(hasComponent(AudioLanguageActivity::class.java.name))
+      intended(hasExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, AUDIO_LANGUAGE))
     }
   }
 
