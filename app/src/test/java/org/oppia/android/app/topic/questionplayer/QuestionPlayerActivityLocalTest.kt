@@ -707,10 +707,8 @@ class QuestionPlayerActivityLocalTest {
 
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
 
-
     }
   }
-
 
   private fun launchForQuestionPlayer(
     skillIdList: ArrayList<String>
