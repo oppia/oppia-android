@@ -125,6 +125,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       super.onAttachedToWindow()
       (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
         .createViewComponent(this).inject(this)
+      checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::logger.isInitialized)
         logger.e(
