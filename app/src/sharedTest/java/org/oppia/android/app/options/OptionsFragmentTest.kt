@@ -374,7 +374,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -402,7 +402,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -430,7 +430,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -458,7 +458,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -486,7 +486,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
@@ -514,7 +514,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            OptionsFragment.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
