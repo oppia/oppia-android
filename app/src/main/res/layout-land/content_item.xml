@@ -19,15 +19,15 @@
   <!-- Overall Inner Space: 12, 16, 12, 16 -->
 
   <!-- EXPLORATION VIEW -->
-  <!-- Overall Outer Space: 24, 24, 40, 0 -->
-  <!-- Overall Inner Space: 8, 12, 8, 12 -->
+  <!-- Overall Outer Space: 48, 16, 80, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
 
   <!-- QUESTION SPLIT VIEW -->
-  <!-- Overall Outer Space: 32, 40, 32, 12 -->
+  <!-- Overall Outer Space: 32, 40, 32, 16 -->
   <!-- Overall Inner Space: 0, 0, 0, 0 -->
 
   <!-- QUESTION VIEW -->
-  <!-- Overall Outer Space: 32, 36, 32, 12 -->
+  <!-- Overall Outer Space: 64, 32, 64, 16 -->
   <!-- Overall Inner Space: 0, 0, 0, 0 -->
 
   <FrameLayout

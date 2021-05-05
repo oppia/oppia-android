@@ -19,15 +19,15 @@
   <!-- Overall Inner Space: 12, 16, 12, 16 -->
 
   <!-- EXPLORATION VIEW -->
-  <!-- Overall Outer Space: 24, 24, 40, 0 -->
-  <!-- Overall Inner Space: 8, 12, 8, 12 -->
+  <!-- Overall Outer Space: 112, 36, 144, 0 -->
+  <!-- Overall Inner Space: 12, 16, 12, 16 -->
 
   <!-- QUESTION SPLIT VIEW -->
-  <!-- Overall Outer Space: 32, 40, 32, 12 -->
+  <!-- Overall Outer Space: 32, 40, 32, 0 -->
   <!-- Overall Inner Space: 0, 0, 0, 0 -->
 
   <!-- QUESTION VIEW -->
-  <!-- Overall Outer Space: 32, 36, 32, 12 -->
+  <!-- Overall Outer Space: 128, 36, 128, 0 -->
   <!-- Overall Inner Space: 0, 0, 0, 0 -->
 
   <FrameLayout
@@ -55,7 +55,7 @@
     app:explorationViewPaddingStart="@{@dimen/content_item_exploration_view_padding_start}"
     app:explorationViewPaddingTop="@{@dimen/content_item_exploration_view_padding_top}"
     app:questionSplitViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
-    app:questionSplitViewMarginBottom="@{@dimen/content_item_question_split_view_margin_bottom}"
+    app:questionSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:questionSplitViewMarginEnd="@{@dimen/content_item_question_split_view_margin_end}"
     app:questionSplitViewMarginStart="@{@dimen/content_item_question_split_view_margin_start}"
     app:questionSplitViewMarginTop="@{@dimen/content_item_question_split_view_margin_top}"
@@ -65,7 +65,7 @@
     app:questionSplitViewPaddingStart="@{@dimen/space_0dp}"
     app:questionSplitViewPaddingTop="@{@dimen/space_0dp}"
     app:questionViewMarginApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-    app:questionViewMarginBottom="@{@dimen/content_item_question_view_margin_bottom}"
+    app:questionViewMarginBottom="@{@dimen/space_0dp}"
     app:questionViewMarginEnd="@{@dimen/content_item_question_view_margin_end}"
     app:questionViewMarginStart="@{@dimen/content_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/content_item_question_view_margin_top}"
