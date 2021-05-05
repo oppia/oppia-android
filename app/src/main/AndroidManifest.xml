@@ -29,7 +29,7 @@
 
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
-      android:label="@string/administrator_controls_label"
+      android:label="@string/administrator_controls_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
