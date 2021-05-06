@@ -188,4 +188,8 @@
   <dimen name="feedback_item_question_view_margin_start">128dp</dimen>
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">128dp</dimen>
+
+  <!-- Selection Interaction Item-->
+  <dimen name="selection_interaction_item_padding_start">24dp</dimen>
+  <dimen name="selection_interaction_item_padding_end">24dp</dimen>
 </resources>
