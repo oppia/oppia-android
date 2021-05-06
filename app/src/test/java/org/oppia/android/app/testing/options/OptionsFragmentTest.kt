@@ -75,7 +75,6 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -83,7 +82,6 @@ class OptionsFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
