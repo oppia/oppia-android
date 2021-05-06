@@ -17,6 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}"
     android:paddingTop="12dp"
@@ -28,6 +29,8 @@
       android:layout_height="wrap_content"
       android:checked="@{viewModel.answerSelected}"
       android:clickable="false"
+      android:focusable="false"
+      android:labelFor="@id/multiple_choice_content_text_view"
       app:buttonTint="@color/oppiaDarkBlue" />
 
     <TextView
@@ -35,9 +38,9 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="12dp"
+      android:layout_marginTop="4dp"
       android:layout_toEndOf="@+id/multiple_choice_radio_button"
       android:fontFamily="sans-serif"
-      android:layout_marginTop="4dp"
       android:text="@{htmlContent}"
       android:textColor="@color/oppiaDarkBlue"
       android:textSize="16sp" />

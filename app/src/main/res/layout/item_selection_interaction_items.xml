@@ -17,6 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.handleItemClicked()}"
     android:paddingTop="12dp"
@@ -28,6 +29,8 @@
       android:layout_height="wrap_content"
       android:checked="@{viewModel.answerSelected}"
       android:clickable="false"
+      android:focusable="false"
+      android:labelFor="@id/item_selection_contents_text_view"
       app:buttonTint="@color/oppiaDarkBlue" />
 
     <TextView
