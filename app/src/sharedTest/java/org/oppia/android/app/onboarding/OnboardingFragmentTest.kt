@@ -2,6 +2,7 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.view.View
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -27,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
+import com.google.common.io.Resources
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -136,6 +138,33 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testOnboardingFragment_DefaultSlideTitleDescription_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Welcome to Oppia! Learn anything you want in an effective and enjoyable way."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_DefaultSlideTitleDescription_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Welcome to Oppia! Learn anything you want in an effective and enjoyable way."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(
@@ -234,6 +263,36 @@ class OnboardingFragmentTest {
     }
   }
 
+  @Test
+  fun testOnboardingFragment_Slide1Title_Slide1Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Add users to your account. Share the experience and create up to 10 profiles."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_Slide1Title_Slide1Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Add users to your account. Share the experience and create up to 10 profiles."
+          )
+        )
+      )
+    }
+  }
   @Test
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
@@ -342,6 +401,37 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testOnboardingFragment_Slide2Title_Slide2Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Download for offline. Continue learning your lessons without internet connection."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_Slide2Title_Slide2Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.onboarding_layout)).check(
+        matches(
+          withContentDescription(
+            "Download for offline. Continue learning your lessons without internet connection."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
@@ -430,6 +520,37 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_Slide3Title_Slide3Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.final_layout)).check(
+        matches(
+          withContentDescription(
+            "Have fun! Enjoy your learning adventures with our free, effective lessons."
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testOnboardingFragment_configChange_Slide3Title_Slide3Description_hasCorrectContentDescription() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.final_layout)).check(
+        matches(
+          withContentDescription(
+            "Have fun! Enjoy your learning adventures with our free, effective lessons."
+          )
+        )
+      )
     }
   }
 
