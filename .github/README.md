@@ -70,7 +70,7 @@ We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android
 [<img height="30" src = "https://img.shields.io/badge/oppia%20dev%20youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][dev-youtube]
 
 [twitter]: https://twitter.com/oppiaorg
-[linkedIn]: https://www.linkedin.com/in/oppia-org/
+[linkedIn]: https://www.linkedin.com/company/oppia-org/
 [medium]: https://medium.com/@oppia.org
 [facebook]: https://www.facebook.com/oppiaorg/
 [oppia-org-youtube]: https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw
