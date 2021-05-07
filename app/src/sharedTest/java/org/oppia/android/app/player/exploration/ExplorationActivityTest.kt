@@ -40,6 +40,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -703,13 +704,19 @@ class ExplorationActivityTest {
         .inRoot(isDialog())
         .perform(click())
 
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withId(R.id.audio_error_text_view)).check(matches(isDisplayed()))
+
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.audio_error_text_view)).check(matches(isDisplayed()))
+      waitForTheView(withText(containsString("audio is not available for this card.")))
     }
     explorationDataController.stopPlayingExploration()
   }
