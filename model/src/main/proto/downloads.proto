@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+enum AcceptedConstraint {
+  ACCEPTED_CONSTRAINT_UNSPECIFIED = 0;
+  ADMIN_APPROVED_DOWNLOAD = 1;
+  CONFIRMED_CELLULAR_DOWNLOAD = 2;
+}
+
+message StartDownloadRequest {
+  string topic_id = 1;
+  repeated AcceptedConstraint accepted_constraints = 2;
+}
+
+message StartDownloadResponse {
+  string topic_id = 1;
+  Status status = 2;
+
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    FAILED_ALREADY_DOWNLOADED = 1;
+    FAILED_INSUFFICIENT_STORAGE = 2;
+    FAILED_NEED_DOWNLOAD_PERMISSION_CONFIRMATION = 3;
+    FAILED_NEED_CELLULAR_CONFIRMATION = 4;
+    SUCCESS_DOWNLOAD_QUEUED = 5;
+  }
+}
+
+message UpdateTopicRequest {
+  string topic_id = 1;
+  repeated AcceptedConstraint accepted_constraints = 2;
+}
+
+message UpdateTopicResponse {
+  string topic_id = 1;
+  Status status = 2;
+
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    FAILED_ALREADY_UPDATED = 1;
+    FAILED_INCOMPATIBLE_UPDATE = 2;
+    FAILED_INSUFFICIENT_STORAGE = 3;
+    FAILED_NEED_DOWNLOAD_PERMISSION_CONFIRMATION = 4;
+    FAILED_NEED_CELLULAR_CONFIRMATION = 5;
+    SUCCESS_UPDATE_QUEUED = 6;
+  }
+}
+
+message DownloadStatusRequest {
+  string topic_id = 1;
+}
+
+message DownloadStatusResponse {
+  oneof download_status {
+    NotDownloaded not_downloaded = 1;
+    DownloadQueued download_queued = 2;
+    Downloading downloading = 3;
+    DownloadPaused download_paused = 4;
+    Downloaded downloaded = 5;
+    HasUpdate has_update = 6;
+    UpdateQueued update_queued = 7;
+    Updating updating = 8;
+    UpdatePaused update_paused = 9;
+  }
+
+  message NotDownloaded {
+    int64 download_size_bytes = 1;
+  }
+
+  message DownloadQueued {
+    int64 download_size_bytes = 1;
+  }
+
+  message Downloading {
+    int64 downloaded_count_bytes = 1;
+    int64 total_download_size_bytes = 2;
+  }
+
+  message DownloadPaused {
+    int64 downloaded_count_bytes = 1;
+    int64 total_download_size_bytes = 2;
+  }
+
+  message Downloaded {
+    int64 downloaded_size_bytes = 1;
+  }
+
+  message HasUpdate {
+    int64 update_size_bytes = 1;
+    int64 total_topic_size_bytes = 2;
+  }
+
+  message UpdateQueued {
+    int64 update_size_bytes = 1;
+  }
+
+  message Updating {
+    int64 downloaded_count_bytes = 1;
+    int64 total_update_size_bytes = 2;
+  }
+
+  message UpdatePaused {
+    int64 downloaded_count_bytes = 1;
+    int64 total_update_size_bytes = 2;
+  }
+}
+
+message ChangeDownloadStatusRequest {
+  string topic_id = 1;
+  ChangeActionType change_action_type = 2;
+
+  enum ChangeActionType {
+    CHANGE_ACTION_TYPE_UNSPECIFIED = 0;
+    CANCEL_DOWNLOAD_OR_UPDATE = 1;
+    PAUSE_DOWNLOAD_OR_UPDATE = 2;
+    RESUME_DOWNLOAD_OR_UPDATE = 3;
+  }
+}
+
+message ChangeDownloadStatusResponse {
+  string topic_id = 1;
+  bool is_update = 2;
+  oneof change_action_response_type {
+    CancelDownloadOrUpdateResponseStatus cancel_download_or_update_response_status = 3;
+    PauseDownloadOrUpdateResponseStatus pause_download_or_update_response_status = 4;
+    ResumeDownloadOrUpdateResponseStatus resume_download_or_update_response_status = 5;
+  }
+
+  enum CancelDownloadOrUpdateResponseStatus {
+    CANCEL_DOWNLOAD_OR_UPDATE_RESPONSE_STATUS_UNSPECIFIED = 0;
+    FAILED_STATUS_CHANGED_WHILE_CANCELING = 1;
+    FAILED_CANCEL_NOT_PAUSED_OR_QUEUED = 2;
+    SUCCESS_CANCELED = 3;
+  }
+
+  enum PauseDownloadOrUpdateResponseStatus {
+    PAUSE_DOWNLOAD_OR_UPDATE_RESPONSE_STATUS_UNSPECIFIED = 0;
+    FAILED_STATUS_CHANGED_WHILE_PAUSING = 1;
+    FAILED_PAUSE_NOT_DOWNLOADING_OR_UPDATING = 2;
+  }
+
+  enum ResumeDownloadOrUpdateResponseStatus {
+    RESUME_DOWNLOAD_OR_UPDATE_RESPONSE_STATUS_UNSPECIFIED = 0;
+    FAILED_STATUS_CHANGED_WHILE_RESUMING = 1;
+    FAILED_RESUME_NOT_PAUSED = 2;
+    FAILED_RESUME_NEED_DOWNLOAD_PERMISSION_CONFIRMATION = 3;
+    FAILED_RESUME_NEED_CELLULAR_CONFIRMATION = 4;
+  }
+}
+
+message DeleteDownloadRequest {
+  string topic_id = 1;
+}
+
+message DeleteDownloadResponse {
+  string topic_id = 1;
+  Status status = 2;
+
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    FAILED_NOT_DOWNLOADED = 1;
+    SUCCESS_DELETED = 2;
+  }
+}
