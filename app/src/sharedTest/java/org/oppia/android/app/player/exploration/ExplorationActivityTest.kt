@@ -708,7 +708,7 @@ class ExplorationActivityTest {
         .inRoot(isDialog())
         .perform(click())
 
-      onView(withId(R.id.audio_error_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_error_text_view)).check(matches(not(isDisplayed())))
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -716,7 +716,7 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      waitForTheView(withText(containsString("audio is not available for this card.")))
+      waitForTheView(withText(containsString("Sorry, हिन्दी audio is not available for this card.")))
     }
     explorationDataController.stopPlayingExploration()
   }
