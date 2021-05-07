@@ -28,7 +28,7 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
 
   companion object {
     internal const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
-    internal const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
+    const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
       "AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
     fun createAudioLanguageActivityIntent(

@@ -28,7 +28,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   companion object {
     internal const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
       "AppLanguageActivity.app_language_preference_title"
-    internal const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+    const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
       "AppLanguageActivity.app_language_preference_summary_value"
     internal const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
 
