@@ -146,7 +146,6 @@ maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
     fetch_sources = True,
     repositories = DAGGER_REPOSITORIES + [
-        "https://bintray.com/bintray/jcenter",
         "https://jcenter.bintray.com/",
         "https://maven.fabric.io/public",
         "https://maven.google.com",
