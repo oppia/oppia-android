@@ -182,8 +182,9 @@ class QuestionAssessmentProgressControllerTest {
 
     startTrainingSession(TEST_SKILL_ID_LIST_012)
 
-    // The second-to-latest result stays pending since the session was loading (the actual result is the fully
-    // loaded session). This is only true if the observer begins before starting to load the session.
+    // The second-to-latest result stays pending since the session was loading (the actual result is
+    // the fully loaded session). This is only true if the observer begins before starting to load
+    // the session.
     verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
       currentQuestionResultCaptor.capture()
     )
@@ -228,7 +229,8 @@ class QuestionAssessmentProgressControllerTest {
     currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
+    // The latest result should correspond to the valid ID, and the progress controller should
+    // gracefully recover.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
@@ -298,7 +300,8 @@ class QuestionAssessmentProgressControllerTest {
     // Then another valid one.
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
-    // The latest result should correspond to the valid ID, and the progress controller should gracefully recover.
+    // The latest result should correspond to the valid ID, and the progress controller should
+    // gracefully recover.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
@@ -406,7 +409,7 @@ class QuestionAssessmentProgressControllerTest {
       atLeastOnce()
     ).onChanged(asyncAnswerOutcomeCaptor.capture())
     val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
-    assertThat(answerOutcome.feedback.html).isEmpty()
+    assertThat(answerOutcome.feedback.html).contains("Incorrect. Try again.")
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
   }
 
@@ -420,23 +423,19 @@ class QuestionAssessmentProgressControllerTest {
 
     submitMultipleChoiceAnswer(1)
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.currentQuestionIndex)
-      .isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount)
-      .isEqualTo(3)
-    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
+    assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(1)
-    assertThat(completedState.getAnswer(0).feedback.html)
-      .contains("That's correct!")
+    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(1)
+    assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
   @Test
@@ -449,23 +448,19 @@ class QuestionAssessmentProgressControllerTest {
 
     submitMultipleChoiceAnswer(0)
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.currentQuestionIndex)
-      .isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount)
-      .isEqualTo(3)
-    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase)
-      .isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = ephemeralQuestion.ephemeralState.pendingState
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(0)
-    assertThat(pendingState.getWrongAnswer(0).feedback.html)
-      .isEmpty()
+    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(pendingState.getWrongAnswer(0).feedback.html).contains("Incorrect. Try again.")
   }
 
   @Test
@@ -477,27 +472,21 @@ class QuestionAssessmentProgressControllerTest {
 
     submitMultipleChoiceAnswer(1)
 
-    // Verify that the current state updates. It should now be completed with both the wrong and correct answers.
+    // Verify that the current state updates. It should now be completed with both the wrong and
+    // correct answers.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.currentQuestionIndex)
-      .isEqualTo(0)
-    assertThat(ephemeralQuestion.totalQuestionCount)
-      .isEqualTo(3)
-    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase)
-      .isEqualTo(COMPLETED_STATE)
+    assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(0)
-    assertThat(completedState.getAnswer(0).feedback.html)
-      .isEmpty()
-    assertThat(completedState.getAnswer(1).userAnswer.answer.nonNegativeInt)
-      .isEqualTo(1)
-    assertThat(completedState.getAnswer(1).feedback.html)
-      .contains("That's correct!")
+    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(completedState.getAnswer(0).feedback.html).contains("Incorrect. Try again.")
+    assertThat(completedState.getAnswer(1).userAnswer.answer.nonNegativeInt).isEqualTo(1)
+    assertThat(completedState.getAnswer(1).feedback.html).contains("That's correct!")
   }
 
   @Test
@@ -631,7 +620,8 @@ class QuestionAssessmentProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that the answer was wrong, and that there's no handler for it so the default outcome is returned.
+    // Verify that the answer was wrong, and that there's no handler for it so the default outcome
+    // is returned.
     verify(
       mockAsyncAnswerOutcomeObserver,
       atLeastOnce()
@@ -653,7 +643,8 @@ class QuestionAssessmentProgressControllerTest {
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify that the current state updates. It should stay pending, and the wrong answer should be appended.
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
@@ -974,38 +965,21 @@ class QuestionAssessmentProgressControllerTest {
     playThroughSessionWithSkillList2()
 
     startTrainingSession(TEST_SKILL_ID_LIST_01)
-    submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+    submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
 
-    // Verify that we're on the second-to-last state of the second session.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
     )
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    // This question is not in the other test session.
-    assertThat(currentQuestion.ephemeralState.state.content.html)
-      .contains("If we talk about wanting")
+    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
 
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-
-    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(hintAndSolution.correctAnswer.correctAnswer)
-      .contains("<p>The number of pieces of cake I want.</p>")
+    val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
+    assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
 
     val result = questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
+      currentQuestion.ephemeralState.state
     )
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
@@ -1026,9 +1000,10 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   /**
-   * Creates a blank subscription to the current state to ensure that requests to load the session complete, otherwise
-   * post-load operations may fail. An observer is required since the current mediator live data implementation will
-   * only lazily load data based on whether there's an active subscription.
+   * Creates a blank subscription to the current state to ensure that requests to load the session
+   * complete, otherwise post-load operations may fail. An observer is required since the current
+   * LiveData-DataProvider interop implementation will only lazily load data based on whether
+   * there's an active subscription.
    */
   private fun subscribeToCurrentQuestionToAllowSessionToLoad() {
     questionAssessmentProgressController.getCurrentQuestion().toLiveData()

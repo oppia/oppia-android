@@ -56,6 +56,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
@@ -352,6 +353,23 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  @Test
+  fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+    }
+  }
+
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
@@ -560,7 +578,7 @@ class AdministratorControlsActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

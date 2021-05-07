@@ -40,7 +40,7 @@ import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_3
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_3
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -237,7 +237,7 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStartPlayingExploration_withoutStoppingSession_fails() {
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_3)
+    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
     explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_4)
     testCoroutineDispatchers.runCurrent()
 

@@ -2,29 +2,48 @@ package org.oppia.android.util.parser
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.PictureDrawable
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * [TestGlideImageLoader] is designed to be used in tests. It uses real [GlideImageLoader]
  * except for [loadDrawable]. [loadDrawable] function is overridden to work with drawable matchers
  * in unit tests.
  */
+@Singleton
 class TestGlideImageLoader @Inject constructor(
   private val glideImageLoader: GlideImageLoader
 ) : ImageLoader {
+  private val loadedBitmaps = mutableListOf<String>()
+  private val loadedBlockSvgs = mutableListOf<String>()
+  private val loadedTextSvgs = mutableListOf<String>()
 
   override fun loadBitmap(
     imageUrl: String,
     target: ImageTarget<Bitmap>,
     transformations: List<ImageTransformation>
-  ) = glideImageLoader.loadBitmap(imageUrl, target, transformations)
+  ) {
+    loadedBitmaps += imageUrl
+    glideImageLoader.loadBitmap(imageUrl, target, transformations)
+  }
 
-  override fun loadSvg(
+  override fun loadBlockSvg(
     imageUrl: String,
-    target: ImageTarget<PictureDrawable>,
+    target: ImageTarget<BlockPictureDrawable>,
     transformations: List<ImageTransformation>
-  ) = glideImageLoader.loadSvg(imageUrl, target, transformations)
+  ) {
+    loadedBlockSvgs += imageUrl
+    glideImageLoader.loadBlockSvg(imageUrl, target, transformations)
+  }
+
+  override fun loadTextSvg(
+    imageUrl: String,
+    target: ImageTarget<TextPictureDrawable>,
+    transformations: List<ImageTransformation>
+  ) {
+    loadedTextSvgs += imageUrl
+    glideImageLoader.loadTextSvg(imageUrl, target, transformations)
+  }
 
   /**
    * [loadDrawable] can be used in tests to match drawable ids:
@@ -41,4 +60,22 @@ class TestGlideImageLoader @Inject constructor(
       target.imageView.setImageResource(imageDrawableResId)
     }
   }
+
+  /**
+   * Returns the list of image URLs that have been loaded as bitmaps since the start of the
+   * application.
+   */
+  fun getLoadedBitmaps(): List<String> = loadedBitmaps
+
+  /**
+   * Returns the list of image URLs that have been loaded as SVGs (in block format) since the start
+   * of the application.
+   */
+  fun getLoadedBlockSvgs(): List<String> = loadedBlockSvgs
+
+  /**
+   * Returns the list of image URLs that have been loaded as SVGs (in inline text format) since the
+   * start of the application.
+   */
+  fun getLoadedTextSvgs(): List<String> = loadedTextSvgs
 }

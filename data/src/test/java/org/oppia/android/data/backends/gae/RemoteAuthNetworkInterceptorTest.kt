@@ -34,7 +34,6 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [RemoteAuthNetworkInterceptor] */
@@ -58,7 +57,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private lateinit var client: OkHttpClient
 
-  lateinit var topicService: TopicService
+  private lateinit var topicService: TopicService
 
   private val testVersionName = "1.0"
 
@@ -151,7 +150,7 @@ class RemoteAuthNetworkInterceptorTest {
     // the full network request properly executes. MockRetrofit and MockWebServer perform the same
     // request mocking in different ways and we want to verify the full request is executed here.
     // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    retrofit = retrofit2.Retrofit.Builder()
+    retrofit = Retrofit.Builder()
       .baseUrl(mockWebServer.url("/"))
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client)
@@ -167,9 +166,6 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(headers?.get("app_version_name")).isEqualTo("1.0")
     assertThat(headers?.get("app_version_code")).isEqualTo("1")
   }
-
-  @Qualifier
-  annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module

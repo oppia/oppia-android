@@ -60,6 +60,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
@@ -126,7 +127,6 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
-    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
@@ -155,6 +155,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEW_MODELS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
@@ -634,12 +635,13 @@ kt_android_library(
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )
 
@@ -664,7 +666,6 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/DrawableMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/EspressoTestsMatchers.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/FontSizeMatcher.kt",
-        "src/sharedTest/java/org/oppia/android/app/utility/MockitoKotlinHelper.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/OrientationChangeAction.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
@@ -684,6 +685,10 @@ TEST_DEPS = [
     ":test_deps",
     "//domain",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
+    "//testing/src/main/java/org/oppia/android/testing/espresso:konfetti_view_matcher",
+    "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
