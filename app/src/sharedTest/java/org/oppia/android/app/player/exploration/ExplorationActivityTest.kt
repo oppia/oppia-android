@@ -702,19 +702,14 @@ class ExplorationActivityTest {
       onView(withText("español"))
         .inRoot(isDialog())
         .perform(click())
-      onView(
-        allOf(
-          withId(R.id.audio_error_text_view),
-          withEffectiveVisibility(Visibility.VISIBLE)
+
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
         )
-      ).check(matches(not(isDisplayed())))
+      )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.audio_error_text_view),
-          withEffectiveVisibility(Visibility.VISIBLE)
-        )
-      ).check(matches(isDisplayed()))
+      onView(withId(R.id.audio_error_text_view)).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
