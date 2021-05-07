@@ -23,7 +23,8 @@ class AdministratorControlsActivity :
   RouteToProfileListListener,
   RouteToAppVersionListener,
   LoadProfileListListener,
-  LoadAppVersionListener {
+  LoadAppVersionListener,
+  ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
   private lateinit var lastLoadedFragment: String
@@ -79,6 +80,11 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter
       .setExtraControlsTitle(getString(R.string.administrator_controls_app_version))
     administratorControlsActivityPresenter.loadAppVersion()
+  }
+
+  override fun showLogoutDialog() {
+    LogoutDialogFragment.newInstance()
+      .showNow(supportFragmentManager, LogoutDialogFragment.TAG_LOGOUT_DIALOG_FRAGMENT)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
