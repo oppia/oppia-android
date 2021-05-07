@@ -3,7 +3,6 @@ package org.oppia.android.app.onboarding
 import android.app.Application
 import android.content.Context
 import android.view.View
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -29,7 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
-import com.google.common.io.Resources
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -156,7 +154,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_DefaultSlideTitleDescription_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_DefaultSlideTitleDescription_hasCorrectContentDescription() {  // ktlint-disable max-line-length
     launch(OnboardingActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.onboarding_layout)).check(
@@ -284,7 +282,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide1Title_Slide1Description_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_Slide1Title_Slide1Description_hasCorrectContentDescription() { // ktlint-disable max-line-length
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -421,7 +419,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide2Title_Slide2Description_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_Slide2Title_Slide2Description_hasCorrectContentDescription() { // ktlint-disable max-line-length
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -544,7 +542,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide3Title_Slide3Description_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_Slide3Title_Slide3Description_hasCorrectContentDescription() { // ktlint-disable max-line-length 
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
