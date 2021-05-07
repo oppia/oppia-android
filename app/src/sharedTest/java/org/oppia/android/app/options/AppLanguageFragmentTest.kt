@@ -1,4 +1,4 @@
-package org.oppia.android.app.testing.options
+package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
@@ -9,10 +9,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
@@ -29,9 +27,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.APP_LANGUAGE
-import org.oppia.android.app.options.AppLanguageActivity
-import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -76,9 +71,8 @@ import javax.inject.Singleton
 
 private const val ENGLISH = 0
 private const val FRENCH = 1
-private const val HINDI = 2
-private const val CHINESE = 3
 
+/** Tests for [AppLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
@@ -96,18 +90,52 @@ class AppLanguageFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
     profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
-  fun testAppLanguage_changeAppLanguageToFrench_changeConfiguration_selectedLanguageIsFrench() {
+  fun testAppLanguage_selectedLanguageIsEnglish() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testAppLanguage_configChange_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      rotateToLandscape()
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAppLanguage_tabletConfig_selectedLanguageIsEnglish() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      testCoroutineDispatchers.runCurrent()
+      checkSelectedLanguage(ENGLISH)
+    }
+  }
+
+  @Test
+  fun testAppLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
+      checkSelectedLanguage(FRENCH)
+    }
+  }
+
+  @Test
+  fun testAppLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+      checkSelectedLanguage(ENGLISH)
       selectLanguage(FRENCH)
       rotateToLandscape()
       checkSelectedLanguage(FRENCH)
@@ -116,12 +144,12 @@ class AppLanguageFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAppLanguage_clickAppLanguage_changeAppLanguage_checkOptionsFragmentIsUpdatedCorrectly() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+  fun testAppLanguage_tabletConfig_changeLanguageToFrench_selectedLanguageIsFrench() {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
       testCoroutineDispatchers.runCurrent()
-      selectChangeAppLanguage()
-      selectLanguage(HINDI)
-      checkAppLanguage("Hindi")
+      checkSelectedLanguage(ENGLISH)
+      selectLanguage(FRENCH)
+      checkSelectedLanguage(FRENCH)
     }
   }
 
@@ -141,19 +169,6 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun selectChangeAppLanguage() {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        1,
-        R.id.app_language_item_layout
-      )
-    ).perform(
-      click()
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
   private fun selectLanguage(index: Int) {
     onView(
       atPositionOnView(
@@ -167,34 +182,11 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun checkAppLanguage(appLanguage: String) {
-    onView(
-      atPositionOnView(
-        R.id.options_recyclerview,
-        1,
-        R.id.app_language_text_view
-      )
-    ).check(
-      matches(withText(appLanguage))
-    )
-  }
-
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       APP_LANGUAGE,
       summaryValue
-    )
-  }
-
-  private fun createOptionActivityIntent(
-    internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
-  ): Intent {
-    return OptionsActivity.createOptionsActivity(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      isFromNavigationDrawer
     )
   }
 
