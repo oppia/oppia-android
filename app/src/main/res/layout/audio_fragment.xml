@@ -78,6 +78,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+      android:id="@+id/audio_error_text_view"
       style="@style/Subtitle2"
       android:layout_width="0dp"
       android:layout_marginStart="16dp"
