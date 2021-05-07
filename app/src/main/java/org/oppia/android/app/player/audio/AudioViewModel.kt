@@ -98,9 +98,8 @@ class AudioViewModel @Inject constructor(
       languages.isNotEmpty() -> {
         autoPlay = false
         languageSelectionShown = true
-        if (languages.contains("en")) {
-          val languageCode = "en"
-          setAudioLanguageCode(languageCode)
+        if (languages.contains(selectedLanguageCode)) {
+          setAudioLanguageCode(selectedLanguageCode)
         } else {
           showError.set(true)
           audioPlayerController.pause()
