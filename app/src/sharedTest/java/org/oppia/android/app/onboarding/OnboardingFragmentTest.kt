@@ -154,7 +154,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_DefaultSlideTitleDescription_hasCorrectContentDescription() {  // ktlint-disable max-line-length
+  fun testOnboardingFragment_configChange_DefaultSlideTitleDescription_hasCorrectContentDescription() { // ktlint-disable max-line-length
     launch(OnboardingActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.onboarding_layout)).check(
@@ -542,7 +542,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide3Title_Slide3Description_hasCorrectContentDescription() { // ktlint-disable max-line-length 
+  fun testOnboardingFragment_configChange_Slide3Title_Slide3Description_hasCorrectContentDescription() { // ktlint-disable max-line-length
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
