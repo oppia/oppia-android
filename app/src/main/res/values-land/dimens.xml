@@ -120,17 +120,19 @@
   <dimen name="feedback_item_exploration_view_margin_end">80dp</dimen>
 
   <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_top">16dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_top">12dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_bottom">16dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_bottom">12dp</dimen>
 
   <!-- Feedback Item: Question Split View -->
   <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_split_view_margin_end">32dp</dimen>
+  <dimen name="feedback_item_question_split_view_margin_bottom">8dp</dimen>
 
   <!-- Feedback Item: Question View -->
   <dimen name="feedback_item_question_view_margin_start">64dp</dimen>
   <dimen name="feedback_item_question_view_margin_top">24dp</dimen>
   <dimen name="feedback_item_question_view_margin_end">64dp</dimen>
+  <dimen name="feedback_item_question_view_margin_bottom">8dp</dimen>
 </resources>
