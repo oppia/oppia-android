@@ -716,7 +716,7 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      waitForTheView(withText(containsString("Sorry, हिन्दी audio is not available for this card.")))
+      waitForTheView(withText(containsString("Sorry, español audio is not available for this card.")))
     }
     explorationDataController.stopPlayingExploration()
   }
