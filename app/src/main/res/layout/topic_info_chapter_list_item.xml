@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.topic.info.TopicInfoChapterItemViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+      android:id="@+id/chapter_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1), viewModel.chapterName)}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="14sp"
+      tools:text="1. Parts of Multiplication Equations" />
+  </LinearLayout>
+</layout>

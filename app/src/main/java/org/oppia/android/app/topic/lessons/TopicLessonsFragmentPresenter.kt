@@ -25,7 +25,7 @@ import javax.inject.Inject
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonsFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val logger: ConsoleLogger,
   private val explorationDataController: ExplorationDataController,
@@ -106,7 +106,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
             StorySummaryAdapter(
               itemList,
               expandedChapterListIndexListener,
-              currentExpandedChapterListIndex
+              currentExpandedChapterListIndex,
+              activity
             )
           binding.storySummaryRecyclerView.apply {
             adapter = storySummaryAdapter

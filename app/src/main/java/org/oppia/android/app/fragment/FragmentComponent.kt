@@ -39,6 +39,7 @@ import org.oppia.android.app.story.StoryFragment
 import org.oppia.android.app.testing.ImageRegionSelectionTestFragment
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.info.TopicInfoDownloadBottomSheetDialogFragment
 import org.oppia.android.app.topic.info.TopicInfoFragment
 import org.oppia.android.app.topic.lessons.TopicLessonsFragment
 import org.oppia.android.app.topic.practice.TopicPracticeFragment
@@ -107,6 +108,7 @@ interface FragmentComponent {
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
+  fun inject(topicInfoDownloadBottomSheetDialogFragment: TopicInfoDownloadBottomSheetDialogFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)
   fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)

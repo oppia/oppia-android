@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -14,6 +15,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -25,6 +27,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -40,6 +43,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
@@ -86,6 +90,8 @@ import javax.inject.Singleton
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
+private const val RATIO_TOPIC_ID = "omzF4oqgeTXd"
+private const val TOPIC_WITHOUT_SKILL_ID = "test_topic_id_2"
 
 private const val TOPIC_DESCRIPTION =
   "You'll often need to talk about part of an object or group. For example, " +
@@ -113,6 +119,9 @@ class TopicInfoFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  // TODO(#2986): add injections once #3010 gets merged
+  var enableMyDownloads: Boolean = true
+
   @Inject
   lateinit var context: Context
 
@@ -136,6 +145,289 @@ class TopicInfoFragmentTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
+  @Test
+  fun testTopicInfoFragment_preview_toolbarTitle_isDisplayedCorrectly() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Info: $TOPIC_NAME")))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_toolbarTitle_isDisplayedCorrectly() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Info: $TOPIC_NAME")))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_tabsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_tabs_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_tabsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_tabs_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStoryHeadingIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.stories_heading)).check(
+        matches(
+          withText(
+            "Story You Can Play"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_multiStoryHeadingAreDisplayed() {
+    launchTopicActivityIntent(internalProfileId, RATIO_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.stories_heading)).check(
+        matches(
+          withText(
+            "Stories You Can Play"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_withSkills_skillHeadingIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skills_heading)).perform(scrollTo())
+      onView(withId(R.id.skills_heading)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_skills_heading)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_withoutSkills_skillHeadingIsNotDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TOPIC_WITHOUT_SKILL_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.skills_heading)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_downloadTopicTextIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.download_story_count_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_topic)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStoryIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.topic_info_story_name_text_view
+        )
+      ).check(
+        matches(
+          withText(
+            "Matthew Goes to the Bakery"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_chapterCountIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.topic_info_story_chapter_count
+        )
+      ).check(
+        matches(
+          withText(
+            "2 Chapters"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_singleChaptersListIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_list_drop_down_icon
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "1.What is a Fraction?"
+          )
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "2.The Meaning of Equal Parts"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_singleStory_configChange_singleChaptersListIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.topic_info_story_summary_recycler_view)).perform(
+        actionOnItemAtPosition<RecyclerView.ViewHolder>(
+          0,
+          scrollTo()
+        )
+      )
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_story_summary_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_list_drop_down_icon
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "1.What is a Fraction?"
+          )
+        )
+      )
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_info_chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_name
+        )
+      ).check(
+        matches(
+          withText(
+            "2.The Meaning of Equal Parts"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_downloadToPlayIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.download_to_play_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_to_play)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_preview_configChange_downloadToPlayIsDisplayed() {
+    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.download_to_play_text_view)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_info_download_to_play)
+          )
+        )
+      )
+    }
+  }
+
+  /**
+   * testTopicInfoFragment_noPreview_topicDownloadedTextIsDisplayed()
+   * testTopicInfoFragment_preview_downloadTopicIconIsDisplayed()
+   * testTopicInfoFragment_noPreview_topicDownloadedIconIsDisplayed()
+   * testTopicInfoFragment_preview_cellular_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_wifi_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_offline_clickDownload_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_cellular_clickDownload_configChange_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_wifi_clickDownload_configChange_dialogIsDisplayed()
+   * testTopicInfoFragment_preview_offline_clickDownload_configChange_dialogIsDisplayed()
+   */
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {

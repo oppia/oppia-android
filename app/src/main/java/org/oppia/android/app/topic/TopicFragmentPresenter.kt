@@ -34,6 +34,12 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
 
+  // TODO(3082): Remove this variable with the one, received from Home Activity
+  private val isTopicDownloaded = false
+
+  // TODO(3082): Replace this variable with the injected annotation
+  private val enableMyDownloads = true
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -65,6 +71,8 @@ class TopicFragmentPresenter @Inject constructor(
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
+    viewModel.isTopicDownloaded = isTopicDownloaded
+    viewModel.enableMyDownloads = enableMyDownloads
     binding.viewModel = viewModel
 
     setUpViewPager(viewPager, topicId, isConfigChanged)
@@ -78,13 +86,24 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enablePracticeTab)
+      ViewPagerAdapter(
+        fragment,
+        internalProfileId,
+        topicId,
+        storyId,
+        enablePracticeTab,
+        enableMyDownloads,
+        isTopicDownloaded
+      )
     viewPager2.adapter = adapter
-    TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
-      tab.text = fragment.getString(topicTab.tabLabelResId)
-      tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
-    }.attach()
+    // TODO(#3072): check if topic is already downloaded or not
+    if (!(enableMyDownloads && !isTopicDownloaded)) {
+      TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+        val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
+        tab.text = fragment.getString(topicTab.tabLabelResId)
+        tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
+      }.attach()
+    }
     if (!isConfigChanged && topicId.isNotEmpty()) {
       setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
     }
