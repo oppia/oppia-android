@@ -35,11 +35,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -104,6 +107,8 @@ import javax.inject.Singleton
 )
 class AdministratorControlsActivityTest {
 
+  private val internalProfileId = 0
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -112,6 +117,23 @@ class AdministratorControlsActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    AdministratorControlsActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
+  @Test
+  fun testAdministratorControls_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(internalProfileId))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_title))
+  }
 
   @Before
   fun setUp() {
@@ -135,7 +157,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -164,7 +186,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -189,7 +211,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -219,7 +241,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUncheck() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -245,7 +267,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickWifiSwitch_configChange_wifiSwitchIsChecked() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -310,7 +332,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -323,7 +345,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -339,7 +361,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -375,7 +397,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -391,7 +413,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -407,7 +429,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -421,7 +443,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       it.openNavigationDrawer()
