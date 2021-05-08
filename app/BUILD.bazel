@@ -60,6 +60,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
@@ -126,7 +127,6 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
-    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
@@ -155,6 +155,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEW_MODELS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAccountActionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsAppInformationViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
