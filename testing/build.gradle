@@ -25,6 +25,7 @@ android {
 
   testOptions {
     unitTests {
+      includeAndroidResources = true
       all {
         // Enable forking to ensure each test is properly run in isolation. For context, see:
         // https://discuss.gradle.org/t/36066/2 & https://github.com/oppia/oppia-android/issues/1942
@@ -50,15 +51,23 @@ dependencies {
   implementation(
       'androidx.annotation:annotation:1.1.0',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
+      "androidx.test:core:1.0.0",
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test:runner:1.2.0',
       'com.google.dagger:dagger:2.24',
+      'com.google.truth:truth:0.43',
       'nl.dionsegijn:konfetti:1.2.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
-      'org.robolectric:robolectric:4.3',
+      'org.robolectric:robolectric:4.4',
       'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
+      'org.mockito:mockito-core:2.19.0',
       project(":domain"),
       project(":utility"),
+  )
+  compileOnly(
+      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
+      'javax.annotation:javax.annotation-api:1.3.2',
+      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
   )
   testImplementation(
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',

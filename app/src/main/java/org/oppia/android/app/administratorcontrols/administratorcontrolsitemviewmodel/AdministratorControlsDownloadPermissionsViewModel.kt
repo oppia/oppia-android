@@ -18,9 +18,9 @@ class AdministratorControlsDownloadPermissionsViewModel(
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
 
-  var isTopicWifiUpdatePermission =
+  val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
-  var isTopicAutoUpdatePermission =
+  val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
   fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {

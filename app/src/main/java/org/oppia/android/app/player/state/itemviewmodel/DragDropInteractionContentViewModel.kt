@@ -1,15 +1,17 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for DragDropSortInput values. */
 class DragDropInteractionContentViewModel(
-  var htmlContent: StringList,
+  private val contentIdHtmlMap: Map<String, String>,
+  var htmlContent: SetOfTranslatableHtmlContentIds,
   var itemIndex: Int,
   var listSize: Int,
-  var dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel
+  val dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel
 ) : ObservableViewModel() {
 
   fun handleGrouping(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
@@ -27,4 +29,12 @@ class DragDropInteractionContentViewModel(
   fun handleDownMovement(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     dragAndDropSortInteractionViewModel.onItemMoved(itemIndex, itemIndex + 1, adapter)
   }
+
+  /**
+   * Returns a [StringList] corresponding to a list of HTML strings that can be displayed to the
+   * user.
+   */
+  fun computeStringList(): StringList = StringList.newBuilder().apply {
+    addAllHtml(htmlContent.contentIdsList.mapNotNull { contentIdHtmlMap[it.contentId] })
+  }.build()
 }

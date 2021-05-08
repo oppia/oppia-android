@@ -9,9 +9,11 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
@@ -50,6 +52,25 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     binding.viewModel = viewModel
   }
 
+  override fun provideComingSoonTopicViewInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return ComingSoonTopicViewBinding.inflate(
+      LayoutInflater.from(parent.context), parent, attachToParent
+    ).root
+  }
+
+  override fun provideComingSoonTopicsViewViewModel(
+    view: View,
+    viewModel: ComingSoonTopicsViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<ComingSoonTopicViewBinding>(view)!!
+    binding.viewModel = viewModel
+  }
+
   override fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
@@ -79,7 +100,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         entityId,
         false
       ).parseOppiaHtml(
-        viewModel.htmlContent,
+        viewModel.htmlContent.html,
         binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
@@ -111,7 +132,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       htmlParserFactory.create(
         resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
       ).parseOppiaHtml(
-        viewModel.htmlContent, binding.multipleChoiceContentTextView
+        viewModel.htmlContent.html, binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
   }

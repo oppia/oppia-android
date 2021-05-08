@@ -16,13 +16,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <View
-      android:id="@+id/add_profile_divider_view"
-      android:layout_width="0.5dp"
-      android:layout_height="match_parent"
-      android:background="@color/oppiaProfileChooserDivider"
-      android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
-
     <LinearLayout
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"

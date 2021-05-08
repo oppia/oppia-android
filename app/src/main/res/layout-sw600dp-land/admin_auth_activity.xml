@@ -114,7 +114,7 @@
             style="@style/StateButtonActive"
             android:layout_marginTop="58dp"
             android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
-            android:clickable="@{viewModel.isSubmitButtonActive}"
+            android:enabled="@{viewModel.isSubmitButtonActive}"
             android:minHeight="36dp"
             android:text="@string/admin_auth_submit"
             android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"

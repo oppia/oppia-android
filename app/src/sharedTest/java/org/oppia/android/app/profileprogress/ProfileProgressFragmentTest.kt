@@ -56,6 +56,7 @@ import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -74,16 +75,18 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.StoryProgressTestHelper
-import org.oppia.android.domain.topic.TEST_STORY_ID_0
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -120,6 +123,9 @@ class ProfileProgressFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -131,6 +137,7 @@ class ProfileProgressFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -253,11 +260,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -274,11 +285,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -309,11 +324,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -330,11 +349,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -365,11 +388,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -398,15 +421,14 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
-    testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
@@ -418,7 +440,11 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_configChange_firstStory_storyNameIsCorrect() {
+  fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -428,13 +454,17 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "First Story"
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
 
   @Test
-  fun testProfileProgressFragment_firstStory_storyNameIsCorrect() {
+  fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -445,13 +475,17 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "First Story"
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
 
   @Test
-  fun testProfileProgressFragment_firstStory_topicNameIsCorrect() {
+  fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -462,13 +496,17 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "FIRST TEST TOPIC"
+        stringToMatch = "FRACTIONS"
       )
     }
   }
 
   @Test
-  fun testProfileProgressFragment_clickFirstStory_opensTopicActivity() {
+  fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
@@ -480,13 +518,17 @@ class ProfileProgressFragmentTest {
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 
   @Test
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
@@ -511,9 +553,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.ongoing_topics_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.ongoing_topics_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -525,9 +567,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -541,9 +583,9 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_progress_list,
-          0,
-          R.id.completed_stories_container
+          recyclerViewId = R.id.profile_progress_list,
+          position = 0,
+          targetViewId = R.id.completed_stories_container
         )
       ).check(matches(not(isClickable())))
     }
@@ -551,11 +593,15 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
-    storyProgressTestHelper.markPartialTopicProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -576,11 +622,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markFullStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -618,9 +664,9 @@ class ProfileProgressFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.profile_progress_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.profile_progress_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).check(matches(withText(stringToMatch)))
   }
@@ -628,9 +674,9 @@ class ProfileProgressFragmentTest {
   private fun clickProfileProgressItem(itemPosition: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.profile_progress_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.profile_progress_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -660,7 +706,6 @@ class ProfileProgressFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -671,12 +716,13 @@ class ProfileProgressFragmentTest {
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       LogStorageModule::class, CachingTestModule::class, PrimeTopicAssetsControllerModule::class,
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class
+      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

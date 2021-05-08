@@ -10,6 +10,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -18,7 +19,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
-import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,8 +47,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val exceptionsController: ExceptionsController
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
@@ -138,10 +137,18 @@ class QuestionAssessmentProgressController @Inject constructor(
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
-          val outcome =
+          val classificationResult =
             answerClassificationController.classify(topPendingState.interaction, answer.answer)
-          answeredQuestionOutcome = progress.stateList.computeAnswerOutcomeForResult(outcome)
+          answeredQuestionOutcome =
+            progress.stateList.computeAnswerOutcomeForResult(classificationResult.outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
+
+          // Track the number of answers the user submitted, including any misconceptions
+          val misconception = if (classificationResult is OutcomeWithMisconception) {
+            classificationResult.taggedSkillId
+          } else null
+          progress.trackAnswerSubmitted(misconception)
+
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentQuestion()
@@ -168,7 +175,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -198,6 +205,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             hintIndex
           )
           progress.stateDeck.pushStateForHint(state, hintIndex)
+          progress.trackHintViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
@@ -208,7 +216,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(hint))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -231,6 +239,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.submitSolutionRevealed(state)
           solution = progress.stateList.computeSolutionForResult(state)
           progress.stateDeck.pushStateForSolution(state)
+          progress.trackSolutionViewed()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
@@ -242,7 +251,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         return MutableLiveData(AsyncResult.success(solution))
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -279,7 +288,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
     }
   }
@@ -342,7 +351,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
       } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+        exceptionsController.logNonFatalException(e)
         AsyncResult.failed(e)
       }
     }

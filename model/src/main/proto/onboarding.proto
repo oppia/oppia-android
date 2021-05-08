@@ -27,6 +27,8 @@ message AppStartupState {
   // Contains the user's startup state upon opening the app. This may change from app open to app
   // open, but should remain constant throughout the lifetime of a single process.
   StartupMode startup_mode = 1;
+  // Indicates if the app is starting up again immediately after a crash has occurred.
+  bool is_from_crash = 2;
 }
 
 // Stores the completion state of the user's progress through the app onboarding flow.

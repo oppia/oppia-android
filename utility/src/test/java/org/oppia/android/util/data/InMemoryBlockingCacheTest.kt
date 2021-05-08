@@ -16,11 +16,12 @@ import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatcher
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
@@ -693,7 +694,7 @@ class InMemoryBlockingCacheTest {
     modules = [
       TestModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -26,6 +26,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -60,6 +61,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -89,13 +91,14 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.EditTextInputAction
-import org.oppia.android.testing.IsOnRobolectric
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.robolectric.IsOnRobolectric
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -141,7 +144,6 @@ class ExplorationActivityTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -165,7 +167,7 @@ class ExplorationActivityTest {
     }
   }
 
-  // TODO(#163): Fill in remaining tests for this activity.
+  // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -209,6 +211,69 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_on))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
   fun testExploration_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -221,7 +286,7 @@ class ExplorationActivityTest {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help))).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -238,7 +303,7 @@ class ExplorationActivityTest {
     ).use {
       explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(click())
+      onView(withText(context.getString(R.string.menu_help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
     }
@@ -560,7 +625,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
-    setupAudioForFraction()
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -599,7 +664,15 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi-en")))
+      onView(
+        allOf(
+          withId(R.id.audio_language_icon),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      ).perform(click())
+      onView(withText("Hinglish"))
+        .inRoot(isDialog())
+        .check(matches(isChecked()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -749,7 +822,7 @@ class ExplorationActivityTest {
     }
   }
 
-  private fun setupAudioForFraction() {
+  private fun setUpAudioForFractionLesson() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
@@ -843,7 +916,6 @@ class ExplorationActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -855,12 +927,12 @@ class ExplorationActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

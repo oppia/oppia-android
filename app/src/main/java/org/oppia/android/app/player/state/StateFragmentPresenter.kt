@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -28,8 +27,12 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.AudioUiManager
+import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -40,7 +43,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import java.util.Date
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
@@ -62,7 +65,8 @@ class StateFragmentPresenter @Inject constructor(
   private val logger: ConsoleLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
+  private val splitScreenManager: SplitScreenManager,
+  private val oppiaClock: OppiaClock
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -85,12 +89,6 @@ class StateFragmentPresenter @Inject constructor(
     explorationProgressController.getCurrentState().toLiveData()
   }
 
-  private val confettiColors = listOf(
-    R.color.confetti_red,
-    R.color.confetti_yellow,
-    R.color.confetti_blue
-  ).map { getColor(context, it) }
-
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -112,7 +110,8 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType),
       binding.congratulationsTextView,
-      binding.congratulationsTextConfettiView
+      binding.congratulationsTextConfettiView,
+      binding.fullScreenConfettiView
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -230,8 +229,10 @@ class StateFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
-    congratulationsTextConfettiView: KonfettiView
+    congratulationsTextConfettiView: KonfettiView,
+    fullScreenConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
+    val isTablet = context.resources.getBoolean(R.bool.isTablet)
     return builder
       .hasConversationView(hasConversationView)
       .addContentSupport()
@@ -245,7 +246,11 @@ class StateFragmentPresenter @Inject constructor(
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
         congratulationsTextConfettiView,
-        confettiColors
+        MINI_CONFETTI_BURST
+      )
+      .addCelebrationForEndOfSession(
+        fullScreenConfettiView,
+        if (isTablet) LARGE_CONFETTI_BURST else MEDIUM_CONFETTI_BURST
       )
       .addHintsAndSolutionsSupport()
       .addAudioVoiceoverSupport(
@@ -523,7 +528,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 
@@ -533,7 +538,7 @@ class StateFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      Date().time
+      oppiaClock.getCurrentTimeMs()
     )
   }
 }

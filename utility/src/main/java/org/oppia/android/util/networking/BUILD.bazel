@@ -1,0 +1,17 @@
+"""
+Package for networking utilities
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "network_connection_util",
+    srcs = [
+        "NetworkConnectionUtil.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

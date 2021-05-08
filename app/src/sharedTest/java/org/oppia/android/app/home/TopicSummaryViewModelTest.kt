@@ -24,6 +24,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -41,10 +42,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -93,10 +95,10 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(topicSummaryViewModel).isEqualTo(topicSummaryViewModel)
@@ -108,11 +110,11 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
-        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
         assertThat(topicSummaryViewModel).isEqualTo(topicSummaryViewModelCopy)
@@ -125,12 +127,12 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModelCopy1 = createBasicTopicSummaryViewModel(it)
-        val topicSummaryViewModelCopy2 = createBasicTopicSummaryViewModel(it)
-        val topicSummaryViewModelCopy3 = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy1 = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy2 = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy3 = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         assertThat(topicSummaryViewModelCopy1).isEqualTo(topicSummaryViewModelCopy2)
         assertThat(topicSummaryViewModelCopy2).isEqualTo(topicSummaryViewModelCopy3)
 
@@ -144,11 +146,11 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
-        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         assertThat(topicSummaryViewModel).isEqualTo(topicSummaryViewModelCopy)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
@@ -162,10 +164,10 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
         assertThat(topicSummaryViewModel).isNotEqualTo(null)
@@ -177,18 +179,18 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelTopicSummary1 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5
         )
         val topicSummaryViewModelTopicSummary2 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary2,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
@@ -205,18 +207,18 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelEntity1 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5
         )
         val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_2",
           topicSummaryClickListener = testFragment,
@@ -232,18 +234,18 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelPosition4 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 4
         )
         val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
-          activity = it,
+          activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
@@ -259,11 +261,11 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
-        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
+        val topicSummaryViewModelCopy = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
         assertThat(topicSummaryViewModel).isEqualTo(topicSummaryViewModelCopy)
 
         // Verify that if a == b, then a.hashCode == b.hashCode
@@ -276,10 +278,10 @@ class TopicSummaryViewModelTest {
   fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
-        val topicSummaryViewModel = createBasicTopicSummaryViewModel(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
+        val topicSummaryViewModel = createBasicTopicSummaryViewModel(homeFragmentTestActivity)
 
         // Verify that hashCode consistently returns the same value.
         val firstHash = topicSummaryViewModel.hashCode()
@@ -309,7 +311,6 @@ class TopicSummaryViewModelTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -319,13 +320,13 @@ class TopicSummaryViewModelTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
