@@ -32,6 +32,7 @@ import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Locale
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -251,10 +252,18 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun checkInputsAreValid(name: String, pin: String, confirmPin: String): Boolean {
     var failed = false
-    if (name.isEmpty()) {
+    if (name.isEmpty() || name.isBlank()) {
       profileViewModel.nameErrorMsg.set(
         activity.resources.getString(
           R.string.add_profile_error_name_empty
+        )
+      )
+      failed = true
+    }
+    if (name.compareTo(name.capitalize(Locale.getDefault())) != 0) {
+      profileViewModel.nameErrorMsg.set(
+        activity.resources.getString(
+          R.string.add_profile_error_name_capitalize
         )
       )
       failed = true

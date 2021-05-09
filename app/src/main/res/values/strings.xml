@@ -226,6 +226,7 @@
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="add_profile_error_name_not_unique">This name is already in use by another profile.</string>
   <string name="add_profile_error_name_empty">Please enter a name for this profile.</string>
+  <string name="add_profile_error_name_capitalize">Please enter the first character of your name in capital.</string>
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
