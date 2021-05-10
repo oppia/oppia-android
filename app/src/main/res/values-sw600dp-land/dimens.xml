@@ -190,11 +190,9 @@
   <dimen name="interaction_item_exploration_view_margin_start">208dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_end">176dp</dimen>
-  <dimen name="interaction_item_exploration_view_margin_bottom">8dp</dimen>
 
   <!-- Interaction Item: Question View -->
   <dimen name="interaction_item_question_view_margin_start">192dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">192dp</dimen>
-  <dimen name="interaction_item_question_view_margin_bottom">8dp</dimen>
 </resources>
