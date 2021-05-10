@@ -2706,13 +2706,6 @@ states {
             file_name: "content-hi-e5ry9n2xi7.mp3"
           }
         }
-        voiceover_mapping {
-          key: "en"
-          value {
-            file_size_bytes: 215508
-            file_name: "content-en-s5iwdwo8p8.mp3"
-          }
-        }
       }
     }
     recorded_voiceovers {

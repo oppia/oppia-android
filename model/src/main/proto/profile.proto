@@ -126,3 +126,13 @@ enum AudioLanguage {
   FRENCH_AUDIO_LANGUAGE = 4;
   CHINESE_AUDIO_LANGUAGE =  5;
 }
+
+// TODO(#3175): Consolidate this with the two enums above.
+// Locales supported by the app (including macaronic languages).
+enum SupportedLocale {
+  SUPPORTED_LOCALE_UNSPECIFIED = 0;
+  ENGLISH = 1;
+  HINDI = 2;
+  HINGLISH = 3;
+  SPANISH = 4;
+}

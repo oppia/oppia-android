@@ -98,17 +98,24 @@ class AudioViewModel @Inject constructor(
       languages.isNotEmpty() -> {
         autoPlay = false
         languageSelectionShown = true
-        if (languages.contains(selectedLanguageCode)) {
+        if (selectedLanguageCode in languages) {
           setAudioLanguageCode(selectedLanguageCode)
         } else {
           showError.set(true)
           audioPlayerController.pause()
         }
       }
+      // If there is no language to continue, stop audio (otherwise the previous state may
+      // confusingly continue playing).
+      languages.isEmpty() -> {
+        showError.set(true)
+        audioPlayerController.pause()
+      }
     }
   }
 
-  /** Sets language code for data binding and changes data source to correct audio */
+    /*
+  }* Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
     showError.set(false)
     selectedLanguageCode = languageCode

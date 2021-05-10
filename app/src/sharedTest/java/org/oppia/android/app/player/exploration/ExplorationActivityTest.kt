@@ -59,7 +59,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.exploration.ExplorationActivity.Companion.createExplorationActivityIntent
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
@@ -859,13 +858,13 @@ class ExplorationActivityTest {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
-      val dataSource = createAudioDataSource(
+      val dataSource1 = createAudioDataSource(
         explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
       )
       val dataSource2 = createAudioDataSource(
         explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-es-i0nhu49z0q.mp3"
       )
-      addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource1!!, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2!!, IOException("Test does not have networking"))
     }
   }
