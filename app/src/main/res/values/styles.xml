@@ -289,7 +289,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textColorHint">@color/editTextError</item>
+    <item name="android:textColor">@color/editTextError</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
