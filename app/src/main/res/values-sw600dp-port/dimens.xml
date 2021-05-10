@@ -23,12 +23,8 @@
   <dimen name="continue_navigation_item_question_view_margin_start">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_end">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_start">128dp</dimen>
-  <dimen name="fraction_interaction_item_non_conversation_view_margin_end">128dp</dimen>
-  <dimen name="fraction_interaction_item_non_conversation_view_margin_start">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="numeric_input_interaction_item_non_conversation_view_margin_end">128dp</dimen>
-  <dimen name="numeric_input_interaction_item_non_conversation_view_margin_start">128dp</dimen>
   <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
   <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
   <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>
@@ -45,8 +41,6 @@
   <dimen name="submit_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_end">128dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_start">128dp</dimen>
-  <dimen name="text_input_interaction_item_non_conversation_view_margin_end">128dp</dimen>
-  <dimen name="text_input_interaction_item_non_conversation_view_margin_start">128dp</dimen>
 
   <dimen name="drag_drop_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_top">24dp</dimen>
@@ -83,7 +77,6 @@
   <dimen name="profile_chooser_profile_view_parent_margin_end_profile_not_added">170dp</dimen>
 
   <dimen name="drag_drop_item_exploration_view_margin_start">144dp</dimen>
-  <dimen name="fraction_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="previous_responses_item_exploration_view_margin_end">144dp</dimen>
   <dimen name="previous_responses_item_exploration_view_margin_start">144dp</dimen>
@@ -99,7 +92,6 @@
   <dimen name="continue_navigation_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="continue_navigation_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_end">112dp</dimen>
-  <dimen name="fraction_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="next_button_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="next_button_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">112dp</dimen>
