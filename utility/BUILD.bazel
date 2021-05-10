@@ -13,13 +13,14 @@ load("//utility:utility_test.bzl", "utility_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
-    "src/main/java/org/oppia/android/util/gcsresource/*.kt",
-    "src/main/java/org/oppia/android/util/profile/*.kt",
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/statusbar/*.kt",
     "src/main/java/org/oppia/android/util/extensions/*.kt",
-    "src/main/java/org/oppia/android/util/system/*.kt",
+    "src/main/java/org/oppia/android/util/gcsresource/*.kt",
+    "src/main/java/org/oppia/android/util/logging/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
+    "src/main/java/org/oppia/android/util/profile/*.kt",
+    "src/main/java/org/oppia/android/util/system/*.kt",
     "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
@@ -58,6 +59,9 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
@@ -86,6 +90,7 @@ TEST_DEPS = [
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
