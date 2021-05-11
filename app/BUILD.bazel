@@ -537,6 +537,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
     ],
