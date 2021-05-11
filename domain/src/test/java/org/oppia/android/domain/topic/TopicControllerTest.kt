@@ -681,7 +681,7 @@ class TopicControllerTest {
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
     assertThat(reviewCardResult.getOrThrow().pageContents.html)
-      .isEqualTo("<p>Description of subtopic is here.</p>")
+      .contains("Description of subtopic is here.")
   }
 
   @Test

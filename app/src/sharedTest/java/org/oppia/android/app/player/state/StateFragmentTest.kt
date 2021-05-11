@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.InputType
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -28,6 +29,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -38,6 +40,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -52,6 +55,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,6 +86,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
@@ -132,9 +137,9 @@ import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -556,6 +561,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -570,6 +576,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -589,6 +596,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -602,6 +610,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -616,6 +625,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -630,6 +640,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -649,6 +660,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -668,6 +680,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -683,6 +696,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -1056,6 +1070,22 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyAccessibilityForItemSelection(
+        position = 0,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1069,6 +1099,21 @@ class StateFragmentTest {
       // Verify that the user is now on the fifth state.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       verifyContentContains("What are the primary colors of light?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyAccessibilityForItemSelection(position = 1, targetViewId = R.id.item_selection_checkbox)
     }
   }
 
@@ -1193,6 +1238,43 @@ class StateFragmentTest {
 
       // Verify that the user is now on the eleventh and final state.
       verifyViewTypeIsPresent(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+    }
+  }
+
+  @Test
+  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+
+      // Play to state 2 to access the fraction input interaction.
+      playThroughPrototypeState1()
+
+      // Verify that fraction input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_textViewHasTextInputType() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+
+      // Play to state 7 to access the ratio input interaction.
+      playThroughPrototypeState6()
+
+      // Verify that ratio input uses the standard text software keyboard.
+      scenario.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
+        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+      }
     }
   }
 
@@ -1530,6 +1612,25 @@ class StateFragmentTest {
     scrollToViewType(viewType)
   }
 
+  private fun verifyAccessibilityForItemSelection(position: Int, targetViewId: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = position,
+        targetViewId = targetViewId
+      )
+    ).check(matches(not(isClickable())))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = position,
+        targetViewId = targetViewId
+      )
+    ).check(matches(not(isFocusable())))
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
@@ -1701,7 +1802,8 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
-      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

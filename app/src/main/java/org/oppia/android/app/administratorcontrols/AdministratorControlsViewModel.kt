@@ -33,6 +33,7 @@ class AdministratorControlsViewModel @Inject constructor(
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
+  private val showLogoutDialogListener = activity as ShowLogoutDialogListener
   private lateinit var userProfileId: ProfileId
   val selectedFragmentIndex = ObservableField<Int>(1)
 
@@ -84,8 +85,7 @@ class AdministratorControlsViewModel @Inject constructor(
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(
       AdministratorControlsAccountActionsViewModel(
-        fragment,
-        IntentFactoryShim
+        showLogoutDialogListener
       )
     )
 

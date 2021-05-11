@@ -55,6 +55,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -92,9 +93,9 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -1449,7 +1450,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

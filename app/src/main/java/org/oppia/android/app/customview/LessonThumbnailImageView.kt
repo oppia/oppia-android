@@ -11,11 +11,11 @@ import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.DefaultGcsPrefix
-import org.oppia.android.util.parser.ImageLoader
-import org.oppia.android.util.parser.ImageTransformation
-import org.oppia.android.util.parser.ImageViewTarget
-import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
+import org.oppia.android.util.parser.image.DefaultGcsPrefix
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageTransformation
+import org.oppia.android.util.parser.image.ImageViewTarget
+import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
 
 /** A custom [AppCompatImageView] used to show lesson thumbnails. */
@@ -125,6 +125,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       super.onAttachedToWindow()
       (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
         .createViewComponent(this).inject(this)
+      checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::oppiaLogger.isInitialized)
         oppiaLogger.e(

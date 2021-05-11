@@ -13,8 +13,8 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**

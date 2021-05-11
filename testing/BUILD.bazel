@@ -41,7 +41,11 @@ kt_android_library(
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+        "//third_party:com_squareup_retrofit2_retrofit",
+        "//third_party:com_squareup_retrofit2_retrofit-mock",
         "//third_party:junit_junit",
+        "//third_party:moshi",
         "//third_party:nl_dionsegijn_konfetti",
         "//third_party:org_jetbrains_kotlin_kotlin-reflect",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
@@ -67,11 +71,16 @@ TEST_DEPS = [
     "//third_party:androidx_test_ext_junit",
     "//third_party:androidx_test_runner",
     "//third_party:com_google_truth_truth",
+    "//third_party:com_squareup_retrofit2_converter-moshi",
+    "//third_party:com_squareup_retrofit2_retrofit",
+    "//third_party:com_squareup_retrofit2_retrofit-mock",
     "//third_party:junit_junit",
+    "//third_party:moshi",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/logging:logger_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

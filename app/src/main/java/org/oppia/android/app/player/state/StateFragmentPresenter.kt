@@ -32,6 +32,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -41,7 +42,7 @@ import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
