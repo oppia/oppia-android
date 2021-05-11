@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.administrator_controls_account_actions_view.view.*
+import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.databinding.TextSizeItemsBinding
@@ -15,7 +17,9 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel
 ) {
-  private var fontSize: String = "Medium"
+  private var fontSize: String = fragment.requireContext().resources.getString(
+    R.string.reading_text_size_medium
+  )
 
   fun handleOnCreateView(
     inflater: LayoutInflater,

@@ -172,9 +172,7 @@ class ReadingTextSizeFragmentTest {
     )
   }
 
-  /**
-   * Matcher for comparing the textSize of content inside a TextView to the expected size
-   */
+  /** Matcher for comparing the textSize of content inside a TextView to the expected size. */
   private fun matchTextViewTextSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
@@ -191,9 +189,7 @@ class ReadingTextSizeFragmentTest {
     }
   }
 
-  /**
-   * Check the selected item inside TextSizeRecyclerView
-   */
+  /** Check the selected item inside TextSizeRecyclerView. */
   private fun verifyItemIsCheckedInTextSizeRecyclerView(index: Int) {
     onView(
       atPositionOnView(
@@ -207,9 +203,7 @@ class ReadingTextSizeFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  /**
-   * Check the textSize of item inside TextSizeRecyclerView
-   */
+  /** Check the textSize of item inside TextSizeRecyclerView. */
   private fun matchTextSizeOfTextSizeRecyclerViewItem(index: Int, size: Float) {
     onView(
       atPositionOnView(
@@ -223,9 +217,7 @@ class ReadingTextSizeFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  /**
-   * Click on the item inside TextSizeRecyclerView
-   */
+  /** Click on the item inside TextSizeRecyclerView. */
   private fun clickOnTextSizeRecyclerViewItem(index: Int) {
     onView(
       atPositionOnView(
