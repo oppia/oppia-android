@@ -48,13 +48,13 @@ import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
-import org.oppia.android.util.parser.DefaultGcsPrefix
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.image.DefaultGcsPrefix
+import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -120,7 +120,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      allFiles.addAll(topicController.getAssetFileNameList(topicIdJsonArray.optString(i)))
+      allFiles.addAll(topicController.getJsonAssetFileNameList(topicIdJsonArray.optString(i)))
     }
 
     val primeAssetJobs = allFiles.map {
@@ -160,7 +160,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
         ).toSet()
       logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
-      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinarAssetDownloaded)
+      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinaryAssetDownloaded)
       val assetDownloadCount = downloadUrls.size
       primeDownloadStatus.postValue(
         PrimeAssetsStatus(currentDownloadCount.get(), assetDownloadCount)

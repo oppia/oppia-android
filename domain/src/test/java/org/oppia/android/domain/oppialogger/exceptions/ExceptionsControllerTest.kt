@@ -25,10 +25,10 @@ import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
@@ -126,11 +126,18 @@ class ExceptionsControllerTest {
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
@@ -149,11 +156,18 @@ class ExceptionsControllerTest {
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
@@ -249,13 +263,19 @@ class ExceptionsControllerTest {
     val exceptionFromCacheStorage =
       oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionFromCacheStorage.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exceptionFromRemoteService).isEqualTo(exceptionThrown)
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionFromCacheStorage.exceptionType).isEqualTo(ExceptionType.FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
@@ -293,10 +313,13 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(null)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
   @Test
@@ -314,10 +337,28 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo("TEST")
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+  }
+
+  /**
+   * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
+   * comparison in a way that's consistent across JDK versions.
+   */
+  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
+    return this.map { element ->
+      return@map listOf(
+        element.fileName,
+        element.methodName,
+        element.lineNumber,
+        element.className
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {

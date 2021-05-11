@@ -54,6 +54,7 @@ import org.oppia.android.app.testing.BindableAdapterTestDataModel.StringModel
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.android.app.testing.BindableAdapterTestViewModel
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForLiveDataWithDataBindingBinding
 import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
@@ -74,20 +75,20 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -160,7 +161,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -196,11 +197,11 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -224,18 +225,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          1
+          recyclerViewId = R.id.test_recycler_view,
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          2
+          recyclerViewId = R.id.test_recycler_view,
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -259,7 +260,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -282,11 +283,11 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -310,18 +311,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          1
+          recyclerViewId = R.id.test_recycler_view,
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          2
+          recyclerViewId = R.id.test_recycler_view,
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -372,7 +373,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -395,7 +400,12 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
@@ -416,7 +426,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -439,7 +453,12 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
@@ -691,7 +710,6 @@ class BindableAdapterTest {
     ): ActivityComponent.Builder
   }
 
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -703,12 +721,12 @@ class BindableAdapterTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

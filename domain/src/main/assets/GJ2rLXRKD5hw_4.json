@@ -1,23 +1,22 @@
 {
-  "subtopic_title":"Adding Fractions",
   "topic_id": "GJ2rLXRKD5hw",
-  "page_contents":{
-    "subtitled_html":{
-      "content_id":"content",
-      "html":"\u003cp\u003eDescription of subtopic is here.\u003c/p\u003e"
+  "topic_name": "Fractions",
+  "page_contents": {
+    "subtitled_html": {
+      "content_id": "content",
+      "html": "<p>Description of subtopic is here.</p>"
     },
-    "written_translations":{
-      "translations_mapping":{
-        "content":{
-
-        }
+    "recorded_voiceovers": {
+      "voiceovers_mapping": {
+        "content": {}
       }
     },
-    "recorded_voiceovers":{
-      "voiceovers_mapping":{
-        "content":{
-        }
+    "written_translations": {
+      "translations_mapping": {
+        "content": {}
       }
     }
-  }
+  },
+  "subtopic_title": "Adding Fractions",
+  "next_subtopic_dict": null
 }

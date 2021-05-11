@@ -21,6 +21,27 @@ jobs:
           checks: "duppatterns,files,syntax"
           experimental_checks: "notowned"
 
+  check_base_branch:
+    name: Check base branch
+    runs-on: ubuntu-18.04
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: "Branch is not based on develop or release branch"
+        if: ${{ github.base_ref != 'develop' && !startsWith(github.base_ref, 'release-') }}
+        run: |
+          echo "Current base branch: $BASE_BRANCH"
+          echo "Note: this check is expected to fail for chained PRs so that they can't accidentally be merged. PRs should only ever be merged directly into develop or a release branch."
+          exit 1
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+
+      - name: "Branch verified as based on develop/release branch"
+        if: ${{ github.base_ref == 'develop' || startsWith(github.base_ref, 'release-') }}
+        run: |
+          echo "Branch is correctly branched off of valid base branch to merge PRs into: $BASE_BRANCH"
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+
   linters:
     name: Lint Tests
     runs-on: ubuntu-18.04
@@ -49,10 +70,7 @@ jobs:
       - name: Download Buf
         run: |
           cd $HOME/oppia-android-tools
-          BUFVERSION="v0.15.0"
-          echo Using Bufbuild version $BUFVERSION
-          curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
-          chmod a+x buf
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_download.sh
 
       - name: Download Buildifier
         run: |
@@ -68,7 +86,8 @@ jobs:
           bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
 
       - name: Protobuf lint check
-        run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+        run: |
+          bash /home/runner/work/oppia-android/oppia-android/scripts/buf_lint_check.sh $HOME
 
       - name: Bazel lint check
         run: |

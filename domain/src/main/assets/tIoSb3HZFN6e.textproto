@@ -1,0 +1,3481 @@
+id: "tIoSb3HZFN6e"
+states {
+  key: "Practice 1"
+  value {
+    name: "Practice 1"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1114790
+            file_name: "content-en-gjwpuccswy.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 659629
+            file_name: "feedback_4-en-nm0mtrihq9.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 381268
+            file_name: "feedback_2-en-z59npwgn6n.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 575619
+            file_name: "feedback_3-en-s5bpcdr30i.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 96643
+            file_name: "feedback_1-en-7y8gg3g6ih.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1150525
+            file_name: "hint_1-en-lptc7bg28w.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 662138
+            file_name: "hint_2-en-dqd3filwcj.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 147420
+            file_name: "default_outcome-en-qwyscloyxm.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>James wanted to experiment. He mixed 280 ml of mango puree and 40 ml of milk. They tried the resulting smoothie, and this one tasted good, too, although James thought it could be better.</p>\n\n<p>Uncle Berry smiled and said to James, \"Let\342\200\231s write the recipe down for now. We can think about how to make it better later.\"</p>\n\n<p>\342\200\234Yeah, okay!\342\200\235 said James. \"I\'ll use the simplest form.\"</p>\n\n<p>What is the simplest form of 280:40?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Simplest form of the simplest form"
+          feedback {
+            html: "<p>Correct! Well done.</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that\'s not correct.\302\240That ratio\302\240is equivalent to 280:40, but it can still be simplified further. Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that\'s not correct. For a ratio to be in simplest form, each of the numbers used should be a counting number\302\240(like 1, 2, 3, ...).</p>\n\n<p>But\302\2401/7 is not a counting number. Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>No, that\'s not correct. To simplify a ratio, you should divide all its parts\302\240by the <strong>same number</strong>. To get 4:1, you would have\302\240divided\302\240the first number by 70, and the second number by 40. Those are not the same!</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>First, find a common factor of 280 and 40, and divide both sides of the ratio by that common factor.</p>\n\n<p>For example, 10 is a common factor of both numbers, so you can start by\302\240dividing\302\240both 280 and 40 by 10. This gives a ratio of 28:4.</p>\n\n<p>However, 28:4 is not the simplest form, because 28 and 4 still have a common factor. What common factor do\302\240they have?</p>"
+          content_id: "hint_1"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>280:40 can be simplified to 28:4 by dividing each side of the ratio by 10.</p>\n\n<p>Now, notice that 28 and 4 can both be divided by 2, without remainder. Can you use this fact to simplify the ratio further?</p>"
+          content_id: "hint_2"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 1"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>14:2</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>4:1</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>7:1</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:1/7</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>28:4</p>"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 3"
+  value {
+    name: "Practice 3"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1143001
+            file_name: "content-en-t95vxdfqqi.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 538003
+            file_name: "default_outcome-en-nozb141d2n.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 497252
+            file_name: "feedback_2-en-9y0tuwur6l.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 586906
+            file_name: "feedback_1-en-w10n3l4qc5.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 264032
+            file_name: "feedback_3-en-gvv9py1s27.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Good job! Do you want to try another one?\"\302\240said Uncle Berry.</p>\n\n<p>\"Yes,\" said James. \"This time, I will mix <strong>24ml</strong> of mango puree, <strong>54ml</strong> of banana puree, and <strong>36ml</strong> of milk. So the ratio of mango puree to banana puree to milk in the simplest form will be....\"</p>\n\n<p>Can you help James find the ratio of mango puree to banana puree to milk, in simplest form?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "2 to 4 is 3 to 6"
+          feedback {
+            html: "<p>Good job! There is no common factor for 4, 9\302\240and 6, because there\'s no number that can divide\302\240all of them without leaving a remainder. So, 4:9:6 is the simplest form. Well done!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4:9:6"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "dividing all three sides"
+          feedback {
+            html: "<p>No, that\'s not correct.\302\240If you divide one part of a ratio by a number, you need to follow through by dividing\302\240<strong>all </strong>other parts\302\240by the same number as well.</p>\n\n<p>Let\'s look at this in more detail.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "4:3:2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:3:1"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:9:3"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 3"
+          feedback {
+            html: "<p>Try entering your answer again without the \"ml\".\302\240In a ratio, you don\'t need to show the \"ml\" unit.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "ml"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 3"
+        feedback {
+          html: "<p>No, that\'s not correct.</p>\n\n<p>When simplifying a ratio, make sure to divide all parts of the ratio by the same common factor, and continue simplifying\302\240until you cannot do this any more.</p>\n\n<p>Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 2"
+  value {
+    name: "Practice 2"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 906642
+            file_name: "content-en-q2m3g5my55.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 676557
+            file_name: "default_outcome-en-rih4qfod9t.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 472175
+            file_name: "feedback_2-en-3ntdp3tp4c.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 97897
+            file_name: "feedback_1-en-jm1kaiow0f.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"I want to make\302\240a\302\240chocolate mango smoothie this time,\"\302\240said James.</p>\n\n<p>He mixed <strong>2</strong> cups of milk, <strong>2</strong> cups of mango puree and <strong>8 </strong>cups of dark chocolate. \"In this recipe,\" he said, \"the simplest form of ratio of milk to mango puree to dark chocolate will be...\"</p>\n\n<p>Can you write the ratio of milk to mango puree to dark chocolate in its simplest form?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 3"
+          feedback {
+            html: "<p>Correct! Good job!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:1:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 2"
+          feedback {
+            html: "<p>No, that\'s not correct. Remember that, when simplifying, you need to divide\302\240<strong>all</strong>\302\240parts of the ratio by the same number, not just the first two parts. Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:1:8"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 2"
+        feedback {
+          html: "<p>No, that\'s not correct. Find a number that divides 2, 2 and 8 without leaving a remainder,\302\240then\302\240simplify the ratio until you cannot simplify it any more.</p>\n\n<p>Also, make sure to write your ratio without any spaces.</p>\n\n<p>Try again!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter ratio as X:Y:Z"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 5"
+  value {
+    name: "Practice 5"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 420767
+            file_name: "content-en-7jfdoz0oai.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 468413
+            file_name: "default_outcome-en-qjll5jal2g.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 856488
+            file_name: "feedback_2-en-zqg0yy7qam.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 100405
+            file_name: "feedback_1-en-hyej332cu9.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1539854
+            file_name: "hint_1-en-vjz6lufzvp.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234You are doing great!\" said Uncle Berry. \"Now, this one is a little harder.\342\200\235</p>\n\n<p>\342\200\234Find a ratio that is equivalent to 8:16:24.\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 6"
+          feedback {
+            html: "<p>Correct! Well done!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 5"
+          feedback {
+            html: "<p>No, that is wrong. Find the simplest form of 8:16:24 first. Is it equal to 2:4:5?</p>\n\n<p>Make sure to reduce all the ratios to their simplest form before you try again, otherwise you won\'t be able to figure out which ones are equivalent.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Let\'s start by writing 8:16:24 in simplest form, since that makes it easier to check whether it\'s equivalent to another ratio.</p>\n\n<p>Since we can divide each number in 8:16:24 by 8 without leaving a remainder, we can simplify\302\2408:16:24 to\302\2401:2:3. There\'s no way to simplify this\302\240further, so the simplest form is 1:2:3.</p>\n\n<p>Now, find the simplest form of each of the ratios in the answer, and compare that to 1:2:3.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 5"
+        feedback {
+          html: "<p>No, that is not correct.\302\240Make sure to reduce all the ratios to their simplest form before you try again, otherwise you won\'t be able to figure out which ones are equivalent.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>2:4:5</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>5:13:21</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>6:12:18</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>10:20:25</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 4"
+  value {
+    name: "Practice 4"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 326727
+            file_name: "content-en-19pb74ymxn.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 225162
+            file_name: "feedback_2-en-ox5lg3cf9p.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 186292
+            file_name: "feedback_3-en-a9bwid7zwz.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 104793
+            file_name: "feedback_1-en-26splcarbs.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 960565
+            file_name: "hint_1-en-eumgnzhiw5.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 708530
+            file_name: "feedback_4-en-oinecf1h1g.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_5"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 381897
+            file_name: "feedback_5-en-90lw41hktl.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 351175
+            file_name: "default_outcome-en-7pbgvxgc3p.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Very good!\" said Uncle Berry. \"Now, try this one. Find all the ratios that are equivalent to 6:9.\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_5"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 5"
+          feedback {
+            html: "<p>Correct! You are doing great!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+                content_ids {
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>You got one correct answer, but there are more. Pick all the correct anwers.</p>\n"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>No, that\'s not correct. On your piece of paper, write down the simplest form for each of the answer choices. Then, find the simplest form of 6:9,\302\240and compare it to the simplest forms you wrote down. Make sure to choose only the correct answers.</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_0"
+                }
+                content_ids {
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+          rule_type: "ContainsAtLeastOneOf"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Make sure to pick\302\240<strong>all</strong>\302\240the correct answers. Try again!</p>\n\n<p>Note that the simplest form of 2:3 is 2:3.</p>"
+            content_id: "feedback_5"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "DoesNotContainAtLeastOneOf"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Make sure to pick\302\240<strong>all </strong>the\302\240correct answers. Try again!</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+                content_ids {
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+          rule_type: "DoesNotContainAtLeastOneOf"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>6 and 9 are both divisible by 3, so we can write 6:9 = 2:3. Since 2:3 cannot be simplified further, the simplest form of 6:9 is 2:3.</p>\n\n<p>Now, write down the simplest form for each of the answer choices, and compare that to 2:3.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 4"
+        feedback {
+          html: "<p>No, that is wrong. Find the simplest form of all choices, and compare with the simplest form of 6:9.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 5
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:3</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>2:3</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>4:6</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>8:12</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>12:15</p>\n"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "The simplest form"
+  value {
+    name: "The simplest form"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 449609
+            file_name: "feedback_2-en-eet49qjvgu.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1079677
+            file_name: "solution-en-418fvaibep.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 2793102
+            file_name: "content-en-c35kus6g6t.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 90370
+            file_name: "feedback_1-en-5eewsfmses.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 304785
+            file_name: "hint_1-en-iq2jz8mk7c.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 387538
+            file_name: "default_outcome-en-uyw55rcnwr.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>As James opened the notebook, Uncle Berry said, \"James, let\'s write the ratio in its<strong>\302\240simplest form</strong>, so that it\342\200\231s easy to use next time.\"</p>\n\n<p>\"What do you mean?\"\302\240asked James.</p>\n\n<p>\"Well,\" said Uncle Berry, \"remember that simplifying a ratio means finding an equivalent ratio with smaller numbers? The simplest form is when you\'ve\302\240simplified a ratio to the point where it can\342\200\231t be simplified\302\240any more.\"</p>\n\n<p>\"For example, for the ratio 12:54, the numbers 12 and 54 have a common factor of 2. (In other words, 12 and 54 can both be divided by 2 without leaving a remainder.) So, we can divide 12:54 by 2 to get 6:27. Now, 6 and 27 have a common factor of 3, so we can simplify the\302\240ratio even more to\302\2402:9.\"</p>\n\n<p>\"But that\'s as far as we can go! We can\'t simplify the ratio further while still keeping both sides of the ratio whole numbers. So, 2:9 is the <strong>simplest form</strong> of the ratio 12:54.\"</p>\n\n<p>\"Aha!\"\302\240said James.\302\240\"Then, since the ratio of milk to mango puree was 4:8, its simplest form must be\342\200\246\"</p>\n\n<p>What is 4:8 in its\302\240simplest form?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 1"
+          feedback {
+            html: "<p>Yes, that is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "1:2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "The simplest form"
+          feedback {
+            html: "<p>You\'re correct that\302\2404:8 = 2:4! But you can simplify 2:4 even further, so you haven\'t reached the <strong>simplest</strong> form yet. Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "2:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      solution {
+        interaction_id: "TextInput"
+        correct_answer {
+          correct_answer: "1:2"
+        }
+        explanation {
+          html: "<p>A common factor of 4\302\240and 8\302\240is 2. So, we can divide both sides of the ratio 4:8\302\240by 2 to get 2:4.</p>\n\n<p>But this is not the simplest form yet, because 2 and 4 are both\302\240divisible by 2. So, we can divide both sides of the ratio 2:4 by 2 to get 1:2.</p>\n\n<p>We can\'t simplify this ratio any more, so <strong>1:2</strong> is the correct answer.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Start\302\240by finding a common factor of 4\302\240and 8. Then, divide all numbers in the ratio by the common factor.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "The simplest form"
+        feedback {
+          html: "<p>No, that\'s not correct. Try again. Remember, to simplify a ratio, you need to divide all parts of the ratio by the same number.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter the correct ratio in the form X:Y"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Introduction"
+  value {
+    name: "Introduction"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1532301
+            file_name: "content-en-o07dqyokvh.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>The next day, James was\302\240sitting on a sofa and reading the recipes in \'Smoothies for Kids\'. Suddenly, he had a brilliant idea. Maybe he\302\240could create his own smoothie recipes!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of James holding a recipe book written: James smoothie recipe&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_174716_ydlal1patt_height_343_width_343.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>But, before we meet James, make sure you know the following before going on:</p>\n\n<ul>\n\t<li>\n\t<p>How to find ratios that are equivalent to a given ratio.</p>\n\t</li>\n\t<li>\n\t<p>What \"simplifying\" a ratio means.</p>\n\t</li>\n\t<li>\n\t<p>How to find a common factor of two numbers.</p>\n\t</li>\n</ul>\n\n<p>It will also be easier if you know the following:</p>\n\n<ul>\n\t<li>What a \"fraction\" is.</li>\n</ul>\n\n<p>Before you start, get some paper and a pen or pencil to write with, and find a quiet place. Take your time, and go through the story at your own pace, so that you understand what is going on.</p>\n\n<p>Once you\342\200\231re ready, click <strong>Continue</strong> to get started!</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Review 1"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "James makes his own recipe"
+  value {
+    name: "James makes his own recipe"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1721010
+            file_name: "content-en-k474sseuj1.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>James was sitting\302\240on a sofa reading his \"Smoothies for Kids\"\302\240recipe book, when he had a brilliant idea. He turned to\302\240Uncle Berry, who was sitting next to him.</p>\n\n<p>\"You know what?\" said James.\302\240\"I think I can make my own smoothie recipe!\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of a recipe book written \\&amp;quot;James\342\200\231 Smoothie Recipes\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_175139_escmxlb9zq_height_285_width_343.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"That\'s a great idea!\"\302\240said Uncle Berry. He walked to the kitchen with James.\302\240\"What smoothie do you want to start with?\"</p>\n\n<p>\342\200\234My favorite fruit, mango!\342\200\235 said James.\302\240He put 4\302\240cups of milk and 8\302\240cups of mango puree into the blender, and made a mango smoothie. James and Uncle Berry both tasted the smoothie.</p>\n\n<p>\342\200\234I like this ratio of milk to mango puree!\342\200\235 said Uncle Berry, \"Let\'s write this recipe down in a notebook so that we can refer to it later.\"</p>\n\n<p>\342\200\234Yeah,\"\302\240said James. But he still thought the smoothie could be better.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "The simplest form"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Final Test"
+  value {
+    name: "Final Test"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1709754
+            file_name: "content-en-b71ajpkevb.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 493490
+            file_name: "default_outcome-en-zy6iq9p28p.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 293498
+            file_name: "feedback_2-en-umfpx8kih2.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 59029
+            file_name: "feedback_1-en-jlj7m5p6ep.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\342\200\234Hmmm,\" said James\'s mother,\302\240\"maybe I can give you something that can help\302\240you with your recipe. But before that, do you think you could make me one of my favourite smoothies? It uses a recipe from Grandma, which I like.\"</p>\n\n<p>\"Sure!\" said James.</p>\n\n<p>\"OK!\" said James\'s mother.\302\240\"If I remember correctly, her mixed-fruit smoothie used\302\240<strong>2 cups</strong> of blueberry puree, <strong>4 cups</strong> of strawberry puree, <strong>12 cups</strong> of mango puree, and <strong>6 cups</strong> of yogurt.\"</p>\n\n<p>\"That\'s a lot of cups,\" said James. \"I don\342\200\231t have enough puree left for that. But I could make a smoothie with the equivalent ratio,\302\240using less puree. Would that be OK?\"</p>\n\n<p>\"Yes, go ahead!\"\302\240answered James\342\200\231 mom.</p>\n\n<p>Pick all the ratios that James can use.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Happy ending"
+          feedback {
+            html: "<p>Excellent!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_0"
+                }
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Final Test"
+          feedback {
+            html: "<p>You got one answer correct, but there are more correct answers. Make sure to pick <strong>all</strong>\302\240the correct\302\240answers.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Final Test"
+        feedback {
+          html: "<p>No, that\'s not correct. Make sure to write out each ratio in its simplest form first, then check whether\302\240it matches the simplest form of James\'s mother\'s recipe.</p>\n\n<p>Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 4
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:2:6:3</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3:6:18:9</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>4:8:20:12</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>6:12:36:24</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "dividing all three sides"
+  value {
+    name: "dividing all three sides"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 2892469
+            file_name: "content-en-9n1p059tlm.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>\"Uncle Berry, I\'m having trouble\302\240writing\302\24024:54:36 in its simplest form,\" said James. \"Can you help me?\"</p>\n\n<p>\"Sure!\" said Uncle Berry. \"Let\'s see ... 24, 54 and 36\302\240all have 2 as a factor, so let\'s divide each of\302\240them by 2. This gives us 12:27:18.\"</p>\n\n<p>\"But that can still be simplified further,\" said James. \"All the numbers are divisible by 3.\" He made the calculations. \"That gives\302\2404:9:6,\" he said.\302\240\"Is that the simplest form?\"</p>\n\n<p>\"Well, we need to check that,\" said Uncle Berry. \"Let\'s look at 4. The only numbers bigger than 1 that divide into it are 2 and 4.\302\240But you can\'t divide 9 or 6 by 4. Now, you could divide 6 by 2...\"</p>\n\n<p>\"But you can\'t divide 9 by 2!\" said James. \"So, that means there\'s no way to make the 4 smaller. All the choices don\'t work.\"</p>\n\n<p>\"That\'s right!\" said Uncle Berry. \"So 4:9:6 must\302\240be the simplest form!\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "3.5"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "2 to 4 is 3 to 6"
+  value {
+    name: "2 to 4 is 3 to 6"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1680289
+            file_name: "content-en-oi4uywt0lk.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1464619
+            file_name: "feedback_2-en-5smm60v0cp.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 517314
+            file_name: "feedback_3-en-12voqhn7nk.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 107925
+            file_name: "feedback_1-en-gt6oiyuvbh.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 849592
+            file_name: "feedback_4-en-8v5xyh020h.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 148674
+            file_name: "default_outcome-en-dv5jtqb18w.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>James continued experimenting with chocolate smoothies. He mixed\302\240ground chocolate and milk in\302\240the ratio 3:6.</p>\n\n<p>\342\200\234Hmmm\342\200\246. I don\342\200\231t like this ratio,\" said James. \"It\'s a little bit milky. Maybe I\342\200\231ll try a 2:4 ratio of ground chocolate and milk instead.\"</p>\n\n<p>\"James, I\'m not sure that that will make the smoothie taste different,\" said Uncle Berry. \"The ratio is still the same!\"</p>\n\n<p>\"Are they?\" asked James. \"But 2:4 can\'t\302\240be equal to 3:6. I can\'t\302\240multiply or divide one of the ratios by a counting number to get the other ratio.\"</p>\n\n<p>What do you think? Is it true that\302\2402:4 = 3:6?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Checking equivalent ratio using the simplest form"
+          feedback {
+            html: "<p>Well done! You are correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "2 to 4 is 3 to 6"
+          feedback {
+            html: "<p>No, that\'s not correct. We only need to consider\302\240counting numbers when we\'re writing a ratio in\302\240simplest form. But when you\'re finding equivalent ratios in general, you can multiply or divide the ratio by <strong>any number</strong>, as long as you do that for <strong>all parts </strong>of the ratio!</p>\n\n<p>Now, take a look at 2:4 and 3:6.\302\240In the last lesson, we said that two ratios are equivalent if they have the same relative relationship. Do 2:4 and 3:6 have the same relative relationship, or a different relative relationship?</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "2 to 4 is 3 to 6"
+          feedback {
+            html: "<p>No, that is wrong. We cannot get an equivalent ratio by adding or subtracting a number.\302\240If you\'ve forgotten how to find equivalent ratios, take a look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson on \\&amp;quot;Equivalent Ratios\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/create/k2bQ7z5XHNbK&amp;quot;\"></oppia-noninteractive-link> for a refresher!</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "2 to 4 is 3 to 6"
+          feedback {
+            html: "<p>No, that\'s not correct.\302\240In the ratio 2:4, we can say that <strong>the\302\240number on the right is twice the\302\240number on the left</strong>. That\'s the relative relationship between the two numbers.</p>\n\n<p>Now, try figuring out\302\240the relative relationship for 3:6. Is it the same as the one for 2:4, or different?</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "2 to 4 is 3 to 6"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>No, because we can\'t multiply 2:4 by a counting number to get 3:6.</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>No, because they have a different relative relationship.</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Yes, because they have the same relative relationship. The number on the\302\240right-hand side is double the number on the left-hand side.</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Yes, because if we add 1 to each side of the ratio, the ratio will become 3:6.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Simplest form of the simplest form"
+  value {
+    name: "Simplest form of the simplest form"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 242718
+            file_name: "content-en-swerj5fwk2.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 488475
+            file_name: "default_outcome-en-2pl85dqc2a.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 546153
+            file_name: "feedback_2-en-n0w4rstlxs.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 474061
+            file_name: "feedback_1-en-h1g52jsc72.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Let\342\200\231s try one more,\" said Uncle Berry. \"What is the simplest form of 1:2?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 2"
+          feedback {
+            html: "<p>Correct! 1:2 itself is the simplest form, as we cannot simplify the ratio further while having both sides still be counting numbers (like 1, 2, 3, ...)</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Simplest form of the simplest form"
+          feedback {
+            html: "<p>No, that\'s not correct. For a ratio to be in simplest form, <strong>each part of the ratio should be\302\240a counting number</strong> (such as 1, 2, 3, 4, ...).\302\240Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Simplest form of the simplest form"
+        feedback {
+          html: "<p>No, that\'s not correct. If a ratio is in simplest form, there should be no common factor between the numbers in the ratio. But your answer can still be simplified. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1/2:1</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:2</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>2:4</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3:6</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "3.5"
+  value {
+    name: "3.5"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 415751
+            file_name: "content-en-awwb0m54a8.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 155570
+            file_name: "default_outcome-en-vuyvyruw6n.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 375630
+            file_name: "feedback_2-en-fp7avoevjd.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 102286
+            file_name: "feedback_1-en-ga5zugaj8n.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 498506
+            file_name: "feedback_3-en-sq1jit7gtr.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Now,\" said Uncle Berry, \"try applying your new-found knowledge! Can you find the simplest form of the ratio\302\24020:8:16?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "2 to 4 is 3 to 6"
+          feedback {
+            html: "<p>Correct! Good job!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:2:4"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "3.5"
+          feedback {
+            html: "<p>Almost there! That ratio is equivalent to 20:4:8,\302\240but you can simplify it\302\240further. Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "10:4:8"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "3.5"
+          feedback {
+            html: "<p>No, that\'s not correct. Remember, if you divide one part of\302\240the ratio by a number, you must divide<strong> all</strong> numbers in the ratio by that same number.</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "5:1:2"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "3.5"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Write your answer as X:Y:Z, where X, Y and Z are counting numbers"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Cliffhanger and Congratulations"
+  value {
+    name: "Cliffhanger and Congratulations"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1226982
+            file_name: "content-en-rjulzshn7a.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>James\'s\302\240mother\302\240drank the smoothie. \"This is really good!\"\302\240she said.</p>\n\n<p>James felt very happy!\302\240Then, he remembered something. \"Mom, just now, you said you could give me something,\" he said. \"What are you going to give me?\342\200\235</p>\n\n<p>James\342\200\231s mother\302\240smiled at him, and said, \342\200\234A special\302\240recipe to make your smoothie better...\"</p>\n\n<p>----------------------------------------------------------------</p>\n\n<p>Congratulations on finishing this lesson. We hope you found it went \342\200\246 very smoothly!</p>\n\n<p>To find out what James\'s mother gave him, click the card below to continue to\302\240the next lesson!</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 2"
+  value {
+    name: "Review 2"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 446473
+            file_name: "content-en-iuo9qxy3ke.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 335502
+            file_name: "default_outcome-en-3y7l6igb8q.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 259643
+            file_name: "feedback_2-en-t18x4rbj9m.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 129240
+            file_name: "feedback_1-en-852jz7mr2h.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Great job! Let\'s try another question\302\240along the same lines.</p>\n\n<p>Which of the following\302\240ratios are equivalent to 6:10? Make sure to pick\302\240<strong>all</strong>\302\240the correct answers.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>Yes, that is correct! Good job!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+                content_ids {
+                  content_id: "ca_choices_4"
+                }
+                content_ids {
+                  content_id: "ca_choices_5"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>You got one answer correct, but there are more correct answers. Make sure to pick <strong>all</strong>\302\240the correct answers.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_5"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 2"
+        feedback {
+          html: "<p>No, that\'s not right. If you\'ve forgotten how to find equivalent ratios, take a look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson on \\&amp;quot;Equivalent Ratios\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/create/k2bQ7z5XHNbK&amp;quot;\"></oppia-noninteractive-link> for a refresher!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 6
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:2</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3:5</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>5:9</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>10:18</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>12:20</p>\n"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>18:30</p>\n"
+                  content_id: "ca_choices_5"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 3"
+  value {
+    name: "Review 3"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 341146
+            file_name: "content-en-jtclclecsl.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 381272
+            file_name: "feedback_2-en-co1uahqkeb.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 370610
+            file_name: "feedback_3-en-2junht6cch.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 84727
+            file_name: "feedback_1-en-soiu63owyd.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 245850
+            file_name: "feedback_4-en-ljc37cugui.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 393180
+            file_name: "default_outcome-en-6zmju74nuf.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Last one!</p>\n\n<p>Find a ratio that\'s\302\240equivalent\302\240to 3:5, so that the number on the right-hand side of the new ratio is 20.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "James makes his own recipe"
+          feedback {
+            html: "<p>Yes, that is correct!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "12:20"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>You\'re close! Remember to enter your answer as a ratio in the form \"X:20\", where X is a number.</p>\n\n<p>Try entering your answer again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "12"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>No, that\'s not right. You need to replace X with the correct number!</p>\n\n<p>Try again.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "X:20"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 3"
+          feedback {
+            html: "<p>No, that\'s not right. If you\'ve forgotten how to find equivalent ratios, try the\302\240<oppia-noninteractive-link text-with-value=\"&amp;quot;lesson on \\&amp;quot;Equivalent Ratios\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/create/k2bQ7z5XHNbK&amp;quot;\"></oppia-noninteractive-link>\302\240first. It\'s\302\240important to master that concept!</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: ":20"
+              }
+            }
+          }
+          rule_type: "Contains"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 3"
+        feedback {
+          html: "<p>No, that\'s not right. Remember to enter your answer in the form X:20 (with no spaces), where X is a number. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter your answer as X:20"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Mom comes home"
+  value {
+    name: "Mom comes home"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1351743
+            file_name: "content-en-fsq4ikvv8a.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>James and Uncle Berry finished making their smoothies. Uncle Berry was happy with the smoothies, but James thought that the recipe\302\240could still be better. However, he couldn\342\200\231t figure out what was\302\240missing in his recipe.</p>\n\n<p>Then James\'s mother\302\240came home.</p>\n\n<p>\"Hi, Mom!\" said\302\240James, bringing\302\240out a chocolate smoothie and a banana-strawberry smoothie. \"I\342\200\231ve made some smoothies with Uncle Berry. Do you want a taste?\"</p>\n\n<p>\"Oh, really?\" said James\'s\302\240mother. She tasted\302\240a bit of each smoothie.\302\240\"James,\" she said, \"this is delicious!\"</p>\n\n<p>\"Thanks, mom!\" said James. \"But I still think something is missing from my smoothie. I don\342\200\231t know what it is, though.\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Final Test"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Happy ending"
+  value {
+    name: "Happy ending"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 1692797
+            file_name: "content-en-y8ftnym62n.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>James\302\240made the smoothie for his mother. Before he gave it to her, he tasted a little of it and he liked it, so he noted down the ratio in his notebook!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Note on notebook: \342\200\230Mixed fruit smoothie: blueberry puree: strawberry puree: mango puree: milk = 1:2:6:3\342\200\231&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_175021_ve5s5j114x_height_361_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>He also made sure to remember some of the important things he learned. You might want to write them down so that you remember, too!</p>\n\n<ul>\n\t<li>\n\t<p>To find the <strong>simplest form</strong> of a ratio, simplify it (by repeatedly dividing all the parts by the same number)\302\240until it cannot be simplified further. Make sure that all parts of the ratio are always whole numbers (1, 2, 3, ...).</p>\n\t</li>\n\t<li>\n\t<p>To check whether two ratios are equivalent, find their simplest forms. If they\'re equal, then the ratios are equivalent. If not, then the ratios are not equivalent.</p>\n\t</li></ul>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Cliffhanger and Congratulations"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Practice 6"
+  value {
+    name: "Practice 6"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 941751
+            file_name: "content-en-645asebdof.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 432050
+            file_name: "default_outcome-en-l74v628t2o.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 259016
+            file_name: "feedback_2-en-nvm0wrjxvz.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 58397
+            file_name: "feedback_1-en-uuttya90hi.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"I like this!\" said James. \"I think I\'m getting better at finding the simplest form of a ratio.\"</p>\n\n<p>\"Yes, you are!\" said Uncle Berry. \"Practice always helps you become better.\"</p>\n\n<p>\"Give me a harder question, then!\" said James.</p>\n\n<p>\"OK,\" said Uncle Berry. \"This one will be a bit\302\240trickier. Can you find all the ratios that are equivalent to 10:15:25?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Mom comes home"
+          feedback {
+            html: "<p>Good job!</p>\n"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 6"
+          feedback {
+            html: "<p>You got one answer correct, but there is more correct answer. Pick all the answers that are correct.</p>\n"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Practice 6"
+        feedback {
+          html: "<p>No, that is not\302\240correct. Before you try again, make sure you\'ve simplified\302\240all the answer choices to their lowest terms first, so that you can compare it to Uncle Berry\'s\302\240ratio.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 4
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>5:10:20</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>6:9:15</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>8:12:20</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>15:20:30</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Checking equivalent ratio using the simplest form"
+  value {
+    name: "Checking equivalent ratio using the simplest form"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 3557346
+            file_name: "content-en-ziehdvvnk6.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 622640
+            file_name: "default_outcome-en-jwf0bq2u25.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 418886
+            file_name: "feedback_1-en-htju5w14dh.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 803201
+            file_name: "hint_1-en-4jobmx9gnv.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>\"Remember,\" said\302\240Uncle Berry. \"Two ratios are called <strong>equivalent</strong> if they have the <strong>same relative relationship</strong>.\302\240Do\302\2402:4 and 3:6 have the same relative relationship?\"</p>\n\n<p>James thought a bit. \"Yes!\" he said. \"We can multiply 2 to the left\302\240side,\302\240and get the number on the right.\"</p>\n\n<p>\"Good! So, 2:4 and 3:6 are equivalent,\"\302\240said Uncle Berry.\302\240\"In fact, you can multiply 2:4 by 1 1/2\302\240to get 3:6.\"</p>\n\n<p>\"Oh, yes!\" said James. \"But that\'s hard to spot. Is there a simpler way to tell when two ratios are equivalent?\"</p>\n\n<p>\"Yes,\" said Uncle Berry. \"You can do that by writing the ratios in their simplest form. If the simplest forms are the same,\302\240the ratios\302\240are equivalent. If the simplest forms are\302\240different, then they are not equivalent.\"</p>\n\n<p>\"For example, the simplest forms of both 2:4 and 3:6 are 1:2. Since the two ratios have the same simplest form, they\'re both\302\240equivalent, and we can write 2:4 = 3:6.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Text: 2:4 = 1:2 = 3:6&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_174903_abpwh1gddh_height_67_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"But 3:9 isn\'t equivalent to 2:4, because the simplest form of 3:9 is 1:3, which is different from 1:2.\342\200\235</p>\n\n<p>\"Got it!\" said James.</p>\n\n<p>\"Great,\" said Uncle Berry. \"Now, can you figure out which of the following ratios is equivalent to 3:9?\"</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Practice 4"
+          feedback {
+            html: "<p>Yes, that is correct! 2:6 and 3:9 both have 1:3 as their simplest form. Well done!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 1
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Start by writing down the simplest form for each ratio, first. For example:</p>\n\n<ul>\n\t<li>The simplest form of 1:2 is 1:2.</li>\n\t<li>The simplest form of 3:12 is 1:4.</li>\n</ul>\n\n<p>Can you figure out the others? Then, you can compare these simplest forms to the one for 3:9.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Checking equivalent ratio using the simplest form"
+        feedback {
+          html: "<p>No, that\'s not correct.</p>\n\n<p>On your piece of paper, write down the simplest form for each of the ratios first. Then, see which of these has the same simplest form as\302\2403:9.</p>\n\n<p>Try again. You can do it!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:2</p>\n"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>2:6</p>\n"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3:12</p>\n"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>6:24</p>\n"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Review 1"
+  value {
+    name: "Review 1"
+    recorded_voiceovers {
+      key: "content"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 460891
+            file_name: "content-en-6vwazi52wi.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 340517
+            file_name: "default_outcome-en-m7xmz0ip6a.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 543019
+            file_name: "feedback_2-en-if0pejm619.mp3"
+          }
+        }
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+        voiceover_mapping {
+          key: "en"
+          value {
+            file_size_bytes: 50877
+            file_name: "feedback_1-en-e728l661r0.mp3"
+          }
+        }
+      }
+    }
+    content {
+      html: "<p>Now, let\342\200\231s see if you remember what you and James learned last time!</p>\n\n<p>Which of the following\302\240ratios is a simplified form of 10:15? Choose <strong>all </strong>the answers which are correct.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 2"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Review 1"
+          feedback {
+            html: "<p>No, that\'s not correct. Remember, you <strong>cannot</strong> get an equivalent ratio by adding or subtracting the same number to both sides.</p>\n\n<p>If you\'ve forgotten how to find equivalent ratios, take a look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson on \\&amp;quot;Equivalent Ratios\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/create/k2bQ7z5XHNbK&amp;quot;\"></oppia-noninteractive-link> for a refresher!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+          rule_type: "ContainsAtLeastOneOf"
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+          rule_type: "ContainsAtLeastOneOf"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Review 1"
+        feedback {
+          html: "<p>No, that\'s not correct.\302\240If you\'ve forgotten how to find equivalent ratios, take a look at the <oppia-noninteractive-link text-with-value=\"&amp;quot;lesson on \\&amp;quot;Equivalent Ratios\\&amp;quot;&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/create/k2bQ7z5XHNbK&amp;quot;\"></oppia-noninteractive-link> for a refresher!</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 4
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>1:2</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>2:3</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>5:10</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>9:14</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "Introduction"
+objective: "Learn how to reduce ratios to simplest form, and use that to check if two ratios are equivalent."
+title: "Writing Ratios in Simplest Form"
+language_code: "en"
