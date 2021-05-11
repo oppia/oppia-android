@@ -25,7 +25,7 @@
     android:paddingTop="12dp"
     android:paddingEnd="@dimen/selection_interaction_item_padding_end"
     android:paddingBottom="12dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_margin_end : @dimen/interaction_item_question_view_margin_end}"
+    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_end : @dimen/interaction_item_question_view_margin_end}"
     app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_start : @dimen/interaction_item_question_view_margin_start}"
     app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}"
     app:layout_constraintBottom_toBottomOf="parent"
