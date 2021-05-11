@@ -361,34 +361,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivity() {
-    launch<OptionsActivity>(
-      createOptionActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.options_recyclerview,
-          position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
-      ).perform(click())
-      intended(
-        allOf(
-          hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
-            "Medium"
-          ),
-          hasComponent(ReadingTextSizeActivity::class.java.name)
-        )
-      )
-    }
-  }
-
-  @Test
   fun openOptionsActivity_configChange_clickTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -450,9 +422,9 @@ class OptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.options_recyclerview,
-          0,
-          R.id.reading_text_size_item_layout
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_item_layout
         )
       ).perform(
         click()
