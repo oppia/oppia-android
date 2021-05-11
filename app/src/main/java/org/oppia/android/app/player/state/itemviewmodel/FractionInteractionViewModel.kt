@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -23,7 +24,7 @@ class FractionInteractionViewModel(
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = ""
+  var answerText = ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -56,6 +57,12 @@ class FractionInteractionViewModel(
     return userAnswerBuilder.build()
   }
 
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+    answerText = userAnswer.plainAnswer
+    notifyChange()
+    Log.d("testSingleton", "i've set the value finally it is ${userAnswer.plainAnswer}")
+  }
+
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
@@ -84,12 +91,14 @@ class FractionInteractionViewModel(
       }
 
       override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
-        answerText = answer.toString().trim()
-        val isAnswerTextAvailable = answerText.isNotEmpty()
-        if (isAnswerTextAvailable != isAnswerAvailable.get()) {
-          isAnswerAvailable.set(isAnswerTextAvailable)
+        if (answer.isNotEmpty()) {
+          answerText = answer.toString().trim()
+          val isAnswerTextAvailable = answerText.isNotEmpty()
+          if (isAnswerTextAvailable != isAnswerAvailable.get()) {
+            isAnswerAvailable.set(isAnswerTextAvailable)
+          }
+          checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
         }
-        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {

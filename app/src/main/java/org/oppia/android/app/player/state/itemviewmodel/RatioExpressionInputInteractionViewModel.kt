@@ -34,6 +34,10 @@ class RatioExpressionInputInteractionViewModel(
   private val numberOfTerms =
     interaction.customizationArgsMap["numberOfTerms"]?.signedInt ?: 0
 
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {

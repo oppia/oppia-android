@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.state.RetriveUserAnswer
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -163,6 +165,7 @@ class StateFragmentPresenter @Inject constructor(
     viewModel.setHintBulbVisibility(false)
     hideKeyboard()
     moveToNextState()
+    RetriveUserAnswer.clearUserAnswer()
   }
 
   fun onNextButtonClicked() = moveToNextState()
@@ -539,6 +542,20 @@ class StateFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
+    )
+  }
+
+  fun handleOnResume() {
+    RetriveUserAnswer.getUserAnswer()?.let {
+      viewModel.setPendingAnswer(it, recyclerViewAssembler::getPendingAnswerHandler)
+      Log.d("testSingleton", "userAnswer -> ${it.answer}")
+      Log.d("testSingleton", "userAnswer -> $it")
+    }
+  }
+
+  fun handleDestroyView() {
+    RetriveUserAnswer.setUserAnswer(
+      viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     )
   }
 }

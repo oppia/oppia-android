@@ -129,4 +129,18 @@ class StateFragment :
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
+
+  override fun onResume() {
+    super.onResume()
+    stateFragmentPresenter.handleOnResume()
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    stateFragmentPresenter.handleDestroyView()
+  }
+
+  override fun setPendingAnswer(userAnswer: UserAnswer) {
+//    TODO("Not yet implemented")
+  }
 }
