@@ -498,14 +498,6 @@ class OptionsFragmentTest {
     }
   }
 
-  private fun createReadingTextSizeActivityIntent(summaryValue: String): Intent {
-    return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      READING_TEXT_SIZE,
-      summaryValue
-    )
-  }
-
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
