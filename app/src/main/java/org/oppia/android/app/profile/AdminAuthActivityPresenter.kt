@@ -69,6 +69,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthSubmitButton.setOnClickListener {
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
       if (inputPin.isEmpty()) {
+        authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_null))
         return@setOnClickListener
       }
       if (inputPin == adminPin) {
