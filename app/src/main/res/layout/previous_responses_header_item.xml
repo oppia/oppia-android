@@ -53,6 +53,7 @@
       android:layout_height="wrap_content"
       android:drawableEnd="@{viewModel.isExpanded ? @drawable/ic_arrow_down_grey_24dp : @drawable/ic_arrow_right_grey_24dp}"
       android:fontFamily="sans-serif-medium"
+      android:gravity="center_vertical"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
       android:text="@{@string/previous_responses_header(viewModel.previousAnswerCount)}"
