@@ -135,22 +135,22 @@
   <dimen name="selection_interaction_item_padding_end">16dp</dimen>
 
   <!-- Previous Responses Item: Exploration Split View -->
-  <dimen name="previous_responses_item_exploration_split_view_margin_start">24dp</dimen>
+  <dimen name="previous_responses_item_exploration_split_view_margin_start">36dp</dimen>
   <dimen name="previous_responses_item_exploration_split_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_exploration_split_view_margin_end">40dp</dimen>
+  <dimen name="previous_responses_item_exploration_split_view_margin_end">52dp</dimen>
 
   <!-- Previous Responses Item: Exploration View -->
-  <dimen name="previous_responses_item_exploration_view_margin_start">48dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_start">60dp</dimen>
   <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_exploration_view_margin_end">80dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_end">92dp</dimen>
 
   <!-- Previous Responses Item: Question Split View -->
-  <dimen name="previous_responses_item_question_split_view_margin_start">32dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_start">44dp</dimen>
   <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_question_split_view_margin_end">32dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_end">44dp</dimen>
 
   <!-- Previous Responses Item: Question View -->
-  <dimen name="previous_responses_item_question_view_margin_start">64dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_start">76dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_question_view_margin_end">64dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_end">76dp</dimen>
 </resources>
