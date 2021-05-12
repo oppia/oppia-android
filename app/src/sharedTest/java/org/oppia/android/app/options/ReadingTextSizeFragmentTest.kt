@@ -85,6 +85,7 @@ private const val MEDIUM_TEXT_SIZE_INDEX = 1
 private const val LARGE_TEXT_SIZE_INDEX = 2
 private const val EXTRA_LARGE_TEXT_SIZE_INDEX = 3
 
+/** Tests for [ReadingTextSizeFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ReadingTextSizeFragmentTest.TestApplication::class)
