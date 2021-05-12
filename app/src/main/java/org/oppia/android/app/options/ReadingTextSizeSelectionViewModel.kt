@@ -10,7 +10,7 @@ import javax.inject.Inject
 /** Text Size list view model for the recycler view in [ReadingTextSizeFragment]. */
 @FragmentScope
 class ReadingTextSizeSelectionViewModel @Inject constructor(
-  private val fragment: Fragment
+  fragment: Fragment
 ) : ObservableViewModel() {
 
   private val resourceBundle = fragment.requireContext().resources
