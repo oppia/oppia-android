@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "CachingTestModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
