@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.administrator_controls_account_actions_view.view.*
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
