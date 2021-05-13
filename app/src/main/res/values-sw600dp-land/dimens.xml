@@ -17,10 +17,6 @@
   <dimen name="state_fragment_split_view_margin_start">64dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_exploration_split_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_exploration_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_question_split_view_margin_top">24dp</dimen>
-  <dimen name="previous_responses_item_question_view_margin_top">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">40dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
@@ -48,10 +44,6 @@
   <dimen name="profile_chooser_profile_view_parent_margin_end_profile_not_added">298dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">208dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_start">208dp</dimen>
-  <dimen name="previous_responses_item_exploration_view_margin_end">208dp</dimen>
-  <dimen name="previous_responses_item_exploration_view_margin_start">208dp</dimen>
-  <dimen name="previous_responses_item_question_view_margin_end">208dp</dimen>
-  <dimen name="previous_responses_item_question_view_margin_start">208dp</dimen>
   <dimen name="submitted_answer_exploration_view_margin_start">208dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">208dp</dimen>
 
@@ -185,4 +177,20 @@
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">24dp</dimen>
   <dimen name="selection_interaction_item_padding_end">24dp</dimen>
+
+  <!-- Previous Responses Item: Exploration Split View -->
+  <dimen name="previous_responses_item_exploration_split_view_margin_start">36dp</dimen>
+  <dimen name="previous_responses_item_exploration_split_view_margin_end">52dp</dimen>
+
+  <!-- Previous Responses Item: Exploration View -->
+  <dimen name="previous_responses_item_exploration_view_margin_start">188dp</dimen>
+  <dimen name="previous_responses_item_exploration_view_margin_end">220dp</dimen>
+
+  <!-- Previous Responses Item: Question Split View -->
+  <dimen name="previous_responses_item_question_split_view_margin_start">44dp</dimen>
+  <dimen name="previous_responses_item_question_split_view_margin_end">44dp</dimen>
+
+  <!-- Previous Responses Item: Question View -->
+  <dimen name="previous_responses_item_question_view_margin_start">204dp</dimen>
+  <dimen name="previous_responses_item_question_view_margin_end">204dp</dimen>
 </resources>
