@@ -146,8 +146,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_0_title)
-              + context.getString(R.string.onboarding_slide_0_description)
+            context.getString(R.string.onboarding_slide_0_title) +
+              context.getString(R.string.onboarding_slide_0_description)
           )
         )
       )
@@ -161,8 +161,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_0_title)
-              + context.getString(R.string.onboarding_slide_0_description)
+            context.getString(R.string.onboarding_slide_0_title) +
+              context.getString(R.string.onboarding_slide_0_description)
           )
         )
       )
@@ -276,8 +276,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_1_title)
-              + context.getString(R.string.onboarding_slide_1_description)
+            context.getString(R.string.onboarding_slide_1_title) +
+              context.getString(R.string.onboarding_slide_1_description)
           )
         )
       )
@@ -293,8 +293,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_1_title)
-              + context.getString(R.string.onboarding_slide_1_description)
+            context.getString(R.string.onboarding_slide_1_title) +
+              context.getString(R.string.onboarding_slide_1_description)
           )
         )
       )
@@ -415,8 +415,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_2_title)
-              + context.getString(R.string.onboarding_slide_2_description)
+            context.getString(R.string.onboarding_slide_2_title) +
+              context.getString(R.string.onboarding_slide_2_description)
           )
         )
       )
@@ -432,8 +432,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_2_title)
-              + context.getString(R.string.onboarding_slide_2_description)
+            context.getString(R.string.onboarding_slide_2_title) +
+              context.getString(R.string.onboarding_slide_2_description)
           )
         )
       )
@@ -540,8 +540,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.final_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_3_title)
-              + context.getString(R.string.onboarding_slide_3_description)
+            context.getString(R.string.onboarding_slide_3_title) +
+              context.getString(R.string.onboarding_slide_3_description)
           )
         )
       )
@@ -557,8 +557,8 @@ class OnboardingFragmentTest {
       onView(withId(R.id.final_layout)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_3_title)
-              + context.getString(R.string.onboarding_slide_3_description)
+            context.getString(R.string.onboarding_slide_3_title) +
+              context.getString(R.string.onboarding_slide_3_description)
           )
         )
       )
