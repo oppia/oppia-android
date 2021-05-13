@@ -142,7 +142,7 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view))
         .perform(click())
-      onView(withId(R.id.profile_list_fragment))
+      onView(withId(R.id.profile_list_container))
         .check(matches(isDisplayed()))
     }
   }
@@ -162,7 +162,7 @@ class AdministratorControlsFragmentTest {
         )
       )
       onView(withId(R.id.app_version_text_view)).perform(click())
-      onView(withId(R.id.app_version_fragment))
+      onView(withId(R.id.app_version_container))
         .check(matches(isDisplayed()))
     }
   }
