@@ -65,6 +65,10 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
+    binding.addProfileActivityAllowDownloadConstraintLayout.setOnClickListener {
+      allowDownloadAccess = !allowDownloadAccess
+      binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
+    }
     binding.addProfileActivityAllowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
       allowDownloadAccess = isChecked
     }
