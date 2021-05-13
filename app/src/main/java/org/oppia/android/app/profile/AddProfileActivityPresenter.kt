@@ -69,9 +69,6 @@ class AddProfileActivityPresenter @Inject constructor(
       allowDownloadAccess = !allowDownloadAccess
       binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
     }
-    binding.addProfileActivityAllowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
-      allowDownloadAccess = isChecked
-    }
     binding.addProfileActivityPinCheckBox.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
       checkboxStateClicked = isChecked
