@@ -2,7 +2,6 @@ package org.oppia.android.app.profile
 
 import android.content.Context
 import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
