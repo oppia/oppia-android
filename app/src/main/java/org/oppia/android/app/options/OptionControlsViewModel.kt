@@ -14,10 +14,10 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [OptionsFragment]. */
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
@@ -71,7 +71,7 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
-      logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
+      oppiaLogger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
     }
     return profile.getOrDefault(Profile.getDefaultInstance())
   }
