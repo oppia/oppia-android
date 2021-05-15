@@ -76,6 +76,8 @@ import javax.inject.Singleton
 )
 class AdministratorControlsFragmentTest {
 
+  private var internalProfileId = 0
+
   @Inject
   lateinit var context: Context
 
@@ -103,7 +105,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -117,7 +119,7 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -132,11 +134,10 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -148,11 +149,10 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -161,7 +161,8 @@ class AdministratorControlsFragmentTest {
           3
         )
       )
-      onView(withId(R.id.app_version_text_view)).perform(click())
+      onView(withId(R.id.app_version_text_view))
+        .perform(click())
       onView(withId(R.id.app_version_container))
         .check(matches(isDisplayed()))
     }

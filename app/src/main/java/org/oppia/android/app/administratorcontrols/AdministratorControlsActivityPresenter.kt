@@ -37,7 +37,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_placeholder,
       AdministratorControlsFragment.newInstance(isMultipane)
     ).commitNow()
@@ -75,7 +75,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
     ).commitNow()
@@ -84,7 +84,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
     ).commitNow()
