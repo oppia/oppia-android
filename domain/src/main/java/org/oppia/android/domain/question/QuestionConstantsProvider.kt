@@ -11,15 +11,31 @@ annotation class QuestionCountPerTrainingSession
 @Qualifier
 annotation class QuestionTrainingSeed
 
+/**
+ * Qualifier corresponding to the penalty users receive for each hint viewed in a practice session.
+ */
 @Qualifier
 annotation class ViewHintScorePenalty
 
+/**
+ * Qualifier corresponding to the penalty users receive for each wrong answer submitted in a
+ * practice session.
+ */
 @Qualifier
 annotation class WrongAnswerScorePenalty
 
+/**
+ * Qualifier corresponding to the maximum score users can receive for each question in a practice
+ * session.
+ */
 @Qualifier
 annotation class MaxScorePerQuestion
 
+/**
+ * Qualifier corresponding to the factor by which all the score constants were internally multiplied
+ * (relative to Oppia web) with the purpose of maintaining integer representations of constants and
+ * scores for internal score calculations.
+ */
 @Qualifier
 annotation class InternalScoreMultiplyFactor
 

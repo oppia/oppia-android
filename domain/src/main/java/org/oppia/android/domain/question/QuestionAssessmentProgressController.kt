@@ -333,7 +333,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       return dataProviders.createInMemoryDataProviderAsync(
         "user_assessment_performance"
       ) {
-        (this::retrieveUserAssessmentPerformanceAsync)(skillIdList)
+        retrieveUserAssessmentPerformanceAsync(skillIdList)
       }
     }
 
