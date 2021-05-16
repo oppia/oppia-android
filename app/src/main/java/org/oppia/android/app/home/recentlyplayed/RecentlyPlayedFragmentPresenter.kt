@@ -18,11 +18,11 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedFragment]. */
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val entityType: String
@@ -223,14 +223,14 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d("RecentlyPlayedFragment", "Loading exploration")
-          result.isFailure() -> logger.e(
+          result.isPending() -> oppiaLogger.d("RecentlyPlayedFragment", "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
             "RecentlyPlayedFragment",
             "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
+            oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,
               topicId,

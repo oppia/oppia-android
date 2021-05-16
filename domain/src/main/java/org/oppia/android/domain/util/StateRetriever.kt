@@ -194,7 +194,9 @@ class StateRetriever @Inject constructor() {
     recordedVoiceovers: JSONObject
   ): Map<String, VoiceoverMapping> {
     val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
-    return voiceoverMappingJson.keys().asSequence().associateWith { contentId ->
+    return voiceoverMappingJson.keys().asSequence().filter { contentId ->
+      voiceoverMappingJson.getJSONObject(contentId).length() != 0
+    }.associateWith { contentId ->
       val voiceoverJson = voiceoverMappingJson.getJSONObject(contentId)
       VoiceoverMapping.newBuilder().apply {
         putAllVoiceoverMapping(
