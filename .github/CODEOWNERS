@@ -212,7 +212,6 @@ NOTICE @seanlip
 # TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global model ownership.
 /model/ @vinitamurthi
-/model/ @vinitamurthi
 
 #####################################################################################
 #                                global overrides                                   #
