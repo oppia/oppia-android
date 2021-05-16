@@ -11,7 +11,7 @@ import org.oppia.android.util.threading.getQueue
 import javax.inject.Inject
 import javax.inject.Singleton
 
-internal typealias ObserveAsyncChange = suspend () -> Unit
+typealias ObserveAsyncChange = suspend () -> Unit
 
 /**
  * A subscription manager for all [DataProvider]s. This should only be used outside of this package for notifying
@@ -26,12 +26,12 @@ class AsyncDataSubscriptionManager @Inject constructor(
   private val backgroundCoroutineScope = CoroutineScope(backgroundDispatcher)
 
   /** Subscribes the specified callback function to the specified [DataProvider] ID. */
-  internal fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
+  fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
     subscriptionMap.enqueue(id, observeChange)
   }
 
   /** Unsubscribes the specified callback function from the specified [DataProvider] ID. */
-  internal fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
+  fun unsubscribe(id: Any, observeChange: ObserveAsyncChange): Boolean {
     // TODO(#91): Determine a way to safely fully remove the queue once it's empty. This may require a custom data
     //  structure or external locking for proper thread safety (e.g. to handle the case where multiple
     //  subscribes/notifies happen shortly after the queue is removed).
@@ -42,7 +42,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * Creates an association such that change notifications via [notifyChange] to the parent ID will also notify
    * observers of the child ID.
    */
-  internal fun associateIds(childId: Any, parentId: Any) {
+  fun associateIds(childId: Any, parentId: Any) {
     // TODO(#6): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
     //  make this impossible in practice unless data provider users try to use the same key for multiple inter-dependent
     //  data providers.
@@ -55,7 +55,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * Removes the specified association between parent and child IDs to prevent notifications to the parent ID from also
    * notifying observers of the child ID.
    */
-  internal fun dissociateIds(childId: Any, parentId: Any) {
+  fun dissociateIds(childId: Any, parentId: Any) {
     associatedIds.dequeue(parentId, childId)
   }
 

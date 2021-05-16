@@ -21,14 +21,14 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
@@ -42,7 +42,7 @@ class HomeViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val internalProfileId: Int,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
@@ -95,7 +95,7 @@ class HomeViewModel(
   val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
       if (itemListResult.isFailure()) {
-        logger.e(
+        oppiaLogger.e(
           "HomeFragment",
           "No home fragment available -- failed to retrieve fragment data.",
           itemListResult.getErrorOrNull()
