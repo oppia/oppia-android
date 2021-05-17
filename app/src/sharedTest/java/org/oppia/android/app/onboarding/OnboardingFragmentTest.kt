@@ -269,7 +269,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_Slide1_hasCorrectContentDescription() {
+  fun testOnboardingFragment_slide1_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -285,7 +285,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide1_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_slide1_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
@@ -408,7 +408,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_Slide2_hasCorrectContentDescription() {
+  fun testOnboardingFragment_slide2_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -424,7 +424,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide2_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_slide2_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
@@ -533,7 +533,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_Slide3_hasCorrectContentDescription() {
+  fun testOnboardingFragment_slide3_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
@@ -549,7 +549,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_configChange_Slide3_hasCorrectContentDescription() {
+  fun testOnboardingFragment_configChange_slide3_hasCorrectContentDescription() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
