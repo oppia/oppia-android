@@ -1,15 +1,25 @@
 package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.getContentIdSet
 import javax.inject.Inject
 
+// Note: the number is needed due to https://youtrack.jetbrains.com/issue/KT-24700 to avoid a
+// redeclaration error with other files.
+private typealias ContentId1 = TranslatableHtmlContentId
+private typealias ListOfContentIdSets1 = ListOfSetsOfTranslatableHtmlContentIds
+
 /**
- * Provider for a classifier that determines whether an element of [ListOfSetsOfHtmlStrings] at a particular position is equal to the specified value per the
- * drag drop sort input interaction.
+ * Provider for a classifier that determines whether an element of
+ * [ListOfSetsOfTranslatableHtmlContentIds] at a particular position is equal to the specified value
+ * per the drag drop sort input interaction.
  *
  * https://github.com/oppia/oppia/blob/03f16147e513ad31cbbf3ce882867a1aac99d649/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L78
  */
@@ -17,30 +27,28 @@ import javax.inject.Inject
 class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
 ) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfSetsOfHtmlStrings, String, Int> {
+  GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfContentIdSets1, ContentId1, Int> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createDoubleInputClassifier(
-      expectedAnswerObjectType = InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
-      expectedObjectType1 = InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
+      expectedAnswerObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+      expectedObjectType1 = TRANSLATABLE_HTML_CONTENT_ID,
       firstInputParameterName = "x",
-      expectedObjectType2 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+      expectedObjectType2 = NON_NEGATIVE_INT,
       secondInputParameterName = "y",
       matcher = this
     )
   }
 
-  /**
-   *  We are adding +1 in matching logic to make it even with the web login i.e. input will be of base 1 rather base 0,
-   *  which is done to make it human friendly.
-   *  */
   override fun matches(
-    answer: ListOfSetsOfHtmlStrings,
-    firstInput: String,
+    answer: ListOfSetsOfTranslatableHtmlContentIds,
+    firstInput: TranslatableHtmlContentId,
     secondInput: Int
   ): Boolean {
-    return answer.setOfHtmlStringsList.indexOfFirst {
-      it.htmlList.contains(firstInput)
+    // Note that the '1' returned here is to have consistency with the web platform: matched indexes
+    // start at 1 rather than 0 to make the indexes more human friendly.
+    return answer.contentIdListsList.indexOfFirst {
+      firstInput.contentId in it.getContentIdSet()
     } + 1 == secondInput
   }
 }

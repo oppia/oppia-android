@@ -24,6 +24,7 @@ import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity.Companion.createHomeFragmentTestActivity
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -41,19 +42,19 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -93,9 +94,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the reflexive property of equals(): a == a.
@@ -108,9 +109,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
 
@@ -125,9 +126,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1MorningCopy1 = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(testFragment)
@@ -150,9 +151,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
         val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
@@ -168,9 +169,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
@@ -183,9 +184,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -207,9 +208,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -232,9 +233,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -259,9 +260,9 @@ class WelcomeViewModelTest {
   fun testWelcomeViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
-        setUpTestFragment(it)
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
+        setUpTestFragment(homeFragmentTestActivity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           testFragment,
@@ -304,7 +305,6 @@ class WelcomeViewModelTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -314,13 +314,13 @@ class WelcomeViewModelTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

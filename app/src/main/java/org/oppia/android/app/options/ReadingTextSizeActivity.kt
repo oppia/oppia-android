@@ -30,7 +30,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
 
   companion object {
     internal const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
-    internal const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+    const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
       "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
     /** Returns a new [Intent] to route to [ReadingTextSizeActivity]. */
     fun createReadingTextSizeActivityIntent(

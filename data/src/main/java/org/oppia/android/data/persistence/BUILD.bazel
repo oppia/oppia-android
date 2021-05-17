@@ -1,0 +1,25 @@
+"""
+This package provides persistence to the rest of the application.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "cache_store",
+    srcs = ["PersistentCacheStore.kt"],
+    custom_package = "org.oppia.android.data.persistence",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//model:profile_java_proto_lite",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:in_memory_blocking_cache",
+        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
+    ],
+)
+
+dagger_rules()

@@ -31,6 +31,8 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.EnablePracticeTab
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.domain.classify.InteractionsModule
@@ -50,19 +52,19 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -79,6 +81,10 @@ class TopicTestActivityForStoryTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
 
   @Before
   fun setUp() {
@@ -102,7 +108,7 @@ class TopicTestActivityForStoryTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
+            TopicTab.getTabForPosition(position = 1, enablePracticeTab).name
           )
         )
       )
@@ -120,8 +126,8 @@ class TopicTestActivityForStoryTest {
       )
       onView(
         atPosition(
-          R.id.story_summary_recycler_view,
-          1
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1
         )
       ).check(matches(hasDescendant(withText(containsString("First Story")))))
     }
@@ -131,18 +137,18 @@ class TopicTestActivityForStoryTest {
   fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
     launch(TopicTestActivityForStory::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      // Story 0 of the topic should be expanded.
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
-          2,
-          R.id.chapter_recycler_view
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -154,12 +160,12 @@ class TopicTestActivityForStoryTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

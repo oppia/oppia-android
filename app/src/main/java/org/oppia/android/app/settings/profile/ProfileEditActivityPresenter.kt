@@ -1,6 +1,7 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,23 +11,25 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditActivityBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
 @ActivityScope
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
 ) {
 
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
-  fun handleOnCreate() {
+  private lateinit var dialog: AlertDialog
+
+  fun handleOnCreate(savedInstanceState: Bundle?) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
@@ -83,7 +86,7 @@ class ProfileEditActivityPresenter @Inject constructor(
           activity,
           Observer {
             if (it.isFailure()) {
-              logger.e(
+              oppiaLogger.e(
                 "ProfileEditActivityPresenter",
                 "Failed to updated allow download access",
                 it.getErrorOrNull()!!
@@ -93,10 +96,12 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
+    if (savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) == true)
+      showDeletionDialog(profileId)
   }
 
   private fun showDeletionDialog(profileId: Int) {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
@@ -121,6 +126,12 @@ class ProfileEditActivityPresenter @Inject constructor(
               }
             }
           )
-      }.create().show()
+      }.create()
+    dialog.show()
+  }
+
+  fun handleOnSaveInstanceState(outState: Bundle) {
+    val isDialogVisible = ::dialog.isInitialized && dialog.isShowing
+    outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, isDialogVisible)
   }
 }

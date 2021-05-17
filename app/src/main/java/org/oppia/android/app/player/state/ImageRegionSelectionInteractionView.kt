@@ -13,13 +13,13 @@ import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
-import org.oppia.android.util.accessibility.CustomAccessibilityManager
+import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.DefaultGcsPrefix
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.ImageLoader
-import org.oppia.android.util.parser.ImageViewTarget
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.image.DefaultGcsPrefix
+import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
 
 /**
@@ -41,7 +41,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var listener: OnClickableAreaClickedListener
 
   @Inject
-  lateinit var accessibilityManager: CustomAccessibilityManager
+  lateinit var accessibilityChecker: AccessibilityChecker
 
   @Inject
   lateinit var imageLoader: ImageLoader
@@ -82,7 +82,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, imageUrl)
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
     if (imageUrl.endsWith("svg", ignoreCase = true)) {
-      imageLoader.loadSvg(imageUrl, ImageViewTarget(this))
+      imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this))
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))
     }
@@ -132,7 +132,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
       .createViewComponent(this)
       .inject(this)
-    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
+    isAccessibilityEnabled = accessibilityChecker.isScreenReaderEnabled()
   }
 
   fun setOnRegionClicked(onRegionClicked: OnClickableAreaClickedListener) {

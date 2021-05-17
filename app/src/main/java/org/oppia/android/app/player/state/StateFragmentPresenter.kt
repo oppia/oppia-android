@@ -32,16 +32,17 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -61,7 +62,7 @@ class StateFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
@@ -302,7 +303,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StateFragment",
         "Failed to retrieve ephemeral state",
         result.getErrorOrNull()!!
@@ -441,7 +442,7 @@ class StateFragmentPresenter @Inject constructor(
     ephemeralStateResult: AsyncResult<AnswerOutcome>
   ): AnswerOutcome {
     if (ephemeralStateResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StateFragment",
         "Failed to retrieve answer outcome",
         ephemeralStateResult.getErrorOrNull()!!
@@ -453,7 +454,7 @@ class StateFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToHint]. */
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StateFragment",
         "Failed to retrieve Hint",
         hintResult.getErrorOrNull()!!
@@ -465,7 +466,7 @@ class StateFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToSolution]. */
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StateFragment",
         "Failed to retrieve Solution",
         solutionResult.getErrorOrNull()!!

@@ -10,8 +10,8 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
