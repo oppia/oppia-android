@@ -1,8 +1,10 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
+import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
@@ -16,7 +18,8 @@ private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
  * [CustomHtmlContentHandler].
  */
 class MathTagHandler(
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val context: Context
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -46,7 +49,7 @@ class MathTagHandler(
         return@run startIndex to length
       }
       output.setSpan(
-        ImageSpan(drawable, content.svgFilename),
+        createMathSpan(content.rawLatex, 72f),
         startIndex,
         endIndex,
         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -54,12 +57,16 @@ class MathTagHandler(
     } else consoleLogger.e("MathTagHandler", "Failed to parse math tag")
   }
 
+  fun createMathSpan(expr: String, baseSize: Float, isMathMode: Boolean = true) =
+    MathExpressionSpan(expr, baseSize, context.assets, isMathMode)
+
   private data class MathContent(val rawLatex: String, val svgFilename: String) {
     companion object {
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
         val rawLatex = obj?.getOptionalString("raw_latex")
         val svgFilename = obj?.getOptionalString("svg_filename")
         return if (rawLatex != null && svgFilename != null) {
+          rawLatex.replace("\\","\\\\")
           MathContent(rawLatex, svgFilename)
         } else null
       }

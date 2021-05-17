@@ -72,6 +72,7 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
+  compile(name:'kotlitex-release', ext:'aar')
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
       'javax.annotation:javax.annotation-api:1.3.2',

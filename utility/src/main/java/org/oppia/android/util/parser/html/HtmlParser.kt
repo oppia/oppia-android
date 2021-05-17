@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -17,7 +18,8 @@ class HtmlParser private constructor(
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
-  customOppiaTagActionListener: CustomOppiaTagActionListener?
+  customOppiaTagActionListener: CustomOppiaTagActionListener?,
+  context: Context
 ) {
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
@@ -31,7 +33,7 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { BulletTagHandler() }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
-  private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
+  private val mathTagHandler by lazy { MathTagHandler(consoleLogger, context) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -125,7 +127,8 @@ class HtmlParser private constructor(
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    private val context: Context
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -145,7 +148,8 @@ class HtmlParser private constructor(
         entityId,
         imageCenterAlign,
         consoleLogger,
-        customOppiaTagActionListener
+        customOppiaTagActionListener,
+        context
       )
     }
   }
