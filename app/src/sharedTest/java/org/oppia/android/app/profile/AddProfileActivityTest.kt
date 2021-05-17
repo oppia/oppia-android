@@ -1518,7 +1518,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(click())
+      onView(withId(R.id.add_profile_activity_allow_download_constraint_layout)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isChecked()))
