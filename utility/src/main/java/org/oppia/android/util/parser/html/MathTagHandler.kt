@@ -3,7 +3,6 @@ package org.oppia.android.util.parser.html
 import android.content.Context
 import android.text.Editable
 import android.text.Spannable
-import android.text.style.ImageSpan
 import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
@@ -66,7 +65,7 @@ class MathTagHandler(
         val rawLatex = obj?.getOptionalString("raw_latex")
         val svgFilename = obj?.getOptionalString("svg_filename")
         return if (rawLatex != null && svgFilename != null) {
-          rawLatex.replace("\\","\\\\")
+          rawLatex.replace("\\", "\\\\")
           MathContent(rawLatex, svgFilename)
         } else null
       }
