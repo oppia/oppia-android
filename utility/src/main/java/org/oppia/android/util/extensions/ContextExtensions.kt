@@ -10,8 +10,13 @@ fun Context.getVersionName(): String {
 }
 
 /** Returns the current app version code. */
-fun Context.getVersionCode(): Int {
-  return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionCode
+fun Context.getLongVersionCode(): Long {
+  return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+    // Check the SDK version to make sure that the method call exists for the API level.
+    this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).longVersionCode
+  } else {
+    this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionCode.toLong()
+  }
 }
 
 /** Returns the time at which the app was last updated. */

@@ -212,6 +212,26 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
+  fun testController_submitMultipleFeedbackReports_withNetwork_doesNotSaveReportsToStore() {
+    // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+
+    val reportsStore = feedbackReportManagementController.getFeedbackReportStore().toLiveData()
+    reportsStore.observeForever(mockReportsStoreObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
+
+    val reportsList = reportStoreResultCaptor.value
+      .getOrDefault(FeedbackReportingDatabase.getDefaultInstance())
+      .reportsList
+    assertThat(reportsList).isEmpty()
+  }
+
+  @Test
   fun testController_submitFeedbackReport_withoutNetwork_savesReportToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
