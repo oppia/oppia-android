@@ -13,6 +13,7 @@ load("//utility:utility_test.bzl", "utility_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/accessibility/*.kt",
+    "src/main/java/org/oppia/android/util/caching/*.kt",
     "src/main/java/org/oppia/android/util/data/*.kt",
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/extensions/*.kt",
@@ -57,6 +58,7 @@ kt_android_library(
         "//third_party:com_google_guava_guava",
         "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
         "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
@@ -90,6 +92,7 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
 ]
