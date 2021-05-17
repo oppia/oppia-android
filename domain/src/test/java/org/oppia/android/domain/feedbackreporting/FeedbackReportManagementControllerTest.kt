@@ -313,7 +313,7 @@ class FeedbackReportManagementControllerTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = "1.0"
-    packageInfo.versionCode = 1
+    packageInfo.longVersionCode = 1
     packageManager.installPackage(packageInfo)
   }
 

@@ -11,9 +11,9 @@ android_library(
     testonly = True,
     assets = glob(["src/test/assets/**"]),
     assets_dir = "src/test/assets/",
-    visibility = ["//:oppia_testing_visibility"],
     custom_package = "org.oppia.android.data",
     manifest = "src/test/AndroidManifest.xml",
+    visibility = ["//:oppia_testing_visibility"],
 )
 
 # keep sorted

@@ -11,7 +11,7 @@ data class GaeFeedbackReportingSystemContext(
   /** The package version name for the user's instance of the app. */
   @Json(name = "platform_version") val packageVersionName: String,
   /** The package version code for the user's instance of the app. */
-  @Json(name = "package_version_code") val packageVersionCode: Int,
+  @Json(name = "package_version_code") val packageVersionCode: Long,
   /** The ISO-3166 code for the country locale set on the user's device. */
   @Json(name = "android_device_country_locale_code") val countryLocaleCode: String,
   /** The IDO-639 code for the language locale set on the user's device. */
