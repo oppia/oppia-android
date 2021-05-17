@@ -215,6 +215,7 @@ class FeedbackReportManagementControllerTest {
   fun testController_submitMultipleFeedbackReports_withNetwork_doesNotSaveReportsToStore() {
     // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
     mockWebServer.enqueue(MockResponse().setBody("{}"))
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
