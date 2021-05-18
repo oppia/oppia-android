@@ -33,6 +33,8 @@
       android:id="@+id/return_to_topic_button"
       style="@style/StateButtonActive"
       android:onClick="@{(v) -> buttonViewModel.returnToTopicNavigationButtonListener.onReturnToTopicButtonClicked()}"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp"
       android:text="@string/state_end_exploration_button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

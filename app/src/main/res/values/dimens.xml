@@ -28,8 +28,6 @@
   <dimen name="next_button_question_view_padding_bottom">28dp</dimen>
   <dimen name="previous_button_exploration_view_padding_bottom">28dp</dimen>
   <dimen name="previous_button_question_view_padding_bottom">28dp</dimen>
-  <dimen name="return_to_topic_item_exploration_view_padding_bottom">28dp</dimen>
-  <dimen name="return_to_topic_item_question_view_padding_bottom">28dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">28dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_start">28dp</dimen>
   <dimen name="submit_button_item_exploration_view_padding_bottom">28dp</dimen>
@@ -57,10 +55,6 @@
   <dimen name="next_button_item_question_view_margin_top">56dp</dimen>
   <dimen name="previous_button_item_exploration_view_margin_top">56dp</dimen>
   <dimen name="previous_button_item_question_view_margin_top">56dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_top">56dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_top">56dp</dimen>
-  <dimen name="return_to_topic_item_exploration_view_margin_top">56dp</dimen>
-  <dimen name="return_to_topic_item_question_view_margin_top">56dp</dimen>
   <dimen name="submit_button_item_exploration_view_margin_top">56dp</dimen>
   <dimen name="submit_button_item_question_view_margin_top">56dp</dimen>
 
@@ -147,8 +141,6 @@
   <dimen name="topic_list_item_margin_top_bottom">12dp</dimen>
   <dimen name="drag_drop_grouping_hint_non_split_text_view_margin_start">12dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">12dp</dimen>
-  <dimen name="replay_button_item_exploration_view_padding_bottom">12dp</dimen>
-  <dimen name="replay_button_item_question_view_padding_bottom">12dp</dimen>
 
   <dimen name="font_scale_content_large_text_view_size">24dp</dimen>
   <dimen name="continue_interaction_item_exploration_view_margin_end">24dp</dimen>
@@ -180,14 +172,6 @@
   <dimen name="profile_chooser_profile_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>
   <dimen name="ratio_input_interaction_item_conversation_view_margin_end">24dp</dimen>
-  <dimen name="replay_button_item_exploration_view_padding_end">24dp</dimen>
-  <dimen name="replay_button_item_exploration_view_padding_start">24dp</dimen>
-  <dimen name="replay_button_item_question_view_padding_end">24dp</dimen>
-  <dimen name="replay_button_item_question_view_padding_start">24dp</dimen>
-  <dimen name="return_to_topic_button_exploration_view_padding_end">24dp</dimen>
-  <dimen name="return_to_topic_button_exploration_view_padding_start">24dp</dimen>
-  <dimen name="return_to_topic_button_question_view_padding_end">24dp</dimen>
-  <dimen name="return_to_topic_button_question_view_padding_start">24dp</dimen>
   <dimen name="selection_interaction_item_conversation_view_margin_end">24dp</dimen>
   <dimen name="submit_button_item_exploration_view_padding_end">24dp</dimen>
   <dimen name="submit_button_item_exploration_view_padding_start">24dp</dimen>
@@ -218,8 +202,6 @@
   <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_already_added">8dp</dimen>
   <dimen name="profile_chooser_profile_view_is_admin_margin_top_profile_already_added">8dp</dimen>
   <dimen name="profile_view_already_added_description_parent_margin_top">8dp</dimen>
-  <dimen name="return_to_topic_button_exploration_view_margin_bottom">8dp</dimen>
-  <dimen name="return_to_topic_button_question_view_margin_bottom">8dp</dimen>
   <dimen name="submit_button_question_view_margin_bottom">8dp</dimen>
   <dimen name="submit_button_exploration_view_margin_bottom">8dp</dimen>
   <dimen name="submitted_answer_text_non_conversation_view_padding_top">8dp</dimen>
@@ -230,14 +212,6 @@
 
   <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="submit_button_item_question_view_margin_end">128dp</dimen>
   <dimen name="submit_button_item_question_view_margin_start">128dp</dimen>
 
@@ -247,7 +221,6 @@
   <dimen name="continue_navigation_item_question_split_view_margin_end">64dp</dimen>
   <dimen name="next_button_item_exploration_split_view_margin_end">64dp</dimen>
   <dimen name="next_button_item_question_split_view_margin_end">64dp</dimen>
-  <dimen name="replay_button_item_question_split_view_margin_end">64dp</dimen>
   <dimen name="submit_button_item_exploration_split_view_margin_end">64dp</dimen>
   <dimen name="submit_button_item_question_split_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
@@ -272,8 +245,6 @@
   <dimen name="next_button_item_question_split_view_margin_top">72dp</dimen>
   <dimen name="previous_button_item_exploration_split_view_margin_top">72dp</dimen>
   <dimen name="previous_button_item_question_split_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_exploration_split_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_question_split_view_margin_top">72dp</dimen>
   <dimen name="state_fragment_non_split_view_with_audio_bar_visible_padding_top">72dp</dimen>
   <dimen name="submit_button_item_exploration_split_view_margin_top">72dp</dimen>
   <dimen name="submit_button_item_question_split_view_margin_top">72dp</dimen>
@@ -421,4 +392,7 @@
 
   <!-- Return to Topic Button: Question View -->
   <dimen name="return_to_topic_button_item_question_view_margin_top">12dp</dimen>
+
+  <!-- Replay Button: Question View -->
+  <dimen name="replay_button_item_question_view_margin_top">48dp</dimen>
 </resources>

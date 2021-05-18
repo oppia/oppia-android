@@ -23,14 +23,6 @@
   <dimen name="drag_drop_item_question_view_margin_start">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
   <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="selection_interaction_item_non_conversation_view_margin_end">128dp</dimen>
   <dimen name="selection_interaction_item_non_conversation_view_margin_start">128dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">128dp</dimen>
@@ -59,8 +51,6 @@
   <dimen name="profile_chooser_profile_view_margin_start_profile_already_added">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin">16dp</dimen>
-
-  <dimen name="return_to_topic_item_question_view_margin_top">12dp</dimen>
 
   <dimen name="profile_chooser_profile_view_name_margin_top_profile_already_added">8dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">28dp</dimen>
@@ -96,9 +86,6 @@
   <dimen name="next_button_item_question_view_margin_top">72dp</dimen>
   <dimen name="previous_button_item_exploration_view_margin_top">72dp</dimen>
   <dimen name="previous_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="return_to_topic_item_exploration_view_margin_top">72dp</dimen>
   <dimen name="submit_button_item_exploration_view_margin_top">72dp</dimen>
   <dimen name="submit_button_item_question_view_margin_top">72dp</dimen>
 
