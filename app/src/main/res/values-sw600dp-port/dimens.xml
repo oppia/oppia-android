@@ -188,19 +188,24 @@
   <dimen name="previous_responses_item_question_view_margin_start">140dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_end">140dp</dimen>
 
+  <!--
+    Note to developers: All margins for state related buttons have been reduced by 4dp because
+    the buttons in their respective styles have additional 4dp margin. This has been done so that
+    the shadows are clearly visible around the buttons.
+  -->
   <!-- General Button Item: Exploration Split View -->
-  <dimen name="general_button_item_exploration_split_view_margin_start">48dp</dimen>
-  <dimen name="general_button_item_exploration_split_view_margin_end">48dp</dimen>
+  <dimen name="general_button_item_exploration_split_view_margin_start">44dp</dimen>
+  <dimen name="general_button_item_exploration_split_view_margin_end">44dp</dimen>
 
   <!-- General Button: Exploration View -->
-  <dimen name="general_button_item_exploration_view_margin_start">112dp</dimen>
-  <dimen name="general_button_item_exploration_view_margin_end">112dp</dimen>
+  <dimen name="general_button_item_exploration_view_margin_start">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_margin_end">108dp</dimen>
 
   <!-- General Button: Question Split View -->
-  <dimen name="general_button_item_question_split_view_margin_start">48dp</dimen>
-  <dimen name="general_button_item_question_split_view_margin_end">48dp</dimen>
+  <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
+  <dimen name="general_button_item_question_split_view_margin_end">44dp</dimen>
 
   <!-- General Button: Question View -->
-  <dimen name="general_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="general_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="general_button_item_question_view_margin_start">124dp</dimen>
+  <dimen name="general_button_item_question_view_margin_end">124dp</dimen>
 </resources>
