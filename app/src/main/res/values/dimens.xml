@@ -415,4 +415,10 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">28dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">28dp</dimen>
+
+  <!-- Return to Topic Button: Exploration View -->
+  <dimen name="return_to_topic_button_item_exploration_view_margin_top">48dp</dimen>
+
+  <!-- Return to Topic Button: Question View -->
+  <dimen name="return_to_topic_button_item_question_view_margin_top">12dp</dimen>
 </resources>
