@@ -42,7 +42,6 @@
   <dimen name="profile_chooser_profile_view_parent_margin_end_profile_not_added">298dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">208dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_start">208dp</dimen>
-  <dimen name="selection_interaction_item_conversation_view_margin_start">208dp</dimen>
   <dimen name="submitted_answer_exploration_view_margin_start">208dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">208dp</dimen>
 
@@ -52,15 +51,8 @@
   <dimen name="continue_navigation_item_question_view_margin_start">192dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_end">192dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_start">192dp</dimen>
-  <dimen name="next_button_item_question_view_margin_end">192dp</dimen>
-  <dimen name="next_button_item_question_view_margin_start">192dp</dimen>
-  <dimen name="previous_button_item_question_view_margin_start">192dp</dimen>
-  <dimen name="selection_interaction_item_non_conversation_view_margin_end">192dp</dimen>
-  <dimen name="selection_interaction_item_non_conversation_view_margin_start">192dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">192dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_start">192dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_end">192dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_start">192dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_end">192dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_start">192dp</dimen>
 
@@ -69,21 +61,9 @@
   <dimen name="continue_navigation_item_exploration_view_margin_end">176dp</dimen>
   <dimen name="continue_navigation_item_exploration_view_margin_start">176dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_end">176dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_end">176dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_start">176dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">176dp</dimen>
-  <dimen name="previous_button_item_exploration_view_margin_start">176dp</dimen>
-  <dimen name="selection_interaction_item_conversation_view_margin_end">176dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_end">176dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_start">176dp</dimen>
   <dimen name="submitted_answer_item_exploration_view_margin_end">176dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_end">176dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="next_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="previous_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="previous_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_top">72dp</dimen>
 
   <dimen name="drag_drop_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
