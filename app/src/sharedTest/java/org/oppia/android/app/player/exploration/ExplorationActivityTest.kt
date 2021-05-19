@@ -40,6 +40,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -58,6 +59,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.player.exploration.ExplorationActivity.Companion.createExplorationActivityIntent
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
@@ -370,7 +372,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -392,7 +394,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -415,7 +417,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -439,7 +441,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -472,7 +474,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -514,7 +516,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -551,7 +553,7 @@ class ExplorationActivityTest {
   // TODO (#1855): Resolve ktlint max line in app module test
   @Test
   fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+    setUpAudioForRatiosLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -673,6 +675,48 @@ class ExplorationActivityTest {
       onView(withText("Hinglish"))
         .inRoot(isDialog())
         .check(matches(isChecked()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testAudioPlayer_openRatiosExp_changeLanguageToSpanish_clickNext_audioErrorTextDisplayed() {
+    setUpAudioForRatiosLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
+      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.audio_language_icon),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      ).perform(click())
+      onView(withText("español"))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withText(context.getString(R.string.audio_language_select_dialog_okay_button)))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withId(R.id.audio_error_text_view)).check(matches(not(isDisplayed())))
+
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(withId(R.id.continue_button)).perform(click())
+      waitForTheView(withText(containsString("Sorry, español audio is not available for this card.")))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -811,14 +855,18 @@ class ExplorationActivityTest {
     )
   }
 
-  private fun setupAudio() {
+  private fun setUpAudioForRatiosLesson() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
       val dataSource = createAudioDataSource(
         explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
       )
+      val dataSource2 = createAudioDataSource(
+        explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-es-i0nhu49z0q.mp3"
+      )
       addShadowMediaPlayerException(dataSource!!, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource2!!, IOException("Test does not have networking"))
     }
   }
 

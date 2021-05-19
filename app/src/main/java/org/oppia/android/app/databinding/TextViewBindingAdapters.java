@@ -14,6 +14,19 @@ import org.oppia.android.util.system.OppiaDateTimeFormatter;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
+  /** Binds adapter for setting error message for audio player. */
+  @BindingAdapter("audio:error")
+  public static void setAudioPlayerError(@NonNull TextView textView, String languageCode) {
+    if (languageCode != null && !languageCode.isEmpty()) {
+      Locale locale = new Locale(languageCode);
+      String languageName = locale.getDisplayLanguage(locale);
+      textView.setText(textView.getContext().getString(
+          R.string.audio_not_available_error,
+          languageName
+      ));
+    }
+  }
+
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
