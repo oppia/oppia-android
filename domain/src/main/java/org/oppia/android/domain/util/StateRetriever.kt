@@ -356,7 +356,8 @@ class StateRetriever @Inject constructor() {
     translatableSetOfStringsJson: JSONObject
   ): TranslatableSetOfNormalizedString = TranslatableSetOfNormalizedString.newBuilder().apply {
     contentId = translatableSetOfStringsJson.getString("contentId")
-    val strSet = translatableSetOfStringsJson.getJSONArray("normalizedStrSet")
+    val normalizedStrObj = translatableSetOfStringsJson.getJSONObject("normalizedStrSet")
+    val strSet = normalizedStrObj.getJSONArray("value")
     for (i in 0 until strSet.length()) {
       addNormalizedStrings(strSet.getString(i))
     }
