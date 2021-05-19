@@ -13,10 +13,10 @@ import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.domain.onboarding.AppStartupStateController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -25,7 +25,7 @@ private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecatio
 @ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val appStartupStateController: AppStartupStateController,
   private val primeTopicAssetsController: PrimeTopicAssetsController
 ) {
@@ -87,7 +87,7 @@ class SplashActivityPresenter @Inject constructor(
     startupStateResult: AsyncResult<AppStartupState>
   ): StartupMode {
     if (startupStateResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "SplashActivity",
         "Failed to retrieve startup state",
         startupStateResult.getErrorOrNull()

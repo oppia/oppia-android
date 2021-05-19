@@ -31,8 +31,6 @@
   <dimen name="return_to_topic_button_item_exploration_view_margin_start">128dp</dimen>
   <dimen name="return_to_topic_button_item_question_view_margin_end">128dp</dimen>
   <dimen name="return_to_topic_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="selection_interaction_item_non_conversation_view_margin_end">128dp</dimen>
-  <dimen name="selection_interaction_item_non_conversation_view_margin_start">128dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">128dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_start">128dp</dimen>
   <dimen name="submit_button_item_question_view_margin_end">128dp</dimen>
@@ -72,7 +70,6 @@
 
   <dimen name="drag_drop_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">144dp</dimen>
-  <dimen name="selection_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="submitted_answer_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_not_added">124dp</dimen>
@@ -86,7 +83,6 @@
   <dimen name="next_button_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="previous_button_item_exploration_view_margin_start">112dp</dimen>
-  <dimen name="selection_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="submit_button_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="submit_button_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="submitted_answer_item_exploration_view_margin_end">112dp</dimen>
@@ -200,4 +196,20 @@
   <!-- Previous Responses Item: Question View -->
   <dimen name="previous_responses_item_question_view_margin_start">140dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_end">140dp</dimen>
+
+  <!-- General Button Item: Exploration Split View -->
+  <dimen name="general_button_item_exploration_split_view_margin_start">48dp</dimen>
+  <dimen name="general_button_item_exploration_split_view_margin_end">48dp</dimen>
+
+  <!-- General Button: Exploration View -->
+  <dimen name="general_button_item_exploration_view_margin_start">112dp</dimen>
+  <dimen name="general_button_item_exploration_view_margin_end">112dp</dimen>
+
+  <!-- General Button: Question Split View -->
+  <dimen name="general_button_item_question_split_view_margin_start">48dp</dimen>
+  <dimen name="general_button_item_question_split_view_margin_end">48dp</dimen>
+
+  <!-- General Button: Question View -->
+  <dimen name="general_button_item_question_view_margin_start">128dp</dimen>
+  <dimen name="general_button_item_question_view_margin_end">128dp</dimen>
 </resources>
