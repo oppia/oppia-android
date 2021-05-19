@@ -87,9 +87,9 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -162,7 +162,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -198,11 +198,11 @@ class BindableAdapterTest {
           getTestFragment(activity).view!!.findViewById(R.id.test_recycler_view)
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -226,18 +226,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          1
+          recyclerViewId = R.id.test_recycler_view,
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          2
+          recyclerViewId = R.id.test_recycler_view,
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -261,7 +261,7 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(1)
       }
       // Perform onView() verification off the the main thread to avoid deadlocking.
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
     }
   }
@@ -284,11 +284,11 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 1))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 1))
         .check(matches(withText(STR_VALUE_0.boundStringValue)))
-      onView(atPosition(R.id.test_recycler_view, 2))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 2))
         .check(matches(withText(STR_VALUE_2.boundStringValue)))
     }
   }
@@ -312,18 +312,18 @@ class BindableAdapterTest {
         assertThat(recyclerView.childCount).isEqualTo(3)
       }
 
-      onView(atPosition(R.id.test_recycler_view, 0))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0))
         .check(matches(withText(STR_VALUE_1.boundStringValue)))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          1
+          recyclerViewId = R.id.test_recycler_view,
+          position = 1
         )
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
-          R.id.test_recycler_view,
-          2
+          recyclerViewId = R.id.test_recycler_view,
+          position = 2
         )
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
@@ -374,7 +374,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -397,7 +401,12 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 
@@ -418,7 +427,11 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("initial")))
+      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
+        matches(
+          withText("initial")
+        )
+      )
     }
   }
 
@@ -441,7 +454,12 @@ class BindableAdapterTest {
       testCoroutineDispatchers.runCurrent()
 
       // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
-      onView(atPosition(R.id.test_recycler_view, 0)).check(matches(withText("new value")))
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
     }
   }
 

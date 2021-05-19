@@ -25,9 +25,8 @@ import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -39,7 +38,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
@@ -60,7 +58,7 @@ class HomeFragmentPresenter @Inject constructor(
       activity,
       fragment,
       oppiaClock,
-      logger,
+      oppiaLogger,
       internalProfileId,
       profileManagementController,
       topicListController,

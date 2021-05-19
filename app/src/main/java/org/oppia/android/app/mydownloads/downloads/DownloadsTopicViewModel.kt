@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
 /** [ViewModel] for title in [DownloadsFragment]. */
 class DownloadsTopicViewModel(
