@@ -19,8 +19,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.filesize.FileSizeUtil
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.HtmlParser
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [TopicInfoFragment]. */
