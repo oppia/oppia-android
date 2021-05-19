@@ -80,7 +80,7 @@ class MathTagHandlerTest {
     setUpTestApplicationComponent()
     noTagHandlers = mapOf()
     tagHandlersWithMathSupport = mapOf(
-      CUSTOM_MATH_TAG to MathTagHandler(consoleLogger)
+      CUSTOM_MATH_TAG to MathTagHandler(consoleLogger, context)
     )
   }
 
