@@ -337,4 +337,12 @@
 
   <!-- Replay Button: Question View -->
   <dimen name="replay_button_item_question_view_margin_top">44dp</dimen>
+
+  <!-- FAQ Single -->
+  <dimen name="faq_single_margin_start">0dp</dimen>
+  <dimen name="faq_single_margin_end">0dp</dimen>
+  <dimen name="faq_single_padding_start">24dp</dimen>
+  <dimen name="faq_single_padding_top">22dp</dimen>
+  <dimen name="faq_single_padding_end">28dp</dimen>
+  <dimen name="faq_single_padding_bottom">60dp</dimen>
 </resources>
