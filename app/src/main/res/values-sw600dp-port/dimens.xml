@@ -193,5 +193,5 @@
   <dimen name="faq_single_padding_start">64dp</dimen>
   <dimen name="faq_single_padding_top">48dp</dimen>
   <dimen name="faq_single_padding_end">64dp</dimen>
-  <dimen name="faq_single_padding_bottom">460dp</dimen>
+  <dimen name="faq_single_padding_bottom">132dp</dimen>
 </resources>
