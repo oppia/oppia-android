@@ -187,6 +187,7 @@
   <dimen name="general_button_item_question_view_margin_end">188dp</dimen>
 
   <!-- FAQ -->
+  <dimen name="faq_list_padding_bottom">124dp</dimen>
   <dimen name="faq_list_margin_start">232dp</dimen>
   <dimen name="faq_list_margin_end">232dp</dimen>
   <dimen name="faq_content_margin_start">36dp</dimen>
