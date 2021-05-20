@@ -16,6 +16,7 @@ import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
+import java.util.*
 import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
@@ -152,7 +153,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
             /* attachToParent= */ false
           ).root
         },
-        bindView = { view, viewModel -> }
+        bindView = { _, _ -> }
       )
       .build()
   }
@@ -167,20 +168,21 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     val position: Int = itemList.indexOf(hintsViewModel)
 
     var isHintListVisible = false
-    if (currentExpandedHintListIndex != null) {
-      isHintListVisible = currentExpandedHintListIndex!! == position
+    currentExpandedHintListIndex?.let {
+      isHintListVisible = it == position
     }
     binding.isListExpanded = isHintListVisible
 
-    index?.let {
-      isHintRevealed?.let {
-        if (index == position && isHintRevealed!!) {
+    index?.let { index ->
+      isHintRevealed?.let { isHintRevealed ->
+        if (index == position && isHintRevealed) {
           hintsViewModel.isHintRevealed.set(true)
         }
       }
     }
 
-    binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
+    binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ")
+      .capitalize(Locale.getDefault())
     binding.hintsAndSolutionSummary.text =
       htmlParserFactory.create(
         resourceBucketName,
@@ -230,11 +232,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         ) {
           bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
         } else {
-          if (previousIndex != null) {
-            bindingAdapter.notifyItemChanged(previousIndex)
+          previousIndex?.let {
+            bindingAdapter.notifyItemChanged(it)
           }
-          if (currentExpandedHintListIndex != null) {
-            bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
+          currentExpandedHintListIndex?.let {
+            bindingAdapter.notifyItemChanged(it)
           }
         }
       }
@@ -251,20 +253,20 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     val position: Int = itemList.indexOf(solutionViewModel)
 
     var isHintListVisible = false
-    if (currentExpandedHintListIndex != null) {
-      isHintListVisible = currentExpandedHintListIndex!! == position
+    currentExpandedHintListIndex?.let { currentExpandedHintListIndex ->
+      isHintListVisible = currentExpandedHintListIndex == position
     }
     binding.isListExpanded = isHintListVisible
 
-    solutionIndex?.let {
-      isSolutionRevealed?.let {
-        if (solutionIndex == position && isSolutionRevealed!!) {
+    solutionIndex?.let { solutionIndex ->
+      isSolutionRevealed?.let { isSolutionRevealed ->
+        if (solutionIndex == position && isSolutionRevealed) {
           solutionViewModel.isSolutionRevealed.set(true)
         }
       }
     }
 
-    binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize()
+    binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize(Locale.getDefault())
     // TODO(#1050): Update to display answers for any answer type.
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
@@ -301,11 +303,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         ) {
           bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
         } else {
-          if (previousIndex != null) {
-            bindingAdapter.notifyItemChanged(previousIndex)
+          previousIndex?.let {
+            bindingAdapter.notifyItemChanged(it)
           }
-          if (currentExpandedHintListIndex != null) {
-            bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
+          currentExpandedHintListIndex?.let {
+            bindingAdapter.notifyItemChanged(it)
           }
         }
       }
@@ -323,7 +325,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private fun showRevealSolutionDialogFragment() {
     val previousFragment =
       fragment.childFragmentManager.findFragmentByTag(TAG_REVEAL_SOLUTION_DIALOG)
-    if (previousFragment != null) {
+    previousFragment?.let {
       fragment.childFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = RevealSolutionDialogFragment.newInstance()
@@ -361,7 +363,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
   private fun handleNewAvailableHint(hintIndex: Int?) {
     if (itemList[hintIndex!!] is HintsViewModel) {
-      val hintsViewModel = itemList[hintIndex!!] as HintsViewModel
+      val hintsViewModel = itemList[hintIndex] as HintsViewModel
       hintsViewModel.hintCanBeRevealed.set(true)
       bindingAdapter.notifyItemChanged(hintIndex)
     }
