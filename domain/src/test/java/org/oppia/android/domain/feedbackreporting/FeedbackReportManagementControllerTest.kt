@@ -8,8 +8,6 @@ import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -40,7 +38,6 @@ import org.oppia.android.app.model.Suggestion
 import org.oppia.android.app.model.Suggestion.SuggestionCategory
 import org.oppia.android.app.model.UserSuppliedFeedback
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.TestLogReportingModule
@@ -60,6 +57,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.Shadows
@@ -158,9 +156,31 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitFeedbackReport_withNetwork_successfullySendsRequestToServer() {
+  fun testController_submitFeedbackReport_withLocalNetwork_successfullySendsRequestToServer() {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+    // The feedback_reporting_unformatted.json is the same as the feedback_reporting.json, in the
+    // format used in the request body of reports sent in network requests.
+    val feedbackReportUnformattedJson = ApiMockLoader.getFakeJson(
+      "feedback_reporting_unformatted.json"
+    )
+
+    val request = mockWebServer.takeRequest(
+      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
+    )
+    request?.let {
+      assertThat(it.method).isEqualTo("POST")
+      // Append newline to the request body to match new line at the end of the JSON file.
+      assertThat(it.body.readUtf8() + "\n").isEqualTo(feedbackReportUnformattedJson)
+    }
+  }
+
+  @Test
+  fun testController_submitFeedbackReport_withCellularNetwork_successfullySendsRequestToServer() {
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
     // The feedback_reporting_unformatted.json is the same as the feedback_reporting.json, in the
     // format used in the request body of reports sent in network requests.
@@ -193,7 +213,7 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitFeedbackReport_withNetwork_doesNotSaveReportToStore() {
+  fun testController_submitFeedbackReport_withLocalNetwork_doesNotSaveReportToStore() {
     // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
@@ -212,11 +232,53 @@ class FeedbackReportManagementControllerTest {
   }
 
   @Test
-  fun testController_submitMultipleFeedbackReports_withNetwork_doesNotSaveReportsToStore() {
-    // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
+  fun testController_submitMultipleFeedbackReports_withLocalNetwork_doesNotSaveReportsToStore() {
+    // Enqueue multiple responses so that the MockWebServer knows when all request are successfully
+    // sent.
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+
+    val reportsStore = feedbackReportManagementController.getFeedbackReportStore().toLiveData()
+    reportsStore.observeForever(mockReportsStoreObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
+
+    val reportsList = reportStoreResultCaptor.value
+      .getOrDefault(FeedbackReportingDatabase.getDefaultInstance())
+      .reportsList
+    assertThat(reportsList).isEmpty()
+  }
+
+  @Test
+  fun testController_submitFeedbackReport_withCellularNetwork_doesNotSaveReportToStore() {
+    // Enqueue a responses so that the MockWebServer knows when the request is successfully sent.
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
+    feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
+
+    val reportsStore = feedbackReportManagementController.getFeedbackReportStore().toLiveData()
+    reportsStore.observeForever(this.mockReportsStoreObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockReportsStoreObserver, atLeastOnce()).onChanged(reportStoreResultCaptor.capture())
+
+    val reportsList = reportStoreResultCaptor.value
+      .getOrDefault(FeedbackReportingDatabase.getDefaultInstance())
+      .reportsList
+    assertThat(reportsList).isEmpty()
+  }
+
+  @Test
+  fun testController_submitMultipleFeedbackReports_withCellularNetwork_doesNotSaveReportsToStore() {
+    // Enqueue multiple responses so that the MockWebServer knows when all requests are successfully
+    // sent.
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
     feedbackReportManagementController.submitFeedbackReport(earlierCrashReport)
     feedbackReportManagementController.submitFeedbackReport(laterSuggestionReport)
 
@@ -343,15 +405,6 @@ class FeedbackReportManagementControllerTest {
     // read when recording the logcat events.
     val logFile = File(context.filesDir, "oppia_app.log")
     logFile.printWriter().use { out -> out.println("Fake logcat log") }
-  }
-
-  private fun createMockGaeFeedbackReport(): GaeFeedbackReport {
-    val feedbackReportJson = ApiMockLoader.getFakeJson("feedback_reporting.json")
-    val moshi = Moshi.Builder().build()
-
-    val adapter: JsonAdapter<GaeFeedbackReport> = moshi.adapter(GaeFeedbackReport::class.java)
-    val mockGaeFeedbackReport = adapter.fromJson(feedbackReportJson)
-    return mockGaeFeedbackReport!!
   }
 
   @Module
