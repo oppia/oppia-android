@@ -20,11 +20,12 @@
 
     <com.jackandphantom.circularimageview.CircleImage
       android:id="@+id/profile_edit_image"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
+      android:layout_width="108dp"
+      android:layout_height="108dp"
       android:clickable="true"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
+      android:padding="8dp"
       app:add_shadow="true"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
