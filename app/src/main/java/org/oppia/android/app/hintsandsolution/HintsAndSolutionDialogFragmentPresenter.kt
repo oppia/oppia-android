@@ -183,7 +183,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ").capitalize()
     binding.hintsAndSolutionSummary.text =
       htmlParserFactory.create(
-        resourceBucketName, entityType, hintsViewModel.explorationId.get()!!, /* imageCenterAlign= */ true
+        resourceBucketName,
+        entityType,
+        hintsViewModel.explorationId.get()!!,
+        /* imageCenterAlign= */ true
       ).parseOppiaHtml(
         hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
       )
