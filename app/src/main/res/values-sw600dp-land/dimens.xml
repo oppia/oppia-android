@@ -188,9 +188,6 @@
 
   <!-- FAQ -->
   <dimen name="faq_list_padding_bottom">124dp</dimen>
-  <dimen name="faq_list_scroll_padding_bottom">0dp</dimen>
-  <dimen name="faq_list_margin_start">232dp</dimen>
-  <dimen name="faq_list_margin_end">232dp</dimen>
   <dimen name="faq_content_margin_start">36dp</dimen>
   <dimen name="faq_content_margin_end">32dp</dimen>
   <dimen name="faq_item_header_margin_start">32dp</dimen>
