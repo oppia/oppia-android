@@ -22,7 +22,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
-  private val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
+  val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
 
   fun setHintsList(hintList: List<Hint>) {
     this.hintList = hintList
