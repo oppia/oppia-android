@@ -181,11 +181,7 @@ class ReadingTextSizeFragmentTest {
       }
 
       override fun matchesSafely(item: View): Boolean {
-        (item as TextView).apply {
-          val pixels = textSize
-          val actualSize = pixels / resources.displayMetrics.scaledDensity
-          return expectedSize.compareTo(actualSize) == 0
-        }
+        return item is TextView && item.textSize == expectedSize
       }
     }
   }
