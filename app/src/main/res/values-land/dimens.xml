@@ -165,4 +165,13 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">60dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">60dp</dimen>
+
+  <!-- FAQ -->
+  <dimen name="faq_list_scroll_padding_bottom">108dp</dimen>
+  <dimen name="faq_content_margin_start">76dp</dimen>
+  <dimen name="faq_content_margin_end">76dp</dimen>
+  <dimen name="faq_item_header_margin_start">72dp</dimen>
+  <dimen name="faq_item_header_margin_top">24dp</dimen>
+  <dimen name="faq_item_header_margin_end">72dp</dimen>
+  <dimen name="faq_item_header_margin_bottom">8dp</dimen>
 </resources>
