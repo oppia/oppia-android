@@ -326,7 +326,7 @@
   <dimen name="general_button_item_question_split_view_margin_end">44dp</dimen>
 
   <!-- General Button: Question View -->
-  <dimen name="general_button_item_question_view_margin_start">24dp</dimen>
+  <dimen name="general_button_item_question_view_margin_start">20dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">24dp</dimen>
 
   <!-- Return to Topic Button: Exploration View -->
