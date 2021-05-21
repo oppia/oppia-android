@@ -441,7 +441,8 @@ class OptionsFragmentTest {
         allOf(
           hasExtra(
             ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
-            "Medium"),
+            "Medium"
+          ),
           hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE),
           hasComponent(ReadingTextSizeActivity::class.java.name)
         )
