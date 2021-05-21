@@ -39,9 +39,13 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
         addHintToList(hintList[index])
       } else if (itemList.size > 1) {
         val isLastHintRevealed =
-          (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+          (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
+            .isHintRevealed.get()
+            ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
-        if (isLastHintRevealed && index <= availableHintIndex / 2) {
+        if (isLastHintRevealed &&
+          index <= availableHintIndex / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
+        ) {
           addHintToList(hintList[index])
         } else {
           break
@@ -50,10 +54,12 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     }
     if (itemList.size > 1) {
       val isLastHintRevealed =
-        (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+        (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
+          .isHintRevealed.get()
+          ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
-        hintList.size * 2 == itemList.size &&
+        hintList.size * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER == itemList.size &&
         isLastHintRevealed &&
         areAllHintsExhausted
       ) {

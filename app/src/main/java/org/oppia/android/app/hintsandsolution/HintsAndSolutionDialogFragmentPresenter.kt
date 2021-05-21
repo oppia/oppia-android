@@ -16,10 +16,16 @@ import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
+
+/** RecyclerView items are 2 times of (No. of Hints + Solution),
+ * this is because in UI after each hint or solution there is a horizontal line/view
+ * which is considered as a separate item in recyclerview.
+ **/
+const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
 
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -86,7 +92,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     // The newAvailableHintIndex received here is coming from state player but in this implementation
     // hints/solutions are shown on every even index and on every odd index we show a divider.
     // Therefore multiplying the original index by 2.
-    viewModel.newAvailableHintIndex.set(newAvailableHintIndex * 2)
+    viewModel.newAvailableHintIndex.set(
+      newAvailableHintIndex * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
+    )
     viewModel.allHintsExhausted.set(allHintsExhausted)
     viewModel.explorationId.set(id)
 
@@ -200,7 +208,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
         (fragment.requireActivity() as? RevealHintListener)?.revealHint(
           saveUserChoice = true,
-          hintIndex = position / 2
+          hintIndex = position / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
         )
         val previousIndex: Int? = currentExpandedHintListIndex
         currentExpandedHintListIndex =
@@ -270,7 +278,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     // TODO(#1050): Update to display answers for any answer type.
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
-        """${solutionViewModel.numerator.get()}/${solutionViewModel.denominator.get()}"""
+        fragment.requireContext().resources.getString(
+          R.string.hints_android_solution_correct_answer,
+          solutionViewModel.numerator.get().toString(),
+          solutionViewModel.denominator.get().toString()
+        )
     } else {
       binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
     }
@@ -315,10 +327,13 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
-    if (itemList[itemList.size - 2] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
+    if (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] is SolutionViewModel) {
+      val solutionViewModel =
+        itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
-      bindingAdapter.notifyItemChanged(itemList.size - 2)
+      bindingAdapter.notifyItemChanged(
+        itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
+      )
     }
   }
 
@@ -337,22 +352,23 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   fun handleRevealSolution() {
-    if (itemList[itemList.size - 2] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
+    if (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] is SolutionViewModel) {
+      val solutionViewModel =
+        itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(true)
       expandedHintListIndexListener.onRevealSolutionClicked(
-        /* solutionIndex= */ itemList.size - 2,
+        /* solutionIndex= */ itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER,
         /* isSolutionRevealed= */ true
       )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution()
       val previousIndex: Int? = currentExpandedHintListIndex
       currentExpandedHintListIndex =
         if (currentExpandedHintListIndex != null &&
-          currentExpandedHintListIndex == itemList.size - 2
+          currentExpandedHintListIndex == itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
         ) {
           null
         } else {
-          itemList.size - 2
+          itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
         }
       expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
       if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {

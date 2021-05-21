@@ -434,4 +434,5 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
+  <string name="hints_android_solution_correct_answer">%s/%s</string>
 </resources>
