@@ -379,6 +379,10 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
+            READING_TEXT_SIZE
+          ),
+          hasExtra(
             ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
             "Medium"
           ),
@@ -407,6 +411,10 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
+            APP_LANGUAGE
+          ),
+          hasExtra(
             AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
@@ -429,8 +437,15 @@ class OptionsFragmentTest {
       ).perform(
         click()
       )
-      intended(hasComponent(ReadingTextSizeActivity::class.java.name))
-      intended(hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE))
+      intended(
+        allOf(
+          hasExtra(
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            "Medium"),
+          hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE),
+          hasComponent(ReadingTextSizeActivity::class.java.name)
+        )
+      )
     }
   }
 
@@ -447,8 +462,18 @@ class OptionsFragmentTest {
       ).perform(
         click()
       )
-      intended(hasComponent(AppLanguageActivity::class.java.name))
-      intended(hasExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE))
+      intended(
+        allOf(
+          hasExtra(
+            APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE
+          ),
+          hasExtra(
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            "English"
+          ),
+          hasComponent(AppLanguageActivity::class.java.name)
+        )
+      )
     }
   }
 
@@ -488,6 +513,10 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
+            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
+            APP_LANGUAGE
+          ),
+          hasExtra(
             AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
             "English"
           ),
@@ -515,6 +544,10 @@ class OptionsFragmentTest {
       ).perform(click())
       intended(
         allOf(
+          hasExtra(
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
+            AUDIO_LANGUAGE
+          ),
           hasExtra(
             AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
