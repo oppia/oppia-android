@@ -1,4 +1,4 @@
-package org.oppia.android.app.parser
+package org.oppia.android.testing
 
 import android.text.style.CharacterStyle
 import android.view.View
