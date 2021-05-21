@@ -166,6 +166,12 @@
   <dimen name="general_button_item_question_view_margin_start">60dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">60dp</dimen>
 
+  <!-- FAQ Single -->
+  <dimen name="faq_single_padding_start">72dp</dimen>
+  <dimen name="faq_single_padding_top">28dp</dimen>
+  <dimen name="faq_single_padding_end">72dp</dimen>
+  <dimen name="faq_single_padding_bottom">56dp</dimen>
+
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">108dp</dimen>
   <dimen name="faq_content_margin_start">76dp</dimen>
