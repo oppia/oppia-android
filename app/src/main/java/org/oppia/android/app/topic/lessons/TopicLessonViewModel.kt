@@ -3,8 +3,10 @@ package org.oppia.android.app.topic.lessons
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -12,16 +14,18 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+/** [ViewModel] for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController
 ) {
-  var currentExpandedChapterListIndex: Int? = null
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
+  lateinit var topicStoryList: List<StorySummary>
+  var itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
 
   val topicLessonLiveData: LiveData<List<TopicLessonsItemViewModel>> by lazy {
     Transformations.map(topicLiveData, ::processTopic)
@@ -52,14 +56,8 @@ class TopicLessonViewModel @Inject constructor(
   }
 
   private fun processTopic(topic: Topic): List<TopicLessonsItemViewModel> {
-    val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
     if (topic.storyList.isNotEmpty()) {
-      topic.storyList!!.forEach { storySummary ->
-        if (storySummary.storyId == storyId) {
-          val index = topic.storyList.indexOf(storySummary)
-          currentExpandedChapterListIndex = index + 1
-        }
-      }
+      topicStoryList = topic.storyList
       itemList.clear()
       itemList.add(TopicLessonsTitleViewModel())
       for (storySummary in topic.storyList) {
@@ -86,4 +84,6 @@ class TopicLessonViewModel @Inject constructor(
   fun setStoryId(storyId: String) {
     this.storyId = storyId
   }
+
+  fun getIndexOfStory(storySummary: StorySummary) = topicStoryList.indexOf(storySummary)
 }

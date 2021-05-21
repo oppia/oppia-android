@@ -45,7 +45,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
-  private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
   private lateinit var bindingAdapter: BindableAdapter<TopicLessonsItemViewModel>
 
   fun handleCreateView(
@@ -67,7 +66,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-
     binding.apply {
       this.viewModel = topicLessonViewModel
       this.lifecycleOwner = fragment
@@ -76,13 +74,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicLessonViewModel.setInternalProfileId(internalProfileId)
     topicLessonViewModel.setTopicId(topicId)
     topicLessonViewModel.setStoryId(storyId)
-    this.currentExpandedChapterListIndex = topicLessonViewModel.currentExpandedChapterListIndex
 
     bindingAdapter = createRecyclerViewAdapter()
     binding.storySummaryRecyclerView.apply {
       adapter = bindingAdapter
     }
-    topicLessonViewModel.currentExpandedChapterListIndex?.let {
+    currentExpandedChapterListIndex?.let {
       if (storyId.isNotEmpty())
         binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(it)
     }
@@ -127,14 +124,19 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     binding: TopicLessonsStorySummaryBinding,
     storySummaryViewModel: StorySummaryViewModel
   ) {
-    val position = itemList.indexOf(storySummaryViewModel)
+    binding.viewModel = storySummaryViewModel
+
+    val position = topicLessonViewModel.itemList.indexOf(storySummaryViewModel)
+    if (storySummaryViewModel.storySummary.storyId == storyId) {
+      val index = topicLessonViewModel.getIndexOfStory(storySummaryViewModel.storySummary)
+      currentExpandedChapterListIndex = index + 1
+    }
 
     var isChapterListVisible = false
-    if (currentExpandedChapterListIndex != null) {
-      isChapterListVisible = currentExpandedChapterListIndex!! == position
+    currentExpandedChapterListIndex?.let {
+      isChapterListVisible = it == position
     }
     binding.isListExpanded = isChapterListVisible
-    binding.viewModel = storySummaryViewModel
 
     val chapterSummaries = storySummaryViewModel
       .storySummary.chapterList
@@ -173,10 +175,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ) {
         bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
       } else {
-        if (previousIndex != null) {
+        previousIndex?.let {
           bindingAdapter.notifyItemChanged(previousIndex)
         }
-        if (currentExpandedChapterListIndex != null) {
+        currentExpandedChapterListIndex?.let {
           bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
         }
       }
@@ -232,7 +234,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      /* backflowScreen= */ 0
+      backflowScreen = 0
     )
   }
 
