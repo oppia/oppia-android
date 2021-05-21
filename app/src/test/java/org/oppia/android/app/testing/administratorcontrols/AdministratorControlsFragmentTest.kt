@@ -4,15 +4,25 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -20,6 +30,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -84,6 +95,50 @@ class AdministratorControlsFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.edit_profiles_text_view))
+        .perform(click())
+      it.onActivity { activity ->
+        val fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+        assertThat(fragment is ProfileListFragment).isTrue()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
+      onView(withId(R.id.app_version_text_view)).perform(click())
+      it.onActivity { activity ->
+        val fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+        assertThat(fragment is AppVersionFragment).isTrue()
+      }
+    }
   }
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {

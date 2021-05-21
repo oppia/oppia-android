@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -19,6 +20,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -111,6 +113,13 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view))
         .perform(click())
+      var fragment: Fragment? = null
+      it.onActivity { activity ->
+        fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+      }
+      assumeTrue(fragment == null)
       intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
@@ -129,6 +138,13 @@ class AdministratorControlsFragmentTest {
         )
       )
       onView(withId(R.id.app_version_text_view)).perform(click())
+      var fragment: Fragment? = null
+      it.onActivity { activity ->
+        fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+      }
+      assumeTrue(fragment == null)
       intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
