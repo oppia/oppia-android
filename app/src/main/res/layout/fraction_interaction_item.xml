@@ -33,6 +33,6 @@
       android:id="@+id/fraction_input_error"
       style="@style/InputInteractionErrorTextView"
       android:text="@{viewModel.errorMessage}"
-      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.INVISIBLE}" />
+      android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}" />
   </LinearLayout>
 </layout>
