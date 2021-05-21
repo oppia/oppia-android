@@ -21,12 +21,6 @@ import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 
-/** RecyclerView items are 2 times of (No. of Hints + Solution),
- * this is because in UI after each hint or solution there is a horizontal line/view
- * which is considered as a separate item in recyclerview.
- **/
-const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
-
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
