@@ -214,7 +214,7 @@ class AdministratorControlsFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(testAdministratorControlsFragmentTest: AdministratorControlsFragmentTest)
+    fun inject(administratorControlsFragmentTest: AdministratorControlsFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -224,8 +224,8 @@ class AdministratorControlsFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(testAdministratorControlsFragmentTest: AdministratorControlsFragmentTest) {
-      component.inject(testAdministratorControlsFragmentTest)
+    fun inject(administratorControlsFragmentTest: AdministratorControlsFragmentTest) {
+      component.inject(administratorControlsFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
