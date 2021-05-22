@@ -1,0 +1,182 @@
+package org.oppia.android.app.databinding
+
+import android.app.Application
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import dagger.Component
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
+import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/** Tests for [DrawableBindingAdapters]. */
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+  application = DrawableBindingAdaptersTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class DrawableBindingAdaptersTest {
+
+  @Inject
+  lateinit var context: Context
+
+  private var resourceColor: Int = 0
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    resourceColor = context.resources.getColor(R.color.chapterCardShadow, null)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>()
+      .inject(this)
+  }
+
+  @Test
+  fun testDrawableBindingAdapters_setBackgroundColor_hasCorrectBackgroundColor() {
+    val v = View(context)
+    setBackgroundColor(v, context.resources.getColor(R.color.chapterCardShadow, null))
+
+    val color = (v.getBackground() as ColorDrawable).color
+    assertThat(color).isEqualTo(
+      0xff000000.toInt() or context.resources.getColor(
+        R.color.chapterCardShadow,
+        null
+      )
+    )
+  }
+
+  @Test
+  fun testDrawableBindingAdapters_setBackgroundDrawable_hasCorrectBackgroundDrawable() {
+    val v = View(context)
+    setBackgroundDrawable(v, resourceColor)
+
+    assertThat(v.background.constantState).isEqualTo(
+      context.resources.getDrawable(
+        R.drawable.rounded_rect_background,
+        null
+      ).constantState
+    )
+
+    assertThat((v.background as GradientDrawable).color?.defaultColor).isEqualTo(
+      0xff000000.toInt() or resourceColor
+    )
+  }
+
+  @Test
+  fun testDrawableBindingAdapters_setTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
+    val v = View(context)
+    setTopBackgroundDrawable(v, resourceColor)
+
+    assertThat(v.background.constantState).isEqualTo(
+      context.resources.getDrawable(
+        R.drawable.top_rounded_rect_background,
+        null
+      ).constantState
+    )
+
+    assertThat((v.getBackground() as GradientDrawable).color?.defaultColor).isEqualTo(
+      0xff000000.toInt() or resourceColor
+    )
+  }
+
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  @Singleton
+  @Component(
+    modules = [
+      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent {
+    @Component.Builder
+    interface Builder : ApplicationComponent.Builder
+
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
+  }
+
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponent
+    }
+
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
+      component.inject(drawableBindingAdaptersTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
+  }
+}

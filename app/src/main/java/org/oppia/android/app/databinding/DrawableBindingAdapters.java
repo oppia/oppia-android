@@ -37,28 +37,4 @@ public final class DrawableBindingAdapters {
     GradientDrawable background = (GradientDrawable) view.getBackground();
     background.setColor(0xff000000 | colorRgb);
   }
-
-  /** Used to set a bottom rounded-rect background drawable with a data-bound color. */
-  @BindingAdapter("app:bottomRoundedRectDrawableWithColor")
-  public static void setBottomBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
-    view.setBackgroundResource(R.drawable.bottom_rounded_rect_background);
-    // The input color needs to have alpha channel prepended to it.
-    GradientDrawable background = (GradientDrawable) view.getBackground();
-    background.setColor(0xff000000 | colorRgb);
-  }
-
-  /** Used to set a rectangular background drawable with a data-bound color. */
-  @BindingAdapter("app:rectangleDrawableWithColor")
-  public static void setRectangleBackgroundDrawable(@NonNull View view, @ColorInt int colorRgb) {
-    view.setBackgroundResource(R.drawable.rectangle_background);
-    // The input color needs to have alpha channel prepended to it.
-    GradientDrawable background = (GradientDrawable) view.getBackground();
-    background.setColor(0xff000000 | colorRgb);
-  }
-
-  /** Used to set a resource background to a button. */
-  @BindingAdapter("android:button")
-  public static void setBackgroundResource(@NonNull Button button, @DrawableRes int resource) {
-    button.setBackgroundResource(resource);
-  }
 }
