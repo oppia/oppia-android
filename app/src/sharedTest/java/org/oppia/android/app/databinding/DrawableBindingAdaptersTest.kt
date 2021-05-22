@@ -89,14 +89,11 @@ class DrawableBindingAdaptersTest {
   @Test
   fun testDrawableBindingAdapters_setBackgroundColor_hasCorrectBackgroundColor() {
     val v = View(context)
-    setBackgroundColor(v, context.resources.getColor(R.color.chapterCardShadow, null))
+    setBackgroundColor(v, resourceColor)
 
     val color = (v.getBackground() as ColorDrawable).color
     assertThat(color).isEqualTo(
-      0xff000000.toInt() or context.resources.getColor(
-        R.color.chapterCardShadow,
-        null
-      )
+      0xff000000.toInt() or resourceColor
     )
   }
 
