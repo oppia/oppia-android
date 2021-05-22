@@ -88,7 +88,10 @@ private const val EXTRA_LARGE_TEXT_SIZE_INDEX = 3
 /** Tests for [ReadingTextSizeFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ReadingTextSizeFragmentTest.TestApplication::class)
+@Config(
+  application = ReadingTextSizeFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ReadingTextSizeFragmentTest {
 
   @Inject
