@@ -435,4 +435,5 @@
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
   <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="profile_list_activity_label">Profile List</string>
 </resources>
