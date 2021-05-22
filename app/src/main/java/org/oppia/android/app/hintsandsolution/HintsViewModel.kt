@@ -7,10 +7,11 @@ import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
 import javax.inject.Inject
 
-/** RecyclerView items are 2 times of (No. of Hints + Solution),
+/**
+ * RecyclerView items are 2 times of (No. of Hints + Solution),
  * this is because in UI after each hint or solution there is a horizontal line/view
  * which is considered as a separate item in recyclerview.
- **/
+ */
 const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */

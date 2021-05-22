@@ -164,7 +164,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding: HintsSummaryBinding,
     hintsViewModel: HintsViewModel
   ) {
-
     binding.viewModel = hintsViewModel
 
     val position: Int = itemList.indexOf(hintsViewModel)
@@ -249,7 +248,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding: SolutionSummaryBinding,
     solutionViewModel: SolutionViewModel
   ) {
-
     binding.viewModel = solutionViewModel
 
     val position: Int = itemList.indexOf(solutionViewModel)
