@@ -87,6 +87,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
+      android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
