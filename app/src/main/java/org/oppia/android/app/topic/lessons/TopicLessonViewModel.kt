@@ -24,8 +24,8 @@ class TopicLessonViewModel @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
-  lateinit var topicStoryList: List<StorySummary>
-  var itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
+  private lateinit var topicStoryList: List<StorySummary>
+  val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
 
   val topicLessonLiveData: LiveData<List<TopicLessonsItemViewModel>> by lazy {
     Transformations.map(topicLiveData, ::processTopic)
@@ -47,7 +47,7 @@ class TopicLessonViewModel @Inject constructor(
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
       oppiaLogger.e(
-        "TopicRevisionFragment",
+        "TopicLessonFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!
       )

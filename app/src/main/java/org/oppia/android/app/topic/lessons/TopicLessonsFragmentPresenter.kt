@@ -67,8 +67,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     binding.apply {
-      this.viewModel = topicLessonViewModel
       this.lifecycleOwner = fragment
+      this.viewModel = topicLessonViewModel
     }
 
     topicLessonViewModel.setInternalProfileId(internalProfileId)
