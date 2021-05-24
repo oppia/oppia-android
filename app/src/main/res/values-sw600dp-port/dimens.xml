@@ -203,4 +203,7 @@
   <dimen name="faq_item_header_margin_top">48dp</dimen>
   <dimen name="faq_item_header_margin_end">64dp</dimen>
   <dimen name="faq_item_header_margin_bottom">24dp</dimen>
+
+  <!-- General Bottom Padding -->
+  <dimen name="general_screen_padding_bottom">112dp</dimen>
 </resources>
