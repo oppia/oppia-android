@@ -45,4 +45,16 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "image_view_matcher",
+    testonly = True,
+    srcs = [
+        "ImageViewMatcher.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
 dagger_rules()
