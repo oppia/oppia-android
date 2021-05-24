@@ -49,6 +49,7 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
+        ":kotlitex-release",
         ":resources",
         "//app:crashlytics",
         "//app:crashlytics_deps",
