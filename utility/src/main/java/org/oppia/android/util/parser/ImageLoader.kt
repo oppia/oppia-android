@@ -3,7 +3,6 @@ package org.oppia.android.util.parser
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import org.oppia.android.util.parser.BlockPictureDrawable
 
 /** Represents transformations for images loaded using [ImageLoader]. */
 enum class ImageTransformation {

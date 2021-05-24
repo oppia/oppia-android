@@ -5,7 +5,6 @@ import android.text.TextPaint
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.utils.RenderOptionsBase
-import org.oppia.android.util.parser.ImageTransformation
 
 /**
  * The app's representation of SVG images. This should be used analogically with Android's bitmap

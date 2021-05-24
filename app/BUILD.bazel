@@ -574,8 +574,9 @@ kt_android_library(
         "//model",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
-        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
     ],
 )
 
@@ -608,7 +609,6 @@ android_library(
         "//third_party:circularimageview_circular_image_view",
         "//third_party:com_chaos_view_pinview",
         "//third_party:com_google_android_material_material",
-        "//utility",
     ],
 )
 
@@ -642,7 +642,6 @@ kt_android_library(
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",

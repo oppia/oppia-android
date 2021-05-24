@@ -1,0 +1,133 @@
+"""
+General purpose utilities for parser.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "assets",
+    srcs = [
+        "ImageAssetFetcher.kt",
+    ],
+)
+
+kt_android_library(
+    name = "bitmap_blur",
+    srcs = [
+        "BitmapBlurrer.kt",
+        "BitmapBlurTransformation.kt",
+    ],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "custom_bullet_span",
+    srcs = [
+        "CustomBulletSpan.kt",
+    ],
+    deps = [
+        "//utility:resources",
+    ],
+)
+
+kt_android_library(
+    name = "drawables",
+    srcs = [
+        "BlockPictureDrawable.kt",
+        "BlockSvgDrawableTranscoder.kt",
+        "GlideImageLoader.kt",
+        "GlideImageLoaderModule.kt",
+        "ImageLoader.kt",
+        "ScalableVectorGraphic.kt",
+        "SvgBlurTransformation.kt",
+        "SvgDecoder.kt",
+        "SvgPictureDrawable.kt",
+        "TextPictureDrawable.kt",
+        "TextSvgDrawableTranscoder.kt",
+    ],
+    deps = [
+        ":assets",
+        ":bitmap_blur",
+        ":dagger",
+        ":image_targets",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:com_caverock_androidsvg",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+    ],
+)
+
+kt_android_library(
+    name = "image_targets",
+    srcs = [
+        "ImageTargets.kt",
+    ],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "parsers",
+    srcs = [
+        "ExplorationHtmlParserEntityType.kt",
+        "HtmlParser.kt",
+        "HtmlParserEntityTypeModule.kt",
+        "ImageParsingAnnotations.kt",
+        "ImageParsingModule.kt",
+        "UrlImageParser.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":custom_bullet_span",
+        ":dagger",
+        ":drawables",
+        ":tag_handlers",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "respositories",
+    srcs = [
+        "RespositoryGlideModule.kt",
+        "RepositoryModelLoader.kt",
+    ],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+    ],
+)
+
+kt_android_library(
+    name = "tag_handlers",
+    srcs = [
+        "BulletTagHandler.kt",
+        "ConceptCardTagHandler.kt",
+        "CustomHtmlContentHandler.kt",
+        "ImageTagHandler.kt",
+        "MathTagHandler.kt",
+    ],
+    deps = [
+        "//third_party:androidx_core_core",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "test_glide_image_loader",
+    srcs = [
+        "TestGlideImageLoader.kt",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
