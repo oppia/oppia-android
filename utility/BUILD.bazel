@@ -26,6 +26,11 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
+aar_import(
+    name = "kotlitex-release",
+    aar = "libs/kotlitex-release.aar",
+)
+
 android_library(
     name = "resources",
     custom_package = "org.oppia.android.util",
