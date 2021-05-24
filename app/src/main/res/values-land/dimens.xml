@@ -183,5 +183,5 @@
 
   <!-- Pin Password -->
   <dimen name="pin_password_padding_top">48dp</dimen>
-  <dimen name="pin_password_padding_bottom">76dp</dimen>
+  <dimen name="pin_password_padding_bottom_land">76dp</dimen>
 </resources>

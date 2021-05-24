@@ -356,7 +356,6 @@
 
   <!-- Pin Password -->
   <dimen name="pin_password_padding_top">96dp</dimen>
-  <dimen name="pin_password_padding_bottom">0dp</dimen>
-  <dimen name="pin_password_hello_margin_top">0dp</dimen>
-  <dimen name="pin_password_hello_margin_bottom">0dp</dimen>
+  <dimen name="pin_password_padding_bottom_land">0dp</dimen>
+  <dimen name="pin_password_hello_margin_top_tablet">0dp</dimen>
 </resources>
