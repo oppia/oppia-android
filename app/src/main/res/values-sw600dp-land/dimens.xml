@@ -200,4 +200,7 @@
   <dimen name="faq_item_header_margin_top">48dp</dimen>
   <dimen name="faq_item_header_margin_end">32dp</dimen>
   <dimen name="faq_item_header_margin_bottom">24dp</dimen>
+
+  <!-- Pin Password -->
+  <dimen name="pin_password_hello_margin_top">104dp</dimen>
 </resources>

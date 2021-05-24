@@ -353,4 +353,10 @@
   <dimen name="faq_item_header_margin_top">24dp</dimen>
   <dimen name="faq_item_header_margin_end">24dp</dimen>
   <dimen name="faq_item_header_margin_bottom">8dp</dimen>
+
+  <!-- Pin Password -->
+  <dimen name="pin_password_padding_top">96dp</dimen>
+  <dimen name="pin_password_padding_bottom">0dp</dimen>
+  <dimen name="pin_password_hello_margin_top">0dp</dimen>
+  <dimen name="pin_password_hello_margin_bottom">0dp</dimen>
 </resources>
