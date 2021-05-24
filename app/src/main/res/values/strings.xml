@@ -282,7 +282,7 @@
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- ProfileListActivity -->
-  <string name="profile_list_activity_title">Profiles</string>
+  <string name="profile_list_activity_title">Profile List</string>
   <!-- ProfileEditActivity -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
@@ -435,5 +435,4 @@
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
   <string name="hints_android_solution_correct_answer">%s/%s</string>
-  <string name="profile_list_activity_label">Profile List</string>
 </resources>
