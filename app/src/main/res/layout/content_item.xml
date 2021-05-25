@@ -58,16 +58,6 @@
       app:explorationViewPaddingBottom="@{@dimen/content_item_exploration_view_padding_bottom}"
       app:explorationViewPaddingEnd="@{@dimen/content_item_exploration_view_padding_end}"
       app:explorationViewPaddingStart="@{@dimen/content_item_exploration_view_padding_start}"
-      app:explorationViewPaddingTop="@{@dimen/content_item_exploration_view_padding_top}"
-      app:questionSplitViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
-      app:questionSplitViewPaddingBottom="@{@dimen/space_0dp}"
-      app:questionSplitViewPaddingEnd="@{@dimen/space_0dp}"
-      app:questionSplitViewPaddingStart="@{@dimen/space_0dp}"
-      app:questionSplitViewPaddingTop="@{@dimen/space_0dp}"
-      app:questionViewPaddingApplicable="@{!viewModel.hasConversationView &amp;&amp; !viewModel.isSplitView}"
-      app:questionViewPaddingBottom="@{@dimen/space_0dp}"
-      app:questionViewPaddingEnd="@{@dimen/space_0dp}"
-      app:questionViewPaddingStart="@{@dimen/space_0dp}"
-      app:questionViewPaddingTop="@{@dimen/space_0dp}" />
+      app:explorationViewPaddingTop="@{@dimen/content_item_exploration_view_padding_top}" />
   </FrameLayout>
 </layout>
