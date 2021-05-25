@@ -34,7 +34,6 @@
         android:layout_height="0dp"
         android:contentDescription="@{viewModel.completedStory.storyName}"
         android:importantForAccessibility="no"
-        android:scaleType="centerInside"
         app:entityId="@{viewModel.completedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
