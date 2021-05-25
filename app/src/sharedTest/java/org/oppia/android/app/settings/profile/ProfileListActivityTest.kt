@@ -78,7 +78,7 @@ class ProfileListActivityTest {
   }
 
   @Test
-  fun testFaqListActivity_hasCorrectActivityLabel() {
+  fun testProfileListActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createProfileListActivityIntent())
     val title = activityTestRule.activity.title
 
