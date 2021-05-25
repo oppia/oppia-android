@@ -32,6 +32,7 @@ import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
+import org.oppia.android.app.settings.profile.ProfileEditActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -71,6 +72,7 @@ interface FragmentComponent {
 
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
+  fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appLanguageFragment: AppLanguageFragment)

@@ -2,13 +2,15 @@ package org.oppia.android.app.settings.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -17,7 +19,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [ProfileEditActivity]. */
-@ActivityScope
+@FragmentScope
 class ProfileEditActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
@@ -29,16 +31,19 @@ class ProfileEditActivityPresenter @Inject constructor(
 
   private lateinit var dialog: AlertDialog
 
-  fun handleOnCreate(savedInstanceState: Bundle?) {
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-
-    val binding = DataBindingUtil.setContentView<ProfileEditActivityBinding>(
-      activity,
-      R.layout.profile_edit_activity
+  fun handleOnCreate(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    isMultipane: Boolean,
+    internalProfileId: Int,
+    profileListListener: ProfileListListener?
+  ): View? {
+    val binding = ProfileEditActivityBinding.inflate(
+      inflater,
+      container,
+      /* attachToRoot= */ false
     )
-    val profileId = activity.intent.getIntExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, 0)
-    profileEditViewModel.setProfileId(profileId)
+    profileEditViewModel.setProfileId(internalProfileId)
 
     binding.apply {
       viewModel = profileEditViewModel
@@ -46,27 +51,36 @@ class ProfileEditActivityPresenter @Inject constructor(
     }
 
     binding.profileRenameButton.setOnClickListener {
-      activity.startActivity(ProfileRenameActivity.createProfileRenameActivity(activity, profileId))
+      activity.startActivity(
+        ProfileRenameActivity.createProfileRenameActivity(
+          activity,
+          internalProfileId
+        )
+      )
     }
 
     binding.profileResetButton.setOnClickListener {
       activity.startActivity(
         ProfileResetPinActivity.createProfileResetPinActivity(
           activity,
-          profileId,
+          internalProfileId,
           profileEditViewModel.isAdmin
         )
       )
     }
 
     binding.profileDeleteButton.setOnClickListener {
-      showDeletionDialog(profileId)
+      showDeletionDialog(internalProfileId)
+    }
+
+    profileListListener?.toolbarListener {
+      (activity as ProfileListActivity).finish()
     }
 
     profileEditViewModel.profile.observe(
       activity,
       Observer {
-        activity.title = it.name
+        profileListListener?.updateToolbarTitle(it.name)
       }
     )
 
@@ -80,7 +94,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
       if (compoundButton.isPressed) {
         profileManagementController.updateAllowDownloadAccess(
-          ProfileId.newBuilder().setInternalId(profileId).build(),
+          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
           checked
         ).toLiveData().observe(
           activity,
@@ -96,11 +110,12 @@ class ProfileEditActivityPresenter @Inject constructor(
         )
       }
     }
-    if (savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) == true)
-      showDeletionDialog(profileId)
+    /*if (savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) == true)
+      showDeletionDialog(internalProfileId)*/
+    return binding.root
   }
 
-  private fun showDeletionDialog(profileId: Int) {
+  private fun showDeletionDialog(internalProfileId: Int) {
     dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
@@ -109,7 +124,8 @@ class ProfileEditActivityPresenter @Inject constructor(
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
         profileManagementController
-          .deleteProfile(ProfileId.newBuilder().setInternalId(profileId).build()).toLiveData()
+          .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+          .toLiveData()
           .observe(
             activity,
             Observer {

@@ -15,6 +15,8 @@ class ProfileListFragment : InjectableFragment() {
   @Inject
   lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
 
+  private var profileListListener: ProfileListListener? = null
+
   companion object {
     fun newInstance(isMultipane: Boolean = false): ProfileListFragment {
       val args = Bundle()
@@ -28,6 +30,8 @@ class ProfileListFragment : InjectableFragment() {
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
+    if (context is ProfileListActivity)
+      profileListListener = context
   }
 
   override fun onCreateView(
@@ -39,6 +43,11 @@ class ProfileListFragment : InjectableFragment() {
       "Expected variables to be passed to ProfileListFragment"
     }
     val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
-    return profileListFragmentPresenter.handleOnCreateView(inflater, container, isMultipane)
+    return profileListFragmentPresenter.handleOnCreateView(
+      inflater,
+      container,
+      isMultipane,
+      profileListListener
+    )
   }
 }

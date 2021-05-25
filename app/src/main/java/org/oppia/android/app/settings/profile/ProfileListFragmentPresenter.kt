@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -20,13 +21,13 @@ class ProfileListFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
-
   private var isMultipane = false
 
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    isMultipane: Boolean
+    isMultipane: Boolean,
+    profileListListener: ProfileListListener?
   ): View? {
     this.isMultipane = isMultipane
     val binding = ProfileListFragmentBinding.inflate(
@@ -35,9 +36,10 @@ class ProfileListFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    binding.profileListToolbar?.setNavigationOnClickListener {
+    profileListListener?.toolbarListener {
       (activity as ProfileListActivity).finish()
     }
+
     binding.apply {
       viewModel = getProfileListViewModel()
       lifecycleOwner = fragment
@@ -65,13 +67,25 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      activity.startActivity(
-        ProfileEditActivity.createProfileEditActivity(
-          activity,
-          profile.id.internalId,
-          isMultipane
-        )
-      )
+      if (isMultipane) {
+        fragment.parentFragmentManager.beginTransaction().add(
+          R.id.administrator_controls_fragment_multipane_placeholder,
+          ProfileEditActivity.createProfileEditActivity(
+            activity,
+            profile.id.internalId,
+            isMultipane
+          )
+        ).commitNow()
+      } else {
+        fragment.parentFragmentManager.beginTransaction().add(
+          R.id.profile_list_fragment_placeholder,
+          ProfileEditActivity.createProfileEditActivity(
+            activity,
+            profile.id.internalId,
+            isMultipane
+          )
+        ).commitNow()
+      }
     }
   }
 

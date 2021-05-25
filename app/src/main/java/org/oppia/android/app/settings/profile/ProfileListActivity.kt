@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity to display all profiles to admin. */
-class ProfileListActivity : InjectableAppCompatActivity() {
+class ProfileListActivity : InjectableAppCompatActivity(), ProfileListListener {
   @Inject
   lateinit var profileListActivityPresenter: ProfileListActivityPresenter
 
@@ -27,5 +27,13 @@ class ProfileListActivity : InjectableAppCompatActivity() {
     fun createProfileListActivityIntent(context: Context): Intent {
       return Intent(context, ProfileListActivity::class.java)
     }
+  }
+
+  override fun updateToolbarTitle(title: String) {
+    profileListActivityPresenter.updateToolbarTitle(title)
+  }
+
+  override fun toolbarListener(function: () -> Unit) {
+    profileListActivityPresenter.toolbarListener(function)
   }
 }

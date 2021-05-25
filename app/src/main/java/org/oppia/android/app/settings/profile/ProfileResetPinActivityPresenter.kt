@@ -1,6 +1,5 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Intent
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -141,9 +140,10 @@ class ProfileResetPinActivityPresenter @Inject constructor(
           activity,
           Observer {
             if (it.isSuccess()) {
-              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              activity.startActivity(intent)
+              activity.supportFragmentManager.beginTransaction().add(
+                R.id.administrator_controls_fragment_multipane_placeholder,
+                ProfileEditActivity.createProfileEditActivity(activity, profileId)
+              ).commitNow()
             }
           }
         )

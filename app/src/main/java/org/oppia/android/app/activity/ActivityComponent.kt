@@ -28,7 +28,6 @@ import org.oppia.android.app.profile.PinPasswordActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfilePictureActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
-import org.oppia.android.app.settings.profile.ProfileEditActivity
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileRenameActivity
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity
@@ -101,7 +100,6 @@ interface ActivityComponent {
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
-  fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profilePictureActivity: ProfilePictureActivity)
   fun inject(profileProgressActivity: ProfileProgressActivity)
