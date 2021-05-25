@@ -81,6 +81,11 @@ class ProfileEditActivityPresenter @Inject constructor(
       activity,
       Observer {
         profileListListener?.updateToolbarTitle(it.name)
+        if (activity is AdministratorControlsActivity) {
+          activity.administratorControlsActivityPresenter.setExtraControlsTitle(
+            it.name
+          )
+        }
       }
     )
 
