@@ -18,11 +18,14 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -40,17 +43,18 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -86,6 +90,13 @@ class PromotedStoryListViewModelTest {
     .setTotalChapterCount(1)
     .build()
 
+  private val promotedActivityList1 = PromotedActivityList.newBuilder()
+    .setPromotedStoryList(
+      PromotedStoryList.newBuilder()
+        .addRecentlyPlayedStory(promotedStory1)
+        .addOlderPlayedStory(promotedStory2).build()
+    ).build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -95,10 +106,10 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_reflexiveStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it, listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity, listOf(promotedStory1, promotedStory2), promotedActivityList1
         )
 
         // Verify the reflexive property of equals(): a == a.
@@ -111,15 +122,17 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_symmetricStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify the symmetric property of equals(): a == b iff b == a.
@@ -133,19 +146,22 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_transitiveStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModelCopy1 = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy2 = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy3 = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModelCopy1).isEqualTo(promotedStoryListViewModelCopy2)
         assertThat(promotedStoryListViewModelCopy2).isEqualTo(promotedStoryListViewModelCopy3)
@@ -160,15 +176,17 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_consistentStoryListOf2_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListViewModelCopy)
 
@@ -183,11 +201,12 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_storyListOf2AndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
@@ -200,15 +219,17 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelEquals_storyListOf2AndStoryListOf3_isNotEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModelOf2 = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListViewModelOf3 = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2, promotedStory3)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2, promotedStory3),
+          promotedActivityList1
         )
 
         assertThat(promotedStoryListViewModelOf2).isNotEqualTo(promotedStoryListViewModelOf3)
@@ -220,15 +241,17 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         val promotedStoryListCopy = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
         assertThat(promotedStoryListViewModel).isEqualTo(promotedStoryListCopy)
 
@@ -243,11 +266,12 @@ class PromotedStoryListViewModelTest {
   fun testPromotedStoryListViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
-    ).use {
-      it.onActivity {
+    ).use { activityScenario ->
+      activityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryListViewModel = createPromotedStoryListViewModel(
-          it,
-          listOf(promotedStory1, promotedStory2)
+          homeFragmentTestActivity,
+          listOf(promotedStory1, promotedStory2),
+          promotedActivityList1
         )
 
         // Verify that hashCode consistently returns the same value.
@@ -279,16 +303,17 @@ class PromotedStoryListViewModelTest {
 
   private fun createPromotedStoryListViewModel(
     activity: AppCompatActivity,
-    promotedStoryList: List<PromotedStory>
+    promotedStoryList: List<PromotedStory>,
+    promotedActivityList: PromotedActivityList
   ): PromotedStoryListViewModel {
     return PromotedStoryListViewModel(
       activity,
-      createPromotedStoryViewModelList(activity, promotedStoryList)
+      createPromotedStoryViewModelList(activity, promotedStoryList),
+      promotedActivityList
     )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -298,13 +323,13 @@ class PromotedStoryListViewModelTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, TestAccessibilityModule::class,
+      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

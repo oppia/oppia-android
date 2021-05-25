@@ -12,8 +12,8 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -78,7 +78,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
   private fun logConceptCardEvent(skillId: String) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_CONCEPT_CARD,
       oppiaLogger.createConceptCardContext(skillId)
     )

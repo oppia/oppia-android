@@ -39,6 +39,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.EnablePracticeTab
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
@@ -61,18 +63,19 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -92,6 +95,10 @@ class TopicPracticeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
 
   @Before
   fun setUp() {
@@ -118,9 +125,9 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -133,16 +140,16 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isCompletelyDisplayed()))
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -155,17 +162,17 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          2,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 2,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
     }
@@ -180,9 +187,9 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
     }
@@ -196,9 +203,9 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(not(isChecked())))
     }
@@ -214,9 +221,9 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -242,9 +249,9 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          1,
-          R.id.subtopic_check_box
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
         )
       ).check(matches(isChecked()))
     }
@@ -258,18 +265,18 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 5)
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(not(isClickable())))
     }
@@ -285,9 +292,9 @@ class TopicPracticeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          5,
-          R.id.topic_practice_start_button
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
         )
       ).check(matches(isClickable()))
     }
@@ -299,9 +306,9 @@ class TopicPracticeFragmentTest {
       clickPracticeTab()
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -313,9 +320,9 @@ class TopicPracticeFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.topic_practice_skill_list,
-          0,
-          R.id.master_skills_text_view
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 0,
+          targetViewId = R.id.master_skills_text_view
         )
       ).check(
         matches(
@@ -344,7 +351,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(2).name),
+        withText(TopicTab.getTabForPosition(position = 2, enablePracticeTab).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -363,16 +370,15 @@ class TopicPracticeFragmentTest {
   private fun clickPracticeItem(position: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.topic_practice_skill_list,
-        position,
-        targetViewId
+        recyclerViewId = R.id.topic_practice_skill_list,
+        position = position,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -384,12 +390,12 @@ class TopicPracticeFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

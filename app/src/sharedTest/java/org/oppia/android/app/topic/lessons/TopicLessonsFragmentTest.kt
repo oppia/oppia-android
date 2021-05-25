@@ -47,6 +47,8 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.topic.EnablePracticeTab
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
@@ -71,19 +73,21 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.domain.topic.StoryProgressTestHelper
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -104,6 +108,13 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
+
   private val internalProfileId = 0
 
   private lateinit var profileId: ProfileId
@@ -114,6 +125,7 @@ class TopicLessonsFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -144,7 +156,7 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -156,7 +168,11 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgress_isDisplayed() {
-    storyProgressTestHelper.markTwoPartialStoryProgressForRatios(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -207,9 +223,9 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_list_drop_down_icon
+          targetViewId = R.id.chapter_list_drop_down_icon
         )
       ).check(
         matches(
@@ -226,9 +242,9 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -242,9 +258,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
       intended(hasComponent(ExplorationActivity::class.java.name))
@@ -288,9 +304,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -307,9 +323,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 2,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -324,9 +340,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -341,9 +357,9 @@ class TopicLessonsFragmentTest {
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
-          R.id.story_summary_recycler_view,
+          recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          R.id.chapter_recycler_view
+          targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
     }
@@ -361,7 +377,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1).name),
+        withText(TopicTab.getTabForPosition(position = 1, enablePracticeTab).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -371,9 +387,9 @@ class TopicLessonsFragmentTest {
   private fun clickStoryItem(position: Int, targetViewId: Int) {
     onView(
       atPositionOnView(
-        R.id.story_summary_recycler_view,
-        position,
-        targetViewId
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = position,
+        targetViewId = targetViewId
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
@@ -391,14 +407,13 @@ class TopicLessonsFragmentTest {
   private fun verifyTextOnStorySummaryListItemAtPosition(itemPosition: Int, stringToMatch: String) {
     onView(
       atPosition(
-        R.id.story_summary_recycler_view,
-        itemPosition
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = itemPosition
       )
     ).check(matches(hasDescendant(withText(containsString(stringToMatch)))))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -410,12 +425,12 @@ class TopicLessonsFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

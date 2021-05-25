@@ -10,8 +10,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.json.JSONException
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +25,6 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
@@ -35,13 +34,18 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -52,7 +56,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
-import java.util.Date
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -66,7 +70,7 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 class TopicControllerTest {
 
   @Inject
-  lateinit var storyProgressController: StoryProgressController
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
   lateinit var topicController: TopicController
@@ -97,12 +101,6 @@ class TopicControllerTest {
   lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
 
   @Mock
-  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Mock
   lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
 
   @Captor
@@ -115,21 +113,20 @@ class TopicControllerTest {
   lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
 
   @Inject
-  lateinit var dataProviders: DataProviders
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
-
-  private val currentTimestamp = Date().time
 
   @Before
   fun setUp() {
     profileId1 = ProfileId.newBuilder().setInternalId(1).build()
     profileId2 = ProfileId.newBuilder().setInternalId(2).build()
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @Test
@@ -153,8 +150,7 @@ class TopicControllerTest {
 
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value!!.getOrThrow()
-    assertThat(topic.topicThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.BAKER)
+    assertThat(topic.topicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
@@ -396,85 +392,7 @@ class TopicControllerTest {
     verifyGetStorySucceeded()
     val story = storySummaryResultCaptor.value!!.getOrThrow()
     val chapter = story.getChapter(0)
-    assertThat(chapter.chapterThumbnail.thumbnailGraphic)
-      .isEqualTo(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_isSuccessful() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val storyResult = storySummaryResultCaptor.value
-    assertThat(storyResult).isNotNull()
-    assertThat(storyResult!!.isSuccess()).isTrue()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.storyId).isEqualTo(TEST_STORY_ID_1)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      TEST_EXPLORATION_ID_1,
-      TEST_EXPLORATION_ID_0,
-      TEST_EXPLORATION_ID_3
-    ).inOrder()
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithoutProgress() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_STARTED)
-    assertThat(story.getChapter(1).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(1).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(0).name)
-    assertThat(story.getChapter(2).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(1).name)
-  }
-
-  @Test
-  fun testRetrieveStory_validSecondStory_returnsStoryWithProgress() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_0, TEST_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    markSecondStory1Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(story.getChapter(0).chapterPlayState)
-      .isEqualTo(ChapterPlayState.COMPLETED)
-    assertThat(story.getChapter(1).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_STARTED)
-    assertThat(story.getChapter(2).chapterPlayState)
-      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(story.getChapter(2).missingPrerequisiteChapter.name)
-      .isEqualTo(story.getChapter(1).name)
+    assertThat(chapter.chapterThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
@@ -671,8 +589,7 @@ class TopicControllerTest {
       .getConceptCard(TEST_SKILL_ID_2)
 
     val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription)
-      .isEqualTo("A different skill in a different topic")
+    assertThat(conceptCard.skillDescription).isEqualTo("A different skill in a different topic")
   }
 
   @Test
@@ -753,7 +670,7 @@ class TopicControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(JSONException::class.java)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
@@ -764,7 +681,7 @@ class TopicControllerTest {
     assertThat(reviewCardResult).isNotNull()
     assertThat(reviewCardResult!!.isSuccess()).isTrue()
     assertThat(reviewCardResult.getOrThrow().pageContents.html)
-      .isEqualTo("<p>Description of subtopic is here.</p>")
+      .contains("Description of subtopic is here.")
   }
 
   @Test
@@ -776,12 +693,11 @@ class TopicControllerTest {
 
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value!!.getOrThrow()
-    assertThat(topic.subtopicList[0].subtopicThumbnail.thumbnailGraphic).isEqualTo(
-      LessonThumbnailGraphic.WHAT_IS_A_FRACTION
-    )
+    assertThat(topic.subtopicList[0].subtopicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -804,6 +720,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -827,6 +744,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -849,6 +767,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -872,6 +791,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -894,6 +814,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() {
     val questionsListProvider = topicController
       .retrieveQuestionsForSkillIds(
@@ -940,7 +861,6 @@ class TopicControllerTest {
   @Test
   fun testGetTopic_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getTopic(
       profileId1, FRACTIONS_TOPIC_ID
@@ -985,14 +905,12 @@ class TopicControllerTest {
   @Test
   fun testGetStory_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getTopic(
       profileId1, FRACTIONS_TOPIC_ID
     ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyRecordProgressSucceeded()
     verifyGetTopicSucceeded()
     val topic = topicResultCaptor.value.getOrThrow()
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -1017,7 +935,6 @@ class TopicControllerTest {
   @Test
   fun testOngoingTopicList_recordOneChapterCompleted_correctOngoingList() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1033,10 +950,7 @@ class TopicControllerTest {
   @Test
   fun testOngoingTopicList_finishEntireTopic_ongoingTopicListIsEmpty() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1050,16 +964,42 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_finishOneEntireTopicAndOneChapterInOtherTopic_ongoingListIsCorrect() {
-    // Mark entire FRACTIONS topic as finished.
+    // Mark entire fractions topic & only 1 chapter in ratios as finished.
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
+    markRatiosStory0Chapter0AsCompleted()
+
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Mark only one chapter in RATIOS topic as finished.
+    verifyGetOngoingTopicListSucceeded()
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicCount).isEqualTo(1)
+    assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
+  }
+
+  @Test
+  fun testOngoingTopicList_finishOneStory_ongoingListIsCorrect() {
     markRatiosStory0Chapter0AsCompleted()
+    markRatiosStory0Chapter1AsCompleted()
+
+    topicController.getOngoingTopicList(
+      profileId1
+    ).toLiveData().observeForever(mockOngoingTopicListObserver)
     testCoroutineDispatchers.runCurrent()
+
+    verifyGetOngoingTopicListSucceeded()
+    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    assertThat(ongoingTopicList.topicCount).isEqualTo(0)
+  }
+
+  @Test
+  fun testOngoingTopicList_finishOneStoryAndStartAnotherStoryFromSameTopic_ongoingListIsCorrect() {
+    markRatiosStory0Chapter0AsCompleted()
+    markRatiosStory0Chapter1AsCompleted()
+    markRatiosStory1Chapter0AsCompleted()
 
     topicController.getOngoingTopicList(
       profileId1
@@ -1086,7 +1026,6 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_recordOneChapterProgress_completedStoryListIsEmpty() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1100,10 +1039,7 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishEntireStory_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1119,10 +1055,7 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishEntireStory_checkChapters_allAreCompleted() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
       .observeForever(mockStorySummaryObserver)
@@ -1138,13 +1071,8 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishOneStoryAndOneChapterInOtherStory_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1160,16 +1088,9 @@ class TopicControllerTest {
   @Test
   fun testCompletedStoryList_finishTwoStories_completedStoryListIsCorrect() {
     markFractionsStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markFractionsStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter0AsCompleted()
-    testCoroutineDispatchers.runCurrent()
-
     markRatiosStory0Chapter1AsCompleted()
-    testCoroutineDispatchers.runCurrent()
 
     topicController.getCompletedStoryList(profileId1).toLiveData()
       .observeForever(mockCompletedStoryListObserver)
@@ -1196,61 +1117,38 @@ class TopicControllerTest {
   }
 
   private fun markFractionsStory0Chapter0AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp1(
       profileId1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-  }
-
-  private fun markSecondStory1Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
-      profileId1,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_1,
-      TEST_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId1,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_0,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
-    storyProgressController.recordCompletedChapter(
+    storyProgressTestHelper.markCompletedRatiosStory0Exp1(
       profileId1,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0,
-      RATIOS_EXPLORATION_ID_1,
-      currentTimestamp
-    ).toLiveData().observeForever(mockRecordProgressObserver)
+      timestampOlderThanOneWeek = false
+    )
   }
 
-  private fun verifyRecordProgressSucceeded() {
-    verify(
-      mockRecordProgressObserver,
-      atLeastOnce()
-    ).onChanged(recordProgressResultCaptor.capture())
-    assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
+  private fun markRatiosStory1Chapter0AsCompleted() {
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(
+      profileId1,
+      timestampOlderThanOneWeek = false
+    )
   }
 
   private fun verifyGetTopicSucceeded() {
@@ -1319,6 +1217,15 @@ class TopicControllerTest {
     @CacheAssetsLocally
     @Provides
     fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1326,7 +1233,7 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

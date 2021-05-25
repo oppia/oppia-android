@@ -35,11 +35,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -56,6 +59,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
@@ -75,19 +79,20 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -102,6 +107,8 @@ import javax.inject.Singleton
 )
 class AdministratorControlsActivityTest {
 
+  private val internalProfileId = 0
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -110,6 +117,23 @@ class AdministratorControlsActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    AdministratorControlsActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
+  @Test
+  fun testAdministratorControls_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createAdministratorControlsActivityIntent(internalProfileId))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_title))
+  }
 
   @Before
   fun setUp() {
@@ -133,7 +157,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -162,7 +186,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -187,7 +211,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -217,23 +241,23 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUncheck() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -243,62 +267,62 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickWifiSwitch_configChange_wifiSwitchIsChecked() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
       onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.topic_update_on_wifi_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
-          R.id.administrator_controls_list,
-          2,
-          R.id.auto_update_topic_switch
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
     }
@@ -308,7 +332,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -321,7 +345,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -337,7 +361,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -351,12 +375,29 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  @Test
+  fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+    }
+  }
+
   // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -372,7 +413,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -388,7 +429,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        profileId = 0
+        profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -402,7 +443,7 @@ class AdministratorControlsActivityTest {
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
+        profileId = internalProfileId
       )
     ).use {
       it.openNavigationDrawer()
@@ -442,8 +483,8 @@ class AdministratorControlsActivityTest {
 
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      context,
-      profileId
+      context = context,
+      profileId = profileId
     )
   }
 
@@ -507,9 +548,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetView
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
       )
     ).check(matches(isDisplayed()))
   }
@@ -521,9 +562,9 @@ class AdministratorControlsActivityTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.administrator_controls_list,
-        itemPosition,
-        targetViewId
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
   }
@@ -543,7 +584,6 @@ class AdministratorControlsActivityTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -555,12 +595,12 @@ class AdministratorControlsActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

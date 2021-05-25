@@ -11,12 +11,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -33,10 +32,9 @@ import kotlin.concurrent.withLock
  */
 @Singleton
 class AudioPlayerController @Inject constructor(
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
@@ -185,8 +183,8 @@ class AudioPlayerController @Inject constructor(
       }
       mediaPlayer.prepareAsync()
     } catch (e: IOException) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
-      logger.e("AudioPlayerController", "Failed to set data source for media player", e)
+      exceptionsController.logNonFatalException(e)
+      oppiaLogger.e("AudioPlayerController", "Failed to set data source for media player", e)
     }
     playProgress?.value = AsyncResult.pending()
   }

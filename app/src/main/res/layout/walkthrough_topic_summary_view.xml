@@ -22,10 +22,9 @@
 
     <org.oppia.android.app.customview.LessonThumbnailImageView
       android:id="@+id/walkthrough_topic_thumbnail_image_view"
-      android:layout_width="match_parent"
-      android:layout_height="92dp"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
       android:importantForAccessibility="no"
-      android:scaleType="centerInside"
       app:entityId="@{viewModel.topicSummary.topicId}"
       app:entityType="@{viewModel.topicEntityType}"
       app:layout_constraintBottom_toTopOf="@+id/bottom_container"
@@ -46,7 +45,7 @@
         android:id="@+id/bottom_topic_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:bottomRoundedRectDrawableWithColor="@{viewModel.darkerBackgroundOverlayColor}"
+        android:background="@color/topicTitleBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -76,7 +75,9 @@
           android:id="@+id/walkthrough_lesson_count_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:ellipsize="end"
           android:fontFamily="sans-serif-light"
+          android:lines="1"
           android:text="@{@plurals/lesson_count(viewModel.totalChapterCount, viewModel.totalChapterCount)}"
           android:textColor="@color/white_80"
           android:textSize="14sp"

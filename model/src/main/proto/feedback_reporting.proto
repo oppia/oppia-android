@@ -1,0 +1,360 @@
+syntax = "proto3";
+
+package model;
+
+import "profile.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Top-level proto to store feedback reports locally when there is no network connection to upload
+// them to the remote service.
+message FeedbackReportingDatabase {
+  // The reports that are cached locally on the device.
+  repeated FeedbackReport reports = 1;
+}
+
+// Corresponds to an entire feedback report with user reported information and collected app,
+// device, and build information.
+message FeedbackReport {
+  // The date as a Unix timestamp for when the report was submitted on the Android device. This is
+  // an int32 for seconds instead of an int64 msec to match the backend storage datetime object.
+  int32 report_submission_timestamp_sec = 1;
+  // The information supplied by the user in a feedback report.
+  UserSuppliedFeedback user_supplied_info = 2;
+  // Information collected about the user's physical device.
+  FeedbackReportingSystemContext system_context = 3;
+  // Information collected about the physical device's build.
+  FeedbackReportingDeviceContext device_context = 4;
+  // Information collected about the specific app build on the device.
+  FeedbackReportingAppContext app_context = 5;
+}
+
+// Information supplied by the user in the feedback report.
+message UserSuppliedFeedback {
+  // The high-level type of feedback that this report represents.
+  oneof report_type {
+    // A suggestion that can be applied to the app.
+    Suggestion suggestion = 1;
+    // An issue that should be addressed.
+    Issue issue = 2;
+    // A crash report that may give additional context on what happened.
+    Crash crash = 3;
+  }
+}
+
+// A feedback report from the user that provides a suggestion for something that could or should
+// change in the app.
+message Suggestion {
+  // The category that the user is making a suggestion for.
+  enum SuggestionCategory {
+    // Unspecified category for a suggestion report; no reports should have an unspecified category
+    // as users are required to select a category.
+    CATEGORY_UNSPECIFIED = 0;
+    // A new feature suggestion.
+    FEATURE_SUGGESTION = 1;
+    // A new language suggestion.
+    LANGUAGE_SUGGESTION = 2;
+    // A suggestion for something else about the app.
+    OTHER_SUGGESTION = 3;
+  }
+  SuggestionCategory suggestion_category = 1;
+  // The text input provided by the user.
+  string user_submitted_suggestion = 2;
+}
+
+// A feedback report from the user that brings up an issue found about the app or with a feature in
+// the app that needs to be fixed / improved.
+message Issue {
+  oneof issue_category {
+    // An issue with lessons or questions.
+    LessonQuestionIssue lesson_question_issue = 1;
+    // A general issue with the language.
+    LanguageIssue language_issue = 2;
+    // An issue with a topic or the topics list / home screen.
+    TopicsIssue topics_issue = 3;
+    // An issue with the user's profile or profile screen.
+    ProfileIssue profile_issue = 4;
+    // An issue with something else in the app not listed above.
+    OtherIssue other_issue = 5;
+  }
+}
+
+// Represents a user-selected category to indicate there is an issue with a lesson or the questions.
+message LessonQuestionIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    ISSUE_OPTION_UNSPECIFIED = 0;
+    // Represents the issue option that the lesson is too long.
+    LESSON_TOO_LONG = 1;
+    // Represents the issue option that the lesson is too short.
+    LESSON_TOO_SHORT = 2;
+    // Represents the issue option that the lesson is too hard.
+    LESSON_TOO_HARD = 3;
+    // Represents the issue option that the lesson is too easy.
+    LESSON_TO_EASY = 4;
+    // Represents the issue option that the user cannot see hints for a question or during the lesson.
+    CANNOT_SEE_HINTS = 5;
+    // Represents the issue option that the language the user expects for the lesson is incorrect.
+    DIFFERENT_LANGUAGE = 6;
+    // Represents the issue option that the user cannot find their desired language for the lesson.
+    CANNOT_FIND_LANGUAGE = 7;
+    // Represents the issue option that the user couldn't understand a question.
+    CANNOT_UNDERSTAND_QUESTION = 8;
+    // Represents the issue option that the user couldn't find the answer to a question.
+    CANNOT_FIND_ANSWER = 9;
+    // Represents the issue option that a typo was seen.
+    TYPO = 10;
+    // Represents the "other" option that lets users input text.
+    OTHER = 11;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the app's language.
+message LanguageIssue {
+  oneof language_issue_category {
+    GeneralLanguageIssue general_language_issue = 1;
+    AudioLanguageIssue audio_language_issue = 2;
+    TextLanguageIssue text_language_issue = 3;
+  }
+}
+
+// Represents the user-selected category for an issue with the app's language without specifying a
+// sub-category of text or audio language. This issue does not have any user-selected options as
+// users must select a sub-category to provide specific issues.
+message GeneralLanguageIssue {}
+
+// Represents the user-selected category for an issue with the app's language and specifying an issue
+// with the audio language.
+message AudioLanguageIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option -- this should never be selected as it is not a valid user option.
+    ISSUE_OPTION_UNSPECIFIED = 0;
+    // Represents the issue option that the audio language is too fast.
+    TOO_FAST = 1;
+    // Represents the issue option that the audio language is too slow.
+    TOO_SLOW = 2;
+    // Represents the issue option that the audio language is too loud.
+    TOO_LOUD = 3;
+    // Represents the issue option that the audio language is too quiet.
+    TOO_QUIET = 4;
+    // Represents the issue option that the user cannot understand the audio language.
+    CANNOT_UNDERSTAND = 5;
+    // Represents the issue option that the audio translation is incorrect.
+    TRANSLATION_WRONG = 6;
+    // Represents the issue option that the language the user expects for the audio is incorrect.
+    DIFFERENT_LANGUAGE = 7;
+    // Represents the issue option that the user cannot find their desired audio language.
+    CANNOT_FIND_LANGUAGE = 8;
+    // Represents the "other" option that lets users input text.
+    OTHER = 9;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the app's language and specifying an issue
+// with the text language.
+message TextLanguageIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option -- this should never be selected as it is not a valid user option.
+    ISSUE_OPTION_UNSPECIFIED = 0;
+    // Represents the issue option that the text language is too big.
+    TOO_BIG = 1;
+    // Represents the issue option that the text language is too small.
+    TOO_SMALL = 2;
+    // Represents the issue option that the user cannot understand the text language.
+    CANNOT_UNDERSTAND = 3;
+    // Represents the issue option that the text translation is incorrect.
+    TRANSLATION_WRONG = 4;
+    // Represents the issue option that the language the user expects for the text is incorrect.
+    DIFFERENT_LANGUAGE = 5;
+    // Represents the issue option that the user cannot find their desired text language.
+    CANNOT_FIND_LANGUAGE = 6;
+    // Represents the "other" option that lets users input text.
+    OTHER = 7;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for an issue with the topics available to the to the user.
+message TopicsIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    ISSUE_OPTION_UNSPECIFIED = 0;
+    // Represents the issue option that the user cannot see all the topics they want to see.
+    CANNOT_SEE_ALL = 1;
+    // Represents the issue option that the user cannot find a desired topic.
+    CANNOT_FIND_TOPIC = 2;
+    // Represents the issue option that the user cannot find a story they accessed earlier.
+    CANNOT_FIND_EARLIER_STORY = 3;
+    // Represents the issue option that the user is unsure of what to do next in the app.
+    DO_NOT_KNOW_NEXT_STEP = 4;
+    // Represents the "other" option that lets users input text.
+    OTHER = 5;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER option is selected.
+  string other_user_input = 2;
+}
+
+
+// Represents the user-selected category for an issue with the user's profile.
+message ProfileIssue {
+  // The specific issue option that a user can choose to include in their report.
+  enum IssueOption {
+    // An unspecified option that represents an "other" issue option in this category.
+    ISSUE_OPTION_UNSPECIFIED = 0;
+    // Represents the issue option that the user cannot add a profile.
+    CANNOT_ADD = 1;
+    // Represents the issue option that the user cannot remove a profile.
+    CANNOT_DELETE = 2;
+    // Represents the issue option that the user cannot add a new admin account.
+    CANNOT_ADD_NEW_ADMIN = 3;
+    // Represents the issue option that the user cannot change their profile name.
+    CANNOT_CHANGE_NAME = 4;
+    // Represents the issue option that the user cannot change their profile image.
+    CANNOT_CHANGE_IMAGE = 5;
+    // Represents the issue option that the user forgot their admin PIN.
+    FORGOT_ADMIN_PIN = 6;
+    // Represents the "other" option that lets users input text.
+    OTHER = 7;
+  }
+  repeated IssueOption user_selected_options = 1;
+  // The user's text input if they selected "other" as an issue option; this can only be non-empty
+  // if the OTHER option is selected.
+  string other_user_input = 2;
+}
+
+// Represents the user-selected category for some other issue with the app that is not listed in the
+// specified categories.
+message OtherIssue {
+  // The user's text input for this issue.
+  string open_user_input = 1;
+}
+
+// A feedback report from the user after a crash has occurred somewhere in the app.
+message Crash {
+  // The location where the crash occurred.
+  enum CrashLocation {
+    // Unspecified location for a crash report; no reports should have an unspecified location
+    // as users are required to select a response for this.
+    CRASH_LOCATION_UNSPECIFIED = 0;
+    // Indicates that the crash occurred in the lesson / exploration player.
+    LESSON_PLAYER = 1;
+    // Indicates that the crash occurred in the question player / during a practice session.
+    PRACTICE_QUESTIONS = 2;
+    // Indicates that the crash occurred in the topics list / home screen.
+    TOPICS_LIST = 3;
+    // Indicates that the crash occurred in the options screen.
+    OPTIONS_ACTIVITY = 4;
+    // Indicates that the crash occurred on the user's profile page.
+    PROFILE_ACTIVITY = 5;
+    // Indicates that the crash occurred in a different location not listed above.
+    OTHER_LOCATION = 6;
+  }
+  CrashLocation crash_location = 1;
+  // The user's text input for explaining what happened.
+  string crash_explanation = 2;
+}
+
+// Information collected about the user device's systems.
+message FeedbackReportingSystemContext {
+  // The package name for the specific app version on the device.
+  string package_version_name = 1;
+  // The package code for the specific app version on the device.
+  int32 package_version_code = 2;
+  // The ISO-3166 country code for the country locale set by the user (otherwise determined by the
+  // environment JVM). EX: A locale of Canada is different than a locale of French Canada and
+  // differentiates user environments. Similarly, even if two language locales are both French,
+  // a country locale of French Canada indicates a different user than someone with a country locale
+  // of France.
+  string country_locale_code = 3;
+  // The ISO-639  code for the device's language locale set by the user (otherwise determined by the
+  // system JVM). EX: Traditional Chinese and simplified Chinese correspond to different language codes.
+  string language_locale_code = 4;
+}
+
+// Information collected about the user's device build.
+message FeedbackReportingDeviceContext {
+  // The model code of the user's device.
+  string device_model = 1;
+  // The version code for the SDK on the device.
+  int32 sdk_version = 2;
+  // The unique fingerprint ID for this specific build.
+  string build_fingerprint = 3;
+  // The type of internet network connection the device is on.
+  enum NetworkType {
+    // Indicates an unspecified or unknown network type.
+    NETWORK_TYPE_UNSPECIFIED = 0;
+    // Indicates the device is connected to a wifi network.
+    WIFI = 1;
+    // Indicates that device is connected to a cellular network.
+    CELLULAR = 2;
+  }
+  NetworkType network_type = 4;
+}
+
+// Information collected about the current version of the Oppia Android app.
+message FeedbackReportingAppContext {
+  // The entry point that feedback reporting was launched from.
+  oneof entry_point {
+    // Indicates that the user started feedback reporting from the main navigation drawer.
+    NavigationDrawerEntryPoint navigation_drawer = 1;
+    // Indicates that the user started feedback reporting from the exploration player.
+    LessonPlayerEntryPoint lesson_player = 2;
+    // Indicates that the user started feedback reporting from a revision card / session.
+    RevisionCardEntryPoint revision_card = 3;
+    // Indicates that the user started feedback reporting from a crash / the crash reporting dialog.
+    CrashEntryPoint crash_dialog = 4;
+  }
+  // The text size the app is set to.
+  ReadingTextSize text_size = 5;
+  // The text language the app is set to.
+  AppLanguage text_language = 6;
+  // The audio language the app is set to.
+  AudioLanguage audio_language = 7;
+  // The app's specific device settings.
+  DeviceSettings device_settings = 8;
+  // Whether the account sending the report is the admin account.
+  bool is_admin = 9;
+}
+
+// Corresponds to the entry point to feedback reporting shown in the navigation drawer menu.
+message NavigationDrawerEntryPoint {}
+
+// Corresponds to the entry point to feedback reporting shown in the exploration player's three-dot
+// menu.
+message LessonPlayerEntryPoint {
+  // The topic ID for of the lesson being played.
+  string topic_id = 1;
+  // The story ID of the lesson being played.
+  string story_id = 2;
+  // The exploration ID of the lesson being played.
+  string exploration_id = 3;
+}
+
+// Corresponds to the entry point to feedback reporting shown in a revision session's three-dot menu.
+message RevisionCardEntryPoint {
+  // The topic ID of the subtopic being reviewed.
+  string topic_id = 1;
+  // The subtopic ID of the subtopic being reviewed.
+  string subtopic_id = 2;
+}
+
+// Corresponds to the entry point to feedback reporting from after an app crash.
+message CrashEntryPoint {}

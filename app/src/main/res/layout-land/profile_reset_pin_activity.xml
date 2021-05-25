@@ -30,9 +30,9 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/profile_reset_pin_title"
+        app:title="@string/profile_reset_pin_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -131,6 +131,7 @@
             android:layout_marginEnd="168dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:clickable="@{viewModel.isButtonActive()}"
+            android:enabled="@{viewModel.isButtonActive()}"
             android:text="@string/profile_rename_save"
             android:textAllCaps="true"
             android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"

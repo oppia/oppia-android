@@ -44,6 +44,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -63,20 +64,21 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -119,15 +121,42 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_parentIsExploration_checkBackArrowVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = false
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
+  fun testHelpFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHelpFragment_notFromNavigationDrawer_configChange_navigationDrawerIsNotPresent() {
+    launch<HelpActivity>(createHelpActivityIntent(0, false)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_activity_fragment_navigation_drawer))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testHelpFragment_parentIsNotExploration_checkBackArrowNotVisible() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
     }
@@ -135,12 +164,21 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_faqListTitleIsDisplayed() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        atPositionOnView(R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view)
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0,
+          targetViewId = R.id.help_item_text_view
+        )
       ).check(
         matches(withText(R.string.frequently_asked_questions_FAQ))
       )
@@ -149,14 +187,21 @@ class HelpFragmentTest {
 
   @Test
   fun testHelpFragment_configChanged_faqListTitleIsDisplayed() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
         atPositionOnView(
-          R.id.help_fragment_recycler_view, 0, R.id.help_item_text_view
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0,
+          targetViewId = R.id.help_item_text_view
         )
       ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
     }
@@ -164,15 +209,30 @@ class HelpFragmentTest {
 
   @Test
   fun openHelpActivity_selectFAQ_showFAQActivitySuccessfully() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
-      onView(atPosition(R.id.help_fragment_recycler_view, 0)).perform(click())
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
     }
   }
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_fragment_placeholder))
         .check(matches(isCompletelyDisplayed()))
@@ -183,7 +243,12 @@ class HelpFragmentTest {
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testHelpFragment_openNavDrawerAndClose_navDrawerIsClosed() {
-    launch<HelpActivity>(createHelpActivityIntent(0, true)).use {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
       onView(withId(R.id.help_activity_drawer_layout)).check(matches(isClosed()))
@@ -222,7 +287,6 @@ class HelpFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -234,12 +298,12 @@ class HelpFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

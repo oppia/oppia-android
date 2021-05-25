@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -30,16 +31,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -59,20 +63,21 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -86,6 +91,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileChooserFragmentTest {
+
+  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
+    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -117,6 +126,15 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  fun testProfileChooserActivity_hasCorrectLabel() {
+    activityTestRule.launchActivity(/* startIntent= */ null)
+    val title = activityTestRule.activity.title
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
+  }
+
+  @Test
   fun testProfileChooserFragment_initializeProfiles_checkProfilesAreShown() {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
@@ -140,9 +158,9 @@ class ProfileChooserFragmentTest {
       )
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.profile_is_admin_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_is_admin_text
         )
       ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
@@ -166,9 +184,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          0,
-          R.id.profile_last_visited
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
@@ -192,9 +210,9 @@ class ProfileChooserFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          0,
-          R.id.profile_last_visited
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_last_visited
         )
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
@@ -279,7 +297,12 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 0)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 0
+        )
+      ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
   }
@@ -287,20 +310,20 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickAdminProfileWithNoPin_checkOpensAdminPinActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_item
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.add_profile_item
         )
       ).perform(click())
       intended(hasComponent(AdminPinActivity::class.java.name))
@@ -309,20 +332,20 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminPinActivity() {
+  fun testProfileChooserFragment_clickAdminControlsWithNoPin_checkOpensAdminControlsActivity() {
     profileManagementController.addProfile(
-      "Admin",
-      "",
-      null,
-      true,
-      -10710042,
-      true
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = true
     ).toLiveData()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(click())
-      intended(hasComponent(AdminPinActivity::class.java.name))
-      intended(hasExtra(ADMIN_PIN_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value))
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+      intended(hasExtra(KEY_NAVIGATION_PROFILE_ID, /* internalProfileId= */ 0))
     }
   }
 
@@ -362,9 +385,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          1,
-          R.id.add_profile_description_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 1,
+          targetViewId = R.id.add_profile_description_text
         )
       ).check(matches(isDisplayed()))
     }
@@ -390,9 +413,9 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.profile_recycler_view,
-          4,
-          R.id.add_profile_description_text
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 4,
+          targetViewId = R.id.add_profile_description_text
         )
       ).check(matches(not(isDisplayed())))
     }
@@ -414,7 +437,12 @@ class ProfileChooserFragmentTest {
     profileTestHelper.initializeProfiles()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPosition(R.id.profile_recycler_view, 4)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profile_recycler_view,
+          position = 4
+        )
+      ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, AdminAuthEnum.PROFILE_ADD_PROFILE.value))
     }
@@ -440,15 +468,14 @@ class ProfileChooserFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.profile_recycler_view,
-        itemPosition,
-        targetView
+        recyclerViewId = R.id.profile_recycler_view,
+        position = itemPosition,
+        targetViewId = targetView
       )
     ).check(matches(withText(stringToMatch)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -460,12 +487,12 @@ class ProfileChooserFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

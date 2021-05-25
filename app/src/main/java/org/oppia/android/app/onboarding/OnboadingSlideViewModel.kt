@@ -6,13 +6,12 @@ import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
 /** [ViewModel] for slide in onboarding flow. */
 class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSlide) :
-  ObservableViewModel() {
+  OnboardingViewPagerViewModel() {
   val slideImage = ObservableField<Int>(R.drawable.ic_portrait_onboarding_0)
   val title =
     ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))

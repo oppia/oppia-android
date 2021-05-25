@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import nl.dionsegijn.konfetti.KonfettiView
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
@@ -24,11 +22,12 @@ import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -37,7 +36,6 @@ import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -49,9 +47,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val context: Context,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
-  private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager
@@ -65,12 +62,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
-
-  private val confettiColors = listOf(
-    R.color.confetti_red,
-    R.color.confetti_yellow,
-    R.color.confetti_blue
-  ).map { getColor(context, it) }
 
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
@@ -220,7 +211,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve ephemeral question",
         result.getErrorOrNull()!!
@@ -358,7 +349,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToHint]. */
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve Hint",
         hintResult.getErrorOrNull()!!
@@ -370,7 +361,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   /** Helper for [subscribeToSolution]. */
   private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
     if (solutionResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve Solution",
         solutionResult.getErrorOrNull()!!
@@ -384,7 +375,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
     if (answeredQuestionOutcomeResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "QuestionPlayerFragment",
         "Failed to retrieve answer outcome",
         answeredQuestionOutcomeResult.getErrorOrNull()!!
@@ -429,7 +420,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
         congratulationsTextConfettiView,
-        confettiColors
+        MINI_CONFETTI_BURST
       )
       .addConceptCardSupport()
       .build()
@@ -441,7 +432,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
       oppiaLogger.createQuestionContext(
         questionId,

@@ -34,10 +34,10 @@ import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.testing.FakeEventLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -54,14 +54,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TEST_TIMESTAMP = 1556094120000
-const val TEST_TOPIC_ID = "test_topicId"
-const val TEST_STORY_ID = "test_storyId"
-const val TEST_EXPLORATION_ID = "test_explorationId"
-const val TEST_QUESTION_ID = "test_questionId"
-const val TEST_SKILL_ID = "test_skillId"
-const val TEST_SKILL_LIST_ID = "test_skillListId"
-const val TEST_SUB_TOPIC_ID = 1
+private const val TEST_TIMESTAMP = 1556094120000
+private const val TEST_TOPIC_ID = "test_topicId"
+private const val TEST_STORY_ID = "test_storyId"
+private const val TEST_EXPLORATION_ID = "test_explorationId"
+private const val TEST_QUESTION_ID = "test_questionId"
+private const val TEST_SKILL_ID = "test_skillId"
+private const val TEST_SKILL_LIST_ID = "test_skillListId"
+private const val TEST_SUB_TOPIC_ID = 1
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)

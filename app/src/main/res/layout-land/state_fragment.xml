@@ -31,6 +31,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:paddingTop="@{viewModel.isSplitView() ? (viewModel.isAudioBarVisible ? @dimen/state_fragment_split_view_with_audio_bar_visible_padding_top : @dimen/space_0dp) : (viewModel.isAudioBarVisible ? @dimen/state_fragment_non_split_view_with_audio_bar_visible_padding_top : @dimen/space_0dp)}"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"
@@ -47,6 +48,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:scrollbars="none"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
@@ -81,12 +83,21 @@
           android:layout_height="wrap_content"
           android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
       </FrameLayout>
+
+      <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/full_screen_confetti_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"></FrameLayout>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"

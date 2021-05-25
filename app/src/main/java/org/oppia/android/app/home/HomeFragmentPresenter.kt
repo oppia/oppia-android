@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
@@ -16,6 +17,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AllTopicsBinding
+import org.oppia.android.databinding.ComingSoonTopicListBinding
 import org.oppia.android.databinding.HomeFragmentBinding
 import org.oppia.android.databinding.PromotedStoryListBinding
 import org.oppia.android.databinding.TopicSummaryViewBinding
@@ -23,9 +25,8 @@ import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -37,7 +38,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
@@ -58,7 +58,7 @@ class HomeFragmentPresenter @Inject constructor(
       activity,
       fragment,
       oppiaClock,
-      logger,
+      oppiaLogger,
       internalProfileId,
       profileManagementController,
       topicListController,
@@ -72,7 +72,7 @@ class HomeFragmentPresenter @Inject constructor(
     homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
       override fun getSpanSize(position: Int): Int {
         return if (position < homeAdapter.itemCount &&
-          homeAdapter.getItemViewType(position) === ViewType.TOPIC_LIST.ordinal
+          homeAdapter.getItemViewType(position) == ViewType.TOPIC_LIST.ordinal
         ) 1
         else spanCount
       }
@@ -96,6 +96,7 @@ class HomeFragmentPresenter @Inject constructor(
         when (viewModel) {
           is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
           is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+          is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
           is AllTopicsViewModel -> ViewType.ALL_TOPICS
           is TopicSummaryViewModel -> ViewType.TOPIC_LIST
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
@@ -112,6 +113,12 @@ class HomeFragmentPresenter @Inject constructor(
         inflateDataBinding = PromotedStoryListBinding::inflate,
         setViewModel = PromotedStoryListBinding::setViewModel,
         transformViewModel = { it as PromotedStoryListViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.COMING_SOON_TOPIC_LIST,
+        inflateDataBinding = ComingSoonTopicListBinding::inflate,
+        setViewModel = ComingSoonTopicListBinding::setViewModel,
+        transformViewModel = { it as ComingSoonTopicListViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.ALL_TOPICS,
@@ -131,6 +138,7 @@ class HomeFragmentPresenter @Inject constructor(
   private enum class ViewType {
     WELCOME_MESSAGE,
     PROMOTED_STORY_LIST,
+    COMING_SOON_TOPIC_LIST,
     ALL_TOPICS,
     TOPIC_LIST
   }
@@ -141,9 +149,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun logHomeActivityEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
-      EventLog.EventAction.OPEN_HOME,
-      /* eventContext= */ null
+      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_HOME, eventContext = null
     )
   }
 }

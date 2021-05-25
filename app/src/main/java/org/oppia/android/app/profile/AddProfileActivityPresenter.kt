@@ -65,8 +65,9 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
-    binding.addProfileActivityAllowDownloadSwitch.setOnCheckedChangeListener { _, isChecked ->
-      allowDownloadAccess = isChecked
+    binding.addProfileActivityAllowDownloadConstraintLayout.setOnClickListener {
+      allowDownloadAccess = !allowDownloadAccess
+      binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
     }
     binding.addProfileActivityPinCheckBox.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
@@ -81,6 +82,7 @@ class AddProfileActivityPresenter @Inject constructor(
     activity.supportActionBar?.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)
