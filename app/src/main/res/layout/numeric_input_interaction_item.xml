@@ -26,6 +26,7 @@
       style="@style/InputInteractionEditText"
       android:contentDescription="@string/numeric_input_content_description"
       android:digits="0123456789.-"
+      android:hint="@string/numeric_input_hint"
       android:inputType="numberDecimal"
       android:text="@={viewModel.answerText}"
       app:textChangedListener="@{viewModel.answerTextWatcher}" />
