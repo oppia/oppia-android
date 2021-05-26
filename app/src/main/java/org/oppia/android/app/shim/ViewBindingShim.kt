@@ -97,7 +97,7 @@ interface ViewBindingShim {
   ): View
 
   /** Handles binding inflation for [PromotedStoryListView] and returns the view model. */
-  fun providePromotedStoryViewModel(
+  fun providePromotedCarouselItemViewModel(
     view: View,
     viewModel: PromotedCarouselItemViewModel
   )

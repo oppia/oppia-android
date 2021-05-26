@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel
-import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
+import org.oppia.android.app.home.promotedlist.PromotedCarouselLisViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
@@ -117,7 +117,7 @@ class HomeViewModel(
 
   /**
    * Returns a [HomeItemViewModel] corresponding to the promoted stories(Recommended, Recently-played and
-   * Last-played stories)[PromotedStoryListViewModel] and Upcoming topics [ComingSoonTopicListViewModel]
+   * Last-played stories)[PromotedCarouselLisViewModel] and Upcoming topics [ComingSoonTopicListViewModel]
    * to be displayed for this learner or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
@@ -126,11 +126,11 @@ class HomeViewModel(
   ): HomeItemViewModel? {
     when (promotedActivityList.recommendationTypeCase) {
       PromotedActivityList.RecommendationTypeCase.PROMOTED_STORY_LIST -> {
-        val storyViewModelList = computePromotedStoryViewModelList(
+        val storyViewModelList = computePromotedCarouselItemViewModelList(
           promotedActivityList.promotedStoryList
         )
         return if (storyViewModelList.isNotEmpty()) {
-          return PromotedStoryListViewModel(
+          return PromotedCarouselLisViewModel(
             activity,
             storyViewModelList,
             promotedActivityList
@@ -152,11 +152,11 @@ class HomeViewModel(
   }
 
   /**
-   * Returns a list of [HomeItemViewModel]s corresponding to the the [PromotedStoryListViewModel] displayed
+   * Returns a list of [HomeItemViewModel]s corresponding to the the [PromotedCarouselLisViewModel] displayed
    * for this profile (see [PromotedCarouselItemViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
-  private fun computePromotedStoryViewModelList(
+  private fun computePromotedCarouselItemViewModelList(
     promotedStoryList: PromotedStoryList
   ): List<PromotedCarouselItemViewModel> {
     with(promotedStoryList) {

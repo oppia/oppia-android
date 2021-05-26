@@ -60,14 +60,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PromotedStoryListViewModel] data. */
+/** Tests for [PromotedCarouselLisViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PromotedStoryListViewModelTest.TestApplication::class,
+  application = PromotedCarouselLisViewModelTest.TestApplication::class,
   manifest = Config.NONE
 )
-class PromotedStoryListViewModelTest {
+class PromotedCarouselLisViewModelTest {
   @Inject
   lateinit var context: Context
 
@@ -108,7 +108,7 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity, listOf(promotedStory1, promotedStory2), promotedActivityList1
         )
 
@@ -124,12 +124,12 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -148,17 +148,17 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModelCopy1 = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy1 = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListViewModelCopy2 = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy2 = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListViewModelCopy3 = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy3 = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -178,12 +178,12 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListViewModelCopy = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelCopy = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -203,7 +203,7 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -221,12 +221,12 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModelOf2 = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelOf2 = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListViewModelOf3 = createPromotedStoryListViewModel(
+        val promotedStoryListViewModelOf3 = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2, promotedStory3),
           promotedActivityList1
@@ -243,12 +243,12 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
         )
-        val promotedStoryListCopy = createPromotedStoryListViewModel(
+        val promotedStoryListCopy = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -268,7 +268,7 @@ class PromotedStoryListViewModelTest {
       HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryListViewModel = createPromotedStoryListViewModel(
+        val promotedStoryListViewModel = createPromotedCarouselListViewModel(
           homeFragmentTestActivity,
           listOf(promotedStory1, promotedStory2),
           promotedActivityList1
@@ -286,7 +286,7 @@ class PromotedStoryListViewModelTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createPromotedStoryViewModelList(
+  private fun createPromotedCarouselItemViewModelList(
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>
   ): List<PromotedCarouselItemViewModel> {
@@ -301,14 +301,14 @@ class PromotedStoryListViewModelTest {
     }
   }
 
-  private fun createPromotedStoryListViewModel(
+  private fun createPromotedCarouselListViewModel(
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>,
     promotedActivityList: PromotedActivityList
-  ): PromotedStoryListViewModel {
-    return PromotedStoryListViewModel(
+  ): PromotedCarouselLisViewModel {
+    return PromotedCarouselLisViewModel(
       activity,
-      createPromotedStoryViewModelList(activity, promotedStoryList),
+      createPromotedCarouselItemViewModelList(activity, promotedStoryList),
       promotedActivityList
     )
   }
@@ -336,18 +336,18 @@ class PromotedStoryListViewModelTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(promotedStoryListViewModelTest: PromotedStoryListViewModelTest)
+    fun inject(promotedCarouselListViewModelTest: PromotedCarouselLisViewModelTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPromotedStoryListViewModelTest_TestApplicationComponent.builder()
+      DaggerPromotedCarouselListViewModelTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(promotedStoryListViewModelTest: PromotedStoryListViewModelTest) {
-      component.inject(promotedStoryListViewModelTest)
+    fun inject(promotedCarouselListViewModelTest: PromotedCarouselLisViewModelTest) {
+      component.inject(promotedCarouselListViewModelTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

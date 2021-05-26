@@ -50,7 +50,7 @@ class PromotedStoryListView @JvmOverloads constructor(
    *
    * @param newDataList the new list of stories to present
    */
-  fun setPromotedStoryList(newDataList: List<PromotedCarouselItemViewModel>?) {
+  fun setPromotedCarouselList(newDataList: List<PromotedCarouselItemViewModel>?) {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -77,7 +77,7 @@ class PromotedStoryListView @JvmOverloads constructor(
           )
         },
         bindView = { view, viewModel ->
-          bindingInterface.providePromotedStoryViewModel(
+          bindingInterface.providePromotedCarouselItemViewModel(
             view,
             viewModel
           )
