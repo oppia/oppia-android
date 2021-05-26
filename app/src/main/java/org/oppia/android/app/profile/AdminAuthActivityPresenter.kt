@@ -71,8 +71,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin.length < adminPin.length) {
         binding.adminAuthInputPinEditText.setImeOptions(EditorInfo.IME_ACTION_NONE)
         return@setOnClickListener
-      }
-      else if (inputPin == adminPin) {
+      } else if (inputPin == adminPin) {
         when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
