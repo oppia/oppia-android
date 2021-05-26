@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.info
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -68,6 +69,7 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.espresso.ImageViewMatcher.Companion.hasScaleType
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -175,6 +177,21 @@ class TopicInfoFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_thumbnail_image_view)).check(
+        matches(
+          hasScaleType(ImageView.ScaleType.FIT_CENTER)
+        )
+      )
     }
   }
 
