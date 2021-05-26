@@ -12,7 +12,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -30,7 +29,6 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

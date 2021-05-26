@@ -13,7 +13,6 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
-
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
