@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.home.promotedlist.PromotedCarouselItemViewModel
 import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.databinding.SectionTitleBinding
 
@@ -60,13 +61,13 @@ class PromotedListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
+        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedCarouselItemViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
         val params =
-          holder.binding.promotedStoryCardView.layoutParams as (ViewGroup.MarginLayoutParams)
+          holder.binding.promotedCarouselItemCardView.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (activity.resources.getBoolean(R.bool.isTablet)) {
           (activity as Context).resources
             .getDimensionPixelSize(R.dimen.ongoing_story_card_view_is_tablet_margin_top)
@@ -155,8 +156,8 @@ class PromotedListAdapter(
             }
           }
         }
-        holder.binding.promotedStoryCardView.layoutParams = params
-        holder.binding.promotedStoryCardView.requestLayout()
+        holder.binding.promotedCarouselItemCardView.layoutParams = params
+        holder.binding.promotedCarouselItemCardView.requestLayout()
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
@@ -194,7 +195,7 @@ class PromotedListAdapter(
   private class PromotedStoryViewHolder(
     val binding: PromotedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(promotedViewModel: PromotedStoryViewModel) {
+    internal fun bind(promotedViewModel: PromotedCarouselItemViewModel) {
       binding.viewModel = promotedViewModel
     }
   }
