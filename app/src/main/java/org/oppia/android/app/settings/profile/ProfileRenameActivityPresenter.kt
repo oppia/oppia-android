@@ -103,7 +103,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
     if (result.isSuccess()) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.administrator_controls_fragment_multipane_placeholder,
-        ProfileEditActivity.createProfileEditActivity(activity, profileId)
+        ProfileEditFragment.newInstance(activity, profileId)
       ).commitNow()
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {

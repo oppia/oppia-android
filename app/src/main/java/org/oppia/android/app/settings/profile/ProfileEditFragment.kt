@@ -8,28 +8,28 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
-const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
+const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditFragment.profile_edit_profile_id"
+const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditFragment.is_multipane"
 const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
-  "ProfileEditActivity.is_profile_deletion_dialog_visible"
+  "ProfileEditFragment.is_profile_deletion_dialog_visible"
 
 /** Activity that allows user to edit a profile. */
-class ProfileEditActivity : InjectableFragment() {
+class ProfileEditFragment : InjectableFragment() {
   @Inject
-  lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
+  lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
-  private var profileListListener: ProfileListListener? = null
+  private var profileListInterface: ProfileListInterface? = null
 
   companion object {
-    fun createProfileEditActivity(
+    fun newInstance(
       context: Context,
       profileId: Int,
       isMultipane: Boolean = false
-    ): ProfileEditActivity {
+    ): ProfileEditFragment {
       val args = Bundle()
       args.putInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
       args.putBoolean(IS_MULTIPANE_EXTRA_KEY, isMultipane)
-      val fragment = ProfileEditActivity()
+      val fragment = ProfileEditFragment()
       fragment.arguments = args
       return fragment
     }
@@ -39,7 +39,7 @@ class ProfileEditActivity : InjectableFragment() {
     super.onAttach(context)
     fragmentComponent.inject(this)
     if (context is ProfileListActivity)
-      profileListListener = context
+      profileListInterface = context
   }
 
   override fun onCreateView(
@@ -52,12 +52,12 @@ class ProfileEditActivity : InjectableFragment() {
     }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA_KEY)
     val internalProfileId = args.getInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, -1)
-    return profileEditActivityPresenter.handleOnCreate(
+    return profileEditFragmentPresenter.handleOnCreate(
       inflater,
       container,
       isMultipane,
       internalProfileId,
-      profileListListener
+      profileListInterface
     )
   }
 
@@ -86,6 +86,6 @@ class ProfileEditActivity : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    profileEditActivityPresenter.handleOnSaveInstanceState(outState)
+    profileEditFragmentPresenter.handleOnSaveInstanceState(outState)
   }
 }

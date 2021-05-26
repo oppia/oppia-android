@@ -27,7 +27,7 @@ class ProfileListFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     isMultipane: Boolean,
-    profileListListener: ProfileListListener?
+    profileListInterface: ProfileListInterface?
   ): View? {
     this.isMultipane = isMultipane
     val binding = ProfileListFragmentBinding.inflate(
@@ -36,7 +36,7 @@ class ProfileListFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    profileListListener?.toolbarListener {
+    profileListInterface?.toolbarListener {
       (activity as ProfileListActivity).finish()
     }
 
@@ -70,7 +70,7 @@ class ProfileListFragmentPresenter @Inject constructor(
       if (isMultipane) {
         fragment.parentFragmentManager.beginTransaction().add(
           R.id.administrator_controls_fragment_multipane_placeholder,
-          ProfileEditActivity.createProfileEditActivity(
+          ProfileEditFragment.newInstance(
             activity,
             profile.id.internalId,
             isMultipane
@@ -79,7 +79,7 @@ class ProfileListFragmentPresenter @Inject constructor(
       } else {
         fragment.parentFragmentManager.beginTransaction().add(
           R.id.profile_list_fragment_placeholder,
-          ProfileEditActivity.createProfileEditActivity(
+          ProfileEditFragment.newInstance(
             activity,
             profile.id.internalId,
             isMultipane

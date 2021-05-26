@@ -142,7 +142,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
             if (it.isSuccess()) {
               activity.supportFragmentManager.beginTransaction().add(
                 R.id.administrator_controls_fragment_multipane_placeholder,
-                ProfileEditActivity.createProfileEditActivity(activity, profileId)
+                ProfileEditFragment.newInstance(activity, profileId)
               ).commitNow()
             }
           }

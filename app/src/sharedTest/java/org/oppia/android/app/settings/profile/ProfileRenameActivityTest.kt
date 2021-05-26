@@ -13,10 +13,9 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -115,14 +114,8 @@ class ProfileRenameActivityTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -145,7 +138,7 @@ class ProfileRenameActivityTest {
   }
 
   @Test
-  fun testProfileRenameActivity_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
+  fun testProfileRenameActivity_inputNewName_clickSave_backToProfileEditScreen() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
@@ -161,12 +154,12 @@ class ProfileRenameActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testProfileRenameActivity_inputNewName_clickImeActionButton_checkProfileEditActivityIsOpen() {
+  fun testProfileRenameActivity_inputNewName_clickImeActionButton_backToProfileEditScreen() {
     launch<ProfileRenameActivity>(
       ProfileRenameActivity.createProfileRenameActivity(
         context = context,
@@ -183,7 +176,7 @@ class ProfileRenameActivityTest {
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 

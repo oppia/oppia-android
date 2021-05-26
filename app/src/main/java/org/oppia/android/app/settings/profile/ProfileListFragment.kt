@@ -15,7 +15,7 @@ class ProfileListFragment : InjectableFragment() {
   @Inject
   lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
 
-  private var profileListListener: ProfileListListener? = null
+  private var profileListInterface: ProfileListInterface? = null
 
   companion object {
     fun newInstance(isMultipane: Boolean = false): ProfileListFragment {
@@ -31,7 +31,7 @@ class ProfileListFragment : InjectableFragment() {
     super.onAttach(context)
     fragmentComponent.inject(this)
     if (context is ProfileListActivity)
-      profileListListener = context
+      profileListInterface = context
   }
 
   override fun onCreateView(
@@ -47,7 +47,7 @@ class ProfileListFragment : InjectableFragment() {
       inflater,
       container,
       isMultipane,
-      profileListListener
+      profileListInterface
     )
   }
 }

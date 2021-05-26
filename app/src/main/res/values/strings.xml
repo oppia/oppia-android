@@ -284,7 +284,7 @@
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
-  <!-- ProfileEditActivity -->
+  <!-- ProfileEditFragment -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
   <string name="profile_edit_rename">Rename</string>

@@ -13,7 +13,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** The ViewModel for [ProfileEditActivity]. */
+/** The ViewModel for [ProfileEditFragment]. */
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,

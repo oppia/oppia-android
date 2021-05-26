@@ -12,15 +12,16 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.databinding.ProfileEditActivityBinding
+import org.oppia.android.databinding.ProfileEditFragmentBinding
+
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** The presenter for [ProfileEditActivity]. */
+/** The presenter for [ProfileEditFragment]. */
 @FragmentScope
-class ProfileEditActivityPresenter @Inject constructor(
+class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
@@ -36,9 +37,9 @@ class ProfileEditActivityPresenter @Inject constructor(
     container: ViewGroup?,
     isMultipane: Boolean,
     internalProfileId: Int,
-    profileListListener: ProfileListListener?
+    profileListInterface: ProfileListInterface?
   ): View? {
-    val binding = ProfileEditActivityBinding.inflate(
+    val binding = ProfileEditFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
@@ -73,14 +74,14 @@ class ProfileEditActivityPresenter @Inject constructor(
       showDeletionDialog(internalProfileId)
     }
 
-    profileListListener?.toolbarListener {
+    profileListInterface?.toolbarListener {
       (activity as ProfileListActivity).finish()
     }
 
     profileEditViewModel.profile.observe(
       activity,
       Observer {
-        profileListListener?.updateToolbarTitle(it.name)
+        profileListInterface?.updateToolbarTitle(it.name)
         if (activity is AdministratorControlsActivity) {
           activity.administratorControlsActivityPresenter.setExtraControlsTitle(
             it.name
@@ -106,7 +107,7 @@ class ProfileEditActivityPresenter @Inject constructor(
           Observer {
             if (it.isFailure()) {
               oppiaLogger.e(
-                "ProfileEditActivityPresenter",
+                "ProfileEditFragmentPresenter",
                 "Failed to updated allow download access",
                 it.getErrorOrNull()!!
               )

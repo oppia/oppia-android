@@ -206,6 +206,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="60dp"
         android:background="@color/grey"
+        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/profile_delete_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -226,6 +227,7 @@
         android:textAllCaps="false"
         android:textColor="@color/oppiaRed"
         android:textSize="16sp"
+        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/view5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -236,6 +238,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
         android:background="@color/grey"
+        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,9 +10,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -93,7 +90,6 @@ class ProfileListFragmentTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -101,7 +97,6 @@ class ProfileListFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -325,12 +320,13 @@ class ProfileListFragmentTest {
   }
 
   @Test
-  fun testProfileListFragment_initializeProfile_clickProfile_checkOpensProfileEditActivity() {
+  fun testProfileListFragment_initializeProfile_clickProfile_profileEditIsDisplayed() {
     profileTestHelper.initializeProfiles()
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(atPosition(R.id.profile_list_recycler_view, 0)).perform(click())
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 

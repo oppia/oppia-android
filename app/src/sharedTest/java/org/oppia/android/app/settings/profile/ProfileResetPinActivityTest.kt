@@ -16,10 +16,9 @@ import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -116,7 +115,6 @@ class ProfileResetPinActivityTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -149,7 +147,6 @@ class ProfileResetPinActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -157,7 +154,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_inputBothPin_save_backToProfileEditScreen() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -186,12 +183,12 @@ class ProfileResetPinActivityTest {
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_inputBothPin_imeAction_backToProfileEditScreen() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -219,12 +216,12 @@ class ProfileResetPinActivityTest {
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_backToProfileEditScreen() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -258,12 +255,12 @@ class ProfileResetPinActivityTest {
 
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testProfileResetPin_withUser_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withUser_inputBothPin_save_backToProfileEditScreen() {
     launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -291,7 +288,7 @@ class ProfileResetPinActivityTest {
         pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
+      onView(withId(R.id.profile_edit_name)).check(matches(isDisplayed()))
     }
   }
 
