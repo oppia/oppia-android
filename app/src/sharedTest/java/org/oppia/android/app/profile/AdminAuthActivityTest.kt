@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -167,6 +168,30 @@ class AdminAuthActivityTest {
   }
 
   @Test
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAddProfileActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        pressImeActionButton()
+      )
+      intended(hasComponent(AddProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddAdminControlsActivity() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
@@ -187,6 +212,30 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      intended(hasComponent(AdministratorControlsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAdminControlsActivity() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12345"),
+        pressImeActionButton()
+      )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -235,9 +284,8 @@ class AdminAuthActivityTest {
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
+        pressImeActionButton()
       )
-      onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
@@ -475,6 +523,34 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_auth_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
+    }
+  }
+
+  @Test
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_configChange_errorIsDisplayed() {
+    launch<AdminAuthActivity>(
+      AdminAuthActivity.createAdminAuthActivityIntent(
+        context = context,
+        adminPin = "12345",
+        profileId = internalProfileId,
+        colorRgb = -10710042,
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
+      )
+    ).use {
+      onView(
+        allOf(
+          withId(R.id.admin_auth_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_auth_input_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("12354"),
+        pressImeActionButton()
+      )
       onView(withId(R.id.admin_auth_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
       onView(isRoot()).perform(orientationLandscape())

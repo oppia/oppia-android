@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.content.Context
 import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
@@ -57,7 +58,8 @@ class AdminAuthActivityPresenter @Inject constructor(
     }
 
     binding.adminAuthInputPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER)
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
       ) {
         binding.adminAuthSubmitButton.callOnClick()
       }
@@ -66,10 +68,11 @@ class AdminAuthActivityPresenter @Inject constructor(
 
     binding.adminAuthSubmitButton.setOnClickListener {
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
-      if (inputPin.isEmpty()) {
+      if (inputPin.length < adminPin.length) {
+        binding.adminAuthInputPinEditText.setImeOptions(EditorInfo.IME_ACTION_NONE)
         return@setOnClickListener
       }
-      if (inputPin == adminPin) {
+      else if (inputPin == adminPin) {
         when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
