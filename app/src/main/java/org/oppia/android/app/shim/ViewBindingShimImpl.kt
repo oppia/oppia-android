@@ -47,7 +47,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     viewModel: PromotedCarouselItemViewModel
   ) {
     val binding =
-      DataBindingUtil.findBinding<org.oppia.android.databinding.PromotedCarouselItemCardBinding>(view)!!
+      DataBindingUtil.findBinding<org.oppia.android.databinding.
+      PromotedCarouselItemCardBinding>(view)!!
     binding.viewModel = viewModel
   }
 
