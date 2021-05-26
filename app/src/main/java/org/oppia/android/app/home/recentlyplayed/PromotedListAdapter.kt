@@ -61,8 +61,8 @@ class PromotedListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as PromotedStoryViewHolder).bind(itemList[position] as
-          PromotedCarouselItemViewModel)
+        (holder as PromotedStoryViewHolder)
+          .bind(itemList[position] as PromotedCarouselItemViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
