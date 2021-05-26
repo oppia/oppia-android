@@ -14,7 +14,11 @@ class ProfileListActivity : InjectableAppCompatActivity(), ProfileListInterface 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    profileListActivityPresenter.handleOnCreate()
+    var internalProfileId = 0
+    if (savedInstanceState != null) {
+      internalProfileId = savedInstanceState.getInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, -1)
+    }
+    profileListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   override fun onSupportNavigateUp(): Boolean {
