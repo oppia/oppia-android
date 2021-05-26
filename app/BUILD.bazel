@@ -96,7 +96,6 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/profileprogress/RouteToOngoingTopicListListener.kt",
     "src/main/java/org/oppia/android/app/recyclerview/OnDragEndedListener.kt",
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
-    "src/main/java/org/oppia/android/app/settings/profile/ProfileListInterface.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
