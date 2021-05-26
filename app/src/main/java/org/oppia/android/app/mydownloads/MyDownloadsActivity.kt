@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.mydownloads.downloads.DownloadsFragment
+import org.oppia.android.app.mydownloads.updates.UpdatesFragment
 import javax.inject.Inject
 
-/** The activity for displaying [MyDownloadsFragment]. */
+/** The activity for displaying [DownloadsFragment] and [UpdatesFragment] in a tab layout. */
 class MyDownloadsActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var myDownloadsActivityPresenter: MyDownloadsActivityPresenter
@@ -17,19 +20,28 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    myDownloadsActivityPresenter.handleOnCreate()
+    val isFromNavigationDrawer = intent.getBooleanExtra(
+      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+      /* defaultValue= */ false
+    )
     internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    myDownloadsActivityPresenter.handleOnCreate(internalProfileId, isFromNavigationDrawer)
   }
 
   companion object {
-    fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
-      val intent = Intent(context, MyDownloadsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
-      return intent
-    }
 
-    fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+    internal const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
+      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+
+    fun createMyDownloadsActivityIntent(
+      context: Context,
+      internalProfileId: Int?,
+      isFromNavigationDrawer: Boolean
+    ): Intent {
+      val intent = Intent(context, MyDownloadsActivity::class.java)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+      intent.putExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      return intent
     }
   }
 

@@ -125,11 +125,6 @@
   <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
     Ratios cannot have 0 as an element.
   </string>
-  <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%d Bytes</string>
-  <string name="size_kb">%d KB</string>
-  <string name="size_mb">%d MB</string>
-  <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
@@ -275,9 +270,25 @@
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
-  <string name="my_downloads">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
+  <string name="sort_by">Sort By</string>
+  <string name="downloads_topic_delete_dialog_message">Delete this topic from the device?</string>
+  <string name="downloads_topic_delete_dialog_cancel">Cancel</string>
+  <string name="downloads_topic_delete_dialog_delete">Delete</string>
+  <string name="downloads_access_dialog_heading">Administrator Permission</string>
+  <string name="downloads_access_dialog_message">Administrator\'s PIN is required to delete this topic from the device.</string>
+  <string name="downloads_access_dialog_positive">Submit</string>
+  <string name="downloads_access_dialog_cancel">Cancel</string>
+  <string name="downloads_access_dialog_input_pin_empty_error">Please Input the PIN.</string>
+  <string name="downloads_access_dialog_input_pin_error">Incorrect Administrator PIN. Please try again.</string>
+  <string name="downloads_delete_heading">Delete</string>
+  <string name="downloads_delete_icon_content_description">Delete Button</string>
+  <string name="downloads_expand_card_show_delete">Show/hide delete</string>
+  <string name="my_downloads_activity_title">My Downloads</string>
+  <string name="downloads_sort_by_newest">Newest</string>
+  <string name="downloads_sort_by_alphabetically">Alphabetical</string>
+  <string name="downloads_sort_by_download_size">Download Size</string>
   <!-- HomeActivityBackDialog -->
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>

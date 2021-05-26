@@ -220,6 +220,19 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="TextInputLayoutDropDown" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+    <item name="boxBackgroundColor">@color/white</item>
+    <item name="boxCornerRadiusBottomEnd">0dp</item>
+    <item name="boxCornerRadiusBottomStart">0dp</item>
+    <item name="boxCornerRadiusTopEnd">0dp</item>
+    <item name="boxCornerRadiusTopStart">0dp</item>
+    <item name="boxStrokeColor">@color/oppiaPrimaryText</item>
+    <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
+    <item name="boxStrokeWidthFocused">@dimen/text_input_layout_stroke_width</item>
+    <item name="endIconTint">@color/oppiaPrimaryText</item>
+    <item name="hintEnabled">false</item>
+  </style>
+
   <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
     <item name="fontFamily">sans-serif</item>
     <item name="android:fontFamily">sans-serif</item>
@@ -229,6 +242,11 @@
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">normal</item>
     <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="roundedCorners">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">4dp</item>
   </style>
 
   <style name="Heading1" parent="TextView.Common1">
