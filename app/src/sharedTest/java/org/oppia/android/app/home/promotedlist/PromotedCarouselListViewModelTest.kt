@@ -60,14 +60,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PromotedCarouselLisViewModel] data. */
+/** Tests for [PromotedCarouselListViewModel] data. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PromotedCarouselLisViewModelTest.TestApplication::class,
+  application = PromotedCarouselListViewModelTest.TestApplication::class,
   manifest = Config.NONE
 )
-class PromotedCarouselLisViewModelTest {
+class PromotedCarouselListViewModelTest {
   @Inject
   lateinit var context: Context
 
@@ -305,8 +305,8 @@ class PromotedCarouselLisViewModelTest {
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>,
     promotedActivityList: PromotedActivityList
-  ): PromotedCarouselLisViewModel {
-    return PromotedCarouselLisViewModel(
+  ): PromotedCarouselListViewModel {
+    return PromotedCarouselListViewModel(
       activity,
       createPromotedCarouselItemViewModelList(activity, promotedStoryList),
       promotedActivityList
@@ -336,7 +336,7 @@ class PromotedCarouselLisViewModelTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(promotedCarouselListViewModelTest: PromotedCarouselLisViewModelTest)
+    fun inject(promotedCarouselListViewModelTest: PromotedCarouselListViewModelTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -346,7 +346,7 @@ class PromotedCarouselLisViewModelTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(promotedCarouselListViewModelTest: PromotedCarouselLisViewModelTest) {
+    fun inject(promotedCarouselListViewModelTest: PromotedCarouselListViewModelTest) {
       component.inject(promotedCarouselListViewModelTest)
     }
 

@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.promotedlist.PromotedCarouselLisViewModel" />
+      type="org.oppia.android.app.home.promotedlist.PromotedCarouselListViewModel" />
   </data>
 
   <LinearLayout

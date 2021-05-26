@@ -10,7 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
-import org.oppia.android.app.home.promotedlist.PromotedCarouselLisViewModel
+import org.oppia.android.app.home.promotedlist.PromotedCarouselListViewModel
 import org.oppia.android.app.home.topiclist.AllTopicsViewModel
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
@@ -95,7 +95,7 @@ class HomeFragmentPresenter @Inject constructor(
       .newBuilder<HomeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
-          is PromotedCarouselLisViewModel -> ViewType.PROMOTED_STORY_LIST
+          is PromotedCarouselListViewModel -> ViewType.PROMOTED_STORY_LIST
           is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
           is AllTopicsViewModel -> ViewType.ALL_TOPICS
           is TopicSummaryViewModel -> ViewType.TOPIC_LIST
@@ -112,7 +112,7 @@ class HomeFragmentPresenter @Inject constructor(
         viewType = ViewType.PROMOTED_STORY_LIST,
         inflateDataBinding = PromotedStoryListBinding::inflate,
         setViewModel = PromotedStoryListBinding::setViewModel,
-        transformViewModel = { it as PromotedCarouselLisViewModel }
+        transformViewModel = { it as PromotedCarouselListViewModel }
       )
       .registerViewDataBinder(
         viewType = ViewType.COMING_SOON_TOPIC_LIST,

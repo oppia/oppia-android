@@ -12,7 +12,7 @@ import org.oppia.android.app.model.PromotedActivityList
 import java.util.Objects
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
-class PromotedCarouselLisViewModel(
+class PromotedCarouselListViewModel(
   private val activity: AppCompatActivity,
   val promotedItemList: List<PromotedCarouselItemViewModel>,
   private val promotedActivityList: PromotedActivityList
@@ -77,7 +77,7 @@ class PromotedCarouselLisViewModel(
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
   override fun equals(other: Any?): Boolean {
-    return other is PromotedCarouselLisViewModel &&
+    return other is PromotedCarouselListViewModel &&
       other.promotedItemList == this.promotedItemList
   }
 
