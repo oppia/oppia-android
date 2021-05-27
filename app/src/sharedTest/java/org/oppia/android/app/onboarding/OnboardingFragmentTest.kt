@@ -141,35 +141,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_defaultSlide_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_0_title) +
-              context.getString(R.string.onboarding_slide_0_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_configChange_defaultSlide_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_0_title) +
-              context.getString(R.string.onboarding_slide_0_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(
@@ -268,38 +239,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Test
-  fun testOnboardingFragment_slide1_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_1_title) +
-              context.getString(R.string.onboarding_slide_1_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_configChange_slide1_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_1_title) +
-              context.getString(R.string.onboarding_slide_1_description)
-          )
-        )
-      )
-    }
-  }
   @Test
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
@@ -408,39 +347,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testOnboardingFragment_slide2_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_2_title) +
-              context.getString(R.string.onboarding_slide_2_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_configChange_slide2_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.onboarding_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_2_title) +
-              context.getString(R.string.onboarding_slide_2_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
@@ -529,39 +435,6 @@ class OnboardingFragmentTest {
           isCompletelyDisplayed()
         )
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_slide3_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.final_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_3_title) +
-              context.getString(R.string.onboarding_slide_3_description)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_configChange_slide3_hasCorrectContentDescription() {
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.final_layout)).check(
-        matches(
-          withContentDescription(
-            context.getString(R.string.onboarding_slide_3_title) +
-              context.getString(R.string.onboarding_slide_3_description)
-          )
-        )
-      )
     }
   }
 
