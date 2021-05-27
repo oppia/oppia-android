@@ -8,6 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
@@ -21,14 +22,20 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private var isMultipane = false
   private lateinit var lastLoadedFragment: String
   private lateinit var binding: AdministratorControlsActivityBinding
+  private var internalProfileId = -1
 
-  fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
+  fun handleOnCreate(
+    extraControlsTitle: String?,
+    lastLoadedFragment: String,
+    internalProfileId: Int
+  ) {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.administrator_controls_activity
     )
     setUpNavigationDrawer()
     this.lastLoadedFragment = lastLoadedFragment
+    this.internalProfileId = internalProfileId
     binding.extraControlsTitle?.apply {
       text = extraControlsTitle
     }
@@ -44,6 +51,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     if (isMultipane) {
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
+        PROFILE_EDIT_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileEdit(
+          internalProfileId,
+          isMultipane
+        )
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
       }
     }
@@ -78,6 +89,16 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
+    ).commitNow()
+  }
+
+  fun loadProfileEdit(internalProfileId: Int, isMultipane: Boolean) {
+    this.internalProfileId = internalProfileId
+    lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.administrator_controls_fragment_multipane_placeholder,
+      ProfileEditFragment.newInstance(internalProfileId, isMultipane)
     ).commitNow()
   }
 

@@ -10,8 +10,6 @@ import javax.inject.Inject
 
 const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditFragment.profile_edit_profile_id"
 const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditFragment.is_multipane"
-const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
-  "ProfileEditFragment.is_profile_deletion_dialog_visible"
 
 /** Activity that allows user to edit a profile. */
 class ProfileEditFragment : InjectableFragment() {
@@ -19,10 +17,10 @@ class ProfileEditFragment : InjectableFragment() {
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
   private var profileListInterface: ProfileListInterface? = null
+  private var isDialogVisible = false
 
   companion object {
     fun newInstance(
-      context: Context,
       profileId: Int,
       isMultipane: Boolean = false
     ): ProfileEditFragment {
@@ -52,12 +50,16 @@ class ProfileEditFragment : InjectableFragment() {
     }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA_KEY)
     val internalProfileId = args.getInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, -1)
+    savedInstanceState?.let {
+      isDialogVisible = it.getBoolean("Dialog", false)
+    }
     return profileEditFragmentPresenter.handleOnCreate(
       inflater,
       container,
       isMultipane,
       internalProfileId,
-      profileListInterface
+      profileListInterface,
+      isDialogVisible
     )
   }
 
@@ -86,6 +88,12 @@ class ProfileEditFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    profileEditFragmentPresenter.handleOnSaveInstanceState(outState)
+    isDialogVisible = profileEditFragmentPresenter.getIsDialogVisible()
+    outState.putBoolean("Dialog", isDialogVisible)
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    profileEditFragmentPresenter.dismissAlertDialog()
   }
 }

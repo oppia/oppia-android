@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -41,8 +42,8 @@ class ProfileListFragmentPresenter @Inject constructor(
     }
 
     binding.apply {
-      viewModel = getProfileListViewModel()
       lifecycleOwner = fragment
+      viewModel = getProfileListViewModel()
     }
 
     binding.profileListRecyclerView.apply {
@@ -67,20 +68,12 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      if (isMultipane) {
-        fragment.parentFragmentManager.beginTransaction().add(
-          R.id.administrator_controls_fragment_multipane_placeholder,
-          ProfileEditFragment.newInstance(
-            activity,
-            profile.id.internalId,
-            isMultipane
-          )
-        ).commitNow()
+      if (isMultipane && activity is AdministratorControlsActivity) {
+        activity.loadProfileEdit(profile.id.internalId, isMultipane)
       } else {
         fragment.parentFragmentManager.beginTransaction().add(
           R.id.profile_list_fragment_placeholder,
           ProfileEditFragment.newInstance(
-            activity,
             profile.id.internalId,
             isMultipane
           )

@@ -1,12 +1,12 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
@@ -22,6 +22,7 @@ import javax.inject.Inject
 @FragmentScope
 class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
+  private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
 ) {
@@ -30,39 +31,42 @@ class ProfileEditFragmentPresenter @Inject constructor(
   lateinit var profileEditViewModel: ProfileEditViewModel
 
   private lateinit var dialog: AlertDialog
+  private var isDialogVisible = false
 
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,
     isMultipane: Boolean,
     internalProfileId: Int,
-    profileListInterface: ProfileListInterface?
+    profileListInterface: ProfileListInterface?,
+    isDialogVisible: Boolean
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+    this.isDialogVisible = isDialogVisible
     profileEditViewModel.setProfileId(internalProfileId)
 
     binding.apply {
+      lifecycleOwner = fragment
       viewModel = profileEditViewModel
-      lifecycleOwner = activity
     }
 
     binding.profileRenameButton.setOnClickListener {
-      activity.startActivity(
+      fragment.startActivity(
         ProfileRenameActivity.createProfileRenameActivity(
-          activity,
+          fragment.requireContext(),
           internalProfileId
         )
       )
     }
 
     binding.profileResetButton.setOnClickListener {
-      activity.startActivity(
+      fragment.startActivity(
         ProfileResetPinActivity.createProfileResetPinActivity(
-          activity,
+          fragment.requireContext(),
           internalProfileId,
           profileEditViewModel.isAdmin
         )
@@ -78,7 +82,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
     }
 
     profileEditViewModel.profile.observe(
-      activity,
+      fragment,
       Observer {
         profileListInterface?.updateToolbarTitle(it.name)
         if (activity is AdministratorControlsActivity) {
@@ -90,7 +94,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
     )
 
     profileEditViewModel.isAllowedDownloadAccess.observe(
-      activity,
+      fragment,
       Observer {
         binding.profileEditAllowDownloadSwitch.isChecked = it
       }
@@ -102,7 +106,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
           ProfileId.newBuilder().setInternalId(internalProfileId).build(),
           checked
         ).toLiveData().observe(
-          activity,
+          fragment,
           Observer {
             if (it.isFailure()) {
               oppiaLogger.e(
@@ -115,44 +119,59 @@ class ProfileEditFragmentPresenter @Inject constructor(
         )
       }
     }
-    /*if (savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) == true)
-      showDeletionDialog(internalProfileId)*/
+    if (isDialogVisible) {
+      showDeletionDialog(internalProfileId)
+    }
     return binding.root
   }
 
   private fun showDeletionDialog(internalProfileId: Int) {
-    dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    isDialogVisible = true
+    dialog = AlertDialog.Builder(fragment.requireContext(), R.style.AlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
+      .setOnCancelListener {
+        isDialogVisible = false
+      }
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
+        isDialogVisible = false
         dialog.dismiss()
       }
       .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { dialog, _ ->
+        isDialogVisible = false
         profileManagementController
           .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build())
           .toLiveData()
           .observe(
-            activity,
+            fragment,
             Observer {
               if (it.isSuccess()) {
-                if (activity.resources.getBoolean(R.bool.isTablet)) {
-                  val intent = Intent(activity, AdministratorControlsActivity::class.java)
+                if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+                  val intent =
+                    Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                  activity.startActivity(intent)
+                  fragment.startActivity(intent)
                 } else {
-                  val intent = Intent(activity, ProfileListActivity::class.java)
+                  val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                  activity.startActivity(intent)
+                  fragment.startActivity(intent)
                 }
               }
             }
           )
+        dialog.dismiss()
       }.create()
     dialog.show()
   }
 
-  fun handleOnSaveInstanceState(outState: Bundle) {
-    val isDialogVisible = ::dialog.isInitialized && dialog.isShowing
-    outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, isDialogVisible)
+  fun getIsDialogVisible(): Boolean {
+    return isDialogVisible
+  }
+
+  fun dismissAlertDialog() {
+    if (::dialog.isInitialized && dialog.isShowing) {
+      isDialogVisible = false
+      dialog.dismiss()
+    }
   }
 }

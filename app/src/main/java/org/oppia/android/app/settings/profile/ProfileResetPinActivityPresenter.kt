@@ -140,10 +140,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
           activity,
           Observer {
             if (it.isSuccess()) {
-              activity.supportFragmentManager.beginTransaction().add(
-                R.id.administrator_controls_fragment_multipane_placeholder,
-                ProfileEditFragment.newInstance(activity, profileId)
-              ).commitNow()
+              activity.finish()
             }
           }
         )

@@ -101,10 +101,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
     if (result.isSuccess()) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.administrator_controls_fragment_multipane_placeholder,
-        ProfileEditFragment.newInstance(activity, profileId)
-      ).commitNow()
+      activity.finish()
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->

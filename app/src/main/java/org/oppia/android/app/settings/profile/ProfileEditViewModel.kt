@@ -20,7 +20,7 @@ class ProfileEditViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
-
+  var isAdmin = false
   private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
 
   /** Specifies whether download access has been enabled by the user. */
@@ -32,8 +32,6 @@ class ProfileEditViewModel @Inject constructor(
       ::processGetProfileResult
     )
   }
-
-  var isAdmin = false
 
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()

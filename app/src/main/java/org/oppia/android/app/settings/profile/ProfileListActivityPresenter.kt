@@ -23,18 +23,17 @@ class ProfileListActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     binding.profileListToolbar.title = activity.getString(R.string.profile_list_activity_title)
 
-    var fragment = getProfileActivityFragment()
+    var fragment = getProfileListActivityFragment()
     fragment = if (fragment == null || fragment is ProfileListFragment) {
       ProfileListFragment.newInstance()
     } else {
-      // use saved instance for profile id
-      ProfileEditFragment.newInstance(activity, internalProfileId)
+      ProfileEditFragment.newInstance(internalProfileId)
     }
     activity.supportFragmentManager.beginTransaction()
       .add(R.id.profile_list_fragment_placeholder, fragment).commitNow()
   }
 
-  private fun getProfileActivityFragment(): Fragment? {
+  private fun getProfileListActivityFragment(): Fragment? {
     val fragment = activity
       .supportFragmentManager
       .findFragmentById(R.id.profile_list_fragment_placeholder)

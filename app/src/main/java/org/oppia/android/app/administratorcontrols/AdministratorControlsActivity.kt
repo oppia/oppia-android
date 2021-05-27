@@ -16,6 +16,7 @@ const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
 const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity :
@@ -23,6 +24,7 @@ class AdministratorControlsActivity :
   RouteToProfileListListener,
   RouteToAppVersionListener,
   LoadProfileListListener,
+  LoadProfileEditListener,
   LoadAppVersionListener,
   ShowLogoutDialogListener {
   @Inject
@@ -33,13 +35,18 @@ class AdministratorControlsActivity :
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+    val internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
+    administratorControlsActivityPresenter.handleOnCreate(
+      extraControlsTitle,
+      lastLoadedFragment,
+      internalProfileId
+    )
     title = getString(R.string.administrator_controls)
   }
 
@@ -73,6 +80,11 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter
       .setExtraControlsTitle(getString(R.string.administrator_controls_edit_profiles))
     administratorControlsActivityPresenter.loadProfileList()
+  }
+
+  override fun loadProfileEdit(internalProfileId: Int, isMultipane: Boolean) {
+    lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    administratorControlsActivityPresenter.loadProfileEdit(internalProfileId, isMultipane)
   }
 
   override fun loadAppVersion() {
