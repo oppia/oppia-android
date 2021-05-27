@@ -102,6 +102,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     imageView.setBackgroundColor(
       (0xff000000L or lessonThumbnail.backgroundColorRgb.toLong()).toInt()
     )
+    imageView.scaleType = ScaleType.FIT_CENTER
   }
 
   /** Loads an image using Glide from [filename]. */

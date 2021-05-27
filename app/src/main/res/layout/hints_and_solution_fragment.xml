@@ -54,6 +54,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="168dp"
         android:scrollbars="none"
+        app:list="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
