@@ -600,7 +600,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_ratioExploration_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
+  fun testAudioWifi_ratioExploration_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -633,7 +633,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithWifi_fractionsExploration_changeLang_next_langIsHinglish() {
+  fun testAudioWifi_fractionsExploration_changeLang_next_langIsHinglish() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -689,7 +689,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWifi_ratioExploration_continueInteraction_audioBtn_submitAns_feedbackAudioPlays() {
+  fun testAudioWifi_ratioExploration_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
