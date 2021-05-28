@@ -1,4 +1,4 @@
-package org.oppia.android.app.databinding;
+ package org.oppia.android.app.databinding;
 
 import android.content.Context;
 import android.content.res.Resources;
