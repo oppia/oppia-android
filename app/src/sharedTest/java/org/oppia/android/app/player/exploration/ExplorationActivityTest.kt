@@ -352,7 +352,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioBtnIsHidden() {
+  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -368,7 +368,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioBtnIsHidden() {
+  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -385,7 +385,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoConnection_ratioExploration_audioIcon_checkOpensNoConnectionDialog() {
+  fun ttestAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -407,7 +407,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_checkOpensCellularAudioDialog() {
+  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -429,7 +429,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_changeConfig_opensCellularAudioDialog() {
+  fun testAudioCell_ratioExploration_audioIcon_configChange_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -452,7 +452,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_clickNegative_checkAudioFragmentIsHidden() {
+  fun testAudioCell_ratioExploration_audioIcon_clickNegative_audioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -720,7 +720,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_loadExplorationFrag_hasDummyString() {
+  fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,

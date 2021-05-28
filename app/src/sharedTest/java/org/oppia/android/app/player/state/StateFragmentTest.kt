@@ -247,7 +247,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_explorationLoads_changeConfig_buttonIsNotVisible() {
+  fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
