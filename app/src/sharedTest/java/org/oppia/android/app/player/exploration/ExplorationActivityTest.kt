@@ -407,7 +407,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_audioIcon_checkOpensCellularAudioDialog() {
+  fun testAudioWithCell_ratioExploration_audioIcon_checkOpensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -429,7 +429,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_audioIcon_changeConfig_opensCellularAudioDialog() {
+  fun testAudioWithCell_ratioExploration_audioIcon_changeConfig_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -452,7 +452,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_audioIcon_clickNegative_checkAudioFragmentIsHidden() {
+  fun testAudioWithCell_ratioExploration_audioIcon_clickNegative_checkAudioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -484,7 +484,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+  fun testAudioWithCell_ratioExploration_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -525,7 +525,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+  fun testAudioWithCell_ratioExploration_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -561,7 +561,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+  fun testAudioWithCell_ratioExploration_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
