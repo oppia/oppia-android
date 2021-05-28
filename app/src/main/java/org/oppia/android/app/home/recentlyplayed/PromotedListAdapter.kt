@@ -68,7 +68,7 @@ class PromotedListAdapter(
         val marginMax =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
         val params =
-          holder.binding.promotedCarouselItemCardView.layoutParams as (ViewGroup.MarginLayoutParams)
+          holder.binding.promotedStoryCardContainer.layoutParams as (ViewGroup.MarginLayoutParams)
         val marginTop = if (activity.resources.getBoolean(R.bool.isTablet)) {
           (activity as Context).resources
             .getDimensionPixelSize(R.dimen.ongoing_story_card_view_is_tablet_margin_top)
@@ -157,8 +157,8 @@ class PromotedListAdapter(
             }
           }
         }
-        holder.binding.promotedCarouselItemCardView.layoutParams = params
-        holder.binding.promotedCarouselItemCardView.requestLayout()
+        holder.binding.promotedStoryCardContainer.layoutParams = params
+        holder.binding.promotedStoryCardContainer.requestLayout()
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
