@@ -267,7 +267,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testAdminAuthActivity_inputIncorrectPassword_inputAgain_errorIsGone() {
+  fun testAdminAuthActivity_inputIncorrectPassword_imeAction_errorIsDisplayed() {
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -283,20 +283,11 @@ class AdminAuthActivityTest {
           isDescendantOfA(withId(R.id.admin_auth_input_pin))
         )
       ).perform(
-        editTextInputAction.appendText("123"),
+        editTextInputAction.appendText("12354"),
         pressImeActionButton()
       )
-      onView(
-        allOf(
-          withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
-      ).perform(
-        editTextInputAction.appendText("4"),
-        closeSoftKeyboard()
-      )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(hasErrorText(R.string.admin_auth_incorrect)))
     }
   }
 

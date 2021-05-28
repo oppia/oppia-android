@@ -68,10 +68,10 @@ class AdminAuthActivityPresenter @Inject constructor(
 
     binding.adminAuthSubmitButton.setOnClickListener {
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
-      if (inputPin.length < adminPin.length) {
-        binding.adminAuthInputPinEditText.setImeOptions(EditorInfo.IME_ACTION_NONE)
+      if (inputPin.isEmpty()) {
         return@setOnClickListener
-      } else if (inputPin == adminPin) {
+      }
+      if (inputPin == adminPin) {
         when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             activity.startActivity(
@@ -90,7 +90,7 @@ class AdminAuthActivityPresenter @Inject constructor(
             activity.finish()
           }
         }
-      } else {
+      } else if (inputPin.length == adminPin.length) {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
     }
