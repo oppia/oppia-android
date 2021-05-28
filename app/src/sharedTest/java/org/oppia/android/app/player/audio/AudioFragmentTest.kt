@@ -269,7 +269,7 @@ class AudioFragmentTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testAudioFragment_invokePrepared_playAudio_configChange_checkStillPlaying() {
+  fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId

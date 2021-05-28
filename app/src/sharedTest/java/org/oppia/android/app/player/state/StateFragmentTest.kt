@@ -270,7 +270,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfig_explorationHasContinueButton() {
+  fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -297,7 +297,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfig_secondState_hasSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -717,7 +717,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfig_firstState_prevAndNextButtonIsNotDisplayed() {
+  fun testStateFragment_loadExp_changeConfiguration_firstState_prevAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
@@ -837,7 +837,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadExp_changeConfig_continueToEnd_hasReturnToTopicButton() {
+  fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
