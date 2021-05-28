@@ -352,7 +352,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
+  fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioBtnIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -368,7 +368,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
+  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioBtnIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -689,7 +689,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_ratioExploration_continueToInteraction_audioBtn_submitAns_feedbackAudioPlays() {
+  fun testAudioWifi_ratioExploration_continueInteraction_audioBtn_submitAns_feedbackAudioPlays() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
