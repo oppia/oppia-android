@@ -429,7 +429,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_audioIcon_changeConfig_checkOpensCellularAudioDialog() {
+  fun testAudioWithCellular_ratioExploration_audioIcon_changeConfig_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -525,7 +525,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_checkbox_negative_audioIcon_audioFragHiddenDialogNotDisplayed() {
+  fun testAudioWithCellular_ratioExploration_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -561,7 +561,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWithCellular_ratioExploration_checkPositive_audioIconTwice_audioFragVisibleDialogNotDisplay() {
+  fun testAudioWithCellular_ratioExploration_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -689,7 +689,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_ratioExploration_continueToInteraction_audioButton_submitAnswer_feedbackAudioPlays() {
+  fun testAudioWithWifi_ratioExploration_continueToInteraction_audioBtn_submitAns_feedbackAudioPlays() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -785,7 +785,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_leave_closesExplorationActivity() {
+  fun testExplorationActivity_onBack_showsStopExplorationDialog_leave_closesExplorationActivity() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
