@@ -85,11 +85,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
-private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
-  "AppLanguageActivity.app_language_preference_title"
-private const val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE = "AUDIO_LANGUAGE_PREFERENCE"
-
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
