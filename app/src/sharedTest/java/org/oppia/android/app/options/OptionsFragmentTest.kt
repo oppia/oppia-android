@@ -452,6 +452,7 @@ class OptionsFragmentTest {
     }
   }
 
+  @Test
   fun openOptionsActivity_configChange_clickAppLanguage_opensAppLanguageActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
