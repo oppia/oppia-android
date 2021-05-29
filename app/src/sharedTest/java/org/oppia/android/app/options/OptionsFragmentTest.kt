@@ -361,6 +361,34 @@ class OptionsFragmentTest {
   }
 
   @Test
+  fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivity() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 0,
+          targetViewId = R.id.reading_text_size_text_view
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            "Medium"
+          ),
+          hasComponent(ReadingTextSizeActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
   fun openOptionsActivity_configChange_clickTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -421,78 +449,6 @@ class OptionsFragmentTest {
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_clickReadingTextSize_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.options_recyclerview,
-          position = 0,
-          targetViewId = R.id.reading_text_size_item_layout
-        )
-      ).perform(
-        click()
-      )
-      intended(
-        allOf(
-          hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
-            "Medium"
-          ),
-          hasExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, READING_TEXT_SIZE),
-          hasComponent(ReadingTextSizeActivity::class.java.name)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_clickAppLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          1,
-          R.id.app_language_item_layout
-        )
-      ).perform(
-        click()
-      )
-      intended(
-        allOf(
-          hasExtra(
-            APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, APP_LANGUAGE
-          ),
-          hasExtra(
-            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
-            "English"
-          ),
-          hasComponent(AppLanguageActivity::class.java.name)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testOptionsFragment_clickDefaultAudioLanguage_checkSendingTheCorrectIntent() {
-    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          R.id.options_recyclerview,
-          2,
-          R.id.audio_laguage_item_layout
-        )
-      ).perform(
-        click()
-      )
-      intended(hasComponent(AudioLanguageActivity::class.java.name))
-      intended(hasExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE, AUDIO_LANGUAGE))
     }
   }
 
@@ -580,6 +536,10 @@ class OptionsFragmentTest {
           hasExtra(
             AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
+          ),
+          hasExtra(
+            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
+            AUDIO_LANGUAGE
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
