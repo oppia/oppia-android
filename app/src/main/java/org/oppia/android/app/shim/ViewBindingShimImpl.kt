@@ -18,6 +18,7 @@ import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
+import org.oppia.android.databinding.PromotedCarouselItemCardBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     parent: ViewGroup,
     attachToParent: Boolean
   ): View {
-    return org.oppia.android.databinding.PromotedCarouselItemCardBinding.inflate(
+    return PromotedCarouselItemCardBinding.inflate(
       LayoutInflater.from(parent.context), parent, attachToParent
     ).root
   }
@@ -47,8 +48,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     viewModel: PromotedCarouselItemViewModel
   ) {
     val binding =
-      DataBindingUtil.findBinding<org.oppia.android.databinding
-        .PromotedCarouselItemCardBinding>(view)!!
+      DataBindingUtil.findBinding<PromotedCarouselItemCardBinding>(view)!!
     binding.viewModel = viewModel
   }
 
