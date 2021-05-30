@@ -2,7 +2,7 @@ package org.oppia.android.util.parser.image
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import org.oppia.android.util.parser.svg.BlockPictureDrawable
+import org.oppia.android.util.parser.BlockPictureDrawable
 import javax.inject.Inject
 import javax.inject.Singleton
 

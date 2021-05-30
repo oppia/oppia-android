@@ -19,7 +19,7 @@ import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.CustomHtmlContentHandler
 import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
-import org.oppia.android.util.parser.svg.BlockPictureDrawable
+import org.oppia.android.util.parser.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
 
