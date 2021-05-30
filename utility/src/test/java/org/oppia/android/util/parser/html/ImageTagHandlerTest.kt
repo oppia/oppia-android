@@ -29,8 +29,11 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.parser.CUSTOM_IMG_TAG
+import org.oppia.android.util.parser.CustomHtmlContentHandler
+import org.oppia.android.util.parser.ImageTagHandler
+import org.oppia.android.util.parser.CustomHtmlContentHandler.CustomTagHandler
+import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

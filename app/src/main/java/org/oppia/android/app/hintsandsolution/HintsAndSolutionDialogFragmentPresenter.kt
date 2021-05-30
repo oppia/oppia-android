@@ -14,8 +14,8 @@ import org.oppia.android.databinding.HintsDividerBinding
 import org.oppia.android.databinding.HintsSummaryBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.HtmlParser
 import java.util.Locale
 import javax.inject.Inject
 

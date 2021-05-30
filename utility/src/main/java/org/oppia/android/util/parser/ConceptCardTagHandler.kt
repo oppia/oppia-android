@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser.html
+package org.oppia.android.util.parser
 
 import android.text.Editable
 import android.text.Spannable
