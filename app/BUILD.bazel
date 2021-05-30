@@ -539,8 +539,10 @@ kt_android_library(
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 
@@ -564,6 +566,7 @@ kt_android_library(
     manifest = "src/main/ViewModelsManifest.xml",
     deps = [
         ":annotations",
+        "//app:crashlytics",
         ":dagger",
         ":listeners",
         ":resources",
@@ -575,7 +578,10 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
     ],
 )
 
@@ -609,6 +615,7 @@ android_library(
         "//third_party:com_google_android_material_material",
         "//third_party:io_github_chaosleung_pinview",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
 
@@ -720,6 +727,7 @@ TEST_DEPS = [
     "//third_party:robolectric_android-all",
     "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
 ]
