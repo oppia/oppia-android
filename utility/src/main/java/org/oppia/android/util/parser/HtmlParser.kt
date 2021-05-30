@@ -6,7 +6,6 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */

@@ -1,10 +1,8 @@
-package org.oppia.android.util.parser.image
+package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Picture
 import android.text.TextPaint
-import org.oppia.android.util.parser.ScalableVectorGraphic
-import org.oppia.android.util.parser.SvgPictureDrawable
 
 /**
  * A [SvgPictureDrawable] for in-line rendering. This must be used in conjunction with

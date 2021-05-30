@@ -65,8 +65,8 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
-import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.GlideImageLoaderModule
+import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton

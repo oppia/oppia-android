@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser.image
+package org.oppia.android.util.parser
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,9 +17,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.CustomHtmlContentHandler
 import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
-import org.oppia.android.util.parser.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -59,7 +57,9 @@ class UrlImageParser private constructor(
       ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
         imageLoader.loadTextSvg(
           imageUrl,
-          createCustomTarget(proxyDrawable, AutoAdjustingImageTarget.TextSvgTarget::create)
+          createCustomTarget(proxyDrawable,
+            AutoAdjustingImageTarget.TextSvgTarget.Companion::create
+          )
         )
         proxyDrawable
       }
@@ -69,7 +69,7 @@ class UrlImageParser private constructor(
             imageUrl,
             createCustomTarget(
               proxyDrawable,
-              AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
+              AutoAdjustingImageTarget.BlockImageTarget.SvgTarget.Companion::create
             )
           )
         } else {
@@ -77,7 +77,7 @@ class UrlImageParser private constructor(
             imageUrl,
             createCustomTarget(
               proxyDrawable,
-              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create
+              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget.Companion::create
             )
           )
         }

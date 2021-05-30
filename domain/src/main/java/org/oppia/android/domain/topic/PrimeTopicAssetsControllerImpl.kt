@@ -52,9 +52,9 @@ import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
-import org.oppia.android.util.parser.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
+import org.oppia.android.util.parser.DefaultGcsPrefix
+import org.oppia.android.util.parser.ImageDownloadUrlTemplate
+import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger

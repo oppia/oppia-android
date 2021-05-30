@@ -4,7 +4,6 @@ import android.content.Context
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
-import org.oppia.android.util.parser.image.ImageTransformation
 import java.security.MessageDigest
 
 /**
