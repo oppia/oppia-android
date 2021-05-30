@@ -57,7 +57,8 @@ class UrlImageParser private constructor(
       ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
         imageLoader.loadTextSvg(
           imageUrl,
-          createCustomTarget(proxyDrawable,
+          createCustomTarget(
+            proxyDrawable,
             AutoAdjustingImageTarget.TextSvgTarget.Companion::create
           )
         )

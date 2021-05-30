@@ -339,12 +339,12 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private suspend fun retrieveUserAssessmentPerformanceAsync(skillIdList: List<String>):
     AsyncResult<UserAssessmentPerformance> {
-      progressLock.withLock {
-        val scoreCalculator =
-          scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
-        return AsyncResult.success(scoreCalculator.computeAll())
-      }
+    progressLock.withLock {
+      val scoreCalculator =
+        scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
+      return AsyncResult.success(scoreCalculator.computeAll())
     }
+  }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>

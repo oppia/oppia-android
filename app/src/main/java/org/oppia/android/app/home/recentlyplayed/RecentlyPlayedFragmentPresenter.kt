@@ -66,7 +66,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private val ongoingStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
-    by lazy {
+      by lazy {
       topicListController.getPromotedActivityList(
         ProfileId.newBuilder().setInternalId(internalProfileId).build()
       ).toLiveData()
