@@ -20,6 +20,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/gcsresource/*.kt",
     "src/main/java/org/oppia/android/util/logging/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
+    "src/main/java/org/oppia/android/util/parser/*.kt",
     "src/main/java/org/oppia/android/util/profile/*.kt",
     "src/main/java/org/oppia/android/util/statusbar/*.kt",
     "src/main/java/org/oppia/android/util/system/*.kt",
@@ -35,22 +36,22 @@ android_library(
 )
 
 # Library for general-purpose utilities.
-kt_android_library(
-    name = "utility",
-    srcs = glob(
-        ["src/main/java/org/oppia/android/util/**/*.kt"],
-        exclude = MIGRATED_PROD_FILES,
-    ),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":dagger",
-        ":resources",
-        "//third_party:com_caverock_androidsvg",
-        "//third_party:com_github_bumptech_glide_glide",
-        "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-    ],
-)
+#kt_android_library(
+#    name = "utility",
+#    srcs = glob(
+#        ["src/main/java/org/oppia/android/util/**/*.kt"],
+#        exclude = MIGRATED_PROD_FILES,
+#    ),
+#    visibility = ["//visibility:public"],
+#    deps = [
+#        ":dagger",
+#        ":resources",
+#        "//third_party:com_caverock_androidsvg",
+#        "//third_party:com_github_bumptech_glide_glide",
+#        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+#        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+#    ],
+#)
 
 # keep sorted
 TEST_DEPS = [
