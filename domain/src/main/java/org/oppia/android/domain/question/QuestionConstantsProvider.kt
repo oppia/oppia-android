@@ -40,21 +40,21 @@ annotation class MaxScorePerQuestion
 annotation class InternalScoreMultiplyFactor
 
 /**
- * Qualifier corresponding to the maximum mastery degrees users can receive for each question in a 
+ * Qualifier corresponding to the maximum mastery degrees users can receive for each question in a
  * practice session.
  */
 @Qualifier
 annotation class MaxMasteryGainPerQuestion
 
 /**
- * Qualifier corresponding to the maximum mastery degrees users can lose for each question in a 
+ * Qualifier corresponding to the maximum mastery degrees users can lose for each question in a
  * practice session.
  */
 @Qualifier
 annotation class MaxMasteryLossPerQuestion
 
 /**
- * Qualifier corresponding to the mastery penalty users receive for each hint viewed in a practice 
+ * Qualifier corresponding to the mastery penalty users receive for each hint viewed in a practice
  * session.
  */
 @Qualifier

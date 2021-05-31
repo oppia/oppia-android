@@ -94,7 +94,7 @@ internal class QuestionAssessmentCalculation private constructor(
         maxMasteryLossPerQuestion
       )
     } else maxMasteryLossPerQuestion
-    
+
   private fun QuestionSessionMetrics.computeQuestionScore(): Int = if (!didViewSolution) {
     val hintsPenalty = numberOfHintsUsed * viewHintPenalty
     val wrongAnswerPenalty = getAdjustedWrongAnswerCount() * wrongAnswerPenalty
