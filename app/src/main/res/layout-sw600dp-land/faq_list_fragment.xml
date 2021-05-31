@@ -9,26 +9,21 @@
       type="org.oppia.android.app.help.faq.FAQListViewModel" />
   </data>
 
-  <androidx.core.widget.NestedScrollView
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/generalNavigationBackground"
-    android:clipToPadding="false"
-    android:overScrollMode="never"
-    android:paddingBottom="108dp"
-    android:scrollbars="none"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:background="@color/generalNavigationBackground">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/faq_fragment_recycler_view"
-      android:layout_width="match_parent"
+      android:layout_width="560dp"
       android:layout_height="match_parent"
+      android:layout_gravity="center_horizontal"
       android:background="@color/white"
       android:clipToPadding="false"
-      android:nestedScrollingEnabled="false"
-      android:paddingBottom="60dp"
+      android:overScrollMode="never"
+      android:paddingBottom="@dimen/faq_list_padding_bottom"
+      android:scrollbars="none"
       app:list="@{viewModel.faqItemList}" />
-  </androidx.core.widget.NestedScrollView>
+  </FrameLayout>
 </layout>

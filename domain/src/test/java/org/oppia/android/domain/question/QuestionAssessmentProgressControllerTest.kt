@@ -1009,43 +1009,22 @@ class QuestionAssessmentProgressControllerTest {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
-    // submit wrong answer for question 2
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(hintAndSolution.correctAnswer.correctAnswer)
-      .isEqualTo("3.0")
-    // view question 2 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit correct answer from solution
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewSolutionForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit correct answers for questions 5 and 4
-    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 5
+    submitCorrectAnswerForQuestion5()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
+    // Question 4
+    submitCorrectAnswerForQuestion4()
 
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.0
       totalPointsAvailable = 3.0
     }.build()
-
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -1058,49 +1037,23 @@ class QuestionAssessmentProgressControllerTest {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
-    // submit wrong answer for question 2
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction
-    assertThat(hintAndSolution.getHint(0).hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    assertThat(hintAndSolution.solution.correctAnswer.correctAnswer)
-      .isEqualTo("3.0")
-    // view question 2 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
-    // view question 2 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit correct answer from solution
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    viewSolutionForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit correct answers for questions 5 and 4
-    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 5
+    submitCorrectAnswerForQuestion5()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
+    // Question 4
+    submitCorrectAnswerForQuestion4()
 
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.0
       totalPointsAvailable = 3.0
     }.build()
-
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -1113,47 +1066,26 @@ class QuestionAssessmentProgressControllerTest {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
-    // submit 5 wrong answers for question 2
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(5)
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hintAndSolution.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    // view question 2 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
-    // submit correct answer from hint
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit correct answers for questions 5 and 4
-    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 5
+    submitCorrectAnswerForQuestion5()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
+    // Question 4
+    submitCorrectAnswerForQuestion4()
 
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 2.4
       totalPointsAvailable = 3.0
     }.build()
-
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -1166,25 +1098,20 @@ class QuestionAssessmentProgressControllerTest {
     subscribeToCurrentQuestionToAllowSessionToLoad()
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
-    // submit correct answers for all questions (questions 2, 5, 4)
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
-    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_2)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
+    // Question 5
+    submitCorrectAnswerForQuestion5()
 
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    // Question 4
+    submitCorrectAnswerForQuestion4()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
     val grade = FractionGrade.newBuilder().apply {
       pointsReceived = 3.0
       totalPointsAvailable = 3.0
     }.build()
-
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -1195,63 +1122,26 @@ class QuestionAssessmentProgressControllerTest {
   fun hintViewed_solutionViewed_wrongAnswersSubmitted_for2Skills_returnDifferingSkillScores() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answers
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 wrong answer
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    // view question 2 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 wrong answer
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("1/2")
-    // view question 3 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 1.5
       totalPointsAvailable = 3.0
@@ -1276,72 +1166,25 @@ class QuestionAssessmentProgressControllerTest {
   fun solutionViewedForAllQuestions_returnZeroScore() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    // view question 1 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    viewSolutionForQuestion1()
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 wrong answer
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    var solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("3.0")
-    // view question 2 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewSolutionForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 wrong answer
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    solution = ephemeralQuestion.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("1/2")
-    // view question 3 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion.ephemeralState.state
-    )
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 0.0
       totalPointsAvailable = 3.0
@@ -1366,61 +1209,23 @@ class QuestionAssessmentProgressControllerTest {
   fun hintViewed_for2QuestionsWithWrongAnswer_returnScore2Point6Outof3() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(0)
+    submitCorrectAnswerForQuestion1()
 
-    // view question 1 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 3
+    submitCorrectAnswerForQuestion3()
 
-    // submit question 2 wrong answer
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    // view question 2 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
-
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
-
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 2.6
       totalPointsAvailable = 3.0
@@ -1445,53 +1250,22 @@ class QuestionAssessmentProgressControllerTest {
   fun multipleHintsViewed_forQuestionsWithWrongAnswer_returnScore2Point7Outof3() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(0)
+    viewHintForQuestion1(1)
+    submitCorrectAnswerForQuestion1()
 
-    // view question 1 hint 0
-    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // view question 1 hint 1
-    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(1)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Second hint text will appear here</p>")
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 1
-    )
+    // Question 3
+    submitCorrectAnswerForQuestion3()
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
-
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
-
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
-
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
       pointsReceived = 2.7
       totalPointsAvailable = 3.0
@@ -1516,66 +1290,26 @@ class QuestionAssessmentProgressControllerTest {
   fun solutionViewedForAllQuestions_returnMaxMasteryLossPerQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion1 = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion1.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    // view question 1 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion1.ephemeralState.state
-    )
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    viewSolutionForQuestion1()
+    submitCorrectAnswerForQuestion1()
 
+    // Question 2
     // submit question 2 wrong answer
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion2 = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion2.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    // view question 2 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion2.ephemeralState.state
-    )
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewSolutionForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 wrong answer
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion3 = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion3.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    // view question 3 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion3.ephemeralState.state
-    )
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = -0.2
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1589,27 +1323,19 @@ class QuestionAssessmentProgressControllerTest {
   fun correctAnswerOnFirstTryForAllQuestions_returnMaxMasteryGainPerQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.2
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1623,62 +1349,25 @@ class QuestionAssessmentProgressControllerTest {
   fun hintsAndSolutionsViewedWithWrongAnswers_noMisconceptions_returnDifferingMasteryDegrees() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answers
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 wrong answer
-    submitNumericInputAnswerAndMoveToNextQuestion(4.0)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion1 = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion1.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val hint = ephemeralQuestion1.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    // view question 2 hint
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion1.ephemeralState.state, true, 0
-    )
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 wrong answer
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    val ephemeralQuestion2 = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion2.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-    val solution = ephemeralQuestion2.ephemeralState.state.interaction.solution
-    assertThat(solution.correctAnswer.correctAnswer)
-      .isEqualTo("1/2")
-    // view question 3 solution
-    questionAssessmentProgressController.submitSolutionIsRevealed(
-      ephemeralQuestion2.ephemeralState.state
-    )
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.03
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1692,33 +1381,25 @@ class QuestionAssessmentProgressControllerTest {
   fun maxMasteryLossPerQuestionSurpassed_returnMaxMasteryLossForQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 3 wrong answers (surpass max mastery loss lower bound for this question)
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    submitTextInputAnswerAndMoveToNextQuestion("3/4")
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+    // Question 3
+    // Submit question 3 wrong answers (surpass max mastery loss lower bound for this question)
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitCorrectAnswerForQuestion3()
 
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.2
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1732,53 +1413,22 @@ class QuestionAssessmentProgressControllerTest {
   fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point11ForLinkedSkill() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 wrong answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    var ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
+    // Question 1
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(0)
+    viewHintForQuestion1(1)
+    submitCorrectAnswerForQuestion1()
 
-    // view question 1 hint 0
-    var hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Hint text will appear here</p>")
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 0
-    )
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // view question 1 hint 1
-    hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(1)
-    assertThat(hint.hintContent.html)
-      .contains("<p>Second hint text will appear here</p>")
-    questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state, true, 1
-    )
+    // Question 3
+    submitCorrectAnswerForQuestion3()
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
-
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
-
-    // submit question 3 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
-
-    // check the computed score
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.11
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1792,31 +1442,21 @@ class QuestionAssessmentProgressControllerTest {
   fun wrongAnswersAllSubmittedWithMisconception_onlyMisconceptionSkillIdMasteryDegreesAffected() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 0 wrong answers
-    submitTextInputAnswerAndMoveToNextQuestion("123/456")
-    submitTextInputAnswerAndMoveToNextQuestion("123/456")
+    // Question 0
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
 
-    // submit question 0 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
-
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.3
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1830,31 +1470,21 @@ class QuestionAssessmentProgressControllerTest {
   fun someWrongAnswersSubmittedWithTaggedMisconceptionSkillId() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     subscribeToCurrentQuestionToAllowSessionToLoad()
-    // this will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
-    // submit question 1 correct answer
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    // Question 1
+    submitCorrectAnswerForQuestion1()
 
-    // submit question 2 correct answer
-    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+    // Question 2
+    submitCorrectAnswerForQuestion2()
 
-    // submit question 0 wrong answers
-    submitTextInputAnswerAndMoveToNextQuestion("4/5")
-    submitTextInputAnswerAndMoveToNextQuestion("123/456")
+    // Question 0
+    submitIncorrectAnswerForQuestion0("4/5")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
 
-    // submit question 0 correct answer
-    submitTextInputAnswerAndMoveToNextQuestion("1/2")
-
-    // check the computed mastery degrees
-    subscribeToScoreAndMasteryCalculations(TEST_SKILL_ID_LIST_01)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-
-    val userAssessmentPerformance = performanceCalculationCaptor.value.getOrThrow()
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val skill0Mastery = 0.25
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
@@ -1881,7 +1511,7 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun subscribeToScoreAndMasteryCalculations(skillIdList: List<String>) {
-    questionAssessmentProgressController.calculateScoresAndMasteryDegrees(skillIdList).toLiveData()
+    questionAssessmentProgressController.calculateScores(skillIdList).toLiveData()
       .observeForever(mockScoreAndMasteryLiveDataObserver)
   }
 
@@ -1957,6 +1587,123 @@ class QuestionAssessmentProgressControllerTest {
       .setAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
       .setPlainAnswer(numericAnswer.toString())
       .build()
+  }
+
+  private fun submitCorrectAnswerForQuestion0() {
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+  }
+
+  private fun submitIncorrectAnswerForQuestion0(answer: String) {
+    assertThat(answer).isNotEqualTo("1/2")
+    submitTextInputAnswerAndMoveToNextQuestion(answer)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+  }
+
+  private fun submitCorrectAnswerForQuestion1() {
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+  }
+
+  private fun submitIncorrectAnswerForQuestion1(answer: Int) {
+    assertThat(answer).isNotEqualTo(1)
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(answer)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+  }
+
+  private fun viewHintForQuestion1(index: Int) {
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(index)
+    if (index == 0) {
+      assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
+    } else if (index == 1) {
+      assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
+    }
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, index
+    )
+  }
+
+  private fun viewSolutionForQuestion1() {
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
+  }
+
+  private fun submitCorrectAnswerForQuestion2() {
+    submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+  }
+
+  private fun submitIncorrectAnswerForQuestion2(answer: Double) {
+    assertThat(answer).isNotEqualTo(3.0)
+    submitNumericInputAnswerAndMoveToNextQuestion(answer)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+  }
+
+  private fun viewHintForQuestion2() {
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
+    questionAssessmentProgressController.submitHintIsRevealed(
+      ephemeralQuestion.ephemeralState.state, true, 0
+    )
+  }
+
+  private fun viewSolutionForQuestion2() {
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
+  }
+
+  private fun submitCorrectAnswerForQuestion3() {
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+  }
+
+  private fun submitIncorrectAnswerForQuestion3(answer: String) {
+    assertThat(answer).isNotEqualTo("1/2")
+    submitTextInputAnswerAndMoveToNextQuestion(answer)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
+  }
+
+  private fun viewSolutionForQuestion3() {
+    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
+  }
+
+  private fun submitCorrectAnswerForQuestion4() {
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+  }
+
+  private fun submitCorrectAnswerForQuestion5() {
+    submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+  }
+
+  private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
+    subscribeToScoreAndMasteryCalculations(skillIdList)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+    return performanceCalculationCaptor.value.getOrThrow()
   }
 
   // TODO(#89): Move this to a common test application component.

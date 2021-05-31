@@ -40,15 +40,6 @@ internal class QuestionAssessmentCalculation private constructor(
         allQuestionScores.size.toDouble() * maxScorePerQuestion / internalScoreMultiplyFactor
     }.build()
 
-  private fun QuestionSessionMetrics.computeQuestionScore(): Int = if (!didViewSolution) {
-    val hintsPenalty = numberOfHintsUsed * viewHintPenalty
-    val wrongAnswerPenalty = getAdjustedWrongAnswerCount() * wrongAnswerPenalty
-    (maxScorePerQuestion - hintsPenalty - wrongAnswerPenalty).coerceAtLeast(0)
-  } else 0
-
-  private fun QuestionSessionMetrics.getAdjustedWrongAnswerCount(): Int =
-    (numberOfAnswersSubmitted - 1).coerceAtLeast(0)
-
   private fun computeScoresPerSkill(): Map<String, FractionGrade> =
     questionSessionMetrics.flatMap { questionMetric ->
       // Convert to List<Pair<String, QuestionSessionMetrics>>>.
@@ -103,6 +94,15 @@ internal class QuestionAssessmentCalculation private constructor(
         maxMasteryLossPerQuestion
       )
     } else maxMasteryLossPerQuestion
+    
+  private fun QuestionSessionMetrics.computeQuestionScore(): Int = if (!didViewSolution) {
+    val hintsPenalty = numberOfHintsUsed * viewHintPenalty
+    val wrongAnswerPenalty = getAdjustedWrongAnswerCount() * wrongAnswerPenalty
+    (maxScorePerQuestion - hintsPenalty - wrongAnswerPenalty).coerceAtLeast(0)
+  } else 0
+
+  private fun QuestionSessionMetrics.getAdjustedWrongAnswerCount(): Int =
+    (numberOfAnswersSubmitted - 1).coerceAtLeast(0)
 
   /** Factory to create a new [QuestionAssessmentCalculation]. */
   class Factory @Inject constructor(

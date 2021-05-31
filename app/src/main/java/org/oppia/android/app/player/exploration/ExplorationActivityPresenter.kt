@@ -79,7 +79,7 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
 
-    binding.explorationToolbar.setOnClickListener {
+    binding.explorationToolbarTitle.setOnClickListener {
       binding.explorationToolbarTitle.isSelected = true
     }
 
