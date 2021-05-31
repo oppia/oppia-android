@@ -687,6 +687,7 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":app",
+    ":crashlytics",
     ":dagger",
     ":resources",
     ":test_deps",
@@ -722,11 +723,11 @@ TEST_DEPS = [
     "//third_party:org_mockito_mockito-core",
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
-    "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/parser:test_glide_image_loader",
 ]
 
 # App module tests. Note that all tests are assumed to be tests with resources (even though not all

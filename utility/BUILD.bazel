@@ -17,7 +17,6 @@ android_library(
 # keep sorted
 TEST_DEPS = [
     ":dagger",
-    ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//model",
@@ -49,6 +48,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
     "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/parser:asset",
     "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",
