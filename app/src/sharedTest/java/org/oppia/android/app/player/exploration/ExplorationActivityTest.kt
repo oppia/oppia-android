@@ -174,7 +174,7 @@ class ExplorationActivityTest {
   )
 
   @Test
-  fun testExpActivity_hasCorrectActivityLabel() {
+  fun testExplorationActivity_hasCorrectActivityLabel() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -191,7 +191,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_toolbarTitle_isDisplayedSuccessfully() {
+  fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -209,7 +209,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
+  fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -228,7 +228,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_toolbarAudioIcon_defaultContentDescription_isCorrect() {
+  fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -248,7 +248,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_clickAudioIcon_contentDescription_changesCorrectly() {
+  fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -269,7 +269,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_clickAudioIconTwice_contentDescription_changesToDefault() {
+  fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -291,7 +291,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_overflowMenu_isDisplayedSuccessfully() {
+  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -309,7 +309,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
+  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -328,7 +328,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExp_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
+  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -734,7 +734,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExpActivity_onBackPressed_showsStopExpDialog() {
+  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -750,7 +750,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExpActivity_onToolbarClosePressed_showsStopExpDialog() {
+  fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
