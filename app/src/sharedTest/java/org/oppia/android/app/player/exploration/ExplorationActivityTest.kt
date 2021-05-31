@@ -174,7 +174,7 @@ class ExplorationActivityTest {
   )
 
   @Test
-  fun testExplorationActivity_hasCorrectActivityLabel() {
+  fun testExpActivity_hasCorrectActivityLabel() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -191,7 +191,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
+  fun testExp_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -209,7 +209,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
+  fun testExp_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -228,7 +228,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
+  fun testExp_toolbarAudioIcon_defaultContentDescription_isCorrect() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -248,7 +248,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+  fun testExp_clickAudioIcon_contentDescription_changesCorrectly() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -269,7 +269,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
+  fun testExp_clickAudioIconTwice_contentDescription_changesToDefault() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -291,7 +291,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
+  fun testExp_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -309,7 +309,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
+  fun testExp_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -328,7 +328,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
+  fun testExp_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -385,7 +385,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun ttestAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
+  fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -484,7 +484,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+  fun testAudioCell_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -525,7 +525,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+  fun testAudioCell_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -561,7 +561,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+  fun testAudioCell_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -600,7 +600,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWifi_ratioExploration_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
+  fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -633,7 +633,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioWifi_fractionsExploration_changeLang_next_langIsHinglish() {
+  fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -689,7 +689,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWifi_ratioExploration_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
+  fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -734,7 +734,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
+  fun testExpActivity_onBackPressed_showsStopExpDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -750,7 +750,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
+  fun testExpActivity_onToolbarClosePressed_showsStopExpDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -767,7 +767,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_cancel_dismissesDialog() {
+  fun testExpActivity_onBackPressed_showsStopExpDialog_cancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -785,7 +785,7 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBack_showsStopExplorationDialog_leave_closesExplorationActivity() {
+  fun testExpActivity_onBack_showsStopExpDialog_leave_closesExpActivity() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
