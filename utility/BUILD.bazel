@@ -4,28 +4,7 @@ This library contains utilities that all other modules, minus model, depend on.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
-
-# Source files that have been migrated to their own package-based libraries. Files added to this
-# list will automatically be excluded from the top-level utility library. It's recommended to use
-# globs here to ensure new files added to migrated packages don't accidentally get included in the
-# top-level module library.
-MIGRATED_PROD_FILES = glob([
-    "src/main/java/org/oppia/android/util/accessibility/*.kt",
-    "src/main/java/org/oppia/android/util/caching/*.kt",
-    "src/main/java/org/oppia/android/util/data/*.kt",
-    "src/main/java/org/oppia/android/util/datetime/*.kt",
-    "src/main/java/org/oppia/android/util/extensions/*.kt",
-    "src/main/java/org/oppia/android/util/gcsresource/*.kt",
-    "src/main/java/org/oppia/android/util/logging/*.kt",
-    "src/main/java/org/oppia/android/util/networking/*.kt",
-    "src/main/java/org/oppia/android/util/parser/*.kt",
-    "src/main/java/org/oppia/android/util/profile/*.kt",
-    "src/main/java/org/oppia/android/util/statusbar/*.kt",
-    "src/main/java/org/oppia/android/util/system/*.kt",
-    "src/main/java/org/oppia/android/util/threading/*.kt",
-])
 
 android_library(
     name = "resources",
@@ -34,24 +13,6 @@ android_library(
     resource_files = glob(["src/main/res/**/*.xml"]),
     visibility = ["//visibility:public"],
 )
-
-# Library for general-purpose utilities.
-#kt_android_library(
-#    name = "utility",
-#    srcs = glob(
-#        ["src/main/java/org/oppia/android/util/**/*.kt"],
-#        exclude = MIGRATED_PROD_FILES,
-#    ),
-#    visibility = ["//visibility:public"],
-#    deps = [
-#        ":dagger",
-#        ":resources",
-#        "//third_party:com_caverock_androidsvg",
-#        "//third_party:com_github_bumptech_glide_glide",
-#        "//utility/src/main/java/org/oppia/android/util/caching:assets",
-#        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-#    ],
-#)
 
 # keep sorted
 TEST_DEPS = [

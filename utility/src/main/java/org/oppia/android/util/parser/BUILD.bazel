@@ -15,8 +15,8 @@ kt_android_library(
 kt_android_library(
     name = "bitmap",
     srcs = [
-        "BitmapBlurrer.kt",
         "BitmapBlurTransformation.kt",
+        "BitmapBlurrer.kt",
     ],
     deps = [
         "//third_party:com_github_bumptech_glide_glide",
