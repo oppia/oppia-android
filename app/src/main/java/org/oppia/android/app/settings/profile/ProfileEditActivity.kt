@@ -35,18 +35,6 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
     profileEditActivityPresenter.handleOnCreate(savedInstanceState)
   }
 
-  override fun onSupportNavigateUp(): Boolean {
-    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
-    if (isMultipane) {
-      super.onBackPressed()
-    } else {
-      val intent = Intent(this, ProfileListActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      startActivity(intent)
-    }
-    return false
-  }
-
   override fun onBackPressed() {
     val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
     if (isMultipane) {
@@ -56,10 +44,5 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       startActivity(intent)
     }
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    profileEditActivityPresenter.handleOnSaveInstanceState(outState)
   }
 }
