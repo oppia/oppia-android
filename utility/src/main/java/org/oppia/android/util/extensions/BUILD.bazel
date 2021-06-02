@@ -22,7 +22,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model",
         "//third_party:com_google_protobuf_protobuf-lite",
     ],
 )
