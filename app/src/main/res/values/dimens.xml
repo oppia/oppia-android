@@ -143,6 +143,7 @@
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_top_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>
   <dimen name="ratio_input_interaction_item_conversation_view_margin_end">24dp</dimen>
   <dimen name="submitted_answer_exploration_view_margin_end">24dp</dimen>
