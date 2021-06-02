@@ -429,7 +429,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_configChange_opensCellularAudioDialog() {
+  fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -452,7 +452,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExploration_audioIcon_clickNegative_audioFragmentIsHidden() {
+  fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -484,7 +484,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+  fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -525,7 +525,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+  fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -561,7 +561,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testAudioCell_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+  fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
