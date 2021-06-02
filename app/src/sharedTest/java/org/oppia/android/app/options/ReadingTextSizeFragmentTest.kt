@@ -75,6 +75,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/* 1.These duplicates are intentional to make sure that that the production values are not changed by mistake. */
+/* 2.TODO #1815: Remove these duplicate values once Screenshot tests are implemented. */
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f
 private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
 private const val LARGE_TEXT_SIZE_SCALE = 1.2f
