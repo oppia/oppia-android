@@ -189,6 +189,17 @@
   <dimen name="general_button_item_question_view_margin_start">124dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">124dp</dimen>
 
+  <!-- Add Profile -->
+  <dimen name="add_profile_main_padding_top">52dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">224dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
+  <dimen name="add_profile_pin_margin_start">0dp</dimen>
+  <dimen name="add_profile_pin_margin_top">24dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_start">0dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">8dp</dimen>
+  <dimen name="add_profile_allow_download_margin_start">0dp</dimen>
+  <dimen name="add_profile_allow_download_margin_top">24dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">64dp</dimen>
   <dimen name="faq_single_padding_top">48dp</dimen>
