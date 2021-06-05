@@ -40,9 +40,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
-import org.oppia.android.app.options.AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
-import org.oppia.android.app.options.ReadingTextSizeActivity.Companion.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -93,6 +90,12 @@ private const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
   "KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
 private const val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
   "KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+  "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY"
+private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+  "APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY"
+private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE =
+  "KEY_READING_TEXT_SIZE_PREFERENCE_TITLE"
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
