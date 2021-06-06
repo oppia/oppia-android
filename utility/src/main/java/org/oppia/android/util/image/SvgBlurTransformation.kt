@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import android.content.Context
 import com.bumptech.glide.load.Transformation

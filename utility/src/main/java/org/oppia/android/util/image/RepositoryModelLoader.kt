@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource

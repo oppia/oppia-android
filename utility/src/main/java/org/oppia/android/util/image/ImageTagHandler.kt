@@ -1,9 +1,11 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.CustomHtmlContentHandler
+import org.oppia.android.util.parser.getJsonStringValue
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [ImageTagHandler]. */

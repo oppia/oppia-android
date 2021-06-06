@@ -1,6 +1,7 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import android.content.Context
+import org.oppia.android.util.image.ScalableVectorGraphic
 
 /**
  * A [SvgPictureDrawable] for block-based rendering, that is, an image that should be centered near

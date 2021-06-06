@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import android.graphics.Picture
 import android.text.TextPaint

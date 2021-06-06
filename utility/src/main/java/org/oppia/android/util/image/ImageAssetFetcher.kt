@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 /** Fetcher for image assets from the app's local asset repository. */
 interface ImageAssetFetcher {

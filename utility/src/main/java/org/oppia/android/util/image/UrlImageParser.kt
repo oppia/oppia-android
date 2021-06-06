@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser
+package org.oppia.android.util.image
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,6 +17,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.CustomHtmlContentHandler
 import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
 import javax.inject.Inject
 import kotlin.math.max

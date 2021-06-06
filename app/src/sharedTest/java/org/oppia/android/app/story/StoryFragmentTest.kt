@@ -105,8 +105,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageLoader
-import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.parser.ImageTransformation
+import org.oppia.android.util.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
