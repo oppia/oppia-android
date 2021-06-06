@@ -3,7 +3,6 @@ package org.oppia.android.util.image
 import android.content.Context
 import android.graphics.Picture
 import android.text.TextPaint
-import org.oppia.android.util.image.ScalableVectorGraphic
 
 /**
  * A [SvgPictureDrawable] for in-line rendering. This must be used in conjunction with

@@ -542,7 +542,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/image:targets",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/parser:parser",
+        "//utility/src/main/java/org/oppia/android/util/parser",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
@@ -729,8 +729,8 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/image:drawable",
     "//utility/src/main/java/org/oppia/android/util/image:parser",
-    "//utility/src/main/java/org/oppia/android/util/image:targets",
     "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
+    "//utility/src/main/java/org/oppia/android/util/image:targets",
     "//utility/src/main/java/org/oppia/android/util/image:test_glide_image_loader",
     "//utility/src/main/java/org/oppia/android/util/parser:parser",
 ]

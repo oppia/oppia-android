@@ -48,12 +48,12 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
 import org.oppia.android.util.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.image.ThumbnailDownloadUrlTemplate
+import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.TopicHtmlParserEntityType
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
