@@ -244,11 +244,20 @@ enum ChapterPlayState {
   // prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
-  // The chapter has been started but not completed by the player.
-  STARTED_NOT_COMPLETED = 3;
+  // The chapter has been started but not completed by the player and the progress made in the
+  // chapter is saved.
+  IN_PROGRESS_SAVED = 3;
+
+  // The chapter has been started but not completed by the player and the progress made in the
+  // chapter is not saved.
+  IN_PROGRESS_NOT_SAVED = 4;
 
   // The chapter has been completed by the player.
-  COMPLETED = 4;
+  COMPLETED = 5;
+
+  // The chapter has been started but not completed by the player.
+  // TODO(lightweight checkpointing): remove this stage when migration to IN_PROGRESS_SAVED/NOT_SAVED is complete.
+  STARTED_NOT_COMPLETED = 6;
 }
 
 // Top level proto used to store topic progress per-profile.
@@ -406,7 +415,7 @@ message TopicRecord {
   // The list of subtopic IDs that can be used to load subtopics from the local filesystem.
   repeated int32 subtopic_ids = 5;
 
-  // Whether this topic is published/availabel to be played.
+  // Whether this topic is published/available to be played.
   bool is_published = 6;
 
   // The thumbnail corresponding to this topic.
