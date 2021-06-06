@@ -107,7 +107,7 @@ import org.oppia.android.util.image.GlideImageLoaderModule
 import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

@@ -51,10 +51,10 @@ import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.image.DefaultGcsPrefix
 import org.oppia.android.util.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.image.ThumbnailDownloadUrlTemplate
-import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.html.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.html.StoryHtmlParserEntityType
+import org.oppia.android.util.html.TopicHtmlParserEntityType
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger

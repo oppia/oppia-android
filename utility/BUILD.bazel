@@ -19,7 +19,6 @@ TEST_DEPS = [
     ":dagger",
     "//app:crashlytics",
     "//app:crashlytics_deps",
-    "//model",
     "//model:event_logger_java_proto_lite",
     "//model:test_models",
     "//testing",

@@ -4,8 +4,8 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.CustomHtmlContentHandler
-import org.oppia.android.util.parser.getJsonStringValue
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.getJsonStringValue
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [ImageTagHandler]. */

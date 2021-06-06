@@ -25,7 +25,7 @@ import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.image.TestGlideImageLoader
 import org.oppia.android.util.image.UrlImageParser
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

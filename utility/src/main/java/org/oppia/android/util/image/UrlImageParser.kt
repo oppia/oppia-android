@@ -17,8 +17,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.CustomHtmlContentHandler
-import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
 import javax.inject.Inject
 import kotlin.math.max
 

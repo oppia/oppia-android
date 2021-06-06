@@ -15,11 +15,11 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.util.parser.BulletTagHandler
-import org.oppia.android.util.parser.CUSTOM_BULLET_LIST_TAG
-import org.oppia.android.util.parser.CustomHtmlContentHandler
-import org.oppia.android.util.parser.getJsonObjectValue
-import org.oppia.android.util.parser.getJsonStringValue
+import org.oppia.android.util.html.BulletTagHandler
+import org.oppia.android.util.html.CUSTOM_BULLET_LIST_TAG
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.getJsonObjectValue
+import org.oppia.android.util.html.getJsonStringValue
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl

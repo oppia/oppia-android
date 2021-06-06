@@ -542,7 +542,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/image:targets",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/parser",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )

@@ -67,8 +67,8 @@ kt_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility:resources",
+        "//utility/src/main/java/org/oppia/android/util/html:custom",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser:custom",
     ],
 )
 
@@ -93,8 +93,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        "//utility/src/main/java/org/oppia/android/util/html:custom",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser:custom",
     ],
 )
 

@@ -31,9 +31,9 @@ import org.oppia.android.util.image.CUSTOM_IMG_TAG
 import org.oppia.android.util.image.ImageTagHandler
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.CustomHtmlContentHandler
-import org.oppia.android.util.parser.CustomHtmlContentHandler.CustomTagHandler
-import org.oppia.android.util.parser.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.CustomHtmlContentHandler.CustomTagHandler
+import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

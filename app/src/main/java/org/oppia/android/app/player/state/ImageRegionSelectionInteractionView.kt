@@ -19,7 +19,7 @@ import org.oppia.android.util.image.DefaultGcsPrefix
 import org.oppia.android.util.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.image.ImageLoader
 import org.oppia.android.util.image.ImageViewTarget
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
+import org.oppia.android.util.html.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
 /**

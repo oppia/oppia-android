@@ -82,9 +82,9 @@ import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.image.TestGlideImageLoader
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.CustomBulletSpan
-import org.oppia.android.util.parser.HtmlParser
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.html.CustomBulletSpan
+import org.oppia.android.util.html.HtmlParser
+import org.oppia.android.util.html.HtmlParserEntityTypeModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
