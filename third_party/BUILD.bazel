@@ -56,6 +56,14 @@ android_library(
 )
 
 android_library(
+    name = "io_github_karino2_kotlitex",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@kotlitex//kotlitex",
+    ],
+)
+
+android_library(
     name = "robolectric_android-all",
     visibility = ["//visibility:public"],
     exports = [

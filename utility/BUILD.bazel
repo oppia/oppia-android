@@ -26,11 +26,6 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
-aar_import(
-    name = "kotlitex-release",
-    aar = "libs/kotlitex-release.aar",
-)
-
 android_library(
     name = "resources",
     custom_package = "org.oppia.android.util",
@@ -49,7 +44,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
-        ":kotlitex-release",
         ":resources",
         "//app:crashlytics",
         "//app:crashlytics_deps",
@@ -63,6 +57,7 @@ kt_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:com_google_guava_guava",
         "//third_party:glide_compiler",
+        "//third_party:io_github_karino2_kotlitex",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
         "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
