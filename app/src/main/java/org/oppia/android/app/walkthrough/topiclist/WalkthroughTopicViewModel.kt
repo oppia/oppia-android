@@ -8,18 +8,18 @@ import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ObservableViewModel for [WalkthroughTopicListFragment]. */
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String
 ) : ObservableViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
@@ -36,7 +36,7 @@ class WalkthroughTopicViewModel @Inject constructor(
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
     if (topicSummaryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "WalkthroughTopicSummaryListFragment",
         "Failed to retrieve TopicSummary list: ",
         topicSummaryListResult.getErrorOrNull()!!

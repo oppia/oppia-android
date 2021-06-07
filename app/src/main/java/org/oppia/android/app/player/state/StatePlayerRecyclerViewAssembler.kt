@@ -89,7 +89,7 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 

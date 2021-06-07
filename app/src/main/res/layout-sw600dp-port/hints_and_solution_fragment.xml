@@ -53,6 +53,7 @@
         android:overScrollMode="never"
         android:paddingBottom="112dp"
         android:scrollbars="none"
+        app:list="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
