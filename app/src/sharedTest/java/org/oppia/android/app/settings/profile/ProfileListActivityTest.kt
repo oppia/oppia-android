@@ -1,16 +1,19 @@
-package org.oppia.android.app.profile
+package org.oppia.android.app.settings.profile
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -18,9 +21,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-import org.oppia.android.app.model.EventLog.EventAction
-import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -41,7 +41,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -59,16 +58,19 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [ProfileListActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = ProfileChooserFragmentLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
-class ProfileChooserFragmentLocalTest {
+@Config(application = ProfileListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class ProfileListActivityTest {
+
+  @get:Rule
+  val activityTestRule: ActivityTestRule<ProfileListActivity> = ActivityTestRule(
+    ProfileListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -76,41 +78,42 @@ class ProfileChooserFragmentLocalTest {
   }
 
   @Test
-  fun testProfileChooser_onLaunch_logsEvent() {
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+  fun testProfileListActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createProfileListActivityIntent())
+    val title = activityTestRule.activity.title
 
-      assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventAction.OPEN_PROFILE_CHOOSER)
-      assertThat(event.context.activityContextCase).isEqualTo(ACTIVITYCONTEXT_NOT_SET)
-    }
-  }
-
-  private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity
-      .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    Truth.assertThat(title).isEqualTo(context.getString(R.string.profile_list_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun createProfileListActivityIntent(): Intent {
+    return ProfileListActivity.createProfileListActivityIntent(
+      ApplicationProvider.getApplicationContext()
+    )
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
@@ -118,18 +121,18 @@ class ProfileChooserFragmentLocalTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest)
+    fun inject(profileListActivityTest: ProfileListActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerProfileListActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest) {
-      component.inject(profileChooserFragmentLocalTest)
+    fun inject(profileListActivityTest: ProfileListActivityTest) {
+      component.inject(profileListActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
