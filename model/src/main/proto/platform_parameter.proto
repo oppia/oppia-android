@@ -39,5 +39,5 @@ message ParameterWithName{
 message ParameterDatabase {
 
     // List of Parameters values with their names.
-    repeated ParameterWithName parameterWithName = 1;
+    repeated ParameterWithName parameter_with_name = 1;
 }
