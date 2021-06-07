@@ -154,6 +154,8 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+  // TODO(#3251): Add AccessibilityTestRule once all accessibility checks pass.
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 

@@ -39,6 +39,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
@@ -91,6 +95,7 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -109,10 +114,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -122,6 +123,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
