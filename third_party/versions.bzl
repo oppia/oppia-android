@@ -76,6 +76,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
     "androidx.test.espresso:espresso-core": "3.2.0",
     "androidx.test.espresso:espresso-intents": "3.1.0",
