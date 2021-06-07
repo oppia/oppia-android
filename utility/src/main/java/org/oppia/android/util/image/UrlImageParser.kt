@@ -16,9 +16,9 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.html.CustomHtmlContentHandler
 import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 import kotlin.math.max
 

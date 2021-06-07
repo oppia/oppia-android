@@ -19,6 +19,11 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -48,18 +53,13 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.image.DefaultGcsPrefix
-import org.oppia.android.util.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.image.ThumbnailDownloadUrlTemplate
 import org.oppia.android.util.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.html.StoryHtmlParserEntityType
 import org.oppia.android.util.html.TopicHtmlParserEntityType
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.oppia.android.util.image.DefaultGcsPrefix
+import org.oppia.android.util.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.image.ThumbnailDownloadUrlTemplate
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val REPLACE_IMG_TAG = "img"
