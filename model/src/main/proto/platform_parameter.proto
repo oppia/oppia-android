@@ -5,19 +5,14 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-
 // It will correspond to a single Platform Parameter Value.
 message Parameter {
-
     // Value of a parameter can be of any one of the following type.
-    oneof value{
-
+    oneof value {
         // Boolean type parameter value.
         bool boolean = 3;
-
         // Integer type parameter value.
         int32 integer = 2;
-
         // String type parameter value.
         string string = 4;
     }
@@ -37,7 +32,6 @@ message ParameterWithName{
 // Final storage format of parameters in the disk. This is made in the form of list so as to closely
 // resemble the JSON response in cache.
 message ParameterDatabase {
-
     // List of Parameters values with their names.
     repeated ParameterWithName parameter_with_name = 1;
 }
