@@ -129,8 +129,8 @@ git_repository(
 )
 
 git_repository(
-    branch = "master",
     name = "kotlitex",
+    commit = "9cb8bc1e2dcef3e69d25acb7816429e9c64b15b1",
     remote = "https://github.com/anandwana001/kotlitex",
 )
 
