@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
@@ -13,6 +11,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CACHE_NAME = "exploration_checkpoint_database"
 private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
@@ -285,6 +285,5 @@ class ExplorationCheckpointController @Inject constructor(
 
     /** checkpoint database has exceeded the allocated size limit. */
     CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED
-
   }
 }
