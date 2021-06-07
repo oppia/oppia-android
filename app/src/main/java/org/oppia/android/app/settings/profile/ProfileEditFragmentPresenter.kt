@@ -32,12 +32,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
-  private lateinit var dialog: AlertDialog
-
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    isMultipane: Boolean,
     internalProfileId: Int
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
