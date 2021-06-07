@@ -154,5 +154,5 @@ maven_install(
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
-
+fail_if_repin_required = True
 pinned_maven_install()
