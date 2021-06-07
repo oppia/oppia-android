@@ -145,9 +145,14 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
     fetch_sources = True,
+    maven_install_json = "//:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
 )
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
