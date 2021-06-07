@@ -204,7 +204,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         NavigationDrawerItem.HOME -> {
           val intent = HomeActivity.createHomeActivity(activity, internalProfileId)
           fragment.activity!!.startActivity(intent)
-          drawerLayout.closeDrawers()
+//          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
           val intent = OptionsActivity.createOptionsActivity(
@@ -215,7 +215,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
-          drawerLayout.closeDrawers()
+//          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.HELP -> {
           val intent = HelpActivity.createHelpActivityIntent(
@@ -226,7 +226,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
-          drawerLayout.closeDrawers()
+//          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
@@ -235,7 +235,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
             fragment.activity!!.finish()
           }
-          drawerLayout.closeDrawers()
+//          drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.SWITCH_PROFILE -> {
           val previousFragment =
