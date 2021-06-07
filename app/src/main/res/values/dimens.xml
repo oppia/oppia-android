@@ -190,7 +190,6 @@
   <dimen name="profile_chooser_margin_end_profile_already_added">72dp</dimen>
 
   <dimen name="drag_drop_interaction_item_exploration_view_margin_start">80dp</dimen>
-  <dimen name="submitted_answer_item_exploration_view_margin_start">80dp</dimen>
   <dimen name="text_input_interaction_item_margin_start">80dp</dimen>
 
   <dimen name="drag_drop_item_exploration_split_view_margin_start">32dp</dimen>
@@ -201,12 +200,7 @@
   <dimen name="drag_drop_item_question_view_margin_start">32dp</dimen>
   <dimen name="state_fragment_split_view_margin_start">32dp</dimen>
   <dimen name="state_fragment_split_view_margin_end">32dp</dimen>
-  <dimen name="submitted_answer_item_question_split_view_margin_end">32dp</dimen>
-  <dimen name="submitted_answer_item_question_split_view_margin_start">32dp</dimen>
-  <dimen name="submitted_answer_item_question_view_margin_end">32dp</dimen>
-  <dimen name="submitted_answer_item_question_view_margin_start">32dp</dimen>
 
-  <dimen name="submitted_answer_item_exploration_view_margin_end">48dp</dimen>
   <dimen name="profile_chooser_add_view_circular_image_margin_top_profile_already_added">48dp</dimen>
   <dimen name="profile_chooser_profile_view_circular_image_margin_top_profile_already_added">48dp</dimen>
   <dimen name="state_fragment_padding_top_audio_bar_visible">48dp</dimen>
@@ -286,6 +280,26 @@
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">16dp</dimen>
   <dimen name="selection_interaction_item_padding_end">16dp</dimen>
+
+  <!-- Submitted Answer Item: Exploration Split View -->
+  <dimen name="submitted_answer_item_exploration_split_view_margin_start">40dp</dimen>
+  <dimen name="submitted_answer_item_exploration_split_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_exploration_split_view_margin_end">24dp</dimen>
+
+  <!-- Submitted Answer Item: Exploration View -->
+  <dimen name="submitted_answer_item_exploration_view_margin_start">40dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_end">24dp</dimen>
+
+  <!-- Submitted Answer Item: Question Split View -->
+  <dimen name="submitted_answer_item_question_split_view_margin_start">32dp</dimen>
+  <dimen name="submitted_answer_item_question_split_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_question_split_view_margin_end">32dp</dimen>
+
+  <!-- Submitted Answer Item: Question View -->
+  <dimen name="submitted_answer_item_question_view_margin_start">32dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_end">32dp</dimen>
 
   <!-- Previous Responses Item: Exploration Split View -->
   <dimen name="previous_responses_item_exploration_split_view_margin_start">36dp</dimen>
