@@ -1,7 +1,6 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -17,7 +16,7 @@ class ProfileEditActivityPresenter @Inject constructor(
 
   private lateinit var toolbar: Toolbar
 
-  fun handleOnCreate(savedInstanceState: Bundle?) {
+  fun handleOnCreate() {
     activity.setContentView(R.layout.profile_edit_activity)
     setUpToolbar()
 

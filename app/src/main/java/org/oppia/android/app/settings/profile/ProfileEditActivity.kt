@@ -32,7 +32,7 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    profileEditActivityPresenter.handleOnCreate(savedInstanceState)
+    profileEditActivityPresenter.handleOnCreate()
   }
 
   override fun onBackPressed() {
