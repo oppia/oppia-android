@@ -130,7 +130,7 @@ git_repository(
 
 git_repository(
     name = "kotlitex",
-    commit = "03e340200e0bd53a0000eefb0f46dbde9c5a8e6b",
+    commit = "3e8a0804041121ece4b57099ac3de386d78e0996",
     remote = "https://github.com/anandwana001/kotlitex",
 )
 
