@@ -144,6 +144,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    fail_if_repin_required = True,
     fetch_sources = True,
     maven_install_json = "//:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
@@ -154,5 +155,4 @@ maven_install(
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
-fail_if_repin_required = True
 pinned_maven_install()
