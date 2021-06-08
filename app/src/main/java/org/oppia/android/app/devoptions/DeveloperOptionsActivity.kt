@@ -3,10 +3,10 @@ package org.oppia.android.app.devoptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import javax.inject.Inject
 
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
   @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter

@@ -472,7 +472,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun checkIfPreviousActivityShouldGetFinished(currentMenuItemId: Int): Boolean {
-    if (previousMenuItemId != null && (previousMenuItemId == 0 || previousMenuItemId == -1) && currentMenuItemId != 0) {
+    if (previousMenuItemId != null &&
+      (previousMenuItemId == 0 || previousMenuItemId == -1) &&
+      currentMenuItemId != 0
+    ) {
       return true
     }
     if (previousMenuItemId != null &&
