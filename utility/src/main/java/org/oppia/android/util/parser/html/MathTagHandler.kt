@@ -1,8 +1,9 @@
 package org.oppia.android.util.parser.html
 
-import android.content.Context
+import android.content.res.AssetManager
 import android.text.Editable
 import android.text.Spannable
+import android.text.style.ImageSpan
 import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
@@ -18,7 +19,7 @@ private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
  */
 class MathTagHandler(
   private val consoleLogger: ConsoleLogger,
-  private val context: Context
+  private val assetManager: AssetManager
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -32,14 +33,6 @@ class MathTagHandler(
       attributes.getJsonObjectValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE)
     )
     if (content != null) {
-      // Insert an image span where the custom tag currently is to load the SVG. In the future, this
-      // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
-      // parser.
-      val drawable =
-        imageRetriever.loadDrawable(
-          content.svgFilename,
-          CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
-        )
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
         // the image when rendering the HTML.
@@ -47,25 +40,41 @@ class MathTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
-      output.setSpan(
-        createMathSpan(content.rawLatex, 72f),
-        startIndex,
-        endIndex,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
+      if (content.svgFilename != null) {
+        // Insert an image span where the custom tag currently is to load the SVG. In the future, this
+        // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
+        // parser.
+        val drawable =
+          imageRetriever.loadDrawable(
+            content.svgFilename,
+            CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+          )
+        output.setSpan(
+          ImageSpan(drawable, content.svgFilename),
+          startIndex,
+          endIndex,
+          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+      } else if (content.rawLatex != null) {
+        output.setSpan(
+          MathExpressionSpan(content.rawLatex, 72f, assetManager, true),
+          startIndex,
+          endIndex,
+          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+      }
     } else consoleLogger.e("MathTagHandler", "Failed to parse math tag")
   }
 
-  fun createMathSpan(expr: String, baseSize: Float, isMathMode: Boolean = true) =
-    MathExpressionSpan(expr, baseSize, context.assets, isMathMode)
-
-  private data class MathContent(val rawLatex: String, val svgFilename: String) {
+  private data class MathContent(val rawLatex: String?, val svgFilename: String?) {
     companion object {
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
         val rawLatex = obj?.getOptionalString("raw_latex")
         val svgFilename = obj?.getOptionalString("svg_filename")
-        return if (rawLatex != null && svgFilename != null) {
+        return if (rawLatex != null && svgFilename == null) {
           rawLatex.replace("\\", "\\\\")
+          MathContent(rawLatex, svgFilename)
+        } else if (svgFilename != null) {
           MathContent(rawLatex, svgFilename)
         } else null
       }
