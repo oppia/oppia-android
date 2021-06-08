@@ -42,6 +42,8 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
@@ -68,6 +70,7 @@ import javax.inject.Singleton
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

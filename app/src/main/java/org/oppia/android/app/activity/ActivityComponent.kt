@@ -54,6 +54,7 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
+import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
@@ -78,6 +79,7 @@ interface ActivityComponent {
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
+  fun inject(developerOptionsActivity: DeveloperOptionsActivity)
   fun inject(audioLanguageActivity: AudioLanguageActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
