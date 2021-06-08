@@ -51,6 +51,7 @@ import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
+import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent(
@@ -79,6 +80,7 @@ interface FragmentComponent {
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)

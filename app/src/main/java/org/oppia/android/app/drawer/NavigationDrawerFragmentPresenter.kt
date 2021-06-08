@@ -1,5 +1,6 @@
 package org.oppia.android.app.drawer
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -38,6 +39,7 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
+import java.util.Optional
 import javax.inject.Inject
 
 const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
@@ -52,7 +54,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
-  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
+  private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>,
+  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -85,7 +88,36 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
 
+    setIfDeveloperOptionsMenuItemListener()
+
     return binding.root
+  }
+
+  private fun setIfDeveloperOptionsMenuItemListener() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      developerOptionsStarter.ifPresent { starter ->
+        getFooterViewModel().isDevMode.set(true)
+        binding.developerOptionsLinearLayout.setOnClickListener {
+          if (getFooterViewModel().isDeveloperOptionsSelected.get() == true) {
+            drawerLayout.closeDrawers()
+            return@setOnClickListener
+          }
+          uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+          drawerLayout.closeDrawers()
+          getFooterViewModel().isDeveloperOptionsSelected.set(true)
+          val intent = starter.createIntent(activity, internalProfileId)
+          fragment.activity!!.startActivity(intent)
+          if (previousMenuItemId == 0) fragment.activity!!.finish()
+          else if (previousMenuItemId != null &&
+            NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
+            NavigationDrawerItem.HOME
+          ) {
+            fragment.activity!!.finish()
+          }
+          drawerLayout.closeDrawers()
+        }
+      }
+    }
   }
 
   private fun getProfileData(): LiveData<Profile> {
@@ -107,7 +139,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             return@setOnClickListener
           }
 
-          uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+          uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
 
           drawerLayout.closeDrawers()
           getFooterViewModel().isAdministratorControlsSelected.set(true)
@@ -117,7 +149,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
               internalProfileId
             )
           fragment.activity!!.startActivity(intent)
-          if (previousMenuItemId != null &&
+          if (previousMenuItemId == -1) fragment.activity!!.finish()
+          else if (previousMenuItemId != null &&
             NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
             NavigationDrawerItem.HOME
           ) {
@@ -249,6 +282,11 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
                 .newBuilder()
                 .setHighlightItem(HighlightItem.ADMINISTRATOR_CONTROLS_ITEM)
                 .build()
+            } else if (getFooterViewModel().isDeveloperOptionsSelected.get() == true) {
+              ExitProfileDialogArguments
+                .newBuilder()
+                .setHighlightItem(HighlightItem.DEVELOPER_OPTIONS_ITEM)
+                .build()
             } else {
               ExitProfileDialogArguments
                 .newBuilder()
@@ -256,6 +294,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
                 .build()
             }
           getFooterViewModel().isAdministratorControlsSelected.set(false)
+          getFooterViewModel().isDeveloperOptionsSelected.set(false)
           binding.fragmentDrawerNavView.menu.getItem(
             NavigationDrawerItem.SWITCH_PROFILE.ordinal
           ).isChecked =
@@ -295,7 +334,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   fun highlightAdministratorControlsItem() {
     getFooterViewModel().isAdministratorControlsSelected.set(true)
-    uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+    uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+    drawerLayout.closeDrawers()
+  }
+
+  fun highlightDeveloperOptionsItem() {
+    getFooterViewModel().isDeveloperOptionsSelected.set(true)
+    uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
     drawerLayout.closeDrawers()
   }
 
@@ -306,7 +351,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       false
   }
 
-  private fun uncheckAllMenuItemsWhenAdministratorControlsIsSelected() {
+  private fun uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected() {
     binding.fragmentDrawerNavView.menu.forEach {
       it.isCheckable = false
     }
@@ -318,8 +363,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
    */
   fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
     previousMenuItemId = if (activity is TopicActivity) null else menuItemId
-    if (menuItemId != 0) {
+    if (menuItemId != 0 && menuItemId != -1) {
       getFooterViewModel().isAdministratorControlsSelected.set(false)
+      getFooterViewModel().isDeveloperOptionsSelected.set(false)
       when (NavigationDrawerItem.valueFromNavId(menuItemId)) {
         NavigationDrawerItem.HOME -> {
           binding.fragmentDrawerNavView.menu.getItem(
@@ -385,8 +431,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.post { drawerToggle.syncState() }
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
-      getFooterViewModel().isAdministratorControlsSelected.set(true)
-      uncheckAllMenuItemsWhenAdministratorControlsIsSelected()
+      if (menuItemId == 0) getFooterViewModel().isAdministratorControlsSelected.set(true)
+      else if (menuItemId == -1) getFooterViewModel().isDeveloperOptionsSelected.set(true)
+      uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
       this.drawerLayout = drawerLayout
       drawerToggle = object : ActionBarDrawerToggle(
         fragment.activity,
@@ -418,14 +465,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       drawerLayout.setDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
-      if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal) {
+      if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal && previousMenuItemId != -1) {
         fragment.activity!!.finish()
       }
     }
   }
 
   private fun checkIfPreviousActivityShouldGetFinished(currentMenuItemId: Int): Boolean {
-    if (previousMenuItemId != null && previousMenuItemId == 0 && currentMenuItemId != 0) {
+    if (previousMenuItemId != null && (previousMenuItemId == 0 || previousMenuItemId == -1) && currentMenuItemId != 0) {
       return true
     }
     if (previousMenuItemId != null &&

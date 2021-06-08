@@ -3,15 +3,21 @@ package org.oppia.android.app.devoptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
+  @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     internalProfileId = intent.getIntExtra(DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY, -1)
+    developerOptionsActivityPresenter.handleOnCreate(internalProfileId)
+    title = getString(R.string.developer_options_title)
   }
 
   companion object {
@@ -20,7 +26,7 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
 
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       return intent
     }
   }
