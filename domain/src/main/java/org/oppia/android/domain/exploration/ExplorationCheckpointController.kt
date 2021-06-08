@@ -25,7 +25,7 @@ private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
 
 /**
- * Controller for retrieving, adding, updating, and deleting exploration exploration checkpoints.
+ * Controller for saving, retrieving, updating, and deleting exploration checkpoints.
  */
 @Singleton
 class ExplorationCheckpointController @Inject constructor(
@@ -35,11 +35,26 @@ class ExplorationCheckpointController @Inject constructor(
   @ExplorationStorageDatabaseSize private val explorationCheckpointDatabaseSizeLimit: Int
 ) {
 
-  /** Indicates the no checkpoint was found for the specified explorationId and profileId. */
+  /** Different stages in which the exploration checkpoint database can exist. */
+  enum class ExplorationCheckpointDatabaseState {
+
+    /** checkpoint database is in an unknown state. */
+    CHECKPOINT_DATABASE_UNKNOWN_STATE,
+
+    /** checkpoint database has not exceeded the allocated size limit. */
+    CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
+
+    /** checkpoint database has exceeded the allocated size limit. */
+    CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED
+  }
+
+  /** Indicates that no checkpoint was found for the specified explorationId and profileId. */
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
 
   /**
-   * These Statuses correspond to the exceptions above such that if the deferred contains
+   * These Statuses correspond to the exception and the checkpoint database states above
+   * such that if the deferred contains
+   *
    * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED, the
    * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED] will be
    * passed to a successful AsyncResult.
@@ -72,7 +87,7 @@ class ExplorationCheckpointController @Inject constructor(
    * returned has the value
    * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED]
    * if the database has exceeded the size limit of [explorationCheckpointDatabaseSizeLimit],
-   * otherwise it is returned with the value
+   * otherwise the success result is returned with the value
    * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED].
    */
   fun recordExplorationCheckpoint(
@@ -143,7 +158,7 @@ class ExplorationCheckpointController @Inject constructor(
         } else
           AsyncResult.failed(
             ExplorationCheckpointNotFoundException(
-              "Checkpoint with exploration $explorationId was not found " +
+              "Checkpoint with the explorationId $explorationId was not found " +
                 "for profileId ${profileId.internalId}."
             )
           )
@@ -236,8 +251,8 @@ class ExplorationCheckpointController @Inject constructor(
       ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND ->
         AsyncResult.failed(
           ExplorationCheckpointNotFoundException(
-            "No saved checkpoint with explorationId ${explorationId!!} found for profile " +
-              "with id ${profileId!!.internalId}."
+            "No saved checkpoint with explorationId ${explorationId!!} found for " +
+              "the profileId ${profileId!!.internalId}."
           )
         )
       ExplorationCheckpointActionStatus.SUCCESS ->
@@ -272,18 +287,5 @@ class ExplorationCheckpointController @Inject constructor(
       }
     }
     return cacheStore
-  }
-
-  /** Different stages in which the exploration checkpoint database can exist. */
-  enum class ExplorationCheckpointDatabaseState {
-
-    /** checkpoint database is in an unknown state. */
-    CHECKPOINT_DATABASE_UNKNOWN_STATE,
-
-    /** checkpoint database has not exceeded the allocated size limit. */
-    CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
-
-    /** checkpoint database has exceeded the allocated size limit. */
-    CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED
   }
 }
