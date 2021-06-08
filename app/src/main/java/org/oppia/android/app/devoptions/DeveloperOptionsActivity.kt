@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
-class DeveloperOptionsActivity: InjectableAppCompatActivity() {
+class DeveloperOptionsActivity : InjectableAppCompatActivity() {
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
