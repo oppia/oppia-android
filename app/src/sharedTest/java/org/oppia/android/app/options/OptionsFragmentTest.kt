@@ -536,7 +536,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
             "English"
           ),
           hasExtra(
