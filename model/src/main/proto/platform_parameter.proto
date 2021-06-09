@@ -20,7 +20,7 @@ message PlatformParameter {
 
 // Storage format of platform parameters while the app is running.
 message PlatformParameterMap{
-    map<string,PlatformParameter> parameter = 1;
+    map<string, PlatformParameter> parameter = 1;
 }
 
 // Pair of Platform Parameter Value and Name.
