@@ -80,6 +80,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -587,6 +589,7 @@ class TopicFragmentTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

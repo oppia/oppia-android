@@ -89,6 +89,8 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 /**
  * TODO(#59): Make this test work with Espresso.
@@ -444,7 +446,8 @@ class AudioFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

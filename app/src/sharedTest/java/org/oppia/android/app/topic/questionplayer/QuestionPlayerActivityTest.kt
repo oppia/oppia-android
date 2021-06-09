@@ -105,6 +105,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -486,7 +488,8 @@ class QuestionPlayerActivityTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

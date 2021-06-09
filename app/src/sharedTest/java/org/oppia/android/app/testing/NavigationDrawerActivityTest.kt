@@ -110,6 +110,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 /** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -403,6 +406,31 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
+  fun testNavDrawer_openNavDrawer_dev_switchProfile_cancel_devIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(R.string.developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
+        )
+      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -517,6 +545,33 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
+  fun testNavDrawer_openNavDrawer_dev_switchProfile_cancel_configChange_devIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(R.string.developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
+        )
+      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
   fun testNavDrawer_openNavDrawer_options_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -589,6 +644,22 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_dev_pressBack_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -680,6 +751,60 @@ class NavigationDrawerActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.fragment_drawer_nav_view))
         .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_dev_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_withDevMode_openNavDrawer_devOptionsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_withDevMode_configChange_devOptionsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_withDevMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(DeveloperOptionsActivity::class.java.name))
+      intended(hasExtra(DeveloperOptionsActivity.getIntentKey(), 0))
     }
   }
 
@@ -929,7 +1054,8 @@ class NavigationDrawerActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

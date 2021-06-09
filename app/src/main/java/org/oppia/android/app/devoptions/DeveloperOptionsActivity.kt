@@ -31,5 +31,9 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
       return intent
     }
+
+    fun getIntentKey(): String {
+      return KEY_NAVIGATION_PROFILE_ID
+    }
   }
 }
