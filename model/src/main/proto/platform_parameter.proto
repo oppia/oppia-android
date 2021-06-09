@@ -6,13 +6,13 @@ option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // It will correspond to a single Platform Parameter Value.
-message Parameter {
+message PlatformParameter {
     // Value of a parameter can be of any one of the following type.
     oneof value {
         // Boolean type parameter value.
-        bool boolean = 3;
+        bool boolean = 2;
         // Integer type parameter value.
-        int32 integer = 2;
+        int32 integer = 3;
         // String type parameter value.
         string string = 4;
     }
@@ -20,13 +20,20 @@ message Parameter {
 
 // Storage format of platform parameters while the app is running.
 message ParameterMap{
-    map<string,Parameter> parameter = 1;
+    map<string,PlatformParameter> parameter = 1;
 }
 
 // Pair of Platform Parameter Value and Name.
 message ParameterWithName{
     string name = 1;
-    Parameter value = 2;
+    oneof value {
+        // Boolean type parameter value.
+        bool boolean = 2;
+        // Integer type parameter value.
+        int32 integer = 3;
+        // String type parameter value.
+        string string = 4;
+    }
 }
 
 // Final storage format of parameters in the disk. This is made in the form of list so as to closely
