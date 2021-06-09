@@ -19,12 +19,12 @@ message PlatformParameter {
 }
 
 // Storage format of platform parameters while the app is running.
-message ParameterMap{
+message PlatformParameterMap{
     map<string,PlatformParameter> parameter = 1;
 }
 
 // Pair of Platform Parameter Value and Name.
-message ParameterWithName{
+message PlatformParameterWithName{
     string name = 1;
     oneof value {
         // Boolean type parameter value.
@@ -38,7 +38,7 @@ message ParameterWithName{
 
 // Final storage format of parameters in the disk. This is made in the form of list so as to closely
 // resemble the JSON response in cache.
-message ParameterDatabase {
+message PlatformParameterDatabase {
     // List of Parameters values with their names.
-    repeated ParameterWithName parameter_with_name = 1;
+    repeated PlatformParameterWithName parameter_with_name = 1;
 }
