@@ -6,7 +6,10 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-/** JUnit rule to enable [AccessibilityChecks] on Espresso. */
+/**
+ * JUnit rule to enable [AccessibilityChecks] on Espresso.
+ * Reference: https://developer.android.com/training/testing/espresso/accessibility-checking
+ */
 class AccessibilityTestRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
