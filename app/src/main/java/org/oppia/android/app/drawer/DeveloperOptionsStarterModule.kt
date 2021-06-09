@@ -4,9 +4,9 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class DeveloperOptionsStarterModule {
+interface DeveloperOptionsStarterModule {
   @Binds
-  abstract fun bindsDeveloperOptionsStarter(
+  fun bindsDeveloperOptionsStarter(
     impl: DeveloperOptionsStarterImpl
   ): DeveloperOptionsStarter
 }

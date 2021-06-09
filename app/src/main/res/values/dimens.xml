@@ -372,4 +372,7 @@
 
   <!-- General Bottom Padding -->
   <dimen name="general_screen_padding_bottom">160dp</dimen>
+
+  <!-- Profile Edit -->
+  <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
 </resources>

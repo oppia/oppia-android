@@ -8,6 +8,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
+/** Activity for Developer Options. */
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
   @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
   private var internalProfileId = -1
@@ -24,6 +25,7 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     const val DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY =
       "DeveloperOptionsActivity.internal_profile_id"
 
+    /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
       intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
