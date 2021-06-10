@@ -26,14 +26,7 @@ message PlatformParameterMap{
 // Pair of Platform Parameter Value and Name.
 message PlatformParameterWithName{
     string name = 1;
-    oneof value {
-        // Boolean type parameter value.
-        bool boolean = 2;
-        // Integer type parameter value.
-        int32 integer = 3;
-        // String type parameter value.
-        string string = 4;
-    }
+    PlatformParameter value = 2;
 }
 
 // Final storage format of parameters in the disk. This is made in the form of list so as to closely
