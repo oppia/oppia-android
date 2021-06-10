@@ -26,6 +26,7 @@ message Exploration {
   bool correctness_feedback_enabled = 7;
   string title = 8;
   string language_code = 9;
+  int32 version = 10;
 }
 
 // Structure for a param change.
