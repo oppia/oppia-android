@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+message FilenameChecks {
+  repeated FilenameCheck filename_checks = 1;
+}
+
+message FilenameCheck {
+  // Regex no files should match.
+  string prohibited_filename_regex = 1;
+
+  // Error to show if any files match the regex.
+  string failure_message = 2;
+}

@@ -1,0 +1,12 @@
+filename_checks {
+  prohibited_filename_regex: "[^app]/src/main/.+?Activity.kt"
+  failure_message: "Activities can only be placed in the app module"
+}
+filename_checks {
+  prohibited_filename_regex: "[^app]/src/main/.+?View.kt"
+  failure_message: "Views can only be placed in the app module"
+}
+filename_checks {
+  prohibited_filename_regex: "[^app]/src/main/.+?Fragment.kt"
+  failure_message: "Fragments can only be placed in the app module"
+}
