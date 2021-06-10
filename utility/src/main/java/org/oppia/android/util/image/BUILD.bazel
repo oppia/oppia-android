@@ -14,17 +14,6 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "bitmap",
-    srcs = [
-        "BitmapBlurTransformation.kt",
-        "BitmapBlurrer.kt",
-    ],
-    deps = [
-        "//third_party:com_github_bumptech_glide_glide",
-    ],
-)
-
-kt_android_library(
     name = "drawable",
     srcs = [
         "BlockPictureDrawable.kt",
@@ -42,7 +31,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":asset",
-        ":bitmap",
         ":dagger",
         ":targets",
         "//third_party:androidx_annotation_annotation",
@@ -50,6 +38,7 @@ kt_android_library(
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/image/bitmap",
     ],
 )
 

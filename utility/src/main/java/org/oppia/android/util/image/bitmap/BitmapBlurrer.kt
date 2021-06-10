@@ -1,4 +1,4 @@
-package org.oppia.android.util.image
+package org.oppia.android.util.image.bitmap
 
 import android.content.Context
 import android.graphics.Bitmap

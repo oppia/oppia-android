@@ -10,6 +10,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.TextPaint
+import org.oppia.android.util.image.bitmap.BitmapBlurrer
 
 /**
  * A [Drawable] for rendering [ScalableVectorGraphic]s. See subclasses for specific drawables &

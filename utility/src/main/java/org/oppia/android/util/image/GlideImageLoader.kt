@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.image.bitmap.BitmapBlurTransformation
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -107,19 +108,19 @@ class GlideImageLoader @Inject constructor(
 
   private fun List<ImageTransformation>.toBitmapGlideTransformations():
     List<Transformation<Bitmap>> {
-      return map {
-        when (it) {
-          ImageTransformation.BLUR -> bitmapBlurTransformation
-        }
+    return map {
+      when (it) {
+        ImageTransformation.BLUR -> bitmapBlurTransformation
       }
     }
+  }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations():
     List<Transformation<ScalableVectorGraphic>> {
-      return map {
-        when (it) {
-          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
-        }
+    return map {
+      when (it) {
+        ImageTransformation.BLUR -> pictureBitmapBlurTransformation
       }
     }
+  }
 }
