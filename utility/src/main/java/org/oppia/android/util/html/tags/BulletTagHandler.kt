@@ -1,9 +1,10 @@
-package org.oppia.android.util.html
+package org.oppia.android.util.html.tags
 
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.BulletSpan
+import org.oppia.android.util.html.CustomHtmlContentHandler
 
 /** The custom tag corresponding to [BulletTagHandler]. */
 const val CUSTOM_BULLET_LIST_TAG = "oppia-li"

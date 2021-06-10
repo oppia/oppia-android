@@ -1,5 +1,5 @@
 """
-General purpose utilities for parser.
+General purpose utilities for html.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -30,25 +30,12 @@ kt_android_library(
     deps = [
         ":custom",
         ":dagger",
-        ":tag_handler",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility:resources",
+        "//utility/src/main/java/org/oppia/android/util/html/tags:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/image:parser",
         "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-    ],
-)
-
-kt_android_library(
-    name = "tag_handler",
-    srcs = [
-        "BulletTagHandler.kt",
-        "ConceptCardTagHandler.kt",
-        "MathTagHandler.kt",
-    ],
-    deps = [
-        ":custom",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )

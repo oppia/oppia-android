@@ -1,9 +1,11 @@
-package org.oppia.android.util.html
+package org.oppia.android.util.html.tags
 
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
 import org.json.JSONObject
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.getJsonObjectValue
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 

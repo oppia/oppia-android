@@ -5,6 +5,12 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
+import org.oppia.android.util.html.tags.BulletTagHandler
+import org.oppia.android.util.html.tags.CUSTOM_BULLET_LIST_TAG
+import org.oppia.android.util.html.tags.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.html.tags.CUSTOM_MATH_TAG
+import org.oppia.android.util.html.tags.ConceptCardTagHandler
+import org.oppia.android.util.html.tags.MathTagHandler
 import org.oppia.android.util.image.CUSTOM_IMG_TAG
 import org.oppia.android.util.image.ImageTagHandler
 import org.oppia.android.util.image.UrlImageParser
