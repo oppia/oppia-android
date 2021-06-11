@@ -16,7 +16,7 @@ class OppiaApplication :
   ApplicationInjectorProvider,
   Configuration.Provider {
 
-  /** Boolean variable to enable dev mode */
+  /** Boolean variable to enable dev mode. It will decide which application component to use */
   private val enableDevMode = true
 
   /** The root [ApplicationComponent]. */
