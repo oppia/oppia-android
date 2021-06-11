@@ -1,4 +1,4 @@
-package org.oppia.android.domain.exploration
+package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import android.app.Application
 import android.content.Context
@@ -10,6 +10,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,8 +43,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * The base exploration id for every exploration used for testing. The exploration id of every test

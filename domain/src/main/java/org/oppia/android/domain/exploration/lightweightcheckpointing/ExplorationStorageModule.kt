@@ -1,4 +1,4 @@
-package org.oppia.android.domain.exploration
+package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import dagger.Module
 import dagger.Provides
