@@ -63,16 +63,14 @@ java_lite_proto_library(
 
 format_import_proto_library(
     name = "exploration_checkpoint_proto",
-    src = ["src/main/proto/exploration_checkpoint.proto"]
-    deps = [
-        ":exploration_proto"
-    ]
+    src = "src/main/proto/exploration_checkpoint.proto",
+    deps = [":exploration_proto"],
 )
 
 java_lite_proto_library(
     name = "exploration_checkpoint_java_proto_lite",
     visibility = ["//visibility:public"],
-    deps = [":exploration_checkpoint_proto"]
+    deps = [":exploration_checkpoint_proto"],
 )
 
 proto_library(
@@ -242,7 +240,6 @@ android_library(
     testonly = True,
     visibility = ["//visibility:public"],
     exports = [
-        ":exploration_checkpoint_java_proto_lite",
         ":test_java_proto_lite",
     ],
 )
