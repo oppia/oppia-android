@@ -11,9 +11,9 @@ class RegexPatternValidationCheck {
     fun main(vararg args: String) {
       val path = System.getProperty("user.dir")
       val fileNamePatternsBinaryFile =
-        File("$path/scripts/src/main/assets/filename_pattern_validation_checks.pb")
+        File("$path/scripts/assets/filename_pattern_validation_checks.pb")
       val fileContentsBinaryFile =
-        File("$path/scripts/src/main/assets/file_content_validation_checks.pb")
+        File("$path/scripts/assets/file_content_validation_checks.pb")
       val filenameCheckBuilder = FilenameChecks.newBuilder()
       val fileContentCheckBuilder = FileContentChecks.newBuilder()
       val namePatternsObj: FilenameChecks =
@@ -37,6 +37,7 @@ class RegexPatternValidationCheck {
         println(it.getProhibitedContentRegex())
         println("------------------------------------")
       }
+
     }
   }
 }
