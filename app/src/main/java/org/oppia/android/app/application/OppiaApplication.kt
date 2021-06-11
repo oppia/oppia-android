@@ -15,6 +15,10 @@ class OppiaApplication :
   ActivityComponentFactory,
   ApplicationInjectorProvider,
   Configuration.Provider {
+
+  /** Boolean variable to enable dev mode */
+  private val enableDevMode = true
+
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
@@ -22,20 +26,39 @@ class OppiaApplication :
       .build()
   }
 
-  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+  /** The root [ApplicationComponentForDevMode]. */
+  private val componentForDevMode: ApplicationComponentForDevMode by lazy {
+    DaggerApplicationComponentForDevMode.builder()
+      .setApplication(this)
+      .build()
   }
 
-  override fun getApplicationInjector(): ApplicationInjector = component
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+    return if (enableDevMode)
+      componentForDevMode.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    else
+      component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+  }
+
+  override fun getApplicationInjector(): ApplicationInjector =
+    if (enableDevMode) componentForDevMode
+    else component
 
   override fun onCreate() {
     super.onCreate()
     FirebaseApp.initializeApp(applicationContext)
     WorkManager.initialize(applicationContext, workManagerConfiguration)
-    component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+    if (enableDevMode)
+      componentForDevMode.getApplicationStartupListeners()
+        .forEach(ApplicationStartupListener::onCreate)
+    else
+      component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 
   override fun getWorkManagerConfiguration(): Configuration {
-    return component.getWorkManagerConfiguration()
+    return if (enableDevMode)
+      componentForDevMode.getWorkManagerConfiguration()
+    else
+      component.getWorkManagerConfiguration()
   }
 }

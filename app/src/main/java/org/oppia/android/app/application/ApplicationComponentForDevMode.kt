@@ -4,7 +4,11 @@ import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Provider
+import javax.inject.Singleton
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -40,13 +44,10 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
-import javax.inject.Provider
-import javax.inject.Singleton
-import org.oppia.android.app.drawer.DeveloperOptionsModule
 
 /**
- * Root Dagger component for the application. All application-scoped modules should be included in
- * this component.
+ * Root Dagger component for the application in dev mode. All application-scoped modules should be
+ * included in this component.
  */
 @Singleton
 @Component(
@@ -68,15 +69,16 @@ import org.oppia.android.app.drawer.DeveloperOptionsModule
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class, PracticeTabModule::class, DeveloperOptionsModule::class
+    NetworkModule::class, PracticeTabModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
   ]
 )
-interface ApplicationComponent : ApplicationInjector {
+interface ApplicationComponentForDevMode : ApplicationInjector {
   @Component.Builder
   interface Builder {
     @BindsInstance
     fun setApplication(application: Application): Builder
-    fun build(): ApplicationComponent
+    fun build(): ApplicationComponentForDevMode
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
