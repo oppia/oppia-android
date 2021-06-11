@@ -10,7 +10,7 @@ kt_android_library(
         "BitmapBlurTransformation.kt",
         "BitmapBlurrer.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/image:__pkg__"],
     deps = [
         "//third_party:com_github_bumptech_glide_glide",
     ],

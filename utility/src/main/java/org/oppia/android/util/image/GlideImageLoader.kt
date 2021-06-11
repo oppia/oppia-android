@@ -108,19 +108,19 @@ class GlideImageLoader @Inject constructor(
 
   private fun List<ImageTransformation>.toBitmapGlideTransformations():
     List<Transformation<Bitmap>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> bitmapBlurTransformation
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> bitmapBlurTransformation
+        }
       }
     }
-  }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations():
     List<Transformation<ScalableVectorGraphic>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+        }
       }
     }
-  }
 }
