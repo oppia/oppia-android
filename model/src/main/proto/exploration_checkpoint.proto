@@ -38,14 +38,14 @@ message ExplorationCheckpoint {
   // it stores false.
   bool solution_is_revealed = 6;
 
-  // The timestamp in milliseconds of when the checkpoint was saved for the first time.
-  int64 timestamp_of_first_checkpoint = 7;
-
   // Stores the title of the saved exploration.
-  string exploration_title = 8;
+  string exploration_title = 7;
 
   // Stores the version of the exploration which is compatible with the saved checkpoint.
-  int32 exploration_version = 9;
+  int32 exploration_version = 8;
+
+  // The timestamp in milliseconds of when the checkpoint was saved for the first time.
+  int64 timestamp_of_first_checkpoint = 9;
 }
 
 // Corresponds to exploration states that have been completed.
@@ -65,10 +65,10 @@ message CompletedStateInCheckpoint {
 message ExplorationCheckpointDetails{
 
   // The ID of the stored exploration checkpoint.
-  string exploration_id = 2;
+  string exploration_id = 1;
 
   // The title of the exploration whose checkpoint is saved.
-  string exploration_title = 1;
+  string exploration_title = 2;
 
   // Stores the version of the exploration which is compatible with the saved checkpoint.
   int32 exploration_version = 3;
