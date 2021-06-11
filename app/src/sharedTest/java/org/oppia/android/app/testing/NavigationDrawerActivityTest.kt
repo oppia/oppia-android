@@ -809,6 +809,20 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
+  fun testNavDrawer_withOutDevMode_devOptionsIsNotDisplayed() {
+    ApplicationProvider.getApplicationContext<TestApplication>().disableDevMode = true
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -1065,21 +1079,67 @@ class NavigationDrawerActivityTest {
     fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
   }
 
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  @Singleton
+  @Component(
+    modules = [
+      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
+      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsModule::class
+    ]
+  )
+  interface TestApplicationComponentWithoutDevMode : ApplicationComponent {
+    @Component.Builder
+    interface Builder : ApplicationComponent.Builder
+
+    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
+  }
+
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+    var disableDevMode = false
+
     private val component: TestApplicationComponent by lazy {
       DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
+    private val componentWithoutDevMode: TestApplicationComponentWithoutDevMode by lazy {
+      DaggerNavigationDrawerActivityTest_TestApplicationComponentWithoutDevMode.builder()
+        .setApplication(this)
+        .build() as TestApplicationComponentWithoutDevMode
+    }
+
     fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
-      component.inject(navigationDrawerActivityTest)
+      if (disableDevMode) componentWithoutDevMode.inject(navigationDrawerActivityTest)
+      else component.inject(navigationDrawerActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      return if (disableDevMode)
+        componentWithoutDevMode
+          .getActivityComponentBuilderProvider()
+          .get()
+          .setActivity(activity)
+          .build()
+      else
+        component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun getApplicationInjector(): ApplicationInjector = component
+    override fun getApplicationInjector(): ApplicationInjector =
+      if (disableDevMode) componentWithoutDevMode
+      else component
   }
 }
