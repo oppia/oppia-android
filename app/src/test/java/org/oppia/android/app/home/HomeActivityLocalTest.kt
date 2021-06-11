@@ -20,6 +20,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -60,8 +62,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)

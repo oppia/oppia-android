@@ -9,6 +9,8 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import javax.inject.Inject
 
+// TODO(#3295): Introduce UI for Developer Options Menu.
+/** The presenter for [DeveloperOptionsFragment]. */
 @FragmentScope
 class DeveloperOptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+// TODO(#3295): Introduce UI for Developer Options Menu.
+/** Fragment that contains Developer Options of the application. */
 class DeveloperOptionsFragment : InjectableFragment() {
   @Inject lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
 

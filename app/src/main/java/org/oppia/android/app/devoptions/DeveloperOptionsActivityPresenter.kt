@@ -9,6 +9,7 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.databinding.DeveloperOptionsActivityBinding
 import javax.inject.Inject
 
+/** The presenter for [DeveloperOptionsActivity]. */
 @ActivityScope
 class DeveloperOptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity

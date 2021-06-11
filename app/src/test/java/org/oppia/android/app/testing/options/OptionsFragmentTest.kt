@@ -26,6 +26,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.options.APP_LANGUAGE
 import org.oppia.android.app.options.AUDIO_LANGUAGE
 import org.oppia.android.app.options.AppLanguageActivity
@@ -74,8 +76,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 private const val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE = "READING_TEXT_SIZE_PREFERENCE"
 private const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =

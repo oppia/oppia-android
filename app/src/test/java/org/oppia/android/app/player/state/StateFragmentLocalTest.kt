@@ -53,6 +53,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.drawer.DeveloperOptionsModule
+import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -117,8 +119,6 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an

@@ -1,15 +1,21 @@
-package org.oppia.android.app.topic.revisioncard
+package org.oppia.android.app.devoptions
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth
 import dagger.Component
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -19,8 +25,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.drawer.DeveloperOptionsModule
 import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -40,12 +44,11 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
-import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -61,62 +64,85 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = RevisionCardActivityLocalTest.TestApplication::class,
+  application = DeveloperOptionsActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class RevisionCardActivityLocalTest {
+class DeveloperOptionsActivityTest {
 
-  private val internalProfileId = 1
+  private val internalProfileId = 0
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    DeveloperOptionsActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
-  @Test
-  fun testRevisionCard_onLaunch_logsEvent() {
-    ActivityScenario.launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
-      )
-    ).use {
-      val event = fakeEventLogger.getMostRecentEvent()
-
-      assertThat(event.context.activityContextCase).isEqualTo(REVISION_CARD_CONTEXT)
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_REVISION_CARD)
-    }
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Test
+  fun testDeveloperOptions_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createDeveloperOptionsActivityIntent(internalProfileId))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    Truth.assertThat(title).isEqualTo(context.getString(R.string.developer_options_title))
+  }
+
+  private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(
+      context = context,
+      internalProfileId = internalProfileId
+    )
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
@@ -125,18 +151,18 @@ class RevisionCardActivityLocalTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(revisionCardActivityLocalTest: RevisionCardActivityLocalTest)
+    fun inject(developerOptionsActivityTest: DeveloperOptionsActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRevisionCardActivityLocalTest_TestApplicationComponent.builder()
+      DaggerDeveloperOptionsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(revisionCardActivityLocalTest: RevisionCardActivityLocalTest) {
-      component.inject(revisionCardActivityLocalTest)
+    fun inject(developerOptionsActivityTest: DeveloperOptionsActivityTest) {
+      component.inject(developerOptionsActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
