@@ -23,7 +23,7 @@ def _generate_single_asset_proto_binary(name, proto_file_name, proto_dep_name, p
         input_file = "%s/%s.textproto" % (asset_dir, proto_file_name),
         output_file = "%s/%s.pb" % (asset_dir, proto_file_name),
         proto_deps = [
-            "//scripts/src/main/java/org/oppia/android/scripts/proto:%s_proto" % proto_dep_name,
+            "//scripts/src/java/org/oppia/android/scripts/proto:%s_proto" % proto_dep_name,
         ],
         proto_type_name = "model.%s" % proto_type_name,
     )
