@@ -14,8 +14,8 @@ class AccessibilityTestRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {
-        val isEnabled = description.isAccessibilityChecksEnabled()
-        if (getCurrentPlatform() == TestPlatform.ESPRESSO && isEnabled) {
+        val isDisabled = description.isAccessibilityChecksDisabled()
+        if (getCurrentPlatform() == TestPlatform.ESPRESSO && !isDisabled) {
           AccessibilityChecks.enable().setRunChecksFromRootView(true)
         }
         base?.evaluate()
@@ -32,18 +32,18 @@ class AccessibilityTestRule : TestRule {
   }
 
   private companion object {
-    private fun Description?.isAccessibilityChecksEnabled(): Boolean {
+    private fun Description?.isAccessibilityChecksDisabled(): Boolean {
       val methodAccessibilityStatus = this?.getAccessibilityStatus()
       val classAccessibilityStatus = this?.testClass?.getAccessibilityStatus()
-      return methodAccessibilityStatus ?: classAccessibilityStatus ?: /* defaultValue= */ true
+      return methodAccessibilityStatus ?: classAccessibilityStatus ?: /* defaultValue= */ false
     }
 
     private fun Description.getAccessibilityStatus(): Boolean? {
-      return getAnnotation(EnableAccessibility::class.java)?.isEnabled
+      return getAnnotation(DisableAccessibilityChecks::class.java)?.isDisabled
     }
 
     private fun <T> Class<T>.getAccessibilityStatus(): Boolean? {
-      return getAnnotation(EnableAccessibility::class.java)?.isEnabled
+      return getAnnotation(DisableAccessibilityChecks::class.java)?.isDisabled
     }
   }
 }

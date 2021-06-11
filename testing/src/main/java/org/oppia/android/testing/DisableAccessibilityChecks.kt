@@ -11,4 +11,4 @@ package org.oppia.android.testing
  * is used and any defined at the class level are ignored.
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class EnableAccessibility(val isEnabled: Boolean)
+annotation class DisableAccessibilityChecks(val isDisabled: Boolean)
