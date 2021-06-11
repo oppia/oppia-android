@@ -38,7 +38,7 @@ message ExplorationCheckpoint {
   // it stores false.
   bool solution_is_revealed = 6;
 
-  // Stores the title of the saved exploration.
+  // The title of the exploration whose checkpoint is saved.
   string exploration_title = 7;
 
   // Stores the version of the exploration which is compatible with the saved checkpoint.
