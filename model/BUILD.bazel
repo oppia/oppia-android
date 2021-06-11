@@ -63,7 +63,7 @@ java_lite_proto_library(
 
 proto_library(
     name = "exploration_checkpoint_proto",
-    src = ["src/main/proto/exploration_checkpoint.proto"]
+    srcs = ["src/main/proto/exploration_checkpoint.proto"]
 )
 
 java_lite_proto_library(
