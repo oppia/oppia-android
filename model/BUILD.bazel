@@ -62,6 +62,20 @@ java_lite_proto_library(
 )
 
 proto_library(
+    name = "exploration_checkpoint_proto",
+    src = ["src/main/proto/exploration_checkpoint.proto"]
+)
+
+java_lite_proto_library(
+    name = "exploration_checkpoint_java_proto_lite",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":exploration_proto",
+        ":exploration_checkpoint_proto"
+        ]
+)
+
+proto_library(
     name = "interaction_object_proto",
     srcs = ["src/main/proto/interaction_object.proto"],
 )
