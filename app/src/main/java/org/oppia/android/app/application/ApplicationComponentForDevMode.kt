@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Provider
-import javax.inject.Singleton
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.drawer.DeveloperOptionsModule
 import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
@@ -44,6 +42,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
+import javax.inject.Provider
+import javax.inject.Singleton
 
 /**
  * Root Dagger component for the application in dev mode. All application-scoped modules should be
