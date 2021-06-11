@@ -10,7 +10,7 @@ option java_multiple_files = true;
 // Top-level proto used to store exploration checkpoint per-profile basis.
 message ExplorationCheckpointDatabase {
 
-  // map from explorationId to ExplorationCheckpoint.
+  // Map from exploration ID to ExplorationCheckpoint.
   map<string, ExplorationCheckpoint> exploration_checkpoint = 1;
 }
 
@@ -27,7 +27,7 @@ message ExplorationCheckpoint {
   // Stores answers to the latest state in the deck.
   repeated AnswerAndResponse pending_user_answers = 3;
 
-  // The Index of the current selected state from the deck of states.
+  // The index of the current selected state from the deck of states.
   int32 state_index = 4;
 
   // Stores -1 if no hint for the pending top state has been revealed otherwise it stores the index
@@ -59,16 +59,16 @@ message CompletedStateInCheckpoint {
   string state_name = 2;
 }
 
-// structure that holds the the exploration_title and the exploration_id associated with a saved
+// Structure that holds the the exploration_title and the exploration_id associated with a saved
 // checkpoint. This container is used to return the details required to delete the oldest checkpoint
 // when the space allocated to save the checkpoints runs out.
 message ExplorationCheckpointDetails{
 
+  // The ID of the stored exploration checkpoint.
+  string exploration_id = 2;
+
   // The title of the exploration whose checkpoint is saved.
   string exploration_title = 1;
-
-  // The explorationId of the stored exploration checkpoint.
-  string exploration_id = 2;
 
   // Stores the version of the exploration which is compatible with the saved checkpoint.
   int32 exploration_version = 3;
