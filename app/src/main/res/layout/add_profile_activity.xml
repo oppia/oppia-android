@@ -31,10 +31,12 @@
         android:background="@color/addProfileBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingTop="48dp"
-          android:paddingBottom="64dp">
+          android:layout_gravity="center_horizontal"
+          android:minWidth="360dp"
+          android:paddingTop="@dimen/add_profile_main_padding_top"
+          android:paddingBottom="@dimen/add_profile_main_padding_bottom">
 
           <com.jackandphantom.circularimageview.CircleImage
             android:id="@+id/add_profile_activity_user_image_view"
@@ -66,9 +68,7 @@
             android:id="@+id/add_profile_activity_required_heading_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
@@ -78,11 +78,9 @@
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
             style="@style/TextInputLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="28dp"
             android:hint="@string/add_profile_input_name"
             app:errorMessage="@{viewModel.nameErrorMsg}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,8 +102,7 @@
             android:id="@+id/add_profile_activity_pin_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +112,6 @@
             android:id="@+id/add_profile_activity_info_image_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
             android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
             android:src="@drawable/ic_info_icon"
@@ -124,10 +120,12 @@
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/add_profile_activity_pin_constraint_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:visibility="@{viewModel.createPin ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_check_box">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -135,9 +133,7 @@
               style="@style/TextInputLayout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginStart="28dp"
               android:layout_marginTop="24dp"
-              android:layout_marginEnd="28dp"
               android:hint="@string/add_profile_input_pin"
               app:errorMessage="@{viewModel.pinErrorMsg}"
               app:layout_constraintEnd_toEndOf="parent"
@@ -160,9 +156,7 @@
               style="@style/TextInputLayout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginStart="28dp"
-              android:layout_marginTop="24dp"
-              android:layout_marginEnd="28dp"
+              android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
               android:hint="@string/add_profile_input_confirm_pin"
               app:errorMessage="@{viewModel.confirmPinErrorMsg}"
               app:layout_constraintEnd_toEndOf="parent"
@@ -184,11 +178,9 @@
               android:id="@+id/add_profile_activity_allow_download_constraint_layout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginStart="28dp"
               android:layout_marginTop="24dp"
-              android:layout_marginEnd="32dp"
-              android:focusable="true"
               android:clickable="@{viewModel.validPin ? true : false}"
+              android:focusable="true"
               android:importantForAccessibility="yes"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_confirm_pin">
 
@@ -232,7 +224,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:layout_marginEnd="28dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:enabled="@{viewModel.isButtonActive()}"
             android:gravity="center"
