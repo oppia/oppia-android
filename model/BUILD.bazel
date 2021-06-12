@@ -62,7 +62,7 @@ java_lite_proto_library(
 )
 
 format_import_proto_library(
-    name = "exploration_checkpoint_proto",
+    name = "exploration_checkpoint",
     src = "src/main/proto/exploration_checkpoint.proto",
     deps = [":exploration_proto"],
 )
