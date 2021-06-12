@@ -11,7 +11,7 @@ kt_android_library(
         "ConceptCardTagHandler.kt",
         "MathTagHandler.kt",
     ],
-    visibility = ["//utility/src/main/java/org/oppia/android/util/html:__pkg__"],
+    visibility = ["//utility:__subpackages__"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/html:custom",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
