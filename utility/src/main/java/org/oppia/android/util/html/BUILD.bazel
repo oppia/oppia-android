@@ -11,7 +11,7 @@ kt_android_library(
         "CustomBulletSpan.kt",
         "CustomHtmlContentHandler.kt",
     ],
-    visibility = ["//utility/src:__subpackages__"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",

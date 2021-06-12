@@ -10,6 +10,7 @@ kt_android_library(
     srcs = [
         "ImageAssetFetcher.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(
@@ -102,6 +103,7 @@ kt_android_library(
     srcs = [
         "TestGlideImageLoader.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":drawable",
         ":targets",
