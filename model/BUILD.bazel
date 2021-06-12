@@ -240,7 +240,6 @@ android_library(
     testonly = True,
     visibility = ["//visibility:public"],
     exports = [
-        ":exploration_checkpoint_java_proto_lite",
         ":test_java_proto_lite",
     ],
 )
