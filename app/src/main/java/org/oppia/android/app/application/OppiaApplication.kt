@@ -16,49 +16,38 @@ class OppiaApplication :
   ApplicationInjectorProvider,
   Configuration.Provider {
 
-  /** Boolean variable to enable dev mode. It will decide which application component to use */
-  private val enableDevMode = true
+  /** Boolean variable to enable Debug mode. It will decide which application component to use */
+  private val enableDebugMode = true
 
   /** The root [ApplicationComponent]. */
-  private val component: ApplicationComponent by lazy {
-    DaggerApplicationComponent.builder()
-      .setApplication(this)
-      .build()
-  }
-
-  /** The root [ApplicationComponentForDevMode]. */
-  private val componentForDevMode: ApplicationComponentForDevMode by lazy {
-    DaggerApplicationComponentForDevMode.builder()
-      .setApplication(this)
-      .build()
+  private val component by lazy {
+    if (enableDebugMode) {
+      /** [ApplicationComponent] for Debug mode. */
+      DaggerDebugApplicationComponent.builder()
+        .setApplication(this)
+        .build() as DebugApplicationComponent
+    } else {
+      /** [ApplicationComponent] for Prod mode. */
+      DaggerApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
   }
 
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-    return if (enableDevMode)
-      componentForDevMode.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    else
-      component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 
-  override fun getApplicationInjector(): ApplicationInjector =
-    if (enableDevMode) componentForDevMode
-    else component
+  override fun getApplicationInjector(): ApplicationInjector = component
 
   override fun onCreate() {
     super.onCreate()
     FirebaseApp.initializeApp(applicationContext)
     WorkManager.initialize(applicationContext, workManagerConfiguration)
-    if (enableDevMode)
-      componentForDevMode.getApplicationStartupListeners()
-        .forEach(ApplicationStartupListener::onCreate)
-    else
-      component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+    component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 
   override fun getWorkManagerConfiguration(): Configuration {
-    return if (enableDevMode)
-      componentForDevMode.getWorkManagerConfiguration()
-    else
-      component.getWorkManagerConfiguration()
+    return component.getWorkManagerConfiguration()
   }
 }
