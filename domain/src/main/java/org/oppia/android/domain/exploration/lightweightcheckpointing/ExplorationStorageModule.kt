@@ -14,7 +14,7 @@ class ExplorationStorageModule {
   /**
    * Provides the size allocated to exploration checkpoint database.
    *
-   * The current [ExplorationStorageDatabaseSize] is set to be 2097152 Bytes that is equal to 2MB
+   * The current [ExplorationStorageDatabaseSize] is set to 2097152 Bytes that is equal to 2MB
    * per profile.
    *
    * Taking 20 KB per checkpoint, it is expected to store about 100 checkpoints for every profile

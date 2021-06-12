@@ -17,8 +17,8 @@ import javax.inject.Singleton
 private const val CACHE_NAME = "exploration_checkpoint_database"
 private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "retrieve_exploration_checkpoint_provider_id"
-private const val RETRIEVE_ORDERED_CHECKPOINT_DATA_PROVIDER_ID =
-  "retrieve_exploration_checkpoint_provider_id"
+private const val RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID =
+  "retrieve_oldest_checkpoint_details_provider_id"
 private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
@@ -38,9 +38,6 @@ class ExplorationCheckpointController @Inject constructor(
   /** Different stages in which the exploration checkpoint database can exist. */
   enum class ExplorationCheckpointDatabaseState {
 
-    /** checkpoint database is in an unknown state. */
-    CHECKPOINT_DATABASE_UNKNOWN_STATE,
-
     /** checkpoint database has not exceeded the allocated size limit. */
     CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
 
@@ -53,7 +50,7 @@ class ExplorationCheckpointController @Inject constructor(
 
   /**
    * These Statuses correspond to the exception and the checkpoint database states above
-   * such that if the deferred contains
+   * such that if the deferred result contains
    *
    * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED, the
    * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED] will be
@@ -109,6 +106,8 @@ class ExplorationCheckpointController @Inject constructor(
           explorationCheckpointDatabaseBuilder
             .putExplorationCheckpoint(explorationId, explorationCheckpoint)
         } else {
+          // update the timestamp to the time when the checkpoint was saved for the first time and
+          // then replace the existing checkpoint in the map with the updated checkpoint.
           explorationCheckpointDatabaseBuilder.putExplorationCheckpoint(
             explorationId,
             explorationCheckpoint.toBuilder()
@@ -166,17 +165,18 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
-   * @returns [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
-   * and explorationVersion of the oldest saved checkpoint.
+   * @return [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
+   * and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
   fun retrieveOldestSavedExplorationCheckpointDetails(
     profileId: ProfileId
   ): DataProvider<ExplorationCheckpointDetails> {
     return retrieveCacheStore(profileId)
       .transformAsync(
-        RETRIEVE_ORDERED_CHECKPOINT_DATA_PROVIDER_ID
+        RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID
       ) { explorationCheckpointDatabase ->
 
+        // find the oldest checkpoint by timestamp or null if no checkpoints is saved.
         val oldestCheckpoint = explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
           it.value.timestampOfFirstCheckpoint
         }

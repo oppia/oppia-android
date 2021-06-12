@@ -45,14 +45,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * The base exploration id for every exploration used for testing. The exploration id of every test
- * exploration will start with the string [BASE_TEST_EXPLORATION_ID].
+ * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
+ * The exploration id of every test exploration will start with
+ * the string [BASE_TEST_EXPLORATION_ID].
  */
 private const val BASE_TEST_EXPLORATION_ID = "test_exploration_"
 
 /**
- * The base exploration title for every exploration used for testing. The exploration title of
- * every test exploration will start with the string [BASE_TEST_EXPLORATION_TITLE].
+ * The base exploration title for every exploration used for testing
+ * [ExplorationCheckpointController]. The exploration title of every test exploration will start
+ * with the string [BASE_TEST_EXPLORATION_TITLE].
  */
 private const val BASE_TEST_EXPLORATION_TITLE = "Test Exploration "
 
@@ -80,9 +82,6 @@ class ExplorationCheckpointControllerTest {
   @Inject
   lateinit var explorationCheckpointController: ExplorationCheckpointController
 
-  private lateinit var firstTestProfile: ProfileId
-  private lateinit var secondTestProfile: ProfileId
-
   @Mock
   lateinit var mockResultObserver: Observer<AsyncResult<Any?>>
 
@@ -101,10 +100,11 @@ class ExplorationCheckpointControllerTest {
   @Captor
   lateinit var checkpointDetailsCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpointDetails>>
 
+  private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
+  private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
+
   @Before
   fun setUp() {
-    firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
-    secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
     setUpTestApplicationComponent()
   }
 
