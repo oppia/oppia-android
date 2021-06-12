@@ -247,16 +247,16 @@ enum ChapterPlayState {
   // The chapter has been started but not completed by the player.
   STARTED_NOT_COMPLETED = 3;
 
+  // The chapter has been completed by the player.
+  COMPLETED = 4;
+
   // The chapter has been started but not completed by the player and the progress made in the
   // chapter is saved.
-  IN_PROGRESS_SAVED = 4;
+  IN_PROGRESS_SAVED = 5;
 
   // The chapter has been started but not completed by the player and the progress made in the
   // chapter is not saved.
-  IN_PROGRESS_NOT_SAVED = 5;
-
-  // The chapter has been completed by the player.
-  COMPLETED = 6;
+  IN_PROGRESS_NOT_SAVED = 6;
 }
 
 // Top level proto used to store topic progress per-profile.
