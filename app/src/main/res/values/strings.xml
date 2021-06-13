@@ -349,6 +349,10 @@
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
+  <string name="reading_text_size_small">Small</string>
+  <string name="reading_text_size_medium">Medium</string>
+  <string name="reading_text_size_large">Large</string>
+  <string name="reading_text_size_extra_large">Extra Large</string>
   <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
