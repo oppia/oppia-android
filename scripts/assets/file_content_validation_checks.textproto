@@ -3,8 +3,3 @@ file_content_checks {
   prohibited_content_regex: "^import .+?support.+?$"
   failure_message: "AndroidX should be used instead of the support library"
 }
-file_content_checks {
-  filename_regex: ".+?.kt"
-  prohibited_content_regex: "^import .+?compiler.+?$"
-  failure_message: "Compiler should not be used directly"
-}
