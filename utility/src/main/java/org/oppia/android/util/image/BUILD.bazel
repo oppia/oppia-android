@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "ImageAssetFetcher.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//utility:__subpackages__"],
 )
 
 kt_android_library(
