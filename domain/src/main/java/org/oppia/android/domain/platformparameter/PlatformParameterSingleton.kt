@@ -8,7 +8,7 @@ import org.oppia.android.util.platformparameter.PlatformParameter
 /** Singleton class which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
 class PlatformParameterSingleton @Inject constructor() {
-  lateinit var platformParameterMap: Map<String, ParameterValue>
+  var platformParameterMap: Map<String, ParameterValue> = mapOf()
 
   /** Initialize platformParameterMap if it is not yet initialised. */
   fun initPlatformParameterMap(map: Map<String, ParameterValue>) {
