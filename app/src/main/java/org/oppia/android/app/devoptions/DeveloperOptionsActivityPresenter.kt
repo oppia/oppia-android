@@ -1,5 +1,6 @@
 package org.oppia.android.app.devoptions
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -15,21 +16,25 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
+  private var isMultipane = false
+  private lateinit var lastLoadedFragment: String
   private lateinit var binding: DeveloperOptionsActivityBinding
 
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate(lastLoadedFragment: String) {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.developer_options_activity
     )
     setUpNavigationDrawer()
+    this.lastLoadedFragment = lastLoadedFragment
+//    isMultipane = binding.developerOptionsFragmentMultipanePlaceholder != null
     val previousFragment = getDeveloperOptionsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.developer_options_fragment_placeholder,
-      DeveloperOptionsFragment.newInstance()
+      DeveloperOptionsFragment.newInstance(isMultipane)
     ).commitNow()
   }
 
@@ -54,5 +59,9 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.developer_options_fragment_placeholder
       ) as DeveloperOptionsFragment?
+  }
+
+  fun handleOnSaveInstanceState(outState: Bundle) {
+    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
 }

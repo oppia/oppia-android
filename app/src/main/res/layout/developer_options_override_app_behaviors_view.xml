@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/override_app_behaviors_text_view"
+      style="@style/Heading5"
+      android:layout_width="match_parent"
+      android:background="@color/mid_grey_30"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_override_app_behaviors_label"
+      android:textColor="@color/colorPrimary"
+      app:layout_constraintBottom_toTopOf="@id/show_all_hints_solution_constraint_layout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/show_all_hints_solution_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      app:layout_constraintBottom_toTopOf="@id/view_divider1"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/override_app_behaviors_text_view">
+
+      <TextView
+        android:id="@+id/show_all_hints_solution_text_view"
+        style="@style/Subtitle1"
+        android:layout_width="0dp"
+        android:background="@color/white"
+        android:text="@string/developer_options_show_all_hints_solution"
+        android:textColor="@color/oppiaPrimaryTextDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/show_all_hints_solution_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/show_all_hints_solution_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="4dp"
+        android:theme="@style/SwitchCompatTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/show_all_hints_solution_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:id="@+id/view_divider1"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/mid_grey_30"
+      app:layout_constraintBottom_toTopOf="@id/force_network_type_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/show_all_hints_solution_constraint_layout" />
+
+    <TextView
+      android:id="@+id/force_network_type_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_force_network_type"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintBottom_toTopOf="@id/view_divider2"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/show_all_hints_solution_constraint_layout" />
+
+    <View
+      android:id="@+id/view_divider2"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/mid_grey_30"
+      app:layout_constraintBottom_toTopOf="@id/force_crash_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/force_network_type_text_view" />
+
+    <TextView
+      android:id="@+id/force_crash_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_force_crash"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider2" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -8,23 +8,30 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
+const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
+const val MARK_CHAPTERS_COMPLETED_FRAGMENT = "MARK_CHAPTERS_COMPLETED_FRAGMENT"
+const val MARK_STORIES_COMPLETED_FRAGMENT = "MARK_STORIES_COMPLETED_FRAGMENT"
+const val MARK_TOPICS_COMPLETED_FRAGMENT = "MARK_TOPICS_COMPLETED_FRAGMENT"
+const val EVENT_LOGS_FRAGMENT = "EVENT_LOGS_FRAGMENT"
+const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
+
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
   @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
-  private var internalProfileId = -1
+  private lateinit var lastLoadedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY, -1)
-    developerOptionsActivityPresenter.handleOnCreate(internalProfileId)
+    lastLoadedFragment = if (savedInstanceState != null)
+        savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
+      else
+        EVENT_LOGS_FRAGMENT
+    developerOptionsActivityPresenter.handleOnCreate(lastLoadedFragment)
     title = getString(R.string.developer_options_title)
   }
 
   companion object {
-    const val DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY =
-      "DeveloperOptionsActivity.internal_profile_id"
-
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
@@ -35,5 +42,10 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    developerOptionsActivityPresenter.handleOnSaveInstanceState(outState)
+    super.onSaveInstanceState(outState)
   }
 }
