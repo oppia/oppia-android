@@ -153,8 +153,11 @@
   <dimen name="general_button_item_question_view_margin_start">60dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">60dp</dimen>
   <!-- Add Profile -->
+  <dimen name="add_profile_container_width">0dp</dimen>
   <dimen name="add_profile_main_padding_top">52dp</dimen>
   <dimen name="add_profile_main_padding_bottom">224dp</dimen>
+  <dimen name="add_profile_main_padding_start">136dp</dimen>
+  <dimen name="add_profile_main_padding_end">136dp</dimen>
   <dimen name="add_profile_pin_checkbox_margin_top">36dp</dimen>
   <dimen name="add_profile_confirm_pin_margin_top">8dp</dimen>
   <!-- FAQ Single -->
