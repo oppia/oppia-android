@@ -40,12 +40,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
-import org.oppia.android.app.options.AppLanguageActivity.Companion.APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
-import org.oppia.android.app.options.AudioLanguageActivity.Companion.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE
-import org.oppia.android.app.options.AudioLanguageActivity.Companion.KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE
-import org.oppia.android.app.options.ReadingTextSizeActivity.Companion.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE
-import org.oppia.android.app.options.ReadingTextSizeActivity.Companion.KEY_READING_TEXT_SIZE_PREFERENCE_TITLE
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -90,6 +84,19 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+  AppLanguageActivity.getIntentKey()[0]
+private val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+  AppLanguageActivity.getIntentKey()[1]
+private val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE =
+  AudioLanguageActivity.getIntentKey()[0]
+private val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
+  AudioLanguageActivity.getIntentKey()[1]
+private val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE =
+  ReadingTextSizeActivity.getIntentKey()[0]
+private val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
+  ReadingTextSizeActivity.getIntentKey()[1]
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)

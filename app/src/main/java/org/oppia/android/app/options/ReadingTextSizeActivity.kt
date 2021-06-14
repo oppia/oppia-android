@@ -43,6 +43,13 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
       intent.putExtra(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
+
+    fun getIntentKey(): Array<String> {
+      return arrayOf(
+        KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
+        KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE
+      )
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -41,6 +41,13 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
       intent.putExtra(KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE, summaryValue)
       return intent
     }
+
+    fun getIntentKey(): Array<String> {
+      return arrayOf(
+        KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
+        KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE
+      )
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
