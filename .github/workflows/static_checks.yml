@@ -100,9 +100,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Bazel
-          uses: abhinavsingh/setup-bazel@v3
-          with:
-            version: 4.0.0
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
 
       - name: Regex Patterns Validation Check
         run: |
