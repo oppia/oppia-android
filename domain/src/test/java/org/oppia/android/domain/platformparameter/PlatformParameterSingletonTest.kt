@@ -26,6 +26,8 @@ const val integerPlatformParameterValue = 1
 const val booleanPlatformParameterName = "boolean_platform_parameter_name"
 const val booleanPlatformParameterValue = true
 
+const val incorrectPlatformParameterName = "incorrect_platform_parameter_name"
+
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterSingletonTest.TestApplication::class)
@@ -40,12 +42,20 @@ class PlatformParameterSingletonTest {
   }
 
   @Test
-  fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
+  fun testSingleton_initialPlatformParameterMap_isEmpty(){
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
+  }
 
+  @Test
+  fun testSingleton_initPlatformParameterMap_isNotEmpty(){
+    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
     platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
+  }
 
+  @Test
+  fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
+    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
     val stringPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
       stringPlatformParameterName
     )
@@ -54,11 +64,7 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIntegerParameter_verifyItsValue() {
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
-
     platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
-
     val integerPlatformParameter = platformParameterSingleton.getPlatformParameter<Int>(
       integerPlatformParameterName
     )
@@ -67,11 +73,7 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveBooleanParameter_verifyItsValue() {
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
-
     platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
-
     val booleanPlatformParameter = platformParameterSingleton.getPlatformParameter<Boolean>(
       booleanPlatformParameterName
     )
@@ -80,15 +82,11 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIncorrectParameter_verifyItsValue() {
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
-
     platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
-
     val incorrectPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
-      "incorrectPlatformParameterName"
+      incorrectPlatformParameterName
     )
-    assertThat(incorrectPlatformParameter).isEqualTo(null)
+    assertThat(incorrectPlatformParameter).isNull()
   }
 
   private fun makePlatformParameterMap(): Map<String, ParameterValue> {
