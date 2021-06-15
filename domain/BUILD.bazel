@@ -12,7 +12,9 @@ load("//domain:domain_test.bzl", "domain_test")
 # list will be excluded automatically from the top-level utility library. It is recommended to use
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level module library.
-MIGRATED_PROD_FILES = glob([])
+MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/oppialogger/*.kt",
+])
 
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     name = "domain_assets",
@@ -73,6 +75,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:exceptions_controller",
         "//model:onboarding_java_proto_lite",
         "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",

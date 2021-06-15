@@ -1,0 +1,74 @@
+"""
+Library for providing log uploading functionality to the Oppia android app.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "log_upload_worker",
+    srcs = [
+        "LogUploadWorker.kt",
+    ],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:exceptions_controller",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "log_upload_worker_factory",
+    srcs = [
+        "LogUploadWorkerFactory.kt",
+    ],
+    deps = [
+        ":log_upload_worker",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "log_upload_worker_module",
+    srcs = [
+        "LogUploadWorkerModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":log_upload_work_manager_initializer",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:application_startup_listener",
+    ],
+)
+
+kt_android_library(
+    name = "log_upload_work_manager_initializer",
+    srcs = [
+        "LogUploadWorkManagerInitializer.kt",
+    ],
+    deps = [
+        ":log_upload_worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:application_startup_listener",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+kt_android_library(
+    name = "work_manager_configuration_module",
+    srcs = [
+        "WorkManagerConfigurationModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":log_upload_worker_factory",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+dagger_rules()

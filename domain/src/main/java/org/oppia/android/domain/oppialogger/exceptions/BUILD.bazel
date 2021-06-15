@@ -1,0 +1,51 @@
+"""
+Library for providing logging exceptions to the Oppia android app.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "exceptions_controller",
+    srcs = [
+        "ExceptionsController.kt",
+    ],
+    visibility = ["//domain:__subpackages__"],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:log_storage_module",
+        "//model:event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "uncaught_exception_logger_module",
+    srcs = [
+        "UncaughtExceptionLoggerModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":uncaught_exception_logger_startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:application_startup_listener",
+    ],
+)
+
+kt_android_library(
+    name = "uncaught_exception_logger_startup_listener",
+    srcs = [
+        "UncaughtExceptionLoggerStartupListener.kt",
+    ],
+    deps = [
+        ":exceptions_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:application_startup_listener",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+dagger_rules()
