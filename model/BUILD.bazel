@@ -226,11 +226,12 @@ java_lite_proto_library(
 format_import_proto_library(
     name = "platform_parameter",
     src = "src/main/proto/platform_parameter.proto",
+    visibility = ["//:oppia_api_visibility"],
 )
 
 java_lite_proto_library(
     name = "platform_parameter_java_proto_lite",
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [":platform_parameter_proto"],
 )
 
