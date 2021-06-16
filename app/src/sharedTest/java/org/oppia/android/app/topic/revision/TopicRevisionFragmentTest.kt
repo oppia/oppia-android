@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.revision
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -66,6 +67,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.ImageViewMatcher.Companion.hasScaleType
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -216,6 +218,24 @@ class TopicRevisionFragmentTest {
     }
   }
 
+  @Test
+  fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickRevisionTab()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.revision_recycler_view,
+          position = 0,
+          targetViewId = R.id.subtopic_image_view
+        )
+      ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
@@ -236,7 +256,12 @@ class TopicRevisionFragmentTest {
   private fun clickRevisionTab() {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 3, enablePracticeTab).name),
+        withText(
+          TopicTab.getTabForPosition(
+            position = 3,
+            enablePracticeTab = enablePracticeTab
+          ).name
+        ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

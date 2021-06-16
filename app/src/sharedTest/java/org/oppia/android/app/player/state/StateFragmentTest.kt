@@ -29,6 +29,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -291,7 +292,7 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -311,7 +312,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsClickable() {
+  fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -319,7 +320,7 @@ class StateFragmentTest {
       typeFractionText("1/2")
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -340,7 +341,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsClickable() {
+  fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -349,7 +350,7 @@ class StateFragmentTest {
       typeFractionText("1/2")
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -382,7 +383,7 @@ class StateFragmentTest {
 
       // The submission button should now be disabled and there should be an error.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -400,7 +401,7 @@ class StateFragmentTest {
 
       // The submission button should now be disabled and there should be an error.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -415,7 +416,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -432,7 +433,7 @@ class StateFragmentTest {
 
       // The submit button should be re-enabled since the text view changed.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -447,7 +448,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -465,7 +466,7 @@ class StateFragmentTest {
 
       // The submit button should be re-enabled since the text view changed.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -562,7 +563,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
+  fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -570,7 +571,7 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.5f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -604,7 +605,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
 
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -619,7 +620,7 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.1f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -634,7 +635,7 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.5f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 

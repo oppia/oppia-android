@@ -5,21 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Topic
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
+import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
+import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
+import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -29,10 +29,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
-  private val topicController: TopicController
-) : StorySummarySelector, ChapterSummarySelector {
+) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
+
+  @Inject
+  lateinit var topicLessonViewModel: TopicLessonViewModel
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -43,7 +45,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
-  private val itemList: MutableList<TopicLessonsItemViewModel> = ArrayList()
+  private lateinit var bindingAdapter: BindableAdapter<TopicLessonsItemViewModel>
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -64,89 +66,132 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.let {
-      it.lifecycleOwner = fragment
+    binding.apply {
+      this.lifecycleOwner = fragment
+      this.viewModel = topicLessonViewModel
     }
-    subscribeToTopicLiveData()
+
+    topicLessonViewModel.setInternalProfileId(internalProfileId)
+    topicLessonViewModel.setTopicId(topicId)
+    topicLessonViewModel.setStoryId(storyId)
+
+    bindingAdapter = createRecyclerViewAdapter()
+    binding.storySummaryRecyclerView.apply {
+      adapter = bindingAdapter
+    }
+    currentExpandedChapterListIndex?.let {
+      if (storyId.isNotEmpty())
+        binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(it)
+    }
     return binding.root
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
-
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
-    topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId
-    ).toLiveData()
+  private enum class ViewType {
+    VIEW_TYPE_TITLE_TEXT,
+    VIEW_TYPE_STORY_ITEM
   }
 
-  private fun subscribeToTopicLiveData() {
-    topicLiveData.observe(
-      fragment,
-      Observer<Topic> {
-        if (it.storyList.isNotEmpty()) {
-          it.storyList!!.forEach { storySummary ->
-            if (storySummary.storyId == storyId) {
-              val index = it.storyList.indexOf(storySummary)
-              currentExpandedChapterListIndex = index + 1
-            }
-          }
-          itemList.clear()
-          itemList.add(TopicLessonsTitleViewModel())
-          for (storySummary in it.storyList) {
-            itemList.add(
-              StorySummaryViewModel(
-                storySummary,
-                fragment as StorySummarySelector,
-                this as ChapterSummarySelector
-              )
-            )
-          }
-          val storySummaryAdapter =
-            StorySummaryAdapter(
-              itemList,
-              expandedChapterListIndexListener,
-              currentExpandedChapterListIndex
-            )
-          binding.storySummaryRecyclerView.apply {
-            adapter = storySummaryAdapter
-          }
-          if (storyId.isNotEmpty())
-            binding.storySummaryRecyclerView.layoutManager!!.scrollToPosition(
-              currentExpandedChapterListIndex!!
-            )
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicLessonsItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<TopicLessonsItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY_ITEM
+          is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE_TEXT
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
-    )
-  }
-
-  private fun getTopicList(): LiveData<Topic> {
-    return Transformations.map(topicResultLiveData, ::processTopicResult)
-  }
-
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      oppiaLogger.e(
-        "TopicLessonsFragment",
-        "Failed to retrieve topic",
-        topic.getErrorOrNull()!!
+      .registerViewBinder(
+        viewType = ViewType.VIEW_TYPE_TITLE_TEXT,
+        inflateView = { parent ->
+          TopicLessonsTitleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            /* attachToParent= */ false
+          ).root
+        },
+        bindView = { _, _ -> }
       )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_STORY_ITEM,
+        inflateDataBinding = TopicLessonsStorySummaryBinding::inflate,
+        setViewModel = this::bindTopicLessonStorySummary,
+        transformViewModel = { it as StorySummaryViewModel }
+      )
+      .build()
+  }
+
+  private fun bindTopicLessonStorySummary(
+    binding: TopicLessonsStorySummaryBinding,
+    storySummaryViewModel: StorySummaryViewModel
+  ) {
+    binding.viewModel = storySummaryViewModel
+
+    val position = topicLessonViewModel.itemList.indexOf(storySummaryViewModel)
+    if (storySummaryViewModel.storySummary.storyId == storyId) {
+      val index = topicLessonViewModel.getIndexOfStory(storySummaryViewModel.storySummary)
+      currentExpandedChapterListIndex = index + 1
     }
-    return topic.getOrDefault(Topic.getDefaultInstance())
-  }
 
-  override fun selectStorySummary(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
+    var isChapterListVisible = false
+    currentExpandedChapterListIndex?.let {
+      isChapterListVisible = it == position
+    }
+    binding.isListExpanded = isChapterListVisible
 
-  override fun selectChapterSummary(storyId: String, explorationId: String) {
-    playExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      /* backflowScreen= */ 0
+    val chapterSummaries = storySummaryViewModel
+      .storySummary.chapterList
+    val completedChapterCount =
+      chapterSummaries.map(ChapterSummary::getChapterPlayState)
+        .filter {
+          it == ChapterPlayState.COMPLETED
+        }
+        .size
+    val storyPercentage: Int =
+      (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
+    binding.storyPercentage = storyPercentage
+    binding.storyProgressView.setStoryChapterDetails(
+      storySummaryViewModel.storySummary.chapterCount,
+      completedChapterCount
     )
+    binding.topicPlayStoryDashedLineView.setLayerType(
+      View.LAYER_TYPE_SOFTWARE,
+      /* paint= */ null
+    )
+    binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
+
+    binding.root.setOnClickListener {
+      val previousIndex: Int? = currentExpandedChapterListIndex
+      currentExpandedChapterListIndex =
+        if (currentExpandedChapterListIndex != null &&
+          currentExpandedChapterListIndex == position
+        ) {
+          null
+        } else {
+          position
+        }
+      expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+      if (previousIndex != null && currentExpandedChapterListIndex != null &&
+        previousIndex == currentExpandedChapterListIndex
+      ) {
+        bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+      } else {
+        previousIndex?.let {
+          bindingAdapter.notifyItemChanged(previousIndex)
+        }
+        currentExpandedChapterListIndex?.let {
+          bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+        }
+      }
+    }
+  }
+
+  private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<ChapterSummaryViewModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = LessonsChapterViewBinding::inflate,
+        setViewModel = LessonsChapterViewBinding::setViewModel
+      ).build()
   }
 
   private fun playExploration(
@@ -180,6 +225,16 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           }
         }
       }
+    )
+  }
+
+  fun selectChapterSummary(storyId: String, explorationId: String) {
+    playExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      backflowScreen = 0
     )
   }
 

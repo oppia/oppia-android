@@ -83,9 +83,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
+      android:label="@string/reading_text_size_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
+      android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
@@ -118,10 +120,12 @@
       android:name=".app.profileprogress.ProfileProgressActivity"
       android:label="@string/profile_progress_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.settings.profile.ProfileEditActivity" />
+    <activity android:name=".app.settings.profile.ProfileEditActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/OppiaThemeWithoutActionBar"
+      android:label="@string/profile_list_activity_title" />
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
       android:label="@string/profile_rename_activity_title"

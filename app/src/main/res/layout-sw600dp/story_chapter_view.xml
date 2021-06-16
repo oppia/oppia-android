@@ -44,7 +44,6 @@
           android:id="@+id/chapter_thumbnail"
           android:layout_width="match_parent"
           android:layout_height="0dp"
-          android:scaleType="centerInside"
           app:entityId="@{viewModel.storyId}"
           app:entityType="@{viewModel.entityType}"
           app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"

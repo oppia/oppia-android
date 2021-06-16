@@ -46,6 +46,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "arguments_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":arguments_proto"],
 )
 
@@ -221,15 +222,6 @@ java_lite_proto_library(
     name = "exploration_java_proto_lite",
     visibility = ["//visibility:public"],
     deps = [":exploration_proto"],
-)
-
-android_library(
-    name = "model",
-    visibility = ["//visibility:public"],
-    exports = [
-        ":arguments_java_proto_lite",
-        ":subtitled_unicode_java_proto_lite",
-    ],
 )
 
 android_library(

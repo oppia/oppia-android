@@ -1812,6 +1812,12 @@
             "content_id": "hint_1",
             "html": "<p>Hint text will appear here</p>"
           }
+        },
+        {
+          "hint_content": {
+            "content_id": "hint_2",
+            "html": "<p>Second hint text will appear here</p>"
+          }
         }],
         "solution": null
       },

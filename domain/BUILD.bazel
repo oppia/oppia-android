@@ -109,7 +109,6 @@ kt_android_library(
         "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
     ],
     deps = [
-        "//model",
         "//model:question_java_proto_lite",
     ],
 )
@@ -123,7 +122,6 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-    "//model",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

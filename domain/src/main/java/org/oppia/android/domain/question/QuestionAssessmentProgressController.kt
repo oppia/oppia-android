@@ -9,6 +9,7 @@ import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -56,6 +57,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val progressLock = ReentrantLock()
+  @Inject internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
@@ -318,6 +320,31 @@ class QuestionAssessmentProgressController @Inject constructor(
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> = progressLock.withLock {
     currentQuestionDataProvider
   }
+
+  /**
+   * Returns a [DataProvider] monitoring the [UserAssessmentPerformance] corresponding to the user's
+   * computed overall performance this practice session.
+   *
+   * This method should only be called at the end of a practice session, after all the questions
+   * have been completed.
+   */
+  fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> =
+    progressLock.withLock {
+      return dataProviders.createInMemoryDataProviderAsync(
+        "user_assessment_performance"
+      ) {
+        retrieveUserAssessmentPerformanceAsync(skillIdList)
+      }
+    }
+
+  private suspend fun retrieveUserAssessmentPerformanceAsync(skillIdList: List<String>):
+    AsyncResult<UserAssessmentPerformance> {
+      progressLock.withLock {
+        val scoreCalculator =
+          scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
+        return AsyncResult.success(scoreCalculator.computeAll())
+      }
+    }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>

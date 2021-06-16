@@ -27,6 +27,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
@@ -983,11 +984,11 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_allow_download_switch))
+      onView(withId(R.id.add_profile_activity_allow_download_constraint_layout))
         .check(
           matches(
             not(
-              isEnabled()
+              isClickable()
             )
           )
         )
@@ -1008,11 +1009,11 @@ class AddProfileActivityTest {
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.add_profile_activity_allow_download_switch))
+      onView(withId(R.id.add_profile_activity_allow_download_constraint_layout))
         .check(
           matches(
             not(
-              isEnabled()
+              isClickable()
             )
           )
         )
@@ -1517,7 +1518,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
-      onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(click())
+      onView(withId(R.id.add_profile_activity_allow_download_constraint_layout)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_allow_download_switch)).check(matches(isChecked()))

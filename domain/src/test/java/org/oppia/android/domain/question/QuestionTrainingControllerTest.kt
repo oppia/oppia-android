@@ -283,6 +283,22 @@ class QuestionTrainingControllerTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = questionSeed
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
   }
 
   // TODO(#89): Move this to a common test application component.
