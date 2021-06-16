@@ -81,7 +81,7 @@ class RegexPatternValidationCheck {
     }
 
     /**
-     * Checks for a prohibited file content
+     * Checks for a prohibited file naming pattern
      *
      * @param repoPath the path of the repo.
      * @param searchFiles a list of all the files which needs to be checked.
@@ -203,3 +203,4 @@ class RegexPatternValidationCheck {
     }
   }
 }
+
