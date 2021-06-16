@@ -1,0 +1,49 @@
+{
+  "artifacts_list": [
+    {
+      "artifact_name": "com.google.auto.service:auto-service-annotations:1.0-rc7",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.google.auto.value:auto-value-annotations:1.6.5",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.google.guava:failureaccess:1.0.1",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.google.guava:guava:28.1-android",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.google.protobuf:protobuf-lite:3.0.0",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "com.squareup.retrofit2:converter-moshi:2.5.0",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
+      "license_names": [],
+      "license_links": []
+    },
+    {
+      "artifact_name": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
+      "license_names": [],
+      "license_links": []
+    }
+  ]
+}
