@@ -4,13 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import javax.inject.Inject
 
 /** [ViewModel] for [DeveloperOptionsFragment]. */
 @FragmentScope

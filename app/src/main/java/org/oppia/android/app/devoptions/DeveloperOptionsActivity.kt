@@ -24,9 +24,9 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     lastLoadedFragment = if (savedInstanceState != null)
-        savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
-      else
-        EVENT_LOGS_FRAGMENT
+      savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
+    else
+      EVENT_LOGS_FRAGMENT
     developerOptionsActivityPresenter.handleOnCreate(lastLoadedFragment)
     title = getString(R.string.developer_options_title)
   }
