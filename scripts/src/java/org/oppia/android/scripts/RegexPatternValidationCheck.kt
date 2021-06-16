@@ -14,6 +14,7 @@ class RegexPatternValidationCheck {
     fun main(vararg args: String) {
 
       val repoPath = args[0] + "/"
+
       val allowedDirectories = arrayOf(
         "app",
         "data",
@@ -22,7 +23,9 @@ class RegexPatternValidationCheck {
         "testing",
         "utility",
       )
+
       val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
+
       var scriptFailedFlag = false
 
       getFilenameChecks().forEach {
@@ -203,4 +206,3 @@ class RegexPatternValidationCheck {
     }
   }
 }
-
