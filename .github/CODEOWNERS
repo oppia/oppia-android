@@ -27,14 +27,6 @@
 .github/CODEOWNERS @oppia/owners
 
 # TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
-# Bazel build files.
-WORKSPACE @fsharpasharp
-*.bzl @fsharpasharp
-*.bazel @fsharpasharp
-.bazelrc @fsharpasharp
-/tools/android/ @fsharpasharp
-
-# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Gradle build files.
 *.gradle @rt4914
 gradle.properties @rt4914
@@ -220,3 +212,15 @@ NOTICE @seanlip
 # TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global model ownership.
 /model/ @vinitamurthi
+
+#####################################################################################
+#                                global overrides                                   #
+#####################################################################################
+
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
+# Bazel build files. This is added after everything else to ensure Bazel files are always reviewed by the same people.
+WORKSPACE @fsharpasharp
+*.bzl @fsharpasharp
+*.bazel @fsharpasharp
+.bazelrc @fsharpasharp
+/tools/android/ @fsharpasharp
