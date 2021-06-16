@@ -6,7 +6,20 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "application_startup_listener",
+    name = "oppia_logger",
+    srcs = [
+        "OppiaLogger.kt",
+    ],
+    visibility = ["//domain:__subpackages__"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//model:event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "startup_listener",
     srcs = [
         "ApplicationStartupListener.kt",
     ],
@@ -14,26 +27,13 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "log_storage_module",
+    name = "storage_module",
     srcs = [
         "LogStorageModule.kt",
     ],
     visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
     deps = [
         ":dagger",
-    ],
-)
-
-kt_android_library(
-    name = "oppia_logger",
-    srcs = [
-        "OppiaLogger.kt",
-    ],
-    visibility = ["//domain:__subpackages__"],
-    deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_controller",
-        "//model:event_logger_java_proto_lite",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
 
