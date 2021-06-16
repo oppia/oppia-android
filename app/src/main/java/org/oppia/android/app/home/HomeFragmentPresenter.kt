@@ -16,6 +16,7 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.recyclerview.GridSpacingItemDecoration
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.ComingSoonTopicListBinding
 import org.oppia.android.databinding.HomeFragmentBinding
@@ -77,6 +78,8 @@ class HomeFragmentPresenter @Inject constructor(
         else spanCount
       }
     }
+    binding.homeRecyclerView.addItemDecoration(GridSpacingItemDecoration(activity));
+
     binding.homeRecyclerView.apply {
       adapter = homeAdapter
       layoutManager = homeLayoutManager
@@ -135,7 +138,7 @@ class HomeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private enum class ViewType {
+  internal enum class ViewType {
     WELCOME_MESSAGE,
     PROMOTED_STORY_LIST,
     COMING_SOON_TOPIC_LIST,
