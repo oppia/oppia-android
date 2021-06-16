@@ -33,7 +33,7 @@ kt_jvm_test(
     name = "test_pattern_validation_check",
     testonly = True,
     srcs = glob(["src/test/org/oppia/android/scripts/RegexPatternValidationCheckTest.kt"]),
-    data = glob(["src/test/dummyfiles/*.*"]),
+    data = glob(["src/test/testfiles/**"]) + REGEX_PATTERN_CHECK_ASSETS,
     test_class = "org.oppia.android.scripts.RegexPatternValidationCheckTest",
     deps = [
         ":pattern_validation_lib",

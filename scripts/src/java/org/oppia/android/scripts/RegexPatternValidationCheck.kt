@@ -3,7 +3,9 @@ package org.oppia.android.scripts
 import java.io.File
 import java.io.FileInputStream
 import org.oppia.android.app.model.FilenameChecks
+import org.oppia.android.app.model.FilenameCheck
 import org.oppia.android.app.model.FileContentChecks
+import org.oppia.android.app.model.FileContentCheck
 import kotlin.system.exitProcess
 
 
@@ -12,26 +14,12 @@ class RegexPatternValidationCheck {
     @JvmStatic
     fun main(vararg args: String) {
 
-      val fileNamePatternsBinaryFile =
-        File("scripts/assets/filename_pattern_validation_checks.pb")
-      val fileContentsBinaryFile =
-        File("scripts/assets/file_content_validation_checks.pb")
-      val filenameCheckBuilder = FilenameChecks.newBuilder()
-      val fileContentCheckBuilder = FileContentChecks.newBuilder()
-      val namePatternsObj: FilenameChecks =
-        FileInputStream(fileNamePatternsBinaryFile).use {
-          filenameCheckBuilder.mergeFrom(it)
-        }.build() as FilenameChecks
-      val fileContentsObj: FileContentChecks =
-        FileInputStream(fileContentsBinaryFile).use {
-          fileContentCheckBuilder.mergeFrom(it)
-        }.build() as FileContentChecks
       val repoPath = args[0] + "/"
       val allowedDirectories = arrayOf("data", "app")
       val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
       var scriptFailedFlag = false
 
-      namePatternsObj.getFilenameChecksList().forEach {
+      getFilenameChecks().forEach {
         if (checkProhibitedFileNamePattern(
             repoPath = repoPath,
             searchFiles = searchFiles,
@@ -42,8 +30,8 @@ class RegexPatternValidationCheck {
         }
       }
 
-      fileContentsObj.getFileContentChecksList().forEach {
-        if (checkProhibitedContent(
+      getFileContentChecks().forEach {
+      if (checkProhibitedContent(
             repoPath = repoPath,
             searchFiles = searchFiles,
             fileNameRegexString = it.getFilenameRegex(),
@@ -60,6 +48,30 @@ class RegexPatternValidationCheck {
       } else {
         println("REGEX PATTERN CHECKS PASSED")
       }
+    }
+
+    fun getFilenameChecks(): List<FilenameCheck> {
+      val fileNamePatternsBinaryFile =
+        File("scripts/assets/filename_pattern_validation_checks.pb")
+      val filenameCheckBuilder = FilenameChecks.newBuilder()
+      val namePatternsObj: FilenameChecks =
+        FileInputStream(fileNamePatternsBinaryFile).use {
+          filenameCheckBuilder.mergeFrom(it)
+        }.build() as FilenameChecks
+
+      return namePatternsObj.getFilenameChecksList()
+    }
+
+    fun getFileContentChecks(): List<FileContentCheck>{
+      val fileContentsBinaryFile =
+        File("scripts/assets/file_content_validation_checks.pb")
+      val fileContentCheckBuilder = FileContentChecks.newBuilder()
+      val fileContentsObj: FileContentChecks =
+        FileInputStream(fileContentsBinaryFile).use {
+          fileContentCheckBuilder.mergeFrom(it)
+        }.build() as FileContentChecks
+
+      return fileContentsObj.getFileContentChecksList()
     }
 
     fun checkProhibitedFileNamePattern(

@@ -7,34 +7,42 @@ import org.junit.Test
 
 class RegexPatternValidationCheckTest {
 
-  private val repoPath = System.getProperty("user.dir") + "/"
-  private val testDirectory = arrayOf("scripts/src/test/dummyfiles")
-  private val searchFiles = RegexPatternValidationCheck.collectSearchFiles(repoPath, testDirectory)
-
-  @Test
-  fun prohibited_Content_Check_Should_Fail() {
-    assertEquals(
-      true,
-      RegexPatternValidationCheck.checkProhibitedContent(
-        repoPath = repoPath,
-        searchFiles = searchFiles,
-        fileNameRegexString = "DummyFile1.kt",
-        prohibitedContentRegexString = "^import .+?support.+?$",
-        errorToShow = "AndroidX should be used instead of the support library"
-      ))
-  }
+  private val testDirectoryPath = System.getProperty("user.dir") + "/scripts/src/test/testfiles/"
+  private val filenameChecks = RegexPatternValidationCheck.getFilenameChecks()
+  private val fileContentChecks = RegexPatternValidationCheck.getFileContentChecks()
 
   @Test
   fun no_Prohibited_Content_Check_Should_Pass() {
-    assertEquals(
-      false,
-      RegexPatternValidationCheck.checkProhibitedContent(
-        repoPath = repoPath,
-        searchFiles = searchFiles,
-        fileNameRegexString = "DummyFile2.kt",
-        prohibitedContentRegexString = "^import .+?support.+?$",
-        errorToShow = "AndroidX should be used instead of the support library"
-      ))
+    val passDirectory = arrayOf("filecontent/pass")
+    val searchFiles = RegexPatternValidationCheck.
+    collectSearchFiles(testDirectoryPath, passDirectory)
+    val supportLibraryRegexObj = fileContentChecks.get(0)
+    val scriptResult = RegexPatternValidationCheck.checkProhibitedContent(
+      repoPath = testDirectoryPath,
+      searchFiles = searchFiles,
+      fileNameRegexString = supportLibraryRegexObj.getFilenameRegex(),
+      prohibitedContentRegexString = supportLibraryRegexObj.getProhibitedContentRegex(),
+      errorToShow = supportLibraryRegexObj.getFailureMessage()
+    )
+
+    assertEquals(false, scriptResult)
+  }
+
+  @Test
+  fun prohibited_Content_Check_Should_Fail() {
+    val failDirectory = arrayOf("filecontent/fail")
+    val searchFiles = RegexPatternValidationCheck.
+    collectSearchFiles(testDirectoryPath, failDirectory)
+    val supportLibraryRegexObj = fileContentChecks.get(0)
+    val scriptResult = RegexPatternValidationCheck.checkProhibitedContent(
+      repoPath = testDirectoryPath,
+      searchFiles = searchFiles,
+      fileNameRegexString = supportLibraryRegexObj.getFilenameRegex(),
+      prohibitedContentRegexString = supportLibraryRegexObj.getProhibitedContentRegex(),
+      errorToShow = supportLibraryRegexObj.getFailureMessage()
+    )
+
+    assertEquals(true, scriptResult)
   }
 
 }
