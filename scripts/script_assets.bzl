@@ -54,21 +54,21 @@ def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name, name_p
 
 def generate_assets_list_from_text_protos(
         name,
-        filename_validation_file_names,
+        filepath_pattern_validation_file_names,
         file_content_validation_file_names):
     """
     Converts multiple lists of text proto assets to binary.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        filename_validation_file_names: list of str. The list of prohibited filename pattern file names.
+        filepath_pattern_validation_file_names: list of str. The list of prohibited filepath pattern file names.
         file_content_validation_file_names: list of str. The list of prohibited file contents file names.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
     """
     return _generate_proto_binary_assets(
-        names = filename_validation_file_names,
+        names = filepath_pattern_validation_file_names,
         proto_dep_name = "filename_pattern_validation_structure",
         proto_type_name = "FilenameChecks",
         name_prefix = name,
