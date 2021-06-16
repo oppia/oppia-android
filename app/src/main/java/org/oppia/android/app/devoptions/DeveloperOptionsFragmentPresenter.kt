@@ -38,8 +38,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?,
-    isMultipane: Boolean
+    container: ViewGroup?
   ): View? {
     binding = DeveloperOptionsFragmentBinding.inflate(
       inflater,
@@ -55,7 +54,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
     binding.developerOptionsList.apply {
       layoutManager = linearLayoutManager
-      adapter = createRecyclerViewAdapter(isMultipane)
+      adapter = createRecyclerViewAdapter()
     }
 
     binding.apply {
@@ -66,11 +65,10 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(isMultipane: Boolean):
+  private fun createRecyclerViewAdapter():
     BindableAdapter<DeveloperOptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
       .newBuilder<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
-        viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
           is DeveloperOptionsModifyLessonProgressViewModel -> {
             viewModel.itemIndex.set(0)

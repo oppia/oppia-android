@@ -16,7 +16,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
-  private var isMultipane = false
   private lateinit var lastLoadedFragment: String
   private lateinit var binding: DeveloperOptionsActivityBinding
 
@@ -27,14 +26,13 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     )
     setUpNavigationDrawer()
     this.lastLoadedFragment = lastLoadedFragment
-//    isMultipane = binding.developerOptionsFragmentMultipanePlaceholder != null
     val previousFragment = getDeveloperOptionsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.developer_options_fragment_placeholder,
-      DeveloperOptionsFragment.newInstance(isMultipane)
+      DeveloperOptionsFragment.newInstance()
     ).commitNow()
   }
 
