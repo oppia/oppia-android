@@ -8,14 +8,20 @@ import org.oppia.android.app.model.FileContentChecks
 import org.oppia.android.app.model.FileContentCheck
 import kotlin.system.exitProcess
 
-
 class RegexPatternValidationCheck {
   companion object {
     @JvmStatic
     fun main(vararg args: String) {
 
       val repoPath = args[0] + "/"
-      val allowedDirectories = arrayOf("data", "app")
+      val allowedDirectories = arrayOf(
+        "app",
+        "data",
+        "domain",
+        "model" ,
+        "testing",
+        "utility",
+      )
       val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
       var scriptFailedFlag = false
 
@@ -31,7 +37,7 @@ class RegexPatternValidationCheck {
       }
 
       getFileContentChecks().forEach {
-      if (checkProhibitedContent(
+        if (checkProhibitedContent(
             repoPath = repoPath,
             searchFiles = searchFiles,
             fileNameRegexString = it.getFilenameRegex(),
@@ -62,7 +68,7 @@ class RegexPatternValidationCheck {
       return namePatternsObj.getFilenameChecksList()
     }
 
-    fun getFileContentChecks(): List<FileContentCheck>{
+    fun getFileContentChecks(): List<FileContentCheck> {
       val fileContentsBinaryFile =
         File("scripts/assets/file_content_validation_checks.pb")
       val fileContentCheckBuilder = FileContentChecks.newBuilder()
@@ -74,6 +80,15 @@ class RegexPatternValidationCheck {
       return fileContentsObj.getFileContentChecksList()
     }
 
+    /**
+     * Checks for a prohibited file content
+     *
+     * @param repoPath the path of the repo.
+     * @param searchFiles a list of all the files which needs to be checked.
+     * @param fileNameRegexString filename pattern regex which should not be present
+     * @param errorToShow error to show incase of failure
+     * @return [Boolean] check failed or passed
+     */
     fun checkProhibitedFileNamePattern(
       repoPath: String,
       searchFiles: Sequence<File>,
@@ -95,7 +110,16 @@ class RegexPatternValidationCheck {
       return filenamePatternCheckFailedFlag
     }
 
-
+    /**
+     * Checks for a prohibited file content
+     *
+     * @param repoPath the path of the repo.
+     * @param searchFiles a list of all the files which needs to be checked.
+     * @param fileNameRegexString filename regex string in which to do the content check
+     * @param prohibitedContentRegexString regex string which should not be contained in the file
+     * @param errorToShow error to show incase of failure
+     * @return [Boolean] check failed or passed
+     */
     fun checkProhibitedContent(
       repoPath: String,
       searchFiles: Sequence<File>,
@@ -109,9 +133,9 @@ class RegexPatternValidationCheck {
       searchFiles.forEach {
         if (fileNameRegex.matches(it.name)) {
           var lineNumber = 0
-          File(it.toString()).forEachLine { l ->
+          File(it.toString()).forEachLine { lineString ->
             lineNumber++
-            if (prohibitedContentRegex.matches(l)) {
+            if (prohibitedContentRegex.matches(lineString)) {
               logProhibitedContentFailure(
                 lineNumber = lineNumber,
                 errorToShow = errorToShow,
@@ -125,6 +149,14 @@ class RegexPatternValidationCheck {
       return contentCheckFailedFlag
     }
 
+    /**
+     * Collects the paths of all the files which are needed to be checked
+     *
+     * @param repoPath the path of the repo.
+     * @param allowedDirectories a list of all the directories which needs to be checked.
+     * @param exemptionList a list of files which needs to be exempted for this check
+     * @return [Sequence<File>] all files which needs to be checked.
+     */
     fun collectSearchFiles(
       repoPath: String,
       allowedDirectories: Array<String>,
@@ -151,23 +183,23 @@ class RegexPatternValidationCheck {
       return false
     }
 
+    /** Logs the failures for filename pattern violation */
     fun logProhibitedFilenameFailure(
       errorToShow: String,
       filePath: String
     ) {
-      println("Prohibited filename pattern: [ROOT]/$filePath")
-      println("Failure message: $errorToShow")
-      println()
+      println("Prohibited filename pattern: [ROOT]/$filePath\n" +
+        "Failure message: $errorToShow\n")
     }
 
+    /** Logs the failures for file content violation */
     fun logProhibitedContentFailure(
       lineNumber: Int,
       errorToShow: String,
       filePath: String) {
-      println("Prohibited content usage found on line no. $lineNumber")
-      println("File: [ROOT]/$filePath")
-      println("Failure message: $errorToShow")
-      println()
+      println("Prohibited content usage found on line no. $lineNumber\n" +
+        "File: [ROOT]/$filePath\n" +
+        "Failure message: $errorToShow\n")
     }
   }
 }
