@@ -11,6 +11,7 @@ message FilenameChecks {
   repeated FilenameCheck filename_checks = 1;
 }
 
+// Check to ensure if any prohibited filename pattern is present
 message FilenameCheck {
   // Regex no files should match.
   string prohibited_filename_regex = 1;

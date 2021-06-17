@@ -11,6 +11,7 @@ message FileContentChecks {
   repeated FileContentCheck file_content_checks = 1;
 }
 
+// Check to ensure if any prohibited file content is used in the codebase
 message FileContentCheck {
     // Matches to filename in which to do the content check.
     string filename_regex = 1;
