@@ -16,7 +16,9 @@ const val EVENT_LOGS_FRAGMENT = "EVENT_LOGS_FRAGMENT"
 const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
 
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity : InjectableAppCompatActivity() {
+class DeveloperOptionsActivity :
+  InjectableAppCompatActivity(),
+  ForceCrashListener {
   @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
   private lateinit var lastLoadedFragment: String
 
@@ -42,6 +44,10 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return KEY_NAVIGATION_PROFILE_ID
     }
+  }
+
+  override fun forceCrash() {
+    developerOptionsActivityPresenter.forceCrash()
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

@@ -59,6 +59,10 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       ) as DeveloperOptionsFragment?
   }
 
+  fun forceCrash() {
+    throw RuntimeException("The app is force crashed.")
+  }
+
   fun handleOnSaveInstanceState(outState: Bundle) {
     outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }

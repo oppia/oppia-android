@@ -18,6 +18,7 @@ class DeveloperOptionsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
 ) {
+  private val forceCrashListener = activity as ForceCrashListener
   private lateinit var userProfileId: ProfileId
   val selectedFragmentIndex = ObservableField<Int>(1)
 
@@ -29,7 +30,11 @@ class DeveloperOptionsViewModel @Inject constructor(
     val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
       mutableListOf(DeveloperOptionsModifyLessonProgressViewModel())
     itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
-    itemViewModelList.add(DeveloperOptionsOverrideAppBehaviorsViewModel())
+    itemViewModelList.add(
+      DeveloperOptionsOverrideAppBehaviorsViewModel(
+        forceCrashListener = forceCrashListener
+      )
+    )
     return itemViewModelList
   }
 
