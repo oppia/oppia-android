@@ -9,10 +9,9 @@ import org.oppia.android.util.platformparameter.PlatformParameter
 @Singleton
 class PlatformParameterSingleton @Inject constructor() {
   var platformParameterMap: Map<String, ParameterValue> = mapOf()
-
-  /** Initialize [platformParameterMap] if it is not yet initialised. */
-  fun initPlatformParameterMap(map: Map<String, ParameterValue>) {
-    if (platformParameterMap.isEmpty()) platformParameterMap = map
+  set(value) {
+    /** Initialize [platformParameterMap] if it is not yet initialised. */
+    if(field.isEmpty()) field = value
   }
 
   /** Retrieve individual [ParameterValue], if it exists in the [platformParameterMap]. */

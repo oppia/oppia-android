@@ -36,6 +36,21 @@ class PlatformParameterSingletonTest {
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
+  private val mockPlatformParameterMap by lazy {
+    val stringPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+      .setString(stringPlatformParameterValue).build()
+    val integerPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+      .setInteger(integerPlatformParameterValue).build()
+    val booleanPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+      .setBoolean(booleanPlatformParameterValue).build()
+
+    mapOf(
+      stringPlatformParameterName to stringPlatformParameter,
+      integerPlatformParameterName to integerPlatformParameter,
+      booleanPlatformParameterName to booleanPlatformParameter,
+    )
+  }
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -43,19 +58,19 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initialPlatformParameterMap_isEmpty(){
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
+    assertThat(platformParameterSingleton.platformParameterMap).isEmpty()
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_isNotEmpty(){
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
-    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
+    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
-    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
+    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val stringPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
       stringPlatformParameterName
     )
@@ -64,7 +79,7 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIntegerParameter_verifyItsValue() {
-    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
+    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val integerPlatformParameter = platformParameterSingleton.getPlatformParameter<Int>(
       integerPlatformParameterName
     )
@@ -73,7 +88,7 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveBooleanParameter_verifyItsValue() {
-    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
+    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val booleanPlatformParameter = platformParameterSingleton.getPlatformParameter<Boolean>(
       booleanPlatformParameterName
     )
@@ -82,26 +97,11 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIncorrectParameter_verifyItsValue() {
-    platformParameterSingleton.initPlatformParameterMap(makePlatformParameterMap())
+    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val incorrectPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
       incorrectPlatformParameterName
     )
     assertThat(incorrectPlatformParameter).isNull()
-  }
-
-  private fun makePlatformParameterMap(): Map<String, ParameterValue> {
-    val stringPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setString(stringPlatformParameterValue).build()
-    val integerPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setInteger(integerPlatformParameterValue).build()
-    val booleanPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setBoolean(booleanPlatformParameterValue).build()
-
-    return mapOf(
-      stringPlatformParameterName to stringPlatformParameter,
-      integerPlatformParameterName to integerPlatformParameter,
-      booleanPlatformParameterName to booleanPlatformParameter,
-    )
   }
 
   fun setUpTestApplicationComponent() {
