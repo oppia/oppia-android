@@ -17,16 +17,16 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
-const val stringPlatformParameterName = "string_platform_parameter_name"
-const val stringPlatformParameterValue = "string_platform_parameter_value"
+private const val STRING_PLATFORM_PARAMETER_NAME = "string_platform_parameter_name"
+private const val STRING_PLATFORM_PARAMETER_VALUE = "string_platform_parameter_value"
 
-const val integerPlatformParameterName = "integer_platform_parameter_name"
-const val integerPlatformParameterValue = 1
+private const val INTEGER_PLATFORM_PARAMETER_NAME = "integer_platform_parameter_name"
+private const val INTEGER_PLATFORM_PARAMETER_VALUE = 1
 
-const val booleanPlatformParameterName = "boolean_platform_parameter_name"
-const val booleanPlatformParameterValue = true
+private const val BOOLEAN_PLATFORM_PARAMETER_NAME = "boolean_platform_parameter_name"
+private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 
-const val incorrectPlatformParameterName = "incorrect_platform_parameter_name"
+private const val INCORRECT_PLATFORM_PARAMETER_NAME = "incorrect_platform_parameter_name"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -38,16 +38,16 @@ class PlatformParameterSingletonTest {
 
   private val mockPlatformParameterMap by lazy {
     val stringPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setString(stringPlatformParameterValue).build()
+      .setString(STRING_PLATFORM_PARAMETER_VALUE).build()
     val integerPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setInteger(integerPlatformParameterValue).build()
+      .setInteger(INTEGER_PLATFORM_PARAMETER_VALUE).build()
     val booleanPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setBoolean(booleanPlatformParameterValue).build()
+      .setBoolean(BOOLEAN_PLATFORM_PARAMETER_VALUE).build()
 
     mapOf(
-      stringPlatformParameterName to stringPlatformParameter,
-      integerPlatformParameterName to integerPlatformParameter,
-      booleanPlatformParameterName to booleanPlatformParameter,
+      STRING_PLATFORM_PARAMETER_NAME to stringPlatformParameter,
+      INTEGER_PLATFORM_PARAMETER_NAME to integerPlatformParameter,
+      BOOLEAN_PLATFORM_PARAMETER_NAME to booleanPlatformParameter,
     )
   }
 
@@ -72,34 +72,34 @@ class PlatformParameterSingletonTest {
   fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
     platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val stringPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
-      stringPlatformParameterName
+      STRING_PLATFORM_PARAMETER_NAME
     )
-    assertThat(stringPlatformParameter?.value).isEqualTo(stringPlatformParameterValue)
+    assertThat(stringPlatformParameter?.value).isEqualTo(STRING_PLATFORM_PARAMETER_VALUE)
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIntegerParameter_verifyItsValue() {
     platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val integerPlatformParameter = platformParameterSingleton.getPlatformParameter<Int>(
-      integerPlatformParameterName
+      INTEGER_PLATFORM_PARAMETER_NAME
     )
-    assertThat(integerPlatformParameter?.value).isEqualTo(integerPlatformParameterValue)
+    assertThat(integerPlatformParameter?.value).isEqualTo(INTEGER_PLATFORM_PARAMETER_VALUE)
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveBooleanParameter_verifyItsValue() {
     platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val booleanPlatformParameter = platformParameterSingleton.getPlatformParameter<Boolean>(
-      booleanPlatformParameterName
+      BOOLEAN_PLATFORM_PARAMETER_NAME
     )
-    assertThat(booleanPlatformParameter?.value).isEqualTo(booleanPlatformParameterValue)
+    assertThat(booleanPlatformParameter?.value).isEqualTo(BOOLEAN_PLATFORM_PARAMETER_VALUE)
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIncorrectParameter_verifyItsValue() {
     platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     val incorrectPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
-      incorrectPlatformParameterName
+      INCORRECT_PLATFORM_PARAMETER_NAME
     )
     assertThat(incorrectPlatformParameter).isNull()
   }
