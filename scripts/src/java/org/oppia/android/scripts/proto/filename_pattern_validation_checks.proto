@@ -5,7 +5,9 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
+// Checks to ensure the usage of any prohibited file path naming pattern
 message FilenameChecks {
+  // List of all the file name checks
   repeated FilenameCheck filename_checks = 1;
 }
 

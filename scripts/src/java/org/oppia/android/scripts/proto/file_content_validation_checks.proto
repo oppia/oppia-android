@@ -5,7 +5,9 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
+// Checks to ensure the usage of any prohibited file content in the codebase
 message FileContentChecks {
+  // List of all the file content checks
   repeated FileContentCheck file_content_checks = 1;
 }
 
