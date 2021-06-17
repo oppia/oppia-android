@@ -39,11 +39,6 @@
       "artifact_name": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
       "license_names": [],
       "license_links": []
-    },
-    {
-      "artifact_name": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
-      "license_names": [],
-      "license_links": []
     }
   ]
 }

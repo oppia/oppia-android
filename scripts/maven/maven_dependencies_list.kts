@@ -27,10 +27,10 @@ val urlTag = "<url>"
 val bazelQueryCommand =
   "bazel query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
 
-var backupLicenseLinksList: MutableList<License> = mutableListOf<License>()
+var backupLicenseLinksList: MutableSet<License> = mutableSetOf<License>()
 var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
 
-var bazelQueryDepsList: MutableList<String> = mutableListOf<String>()
+var bazelQueryDepsNames: MutableList<String> = mutableListOf<String>()
 var mavenInstallDependencyList: MutableList<Dependency>? = mutableListOf<Dependency>()
 var finalDependenciesList = mutableListOf<Dependency>()
 var parsedArtifactsList = mutableListOf<String>()
@@ -44,21 +44,21 @@ fun findBackUpForLicenseLinks() {
   val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
   if (backupJsonContent.isEmpty()) {
     println("The backup_license_links.json file is empty. Please add the JSON structure to provide the License Links.")
-    exitProcess(1)
+    throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
   }
   val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
   val adapter = moshi.adapter(BackupDependency::class.java)
   val backupDependency = adapter.fromJson(backupJsonContent)
   if (backupDependency == null) {
-    println("Back Up is not ready to provide any License Links.")
-    return
+    println("The backup_license_links.json file is empty. Please add the JSON structure to provide the License Links.")
+    throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
   }
-  backupLicenseLinksList = backupDependency?.artifactsList
+  backupLicenseLinksList = backupDependency?.artifacts
   if (backupLicenseLinksList.isEmpty()) {
     println("The backup_license_links.json file does not contain any license links.")
     return
   }
-  backupLicenseLinksList?.sortWith(object : Comparator<License> {
+  backupLicenseLinksList?.toSortedSet(object : Comparator<License> {
     override fun compare(license1: License, license2: License): Int {
       return license1.artifactName.compareTo(license2.artifactName)
     }
@@ -97,9 +97,9 @@ fun runBashCommand(command: String) {
       line = reader.readLine()
       if (line == null) break
       val endindex = line.toString().length
-      bazelQueryDepsList.add(line.toString().substring(9, endindex))
+      bazelQueryDepsNames.add(line.toString().substring(9, endindex))
     }
-    bazelQueryDepsList.sort()
+    bazelQueryDepsNames.sort()
 
     val exitValue = process.waitFor();
     if (exitValue != 0) {
@@ -124,26 +124,28 @@ fun readMavenInstall() {
   mavenInstallDependencyList?.forEach { dep ->
     var artifactName = dep.coord.toString()
     val artifactParsedName = parseArtifactName(artifactName)
-    if (bazelQueryDepsList.contains(artifactParsedName)) {
+    if (bazelQueryDepsNames.contains(artifactParsedName)) {
       parsedArtifactsList.add(artifactParsedName)
       finalDependenciesList.add(dep)
     }
   }
   println("final list size = ${finalDependenciesList.size}")
-  println("bazel query size = ${bazelQueryDepsList.size}")
+  println("bazel query size = ${bazelQueryDepsNames.size}")
 }
 
+// Utility function to write all the dependencies of the bazelQueryDepsList.
 fun showBazelQueryDepsList() {
   val bazelListFile = File("bazel_list.txt")
   bazelListFile.printWriter().use { writer ->
     var count = 0
-    bazelQueryDepsList.forEach {
+    bazelQueryDepsNames.forEach {
       writer.print("${count++} ")
       writer.println(it)
     }
   }
 }
 
+// Utility function to write all the dependencies of the parsedArtifactsList.
 fun showFinalDepsList() {
   val finalDepsFile = File("parsed_list.txt")
   finalDepsFile.printWriter().use { writer ->
@@ -161,6 +163,7 @@ var mavenDependencyItemIndex = 0
 var countDepsWithoutLicenseLinks = 0
 
 var writeBackup = false
+var scriptFailed = false
 
 fun getLicenseLinksfromPOM() {
   finalDependenciesList.forEach {
@@ -223,13 +226,14 @@ fun getLicenseLinksfromPOM() {
       }
     } catch (e: Exception) {
       ++countInvalidPomUrl
+      scriptFailed = true
       println("****************")
       println("Error : There was a problem while opening the provided link  - ")
       println("URL : ${pomFileUrl}")
       println("Dependency Name : ${artifactName}")
       println("****************")
       e.printStackTrace()
-      exitProcess(0)
+      exitProcess(1)
     }
     if (backupLicenseNamesList.isEmpty()) {
       ++countDepsWithoutLicenseLinks
@@ -244,17 +248,19 @@ fun getLicenseLinksfromPOM() {
         // Check if the URL is valid and license can be extracted.
         val indexOfDep =
           backupLicenseDepsList.binarySearch(it?.coord, 0, backupLicenseDepsList.lastIndex)
-        val backUp = this.backupLicenseLinksList[indexOfDep]
+        val backUp = this.backupLicenseLinksList.elementAt(indexOfDep)
         val licenseNames = backUp.licenseNames
         val licenseLinks = backUp.licenseLinks
         //  check...
         if (licenseLinks.isEmpty()) {
+          scriptFailed = true
           println("***********")
           println("Please provide backup license link(s) for the artifact " +
             "- \"${it?.coord}\" in backup.json.")
           println("***********")
         }
         if (licenseNames.isEmpty()) {
+          scriptFailed = true
           println("***********")
           println("Please provide backup license name(s) for the artifact - \"${it?.coord}\" in backup.json.")
           println("***********")
@@ -275,6 +281,7 @@ fun getLicenseLinksfromPOM() {
           )
         )
         writeBackup = true
+        scriptFailed = true
       }
     }
     val dep = MavenDependency(
@@ -312,4 +319,8 @@ if (writeBackup) {
     out.println(json)
   }
   exitProcess(1)
+}
+
+if(scriptFailed) {
+  throw Exception("Script could not get license links for all the Maven Dependencies.")
 }
