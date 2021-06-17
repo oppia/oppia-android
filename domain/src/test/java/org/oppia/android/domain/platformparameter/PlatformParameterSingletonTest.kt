@@ -57,12 +57,12 @@ class PlatformParameterSingletonTest {
   }
 
   @Test
-  fun testSingleton_initialPlatformParameterMap_isEmpty(){
+  fun testSingleton_initialPlatformParameterMap_isEmpty() {
     assertThat(platformParameterSingleton.platformParameterMap).isEmpty()
   }
 
   @Test
-  fun testSingleton_initPlatformParameterMap_isNotEmpty(){
+  fun testSingleton_initPlatformParameterMap_isNotEmpty() {
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
     platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
     assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
