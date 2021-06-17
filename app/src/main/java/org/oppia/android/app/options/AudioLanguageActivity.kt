@@ -42,11 +42,12 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
       return intent
     }
 
-    fun getIntentKey(): Array<String> {
-      return arrayOf(
-        KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE,
-        KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE
-      )
+    fun getKeyAudioLanguagePreferenceTitle(): String {
+      return KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE
+    }
+
+    fun getKeyAudioLanguagePreferenceSummaryValue(): String {
+      return KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE
     }
   }
 

@@ -86,17 +86,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
-  AppLanguageActivity.getIntentKey()[0]
+  AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey()
 private val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
-  AppLanguageActivity.getIntentKey()[1]
+  AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey()
 private val KEY_AUDIO_LANGUAGE_PREFERENCE_TITLE =
-  AudioLanguageActivity.getIntentKey()[0]
+  AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle()
 private val KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
-  AudioLanguageActivity.getIntentKey()[1]
+  AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue()
 private val KEY_READING_TEXT_SIZE_PREFERENCE_TITLE =
-  ReadingTextSizeActivity.getIntentKey()[0]
+  ReadingTextSizeActivity.getKeyReadingTextSizePreferenceTitle()
 private val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
-  ReadingTextSizeActivity.getIntentKey()[1]
+  ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue()
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)

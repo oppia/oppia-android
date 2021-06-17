@@ -44,11 +44,12 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       return intent
     }
 
-    fun getIntentKey(): Array<String> {
-      return arrayOf(
-        APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY,
-        APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
-      )
+    fun getAppLanguagePreferenceTitleExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
+    }
+
+    fun getAppLanguagePreferenceSummaryValueExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
     }
   }
 

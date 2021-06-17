@@ -44,11 +44,12 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
       return intent
     }
 
-    fun getIntentKey(): Array<String> {
-      return arrayOf(
-        KEY_READING_TEXT_SIZE_PREFERENCE_TITLE,
-        KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE
-      )
+    fun getKeyReadingTextSizePreferenceTitle(): String {
+      return KEY_READING_TEXT_SIZE_PREFERENCE_TITLE
+    }
+
+    fun getKeyReadingTextSizePreferenceSummaryValue(): String {
+      return KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE
     }
   }
 
