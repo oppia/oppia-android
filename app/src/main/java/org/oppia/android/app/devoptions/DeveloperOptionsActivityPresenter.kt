@@ -17,7 +17,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
 
-  fun handleOnCreate(internalProfileId: Int) {
+  fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.developer_options_activity

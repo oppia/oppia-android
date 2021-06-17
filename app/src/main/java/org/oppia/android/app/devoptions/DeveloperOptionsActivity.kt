@@ -11,20 +11,15 @@ import javax.inject.Inject
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
   @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
-  private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY, -1)
-    developerOptionsActivityPresenter.handleOnCreate(internalProfileId)
+    developerOptionsActivityPresenter.handleOnCreate()
     title = getString(R.string.developer_options_title)
   }
 
   companion object {
-    const val DEVELOPER_OPTIONS_ACTIVITY_PROFILE_ID_KEY =
-      "DeveloperOptionsActivity.internal_profile_id"
-
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)

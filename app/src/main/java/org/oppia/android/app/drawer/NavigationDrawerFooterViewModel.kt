@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /** [ViewModel] for displaying Administrator Controls option. */
 class NavigationDrawerFooterViewModel @Inject constructor() : ObservableViewModel() {
-  val isDevMode = ObservableField<Boolean>(false)
+  val isDebugMode = ObservableField<Boolean>(false)
   val isDeveloperOptionsSelected = ObservableField<Boolean>(false)
   val isAdmin = ObservableField<Boolean>(false)
   val isAdministratorControlsSelected = ObservableField<Boolean>(false)
