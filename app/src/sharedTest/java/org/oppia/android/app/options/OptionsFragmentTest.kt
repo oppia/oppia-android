@@ -374,7 +374,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -402,7 +402,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceTitle(),
+            READING_TEXT_SIZE
+          ),
+          hasExtra(
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -430,7 +434,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -458,7 +466,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -486,7 +498,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
+          ),
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
@@ -514,8 +530,12 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
+          ),
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
