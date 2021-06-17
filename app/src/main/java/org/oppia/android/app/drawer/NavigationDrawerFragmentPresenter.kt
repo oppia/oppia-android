@@ -96,7 +96,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun setIfDeveloperOptionsMenuItemListener() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       developerOptionsStarter.ifPresent { starter ->
-        getFooterViewModel().isDevMode.set(true)
+        getFooterViewModel().isDebugMode.set(true)
         binding.developerOptionsLinearLayout.setOnClickListener {
           if (getFooterViewModel().isDeveloperOptionsSelected.get() == true) {
             drawerLayout.closeDrawers()
@@ -432,6 +432,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     } else {
       // For showing navigation drawer in AdministratorControlsActivity
       if (menuItemId == 0) getFooterViewModel().isAdministratorControlsSelected.set(true)
+      // For showing navigation drawer in DeveloperOptionsActivity
       else if (menuItemId == -1) getFooterViewModel().isDeveloperOptionsSelected.set(true)
       uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
       this.drawerLayout = drawerLayout
