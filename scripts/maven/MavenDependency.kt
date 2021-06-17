@@ -3,6 +3,7 @@ package scripts
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+/** Data class for Storing details of a Maven Dependency. */
 @JsonClass(generateAdapter = true)
 data class MavenDependency(
   @Json(name = "index") val index: Int,

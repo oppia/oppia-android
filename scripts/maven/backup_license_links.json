@@ -1,5 +1,5 @@
 {
-  "artifacts_list": [
+  "artifacts": [
     {
       "artifact_name": "com.google.auto.service:auto-service-annotations:1.0-rc7",
       "license_names": [],

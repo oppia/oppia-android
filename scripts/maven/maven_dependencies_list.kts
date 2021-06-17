@@ -6,7 +6,7 @@
 //INCLUDE Dependencies.kt
 //INCLUDE MavenDependency.kt
 //INCLUDE License.kt
-//INCLUDE SpecialDependency.kt
+//INCLUDE BackupDependency.kt
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -17,58 +17,73 @@ import java.io.InputStreamReader
 import kotlin.system.exitProcess
 import java.net.URL
 
-val path = "/home/prayutsu/opensource/oppia-android/"
+// String utils to parse POM file of dependencies.
+val licensesTag = "<licenses>"
+val licenseCloseTag = "</licenses>"
+val licenseTag = "<license>"
+val nameTag = "<name>"
+val urlTag = "<url>"
+
+val bazelQueryCommand =
+  "bazel query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
+
 var backupLicenseLinksList: MutableList<License> = mutableListOf<License>()
 var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
-val cmd2 = "bazel query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
 
-var maven_list_query: MutableList<String> = mutableListOf<String>()
+var bazelQueryDepsList: MutableList<String> = mutableListOf<String>()
+var mavenInstallDependencyList: MutableList<Dependency>? = mutableListOf<Dependency>()
+var finalDependenciesList = mutableListOf<Dependency>()
+var parsedArtifactsList = mutableListOf<String>()
+
+val MavenDepsList = mutableListOf<MavenDependency>()
+val linkset = mutableSetOf<String>()
+val nolicenseSet = mutableSetOf<String>()
 
 fun findBackUpForLicenseLinks() {
-  val provideLicensesJson = File(path + "scripts/maven", "backup_license_links.json")
-  val jsontext = provideLicensesJson.inputStream().bufferedReader().use { it.readText() }
-  if (jsontext.isEmpty()) {
+  val backupJson = File("scripts/maven", "backup_license_links.json")
+  val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
+  if (backupJsonContent.isEmpty()) {
     println("The backup_license_links.json file is empty. Please add the JSON structure to provide the License Links.")
-    exitProcess(0)
+    exitProcess(1)
   }
   val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-  val specialDependencyAdapter = moshi.adapter(SpecialDependency::class.java)
-  val specialDep = specialDependencyAdapter.fromJson(jsontext)
-  if (specialDep == null) {
+  val adapter = moshi.adapter(BackupDependency::class.java)
+  val backupDependency = adapter.fromJson(backupJsonContent)
+  if (backupDependency == null) {
     println("Back Up is not ready to provide any License Links.")
     return
   }
-  backupLicenseLinksList = specialDep?.artifactsList
+  backupLicenseLinksList = backupDependency?.artifactsList
   if (backupLicenseLinksList.isEmpty()) {
     println("The backup_license_links.json file does not contain any license links.")
     return
   }
   backupLicenseLinksList?.sortWith(object : Comparator<License> {
-    override fun compare(l1: License, l2:License): Int {
-      return l1.artifactName.compareTo(l2.artifactName)
+    override fun compare(license1: License, license2: License): Int {
+      return license1.artifactName.compareTo(license2.artifactName)
     }
   })
-  backupLicenseLinksList?.forEach {
-    backupLicenseDepsList.add(it?.artifactName)
+  backupLicenseLinksList?.forEach { license ->
+    backupLicenseDepsList.add(license?.artifactName)
   }
   backupLicenseDepsList.sort()
-  println(backupLicenseLinksList)
-  println(backupLicenseDepsList)
 
 }
 
-fun parseName(name2: String): String {
-  var colonIndex = name2.length - 1
-  while (name2.isNotEmpty() && name2[colonIndex] != ':') {
-    colonIndex--;
+fun parseArtifactName(artifactName: String): String {
+  var indexOfColon = artifactName.length - 1
+  while (artifactName.isNotEmpty() && artifactName[indexOfColon] != ':') {
+    indexOfColon--
   }
-  var name = name2.substring(0, colonIndex)
-  val nameBuilder = StringBuilder()
-  for (i in name.indices) {
-    if (name[i] == '.' || name[i] == ':' || name[i] == '-') nameBuilder.append('_')
-    else nameBuilder.append(name[i])
+  var artifactNameWithoutVersion = artifactName.substring(0, indexOfColon)
+  val parsedArtifactNameBuilder = StringBuilder()
+  for (i in artifactNameWithoutVersion.indices) {
+    if (artifactNameWithoutVersion[i] == '.' || artifactNameWithoutVersion[i] == ':' || artifactNameWithoutVersion[i] == '-') parsedArtifactNameBuilder.append(
+      '_'
+    )
+    else parsedArtifactNameBuilder.append(artifactNameWithoutVersion[i])
   }
-  return nameBuilder.toString()
+  return parsedArtifactNameBuilder.toString()
 }
 
 fun runBashCommand(command: String) {
@@ -78,204 +93,223 @@ fun runBashCommand(command: String) {
     val process = processBuilder.start()
     val reader = BufferedReader(InputStreamReader(process.getInputStream()));
     var line: String?
-    var count = 0
     while (true) {
       line = reader.readLine()
       if (line == null) break
       val endindex = line.toString().length
-      maven_list_query.add(line.toString().substring(9, endindex))
-      ++count
+      bazelQueryDepsList.add(line.toString().substring(9, endindex))
     }
-    println("count = $count")
+    bazelQueryDepsList.sort()
 
-    val exitVal = process.waitFor();
-    if (exitVal == 0) {
-      println("Success!")
-    } else {
-      // abnormal.
+    val exitValue = process.waitFor();
+    if (exitValue != 0) {
       println("There was some unexpected error.")
+      exitProcess(1)
     }
-
   } catch (e: Exception) {
     e.printStackTrace();
   }
 }
 
-runBashCommand(cmd2)
-findBackUpForLicenseLinks()
+fun readMavenInstall() {
+  val mavenInstallJson = File("maven_install.json")
+  val mavenInstallJsonText = mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
 
-val gradleAssetFile = File(path, "maven_install.json")
-val st = gradleAssetFile.inputStream().bufferedReader().use { it.readText() }
+  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+  val adapter = moshi.adapter(DependencyTree::class.java)
+  val dependencyTree = adapter.fromJson(mavenInstallJsonText)
+  mavenInstallDependencyList = dependencyTree?.dependencies?.dependencyList
+  mavenInstallDependencyList?.sortBy { it -> it.coord }
 
-val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-val adapter = moshi.adapter(DependencyTree::class.java)
-val move = adapter.fromJson(st)
-val list = move?.dependencies?.dependencyList
-list?.sortBy { it -> it.coord }
-maven_list_query.sort()
-val finalList = mutableListOf<Dependency>()
-val pdepslist = mutableListOf<String>()
-list?.forEach {
-  var name = it.coord.toString()
-  val pname = parseName(name)
-  if (maven_list_query.contains(pname)) {
-//    println(pname)
-    pdepslist.add(pname)
-    finalList.add(it)
+  mavenInstallDependencyList?.forEach { dep ->
+    var artifactName = dep.coord.toString()
+    val artifactParsedName = parseArtifactName(artifactName)
+    if (bazelQueryDepsList.contains(artifactParsedName)) {
+      parsedArtifactsList.add(artifactParsedName)
+      finalDependenciesList.add(dep)
+    }
+  }
+  println("final list size = ${finalDependenciesList.size}")
+  println("bazel query size = ${bazelQueryDepsList.size}")
+}
+
+fun showBazelQueryDepsList() {
+  val bazelListFile = File("bazel_list.txt")
+  bazelListFile.printWriter().use { writer ->
+    var count = 0
+    bazelQueryDepsList.forEach {
+      writer.print("${count++} ")
+      writer.println(it)
+    }
   }
 }
-println("final list size = ${finalList.size}")
-println("bazel query size = ${maven_list_query.size}")
-val bazel_query_list_file = File(path, "bazel_list.txt")
-bazel_query_list_file.printWriter().use { out ->
-  var count = 0
-  maven_list_query.forEach {
-    out.print("${count++} ")
-    out.println(it)
-  }
-}
-val final_list_file = File(path, "parsed_list.txt")
-final_list_file.printWriter().use { out ->
-  var count = 0
-  pdepslist.forEach {
-    out.print("${count++} ")
-    out.println(it)
+
+fun showFinalDepsList() {
+  val finalDepsFile = File("parsed_list.txt")
+  finalDepsFile.printWriter().use { writer ->
+    var count = 0
+    parsedArtifactsList.forEach {
+      writer.print("${count++} ")
+      writer.println(it)
+    }
   }
 }
 
 var count = 0
-var invalid = 0;
-var listIndex = 0
-var nolicense = 0
-val MavenDepsList = mutableListOf<MavenDependency>()
-val linkset = mutableSetOf<String>()
-val nolicenseSet = mutableSetOf<String>()
-var writeBackup = false
-finalList.forEach {
-  val url = it?.url
-  val pomUrl = url?.substring(0, url?.length - 3) + "pom"
-  val name = it?.coord
-  var version = StringBuilder()
-  var itr = name.length-1
-  while (itr >= 0 && name[itr]!=':') {
-    version.append(name[itr])
-    itr--
-  }
-  var licenseNameList = mutableListOf<String>()
-  var licenseLinkList = mutableListOf<String>()
-  try {
-    val pomfile = URL(pomUrl).openStream().bufferedReader().readText()
-    ++count
-    val text = pomfile.toString()
-    println("Index: $count = ${text.length}")
-    val licensesTag = "<licenses>"
-    var ini = -1
-    var end = 0
-    if(text.length > 11) {
-      for (i in 0..(text.length - 11)) {
-        if (text.substring(i, i+10) == licensesTag) {
-          ini = i + 9;
-          break;
-        }
-      }
-      if (ini != -1) {
-        val licenseTag = "<license>"
-        val licenseCloseTag = "</licenses>"
-        var i=ini
-        while (i < (text.length - 12)) {
-          if (text.substring(i, i+9) == licenseTag) {
-            val nameTag = "<name>"
-            val urlTag = "<url>"
-            i += 9
-            while (i < text.length-6 && text.substring(i, i+6) != nameTag) {
-              ++i;
-            }
-            i += 6
-            var url = StringBuilder()
-            var urlName = StringBuilder()
-            while (text[i] != '<') {
-              urlName.append(text[i])
-              ++i
-            }
-            while (i < text.length-4 && text.substring(i, i+5) != urlTag) {
-              ++i;
-            }
-            i += 5
-            while (text[i] != '<') {
-              url.append(text[i])
-              ++i
-            }
-            licenseNameList.add(urlName.toString())
-            licenseLinkList.add(url.toString())
-            linkset.add(url.toString())
-          } else if (text.substring(i, i+12) == licenseCloseTag) {
-            break
-          }
-          ++i
-        }
-      }
-    }
-  } catch (e: Exception) {
-    ++invalid
-    println("****************")
-    println("Error : There was a problem while opening the provided link  - ")
-    println("URL : ${pomUrl}")
-    println("Dependency Name : ${name}")
-    println("****************")
-    e.printStackTrace()
-    exitProcess(0)
-  }
-  if(licenseNameList.isEmpty()) {
-    ++nolicense
-    nolicenseSet.add(it?.coord)
-    // Look for the license link in provide_licenses.json
-    if (backupLicenseDepsList.isNotEmpty() && backupLicenseDepsList.binarySearch(it?.coord, 0, backupLicenseDepsList.lastIndex) >= 0) {
-      // Check if the URL is valid and license can be extracted.
-      val indexOfDep = backupLicenseDepsList.binarySearch(it?.coord, 0, backupLicenseDepsList.lastIndex)
-      val backUp = backupLicenseLinksList[indexOfDep]
-      val licenseNames = backUp.licenseNames
-      val licenseLinks = backUp.licenseLinks
-      //  check...
-      if(licenseLinks.isEmpty()) {
-        println("***********")
-        println("Please provide backup license link(s) for the artifact - \"${it?.coord}\" in backup.json.")
-        println("***********")
-      }
-      if(licenseNames.isEmpty()) {
-        println("***********")
-        println("Please provide backup license name(s) for the artifact - \"${it?.coord}\" in backup.json.")
-        println("***********")
-      }
-      if(licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
-        licenseNameList = licenseNames
-        licenseLinkList = licenseLinks
-      }
-    } else {
-      println("***********")
-      println("Please provide backup license name(s) and link(s) for the artifact - \"${it?.coord}\" in backup.json.")
-      println("***********")
-      backupLicenseLinksList.add(License(it?.coord, mutableListOf<String>(), mutableListOf<String>()))
-      writeBackup = true
-    }
-  }
-  val dep = MavenDependency(listIndex, it?.coord, version.toString(), licenseNameList, licenseLinkList)
-  MavenDepsList.add(dep)
+var countInvalidPomUrl = 0;
+var mavenDependencyItemIndex = 0
+var countDepsWithoutLicenseLinks = 0
 
-  ++listIndex
+var writeBackup = false
+
+fun getLicenseLinksfromPOM() {
+  finalDependenciesList.forEach {
+    val url = it?.url
+    val pomFileUrl = url?.substring(0, url?.length - 3) + "pom"
+    val artifactName = it?.coord
+    var artifactVersion = StringBuilder()
+    var lastIndex = artifactName.length - 1
+    while (lastIndex >= 0 && artifactName[lastIndex] != ':') {
+      artifactVersion.append(artifactName[lastIndex])
+      lastIndex--
+    }
+    var backupLicenseNamesList = mutableListOf<String>()
+    var backupLicenseLinksList = mutableListOf<String>()
+    try {
+      val pomfile = URL(pomFileUrl).openStream().bufferedReader().readText()
+      ++count
+      val pomText = pomfile.toString()
+      var cursor = -1
+      var end = 0
+      if (pomText.length > 11) {
+        for (index in 0..(pomText.length - 11)) {
+          if (pomText.substring(index, index + 10) == licensesTag) {
+            cursor = index + 9;
+            break;
+          }
+        }
+        if (cursor != -1) {
+          var cursor2 = cursor
+          while (cursor2 < (pomText.length - 12)) {
+            if (pomText.substring(cursor2, cursor2 + 9) == licenseTag) {
+              cursor2 += 9
+              while (cursor2 < pomText.length - 6 && pomText.substring(cursor2, cursor2 + 6) != nameTag) {
+                ++cursor2;
+              }
+              cursor2 += 6
+              var url = StringBuilder()
+              var urlName = StringBuilder()
+              while (pomText[cursor2] != '<') {
+                urlName.append(pomText[cursor2])
+                ++cursor2
+              }
+              while (cursor2 < pomText.length - 4 && pomText.substring(cursor2, cursor2 + 5) != urlTag) {
+                ++cursor2;
+              }
+              cursor2 += 5
+              while (pomText[cursor2] != '<') {
+                url.append(pomText[cursor2])
+                ++cursor2
+              }
+              backupLicenseNamesList.add(urlName.toString())
+              backupLicenseLinksList.add(url.toString())
+              linkset.add(url.toString())
+            } else if (pomText.substring(cursor2, cursor2 + 12) == licenseCloseTag) {
+              break
+            }
+            ++cursor2
+          }
+        }
+      }
+    } catch (e: Exception) {
+      ++countInvalidPomUrl
+      println("****************")
+      println("Error : There was a problem while opening the provided link  - ")
+      println("URL : ${pomFileUrl}")
+      println("Dependency Name : ${artifactName}")
+      println("****************")
+      e.printStackTrace()
+      exitProcess(0)
+    }
+    if (backupLicenseNamesList.isEmpty()) {
+      ++countDepsWithoutLicenseLinks
+      nolicenseSet.add(it?.coord)
+      // Look for the license link in provide_licenses.json
+      if (backupLicenseDepsList.isNotEmpty() && backupLicenseDepsList.binarySearch(
+          it?.coord,
+          0,
+          backupLicenseDepsList.lastIndex
+        ) >= 0
+      ) {
+        // Check if the URL is valid and license can be extracted.
+        val indexOfDep =
+          backupLicenseDepsList.binarySearch(it?.coord, 0, backupLicenseDepsList.lastIndex)
+        val backUp = this.backupLicenseLinksList[indexOfDep]
+        val licenseNames = backUp.licenseNames
+        val licenseLinks = backUp.licenseLinks
+        //  check...
+        if (licenseLinks.isEmpty()) {
+          println("***********")
+          println("Please provide backup license link(s) for the artifact " +
+            "- \"${it?.coord}\" in backup.json.")
+          println("***********")
+        }
+        if (licenseNames.isEmpty()) {
+          println("***********")
+          println("Please provide backup license name(s) for the artifact - \"${it?.coord}\" in backup.json.")
+          println("***********")
+        }
+        if (licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
+          backupLicenseNamesList = licenseNames
+          backupLicenseLinksList = licenseLinks
+        }
+      } else {
+        println("***********")
+        println("Please provide backup license name(s) and link(s) for the artifact - \"${it?.coord}\" in backup.json.")
+        println("***********")
+        this.backupLicenseLinksList.add(
+          License(
+            it?.coord,
+            mutableListOf<String>(),
+            mutableListOf<String>()
+          )
+        )
+        writeBackup = true
+      }
+    }
+    val dep = MavenDependency(
+      mavenDependencyItemIndex,
+      it?.coord,
+      artifactVersion.toString(),
+      backupLicenseNamesList,
+      backupLicenseLinksList
+    )
+    MavenDepsList.add(dep)
+
+    ++mavenDependencyItemIndex
+  }
 }
+
+runBashCommand(bazelQueryCommand)
+findBackUpForLicenseLinks()
+readMavenInstall()
+getLicenseLinksfromPOM()
+
+
 println("count = $count")
-println("invalid = $invalid")
-println("nolicense = $nolicense")
+println("invalid = $countInvalidPomUrl")
+println("nolicense = $countDepsWithoutLicenseLinks")
 println(linkset)
 println(nolicenseSet)
 
-if(writeBackup) {
-  val provideLicensesJson = File(path + "scripts/", "provide_licenses.json")
+if (writeBackup) {
+  val provideLicensesJson = File("scripts/maven", "backup_license_links.json")
   provideLicensesJson.printWriter().use { out ->
-    val specialDependency = SpecialDependency(backupLicenseLinksList)
+    val backupDependency = BackupDependency(backupLicenseLinksList)
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-    val specialDependencyAdapter = moshi.adapter(SpecialDependency::class.java)
-    val specialDep = specialDependencyAdapter.indent("  ").toJson(specialDependency)
-    out.println(specialDep)
+    val adapter = moshi.adapter(BackupDependency::class.java)
+    val json = adapter.indent("  ").toJson(backupDependency)
+    out.println(json)
   }
+  exitProcess(1)
 }
