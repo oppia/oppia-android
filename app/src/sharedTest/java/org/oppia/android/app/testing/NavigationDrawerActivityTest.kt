@@ -810,7 +810,7 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_withOutDevMode_devOptionsIsNotDisplayed() {
-    ApplicationProvider.getApplicationContext<TestApplication>().disableDevMode = true
+    ApplicationProvider.getApplicationContext<TestApplication>().disableDebugMode = true
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -828,7 +828,8 @@ class NavigationDrawerActivityTest {
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -1100,7 +1101,7 @@ class NavigationDrawerActivityTest {
       DeveloperOptionsModule::class
     ]
   )
-  interface TestApplicationComponentWithoutDevMode : ApplicationComponent {
+  interface TestNoDebugApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
@@ -1108,7 +1109,7 @@ class NavigationDrawerActivityTest {
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    var disableDevMode = false
+    var disableDebugMode = false
 
     private val component: TestApplicationComponent by lazy {
       DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
@@ -1116,20 +1117,20 @@ class NavigationDrawerActivityTest {
         .build() as TestApplicationComponent
     }
 
-    private val componentWithoutDevMode: TestApplicationComponentWithoutDevMode by lazy {
-      DaggerNavigationDrawerActivityTest_TestApplicationComponentWithoutDevMode.builder()
+    private val noDebugComponent: TestNoDebugApplicationComponent by lazy {
+      DaggerNavigationDrawerActivityTest_TestNoDebugApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponentWithoutDevMode
+        .build() as TestNoDebugApplicationComponent
     }
 
     fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
-      if (disableDevMode) componentWithoutDevMode.inject(navigationDrawerActivityTest)
+      if (disableDebugMode) noDebugComponent.inject(navigationDrawerActivityTest)
       else component.inject(navigationDrawerActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return if (disableDevMode)
-        componentWithoutDevMode
+      return if (disableDebugMode)
+        noDebugComponent
           .getActivityComponentBuilderProvider()
           .get()
           .setActivity(activity)
@@ -1139,7 +1140,7 @@ class NavigationDrawerActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector =
-      if (disableDevMode) componentWithoutDevMode
+      if (disableDebugMode) noDebugComponent
       else component
   }
 }

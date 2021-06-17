@@ -23,6 +23,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -35,6 +36,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth
 import dagger.Component
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -225,6 +227,25 @@ class DeveloperOptionsActivityTest {
         targetViewId = R.id.force_crash_text_view,
         stringIdToMatch = R.string.developer_options_force_crash
       )
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(not(isChecked())))
     }
   }
 
