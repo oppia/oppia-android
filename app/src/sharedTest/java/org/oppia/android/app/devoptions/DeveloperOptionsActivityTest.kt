@@ -74,6 +74,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -246,6 +247,21 @@ class DeveloperOptionsActivityTest {
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      assertThrows(RuntimeException::class) {
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_crash_text_view)).perform(click())
+      }
     }
   }
 
