@@ -32,7 +32,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       isNegative = false,
       value = 2
     )
-  private val NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2 =
+  private val NEGATIVE_INTEGER_NUMBER_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = true,
       value = 2
@@ -124,8 +124,8 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeWholeNumber2Input_doesNotMatch() {
-    val inputs = mapOf("f" to NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2)
+  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeIntegerNumber2Input_doesNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_INTEGER_NUMBER_VALUE_TEST_2)
     val answer = WHOLE_NUMBER_VALUE_TEST_2
 
     val matches =
