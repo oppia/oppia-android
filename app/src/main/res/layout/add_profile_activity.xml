@@ -45,7 +45,8 @@
             android:paddingEnd="@dimen/add_profile_main_padding_end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.jackandphantom.circularimageview.CircleImage
               android:id="@+id/add_profile_activity_user_image_view"
