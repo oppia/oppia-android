@@ -6,7 +6,6 @@ import org.oppia.android.app.model.FilenameChecks
 import org.oppia.android.app.model.FilenameCheck
 import org.oppia.android.app.model.FileContentChecks
 import org.oppia.android.app.model.FileContentCheck
-import kotlin.system.exitProcess
 
 class RegexPatternValidationCheck {
   companion object {

@@ -106,4 +106,4 @@ jobs:
 
       - name: Regex Patterns Validation Check
         run: |
-          bazel run //scripts:pattern_validation_check -- $(pwd)
+          bazel run //scripts:pattern_validation_check -- $(pwd) app data utility domain
