@@ -15,14 +15,11 @@ class RegexPatternValidationCheck {
 
       val repoPath = args[0] + "/"
 
-      val allowedDirectories = arrayOf(
-        "app",
-        "data",
-        "domain",
-        "model" ,
-        "testing",
-        "utility",
-      )
+      val allowedDirectories: MutableList<String> = ArrayList()
+
+      for (i in 1 until args.size) {
+        allowedDirectories.add(args[i])
+      }
 
       val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
 
@@ -52,8 +49,7 @@ class RegexPatternValidationCheck {
       }
 
       if (scriptFailedFlag) {
-        println("REGEX PATTERN CHECKS FAILED")
-        exitProcess(1)
+        throw Exception("REGEX PATTERN CHECKS FAILED")
       } else {
         println("REGEX PATTERN CHECKS PASSED")
       }
@@ -162,7 +158,7 @@ class RegexPatternValidationCheck {
      */
     fun collectSearchFiles(
       repoPath: String,
-      allowedDirectories: Array<String>,
+      allowedDirectories: MutableList<String>,
       exemptionList: Array<String> = arrayOf<String>()
     ): Sequence<File> {
       val validPaths = File(repoPath).walk().filter { it ->
@@ -177,7 +173,7 @@ class RegexPatternValidationCheck {
 
     fun checkIfAllowedDirectory(
       pathString: String,
-      allowedDirectories: Array<String>
+      allowedDirectories: MutableList<String>
     ): Boolean {
       allowedDirectories.forEach {
         if (pathString.startsWith(it))

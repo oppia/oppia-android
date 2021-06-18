@@ -4,77 +4,77 @@ import java.io.File
 import kotlin.test.assertEquals
 import org.oppia.android.scripts.RegexPatternValidationCheck
 import org.junit.Test
+import org.junit.Rule
+import org.junit.Before
+import org.junit.rules.TemporaryFolder
+import org.junit.rules.ExpectedException
 
 class RegexPatternValidationCheckTest {
 
-  private val testDirectoryPath = System.getProperty("user.dir") + "/scripts/src/test/testfiles/"
-  private val filenameChecks = RegexPatternValidationCheck.getFilenameChecks()
-  private val fileContentChecks = RegexPatternValidationCheck.getFileContentChecks()
+  @Rule
+  @JvmField
+  public var tempFolder: TemporaryFolder = TemporaryFolder()
 
-  @Test
-  fun testFilenamePattern_checkShouldPass() {
-    val allowedDirectory = arrayOf("app")
-    val searchFiles = RegexPatternValidationCheck.
-    collectSearchFiles(testDirectoryPath + "filenamepattern/pass/testrepo/", allowedDirectory)
-    val activityFilePatternRegexObj = filenameChecks.get(0)
-    val scriptResult = RegexPatternValidationCheck.checkProhibitedFileNamePattern(
-      repoPath = testDirectoryPath + "filenamepattern/pass/testrepo/",
-      searchFiles = searchFiles,
-      prohibitedFilenameRegexString = activityFilePatternRegexObj.getProhibitedFilenameRegex(),
-      errorToShow = activityFilePatternRegexObj.getFailureMessage()
-    )
+  @Rule
+  @JvmField
+  var thrown: ExpectedException = ExpectedException.none()
 
-    assertEquals(expected = false, actual = scriptResult)
+  @Before
+  fun initTestFilesDirectory() {
+    val testFilesDirectory = tempFolder.newFolder("testfiles")
   }
 
   @Test
-  fun testFilenamePattern_checkShouldFail() {
-    val allowedDirectory = arrayOf("data")
-    val searchFiles = RegexPatternValidationCheck.
-    collectSearchFiles(testDirectoryPath + "filenamepattern/fail/testrepo/", allowedDirectory)
-    val activityFilePatternRegexObj = filenameChecks.get(0)
-    val scriptResult = RegexPatternValidationCheck.checkProhibitedFileNamePattern(
-      repoPath = testDirectoryPath + "filenamepattern/fail/testrepo/",
-      searchFiles = searchFiles,
-      prohibitedFilenameRegexString = activityFilePatternRegexObj.getProhibitedFilenameRegex(),
-      errorToShow = activityFilePatternRegexObj.getFailureMessage()
+  fun test_fileNamePattern_validFileNamePattern_scriptShouldPass() {
+    val appLayerMimic = tempFolder.newFolder("testfiles", "app", "src", "main")
+    val prohibitedFileNamePattern = tempFolder.newFile(
+      "testfiles/app/src/main/TestActivity.kt"
     )
 
-    assertEquals(expected = true, actual = scriptResult)
+    runScript(tempFolder.getRoot().toString() + "/testfiles", arrayOf("app"))
   }
 
   @Test
-  fun testFileContent_noProhibitedContentUsed_checkShouldPass() {
-    val allowedDirectory = arrayOf("filecontent/pass")
-    val searchFiles = RegexPatternValidationCheck.
-    collectSearchFiles(testDirectoryPath, allowedDirectory)
-    val supportLibraryRegexObj = fileContentChecks.get(0)
-    val scriptResult = RegexPatternValidationCheck.checkProhibitedContent(
-      repoPath = testDirectoryPath,
-      searchFiles = searchFiles,
-      fileNameRegexString = supportLibraryRegexObj.getFilenameRegex(),
-      prohibitedContentRegexString = supportLibraryRegexObj.getProhibitedContentRegex(),
-      errorToShow = supportLibraryRegexObj.getFailureMessage()
+  fun test_fileNamePattern_useProhibitedFileNamePattern_scriptShouldFail() {
+    val dataLayerMimic = tempFolder.newFolder("testfiles", "data", "src", "main")
+    val prohibitedFileNamePattern = tempFolder.newFile(
+      "testfiles/data/src/main/TestActivity.kt"
     )
 
-    assertEquals(expected = false, actual = scriptResult)
+    expectScriptFailure()
+
+    runScript(tempFolder.getRoot().toString() + "/testfiles", arrayOf("data"))
   }
 
   @Test
-  fun testFileContent_prohibitedContentUsed_checkShouldFail() {
-    val allowedDirectory = arrayOf("filecontent/fail")
-    val searchFiles = RegexPatternValidationCheck.
-    collectSearchFiles(testDirectoryPath, allowedDirectory)
-    val supportLibraryRegexObj = fileContentChecks.get(0)
-    val scriptResult = RegexPatternValidationCheck.checkProhibitedContent(
-      repoPath = testDirectoryPath,
-      searchFiles = searchFiles,
-      fileNameRegexString = supportLibraryRegexObj.getFilenameRegex(),
-      prohibitedContentRegexString = supportLibraryRegexObj.getProhibitedContentRegex(),
-      errorToShow = supportLibraryRegexObj.getFailureMessage()
-    )
+  fun test_fileContent_noProhibitedSupportLibraryImport_scriptShouldPass() {
+    val fileContainsNoSuppotLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
 
-    assertEquals(expected = true, actual = scriptResult)
+    runScript()
   }
 
+  @Test
+  fun test_fileContent_useProhibitedSupportLibraryImport_scriptShouldFail() {
+    val prohibitedContent = "import android.support.v7.app"
+    val fileContainsSuppotLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
+    fileContainsSuppotLibraryImport.writeText(prohibitedContent)
+
+    expectScriptFailure()
+
+    runScript()
+  }
+
+  fun runScript(
+    testDirectoryPath: String = tempFolder.getRoot().toString(),
+    allowedDirectories: Array<String> = arrayOf("testfiles")) {
+    RegexPatternValidationCheck.main(
+      testDirectoryPath,
+      *allowedDirectories
+    )
+  }
+
+  fun expectScriptFailure() {
+    thrown.expect(java.lang.Exception::class.java)
+    thrown.expectMessage("REGEX PATTERN CHECKS FAILED")
+  }
 }

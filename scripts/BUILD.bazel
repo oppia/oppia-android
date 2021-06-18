@@ -33,12 +33,7 @@ kt_jvm_test(
     name = "test_pattern_validation_check",
     testonly = True,
     srcs = ["src/test/org/oppia/android/scripts/RegexPatternValidationCheckTest.kt"],
-    data = [
-        "src/test/testfiles/filecontent/fail/SupportLibraryImportUsage.kt",
-        "src/test/testfiles/filecontent/pass/NoSupportLibraryImportUsage.kt",
-        "src/test/testfiles/filenamepattern/fail/testrepo/data/src/main/ProhibitedFilenamePatternActivity.kt",
-        "src/test/testfiles/filenamepattern/pass/testrepo/app/src/main/ValidFilenamePatternActivity.kt",
-    ] + REGEX_PATTERN_CHECK_ASSETS,
+    data = REGEX_PATTERN_CHECK_ASSETS,
     test_class = "org.oppia.android.scripts.RegexPatternValidationCheckTest",
     deps = [
         ":pattern_validation_lib",
