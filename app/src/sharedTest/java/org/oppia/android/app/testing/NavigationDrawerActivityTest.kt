@@ -406,7 +406,7 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_dev_switchProfile_cancel_devIsSelected() {
+  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -545,7 +545,7 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_dev_switchProfile_cancel_configChange_devIsSelected() {
+  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -654,7 +654,7 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_dev_pressBack_homeIsSelected() {
+  fun testNavDrawer_openNavDrawer_debug_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -757,7 +757,7 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_dev_pressBack_configChange_homeIsSelected() {
+  fun testNavDrawer_openNavDrawer_debug_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -772,7 +772,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withDevMode_openNavDrawer_devOptionsIsDisplayed() {
+  fun testNavDrawer_inDebugMode_openNavDrawer_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -782,7 +782,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withDevMode_configChange_devOptionsIsDisplayed() {
+  fun testNavDrawer_inDebugMode_configChange_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
@@ -794,7 +794,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withDevMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
+  fun testNavDrawer_inDebugMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
         internalProfileId
@@ -809,7 +809,7 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
-  fun testNavDrawer_withOutDevMode_devOptionsIsNotDisplayed() {
+  fun testNavDrawer_notInDebugMode_devOptionsIsNotDisplayed() {
     ApplicationProvider.getApplicationContext<TestApplication>().disableDebugMode = true
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
