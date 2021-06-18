@@ -6,17 +6,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TextInputEqualsRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -32,7 +31,7 @@ class TextInputEqualsRuleClassifierProviderTest {
   private val STRING_VALUE_THIS = createString(value = "this")
   private val STRING_VALUE_A_TEST = createString(value = "a test")
   private val STRING_VALUE_NOT_A_TEST = createString(value = "not a test")
-  private val INT_VALUE_TEST_NON_NEGATIVE = createNonNegativeInt(value = 1)
+  private val INT_VALUE_TEST_NON_NEGATIVE = createUnsingnedInteger(value = 1)
 
   private val STRING_VALUE_TEST_UPPERCASE_INPUT_SET =
     createTranslatableSetOfNormalizedString("TEST")

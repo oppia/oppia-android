@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,8 +15,6 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -24,17 +24,14 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_TEST_5 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 5
     )
   private val WHOLE_NUMBER_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 2
     )
-  private val NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2 =
-    InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = true,
+  private val NEGATIVE_INTEGER_NUMBER_VALUE_TEST_2 =
+    InteractionObjectTestBuilder.createSignedInt(
       value = 2
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
@@ -124,8 +121,8 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   @Test
-  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeWholeNumber2Input_doesNotMatch() {
-    val inputs = mapOf("f" to NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2)
+  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeIntegerNumber2Input_doesNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_INTEGER_NUMBER_VALUE_TEST_2)
     val answer = WHOLE_NUMBER_VALUE_TEST_2
 
     val matches =

@@ -6,17 +6,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -25,7 +24,7 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
 
-  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
+  private val NON_NEGATIVE_VALUE_0 = createUnsingnedInteger(value = 0)
   private val ITEM_SET_1_ITEMS_12 = listOf("content_id_1", "content_id_2")
   private val ITEM_SET_1_ITEMS_123 = listOf("content_id_1", "content_id_2", "content_id_3")
   private val ITEM_SET_1_ITEM_1 = listOf("content_id_1")

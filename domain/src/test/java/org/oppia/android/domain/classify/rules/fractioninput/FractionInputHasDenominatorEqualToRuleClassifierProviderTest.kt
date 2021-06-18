@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,8 +16,6 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [FractionInputHasDenominatorEqualToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -25,7 +25,6 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
 
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false,
       value = 123
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
@@ -41,11 +40,11 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
       denominator = 4
     )
   private val NON_NEGATIVE_VALUE_TEST_1 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 1
     )
   private val NON_NEGATIVE_VALUE_TEST_2 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 2
     )
 

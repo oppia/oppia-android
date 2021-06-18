@@ -6,18 +6,17 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [DragDropSortInputHasElementXBeforeElementYClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -29,7 +28,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   private val VALID_CONTENT_ID_1 = createTranslatableHtmlContentId(contentId = "content_id_1")
   private val VALID_CONTENT_ID_2 = createTranslatableHtmlContentId(contentId = "content_id_2")
   private val INVALID_CONTENT_ID = createTranslatableHtmlContentId(contentId = "invalid_content_id")
-  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
+  private val NON_NEGATIVE_VALUE_1 = createUnsingnedInteger(value = 1)
   private val LIST_OF_SETS_OF_CONTENT_IDS =
     createListOfSetsOfTranslatableHtmlContentIds(
       listOf("content_id_1"), listOf("content_id_2"), listOf("content_id_3")
