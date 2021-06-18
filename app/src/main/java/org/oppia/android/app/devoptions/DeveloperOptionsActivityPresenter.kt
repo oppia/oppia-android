@@ -60,7 +60,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   }
 
   fun forceCrash() {
-    throw RuntimeException(activity.getString(R.string.force_crash_app))
+    throw RuntimeException(activity.getString(R.string.force_crash_occurred))
   }
 
   fun handleOnSaveInstanceState(outState: Bundle) {
