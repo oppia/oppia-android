@@ -39,6 +39,22 @@ val MavenDepsList = mutableListOf<MavenDependency>()
 val linkset = mutableSetOf<String>()
 val nolicenseSet = mutableSetOf<String>()
 
+fun runMavenRepinCommand() {
+  val processBuilder = ProcessBuilder()
+  val repinCommand = "REPIN=1 bazel run @unpinned_maven//:pin"
+  processBuilder.command("bash", "-c", repinCommand)
+  try {
+    val process = processBuilder.start()
+    val exitValue = process.waitFor();
+    if (exitValue != 0) {
+      throw Exception("An error was encountered while running the $repinCommand command.")
+    }
+  } catch (e: Exception) {
+    e.printStackTrace();
+    throw Exception("An error was encountered while running the $repinCommand command.")
+  }
+}
+
 fun findBackUpForLicenseLinks() {
   val backupJson = File("scripts/maven", "backup_license_links.json")
   val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
@@ -86,7 +102,7 @@ fun parseArtifactName(artifactName: String): String {
   return parsedArtifactNameBuilder.toString()
 }
 
-fun runBashCommand(command: String) {
+fun runBazelQueryCommand(command: String) {
   val processBuilder = ProcessBuilder()
   processBuilder.command("bash", "-c", command)
   try {
@@ -157,7 +173,6 @@ fun showFinalDepsList() {
   }
 }
 
-var count = 0
 var countInvalidPomUrl = 0;
 var mavenDependencyItemIndex = 0
 var countDepsWithoutLicenseLinks = 0
@@ -180,7 +195,6 @@ fun getLicenseLinksfromPOM() {
     var backupLicenseLinksList = mutableListOf<String>()
     try {
       val pomfile = URL(pomFileUrl).openStream().bufferedReader().readText()
-      ++count
       val pomText = pomfile.toString()
       var cursor = -1
       var end = 0
@@ -297,15 +311,15 @@ fun getLicenseLinksfromPOM() {
   }
 }
 
-runBashCommand(bazelQueryCommand)
+runMavenRepinCommand()
+runBazelQueryCommand(bazelQueryCommand)
 findBackUpForLicenseLinks()
 readMavenInstall()
 getLicenseLinksfromPOM()
 
 
-println("count = $count")
-println("invalid = $countInvalidPomUrl")
-println("nolicense = $countDepsWithoutLicenseLinks")
+println("Number of deps with Invalid URL = $countInvalidPomUrl")
+println("Number of deps for which licenses have to be provided manually = $countDepsWithoutLicenseLinks")
 println(linkset)
 println(nolicenseSet)
 
@@ -318,7 +332,6 @@ if (writeBackup) {
     val json = adapter.indent("  ").toJson(backupDependency)
     out.println(json)
   }
-  exitProcess(1)
 }
 
 if(scriptFailed) {
