@@ -53,6 +53,7 @@ kt_jvm_library(
 
 #kt_jvm_library(
 #    name = "generate_maven_deps_list",
+#    srcs = ["gener"]
 #    deps = [
 #        ":backup_dependency",
 #        ":dependencies",
@@ -67,7 +68,8 @@ kt_jvm_library(
 kt_jvm_test(
     name = "maven_script_test",
     testonly = True,
-    test_class = "test.MavenScriptTest",
+    srcs = ["MavenScriptTest.kt"],
+    test_class = "MavenScriptTest",
     deps = [
         ":backup_dependency",
         ":dependencies",
