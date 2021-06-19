@@ -43,6 +43,14 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       intent.putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
       return intent
     }
+
+    fun getAppLanguagePreferenceTitleExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
+    }
+
+    fun getAppLanguagePreferenceSummaryValueExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
+    }
   }
 
   override fun onBackPressed() {
