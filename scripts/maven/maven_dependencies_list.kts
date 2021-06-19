@@ -87,17 +87,21 @@ fun findBackUpForLicenseLinks() {
 }
 
 fun parseArtifactName(artifactName: String): String {
-  var indexOfColon = artifactName.length - 1
-  while (artifactName.isNotEmpty() && artifactName[indexOfColon] != ':') {
-    indexOfColon--
+  var colonIndex = artifactName.length - 1
+  while (artifactName.isNotEmpty() && artifactName[colonIndex] != ':') {
+    colonIndex--
   }
-  var artifactNameWithoutVersion = artifactName.substring(0, indexOfColon)
+  var artifactNameWithoutVersion = artifactName.substring(0, colonIndex)
   val parsedArtifactNameBuilder = StringBuilder()
-  for (i in artifactNameWithoutVersion.indices) {
-    if (artifactNameWithoutVersion[i] == '.' || artifactNameWithoutVersion[i] == ':' || artifactNameWithoutVersion[i] == '-') parsedArtifactNameBuilder.append(
-      '_'
-    )
-    else parsedArtifactNameBuilder.append(artifactNameWithoutVersion[i])
+  for (index in artifactNameWithoutVersion.indices) {
+    if (artifactNameWithoutVersion[index] == '.' || artifactNameWithoutVersion[index] == ':' ||
+      artifactNameWithoutVersion[index] == '-') {
+        parsedArtifactNameBuilder.append(
+        '_'
+      )
+    } else {
+      parsedArtifactNameBuilder.append(artifactNameWithoutVersion[index])
+    }
   }
   return parsedArtifactNameBuilder.toString()
 }
@@ -117,10 +121,10 @@ fun runBazelQueryCommand(command: String) {
     }
     bazelQueryDepsNames.sort()
 
-    val exitValue = process.waitFor();
+    val exitValue = process.waitFor()
     if (exitValue != 0) {
-      println("There was some unexpected error.")
-      exitProcess(1)
+      throw Exception("Unexpected error.")
+      System.err.println("There was some unexpected error while running the bazel Query command.")
     }
   } catch (e: Exception) {
     e.printStackTrace();
@@ -139,9 +143,9 @@ fun readMavenInstall() {
 
   mavenInstallDependencyList?.forEach { dep ->
     var artifactName = dep.coord.toString()
-    val artifactParsedName = parseArtifactName(artifactName)
-    if (bazelQueryDepsNames.contains(artifactParsedName)) {
-      parsedArtifactsList.add(artifactParsedName)
+    val parsedArtifactName = parseArtifactName(artifactName)
+    if (bazelQueryDepsNames.contains(parsedArtifactName)) {
+      parsedArtifactsList.add(parsedArtifactName)
       finalDependenciesList.add(dep)
     }
   }
