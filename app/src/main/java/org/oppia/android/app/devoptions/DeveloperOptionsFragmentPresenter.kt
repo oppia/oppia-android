@@ -12,7 +12,6 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.DeveloperOptionsFragmentBinding
 import org.oppia.android.databinding.DeveloperOptionsModifyLessonProgressViewBinding
@@ -31,7 +30,6 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
   private lateinit var binding: DeveloperOptionsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var developerOptionsViewModel: DeveloperOptionsViewModel
@@ -47,8 +45,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
     )
 
     internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    developerOptionsViewModel.setProfileId(profileId)
+    developerOptionsViewModel.setInternalProfileId(internalProfileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 

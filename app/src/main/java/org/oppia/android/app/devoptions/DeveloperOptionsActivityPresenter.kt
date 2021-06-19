@@ -9,6 +9,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.databinding.DeveloperOptionsActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 
 /** The presenter for [DeveloperOptionsActivity]. */
 @ActivityScope
@@ -57,6 +58,15 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.developer_options_fragment_placeholder
       ) as DeveloperOptionsFragment?
+  }
+
+  fun loadMarkChaptersCompleted() {
+    lastLoadedFragment = MARK_CHAPTERS_COMPLETED_FRAGMENT
+    getDeveloperOptionsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.developer_options_fragment_placeholder,
+      MarkChaptersCompletedFragment()
+    ).commitNow()
   }
 
   fun handleOnSaveInstanceState(outState: Bundle) {

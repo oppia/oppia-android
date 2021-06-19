@@ -55,6 +55,7 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
@@ -94,6 +95,7 @@ interface ActivityComponent {
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
+  fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)

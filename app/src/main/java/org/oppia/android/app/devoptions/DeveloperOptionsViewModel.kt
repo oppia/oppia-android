@@ -9,7 +9,6 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
 
 /** [ViewModel] for [DeveloperOptionsFragment]. */
@@ -18,7 +17,9 @@ class DeveloperOptionsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
 ) {
-  private lateinit var userProfileId: ProfileId
+  private val routeToMarkChaptersCompletedListener =
+    activity as RouteToMarkChaptersCompletedListener
+  private var internalProfileId: Int = -1
   val selectedFragmentIndex = ObservableField<Int>(1)
 
   val developerOptionsList: List<DeveloperOptionsItemViewModel> by lazy {
@@ -27,13 +28,17 @@ class DeveloperOptionsViewModel @Inject constructor(
 
   private fun processDeveloperOptionsList(): List<DeveloperOptionsItemViewModel> {
     val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
-      mutableListOf(DeveloperOptionsModifyLessonProgressViewModel())
+      mutableListOf(
+        DeveloperOptionsModifyLessonProgressViewModel(
+          routeToMarkChaptersCompletedListener
+        )
+      )
     itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
     itemViewModelList.add(DeveloperOptionsOverrideAppBehaviorsViewModel())
     return itemViewModelList
   }
 
-  fun setProfileId(profileId: ProfileId) {
-    userProfileId = profileId
+  fun setInternalProfileId(internalProfileId: Int) {
+    this.internalProfileId = internalProfileId
   }
 }

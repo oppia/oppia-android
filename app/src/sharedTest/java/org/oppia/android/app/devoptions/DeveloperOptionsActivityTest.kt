@@ -144,7 +144,7 @@ class DeveloperOptionsActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    Truth.assertThat(title).isEqualTo(context.getString(R.string.developer_options_title))
+    Truth.assertThat(title).isEqualTo(context.getString(R.string.developer_options_activity_title))
   }
 
   @Test

@@ -53,6 +53,7 @@ import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent(
@@ -93,6 +94,7 @@ interface FragmentComponent {
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
