@@ -1,0 +1,81 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
+
+kt_jvm_library(
+    name = "backup_dependency",
+    srcs = ["BackupDependency.kt"],
+    deps = [
+        ":license",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+kt_jvm_library(
+    name = "dependencies",
+    srcs = ["Dependencies.kt"],
+    deps = [
+        ":dependency",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+kt_jvm_library(
+    name = "dependency",
+    srcs = ["Dependency.kt"],
+    deps = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+kt_jvm_library(
+    name = "dependency_tree",
+    srcs = ["DependencyTree.kt"],
+    deps = [
+        ":dependencies",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+kt_jvm_library(
+    name = "license",
+    srcs = ["License.kt"],
+    deps = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+kt_jvm_library(
+    name = "maven_dependency",
+    srcs = ["MavenDependency.kt"],
+    deps = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+    ],
+)
+
+#kt_jvm_library(
+#    name = "generate_maven_deps_list",
+#    deps = [
+#        ":backup_dependency",
+#        ":dependencies",
+#        ":dependency",
+#        ":dependency_tree",
+#        ":license",
+#        ":maven_dependency",
+#        "//third_party:com_squareup_moshi_moshi-kotlin",
+#    ],
+#)
+
+kt_jvm_test(
+    name = "maven_script_test",
+    testonly = True,
+    test_class = "test.MavenScriptTest",
+    deps = [
+        ":backup_dependency",
+        ":dependencies",
+        ":dependency",
+        ":dependency_tree",
+        ":license",
+        ":maven_dependency",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
