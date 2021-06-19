@@ -7,6 +7,7 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -55,7 +56,6 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])

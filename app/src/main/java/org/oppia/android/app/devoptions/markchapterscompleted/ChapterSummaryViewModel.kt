@@ -11,6 +11,4 @@ class ChapterSummaryViewModel(
   val chapterName: String,
   val storyId: String,
   val index: Int,
-) : ObservableViewModel() {
-
-}
+) : ObservableViewModel()

@@ -2,7 +2,6 @@ package org.oppia.android.app.devoptions.markchapterscompleted
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
@@ -13,6 +12,7 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The ViewModel for [MarkChaptersCompletedActivity]. */
 @FragmentScope

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
+import javax.inject.Inject
 
 /** Fragment to display all chapters and provide functionality to mark them completed. */
 class MarkChaptersCompletedFragment : InjectableFragment() {

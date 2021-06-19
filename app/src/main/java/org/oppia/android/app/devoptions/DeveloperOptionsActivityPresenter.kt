@@ -6,10 +6,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.databinding.DeveloperOptionsActivityBinding
 import javax.inject.Inject
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 
 /** The presenter for [DeveloperOptionsActivity]. */
 @ActivityScope

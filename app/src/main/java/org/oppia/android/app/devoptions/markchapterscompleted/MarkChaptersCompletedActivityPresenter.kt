@@ -1,9 +1,9 @@
 package org.oppia.android.app.devoptions.markchapterscompleted
 
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import javax.inject.Inject
 
 /** The presenter for [MarkChaptersCompletedActivity]. */
 @ActivityScope
