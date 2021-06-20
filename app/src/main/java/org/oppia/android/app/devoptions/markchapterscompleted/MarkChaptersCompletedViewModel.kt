@@ -3,16 +3,14 @@ package org.oppia.android.app.devoptions.markchapterscompleted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** The ViewModel for [MarkChaptersCompletedActivity]. */
 @FragmentScope
@@ -51,40 +49,15 @@ class MarkChaptersCompletedViewModel @Inject constructor(
   }
 
   private fun processTopicList(topicList: TopicList): List<StorySummaryViewModel> {
+    itemList.clear()
     topicList.topicSummaryList.forEach { topicSummary ->
       val topicId = topicSummary.topicId
-      val topicResultLiveData = topicController.getTopic(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        topicId
-      ).toLiveData()
-      val topicLiveData = Transformations.map(topicResultLiveData, ::processTopicResult)
-      val storyList = Transformations.map(topicLiveData, ::processTopic)
-      itemList.plus(storyList)
-    }
-    return itemList
-  }
-
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      oppiaLogger.e(
-        "MarkChaptersCompletedFragment",
-        "Failed to retrieve topic",
-        topic.getErrorOrNull()!!
-      )
-    }
-    return topic.getOrDefault(Topic.getDefaultInstance())
-  }
-
-  private fun processTopic(topic: Topic): List<StorySummaryViewModel> {
-    val topicList: MutableList<StorySummaryViewModel> = ArrayList()
-    if (topic.storyList.isNotEmpty()) {
-      for (storySummary in topic.storyList) {
-        topicList.add(
-          StorySummaryViewModel(storySummary)
-        )
+      val topic = topicController.retrieveTopic(topicId = topicId)
+      topic.storyList.forEach { storySummary ->
+        itemList.add(StorySummaryViewModel(storySummary))
       }
     }
-    return topicList
+    return itemList
   }
 
   fun setInternalProfileId(internalProfileId: Int) {
