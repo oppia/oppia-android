@@ -28,7 +28,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -399,7 +399,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -424,7 +424,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
     }
   }
 
@@ -538,7 +538,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -565,7 +565,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
     }
   }
 
