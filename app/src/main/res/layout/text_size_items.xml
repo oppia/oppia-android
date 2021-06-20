@@ -4,7 +4,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.options.LanguageItemViewModel" />
+      type="org.oppia.android.app.options.TextSizeItemViewModel" />
   </data>
 
   <LinearLayout
@@ -14,32 +14,32 @@
     android:background="@drawable/general_item_background_border_light"
     android:gravity="center_vertical"
     android:minHeight="48dp"
-    android:onClick="@{() -> viewModel.languageRadioButtonListener.onLanguageSelected(viewModel.language)}"
+    android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.textSizeName)}"
     android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
-      android:id="@+id/language_radio_button"
+      android:id="@+id/text_size_radio_button"
       style="@style/LanguageRadioButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginEnd="24dp"
-      android:checked="@{viewModel.isLanguageSelected}"
+      android:checked="@{viewModel.isTextSizeSelected}"
       android:clickable="false"
       android:focusable="false"
-      android:labelFor="@id/language_text_view"
+      android:labelFor="@id/text_size_text_view"
       android:minWidth="20dp"
       android:minHeight="20dp" />
 
     <TextView
-      android:id="@+id/language_text_view"
+      android:id="@+id/text_size_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.language}"
+      android:text="@{viewModel.textSizeName}"
       android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp" />
+      android:textSize="@{viewModel.textSize}" />
   </LinearLayout>
 </layout>
