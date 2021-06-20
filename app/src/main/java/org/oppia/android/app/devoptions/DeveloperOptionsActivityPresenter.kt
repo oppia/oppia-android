@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -16,16 +15,14 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
-  private lateinit var lastLoadedFragment: String
   private lateinit var binding: DeveloperOptionsActivityBinding
 
-  fun handleOnCreate(lastLoadedFragment: String) {
+  fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.developer_options_activity
     )
     setUpNavigationDrawer()
-    this.lastLoadedFragment = lastLoadedFragment
     val previousFragment = getDeveloperOptionsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
@@ -61,9 +58,5 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 
   fun forceCrash() {
     throw RuntimeException(activity.getString(R.string.force_crash_occurred))
-  }
-
-  fun handleOnSaveInstanceState(outState: Bundle) {
-    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
   }
 }
