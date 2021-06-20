@@ -9,8 +9,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
-import javax.inject.Inject
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The ViewModel for [MarkChaptersCompletedActivity]. */
 @FragmentScope
