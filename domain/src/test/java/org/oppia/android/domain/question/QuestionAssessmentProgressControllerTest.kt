@@ -1010,6 +1010,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
@@ -1038,6 +1039,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     viewSolutionForQuestion2()
@@ -1067,6 +1069,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answers
     submitIncorrectAnswerForQuestion2(4.0)
     submitIncorrectAnswerForQuestion2(4.0)
     submitIncorrectAnswerForQuestion2(4.0)
@@ -1126,17 +1129,20 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answers
     submitIncorrectAnswerForQuestion1(2)
     submitIncorrectAnswerForQuestion1(2)
     submitIncorrectAnswerForQuestion1(2)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1170,16 +1176,19 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewSolutionForQuestion1()
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1213,11 +1222,13 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
@@ -1254,6 +1265,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     viewHintForQuestion1(1)
@@ -1294,17 +1306,19 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewSolutionForQuestion1()
     submitCorrectAnswerForQuestion1()
 
     // Question 2
-    // submit question 2 wrong answer
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1353,16 +1367,19 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answers
     submitIncorrectAnswerForQuestion1(2)
     submitIncorrectAnswerForQuestion1(2)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1417,6 +1434,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     viewHintForQuestion1(1)
@@ -1452,6 +1470,7 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion2()
 
     // Question 0
+    // Submit question 0 wrong answers
     submitIncorrectAnswerForQuestion0("123/456")
     submitIncorrectAnswerForQuestion0("123/456")
     submitCorrectAnswerForQuestion0()
@@ -1480,6 +1499,7 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion2()
 
     // Question 0
+    // Submit question 0 wrong answers
     submitIncorrectAnswerForQuestion0("4/5")
     submitIncorrectAnswerForQuestion0("123/456")
     submitCorrectAnswerForQuestion0()
