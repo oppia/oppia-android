@@ -114,5 +114,6 @@ jobs:
           bazel run //scripts:xml_syntax_check -- $(pwd) app data utility domain
 
       - name: Testfile Presence Check
+        if: always()
         run: |
           bazel run //scripts:test_file_check -- $(pwd) app data domain testing utility scripts
