@@ -61,6 +61,7 @@
       style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
+      android:onClick="@{(v) -> viewModel.onMarkStoriesCompletedClicked()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"

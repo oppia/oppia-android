@@ -19,6 +19,8 @@ class DeveloperOptionsViewModel @Inject constructor(
 ) {
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
+  private val routeToMarkStoriesCompletedListener =
+    activity as RouteToMarkStoriesCompletedListener
   private var internalProfileId: Int = -1
   val selectedFragmentIndex = ObservableField<Int>(1)
 
@@ -30,7 +32,8 @@ class DeveloperOptionsViewModel @Inject constructor(
     val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
       mutableListOf(
         DeveloperOptionsModifyLessonProgressViewModel(
-          routeToMarkChaptersCompletedListener
+          routeToMarkChaptersCompletedListener,
+          routeToMarkStoriesCompletedListener
         )
       )
     itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
