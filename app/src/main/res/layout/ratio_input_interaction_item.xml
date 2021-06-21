@@ -11,15 +11,22 @@
       type="org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
   </data>
 
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_margin_end : @dimen/interaction_item_question_view_margin_end}"
+    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_start : @dimen/interaction_item_question_view_margin_start}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}">
+
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_margin_end : @dimen/interaction_item_question_view_margin_end}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_start : @dimen/interaction_item_question_view_margin_start}"
-    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}">
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <org.oppia.android.app.customview.interaction.RatioInputInteractionView
       android:id="@+id/ratio_input_interaction_view"
@@ -35,4 +42,5 @@
       android:text="@{viewModel.errorMessage}"
       android:visibility="@{viewModel.errorMessage.length()>0? View.VISIBLE : View.GONE}" />
   </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
