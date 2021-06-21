@@ -109,6 +109,7 @@ jobs:
           bazel run //scripts:pattern_validation_check -- $(pwd) app data utility domain
 
       - name: XML Syntax Validation Check
+        if: always()
         run: |
           bazel run //scripts:xml_syntax_check -- $(pwd) app data utility domain
 
