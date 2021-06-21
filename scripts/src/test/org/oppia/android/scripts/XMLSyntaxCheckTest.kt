@@ -8,6 +8,7 @@ import org.junit.Rule
 import org.junit.Before
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.ExpectedException
+import org.oppia.android.scripts.ScriptResultConstants
 
 class XMLSyntaxCheckTest {
   @Rule
@@ -24,7 +25,7 @@ class XMLSyntaxCheckTest {
   }
 
   @Test
-  fun test_correctXML_scriptCheckShouldPass(){
+  fun testXmlSyntax_validXML_xmlSyntaxIsCorrect(){
     val prohibitedContent =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
       "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
@@ -40,7 +41,7 @@ class XMLSyntaxCheckTest {
   }
 
   @Test
-  fun test_brokentXML_scriptCheckShouldFail(){
+  fun testXmlSyntax_brokenXML_xmlSyntaxIsInCorrect(){
     val prohibitedContent =
       "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
@@ -63,6 +64,6 @@ class XMLSyntaxCheckTest {
 
   fun expectScriptFailure() {
     thrown.expect(java.lang.Exception::class.java)
-    thrown.expectMessage("XML SYNTAX CHECK FAILED")
+    thrown.expectMessage(ScriptResultConstants.XML_SYNTAX_CHECK_FAILED)
   }
 }
