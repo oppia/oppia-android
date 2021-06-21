@@ -1,6 +1,6 @@
 package org.oppia.android.scripts
 
-class ExemptionsList {
+object ExemptionsList {
 
   val TEST_FILE_CHECK_EXEMPTIONS_LIST = arrayOf(
     "TestCoroutineDispatcherTestBase.kt",

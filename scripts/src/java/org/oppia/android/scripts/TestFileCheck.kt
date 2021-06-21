@@ -2,6 +2,7 @@ package org.oppia.android.scripts
 
 import java.io.File
 import org.oppia.android.scripts.ExemptionsList
+import org.oppia.android.scripts.ScriptResultConstants
 
 class TestFileCheck {
   companion object {
@@ -23,7 +24,7 @@ class TestFileCheck {
 
       val searchFiles = collectSearchFiles(repoPath,
         allowedDirectories,
-        ExemptionsList().TEST_FILE_CHECK_EXEMPTIONS_LIST)
+        ExemptionsList.TEST_FILE_CHECK_EXEMPTIONS_LIST)
 
       var scriptFailedFlag = false
 
@@ -44,9 +45,9 @@ class TestFileCheck {
       }
 
       if (scriptFailedFlag) {
-        throw Exception("TEST FILE CHECK FAILED")
+        throw Exception(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
       } else {
-        println("TEST FILE CHECK PASSED")
+        println(ScriptResultConstants.TEST_FILE_CHECK_PASSED)
       }
     }
 
@@ -74,6 +75,15 @@ class TestFileCheck {
       return validPaths
     }
 
+    /**
+     * Checks if a layer is allowed to be analyzed for the check or not.
+     * It only allows the layers listed in allowedDirectories
+     * (which is specified from the command line arguments) to be analyzed.
+     *
+     * @param pathString the path of the repo.
+     * @param allowedDirectories a list of all the files which needs to be checked.
+     * @return [Boolean] check failed or passed
+     */
     fun checkIfAllowedDirectory(
       pathString: String,
       allowedDirectories: MutableList<String>

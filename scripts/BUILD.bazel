@@ -83,6 +83,7 @@ kt_jvm_library(
     testonly = True,
     srcs = [
         "src/java/org/oppia/android/scripts/ExemptionsList.kt",
+        "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
         "src/java/org/oppia/android/scripts/TestFileCheck.kt",
     ],
 )

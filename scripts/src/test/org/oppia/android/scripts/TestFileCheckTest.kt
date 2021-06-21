@@ -8,6 +8,7 @@ import org.junit.Rule
 import org.junit.Before
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.ExpectedException
+import org.oppia.android.scripts.ScriptResultConstants
 
 class TestFileCheckTest {
   @Rule
@@ -24,7 +25,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun test_testFilePresent_scriptCheckShouldPass(){
+  fun testTestFileCheck_addTestFile_testFileIsPresent(){
     val tempProdFile = tempFolder.newFile("testfiles/ProdFile.kt")
     val tempProdFileTest = tempFolder.newFile("testfiles/ProdFileTest.kt")
 
@@ -32,7 +33,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun test_testFileNotPresent_scriptCheckShouldFail(){
+  fun testTestFileCheck_missTestFile_testFileIsNotPresent(){
     val tempProdFile1 = tempFolder.newFile("testfiles/ProdFile1.kt")
     val tempProdFile1Test = tempFolder.newFile("testfiles/ProdFile1Test.kt")
     val tempProdFile2 = tempFolder.newFile("testfiles/ProdFile2.kt")
@@ -48,6 +49,6 @@ class TestFileCheckTest {
 
   fun expectScriptFailure() {
     thrown.expect(java.lang.Exception::class.java)
-    thrown.expectMessage("TEST FILE CHECK FAILED")
+    thrown.expectMessage(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
   }
 }
