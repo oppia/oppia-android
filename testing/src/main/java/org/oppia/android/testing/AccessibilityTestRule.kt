@@ -7,7 +7,7 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 // TODO(#3251): Enable AccessibilityChecks
-
+private const val DEFAULT_ENABLED_STATE = true
 /**
  * JUnit rule to enable [AccessibilityChecks] on Espresso. This does not work when run on Robolectric.
  *
@@ -17,8 +17,8 @@ class AccessibilityTestRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {
-        val isDisabled = description.isAccessibilityChecksDisabled()
-        if (getCurrentPlatform() == TestPlatform.ESPRESSO && !isDisabled) {
+        val isEnabled = description.areAccessibilityChecksEnabled()
+        if (getCurrentPlatform() == TestPlatform.ESPRESSO && isEnabled) {
           AccessibilityChecks.enable().setRunChecksFromRootView(true)
         }
         base?.evaluate()
@@ -35,18 +35,18 @@ class AccessibilityTestRule : TestRule {
   }
 
   private companion object {
-    private fun Description?.isAccessibilityChecksDisabled(): Boolean {
-      val methodAccessibilityStatus = this?.getAccessibilityStatus()
-      val classAccessibilityStatus = this?.testClass?.getAccessibilityStatus()
-      return methodAccessibilityStatus ?: classAccessibilityStatus ?: /* defaultValue= */ false
+    private fun Description?.areAccessibilityChecksEnabled(): Boolean {
+      val methodAccessibilityStatus = this?.areAccessibilityTestsEnabledForMethod()
+      val classAccessibilityStatus = this?.testClass?.areAccessibilityTestsEnabledForClass()
+      return methodAccessibilityStatus ?: classAccessibilityStatus ?: DEFAULT_ENABLED_STATE
     }
 
-    private fun Description.getAccessibilityStatus(): Boolean {
-      return getAnnotation(DisableAccessibilityChecks::class.java) != null
+    private fun Description.areAccessibilityTestsEnabledForMethod(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
 
-    private fun <T> Class<T>.getAccessibilityStatus(): Boolean {
-      return getAnnotation(DisableAccessibilityChecks::class.java) != null
+    private fun <T> Class<T>.areAccessibilityTestsEnabledForClass(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
   }
 }
