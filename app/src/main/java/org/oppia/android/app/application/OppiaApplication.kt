@@ -17,7 +17,7 @@ class OppiaApplication :
   Configuration.Provider {
 
   /** The root [ApplicationComponent]. */
-  private val component by lazy {
+  private val component: ApplicationComponent by lazy {
     DaggerApplicationComponent.builder()
       .setApplication(this)
       .build()
