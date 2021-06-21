@@ -55,7 +55,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
-      android:contentDescription="@{accessibleAnswer ?? submittedAnswer}"
+      android:contentDescription="@{viewModel.isCorrectAnswer() ? String.format(@string/correct_submitted_answer_with_append, submittedAnswer) : String.format(@string/incorrect_submitted_answer_with_append, submittedAnswer)}"
       android:padding="12dp"
       android:text="@{submittedAnswer}"
       android:textColor="@color/oppiaPrimaryText"
@@ -67,19 +67,27 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/submitted_answer_recycler_view"
+    <LinearLayout
+      android:id="@+id/submitted_answer_recycler_view_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/submitted_answer_background"
-      android:paddingStart="8dp"
-      android:paddingEnd="8dp"
-      android:visibility="gone"
-      app:itemDecorator="@{@drawable/divider}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      android:orientation="vertical"
+      android:contentDescription="@{viewModel.isCorrectAnswer ? @string/correct_submitted_answer : @string/incorrect_submitted_answer}"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/submitted_answer_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/submitted_answer_background"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:visibility="gone"
+        app:itemDecorator="@{@drawable/divider}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+    </LinearLayout>
 
     <ImageView
       android:id="@+id/answer_tick"
@@ -87,6 +95,7 @@
       android:layout_height="@dimen/answer_tick_size"
       android:layout_gravity="center_vertical"
       android:layout_marginStart="@dimen/answer_tick_margin"
+      android:importantForAccessibility="no"
       android:src="@drawable/ic_check_primary"
       android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
