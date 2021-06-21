@@ -2,6 +2,35 @@ package org.oppia.android.scripts
 
 object ExemptionsList {
 
+  val ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST = arrayOf(
+    ".app.home.HomeActivity",
+    ".app.home.recentlyplayed.RecentlyPlayedActivity",
+    ".app.mydownloads.MyDownloadsActivity",
+    ".app.player.state.testing.StateFragmentTestActivity",
+    ".app.profileprogress.ProfilePictureActivity",
+    ".app.settings.profile.ProfileEditActivity",
+    ".app.splash.SplashActivity",
+    ".app.testing.AudioFragmentTestActivity",
+    ".app.testing.BindableAdapterTestActivity",
+    ".app.testing.ConceptCardFragmentTestActivity",
+    ".app.testing.DragDropTestActivity",
+    ".app.testing.ExplorationInjectionActivity",
+    ".app.testing.ExplorationTestActivity",
+    ".app.testing.TestFontScaleConfigurationUtilActivity",
+    ".app.testing.HomeFragmentTestActivity",
+    ".app.testing.HtmlParserTestActivity",
+    ".app.testing.HomeTestActivity",
+    ".app.testing.InputInteractionViewTestActivity",
+    ".app.testing.ImageRegionSelectionTestActivity",
+    ".app.testing.NavigationDrawerTestActivity",
+    ".app.testing.ProfileChooserFragmentTestActivity",
+    ".app.testing.TopicTestActivity",
+    ".app.testing.TopicTestActivityForStory",
+    ".app.testing.TopicRevisionTestActivity",
+    ".app.walkthrough.WalkthroughActivity",
+    ".app.testing.LessonThumbnailImageViewTestActivity",
+  )
+
   val TEST_FILE_CHECK_EXEMPTIONS_LIST = arrayOf(
     "TestCoroutineDispatcherTestBase.kt",
     "TestEnvironmentConfig.kt",
@@ -609,5 +638,5 @@ object ExemptionsList {
     "NetworkApiKey.kt",
     "NetworkModule.kt",
     "ExemptionsList.kt"
-    )
+  )
 }

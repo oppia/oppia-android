@@ -12,4 +12,8 @@ object ScriptResultConstants {
   /** TestFileCheck output message constants **/
   val TEST_FILE_CHECK_PASSED: String = "TEST FILE CHECK PASSED"
   val TEST_FILE_CHECK_FAILED: String = "TEST FILE CHECK FAILED"
+
+  /** AccessibilityLabelCheck output message constants **/
+  val ACCESSIBILITY_LABEL_CHECK_PASSED: String = "ACCESSIBILITY LABEL CHECK PASSED"
+  val ACCESSIBILITY_LABEL_CHECK_FAILED: String = "ACCESSIBILITY LABEL CHECK FAILED"
 }

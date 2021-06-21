@@ -98,3 +98,31 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_binary(
+    name = "accessibility_label_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.AccessibilityLabelCheck$Companion",
+    runtime_deps = [":accessibility_label_check_lib"],
+)
+
+kt_jvm_library(
+    name = "accessibility_label_check_lib",
+    testonly = True,
+    srcs = [
+        "src/java/org/oppia/android/scripts/AccessibilityLabelCheck.kt",
+        "src/java/org/oppia/android/scripts/ExemptionsList.kt",
+        "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
+    ],
+)
+
+kt_jvm_test(
+    name = "test_accessibility_label_check",
+    testonly = True,
+    srcs = ["src/test/org/oppia/android/scripts/AccessibilityLabelCheckTest.kt"],
+    test_class = "org.oppia.android.scripts.AccessibilityLabelCheckTest",
+    deps = [
+        ":accessibility_label_check_lib",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
