@@ -128,3 +128,4 @@ class AccessibilityLabelCheckTest {
     thrown.expectMessage(ScriptResultConstants.ACCESSIBILITY_LABEL_CHECK_FAILED)
   }
 }
+
