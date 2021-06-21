@@ -119,7 +119,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks(isDisabled = true) // TODO(#3251): Enable AccessibilityChecks
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
@@ -137,7 +137,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks(isDisabled = true) // TODO(#3251): Enable AccessibilityChecks
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
@@ -160,7 +160,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks(isDisabled = true) // TODO(#3251): Enable AccessibilityChecks
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(

@@ -6,8 +6,11 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
+// TODO(#3251): Enable AccessibilityChecks
+
 /**
- * JUnit rule to enable [AccessibilityChecks] on Espresso.
+ * JUnit rule to enable [AccessibilityChecks] on Espresso. This does not work when run on Robolectric.
+ *
  * Reference: https://developer.android.com/training/testing/espresso/accessibility-checking
  */
 class AccessibilityTestRule : TestRule {
@@ -38,12 +41,12 @@ class AccessibilityTestRule : TestRule {
       return methodAccessibilityStatus ?: classAccessibilityStatus ?: /* defaultValue= */ false
     }
 
-    private fun Description.getAccessibilityStatus(): Boolean? {
-      return getAnnotation(DisableAccessibilityChecks::class.java)?.isDisabled
+    private fun Description.getAccessibilityStatus(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) != null
     }
 
-    private fun <T> Class<T>.getAccessibilityStatus(): Boolean? {
-      return getAnnotation(DisableAccessibilityChecks::class.java)?.isDisabled
+    private fun <T> Class<T>.getAccessibilityStatus(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) != null
     }
   }
 }
