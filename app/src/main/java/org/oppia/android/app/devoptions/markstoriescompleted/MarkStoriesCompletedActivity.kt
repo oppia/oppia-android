@@ -20,7 +20,7 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     internalProfileId = intent.getIntExtra(MARK_STORIES_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
-    title = getString(R.string.developer_options_mark_stories_completed)
+    title = getString(R.string.mark_stories_completed_activity_title)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

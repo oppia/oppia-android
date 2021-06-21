@@ -10,6 +10,7 @@ import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFrag
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
@@ -97,6 +98,7 @@ interface FragmentComponent {
   fun inject(homeFragment: HomeFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
+  fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)

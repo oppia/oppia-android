@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
@@ -20,7 +21,8 @@ const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
 class DeveloperOptionsActivity :
   InjectableAppCompatActivity(),
   RouteToMarkChaptersCompletedListener,
-  RouteToMarkStoriesCompletedListener {
+  RouteToMarkStoriesCompletedListener,
+  RouteToMarkTopicsCompletedListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
   private var internalProfileId = -1
@@ -44,6 +46,13 @@ class DeveloperOptionsActivity :
     startActivity(
       MarkStoriesCompletedActivity
         .createMarkStoriesCompletedIntent(this, internalProfileId)
+    )
+  }
+
+  override fun routeToMarkTopicsCompleted() {
+    startActivity(
+      MarkTopicsCompletedActivity
+        .createMarkTopicsCompletedIntent(this, internalProfileId)
     )
   }
 

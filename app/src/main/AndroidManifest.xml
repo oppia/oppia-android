@@ -207,6 +207,10 @@
       android:name=".app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity"
       android:label="@string/mark_stories_completed_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity"
+      android:label="@string/mark_topics_completed_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
