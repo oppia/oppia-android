@@ -581,7 +581,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1007,7 +1007,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withContentDescription("4 to 5")))
+        .check(matches(withContentDescription("Correct submitted answer: 4 to 5")))
     }
   }
 
