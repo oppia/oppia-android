@@ -104,9 +104,6 @@ dependencies {
   implementation project(':model')
   implementation project(':utility')
 }
-repositories {
-  mavenCentral()
-}
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
 // The below command stops that from happening: https://github.com/google/tink/issues/282

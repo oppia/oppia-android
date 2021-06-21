@@ -51,7 +51,7 @@
       style="@style/StateButtonActive"
       android:background="@{buttonViewModel.canSubmitAnswer ? @drawable/state_button_primary_background : @drawable/state_button_inactive_background}"
       android:button="@drawable/state_button_primary_background"
-      android:clickable="@{buttonViewModel.canSubmitAnswer}"
+      android:enabled="@{buttonViewModel.canSubmitAnswer}"
       android:onClick="@{(v) -> buttonViewModel.submitNavigationButtonListener.onSubmitButtonClicked()}"
       android:text="@string/state_submit_button"
       app:layout_constraintBottom_toBottomOf="parent"

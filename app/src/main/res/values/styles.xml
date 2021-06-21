@@ -94,31 +94,38 @@
   <style name="StateButtonActive" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginRight">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:layout_margin">4dp</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">14sp</item>
   </style>
-
   <!-- PREVIOUS BUTTON STYLE -->
   <style name="PreviousButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:layout_width">48dp</item>
     <item name="android:layout_height">48dp</item>
-    <item name="android:layout_margin">4dp</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginRight">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/previous_state_description</item>
     <item name="android:padding">12dp</item>
     <item name="android:src">@drawable/ic_arrow_back_oppia_dark_blue_24dp</item>
   </style>
-
   <!-- NEXT BUTTON STYLE -->
   <style name="NextButton" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:layout_width">48dp</item>
     <item name="android:layout_height">48dp</item>
-    <item name="android:layout_margin">4dp</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginRight">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/next_state_description</item>
     <item name="android:padding">12dp</item>
