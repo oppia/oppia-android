@@ -608,6 +608,7 @@ object ExemptionsList {
     "GaeSubtopicSummary.kt",
     "NetworkApiKey.kt",
     "NetworkModule.kt",
-    "ExemptionsList.kt"
+    "ExemptionsList.kt",
+    "ScriptResultConstants.kt",
     )
 }
