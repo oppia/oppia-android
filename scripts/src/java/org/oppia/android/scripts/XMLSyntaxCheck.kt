@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import java.io.File
 import org.xml.sax.SAXParseException
 import org.xml.sax.ErrorHandler
+import org.oppia.android.scripts.ScriptResultConstants
 
 class XMLSyntaxCheck {
   companion object {
@@ -38,9 +39,9 @@ class XMLSyntaxCheck {
       }
 
       if (scriptFailedFlag) {
-        throw Exception("XML SYNTAX CHECK FAILED")
+        throw Exception(ScriptResultConstants.XML_SYNTAX_CHECK_FAILED)
       } else {
-        println("XML SYNTAX CHECK PASSED")
+        println(ScriptResultConstants.XML_SYNTAX_CHECK_PASSED)
       }
     }
 
@@ -68,6 +69,15 @@ class XMLSyntaxCheck {
       return validPaths
     }
 
+    /**
+     * Checks if a layer is allowed to be analyzed for the check or not.
+     * It only allows the layers listed in allowedDirectories
+     * (which is specified from the command line arguments) to be analyzed.
+     *
+     * @param pathString the path of the repo.
+     * @param allowedDirectories a list of all the files which needs to be checked.
+     * @return [Boolean] check failed or passed
+     */
     fun checkIfAllowedDirectory(
       pathString: String,
       allowedDirectories: MutableList<String>
@@ -79,6 +89,10 @@ class XMLSyntaxCheck {
       return false
     }
 
+    /** Logs the failures for XML syntax validation
+     *
+     * @param e the parsing exception thrown by the parser
+     */
     fun logCheckFailure(e: SAXParseException) {
       println(
         "XML syntax error: ${e.message}\n" +
@@ -88,6 +102,9 @@ class XMLSyntaxCheck {
     }
   }
 
+  /** Class for custom error handling of the parse exception
+   * thrown by the parser, to customize the failure message
+   * as per our use case **/
   class SyntaxErrorHandler : ErrorHandler {
     override fun warning(e: SAXParseException) {
       logCheckFailure(e)

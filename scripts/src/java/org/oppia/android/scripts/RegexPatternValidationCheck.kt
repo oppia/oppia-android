@@ -6,6 +6,7 @@ import org.oppia.android.app.model.FilenameChecks
 import org.oppia.android.app.model.FilenameCheck
 import org.oppia.android.app.model.FileContentChecks
 import org.oppia.android.app.model.FileContentCheck
+import org.oppia.android.scripts.ScriptResultConstants
 
 class RegexPatternValidationCheck {
   companion object {
@@ -16,8 +17,8 @@ class RegexPatternValidationCheck {
 
       val allowedDirectories: MutableList<String> = ArrayList()
 
-      for (i in 1 until args.size) {
-        allowedDirectories.add(args[i])
+      for (layerIndex in 1 until args.size) {
+        allowedDirectories.add(args[layerIndex])
       }
 
       val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
@@ -48,12 +49,17 @@ class RegexPatternValidationCheck {
       }
 
       if (scriptFailedFlag) {
-        throw Exception("REGEX PATTERN CHECKS FAILED")
+        throw Exception(ScriptResultConstants.REGEX_CHECKS_FAILED)
       } else {
-        println("REGEX PATTERN CHECKS PASSED")
+        println(ScriptResultConstants.REGEX_CHECKS_PASSED)
       }
     }
 
+    /**
+     * Fetches all filename checks
+     *
+     * @return [List<FilenameCheck>] a list of all the FilenameChecks
+     */
     fun getFilenameChecks(): List<FilenameCheck> {
       val fileNamePatternsBinaryFile =
         File("scripts/assets/filename_pattern_validation_checks.pb")
@@ -66,6 +72,11 @@ class RegexPatternValidationCheck {
       return namePatternsObj.getFilenameChecksList()
     }
 
+    /**
+     * Fetches all file content checks
+     *
+     * @return [List<FileContentCheck>] a list of all the FileContentChecks
+     */
     fun getFileContentChecks(): List<FileContentCheck> {
       val fileContentsBinaryFile =
         File("scripts/assets/file_content_validation_checks.pb")
@@ -170,6 +181,15 @@ class RegexPatternValidationCheck {
       return validPaths
     }
 
+    /**
+     * Checks if a layer is allowed to be analyzed for the check or not.
+     * It only allows the layers listed in allowedDirectories
+     * (which is specified from the command line arguments) to be analyzed.
+     *
+     * @param pathString the path of the repo.
+     * @param allowedDirectories a list of all the files which needs to be checked.
+     * @return [Boolean] check failed or passed
+     */
     fun checkIfAllowedDirectory(
       pathString: String,
       allowedDirectories: MutableList<String>
@@ -181,7 +201,11 @@ class RegexPatternValidationCheck {
       return false
     }
 
-    /** Logs the failures for filename pattern violation */
+    /** Logs the failures for filename pattern violation
+     *
+     * @param errorToShow the failure message to be logged
+     * @param filePath the path of the file relative to the repository which failed the check
+     */
     fun logProhibitedFilenameFailure(
       errorToShow: String,
       filePath: String
@@ -190,7 +214,12 @@ class RegexPatternValidationCheck {
         "Failure message: $errorToShow\n")
     }
 
-    /** Logs the failures for file content violation */
+    /** Logs the failures for file content violation
+     *
+     * @param lineNumberthe line number at which the failure occured
+     * @param errorToShow the failure message to be logged
+     * @param filePath the path of the file relative to the repository which failed the check
+     */
     fun logProhibitedContentFailure(
       lineNumber: Int,
       errorToShow: String,

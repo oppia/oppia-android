@@ -8,6 +8,7 @@ import org.junit.Rule
 import org.junit.Before
 import org.junit.rules.TemporaryFolder
 import org.junit.rules.ExpectedException
+import org.oppia.android.scripts.ScriptResultConstants
 
 class RegexPatternValidationCheckTest {
 
@@ -25,7 +26,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun test_fileNamePattern_validFileNamePattern_scriptShouldPass() {
+  fun testFileNamePattern_validFileNamePattern_fileNamePatternIsCorrect() {
     val appLayerMimic = tempFolder.newFolder("testfiles", "app", "src", "main")
     val prohibitedFileNamePattern = tempFolder.newFile(
       "testfiles/app/src/main/TestActivity.kt"
@@ -35,7 +36,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun test_fileNamePattern_useProhibitedFileNamePattern_scriptShouldFail() {
+  fun testFileNamePattern_prohibitedFileNamePattern_fileNamePatternIsNotCorrect() {
     val dataLayerMimic = tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFileNamePattern = tempFolder.newFile(
       "testfiles/data/src/main/TestActivity.kt"
@@ -47,14 +48,14 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun test_fileContent_noProhibitedSupportLibraryImport_scriptShouldPass() {
+  fun testFileContent_noSupportLibraryImport_fileContentIsCorrect() {
     val fileContainsNoSuppotLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
 
     runScript()
   }
 
   @Test
-  fun test_fileContent_useProhibitedSupportLibraryImport_scriptShouldFail() {
+  fun testFileContent_supportLibraryImport_fileContentIsNotCorrect() {
     val prohibitedContent = "import android.support.v7.app"
     val fileContainsSuppotLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSuppotLibraryImport.writeText(prohibitedContent)
@@ -75,6 +76,6 @@ class RegexPatternValidationCheckTest {
 
   fun expectScriptFailure() {
     thrown.expect(java.lang.Exception::class.java)
-    thrown.expectMessage("REGEX PATTERN CHECKS FAILED")
+    thrown.expectMessage(ScriptResultConstants.REGEX_CHECKS_FAILED)
   }
 }
