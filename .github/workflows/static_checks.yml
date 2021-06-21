@@ -109,16 +109,13 @@ jobs:
           bazel run //scripts:pattern_validation_check -- $(pwd) app data utility domain
 
       - name: XML Syntax Validation Check
-        if: always()
         run: |
           bazel run //scripts:xml_syntax_check -- $(pwd) app data utility domain
 
       - name: Testfile Presence Check
-        if: always()
         run: |
           bazel run //scripts:test_file_check -- $(pwd) app data domain testing utility scripts
 
       - name: Accessibility label check
-        if: always()
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
