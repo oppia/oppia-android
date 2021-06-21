@@ -119,5 +119,6 @@ jobs:
           bazel run //scripts:test_file_check -- $(pwd) app data domain testing utility scripts
 
       - name: Accessibility label check
+        if: always()
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
