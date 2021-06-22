@@ -7,7 +7,6 @@ import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
 import kotlin.system.exitProcess
-import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.maven.backup.BackupDependency
 import org.oppia.android.app.maven.backup.License
 import org.oppia.android.app.maven.maveninstall.Dependency
@@ -19,7 +18,7 @@ const val licenseTag = "<license>"
 const val nameTag = "<name>"
 const val urlTag = "<url>"
 const val bazelQueryCommand =
-  "bazel query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
+  "bazel --output_base=/tmp query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
 
 class GenerateMavenDependenciesList {
   companion object {
@@ -34,8 +33,9 @@ class GenerateMavenDependenciesList {
     val mavenDepsList = mutableListOf<MavenDependency>()
     val linkset = mutableSetOf<String>()
     val nolicenseSet = mutableSetOf<String>()
-    @JvmStatic fun main(args: Array<String>) {
-      runMavenRePinCommand()
+    @JvmStatic
+    fun main(args: Array<String>) {
+//      runMavenRePinCommand()
       runBazelQueryCommand(bazelQueryCommand)
       findBackUpForLicenseLinks()
       readMavenInstall()
@@ -85,8 +85,7 @@ class GenerateMavenDependenciesList {
 
     fun findBackUpForLicenseLinks() {
       val backupJson = File(
-        "app/src/main/java/org/oppia/android/app/maven/backup/",
-        "backup_license_links.json"
+        "/home/prayutsu/opensource/oppia-android/app/src/main/java/org/oppia/android/app/maven/backup/backup_license_links.json"
       )
       val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
       if (backupJsonContent.isEmpty()) {
@@ -164,8 +163,8 @@ class GenerateMavenDependenciesList {
     }
 
     private fun readMavenInstall() {
-      val HOME = "/home/prayutsu/openosurce/oppia-android/"
-      val mavenInstallJson = File(HOME,"maven_install.json")
+      val HOME = "/home/prayutsu/opensource/oppia-android/"
+      val mavenInstallJson = File("/home/prayutsu/opensource/oppia-android/maven_install.json")
       val mavenInstallJsonText =
         mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
 
@@ -201,8 +200,8 @@ class GenerateMavenDependenciesList {
 
     // Utility function to write all the dependencies of the parsedArtifactsList.
     fun showFinalDepsList() {
-      val HOME = "/home/prayutsu/openosurce/oppia-android/"
-      val finalDepsFile = File(HOME, "parsed_list.txt")
+      val HOME = "/home/prayutsu/opensource/oppia-android/"
+      val finalDepsFile = File("/home/prayutsu/opensource/oppia-android/parsed_list.txt")
       finalDepsFile.printWriter().use { writer ->
         var count = 0
         parsedArtifactsList.forEach {

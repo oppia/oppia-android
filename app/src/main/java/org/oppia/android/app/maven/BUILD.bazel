@@ -76,15 +76,14 @@ kt_jvm_library(
 
 kt_jvm_binary(
     name = "pattern_validation_check",
-    srcs = ["GenerateMavenDependencies.kt"],
-    main_class = "GenerateMavenDependenciesList$Companion",
+    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesList$Companion",
     runtime_deps = [":maven_deps_list"],
 )
 
 kt_jvm_library(
     name = "maven_deps_list",
     srcs = [
-        "src/java/org/oppia/android/app/maven/GenerateMavenDependenciesList.kt",
+        "GenerateMavenDependenciesList.kt",
     ],
     deps = [
         ":backup_dependency",
