@@ -9,12 +9,12 @@ option java_multiple_files = true;
 message PlatformParameter {
   // Value of the parameter.
   oneof value_type {
-      // Indicates a boolean-typed platform parameter.
-      bool boolean = 2;
-      // Indicates a integer-typed platform parameter.
-      int32 integer = 3;
-      // Indicates a string-typed platform parameter.
-      string string = 4;
+    // Indicates a boolean-typed platform parameter.
+    bool boolean = 2;
+    // Indicates a integer-typed platform parameter.
+    int32 integer = 3;
+    // Indicates a string-typed platform parameter.
+    string string = 4;
   }
 }
 
