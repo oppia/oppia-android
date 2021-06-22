@@ -1,7 +1,7 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library", "kt_jvm_test")
 
 kt_jvm_library(
-    name = "dependency",
+    name = "maven_list_dependency",
     srcs = [
         "maveninstall/MavenListDependency.kt",
     ],
@@ -11,18 +11,18 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "dependencies",
+    name = "maven_list_dependencies",
     srcs = [
         "maveninstall/MavenListDependencies.kt",
     ],
     deps = [
-        ":dependency",
+        ":maven_list_dependency",
         "//third_party:moshi",
     ],
 )
 
 kt_jvm_library(
-    name = "license",
+    name = "backup_license",
     srcs = [
         "backup/BackupLicense.kt",
     ],
@@ -37,19 +37,19 @@ kt_jvm_library(
         "backup/BackupDependency.kt",
     ],
     deps = [
-        ":license",
+        ":backup_license",
         "//third_party:moshi",
     ],
 )
 
 kt_jvm_library(
-    name = "dependency_tree",
+    name = "maven_list_dependency_tree",
     srcs = [
         "maveninstall/MavenListDependencyTree.kt",
     ],
     deps = [
-        ":dependency",
-        ":mavenListDependencies",
+        ":maven_list_dependencies",
+        ":maven_list_dependency",
         "//third_party:moshi",
     ],
 )
@@ -77,10 +77,10 @@ kt_jvm_library(
     ],
     deps = [
         ":backup_dependency",
-        ":dependency",
-        ":dependency_tree",
-        ":license",
-        ":mavenListDependencies",
-        ":maven_dependency",
+        ":backup_license",
+        ":license_dependency",
+        ":maven_list_dependencies",
+        ":maven_list_dependency",
+        ":maven_list_dependency_tree",
     ],
 )

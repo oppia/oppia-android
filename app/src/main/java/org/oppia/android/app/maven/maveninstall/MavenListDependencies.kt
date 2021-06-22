@@ -7,6 +7,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MavenListDependencies(
 
-  @Json(name = "mavenListDependencies") val dependencyList: MutableList<MavenListDependency>
+  @Json(name = "dependencies") val dependencyList: MutableList<MavenListDependency>
 
 )
