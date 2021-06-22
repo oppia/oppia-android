@@ -24,13 +24,12 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     )
     setUpNavigationDrawer()
     val previousFragment = getDeveloperOptionsFragment()
-    if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    if (previousFragment == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.developer_options_fragment_placeholder,
+        DeveloperOptionsFragment.newInstance()
+      ).commitNow()
     }
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.developer_options_fragment_placeholder,
-      DeveloperOptionsFragment.newInstance()
-    ).commitNow()
   }
 
   private fun setUpNavigationDrawer() {

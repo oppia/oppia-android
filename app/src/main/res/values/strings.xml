@@ -63,7 +63,7 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
-  <string name="developer_options_title">Developer Options</string>
+  <string name="developer_options_activity_title">Developer Options</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
@@ -77,7 +77,7 @@
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="numeric_input_hint">Enter a number.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
@@ -454,4 +454,8 @@
   <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
   <string name="developer_options_force_network_type">Force network type</string>
   <string name="developer_options_force_crash">Force crash</string>
+  <string name="correct_submitted_answer">Correct submitted answer</string>
+  <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
+  <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
 </resources>

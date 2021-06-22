@@ -10,7 +10,8 @@ import javax.inject.Inject
 
 /** Fragment that contains Developer Options of the application. */
 class DeveloperOptionsFragment : InjectableFragment() {
-  @Inject lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
+  @Inject
+  lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
 
   companion object {
     fun newInstance(): DeveloperOptionsFragment {

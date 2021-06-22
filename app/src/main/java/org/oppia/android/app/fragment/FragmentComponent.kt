@@ -73,6 +73,7 @@ interface FragmentComponent {
 
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
+  fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appLanguageFragment: AppLanguageFragment)
@@ -81,7 +82,6 @@ interface FragmentComponent {
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
-  fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
