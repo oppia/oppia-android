@@ -110,8 +110,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_databaseNotFull_isSuccessfulWithDatabaseInCorrectState() {
-
-    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, 0).toLiveData()
+    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, index = 0).toLiveData()
     saveCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
@@ -123,9 +122,9 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_databaseFull_isSuccessfulWithDatabaseInCorrectState() {
-    saveMultipleCheckpoints(firstTestProfile, 2)
+    saveMultipleCheckpoints(firstTestProfile, numberOfCheckpoints = 2)
 
-    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, 3).toLiveData()
+    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, index = 3).toLiveData()
     saveCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
@@ -137,9 +136,9 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_databaseFullForFirstTestProfile_checkDatabaseNotFullForSecondTestProfile() {
-    saveMultipleCheckpoints(firstTestProfile, 3)
+    saveMultipleCheckpoints(firstTestProfile, numberOfCheckpoints = 3)
 
-    val saveCheckpointLiveData = saveCheckpoint(secondTestProfile, 0).toLiveData()
+    val saveCheckpointLiveData = saveCheckpoint(secondTestProfile, index = 0).toLiveData()
     saveCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
@@ -151,44 +150,44 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val retrieveCheckpointLiveData =
-      retrieveExplorationCheckpoint(firstTestProfile, 0).toLiveData()
+      retrieveExplorationCheckpoint(firstTestProfile, index = 0).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsSuccessful(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
   }
 
   @Test
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val retrieveCheckpointLiveData =
-      retrieveExplorationCheckpoint(firstTestProfile, 1).toLiveData()
+      retrieveExplorationCheckpoint(firstTestProfile, index = 1).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
   }
 
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val retrieveCheckpointLiveData =
-      retrieveExplorationCheckpoint(secondTestProfile, 0).toLiveData()
+      retrieveExplorationCheckpoint(secondTestProfile, index = 0).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
   }
 
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
-    val updateCheckpointLiveData = saveUpdatedCheckpoint(firstTestProfile, 0).toLiveData()
+    val updateCheckpointLiveData = saveUpdatedCheckpoint(firstTestProfile, index = 0).toLiveData()
     updateCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     val retrieveCheckpointLiveData =
-      retrieveExplorationCheckpoint(firstTestProfile, 0).toLiveData()
+      retrieveExplorationCheckpoint(firstTestProfile, index = 0).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsSuccessful(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
 
@@ -200,7 +199,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
-    saveMultipleCheckpoints(firstTestProfile, 3)
+    saveMultipleCheckpoints(firstTestProfile, numberOfCheckpoints = 3)
 
     val oldestCheckpointDetailsLiveData =
       retrieveOldestCheckpointDetails(firstTestProfile).toLiveData()
@@ -209,10 +208,10 @@ class ExplorationCheckpointControllerTest {
 
     val oldestCheckpointDetails = checkpointDetailsCaptor.value.getOrThrow()
     assertThat(oldestCheckpointDetails.explorationId).matches(
-      createExplorationIdForIndex(0)
+      createExplorationIdForIndex(index = 0)
     )
     assertThat(oldestCheckpointDetails.explorationTitle).matches(
-      createExplorationTitleForIndex(0)
+      createExplorationTitleForIndex(index = 0)
     )
   }
 
@@ -226,25 +225,25 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val deleteCheckpointLiveData =
-      deleteCheckpointWithExplorationId(firstTestProfile, 0).toLiveData()
+      deleteCheckpointWithExplorationId(firstTestProfile, index = 0).toLiveData()
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     val retrieveCheckpointLiveData =
-      retrieveExplorationCheckpoint(firstTestProfile, 0).toLiveData()
+      retrieveExplorationCheckpoint(firstTestProfile, index = 0).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
   }
 
   @Test
   fun testController_saveCheckpoint_deleteUnsavedCheckpoint_isFailure() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val deleteCheckpointLiveData =
-      deleteCheckpointWithExplorationId(firstTestProfile, 1).toLiveData()
+      deleteCheckpointWithExplorationId(firstTestProfile, index = 1).toLiveData()
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsFailure(mockResultObserver, resultCaptor)
 
@@ -254,10 +253,10 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_deleteSavedCheckpointFromDifferentProfile_isFailure() {
-    saveCheckpoint(firstTestProfile, 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
 
     val deleteCheckpointLiveData =
-      deleteCheckpointWithExplorationId(secondTestProfile, 0).toLiveData()
+      deleteCheckpointWithExplorationId(secondTestProfile, index = 0).toLiveData()
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsFailure(mockResultObserver, resultCaptor)
 
@@ -334,10 +333,7 @@ class ExplorationCheckpointControllerTest {
       createExplorationIdForIndex(index)
     )
 
-  /** @return a unique explorationId for every test exploration. The explorationId of every
-   * test exploration will be of the form "test_exploration_#", where the symbol "#" represents
-   * an non-negative integer.
-   *
+  /**
    * Every test exploration has a unique index associated with it. The explorationId for any
    * test exploration is created by concatenating the string [BASE_TEST_EXPLORATION_ID] with the
    * unique index of that exploration.
@@ -346,18 +342,23 @@ class ExplorationCheckpointControllerTest {
    * be formed by concatenating the string [BASE_TEST_EXPLORATION_ID] with its index, i.e. 0.
    * Therefore the exploration id of the exploration with index 0 will be the string
    * "test_exploration_0".
+   *
+   * @return a unique explorationId for every test exploration. The explorationId of every
+   *         test exploration will be of the form "test_exploration_#", where the symbol "#"
+   *         represents an non-negative integer.
    */
   private fun createExplorationIdForIndex(index: Int): String =
     BASE_TEST_EXPLORATION_ID + index
 
-  /** @return a unique explorationTitle for every test exploration. The explorationTitle for any
-   * test exploration is of the form "Test Exploration #".
-   *
+  /**
    * Similar to [createExplorationIdForIndex], exploration title for any test exploration  are
    * created by concatenating the string [BASE_TEST_EXPLORATION_TITLE] with the the unique index
    * of that exploration.
    *
-   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".
+   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".\
+   *
+   * @return a unique explorationTitle for every test exploration. The explorationTitle for any
+   *         test exploration is of the form "Test Exploration #".
    */
   private fun createExplorationTitleForIndex(index: Int): String =
     BASE_TEST_EXPLORATION_TITLE + index
