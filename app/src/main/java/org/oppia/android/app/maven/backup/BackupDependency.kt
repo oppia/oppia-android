@@ -10,6 +10,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class BackupDependency(
 
-  @Json(name = "artifacts") val artifacts: MutableSet<License> = mutableSetOf<License>()
+  @Json(name = "artifacts") val artifacts: MutableSet<BackupLicense> = mutableSetOf<BackupLicense>()
 
 )

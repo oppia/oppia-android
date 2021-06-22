@@ -8,12 +8,14 @@ import com.squareup.moshi.JsonClass
  * in maven_install.json.
  */
 @JsonClass(generateAdapter = true)
-data class Dependency(
+data class MavenListDependency(
+
   @Json(name = "coord") val coord: String,
-  @Json(name = "dependencies") val dependencies: List<String>? = null,
+  @Json(name = "mavenListDependencies") val dependencies: List<String>? = null,
   @Json(name = "directDependencies") val directDependencies: List<String>? = null,
   @Json(name = "file") val file: String? = null,
   @Json(name = "mirror_urls") val mirrorUrls: List<String>? = null,
   @Json(name = "sha256") val sha: String? = null,
   @Json(name = "url") val url: String? = null
+
 )

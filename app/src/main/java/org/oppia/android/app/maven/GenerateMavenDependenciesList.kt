@@ -8,9 +8,9 @@ import java.io.InputStreamReader
 import java.net.URL
 import kotlin.system.exitProcess
 import org.oppia.android.app.maven.backup.BackupDependency
-import org.oppia.android.app.maven.backup.License
-import org.oppia.android.app.maven.maveninstall.Dependency
-import org.oppia.android.app.maven.maveninstall.DependencyTree
+import org.oppia.android.app.maven.backup.BackupLicense
+import org.oppia.android.app.maven.maveninstall.MavenListDependency
+import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
 
 const val licensesTag = "<licenses>"
 const val licenseCloseTag = "</licenses>"
@@ -22,15 +22,15 @@ const val bazelQueryCommand =
 
 class GenerateMavenDependenciesList {
   companion object {
-    var backupLicenseLinksList: MutableSet<License> = mutableSetOf<License>()
+    var backupLicenseLinksList: MutableSet<BackupLicense> = mutableSetOf<BackupLicense>()
     var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
 
     var bazelQueryDepsNames: MutableList<String> = mutableListOf<String>()
-    var mavenInstallDependencyList: MutableList<Dependency>? = mutableListOf<Dependency>()
-    var finalDependenciesList = mutableListOf<Dependency>()
+    var mavenInstallDependencyList: MutableList<MavenListDependency>? = mutableListOf<MavenListDependency>()
+    var finalDependenciesList = mutableListOf<MavenListDependency>()
     var parsedArtifactsList = mutableListOf<String>()
 
-    val mavenDepsList = mutableListOf<MavenDependency>()
+    val mavenDepsList = mutableListOf<LicenseDependency>()
     val linkset = mutableSetOf<String>()
     val nolicenseSet = mutableSetOf<String>()
     @JvmStatic
@@ -63,7 +63,7 @@ class GenerateMavenDependenciesList {
       }
 
       if (scriptFailed) {
-        throw Exception("Script could not get license links for all the Maven Dependencies.")
+        throw Exception("Script could not get license links for all the Maven MavenListDependencies.")
       }
     }
 
@@ -89,14 +89,14 @@ class GenerateMavenDependenciesList {
       )
       val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
       if (backupJsonContent.isEmpty()) {
-        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the License Links.")
+        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the BackupLicense Links.")
         throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
       }
       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
       val adapter = moshi.adapter(BackupDependency::class.java)
       val backupDependency = adapter.fromJson(backupJsonContent)
       if (backupDependency == null) {
-        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the License Links.")
+        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the BackupLicense Links.")
         throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
       }
       backupLicenseLinksList = backupDependency.artifacts
@@ -169,9 +169,9 @@ class GenerateMavenDependenciesList {
         mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
 
       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-      val adapter = moshi.adapter(DependencyTree::class.java)
+      val adapter = moshi.adapter(MavenListDependencyTree::class.java)
       val dependencyTree = adapter.fromJson(mavenInstallJsonText)
-      mavenInstallDependencyList = dependencyTree?.dependencies?.dependencyList
+      mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
       mavenInstallDependencyList?.sortBy { it -> it.coord }
 
       mavenInstallDependencyList?.forEach { dep ->
@@ -186,7 +186,7 @@ class GenerateMavenDependenciesList {
       println("bazel query size = ${bazelQueryDepsNames.size}")
     }
 
-    // Utility function to write all the dependencies of the bazelQueryDepsList.
+    // Utility function to write all the mavenListDependencies of the bazelQueryDepsList.
     fun showBazelQueryDepsList() {
       val bazelListFile = File("bazel_list.txt")
       bazelListFile.printWriter().use { writer ->
@@ -198,7 +198,7 @@ class GenerateMavenDependenciesList {
       }
     }
 
-    // Utility function to write all the dependencies of the parsedArtifactsList.
+    // Utility function to write all the mavenListDependencies of the parsedArtifactsList.
     fun showFinalDepsList() {
       val HOME = "/home/prayutsu/opensource/oppia-android/"
       val finalDepsFile = File("/home/prayutsu/opensource/oppia-android/parsed_list.txt")
@@ -289,7 +289,7 @@ class GenerateMavenDependenciesList {
           println("****************")
           println("Error : There was a problem while opening the provided link  - ")
           println("URL : $pomFileUrl")
-          println("Dependency Name : ${artifactName}")
+          println("MavenListDependency Name : ${artifactName}")
           println("****************")
           e.printStackTrace()
           exitProcess(1)
@@ -335,7 +335,7 @@ class GenerateMavenDependenciesList {
             println("Please provide backup license name(s) and link(s) for the artifact - \"${it.coord}\" in backup.json.")
             println("***********")
             this.backupLicenseLinksList.add(
-              License(
+              BackupLicense(
                 it.coord,
                 mutableListOf<String>(),
                 mutableListOf<String>()
@@ -345,7 +345,7 @@ class GenerateMavenDependenciesList {
             scriptFailed = true
           }
         }
-        val dep = MavenDependency(
+        val dep = LicenseDependency(
           mavenDependencyItemIndex,
           it.coord,
           artifactVersion.toString(),

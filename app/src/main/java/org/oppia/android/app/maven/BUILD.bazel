@@ -1,19 +1,9 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library", "kt_jvm_test")
 
-#REGEX_PATTERN_CHECK_ASSETS = generate_assets_list_from_text_protos(
-#    name = "script_assets",
-#    file_content_validation_file_names = [
-#        "file_content_validation_checks",
-#    ],
-#    filepath_pattern_validation_file_names = [
-#        "filename_pattern_validation_checks",
-#    ],
-#)
-
 kt_jvm_library(
     name = "dependency",
     srcs = [
-        "maveninstall/Dependency.kt",
+        "maveninstall/MavenListDependency.kt",
     ],
     deps = [
         "//third_party:moshi",
@@ -23,7 +13,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "dependencies",
     srcs = [
-        "maveninstall/Dependencies.kt",
+        "maveninstall/MavenListDependencies.kt",
     ],
     deps = [
         ":dependency",
@@ -34,7 +24,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "license",
     srcs = [
-        "backup/License.kt",
+        "backup/BackupLicense.kt",
     ],
     deps = [
         "//third_party:moshi",
@@ -55,19 +45,19 @@ kt_jvm_library(
 kt_jvm_library(
     name = "dependency_tree",
     srcs = [
-        "maveninstall/DependencyTree.kt",
+        "maveninstall/MavenListDependencyTree.kt",
     ],
     deps = [
-        ":dependencies",
         ":dependency",
+        ":mavenListDependencies",
         "//third_party:moshi",
     ],
 )
 
 kt_jvm_library(
-    name = "maven_dependency",
+    name = "license_dependency",
     srcs = [
-        "MavenDependency.kt",
+        "LicenseDependency.kt",
     ],
     deps = [
         "//third_party:moshi",
@@ -75,7 +65,7 @@ kt_jvm_library(
 )
 
 kt_jvm_binary(
-    name = "pattern_validation_check",
+    name = "generate_maven_dependencies_list",
     main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesList$Companion",
     runtime_deps = [":maven_deps_list"],
 )
@@ -87,22 +77,10 @@ kt_jvm_library(
     ],
     deps = [
         ":backup_dependency",
-        ":dependencies",
         ":dependency",
         ":dependency_tree",
         ":license",
+        ":mavenListDependencies",
         ":maven_dependency",
     ],
 )
-
-#kt_jvm_test(
-#    name = "test_pattern_validation_check",
-#    testonly = True,
-#    srcs = ["src/test/org/oppia/android/scripts/RegexPatternValidationCheckTest.kt"],
-#    data = REGEX_PATTERN_CHECK_ASSETS,
-#    test_class = "org.oppia.android.scripts.RegexPatternValidationCheckTest",
-#    deps = [
-#        ":pattern_validation_lib",
-#        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-#    ],
-#)

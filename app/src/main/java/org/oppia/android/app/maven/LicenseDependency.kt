@@ -3,9 +3,9 @@ package org.oppia.android.app.maven
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-/** Data class for Storing details of a Maven Dependency. */
+/** Data class for Storing details of a Maven MavenListDependency. */
 @JsonClass(generateAdapter = true)
-data class MavenDependency(
+data class LicenseDependency(
   @Json(name = "index") val index: Int,
   @Json(name = "artifact_name") val artifactName: String,
   @Json(name = "artifact_version") val artifact_version: String,
