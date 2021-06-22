@@ -1,4 +1,4 @@
-package org.oppia.android.app.devoptions
+package org.oppia.android.app.testing
 
 import android.app.Application
 import android.content.Context
@@ -6,11 +6,9 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -19,23 +17,31 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
+import com.google.android.material.navigation.NavigationView
 import dagger.Component
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -49,12 +55,14 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.drawer.DeveloperOptionsModule
 import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
+import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -72,8 +80,11 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -91,39 +102,48 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [DeveloperOptionsActivity]. */
+/** Tests for [NavigationDrawerTestActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = DeveloperOptionsActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityDevTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class DeveloperOptionsActivityTest {
+class NavigationDrawerActivityDevTest {
 
-  private val internalProfileId = 0
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var context: Context
 
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    DeveloperOptionsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val internalProfileId = 0
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
+    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
+      context,
+      internalProfileId
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -131,155 +151,151 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createDeveloperOptionsActivityIntent(internalProfileId))
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.developer_options_activity_title))
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_modifyLessonProgressIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 0,
-        targetView = R.id.modify_lesson_progress_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_chapters_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_chapters_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_stories_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_stories_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_topics_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_topics_completed
-      )
+  fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
   @Test
-  fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 1,
-        targetView = R.id.view_logs_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.event_logs_text_view,
-        stringIdToMatch = R.string.developer_options_event_logs
-      )
+  fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
+    launch(NavigationDrawerTestActivity::class.java).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
     }
   }
 
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_devOptionsIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 2,
-        targetView = R.id.override_app_behaviors_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.show_all_hints_solution_text_view,
-        stringIdToMatch = R.string.developer_options_show_all_hints_solution
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_network_type_text_view,
-        stringIdToMatch = R.string.developer_options_force_network_type
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_crash_text_view,
-        stringIdToMatch = R.string.developer_options_force_crash
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
       onView(
-        atPositionOnView(
-          recyclerViewId = R.id.developer_options_list,
-          position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
+        allOf(
+          withText(R.string.developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(not(isChecked())))
+      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
     }
   }
 
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      it.openNavigationDrawer()
+      onView(withText(R.string.menu_switch_profile)).perform(click())
+      onView(withText(R.string.home_activity_back_dialog_cancel))
+        .inRoot(isDialog())
+        .perform(click())
+      it.openNavigationDrawer()
       testCoroutineDispatchers.runCurrent()
-      assertThrows(RuntimeException::class) {
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_crash_text_view)).perform(click())
-      }
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(R.string.developer_options),
+          isDescendantOfA(withId(R.id.developer_options_linear_layout))
+        )
+      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_debug_pressBack_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+    }
+  }
+
+  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
+  @RunOn(TestPlatform.ESPRESSO)
+  @Test
+  fun testNavDrawer_openNavDrawer_debug_pressBack_configChange_homeIsSelected() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withText(R.string.developer_options)).perform(click())
+      onView(isRoot()).perform(pressBack())
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.fragment_drawer_nav_view))
+        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
     }
   }
 
   @Test
-  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
+  fun testNavDrawer_inDebugMode_openNavDrawer_devOptionsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_inDebugMode_openNavDrawer_configChange_devOptionsIsDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_inDebugMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
       )
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
-        .perform(click())
-      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
-        .check(matches(isDisplayed()))
+        .check(matches(isDisplayed())).perform(click())
+      intended(hasComponent(DeveloperOptionsActivity::class.java.name))
+      intended(
+        hasExtra(
+          DeveloperOptionsActivity.getIntentKey(),
+          internalProfileId
+        )
+      )
     }
   }
 
-  private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(
-      context = context,
-      internalProfileId = internalProfileId
-    )
-  }
-
-  private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {
+  private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
@@ -288,7 +304,7 @@ class DeveloperOptionsActivityTest {
     // background context.
     onActivity { activity ->
       val drawerLayout =
-        activity.findViewById<DrawerLayout>(R.id.developer_options_activity_drawer_layout)
+        activity.findViewById<DrawerLayout>(R.id.home_activity_drawer_layout)
       // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
       // will compute several of these across multiple draw calls, but one seems sufficient for
       // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
@@ -314,7 +330,7 @@ class DeveloperOptionsActivityTest {
       }
 
       override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return Matchers.allOf(
+        return allOf(
           isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
         )
       }
@@ -360,40 +376,16 @@ class DeveloperOptionsActivityTest {
     return view.getParent()
   }
 
-  private fun verifyItemDisplayedOnDeveloperOptionsListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.developer_options_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(isDisplayed()))
-  }
+  private fun checkNavigationViewItemStatus(item: NavigationDrawerItem) =
+    object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("NavigationViewItem is checked")
+      }
 
-  private fun verifyTextOnDeveloperOptionsListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    @StringRes stringIdToMatch: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.developer_options_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(matches(withText(context.getString(stringIdToMatch))))
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.developer_options_list)).perform(
-      scrollToPosition<ViewHolder>(
-        position
-      )
-    )
-  }
+      override fun matchesSafely(view: View): Boolean {
+        return (view as NavigationView).menu.getItem(item.ordinal).isChecked
+      }
+    }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -420,18 +412,18 @@ class DeveloperOptionsActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(developerOptionsActivityTest: DeveloperOptionsActivityTest)
+    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDeveloperOptionsActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityDevTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(developerOptionsActivityTest: DeveloperOptionsActivityTest) {
-      component.inject(developerOptionsActivityTest)
+    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest) {
+      return component.inject(navigationDrawerActivityDevTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

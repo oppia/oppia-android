@@ -15,23 +15,11 @@ class OppiaApplication :
   ActivityComponentFactory,
   ApplicationInjectorProvider,
   Configuration.Provider {
-
-  /** Boolean variable to enable Debug mode. It will decide which application component to use */
-  private val enableDebugMode = true
-
   /** The root [ApplicationComponent]. */
-  private val component by lazy {
-    if (enableDebugMode) {
-      /** [ApplicationComponent] for Debug mode. */
-      DaggerDebugApplicationComponent.builder()
-        .setApplication(this)
-        .build() as DebugApplicationComponent
-    } else {
-      /** [ApplicationComponent] for Prod mode. */
-      DaggerApplicationComponent.builder()
-        .setApplication(this)
-        .build()
-    }
+  private val component: ApplicationComponent by lazy {
+    DaggerApplicationComponent.builder()
+      .setApplication(this)
+      .build()
   }
 
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -25,7 +25,7 @@ class DeveloperOptionsActivity :
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     developerOptionsActivityPresenter.handleOnCreate()
-    title = getString(R.string.developer_options_title)
+    title = getString(R.string.developer_options_activity_title)
   }
 
   companion object {

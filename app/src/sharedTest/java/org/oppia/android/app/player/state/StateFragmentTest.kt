@@ -33,6 +33,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -473,6 +474,48 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Incorrect submitted answer: 1/4"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Correct submitted answer: 1/2"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -517,6 +560,53 @@ class StateFragmentTest {
           targetViewId = R.id.submitted_html_answer_recycler_view
         )
       ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_recycler_view_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.incorrect_submitted_answer)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_recycler_view_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.correct_submitted_answer)
+          )
+        )
+      )
     }
   }
 
@@ -920,7 +1010,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withContentDescription("4 to 5")))
+        .check(matches(withContentDescription("Correct submitted answer: 4 to 5")))
     }
   }
 
@@ -1154,6 +1244,23 @@ class StateFragmentTest {
       // Verify that the user is now on the seventh state.
       verifyViewTypeIsPresent(RATIO_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("The ratio of the two numbers is:")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      // Multi-selection item selection.
+      playThroughPrototypeState5()
+
+      // Verify that the user is now on the sixth state.
+      verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
+      verifyHint(context.resources.getString(R.string.numeric_input_hint))
     }
   }
 
@@ -1608,6 +1715,17 @@ class StateFragmentTest {
         targetViewId = R.id.content_text_view
       )
     ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun verifyHint(hint: String) {
+    scrollToViewType(NUMERIC_INPUT_INTERACTION)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 1,
+        targetViewId = R.id.numeric_input_interaction_view
+      )
+    ).check(matches(withHint(containsString(hint))))
   }
 
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
