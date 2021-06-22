@@ -365,6 +365,12 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  /** Checks if the progress made in the exploration is saved and the checkpoint database has not
+   * exceeded the limit.
+   *
+   * @return a one-time [LiveData] with success result if both the above mentioned conditions are
+   *         true otherwise it returns a failure result with appropriate exception.
+   */
   fun checkCheckpointSavedAndDatabaseLimitNotExceeded(): LiveData<AsyncResult<Any?>> {
     return explorationProgressLock.withLock {
       when (explorationProgress.checkpointState) {
