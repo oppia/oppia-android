@@ -1,4 +1,4 @@
 filename_checks {
   prohibited_filename_regex: "data/src/main/.+?Activity.kt"
-  failure_message: "Activities can only be placed in the app module"
+  failure_message: "Activities cannot be placed in the data module"
 }
