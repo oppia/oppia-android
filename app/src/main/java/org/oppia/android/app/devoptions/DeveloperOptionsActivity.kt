@@ -10,13 +10,14 @@ import javax.inject.Inject
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
-  @Inject lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
+  @Inject
+  lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     developerOptionsActivityPresenter.handleOnCreate()
-    title = getString(R.string.developer_options_title)
+    title = getString(R.string.developer_options_activity_title)
   }
 
   companion object {
