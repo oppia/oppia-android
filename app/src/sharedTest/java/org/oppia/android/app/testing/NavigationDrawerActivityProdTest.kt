@@ -60,9 +60,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
@@ -118,10 +116,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityProdTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerActivityTest {
+class NavigationDrawerActivityProdTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -406,31 +404,6 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_devOptionsIsSelected() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
-      it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
-        .inRoot(isDialog())
-        .perform(click())
-      it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(R.string.developer_options),
-          isDescendantOfA(withId(R.id.developer_options_linear_layout))
-        )
-      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
-    }
-  }
-
-  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
-  @RunOn(TestPlatform.ESPRESSO)
-  @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -545,33 +518,6 @@ class NavigationDrawerActivityTest {
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
-      it.openNavigationDrawer()
-      onView(withText(R.string.menu_switch_profile)).perform(click())
-      onView(withText(R.string.home_activity_back_dialog_cancel))
-        .inRoot(isDialog())
-        .perform(click())
-      it.openNavigationDrawer()
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withText(R.string.developer_options),
-          isDescendantOfA(withId(R.id.developer_options_linear_layout))
-        )
-      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
-    }
-  }
-
-  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
-  @RunOn(TestPlatform.ESPRESSO)
-  @Test
   fun testNavDrawer_openNavDrawer_options_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
@@ -644,22 +590,6 @@ class NavigationDrawerActivityTest {
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
-      onView(isRoot()).perform(pressBack())
-      it.openNavigationDrawer()
-      onView(withId(R.id.fragment_drawer_nav_view))
-        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
-    }
-  }
-
-  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
-  @RunOn(TestPlatform.ESPRESSO)
-  @Test
-  fun testNavDrawer_openNavDrawer_debug_pressBack_homeIsSelected() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
       onView(isRoot()).perform(pressBack())
       it.openNavigationDrawer()
       onView(withId(R.id.fragment_drawer_nav_view))
@@ -754,71 +684,29 @@ class NavigationDrawerActivityTest {
     }
   }
 
-  // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testNavDrawer_openNavDrawer_debug_pressBack_configChange_homeIsSelected() {
+  fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
     ).use {
       it.openNavigationDrawer()
-      onView(withText(R.string.developer_options)).perform(click())
-      onView(isRoot()).perform(pressBack())
-      it.openNavigationDrawer()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.fragment_drawer_nav_view))
-        .check(matches(checkNavigationViewItemStatus(NavigationDrawerItem.HOME)))
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
     }
   }
 
   @Test
-  fun testNavDrawer_inDebugMode_openNavDrawer_devOptionsIsDisplayed() {
+  fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
-    ).use {
-      it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_inDebugMode_configChange_devOptionsIsDisplayed() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
-      onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_inDebugMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
-        .check(matches(isDisplayed())).perform(click())
-      intended(hasComponent(DeveloperOptionsActivity::class.java.name))
-      intended(hasExtra(DeveloperOptionsActivity.getIntentKey(), 0))
-    }
-  }
-
-  @Test
-  fun testNavDrawer_notInDebugMode_devOptionsIsNotDisplayed() {
-    ApplicationProvider.getApplicationContext<TestApplication>().disableDebugMode = true
-    launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
-    ).use {
-      it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout))
-        .check(matches(not(isDisplayed())))
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -1070,77 +958,31 @@ class NavigationDrawerActivityTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
+      DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
-  }
-
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  @Singleton
-  @Component(
-    modules = [
-      RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsModule::class
-    ]
-  )
-  interface TestNoDebugApplicationComponent : ApplicationComponent {
-    @Component.Builder
-    interface Builder : ApplicationComponent.Builder
-
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    var disableDebugMode = false
-
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityProdTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    private val noDebugComponent: TestNoDebugApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityTest_TestNoDebugApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestNoDebugApplicationComponent
-    }
-
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
-      if (disableDebugMode) noDebugComponent.inject(navigationDrawerActivityTest)
-      else component.inject(navigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest) {
+      return component.inject(navigationDrawerActivityProdTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return if (disableDebugMode)
-        noDebugComponent
-          .getActivityComponentBuilderProvider()
-          .get()
-          .setActivity(activity)
-          .build()
-      else
-        component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun getApplicationInjector(): ApplicationInjector =
-      if (disableDebugMode) noDebugComponent
-      else component
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
