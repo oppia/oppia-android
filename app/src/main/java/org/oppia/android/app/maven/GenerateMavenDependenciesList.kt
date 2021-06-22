@@ -2,15 +2,15 @@ package org.oppia.android.app.maven
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import org.oppia.android.app.maven.backup.BackupDependency
+import org.oppia.android.app.maven.backup.BackupLicense
+import org.oppia.android.app.maven.maveninstall.MavenListDependency
+import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
 import kotlin.system.exitProcess
-import org.oppia.android.app.maven.backup.BackupDependency
-import org.oppia.android.app.maven.backup.BackupLicense
-import org.oppia.android.app.maven.maveninstall.MavenListDependency
-import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
 
 const val licensesTag = "<licenses>"
 const val licenseCloseTag = "</licenses>"
@@ -18,7 +18,8 @@ const val licenseTag = "<license>"
 const val nameTag = "<name>"
 const val urlTag = "<url>"
 const val bazelQueryCommand =
-  "bazel --output_base=/tmp query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
+  "bazel --output_base=/tmp query 'deps(deps(//:oppia) " +
+    "intersect //third_party/...) intersect @maven//...'"
 
 class GenerateMavenDependenciesList {
   companion object {
@@ -26,13 +27,15 @@ class GenerateMavenDependenciesList {
     var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
 
     var bazelQueryDepsNames: MutableList<String> = mutableListOf<String>()
-    var mavenInstallDependencyList: MutableList<MavenListDependency>? = mutableListOf<MavenListDependency>()
+    var mavenInstallDependencyList: MutableList<MavenListDependency>? =
+      mutableListOf<MavenListDependency>()
     var finalDependenciesList = mutableListOf<MavenListDependency>()
     var parsedArtifactsList = mutableListOf<String>()
 
     val mavenDepsList = mutableListOf<LicenseDependency>()
     val linkset = mutableSetOf<String>()
     val nolicenseSet = mutableSetOf<String>()
+
     @JvmStatic
     fun main(args: Array<String>) {
 //      runMavenRePinCommand()
@@ -44,7 +47,10 @@ class GenerateMavenDependenciesList {
       showFinalDepsList()
 
       println("Number of deps with Invalid URL = $countInvalidPomUrl")
-      println("Number of deps for which licenses have to be provided manually = $countDepsWithoutLicenseLinks")
+      println(
+        "Number of deps for which licenses have " +
+          "to be provided manually = $countDepsWithoutLicenseLinks"
+      )
       println(linkset)
       println(nolicenseSet)
 
@@ -63,7 +69,10 @@ class GenerateMavenDependenciesList {
       }
 
       if (scriptFailed) {
-        throw Exception("Script could not get license links for all the Maven MavenListDependencies.")
+        throw Exception(
+          "Script could not get license links" +
+            " for all the Maven MavenListDependencies."
+        )
       }
     }
 
@@ -85,19 +94,34 @@ class GenerateMavenDependenciesList {
 
     fun findBackUpForLicenseLinks() {
       val backupJson = File(
-        "/home/prayutsu/opensource/oppia-android/app/src/main/java/org/oppia/android/app/maven/backup/backup_license_links.json"
+        "/home/prayutsu/opensource/oppia-android/" +
+          "app/src/main/java/org/oppia/android/app/maven/backup/backup_license_links.json"
       )
-      val backupJsonContent = backupJson.inputStream().bufferedReader().use { it.readText() }
+      val backupJsonContent = backupJson.inputStream().bufferedReader().use {
+        it.readText()
+      }
       if (backupJsonContent.isEmpty()) {
-        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the BackupLicense Links.")
-        throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
+        println(
+          "The backup_license_links.json file is empty. " +
+            "Please add the JSON structure to provide the BackupLicense Links."
+        )
+        throw Exception(
+          "The backup_license_links.json must " +
+            "contain an array with \"artifacts\" key."
+        )
       }
       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
       val adapter = moshi.adapter(BackupDependency::class.java)
       val backupDependency = adapter.fromJson(backupJsonContent)
       if (backupDependency == null) {
-        println("The backup_license_links.json file is empty. Please add the JSON structure to provide the BackupLicense Links.")
-        throw Exception("The backup_license_links.json must contain an array with \"artifacts\" key.")
+        println(
+          "The backup_license_links.json file is empty. " +
+            "Please add the JSON structure to provide the BackupLicense Links."
+        )
+        throw Exception(
+          "The backup_license_links.json " +
+            "must contain an array with \"artifacts\" key."
+        )
       }
       backupLicenseLinksList = backupDependency.artifacts
       if (backupLicenseLinksList.isEmpty()) {
@@ -113,7 +137,6 @@ class GenerateMavenDependenciesList {
         backupLicenseDepsList.add(license.artifactName)
       }
       backupLicenseDepsList.sort()
-
     }
 
     fun parseArtifactName(artifactName: String): String {
@@ -154,7 +177,10 @@ class GenerateMavenDependenciesList {
 
         val exitValue = process.waitFor()
         if (exitValue != 0) {
-          System.err.println("There was some unexpected error while running the bazel Query command.")
+          System.err.println(
+            "There was some unexpected error while " +
+              "running the bazel Query command."
+          )
           throw Exception("Unexpected error.")
         }
       } catch (e: Exception) {
@@ -247,7 +273,8 @@ class GenerateMavenDependenciesList {
               while (cursor2 < (pomText.length - 12)) {
                 if (pomText.substring(cursor2, cursor2 + 9) == licenseTag) {
                   cursor2 += 9
-                  while (cursor2 < pomText.length - 6 && pomText.substring(
+                  while (cursor2 < pomText.length - 6 &&
+                    pomText.substring(
                       cursor2,
                       cursor2 + 6
                     ) != nameTag
@@ -261,7 +288,8 @@ class GenerateMavenDependenciesList {
                     urlName.append(pomText[cursor2])
                     ++cursor2
                   }
-                  while (cursor2 < pomText.length - 4 && pomText.substring(
+                  while (cursor2 < pomText.length - 4 &&
+                    pomText.substring(
                       cursor2,
                       cursor2 + 5
                     ) != urlTag
@@ -289,7 +317,7 @@ class GenerateMavenDependenciesList {
           println("****************")
           println("Error : There was a problem while opening the provided link  - ")
           println("URL : $pomFileUrl")
-          println("MavenListDependency Name : ${artifactName}")
+          println("MavenListDependency Name : $artifactName")
           println("****************")
           e.printStackTrace()
           exitProcess(1)
@@ -298,7 +326,8 @@ class GenerateMavenDependenciesList {
           ++countDepsWithoutLicenseLinks
           nolicenseSet.add(it.coord)
           // Look for the license link in provide_licenses.json
-          if (backupLicenseDepsList.isNotEmpty() && backupLicenseDepsList.binarySearch(
+          if (backupLicenseDepsList.isNotEmpty() &&
+            backupLicenseDepsList.binarySearch(
               it.coord,
               0,
               backupLicenseDepsList.lastIndex
@@ -323,7 +352,10 @@ class GenerateMavenDependenciesList {
             if (licenseNames.isEmpty()) {
               scriptFailed = true
               println("***********")
-              println("Please provide backup license name(s) for the artifact - \"${it.coord}\" in backup.json.")
+              println(
+                "Please provide backup license " +
+                  "name(s) for the artifact - \"${it.coord}\" in backup.json."
+              )
               println("***********")
             }
             if (licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
@@ -332,7 +364,10 @@ class GenerateMavenDependenciesList {
             }
           } else {
             println("***********")
-            println("Please provide backup license name(s) and link(s) for the artifact - \"${it.coord}\" in backup.json.")
+            println(
+              "Please provide backup license name(s) " +
+                "and link(s) for the artifact - \"${it.coord}\" in backup.json."
+            )
             println("***********")
             this.backupLicenseLinksList.add(
               BackupLicense(
@@ -353,10 +388,8 @@ class GenerateMavenDependenciesList {
           backupLicenseLinksList
         )
         mavenDepsList.add(dep)
-
         ++mavenDependencyItemIndex
       }
     }
   }
-
 }
