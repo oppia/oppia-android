@@ -503,6 +503,7 @@ android_library(
         "//third_party:de_hdodenhof_circleimageview",
         "//third_party:io_github_chaosleung_pinview",
         "//third_party:javax_annotation_javax_annotation-api_jar",
+        "//third_party:moshi",
         "//third_party:nl_dionsegijn_konfetti",
     ],
 )

@@ -121,6 +121,8 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.github.oppia:CircularImageview:35d08ba88a',
+      'com.squareup.moshi:moshi-kotlin:1.11.0',
+      'com.squareup.moshi:moshi-kotlin-codegen:1.11.0',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
