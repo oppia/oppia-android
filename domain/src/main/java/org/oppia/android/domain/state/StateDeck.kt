@@ -2,7 +2,9 @@ package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
+import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.Solution
@@ -26,6 +28,8 @@ internal class StateDeck internal constructor(
   private val hintList: MutableList<Hint> = ArrayList()
   private lateinit var solution: Solution
   private var stateIndex: Int = 0
+  private var indexOfRevealedHint: Int = -1
+  private var solutionIsRevealed: Boolean = false
 
   /** Resets this deck to a new, specified initial [State]. */
   internal fun resetDeck(initialState: State) {
@@ -34,6 +38,8 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     stateIndex = 0
+    indexOfRevealedHint = -1
+    solutionIsRevealed = false
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
@@ -108,6 +114,8 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     pendingTopState = state
+    indexOfRevealedHint = -1
+    solutionIsRevealed = false
   }
 
   internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
@@ -125,6 +133,7 @@ internal class StateDeck internal constructor(
       .build()
     pendingTopState = newState
     hintList.clear()
+    indexOfRevealedHint++
     return ephemeralState
   }
 
@@ -139,6 +148,7 @@ internal class StateDeck internal constructor(
       )
       .build()
     pendingTopState = newState
+    solutionIsRevealed = true
     return ephemeralState
   }
 
@@ -170,6 +180,36 @@ internal class StateDeck internal constructor(
       .setCorrectAnswer(state.interaction.solution.correctAnswer)
       .setExplanation(state.interaction.solution.explanation)
       .build()
+  }
+
+  /**
+   *  @return an [ExplorationCheckpoint] which contains the latest values of the variables of
+   *          [StateDeck] that are used in checkpointing.
+   */
+  internal fun createExplorationCheckpoint(
+    explorationTitle: String,
+    explorationVersion: Int,
+    timestamp: Long
+  ): ExplorationCheckpoint {
+    val checkpoint = ExplorationCheckpoint.newBuilder()
+
+    previousStates.forEach { state ->
+      checkpoint.addCompletedStatesInCheckpoint(
+        CompletedStateInCheckpoint.newBuilder()
+          .setCompletedState(state.completedState)
+          .setStateName(state.state.name)
+      )
+    }
+    checkpoint.pendingStateName = pendingTopState.name
+    checkpoint.addAllPendingUserAnswers(currentDialogInteractions)
+    checkpoint.stateIndex = stateIndex
+    checkpoint.hintIndex = indexOfRevealedHint
+    checkpoint.solutionIsRevealed = solutionIsRevealed
+    checkpoint.explorationTitle = explorationTitle
+    checkpoint.explorationVersion = explorationVersion
+    checkpoint.timestampOfFirstCheckpoint = timestamp
+
+    return checkpoint.build()
   }
 
   private fun getCurrentPendingState(): EphemeralState {

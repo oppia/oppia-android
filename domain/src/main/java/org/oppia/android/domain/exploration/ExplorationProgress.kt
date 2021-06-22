@@ -23,6 +23,7 @@ internal class ExplorationProgress {
   internal val stateDeck: StateDeck by lazy {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)
   }
+  internal var checkpointState = CheckpointState.UNSAVED
 
   /**
    * Advances the current play stage to the specified stage, verifying that the transition is correct.
@@ -70,6 +71,25 @@ internal class ExplorationProgress {
     }
   }
 
+  /**
+   * updates the value of [checkpointState] based on the value of isProgressSaved
+   * and canStoreProgress.
+   *
+   * @param isProgressSaved indicates whether the operation to save checkpoint was
+   *        successful or not.
+   * @param canStoreProgress indicates whether the checkpoint database has exceeded the
+   *        allocated size limit or not. */
+  internal fun updateCheckpointState(isProgressSaved: Boolean, canStoreProgress: Boolean) {
+    checkpointState = if (isProgressSaved) {
+      when (canStoreProgress) {
+        true -> CheckpointState.SAVED_CHECKPOINT_DATABASE_NOT_EXCEEDED_LIMIT
+        false -> CheckpointState.SAVED_CHECKPOINT_DATABASE_EXCEEDED_LIMIT
+      }
+    } else {
+      CheckpointState.UNSAVED
+    }
+  }
+
   companion object {
     internal fun isTopStateTerminal(state: State): Boolean {
       return state.interaction.id == TERMINAL_INTERACTION_ID
@@ -89,5 +109,23 @@ internal class ExplorationProgress {
 
     /** The controller is in the process of submitting an answer. */
     SUBMITTING_ANSWER
+  }
+
+  /** Different states in which checkpoint saving exploration progress can exist. */
+  enum class CheckpointState {
+    /**
+     *  Progress made in the exploration is saved and the size of the checkpoint database has
+     * not exceeded limit.
+     */
+    SAVED_CHECKPOINT_DATABASE_NOT_EXCEEDED_LIMIT,
+
+    /**
+     * Progress made in the exploration is saved and the size of the checkpoint database has
+     * exceeded limit.
+     */
+    SAVED_CHECKPOINT_DATABASE_EXCEEDED_LIMIT,
+
+    /** Progress made in the exploration is not saved. */
+    UNSAVED
   }
 }

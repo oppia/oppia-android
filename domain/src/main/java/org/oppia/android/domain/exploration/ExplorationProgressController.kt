@@ -2,25 +2,30 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
+import org.oppia.android.util.system.OppiaClock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
  * exploration. Note that this controller only supports one active exploration at a time.
@@ -36,7 +41,9 @@ class ExplorationProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val oppiaClock: OppiaClock
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#182): Add support for refresher explorations.
@@ -47,6 +54,12 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+
+  /** Indicates that the checkpoint database has exceeded the allocated limit. */
+  class CheckpointDatabaseExceededLimitException(msg: String) : Exception(msg)
+
+  /** Indicates that exploration contains unsaved progress. */
+  class ProgressNotSavedException(msg: String) : Exception(msg)
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
@@ -352,6 +365,77 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  fun checkCheckpointSavedAndDatabaseLimitNotExceeded(): LiveData<AsyncResult<Any?>> {
+    return explorationProgressLock.withLock {
+      when (explorationProgress.checkpointState) {
+        ExplorationProgress.CheckpointState.SAVED_CHECKPOINT_DATABASE_NOT_EXCEEDED_LIMIT ->
+          MutableLiveData(AsyncResult.success(null))
+        ExplorationProgress.CheckpointState.SAVED_CHECKPOINT_DATABASE_EXCEEDED_LIMIT ->
+          MutableLiveData(
+            AsyncResult.failed(
+              CheckpointDatabaseExceededLimitException(
+                "Checkpoint database of profileId (profileId here) has exceeded the allocated limit."
+              )
+            )
+          )
+        ExplorationProgress.CheckpointState.UNSAVED ->
+          MutableLiveData(
+            AsyncResult.failed(
+              ProgressNotSavedException(
+                "Current exploration with id ${explorationProgress.currentExplorationId} " +
+                  "contains unsaved progress."
+              )
+            )
+          )
+      }
+    }
+  }
+
+  suspend fun saveCheckpointing() {
+    lateinit var profileId: ProfileId
+    lateinit var explorationId: String
+    lateinit var checkpoint: ExplorationCheckpoint
+    explorationProgressLock.withLock {
+      profileId = ProfileId.newBuilder().setInternalId(0).build()
+      explorationId = explorationProgress.currentExplorationId
+      checkpoint = explorationProgress.stateDeck.createExplorationCheckpoint(
+        explorationProgress.currentExploration.title,
+        explorationProgress.currentExploration.version,
+        oppiaClock.getCurrentTimeMs()
+      )
+    }
+    val saveCheckpointResult = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      explorationId,
+      checkpoint
+    ).retrieveData()
+    processSaveCheckpointResult(saveCheckpointResult)
+  }
+
+  private suspend fun processSaveCheckpointResult(saveCheckpointResult: AsyncResult<Any?>) {
+    var isProgressSaved = false
+    var canStoreProgress = true
+    if (saveCheckpointResult.isSuccess()) {
+      when (saveCheckpointResult.getOrThrow()) {
+        ExplorationCheckpointController
+          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED -> {
+          isProgressSaved = true
+          canStoreProgress = false
+        }
+        ExplorationCheckpointController
+          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED -> {
+          isProgressSaved = true
+          canStoreProgress = true
+        }
+      }
+    } else if (saveCheckpointResult.isFailure()) {
+      isProgressSaved = false
+    }
+    explorationProgressLock.withLock {
+      explorationProgress.updateCheckpointState(isProgressSaved, canStoreProgress)
+    }
+  }
+
   /**
    * Returns a [DataProvider] monitoring the current [EphemeralState] the learner is currently
    * viewing. If this state corresponds to a a terminal state, then the learner has completed the
@@ -418,8 +502,9 @@ class ExplorationProgressController @Inject constructor(
             AsyncResult.failed<EphemeralState>(e)
           }
         }
-        ExplorationProgress.PlayStage.VIEWING_STATE ->
+        ExplorationProgress.PlayStage.VIEWING_STATE -> {
           AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+        }
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
