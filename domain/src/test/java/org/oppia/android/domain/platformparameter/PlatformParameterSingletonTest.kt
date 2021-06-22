@@ -58,20 +58,20 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initialPlatformParameterMap_isEmpty() {
-    assertThat(platformParameterSingleton.platformParameterMap).isEmpty()
+    assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_isNotEmpty() {
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isTrue()
-    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
-    assertThat(platformParameterSingleton.platformParameterMap.isEmpty()).isFalse()
+    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isTrue()
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isFalse()
   }
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
-    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
-    val stringPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    val stringPlatformParameter = platformParameterSingleton.getStringPlatformParameter(
       STRING_PLATFORM_PARAMETER_NAME
     )
     assertThat(stringPlatformParameter?.value).isEqualTo(STRING_PLATFORM_PARAMETER_VALUE)
@@ -79,8 +79,8 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIntegerParameter_verifyItsValue() {
-    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
-    val integerPlatformParameter = platformParameterSingleton.getPlatformParameter<Int>(
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    val integerPlatformParameter = platformParameterSingleton.getIntegerPlatformParameter(
       INTEGER_PLATFORM_PARAMETER_NAME
     )
     assertThat(integerPlatformParameter?.value).isEqualTo(INTEGER_PLATFORM_PARAMETER_VALUE)
@@ -88,8 +88,8 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveBooleanParameter_verifyItsValue() {
-    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
-    val booleanPlatformParameter = platformParameterSingleton.getPlatformParameter<Boolean>(
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    val booleanPlatformParameter = platformParameterSingleton.getBooleanPlatformParameter(
       BOOLEAN_PLATFORM_PARAMETER_NAME
     )
     assertThat(booleanPlatformParameter?.value).isEqualTo(BOOLEAN_PLATFORM_PARAMETER_VALUE)
@@ -97,8 +97,8 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_retrieveIncorrectParameter_verifyItsValue() {
-    platformParameterSingleton.platformParameterMap = mockPlatformParameterMap
-    val incorrectPlatformParameter = platformParameterSingleton.getPlatformParameter<String>(
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    val incorrectPlatformParameter = platformParameterSingleton.getStringPlatformParameter(
       INCORRECT_PLATFORM_PARAMETER_NAME
     )
     assertThat(incorrectPlatformParameter).isNull()
