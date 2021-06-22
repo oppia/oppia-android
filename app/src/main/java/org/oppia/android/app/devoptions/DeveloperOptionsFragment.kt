@@ -11,7 +11,8 @@ import javax.inject.Inject
 // TODO(#3295): Introduce UI for Developer Options Menu.
 /** Fragment that contains Developer Options of the application. */
 class DeveloperOptionsFragment : InjectableFragment() {
-  @Inject lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
+  @Inject
+  lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
 
   companion object {
     fun newInstance(): DeveloperOptionsFragment {
@@ -29,7 +30,6 @@ class DeveloperOptionsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return developerOptionsFragmentPresenter
-      .handleCreateView(inflater, container)
+    return developerOptionsFragmentPresenter.handleCreateView(inflater, container)
   }
 }

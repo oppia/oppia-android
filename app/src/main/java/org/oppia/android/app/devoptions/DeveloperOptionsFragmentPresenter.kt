@@ -3,8 +3,6 @@ package org.oppia.android.app.devoptions
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import javax.inject.Inject
@@ -12,10 +10,7 @@ import javax.inject.Inject
 // TODO(#3295): Introduce UI for Developer Options Menu.
 /** The presenter for [DeveloperOptionsFragment]. */
 @FragmentScope
-class DeveloperOptionsFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment
-) {
+class DeveloperOptionsFragmentPresenter @Inject constructor() {
 
   fun handleCreateView(
     inflater: LayoutInflater,
