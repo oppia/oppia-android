@@ -33,6 +33,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -1245,6 +1246,23 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      // Multi-selection item selection.
+      playThroughPrototypeState5()
+
+      // Verify that the user is now on the sixth state.
+      verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
+      verifyHint(context.resources.getString(R.string.numeric_input_hint))
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1695,6 +1713,17 @@ class StateFragmentTest {
         targetViewId = R.id.content_text_view
       )
     ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun verifyHint(hint: String) {
+    scrollToViewType(NUMERIC_INPUT_INTERACTION)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 1,
+        targetViewId = R.id.numeric_input_interaction_view
+      )
+    ).check(matches(withHint(containsString(hint))))
   }
 
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
