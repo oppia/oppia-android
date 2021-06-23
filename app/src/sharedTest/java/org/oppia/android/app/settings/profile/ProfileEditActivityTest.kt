@@ -25,6 +25,7 @@ import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -59,6 +60,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -87,6 +89,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileEditActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context
@@ -131,7 +135,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Akshay"))))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Akshay"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
     }
   }
@@ -145,9 +149,11 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
     }
   }
@@ -162,9 +168,11 @@ class ProfileEditActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
     }
   }
@@ -178,9 +186,11 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
     }
   }
@@ -195,10 +205,13 @@ class ProfileEditActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.action_bar)).check(matches(hasDescendant(withText("Ben"))))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_container)).perform(scrollTo())
+      onView(withId(R.id.profile_edit_allow_download_sub)).perform(scrollTo())
         .check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).perform(scrollTo())
+        .check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
       onView(withId(R.id.profile_delete_button))
         .perform(scrollTo())
         .check(

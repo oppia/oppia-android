@@ -1,23 +1,19 @@
-package org.oppia.android.app.testing.options
+package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.CoordinatesProvider
-import androidx.test.espresso.action.GeneralClickAction
-import androidx.test.espresso.action.Press
-import androidx.test.espresso.action.Tap
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -27,6 +23,7 @@ import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -37,9 +34,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.options.READING_TEXT_SIZE
-import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -62,6 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -82,14 +77,27 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SMALL_TEXT_SIZE = 0
-private const val MEDIUM_TEXT_SIZE = 5
-private const val LARGE_TEXT_SIZE = 10
+// TODO #1815: Remove these duplicate values once Screenshot tests are implemented.
+private const val SMALL_TEXT_SIZE_SCALE = 0.8f
+private const val MEDIUM_TEXT_SIZE_SCALE = 1.0f
+private const val LARGE_TEXT_SIZE_SCALE = 1.2f
+private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
+private const val SMALL_TEXT_SIZE_INDEX = 0
+private const val MEDIUM_TEXT_SIZE_INDEX = 1
+private const val LARGE_TEXT_SIZE_INDEX = 2
+private const val EXTRA_LARGE_TEXT_SIZE_INDEX = 3
+
+/** Tests for [ReadingTextSizeFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ReadingTextSizeFragmentTest.TestApplication::class)
+@Config(
+  application = ReadingTextSizeFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ReadingTextSizeFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context
@@ -99,6 +107,10 @@ class ReadingTextSizeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val defaultTextSizeInFloat by lazy {
+    context.resources.getDimension(R.dimen.default_reading_text_size)
+  }
 
   @Before
   fun setUp() {
@@ -115,20 +127,37 @@ class ReadingTextSizeFragmentTest {
   @Test
   fun testTextSize_changeTextSizeToLarge_changeConfiguration_checkTextSizeLargeIsSelected() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
-      checkTextSize(SMALL_TEXT_SIZE)
-      updateTextSize(LARGE_TEXT_SIZE)
+      verifyItemIsCheckedInTextSizeRecyclerView(SMALL_TEXT_SIZE_INDEX)
+      clickOnTextSizeRecyclerViewItem(LARGE_TEXT_SIZE_INDEX)
       rotateToLandscape()
-      checkTextSize(LARGE_TEXT_SIZE)
+      verifyItemIsCheckedInTextSizeRecyclerView(LARGE_TEXT_SIZE_INDEX)
+    }
+  }
+
+  @Test
+  fun testTextSize_checkTextSizeOfAllFourItems_textSizeMatchedCorrectly() {
+    launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent("Small")).use {
+      matchTextSizeOfTextSizeRecyclerViewItem(
+        SMALL_TEXT_SIZE_INDEX, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+      )
+      matchTextSizeOfTextSizeRecyclerViewItem(
+        MEDIUM_TEXT_SIZE_INDEX, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+      )
+      matchTextSizeOfTextSizeRecyclerViewItem(
+        LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+      )
+      matchTextSizeOfTextSizeRecyclerViewItem(
+        EXTRA_LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
+      )
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
-  fun testTextSize_clickTextSize_changeTextSizeToLarge_checkOptionsFragmentIsUpdatedCorrectly() {
+  fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
-      updateTextSize(MEDIUM_TEXT_SIZE)
+      clickOnTextSizeRecyclerViewItem(MEDIUM_TEXT_SIZE_INDEX)
       checkTextSizeLabel("Medium")
     }
   }
@@ -152,46 +181,58 @@ class ReadingTextSizeFragmentTest {
     )
   }
 
-  private fun clickSeekBar(position: Int): ViewAction {
-    return GeneralClickAction(
-      Tap.SINGLE,
-      CoordinatesProvider { view ->
-        val seekBar = view as SeekBar
-        val screenPos = IntArray(2)
-        seekBar.getLocationInWindow(screenPos)
-        val trueWith = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
-
-        val percentagePos = (position.toFloat() / seekBar.max)
-        val screenX = trueWith * percentagePos + screenPos[0] + seekBar.paddingLeft
-        val screenY = seekBar.height / 2f + screenPos[1]
-        val coordinates = FloatArray(2)
-        coordinates[0] = screenX
-        coordinates[1] = screenY
-        coordinates
-      },
-      Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
-    )
-  }
-
-  private fun seekBarProgress(progress: Int): TypeSafeMatcher<View> {
+  /** Matcher for comparing the textSize of content inside a TextView to the expected size. */
+  private fun matchTextViewTextSize(expectedSize: Float): TypeSafeMatcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
-        description?.appendText("SeekBarProgress")
+        description?.appendText("TextView with text size: $expectedSize")
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as SeekBar).progress == progress
+      override fun matchesSafely(item: View): Boolean {
+        return item is TextView && item.textSize == expectedSize
       }
     }
   }
 
-  private fun checkTextSize(value: Int) {
-    onView(withId(R.id.reading_text_size_seekBar)).check(matches(seekBarProgress(value)))
+  /** Check the selected item inside TextSizeRecyclerView. */
+  private fun verifyItemIsCheckedInTextSizeRecyclerView(index: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_radio_button
+      )
+    ).check(
+      matches(isChecked())
+    )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateTextSize(value: Int) {
-    onView(withId(R.id.reading_text_size_seekBar)).perform(clickSeekBar(value))
+  /** Check the textSize of item inside TextSizeRecyclerView. */
+  private fun matchTextSizeOfTextSizeRecyclerViewItem(index: Int, size: Float) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_text_view
+      )
+    ).check(
+      matches(matchTextViewTextSize(size))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /** Click on the item inside TextSizeRecyclerView. */
+  private fun clickOnTextSizeRecyclerViewItem(index: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.text_size_recycler_view,
+        position = index,
+        targetViewId = R.id.text_size_radio_button
+      )
+    ).perform(
+      click()
+    )
     testCoroutineDispatchers.runCurrent()
   }
 

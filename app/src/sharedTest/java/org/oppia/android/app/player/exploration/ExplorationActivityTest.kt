@@ -91,6 +91,8 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -122,6 +124,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
@@ -248,6 +252,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -269,6 +274,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -291,6 +297,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -309,6 +316,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -328,6 +336,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -367,9 +376,8 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
+  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -386,6 +394,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -408,6 +417,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -429,9 +439,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -453,9 +463,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -486,9 +496,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -528,9 +538,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -565,9 +575,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -603,11 +613,10 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
+  fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -639,9 +648,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -694,11 +703,10 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() { // ktlint-disable max-line-length
+  fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
     getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -744,6 +752,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -760,6 +769,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -775,10 +785,10 @@ class ExplorationActivityTest {
     }
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testExpActivity_onBackPressed_showsStopExpDialog_cancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -793,11 +803,10 @@ class ExplorationActivityTest {
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() { // ktlint-disable max-line-length
+  fun testExpActivity_onBack_showsStopExpDialog_leave_closesExpActivity() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,

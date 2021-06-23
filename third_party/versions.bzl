@@ -46,8 +46,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
     "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
+    "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.2.0-alpha02",
-    "com.google.android:flexbox": "2.0.1",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
@@ -76,6 +76,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
     "androidx.test.espresso:espresso-core": "3.2.0",
     "androidx.test.espresso:espresso-intents": "3.1.0",
