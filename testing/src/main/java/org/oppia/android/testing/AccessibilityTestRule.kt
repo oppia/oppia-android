@@ -8,6 +8,7 @@ import org.junit.runners.model.Statement
 
 // TODO(#3351): Merge AccessibilityTestRule with OppiaTestRule.
 private const val DEFAULT_ENABLED_STATE = true
+
 /**
  * JUnit rule to enable [AccessibilityChecks] on Espresso. This does not work when run on Robolectric.
  *
