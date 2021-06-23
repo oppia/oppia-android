@@ -1,21 +1,24 @@
 syntax = "proto3";
 
-package model;
+package proto;
 
-option java_package = "org.oppia.android.app.model";
+option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
-// Checks to ensure the usage of any prohibited file path naming pattern
+// Checks to ensure the usage of any prohibited file path naming pattern.
 message FilenameChecks {
-  // List of all the file name checks
+  // List of all the file name checks.
   repeated FilenameCheck filename_checks = 1;
 }
 
-// Check to ensure if any prohibited filename pattern is present
+// Check to ensure if any prohibited filename pattern is present.
 message FilenameCheck {
-  // Regex no files should match.
+  // Filename regex no files should match.
   string prohibited_filename_regex = 1;
 
   // Error to show if any files match the regex.
   string failure_message = 2;
+
+  // Names of all the files which should be exempted for this check.
+  repeated string exempted_file_name = 4;
 }

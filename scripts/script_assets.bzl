@@ -25,7 +25,7 @@ def _generate_single_asset_proto_binary(name, proto_file_name, proto_dep_name, p
         proto_deps = [
             "//scripts/src/java/org/oppia/android/scripts/proto:%s_proto" % proto_dep_name,
         ],
-        proto_type_name = "model.%s" % proto_type_name,
+        proto_type_name = "proto.%s" % proto_type_name,
     )
 
 def _generate_proto_binary_assets(names, proto_dep_name, proto_type_name, name_prefix):
