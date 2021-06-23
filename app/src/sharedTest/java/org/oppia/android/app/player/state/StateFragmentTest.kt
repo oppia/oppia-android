@@ -118,6 +118,8 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -155,6 +157,9 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -283,6 +288,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -298,6 +304,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -313,6 +320,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -326,6 +334,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_continueButtonIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -342,6 +351,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -356,6 +366,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -373,6 +384,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -390,6 +402,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -408,6 +421,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -422,6 +436,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -439,6 +454,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -454,6 +470,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -472,6 +489,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -493,6 +511,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -524,6 +543,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -542,6 +562,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -562,6 +583,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -581,6 +603,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -610,6 +633,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
     // Note to self: current setup allows the user to drag the view without issues (now that
     // event interception isn't a problem), however the view is going partly offscreen which
@@ -632,6 +656,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -819,6 +844,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -830,6 +856,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -842,6 +869,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -857,6 +885,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -873,6 +902,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -891,6 +921,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -911,6 +942,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -927,6 +959,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -944,6 +977,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -958,6 +992,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -994,6 +1029,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1116,6 +1152,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1130,6 +1167,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1145,6 +1183,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1161,6 +1200,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1177,6 +1217,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1194,6 +1235,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1209,6 +1251,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1227,6 +1270,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1246,6 +1290,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1263,6 +1308,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1283,6 +1329,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1305,6 +1352,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1328,6 +1376,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1350,7 +1399,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
+  fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
 
@@ -1366,6 +1416,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
