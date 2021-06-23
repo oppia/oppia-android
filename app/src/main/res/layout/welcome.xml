@@ -12,8 +12,8 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="28dp"
-    android:paddingEnd="28dp">
+    android:paddingStart="@dimen/home_outer_margin"
+    android:paddingEnd="@dimen/home_outer_margin">
 
     <com.google.android.flexbox.FlexboxLayout
       android:id="@+id/welcome_message_container"
@@ -31,7 +31,7 @@
         android:id="@+id/welcome_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.greeting}"
         android:textColor="@color/oppiaPrimaryText"
