@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,6 +150,17 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
 
+    explorationProgressController.getSaveCheckpointDataProvider().toLiveData().observe(
+      fragment,
+      Observer {
+        if(it.isSuccess())
+          Log.d("12345", "processSaveCheckpointResult: CHECKPOINT progress saved")
+        else if(it.isFailure())
+          Log.d("12345", "processSaveCheckpointResult: CHECKPOINT progress NOT saved.")
+        else
+          Log.d("12345", "processSaveCheckpointResult: CHECKPOINT result Pending.")
+      }
+    )
     subscribeToCurrentState()
     markExplorationAsRecentlyPlayed()
     return binding.root

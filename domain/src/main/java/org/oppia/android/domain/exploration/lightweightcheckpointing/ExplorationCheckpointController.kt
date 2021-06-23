@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration.lightweightcheckpointing
 
+import android.util.Log
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
@@ -92,6 +93,7 @@ class ExplorationCheckpointController @Inject constructor(
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
+    Log.d("12345", "recordExplorationCheckpoint: SAVING CHECKPOINT WITH TIMESTAMP ${explorationCheckpoint}")
     val deferred =
       retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
         updateInMemoryCache = true

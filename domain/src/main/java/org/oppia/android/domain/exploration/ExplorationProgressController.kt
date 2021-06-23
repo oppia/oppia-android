@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import java.util.concurrent.locks.ReentrantLock
@@ -25,6 +26,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+private const val EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID = "exploration_checkpoint_data_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
@@ -68,6 +70,11 @@ class ExplorationProgressController @Inject constructor(
     )
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
+  private val explorationCheckpointDataProvider =
+    dataProviders.createInMemoryDataProviderAsync(
+      EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID,
+      this::saveCheckpointAsync
+    )
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExplorationAsync(explorationId: String) {
@@ -397,51 +404,6 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  suspend fun saveCheckpointing() {
-    lateinit var profileId: ProfileId
-    lateinit var explorationId: String
-    lateinit var checkpoint: ExplorationCheckpoint
-    explorationProgressLock.withLock {
-      profileId = ProfileId.newBuilder().setInternalId(0).build()
-      explorationId = explorationProgress.currentExplorationId
-      checkpoint = explorationProgress.stateDeck.createExplorationCheckpoint(
-        explorationProgress.currentExploration.title,
-        explorationProgress.currentExploration.version,
-        oppiaClock.getCurrentTimeMs()
-      )
-    }
-    val saveCheckpointResult = explorationCheckpointController.recordExplorationCheckpoint(
-      profileId,
-      explorationId,
-      checkpoint
-    ).retrieveData()
-    processSaveCheckpointResult(saveCheckpointResult)
-  }
-
-  private suspend fun processSaveCheckpointResult(saveCheckpointResult: AsyncResult<Any?>) {
-    var isProgressSaved = false
-    var canStoreProgress = true
-    if (saveCheckpointResult.isSuccess()) {
-      when (saveCheckpointResult.getOrThrow()) {
-        ExplorationCheckpointController
-          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED -> {
-          isProgressSaved = true
-          canStoreProgress = false
-        }
-        ExplorationCheckpointController
-          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED -> {
-          isProgressSaved = true
-          canStoreProgress = true
-        }
-      }
-    } else if (saveCheckpointResult.isFailure()) {
-      isProgressSaved = false
-    }
-    explorationProgressLock.withLock {
-      explorationProgress.updateCheckpointState(isProgressSaved, canStoreProgress)
-    }
-  }
-
   /**
    * Returns a [DataProvider] monitoring the current [EphemeralState] the learner is currently
    * viewing. If this state corresponds to a a terminal state, then the learner has completed the
@@ -464,6 +426,8 @@ class ExplorationProgressController @Inject constructor(
    * exploration, it should return a pending state.
    */
   fun getCurrentState(): DataProvider<EphemeralState> = currentStateDataProvider
+
+  fun getSaveCheckpointDataProvider(): DataProvider<Any?> = explorationCheckpointDataProvider
 
   private suspend fun retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
     return try {
@@ -509,11 +473,67 @@ class ExplorationProgressController @Inject constructor(
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE -> {
+          asyncDataSubscriptionManager.notifyChangeAsync(EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID)
           AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
         }
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
+  }
+
+  private suspend fun saveCheckpointAsync(): AsyncResult<Any?> {
+    return try {
+      lateinit var profileId: ProfileId
+      lateinit var explorationId: String
+      lateinit var checkpoint: ExplorationCheckpoint
+      explorationProgressLock.withLock {
+        if(explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION)
+          return AsyncResult.failed(ProgressNotSavedException(" "))
+        profileId = ProfileId.newBuilder().setInternalId(0).build()
+        explorationId = explorationProgress.currentExplorationId
+        checkpoint = explorationProgress.stateDeck.createExplorationCheckpoint(
+          explorationProgress.currentExploration.title,
+          explorationProgress.currentExploration.version,
+          oppiaClock.getCurrentTimeMs()
+        )
+      }
+      val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+        profileId,
+        explorationId,
+        checkpoint
+      )
+      processSaveCheckpointResult(saveCheckpointDataProvider)
+    } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e)
+      AsyncResult.failed(e)
+    }
+  }
+
+
+  private suspend fun processSaveCheckpointResult(saveCheckpointDataProvider: DataProvider<Any?>): AsyncResult<Any?> {
+    var isProgressSaved = false
+    var canStoreProgress = true
+    val saveCheckpointResult = saveCheckpointDataProvider.retrieveData()
+    if (saveCheckpointResult.isSuccess()) {
+      when (saveCheckpointResult.getOrThrow()) {
+        ExplorationCheckpointController
+          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED -> {
+          isProgressSaved = true
+          canStoreProgress = false
+        }
+        ExplorationCheckpointController
+          .ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED -> {
+          isProgressSaved = true
+          canStoreProgress = true
+        }
+      }
+    } else if (saveCheckpointResult.isFailure()) {
+      isProgressSaved = false
+    }
+    explorationProgressLock.withLock {
+      explorationProgress.updateCheckpointState(isProgressSaved, canStoreProgress)
+    }
+    return saveCheckpointResult
   }
 
   private fun finishLoadExploration(exploration: Exploration, progress: ExplorationProgress) {
