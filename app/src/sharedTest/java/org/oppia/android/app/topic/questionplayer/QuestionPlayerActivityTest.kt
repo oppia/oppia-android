@@ -205,7 +205,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
@@ -238,7 +238,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testQuestionPlayer_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
