@@ -21,6 +21,9 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -49,6 +52,9 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.drawer.DeveloperOptionsModule
 import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -116,6 +122,7 @@ class DeveloperOptionsActivityTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -123,6 +130,7 @@ class DeveloperOptionsActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -238,6 +246,48 @@ class DeveloperOptionsActivityTest {
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_chapters_completed_text_view)).perform(click())
+      intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_stories_completed_text_view)).perform(click())
+      intended(hasComponent(MarkStoriesCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_topics_completed_text_view)).perform(click())
+      intended(hasComponent(MarkTopicsCompletedActivity::class.java.name))
     }
   }
 
