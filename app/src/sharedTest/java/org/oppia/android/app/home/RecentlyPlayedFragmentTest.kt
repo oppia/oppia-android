@@ -181,7 +181,7 @@ class RecentlyPlayedFragmentTest {
           withParent(withId(R.id.recently_played_toolbar))
         )
       ).check(
-        matches(withText(R.string.stories_for_you))
+        matches(withText(R.string.recently_played_activity))
       )
     }
   }
@@ -590,7 +590,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
       ).check(
-        matches(withText(R.string.stories_for_you))
+        matches(withText(R.string.recently_played_activity))
       )
     }
   }
