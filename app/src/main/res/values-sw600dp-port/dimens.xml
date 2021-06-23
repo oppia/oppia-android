@@ -227,4 +227,7 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">88dp</dimen>
+
+  <!-- Pin Password -->
+  <dimen name="pin_password_hello_margin_top_tablet">216dp</dimen>
 </resources>
