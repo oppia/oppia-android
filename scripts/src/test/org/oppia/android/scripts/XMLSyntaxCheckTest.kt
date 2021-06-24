@@ -12,7 +12,6 @@ import java.io.PrintStream
 
 /** Tests for [XMLSyntaxCheck]. */
 class XMLSyntaxCheckTest {
-
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = java.lang.System.out
 
