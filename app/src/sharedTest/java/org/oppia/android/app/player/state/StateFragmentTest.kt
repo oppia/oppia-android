@@ -288,7 +288,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -304,7 +303,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -320,7 +318,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -334,7 +331,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_continueButtonIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -351,7 +347,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -366,7 +361,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -384,7 +378,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -402,7 +395,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -421,7 +413,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -436,7 +427,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -454,7 +444,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -470,7 +459,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -489,7 +477,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -511,7 +498,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -844,7 +830,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -856,7 +841,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -869,7 +853,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -885,7 +868,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -902,7 +884,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -921,7 +902,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1029,7 +1009,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1152,7 +1131,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1167,7 +1145,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1183,7 +1160,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1200,7 +1176,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1217,7 +1192,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1235,7 +1209,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1251,7 +1224,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1270,7 +1242,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1290,7 +1261,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1308,7 +1278,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1329,7 +1298,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1399,7 +1367,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
@@ -1416,7 +1383,6 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()

@@ -2,6 +2,13 @@ package org.oppia.android.testing
 
 import android.os.Build
 import androidx.test.espresso.accessibility.AccessibilityChecks
+import androidx.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesCheckNames
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesViews
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.endsWith
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -20,7 +27,18 @@ class AccessibilityTestRule : TestRule {
       override fun evaluate() {
         val isEnabled = description.areAccessibilityChecksEnabled()
         if (getCurrentPlatform() == TestPlatform.ESPRESSO && isEnabled) {
-          AccessibilityChecks.enable().setRunChecksFromRootView(true)
+          AccessibilityChecks.enable().apply {
+            // Suppressing failures for all views which matches with below conditions as we do not
+            // want to change the UI to pass these failures as it will change the expected behaviour
+            // for learner.
+            setSuppressingResultMatcher(
+              allOf(
+                matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
+                matchesViews(withContentDescription("More options")),
+                matchesViews(withClassName(endsWith("OverflowMenuButton")))
+              )
+            )
+          }.setRunChecksFromRootView(true)
         }
         base?.evaluate()
       }
