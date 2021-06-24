@@ -1,33 +1,27 @@
 package org.oppia.android.scripts
 
-import java.io.File
-import org.oppia.android.scripts.TestFileCheck
-import org.junit.Test
-import org.junit.Rule
-import org.junit.Before
-import org.junit.After
-import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.ScriptResultConstants
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
-import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
+/** Tests for [TestFileCheck]. */
 class TestFileCheckTest {
+  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val originalOut: PrintStream = java.lang.System.out
+
   @Rule
   @JvmField
   public var tempFolder: TemporaryFolder = TemporaryFolder()
 
   @Before
-  fun initTestFilesDirectory() {
+  fun setUpTests() {
     tempFolder.newFolder("testfiles")
-  }
-
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = java.lang.System.out
-
-  @Before
-  fun setUpStreams() {
     java.lang.System.setOut(PrintStream(outContent))
   }
 
@@ -58,7 +52,9 @@ class TestFileCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
+    assertThat(exception).hasMessageThat().contains(
+      ScriptResultConstants.TEST_FILE_CHECK_FAILED
+    )
     assertThat(outContent.toString().trim()).isEqualTo(
       "No test file found for:\nProdFile2.kt"
     )
@@ -75,12 +71,15 @@ class TestFileCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
+    assertThat(exception).hasMessageThat().contains(
+      ScriptResultConstants.TEST_FILE_CHECK_FAILED
+    )
     assertThat(outContent.toString().trim()).isEqualTo(
       "No test file found for:\nProdFile3.kt\nProdFile2.kt"
     )
   }
 
+  /** Helper function which executes the main method of the script. */
   fun runScript() {
     TestFileCheck.main(tempFolder.getRoot().toString(), "testfiles")
   }

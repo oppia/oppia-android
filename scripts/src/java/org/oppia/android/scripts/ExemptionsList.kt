@@ -1,8 +1,9 @@
 package org.oppia.android.scripts
 
+/** Lists of files which should be exepmted for the different script checks. */
 object ExemptionsList {
-
-  val TEST_FILE_CHECK_EXEMPTIONS_LIST = arrayOf(
+  /** List of files which should be exempted for the test file check. */
+  val TEST_FILE_CHECK_EXEMPTIONS_LIST = listOf(
     "TestCoroutineDispatcherTestBase.kt",
     "TestEnvironmentConfig.kt",
     "OppiaTestRule.kt",
@@ -610,5 +611,6 @@ object ExemptionsList {
     "NetworkModule.kt",
     "ExemptionsList.kt",
     "ScriptResultConstants.kt",
-    )
+    "RepoFile.kt"
+  )
 }
