@@ -80,7 +80,7 @@ class TestFileCheckTest {
   }
 
   /** Helper function which executes the main method of the script. */
-  fun runScript() {
+  private fun runScript() {
     TestFileCheck.main(tempFolder.getRoot().toString(), "testfiles")
   }
 }
