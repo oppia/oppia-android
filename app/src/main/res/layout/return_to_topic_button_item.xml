@@ -14,9 +14,8 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    app:layoutMarginEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_end : @dimen/general_button_item_question_view_margin_end}"
-    app:layoutMarginStart="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_start : @dimen/general_button_item_question_view_margin_start}"
+    android:paddingEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_end : @dimen/general_button_item_question_view_margin_end}"
+    android:paddingStart="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_start : @dimen/general_button_item_question_view_margin_start}"
     app:layoutMarginTop="@{buttonViewModel.hasConversationView ? @dimen/return_to_topic_button_item_exploration_view_margin_top : @dimen/return_to_topic_button_item_question_view_margin_top}">
 
     <ImageButton
