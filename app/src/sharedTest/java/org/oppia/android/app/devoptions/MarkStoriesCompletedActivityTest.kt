@@ -10,11 +10,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -36,7 +33,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.drawer.DeveloperOptionsModule
 import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -79,14 +76,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [MarkChaptersCompletedActivity]. */
+/** Tests for [MarkStoriesCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = MarkChaptersCompletedActivityTest.TestApplication::class,
+  application = MarkStoriesCompletedActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class MarkChaptersCompletedActivityTest {
+class MarkStoriesCompletedActivityTest {
 
   private val internalProfileId = 0
 
@@ -98,7 +95,7 @@ class MarkChaptersCompletedActivityTest {
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
-    MarkChaptersCompletedActivity::class.java,
+    MarkStoriesCompletedActivity::class.java,
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
@@ -119,19 +116,19 @@ class MarkChaptersCompletedActivityTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
+  fun testMarkStoriesCompletedActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.mark_chapters_completed_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.mark_stories_completed_activity_title))
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_storiesAreShown() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
+  fun testMarkStoriesCompletedActivity_storiesAreShown() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
@@ -139,50 +136,50 @@ class MarkChaptersCompletedActivityTest {
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 0,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("First Story")))
       scrollToPosition(1)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 1,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Other Interesting Story")))
       scrollToPosition(2)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Matthew Goes to the Bakery")))
       scrollToPosition(3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 3,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Ratios: Part 1")))
       scrollToPosition(4)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 4,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Ratios: Part 2")))
     }
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_configChange_storiesAreShown() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
+  fun testMarkStoriesCompletedActivity_configChange_storiesAreShown() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
@@ -191,226 +188,133 @@ class MarkChaptersCompletedActivityTest {
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 0,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("First Story")))
       scrollToPosition(1)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 1,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Other Interesting Story")))
       scrollToPosition(2)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Matthew Goes to the Bakery")))
       scrollToPosition(3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 3,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Ratios: Part 1")))
       scrollToPosition(4)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 4,
-          targetViewId = R.id.mark_chapters_completed_story_name_text_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(withText("Ratios: Part 2")))
     }
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_chapterListSAreVisible() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
+  fun testMarkStoriesCompletedActivity_selectAll_isChecked() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(4)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 4,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testMarkChaptersCompletedActivity_configChange_chapterListSAreVisible() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-      scrollToPosition(4)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
-          position = 4,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
-        )
-      ).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testMarkChaptersCompletedActivity_selectAll_isChecked() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box))
+      onView(withId(R.id.mark_stories_completed_all_check_box))
         .perform(click()).check(matches(isChecked()))
     }
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_selectAll_thenDeselect_isNotChecked() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
+  fun testMarkStoriesCompletedActivity_selectAll_thenDeselect_isNotChecked() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box))
+      onView(withId(R.id.mark_stories_completed_all_check_box))
         .perform(click()).perform(click()).check(matches(not(isChecked())))
     }
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_selectChaptersOfFirstStory_chaptersAreChecked() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(
+  fun testMarkStoriesCompletedActivity_selectStories_storiesAreChecked() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
           position = 0,
-          targetViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
-      ).perform(actionOnItemAtPosition<ViewHolder>(0, click()))
-        .check(
-          selectedDescendantsMatch(
-            atPositionOnView(
-              recyclerViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view,
-              position = 0,
-              targetViewId = R.id.mark_chapters_completed_chapter_check_box
-            ),
-            isChecked()
-          )
+      ).perform(click()).check(matches(isChecked()))
+      scrollToPosition(1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
-        .perform(actionOnItemAtPosition<ViewHolder>(1, click()))
-        .check(
-          selectedDescendantsMatch(
-            atPositionOnView(
-              recyclerViewId = R.id.mark_chapters_completed_chapter_summary_recycler_view,
-              position = 1,
-              targetViewId = R.id.mark_chapters_completed_chapter_check_box
-            ),
-            isChecked()
-          )
+      ).perform(click()).check(matches(isChecked()))
+      scrollToPosition(2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          position = 2,
+          targetViewId = R.id.mark_stories_completed_story_check_box
         )
+      ).perform(click()).check(matches(isChecked()))
+      scrollToPosition(3)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          position = 3,
+          targetViewId = R.id.mark_stories_completed_story_check_box
+        )
+      ).perform(click()).check(matches(isChecked()))
+      scrollToPosition(4)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          position = 4,
+          targetViewId = R.id.mark_stories_completed_story_check_box
+        )
+      ).perform(click()).check(matches(isChecked()))
     }
   }
 
-  private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+  private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
+    return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
       context = context,
       internalProfileId = internalProfileId
     )
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_chapters_completed_story_summary_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(
-        position
-      )
+    onView(withId(R.id.mark_stories_completed_story_summary_recycler_view)).perform(
+      scrollToPosition<ViewHolder>(position)
     )
   }
 
@@ -439,18 +343,18 @@ class MarkChaptersCompletedActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(markChaptersCompletedActivityTest: MarkChaptersCompletedActivityTest)
+    fun inject(markStoriesCompletedActivityTest: MarkStoriesCompletedActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkChaptersCompletedActivityTest_TestApplicationComponent.builder()
+      DaggerMarkStoriesCompletedActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(markChaptersCompletedActivityTest: MarkChaptersCompletedActivityTest) {
-      component.inject(markChaptersCompletedActivityTest)
+    fun inject(markStoriesCompletedActivityTest: MarkStoriesCompletedActivityTest) {
+      component.inject(markStoriesCompletedActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
