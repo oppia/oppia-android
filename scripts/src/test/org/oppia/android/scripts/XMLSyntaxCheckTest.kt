@@ -1,33 +1,28 @@
 package org.oppia.android.scripts
 
-import java.io.File
-import org.oppia.android.scripts.XMLSyntaxCheck
-import org.junit.Test
-import org.junit.Rule
-import org.junit.Before
-import org.junit.After
-import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.ScriptResultConstants
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
-import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
+/** Tests for [XMLSyntaxCheck]. */
 class XMLSyntaxCheckTest {
+
+  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val originalOut: PrintStream = java.lang.System.out
+
   @Rule
   @JvmField
   public var tempFolder: TemporaryFolder = TemporaryFolder()
 
   @Before
-  fun initTestFilesDirectory() {
+  fun setUpTests() {
     tempFolder.newFolder("testfiles")
-  }
-
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = java.lang.System.out
-
-  @Before
-  fun setUpStreams() {
     java.lang.System.setOut(PrintStream(outContent))
   }
 
@@ -37,14 +32,14 @@ class XMLSyntaxCheckTest {
   }
 
   @Test
-  fun testXmlSyntax_validXML_xmlSyntaxIsCorrect(){
+  fun testXmlSyntax_validXML_xmlSyntaxIsCorrect() {
     val validXML =
-    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-      "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
-      "  android:shape=\"rectangle\">\n" +
-      "  <solid android:color=\"#3333334D\" />\n" +
-      "  <size android:height=\"1dp\" />\n" +
-      "</shape>"
+      "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+        "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
+        "  android:shape=\"rectangle\">\n" +
+        "  <solid android:color=\"#3333334D\" />\n" +
+        "  <size android:height=\"1dp\" />\n" +
+        "</shape>"
 
     val tempFile = tempFolder.newFile("testfiles/TestFile.xml")
     tempFile.writeText(validXML)
@@ -57,7 +52,7 @@ class XMLSyntaxCheckTest {
   }
 
   @Test
-  fun testXmlSyntax_invalidOpeningTag_xmlSyntaxIsInCorrect(){
+  fun testXmlSyntax_invalidOpeningTag_xmlSyntaxIsInCorrect() {
     val invalidXML =
       "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
@@ -72,18 +67,20 @@ class XMLSyntaxCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.XML_SYNTAX_CHECK_FAILED)
+    assertThat(exception).hasMessageThat().contains(
+      ScriptResultConstants.XML_SYNTAX_CHECK_FAILED
+    )
     assertThat(outContent.toString().trim()).isEqualTo(
-    "XML syntax error: The content of elements must consist of well-formed" +
-      " character data or markup.\n" +
-      "lineNumber: 4\n" +
-      "columnNumber: 4\n" +
-      "File: [ROOT]/testfiles/TestFile.xml"
+      "XML syntax error: The content of elements must consist of well-formed" +
+        " character data or markup.\n" +
+        "lineNumber: 4\n" +
+        "columnNumber: 4\n" +
+        "File: [ROOT]/testfiles/TestFile.xml"
     )
   }
 
   @Test
-  fun testXmlSyntax_wrongClosingTag_xmlSyntaxIsInCorrect(){
+  fun testXmlSyntax_wrongClosingTag_xmlSyntaxIsInCorrect() {
     val invalidXML =
       "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
@@ -98,7 +95,9 @@ class XMLSyntaxCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.XML_SYNTAX_CHECK_FAILED)
+    assertThat(exception).hasMessageThat().contains(
+      ScriptResultConstants.XML_SYNTAX_CHECK_FAILED
+    )
     assertThat(outContent.toString().trim()).isEqualTo(
       "XML syntax error: The end-tag for element type \"shape\" must end" +
         " with a '>' delimiter.\n" +
@@ -109,7 +108,7 @@ class XMLSyntaxCheckTest {
   }
 
   @Test
-  fun testXmlSyntax_multipleFilesHavingInvalidXml_xmlSyntaxIsInCorrect(){
+  fun testXmlSyntax_multipleFilesHavingInvalidXml_xmlSyntaxIsInCorrect() {
     val invalidXMLForFile1 =
       "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
         "<shape xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
@@ -133,14 +132,16 @@ class XMLSyntaxCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.XML_SYNTAX_CHECK_FAILED)
+    assertThat(exception).hasMessageThat().contains(
+      ScriptResultConstants.XML_SYNTAX_CHECK_FAILED
+    )
     assertThat(outContent.toString().trim()).isEqualTo(
       "XML syntax error: The end-tag for element type \"shape\" must end" +
         " with a '>' delimiter.\n" +
         "lineNumber: 6\n" +
         "columnNumber: 8\n" +
-        "File: [ROOT]/testfiles/TestFile2.xml\n\n"+
-      "XML syntax error: The content of elements must consist of well-formed" +
+        "File: [ROOT]/testfiles/TestFile2.xml\n\n" +
+        "XML syntax error: The content of elements must consist of well-formed" +
         " character data or markup.\n" +
         "lineNumber: 4\n" +
         "columnNumber: 4\n" +
@@ -148,6 +149,7 @@ class XMLSyntaxCheckTest {
     )
   }
 
+  /** Helper function which executes the main method of the script. */
   private fun runScript() {
     XMLSyntaxCheck.main(tempFolder.getRoot().toString(), "testfiles")
   }
