@@ -99,6 +99,8 @@ kt_jvm_test(
     test_class = "org.oppia.android.scripts.TestFileCheckTest",
     deps = [
         ":test_file_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
