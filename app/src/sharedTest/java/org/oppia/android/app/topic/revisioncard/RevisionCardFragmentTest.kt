@@ -74,7 +74,6 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -119,7 +118,6 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
@@ -137,7 +135,6 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
@@ -160,7 +157,6 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
