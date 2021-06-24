@@ -43,7 +43,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       ) as NavigationDrawerFragment
     navigationDrawerFragment.setUpDrawer(
       binding.developerOptionsActivityDrawerLayout,
-      toolbar, /* menuItemId= */ -1
+      toolbar, menuItemId = -1
     )
   }
 
