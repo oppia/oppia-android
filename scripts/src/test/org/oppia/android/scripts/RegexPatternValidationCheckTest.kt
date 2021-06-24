@@ -1,34 +1,28 @@
 package org.oppia.android.scripts
 
-import java.io.File
-import org.oppia.android.scripts.RegexPatternValidationCheck
-import org.junit.Test
-import org.junit.Rule
-import org.junit.Before
-import org.junit.After
-import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.ScriptResultConstants
 import com.google.common.truth.Truth.assertThat
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
-import java.io.PrintStream
 import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
+/** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {
+
+  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
+  private val originalOut: PrintStream = java.lang.System.out
 
   @Rule
   @JvmField
   public var tempFolder: TemporaryFolder = TemporaryFolder()
 
   @Before
-  fun initTestFilesDirectory() {
+  fun setUpTests() {
     tempFolder.newFolder("testfiles")
-  }
-
-  private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = java.lang.System.out
-
-  @Before
-  fun setUpStreams() {
     java.lang.System.setOut(PrintStream(outContent))
   }
 
@@ -42,7 +36,10 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFolder("testfiles", "app", "src", "main")
     tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
 
-    runScript(tempFolder.getRoot().toString() + "/testfiles", arrayOf("app"))
+    runScript(
+      testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
+      allowedDirectories = arrayOf("app")
+    )
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ScriptResultConstants.REGEX_CHECKS_PASSED
@@ -56,8 +53,8 @@ class RegexPatternValidationCheckTest {
 
     val exception = assertThrows(Exception::class) {
       runScript(
-        tempFolder.getRoot().toString() + "/testfiles",
-        arrayOf("data")
+        testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
+        allowedDirectories = arrayOf("data")
       )
     }
 
@@ -90,16 +87,16 @@ class RegexPatternValidationCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
-    assertThat(
-      "Prohibited content usage found on line no. 1\n" +
-        "File: [ROOT]/testfiles/TestFile.kt\n" +
-        "Failure message: AndroidX should be used instead of the support library"
-    ).isEqualTo(
-      outContent.toString().trim())
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        "Prohibited content usage found on line no. 1\n" +
+          "File: [ROOT]/testfiles/TestFile.kt\n" +
+          "Failure message: AndroidX should be used instead of the support library"
+      )
   }
 
   @Test
-  fun testMultipleFailures_useProhibitedFileNameAndFileContent_MultipleFailuresShouldBeLogged() {
+  fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile(
       "testfiles/data/src/main/TestActivity.kt"
@@ -107,11 +104,10 @@ class RegexPatternValidationCheckTest {
     val prohibitedContent = "import android.support.v7.app"
     prohibitedFile.writeText(prohibitedContent)
 
-
     val exception = assertThrows(Exception::class) {
       runScript(
-        tempFolder.getRoot().toString() + "/testfiles",
-        arrayOf("data")
+        testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
+        allowedDirectories = arrayOf("data")
       )
     }
 
@@ -125,9 +121,11 @@ class RegexPatternValidationCheckTest {
     )
   }
 
+  /** Helper function which executes the main method of the script. */
   private fun runScript(
     testDirectoryPath: String = tempFolder.getRoot().toString(),
-    allowedDirectories: Array<String> = arrayOf("testfiles")) {
+    allowedDirectories: Array<String> = arrayOf("testfiles")
+  ) {
     RegexPatternValidationCheck.main(
       testDirectoryPath,
       *allowedDirectories

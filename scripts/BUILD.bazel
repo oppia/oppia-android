@@ -24,6 +24,7 @@ kt_jvm_library(
     testonly = True,
     srcs = [
         "src/java/org/oppia/android/scripts/RegexPatternValidationCheck.kt",
+        "src/java/org/oppia/android/scripts/RepoFile.kt",
         "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
     ],
     deps = [
