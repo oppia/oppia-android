@@ -31,8 +31,8 @@
     <org.oppia.android.app.customview.interaction.NumericInputInteractionView
       android:id="@+id/numeric_input_interaction_view"
       style="@style/InputInteractionEditText"
-      android:contentDescription="@string/numeric_input_content_description"
       android:digits="0123456789.-"
+      android:hint="@string/numeric_input_hint"
       android:inputType="numberDecimal"
       android:text="@={viewModel.answerText}"
       app:textChangedListener="@{viewModel.answerTextWatcher}" />
