@@ -7,6 +7,7 @@ package org.oppia.android.util.platformparameter
  * */
 interface PlatformParameter<T> {
   val value: T
+
   companion object{
     /**
      *  Creates a Platform Parameter Implementation containing the default value for a particular

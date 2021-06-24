@@ -14,7 +14,7 @@ import org.oppia.android.util.platformparameter.Param3Default
 import org.oppia.android.util.platformparameter.Param3Name
 import org.oppia.android.util.platformparameter.PlatformParameter
 
-/* Platform Parameter Module which provides individual Platform Parameters*/
+/* Platform Parameter Module that provides values for the individual Platform Parameters. */
 @Module
 class PlatformParameterModule {
 
