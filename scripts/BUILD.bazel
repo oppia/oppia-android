@@ -58,6 +58,7 @@ kt_jvm_library(
     name = "xml_syntax_check_lib",
     testonly = True,
     srcs = [
+        "src/java/org/oppia/android/scripts/RepoFile.kt",
         "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
         "src/java/org/oppia/android/scripts/XMLSyntaxCheck.kt",
     ],
