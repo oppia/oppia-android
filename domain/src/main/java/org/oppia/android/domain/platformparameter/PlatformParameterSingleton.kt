@@ -21,44 +21,33 @@ class PlatformParameterSingleton @Inject constructor() {
   /** Retrieve a String type [ParameterValue], if it exists in the [platformParameterMap]. */
   fun getStringPlatformParameter(name: String): PlatformParameter<String>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name]?.string ?: return null
+    val parameter = platformParameterMap[name] ?: return null
+    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.STRING)) return null
     return object : PlatformParameter<String> {
       override val value: String
-        get() = parameter
+        get() = parameter.string
     }
   }
 
   /** Retrieve an Integer type [ParameterValue], if it exists in the [platformParameterMap]. */
   fun getIntegerPlatformParameter(name: String): PlatformParameter<Int>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name]?.integer ?: return null
+    val parameter = platformParameterMap[name] ?: return null
+    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.INTEGER)) return null
     return object : PlatformParameter<Int> {
       override val value: Int
-        get() = parameter
+        get() = parameter.integer
     }
   }
 
   /** Retrieve a Boolean type [ParameterValue], if it exists in the [platformParameterMap]. */
   fun getBooleanPlatformParameter(name: String): PlatformParameter<Boolean>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name]?.boolean ?: return null
+    val parameter = platformParameterMap[name] ?: return null
+    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.BOOLEAN)) return null
     return object : PlatformParameter<Boolean> {
       override val value: Boolean
-        get() = parameter
+        get() = parameter.boolean
     }
   }
-
-//  /** Retrieve individual [ParameterValue], if it exists in the [platformParameterMap]. */
-//  inline fun <reified T> getPlatformParameter(name: String): PlatformParameter<T>? {
-//    if (platformParameterMap.isEmpty()) return null
-//    val parameter = platformParameterMap[name] ?: return null
-//    return object : PlatformParameter<T> {
-//      override val value: T
-//        get() = when (T::class) {
-//          String::class -> parameter.string as T
-//          Int::class -> parameter.integer as T
-//          else -> parameter.boolean as T
-//        }
-//    }
-//  }
 }

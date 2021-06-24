@@ -69,6 +69,17 @@ class PlatformParameterSingletonTest {
   }
 
   @Test
+  fun testSingleton_initPlatformParameterMapTwice_checkIsNotUpdatedTwice() {
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isFalse()
+    val emptyPlatformParameterMap = mapOf<String,ParameterValue>()
+    platformParameterSingleton.setPlatformParameterMap(emptyPlatformParameterMap)
+    assertThat(
+      platformParameterSingleton.getPlatformParameterMap()
+    ).isEqualTo(mockPlatformParameterMap)
+  }
+
+  @Test
   fun testSingleton_initPlatformParameterMap_retrieveStringParameter_verifyItsValue() {
     platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
     val stringPlatformParameter = platformParameterSingleton.getStringPlatformParameter(
@@ -96,10 +107,19 @@ class PlatformParameterSingletonTest {
   }
 
   @Test
-  fun testSingleton_initPlatformParameterMap_retrieveIncorrectParameter_verifyItsValue() {
+  fun testSingleton_initPlatformParameterMap_retrieveIncorrectNamedParameter_verifyIsNull() {
     platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
     val incorrectPlatformParameter = platformParameterSingleton.getStringPlatformParameter(
       INCORRECT_PLATFORM_PARAMETER_NAME
+    )
+    assertThat(incorrectPlatformParameter).isNull()
+  }
+
+  @Test
+  fun testSingleton_initPlatformParameterMap_retrieveIncorrectTypeParameter_verifyIsNull() {
+    platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
+    val incorrectPlatformParameter = platformParameterSingleton.getStringPlatformParameter(
+      BOOLEAN_PLATFORM_PARAMETER_NAME
     )
     assertThat(incorrectPlatformParameter).isNull()
   }
