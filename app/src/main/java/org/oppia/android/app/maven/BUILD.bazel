@@ -6,7 +6,8 @@ kt_jvm_library(
         "maveninstall/MavenListDependency.kt",
     ],
     deps = [
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -17,7 +18,8 @@ kt_jvm_library(
     ],
     deps = [
         ":maven_list_dependency",
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -27,7 +29,8 @@ kt_jvm_library(
         "backup/BackupLicense.kt",
     ],
     deps = [
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -38,7 +41,8 @@ kt_jvm_library(
     ],
     deps = [
         ":backup_license",
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -50,7 +54,8 @@ kt_jvm_library(
     deps = [
         ":maven_list_dependencies",
         ":maven_list_dependency",
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 
@@ -60,7 +65,8 @@ kt_jvm_library(
         "LicenseDependency.kt",
     ],
     deps = [
-        "//third_party:moshi",
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
     ],
 )
 

@@ -18,7 +18,7 @@ const val licenseTag = "<license>"
 const val nameTag = "<name>"
 const val urlTag = "<url>"
 const val bazelQueryCommand =
-  "bazel --output_base=/tmp query 'deps(deps(//:oppia) " +
+  "bazel --output_base=/tmp/diff query 'deps(deps(//:oppia) " +
     "intersect //third_party/...) intersect @maven//...'"
 
 class GenerateMavenDependenciesList {
