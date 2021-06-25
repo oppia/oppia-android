@@ -180,7 +180,8 @@ class RegexPatternValidationCheck {
     return matchedFiles.size != 0
   }
 
-  /** Logs the failures for filename pattern violation.
+  /**
+   * Logs the failures for filename pattern violation.
    *
    * @param repoPath the path of the repo to be analyzed
    * @param errorToShow the filename error to be logged
@@ -201,7 +202,8 @@ class RegexPatternValidationCheck {
     }
   }
 
-  /** Logs the failures for file content violation.
+  /**
+   * Logs the failures for file content violation.
    *
    * @param lineNumberthe line number at which the failure occured
    * @param errorToShow the failure message to be logged
