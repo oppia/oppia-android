@@ -24,6 +24,9 @@ class TestFileCheck {
         ExemptionsList.TEST_FILE_CHECK_EXEMPTIONS_LIST
       )
 
+      // class object which is needed to acess the helper methods
+      val testFileCheck: TestFileCheck = TestFileCheck()
+
       // a list of all the prod files present in the repo.
       val prodFilesList: MutableList<String> = ArrayList()
 
@@ -40,10 +43,10 @@ class TestFileCheck {
 
       // a list of all the prod files that do not have a corresponding test file.
       val matchedFileNames = prodFilesList.filter {
-        retrievePotentionalTestFileName(it) !in testFilesList
+        testFileCheck.retrievePotentionalTestFileName(it) !in testFilesList
       }
 
-      logFailures(matchedFileNames)
+      testFileCheck.logFailures(matchedFileNames)
 
       if (matchedFileNames.size != 0) {
         throw Exception(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
@@ -51,31 +54,31 @@ class TestFileCheck {
         println(ScriptResultConstants.TEST_FILE_CHECK_PASSED)
       }
     }
+  }
 
-    /**
-     * Retrieves the potential test file name for a prod file.
-     *
-     * @param prodFileName name of the prod file
-     * @return potential name of the test file
-     */
-    private fun retrievePotentionalTestFileName(prodFileName: String): String {
-      return prodFileName.removeSuffix(".kt") + "Test.kt"
-    }
+  /**
+   * Retrieves the potential test file name for a prod file.
+   *
+   * @param prodFileName name of the prod file
+   * @return potential name of the test file
+   */
+  private fun retrievePotentionalTestFileName(prodFileName: String): String {
+    return prodFileName.removeSuffix(".kt") + "Test.kt"
+  }
 
-    /**
-     * Logs the file names of all the prod files that do not have a test file.
-     *
-     * @param matchedFileNames list of all the files missing a test file
-     * @return log the failures
-     */
-    private fun logFailures(matchedFileNames: List<String>) {
-      if (matchedFileNames.size != 0) {
-        print("No test file found for:\n")
-        matchedFileNames.forEach { file ->
-          print("$file\n")
-        }
-        println()
+  /**
+   * Logs the file names of all the prod files that do not have a test file.
+   *
+   * @param matchedFileNames list of all the files missing a test file
+   * @return log the failures
+   */
+  private fun logFailures(matchedFileNames: List<String>) {
+    if (matchedFileNames.size != 0) {
+      println("No test file found for:")
+      matchedFileNames.forEach { file ->
+        println("$file")
       }
+      println()
     }
   }
 }

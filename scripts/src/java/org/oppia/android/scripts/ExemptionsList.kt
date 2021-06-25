@@ -611,6 +611,7 @@ object ExemptionsList {
     "NetworkModule.kt",
     "ExemptionsList.kt",
     "ScriptResultConstants.kt",
-    "RepoFile.kt"
+    "RepoFile.kt",
+    "SyntaxErrorHandler.kt"
   )
 }
