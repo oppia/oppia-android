@@ -24,8 +24,10 @@ private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
  */
 fun main(args: Array<String>) {
   if (args.size < 2) {
-    println("Usage: bazel run //scripts:computed_affected_tests --" +
-      " <path_to_directory_root> <path_to_output_file>")
+    println(
+      "Usage: bazel run //scripts:computed_affected_tests --" +
+        " <path_to_directory_root> <path_to_output_file>"
+    )
     exitProcess(1)
   }
 
@@ -58,8 +60,10 @@ private fun computeAffectedTargetsForDevelopBranch(bazelClient: BazelClient, out
 
   val allTestTargets = bazelClient.retrieveAllTestTargets()
   println()
-  println("Affected test targets:" +
-    "\n${allTestTargets.joinToString(separator = "\n") { "- $it" }}")
+  println(
+    "Affected test targets:" +
+      "\n${allTestTargets.joinToString(separator = "\n") { "- $it" }}"
+  )
   outputFile.printWriter().use { writer -> allTestTargets.forEach { writer.println(it) } }
 }
 
@@ -97,8 +101,10 @@ private fun computeAffectedTargetsForNonDevelopBranch(
 
   val allAffectedTestTargets = (affectedTestTargets + transitiveTestTargets).toSet()
   println()
-  println("Affected test targets:" +
-    "\n${allAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}")
+  println(
+    "Affected test targets:" +
+      "\n${allAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
+  )
   outputFile.printWriter().use { writer -> allAffectedTestTargets.forEach { writer.println(it) } }
 }
 
