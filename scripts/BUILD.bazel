@@ -123,6 +123,7 @@ kt_jvm_library(
         "src/java/org/oppia/android/scripts/AccessibilityLabelCheck.kt",
         "src/java/org/oppia/android/scripts/ExemptionsList.kt",
         "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
+        "src/java/org/oppia/android/scripts/SyntaxErrorHandler.kt",
     ],
 )
 
@@ -133,6 +134,8 @@ kt_jvm_test(
     test_class = "org.oppia.android.scripts.AccessibilityLabelCheckTest",
     deps = [
         ":accessibility_label_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
