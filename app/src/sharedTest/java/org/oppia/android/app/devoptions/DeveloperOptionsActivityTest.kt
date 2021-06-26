@@ -150,9 +150,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_modifyLessonProgressIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -181,9 +179,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -202,9 +198,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -233,9 +227,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -252,9 +244,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -266,9 +256,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -280,9 +268,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -294,9 +280,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
@@ -308,8 +292,7 @@ class DeveloperOptionsActivityTest {
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
     return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(
-      context = context,
-      internalProfileId = internalProfileId
+      context, internalProfileId
     )
   }
 

@@ -134,45 +134,30 @@ class MarkStoriesCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("First Story")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 0,
+        stringToMatch = "First Story"
+      )
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Other Interesting Story")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 1,
+        stringToMatch = "Other Interesting Story"
+      )
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Matthew Goes to the Bakery")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 2,
+        stringToMatch = "Matthew Goes to the Bakery"
+      )
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Ratios: Part 1")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 3,
+        stringToMatch = "Ratios: Part 1"
+      )
       scrollToPosition(4)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 4,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Ratios: Part 2")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 4,
+        stringToMatch = "Ratios: Part 2"
+      )
     }
   }
 
@@ -186,45 +171,30 @@ class MarkStoriesCompletedActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("First Story")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 0,
+        stringToMatch = "First Story"
+      )
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Other Interesting Story")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 1,
+        stringToMatch = "Other Interesting Story"
+      )
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Matthew Goes to the Bakery")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 2,
+        stringToMatch = "Matthew Goes to the Bakery"
+      )
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Ratios: Part 1")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 3,
+        stringToMatch = "Ratios: Part 1"
+      )
       scrollToPosition(4)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 4,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(withText("Ratios: Part 2")))
+      verifyStoryNameOnStorySummaryListItemAtPosition(
+        itemPosition = 4,
+        stringToMatch = "Ratios: Part 2"
+      )
     }
   }
 
@@ -242,7 +212,7 @@ class MarkStoriesCompletedActivityTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedActivity_selectAll_thenDeselect_isNotChecked() {
+  fun testMarkStoriesCompletedActivity_selectAll_unselect_isNotChecked() {
     launch<MarkStoriesCompletedActivity>(
       createMarkStoriesCompletedActivityIntent(
         internalProfileId = internalProfileId
@@ -263,53 +233,45 @@ class MarkStoriesCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
       scrollToPosition(4)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 4,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
     }
   }
 
   private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
-      context = context,
-      internalProfileId = internalProfileId
+      context, internalProfileId
     )
+  }
+
+  private fun verifyStoryNameOnStorySummaryListItemAtPosition(
+    itemPosition: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_stories_completed_story_check_box
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun verifyItemCheckedOnStorySummaryListItem(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_stories_completed_story_check_box
+      )
+    ).perform(click()).check(matches(isChecked()))
   }
 
   private fun scrollToPosition(position: Int) {

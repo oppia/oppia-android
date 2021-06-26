@@ -128,96 +128,66 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_topicsAreShown() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("First Test Topic")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 0,
+        stringToMatch = "First Test Topic"
+      )
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Second Test Topic")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 1,
+        stringToMatch = "Second Test Topic"
+      )
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Fractions")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 2,
+        stringToMatch = "Fractions"
+      )
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Ratios and Proportional Reasoning")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 3,
+        stringToMatch = "Ratios and Proportional Reasoning"
+      )
     }
   }
 
   @Test
   fun testMarkTopicsCompletedActivity_configChange_topicsAreShown() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("First Test Topic")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 0,
+        stringToMatch = "First Test Topic"
+      )
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Second Test Topic")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 1,
+        stringToMatch = "Second Test Topic"
+      )
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Fractions")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 2,
+        stringToMatch = "Fractions"
+      )
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(withText("Ratios and Proportional Reasoning")))
+      verifyTopicNameOnTopicSummaryListItemAtPosition(
+        itemPosition = 3,
+        stringToMatch = "Ratios and Proportional Reasoning"
+      )
     }
   }
 
   @Test
   fun testMarkTopicsCompletedActivity_selectAll_isChecked() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box))
@@ -226,11 +196,9 @@ class MarkTopicsCompletedActivityTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedActivity_selectAll_thenDeselect_isNotChecked() {
+  fun testMarkTopicsCompletedActivity_selectAll_unselect_isNotChecked() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box))
@@ -241,51 +209,47 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_selectTopics_topicsAreChecked() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 0,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
       scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 1,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
       scrollToPosition(2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
       scrollToPosition(3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).perform(click()).check(matches(isChecked()))
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }
 
   private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
-      context = context,
-      internalProfileId = internalProfileId
+      context, internalProfileId
     )
+  }
+
+  private fun verifyTopicNameOnTopicSummaryListItemAtPosition(
+    itemPosition: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_topics_completed_topic_check_box
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun verifyItemCheckedOnTopicSummaryListItem(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_topics_completed_topic_check_box
+      )
+    ).perform(click()).check(matches(isChecked()))
   }
 
   private fun scrollToPosition(position: Int) {
