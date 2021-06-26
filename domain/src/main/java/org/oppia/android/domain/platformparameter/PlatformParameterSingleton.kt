@@ -22,7 +22,7 @@ class PlatformParameterSingleton @Inject constructor() {
   fun getStringPlatformParameter(name: String): PlatformParameter<String>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
-    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.STRING)) return null
+    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.STRING)) return null
     return object : PlatformParameter<String> {
       override val value: String
         get() = parameter.string
@@ -33,7 +33,7 @@ class PlatformParameterSingleton @Inject constructor() {
   fun getIntegerPlatformParameter(name: String): PlatformParameter<Int>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
-    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.INTEGER)) return null
+    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.INTEGER)) return null
     return object : PlatformParameter<Int> {
       override val value: Int
         get() = parameter.integer
@@ -44,7 +44,7 @@ class PlatformParameterSingleton @Inject constructor() {
   fun getBooleanPlatformParameter(name: String): PlatformParameter<Boolean>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
-    if(!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.BOOLEAN)) return null
+    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.BOOLEAN)) return null
     return object : PlatformParameter<Boolean> {
       override val value: Boolean
         get() = parameter.boolean
