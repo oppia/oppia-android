@@ -8,6 +8,7 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
@@ -74,6 +75,7 @@ interface FragmentComponent {
   fun getViewComponentBuilderProvider(): Provider<ViewComponent.Builder>
 
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
+  fun inject(viewEventLogsFragment: ViewEventLogsFragment)
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appLanguageFragment: AppLanguageFragment)

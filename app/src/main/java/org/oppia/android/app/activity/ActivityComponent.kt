@@ -7,6 +7,7 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -70,6 +71,7 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
+  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(administratorControlsActivity: AdministratorControlsActivity)

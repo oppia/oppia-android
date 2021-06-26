@@ -14,6 +14,9 @@ class FakeEventLogger @Inject constructor() : EventLogger {
     eventList.add(eventLog)
   }
 
+  /** Returns eventList. */
+  fun getEventList(): ArrayList<EventLog> = eventList
+
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = eventList.last()
 

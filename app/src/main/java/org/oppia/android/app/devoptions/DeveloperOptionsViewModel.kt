@@ -19,6 +19,8 @@ class DeveloperOptionsViewModel @Inject constructor(
   private val fragment: Fragment,
 ) {
   private lateinit var userProfileId: ProfileId
+  private val routeToViewEventLogsListener =
+    activity as RouteToViewEventLogsListener
   val selectedFragmentIndex = ObservableField<Int>(1)
 
   val developerOptionsList: List<DeveloperOptionsItemViewModel> by lazy {
@@ -28,7 +30,7 @@ class DeveloperOptionsViewModel @Inject constructor(
   private fun processDeveloperOptionsList(): List<DeveloperOptionsItemViewModel> {
     val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
       mutableListOf(DeveloperOptionsModifyLessonProgressViewModel())
-    itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
+    itemViewModelList.add(DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener))
     itemViewModelList.add(DeveloperOptionsOverrideAppBehaviorsViewModel())
     return itemViewModelList
   }

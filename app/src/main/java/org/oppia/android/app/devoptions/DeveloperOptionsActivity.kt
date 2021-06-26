@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import javax.inject.Inject
 
@@ -15,7 +16,9 @@ const val EVENT_LOGS_FRAGMENT = "EVENT_LOGS_FRAGMENT"
 const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
 
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity : InjectableAppCompatActivity() {
+class DeveloperOptionsActivity :
+  InjectableAppCompatActivity(),
+  RouteToViewEventLogsListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
@@ -24,6 +27,10 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     developerOptionsActivityPresenter.handleOnCreate()
     title = getString(R.string.developer_options_activity_title)
+  }
+
+  override fun routeToViewEventLogs() {
+    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
   }
 
   companion object {

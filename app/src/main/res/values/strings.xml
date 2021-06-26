@@ -64,6 +64,7 @@
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
   <string name="developer_options_activity_title">Developer Options</string>
+  <string name="view_event_logs_activity_title">View Event Logs</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
