@@ -1,3 +1,7 @@
+"""
+Macros for preparing & creating assets to include in the scripts module.
+"""
+
 load("//domain:domain_assets.bzl", "gen_binary_proto_from_text")
 
 def _generate_single_asset_proto_binary(name, proto_file_name, proto_dep_name, proto_type_name):
