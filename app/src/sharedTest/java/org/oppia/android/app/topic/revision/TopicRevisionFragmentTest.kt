@@ -26,6 +26,7 @@ import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -65,6 +66,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.ImageViewMatcher.Companion.hasScaleType
@@ -92,6 +94,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicRevisionFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context

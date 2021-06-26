@@ -30,6 +30,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -73,6 +74,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -101,6 +103,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

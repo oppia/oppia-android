@@ -75,6 +75,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -102,6 +103,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AdminPinActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get: Rule
   val activityTestRule: ActivityTestRule<AdminPinActivity> = ActivityTestRule(

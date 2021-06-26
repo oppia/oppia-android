@@ -88,6 +88,8 @@ import javax.inject.Singleton
 )
 class WalkthroughTopicListFragmentTest {
 
+  // TODO(#3367): Use AccessibilityTestRule
+
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var testEnvironmentConfig: TestEnvironmentConfig
