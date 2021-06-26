@@ -1,7 +1,7 @@
 package org.oppia.android.scripts
 
+/** Lists of files which should be exepmted for the different script checks. */
 object ExemptionsList {
-
   val ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST = arrayOf(
     ".app.home.HomeActivity",
     ".app.home.recentlyplayed.RecentlyPlayedActivity",
@@ -31,7 +31,8 @@ object ExemptionsList {
     ".app.testing.LessonThumbnailImageViewTestActivity",
   )
 
-  val TEST_FILE_CHECK_EXEMPTIONS_LIST = arrayOf(
+  /** List of files which should be exempted for the test file check. */
+  val TEST_FILE_CHECK_EXEMPTIONS_LIST = listOf(
     "TestCoroutineDispatcherTestBase.kt",
     "TestEnvironmentConfig.kt",
     "OppiaTestRule.kt",
@@ -639,5 +640,7 @@ object ExemptionsList {
     "NetworkModule.kt",
     "ExemptionsList.kt",
     "ScriptResultConstants.kt",
-    )
+    "RepoFile.kt",
+    "SyntaxErrorHandler.kt"
+  )
 }

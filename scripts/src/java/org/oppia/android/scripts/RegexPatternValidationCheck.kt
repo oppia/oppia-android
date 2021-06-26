@@ -1,232 +1,227 @@
 package org.oppia.android.scripts
 
+import com.google.protobuf.MessageLite
+import org.oppia.android.scripts.proto.FileContentCheck
+import org.oppia.android.scripts.proto.FileContentChecks
+import org.oppia.android.scripts.proto.FilenameCheck
+import org.oppia.android.scripts.proto.FilenameChecks
 import java.io.File
 import java.io.FileInputStream
-import org.oppia.android.app.model.FilenameChecks
-import org.oppia.android.app.model.FilenameCheck
-import org.oppia.android.app.model.FileContentChecks
-import org.oppia.android.app.model.FileContentCheck
-import org.oppia.android.scripts.ScriptResultConstants
 
+/**
+ * Script for ensuring that prohibited file contents and
+ * file naming patterns are not present in the codebase.
+ */
 class RegexPatternValidationCheck {
   companion object {
     @JvmStatic
     fun main(vararg args: String) {
-
+      // path of the repo to be analyzed.
       val repoPath = args[0] + "/"
 
-      val allowedDirectories: MutableList<String> = ArrayList()
+      // a list of all allowed directories in the repo to be analyzed.
+      // args[0] is the repoPath, the allowed directories are specified
+      // after it. Hence, we have to start from the 1st index.
+      val allowedDirectories = args.drop(1)
 
-      for (layerIndex in 1 until args.size) {
-        allowedDirectories.add(args[layerIndex])
-      }
+      // a list of all files in the repo to be analyzed.
+      val searchFiles = RepoFile.collectSearchFiles(
+        repoPath,
+        allowedDirectories
+      )
 
-      val searchFiles = collectSearchFiles(repoPath, allowedDirectories)
+      // class object which is needed to acess the helper methods
+      val regexPatternValidationCheck: RegexPatternValidationCheck =
+        RegexPatternValidationCheck()
 
-      var scriptFailedFlag = false
-
-      getFilenameChecks().forEach {
-        if (checkProhibitedFileNamePattern(
-            repoPath = repoPath,
-            searchFiles = searchFiles,
-            prohibitedFilenameRegexString = it.getProhibitedFilenameRegex(),
-            errorToShow = it.getFailureMessage()
-          )) {
-          scriptFailedFlag = true
+      // check if the repo has any filename failure.
+      val hasFilenameCheckFailure = regexPatternValidationCheck.retrieveFilenameChecks()
+        .fold(initial = false) { isFailing, filenameCheck ->
+          val checkFailed = regexPatternValidationCheck.checkProhibitedFileNamePattern(
+            repoPath,
+            searchFiles,
+            filenameCheck,
+          )
+          isFailing || checkFailed
         }
-      }
 
-      getFileContentChecks().forEach {
-        if (checkProhibitedContent(
-            repoPath = repoPath,
-            searchFiles = searchFiles,
-            fileNameRegexString = it.getFilenameRegex(),
-            prohibitedContentRegexString = it.getProhibitedContentRegex(),
-            errorToShow = it.getFailureMessage()
-          )) {
-          scriptFailedFlag = true
+      // check if the repo has any file content failure.
+      val hasFileContentCheckFailure = regexPatternValidationCheck.retrieveFileContentChecks()
+        .fold(initial = false) { isFailing, fileContentCheck ->
+          val checkFailed = regexPatternValidationCheck.checkProhibitedContent(
+            repoPath,
+            searchFiles,
+            fileContentCheck,
+          )
+          isFailing || checkFailed
         }
-      }
 
-      if (scriptFailedFlag) {
+      if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
         throw Exception(ScriptResultConstants.REGEX_CHECKS_FAILED)
       } else {
         println(ScriptResultConstants.REGEX_CHECKS_PASSED)
       }
     }
+  }
 
-    /**
-     * Fetches all filename checks
-     *
-     * @return [List<FilenameCheck>] a list of all the FilenameChecks
-     */
-    fun getFilenameChecks(): List<FilenameCheck> {
-      val fileNamePatternsBinaryFile =
-        File("scripts/assets/filename_pattern_validation_checks.pb")
-      val filenameCheckBuilder = FilenameChecks.newBuilder()
-      val namePatternsObj: FilenameChecks =
-        FileInputStream(fileNamePatternsBinaryFile).use {
-          filenameCheckBuilder.mergeFrom(it)
-        }.build() as FilenameChecks
+  /**
+   * Retrieves all filename checks.
+   *
+   * @return a list of all the FilenameChecks
+   */
+  private fun retrieveFilenameChecks(): List<FilenameCheck> {
+    return getProto(
+      "filename_pattern_validation_checks.pb",
+      FilenameChecks.getDefaultInstance()
+    ).getFilenameChecksList()
+  }
 
-      return namePatternsObj.getFilenameChecksList()
-    }
+  /**
+   * Retrieves all file content checks.
+   *
+   * @return a list of all the FileContentChecks
+   */
+  private fun retrieveFileContentChecks(): List<FileContentCheck> {
+    return getProto(
+      "file_content_validation_checks.pb",
+      FileContentChecks.getDefaultInstance()
+    ).getFileContentChecksList()
+  }
 
-    /**
-     * Fetches all file content checks
-     *
-     * @return [List<FileContentCheck>] a list of all the FileContentChecks
-     */
-    fun getFileContentChecks(): List<FileContentCheck> {
-      val fileContentsBinaryFile =
-        File("scripts/assets/file_content_validation_checks.pb")
-      val fileContentCheckBuilder = FileContentChecks.newBuilder()
-      val fileContentsObj: FileContentChecks =
-        FileInputStream(fileContentsBinaryFile).use {
-          fileContentCheckBuilder.mergeFrom(it)
-        }.build() as FileContentChecks
+  /**
+   * Helper function to parse the textproto file to a proto class.
+   *
+   * @param textProtoFileName name of the textproto file to be parsed
+   * @param proto instance of the proto class
+   * @return proto class from the parsed textproto file
+   */
+  private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
+    val protoBinaryFile = File("scripts/assets/$textProtoFileName")
+    val builder = proto.newBuilderForType()
 
-      return fileContentsObj.getFileContentChecksList()
-    }
+    @Suppress("UNCHECKED_CAST")
+    val protoObj: T =
+      FileInputStream(protoBinaryFile).use {
+        builder.mergeFrom(it)
+      }.build() as T
+    return protoObj
+  }
 
-    /**
-     * Checks for a prohibited file naming pattern
-     *
-     * @param repoPath the path of the repo.
-     * @param searchFiles a list of all the files which needs to be checked.
-     * @param fileNameRegexString filename pattern regex which should not be present
-     * @param errorToShow error to show incase of failure
-     * @return [Boolean] check failed or passed
-     */
-    fun checkProhibitedFileNamePattern(
-      repoPath: String,
-      searchFiles: Sequence<File>,
-      prohibitedFilenameRegexString: String,
-      errorToShow: String
-    ): Boolean {
-      var filenamePatternCheckFailedFlag = false
-      val prohibitedFilenameRegex = prohibitedFilenameRegexString.toRegex()
-      searchFiles.forEach {
-        val filePath = it.toString().removePrefix(repoPath)
-        if (prohibitedFilenameRegex.matches(filePath)) {
-          logProhibitedFilenameFailure(
-            filePath = filePath,
-            errorToShow = errorToShow
+  /**
+   * Checks for a prohibited file naming pattern.
+   *
+   * @param repoPath the path of the repo
+   * @param searchFiles a list of all the files which needs to be checked
+   * @param filenameCheck proto object of FilenameCheck
+   * @return file name pattern is correct or not
+   */
+  private fun checkProhibitedFileNamePattern(
+    repoPath: String,
+    searchFiles: List<File>,
+    filenameCheck: FilenameCheck,
+  ): Boolean {
+    val prohibitedFilenameRegex = filenameCheck.getProhibitedFilenameRegex().toRegex()
+
+    val matchedFiles = searchFiles.filter { file ->
+      return@filter file.name !in filenameCheck.getExemptedFileNameList() &&
+        prohibitedFilenameRegex.matches(
+          RepoFile.retrieveFilePath(
+            file,
+            repoPath
           )
-          filenamePatternCheckFailedFlag = true
-        }
-      }
-      return filenamePatternCheckFailedFlag
+        )
     }
 
-    /**
-     * Checks for a prohibited file content
-     *
-     * @param repoPath the path of the repo.
-     * @param searchFiles a list of all the files which needs to be checked.
-     * @param fileNameRegexString filename regex string in which to do the content check
-     * @param prohibitedContentRegexString regex string which should not be contained in the file
-     * @param errorToShow error to show incase of failure
-     * @return [Boolean] check failed or passed
-     */
-    fun checkProhibitedContent(
-      repoPath: String,
-      searchFiles: Sequence<File>,
-      fileNameRegexString: String,
-      prohibitedContentRegexString: String,
-      errorToShow: String
-    ): Boolean {
-      var contentCheckFailedFlag = false
-      val fileNameRegex = fileNameRegexString.toRegex()
-      val prohibitedContentRegex = prohibitedContentRegexString.toRegex()
-      searchFiles.forEach {
-        if (fileNameRegex.matches(it.name)) {
-          var lineNumber = 0
-          File(it.toString()).forEachLine { lineString ->
-            lineNumber++
-            if (prohibitedContentRegex.matches(lineString)) {
+    logProhibitedFilenameFailure(
+      repoPath,
+      filenameCheck.getFailureMessage(),
+      matchedFiles,
+    )
+    return matchedFiles.toList().size != 0
+  }
+
+  /**
+   * Checks for a prohibited file content.
+   *
+   * @param repoPath the path of the repo
+   * @param searchFiles a list of all the files which needs to be checked
+   * @param fileContentCheck proto object of FileContentCheck
+   * @return file content pattern is correct or not
+   */
+  private fun checkProhibitedContent(
+    repoPath: String,
+    searchFiles: List<File>,
+    fileContentCheck: FileContentCheck,
+  ): Boolean {
+    val fileNameRegex = fileContentCheck.getFilenameRegex().toRegex()
+
+    val prohibitedContentRegex =
+      fileContentCheck.getProhibitedContentRegex().toRegex()
+
+    val matchedFiles = searchFiles.filter { file ->
+      file.name !in fileContentCheck.getExemptedFileNameList() &&
+        fileNameRegex.matches(file.name) &&
+        File(file.toString()).bufferedReader().lineSequence()
+          .foldIndexed(initial = false) { lineIndex, isFailing, lineContent ->
+            val matches = prohibitedContentRegex.matches(lineContent)
+            if (matches) {
               logProhibitedContentFailure(
-                lineNumber = lineNumber,
-                errorToShow = errorToShow,
-                filePath = it.toString().removePrefix(repoPath)
+                // Since, the line number starts from 1 and index starts
+                // from 0, therefore we have to increment index by 1, to
+                // denote the line number.
+                lineIndex + 1,
+                fileContentCheck.getFailureMessage(),
+                RepoFile.retrieveFilePath(file, repoPath)
               )
-              contentCheckFailedFlag = true
             }
+            isFailing || matches
           }
-        }
+    }
+    return matchedFiles.size != 0
+  }
+
+  /**
+   * Logs the failures for filename pattern violation.
+   *
+   * @param repoPath the path of the repo to be analyzed
+   * @param errorToShow the filename error to be logged
+   * @param matchedFiles a list of all the files which had the filenaming violation
+   * @return log the filename failures
+   */
+  private fun logProhibitedFilenameFailure(
+    repoPath: String,
+    errorToShow: String,
+    matchedFiles: List<File>
+  ) {
+    if (matchedFiles.size != 0) {
+      println("Filename pattern violation: $errorToShow")
+      matchedFiles.forEach {
+        println("Prohibited file: [ROOT]/${RepoFile.retrieveFilePath(it, repoPath)}")
       }
-      return contentCheckFailedFlag
+      println()
     }
+  }
 
-    /**
-     * Collects the paths of all the files which are needed to be checked
-     *
-     * @param repoPath the path of the repo.
-     * @param allowedDirectories a list of all the directories which needs to be checked.
-     * @param exemptionList a list of files which needs to be exempted for this check
-     * @return [Sequence<File>] all files which needs to be checked.
-     */
-    fun collectSearchFiles(
-      repoPath: String,
-      allowedDirectories: MutableList<String>,
-      exemptionList: Array<String> = arrayOf<String>()
-    ): Sequence<File> {
-      val validPaths = File(repoPath).walk().filter { it ->
-        checkIfAllowedDirectory(
-          it.toString().removePrefix(repoPath),
-          allowedDirectories)
-          && it.isFile
-          && it.name !in exemptionList
-      }
-      return validPaths
-    }
-
-    /**
-     * Checks if a layer is allowed to be analyzed for the check or not.
-     * It only allows the layers listed in allowedDirectories
-     * (which is specified from the command line arguments) to be analyzed.
-     *
-     * @param pathString the path of the repo.
-     * @param allowedDirectories a list of all the files which needs to be checked.
-     * @return [Boolean] check failed or passed
-     */
-    fun checkIfAllowedDirectory(
-      pathString: String,
-      allowedDirectories: MutableList<String>
-    ): Boolean {
-      allowedDirectories.forEach {
-        if (pathString.startsWith(it))
-          return true
-      }
-      return false
-    }
-
-    /** Logs the failures for filename pattern violation
-     *
-     * @param errorToShow the failure message to be logged
-     * @param filePath the path of the file relative to the repository which failed the check
-     */
-    fun logProhibitedFilenameFailure(
-      errorToShow: String,
-      filePath: String
-    ) {
-      println("Prohibited filename pattern: [ROOT]/$filePath\n" +
-        "Failure message: $errorToShow\n")
-    }
-
-    /** Logs the failures for file content violation
-     *
-     * @param lineNumberthe line number at which the failure occured
-     * @param errorToShow the failure message to be logged
-     * @param filePath the path of the file relative to the repository which failed the check
-     */
-    fun logProhibitedContentFailure(
-      lineNumber: Int,
-      errorToShow: String,
-      filePath: String) {
-      println("Prohibited content usage found on line no. $lineNumber\n" +
-        "File: [ROOT]/$filePath\n" +
-        "Failure message: $errorToShow\n")
-    }
+  /**
+   * Logs the failures for file content violation.
+   *
+   * @param lineNumberthe line number at which the failure occured
+   * @param errorToShow the failure message to be logged
+   * @param filePath the path of the file relative to the repository which failed the check
+   * @return log the prohibited content failures
+   */
+  private fun logProhibitedContentFailure(
+    lineNumber: Int,
+    errorToShow: String,
+    filePath: String
+  ) {
+    val failureMessage =
+      """
+          Prohibited content usage found on line no. $lineNumber
+          File: [ROOT]/$filePath
+          Failure message: $errorToShow
+      """.trimIndent()
+    println(failureMessage)
+    println()
   }
 }

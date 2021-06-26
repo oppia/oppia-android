@@ -1,32 +1,37 @@
 package org.oppia.android.scripts
 
-import java.io.File
-import org.oppia.android.scripts.ExemptionsList
-import org.oppia.android.scripts.ScriptResultConstants
-
+/**
+ * Script for ensuring that every prod file has a
+ * corresponding Test file present in the repo.
+ */
 class TestFileCheck {
   companion object {
-
     @JvmStatic
     fun main(vararg args: String) {
-
+      // path of the repo to be analyzed.
       val repoPath = args[0] + "/"
 
-      val allowedDirectories: MutableList<String> = ArrayList()
+      // a list of all allowed directories in the repo to be analyzed.
+      // args[0] is the repoPath, the allowed directories are specified
+      // after it. Hence, we have to start from the 1st index.
+      val allowedDirectories = args.drop(1)
 
+      // a list of all kotlin files in the repo to be analyzed.
+      val searchFiles = RepoFile.collectSearchFiles(
+        repoPath,
+        allowedDirectories,
+        ".kt",
+        ExemptionsList.TEST_FILE_CHECK_EXEMPTIONS_LIST
+      )
+
+      // class object which is needed to acess the helper methods
+      val testFileCheck: TestFileCheck = TestFileCheck()
+
+      // a list of all the prod files present in the repo.
       val prodFilesList: MutableList<String> = ArrayList()
 
+      // a list of all the test files present in the repo.
       val testFilesList: MutableList<String> = ArrayList()
-
-      for (i in 1 until args.size) {
-        allowedDirectories.add(args[i])
-      }
-
-      val searchFiles = collectSearchFiles(repoPath,
-        allowedDirectories,
-        ExemptionsList.TEST_FILE_CHECK_EXEMPTIONS_LIST)
-
-      var scriptFailedFlag = false
 
       searchFiles.forEach {
         if (it.name.endsWith("Test.kt")) {
@@ -36,63 +41,44 @@ class TestFileCheck {
         }
       }
 
-      prodFilesList.forEach {
-        val potentialTestFile = it.removeSuffix(".kt") + "Test.kt"
-        if (potentialTestFile !in testFilesList) {
-          println("No test file found for: $it\n")
-          scriptFailedFlag = true
-        }
+      // a list of all the prod files that do not have a corresponding test file.
+      val matchedFileNames = prodFilesList.filter {
+        testFileCheck.retrievePotentionalTestFileName(it) !in testFilesList
       }
 
-      if (scriptFailedFlag) {
+      testFileCheck.logFailures(matchedFileNames)
+
+      if (matchedFileNames.size != 0) {
         throw Exception(ScriptResultConstants.TEST_FILE_CHECK_FAILED)
       } else {
         println(ScriptResultConstants.TEST_FILE_CHECK_PASSED)
       }
     }
+  }
 
-    /**
-     * Collects the paths of all the files which are needed to be checked
-     *
-     * @param repoPath the path of the repo.
-     * @param allowedDirectories a list of all the directories which needs to be checked.
-     * @param exemptionList a list of files which needs to be exempted for this check
-     * @return [Sequence<File>] all files which needs to be checked.
-     */
-    fun collectSearchFiles(
-      repoPath: String,
-      allowedDirectories: MutableList<String>,
-      exemptionList: Array<String> = arrayOf<String>()
-    ): Sequence<File> {
-      val validPaths = File(repoPath).walk().filter { it ->
-        checkIfAllowedDirectory(
-          it.toString().removePrefix(repoPath),
-          allowedDirectories)
-          && it.isFile
-          && it.name.endsWith(".kt")
-          && it.name !in exemptionList
-      }
-      return validPaths
-    }
+  /**
+   * Retrieves the potential test file name for a prod file.
+   *
+   * @param prodFileName name of the prod file
+   * @return potential name of the test file
+   */
+  private fun retrievePotentionalTestFileName(prodFileName: String): String {
+    return prodFileName.removeSuffix(".kt") + "Test.kt"
+  }
 
-    /**
-     * Checks if a layer is allowed to be analyzed for the check or not.
-     * It only allows the layers listed in allowedDirectories
-     * (which is specified from the command line arguments) to be analyzed.
-     *
-     * @param pathString the path of the repo.
-     * @param allowedDirectories a list of all the files which needs to be checked.
-     * @return [Boolean] check failed or passed
-     */
-    fun checkIfAllowedDirectory(
-      pathString: String,
-      allowedDirectories: MutableList<String>
-    ): Boolean {
-      allowedDirectories.forEach {
-        if (pathString.startsWith(it))
-          return true
+  /**
+   * Logs the file names of all the prod files that do not have a test file.
+   *
+   * @param matchedFileNames list of all the files missing a test file
+   * @return log the failures
+   */
+  private fun logFailures(matchedFileNames: List<String>) {
+    if (matchedFileNames.size != 0) {
+      println("No test file found for:")
+      matchedFileNames.forEach { file ->
+        println("$file")
       }
-      return false
+      println()
     }
   }
 }
