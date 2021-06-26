@@ -1,0 +1,18 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary")
+
+# Visibility for libraries that have binaries defined at this package.
+package_group(
+    name = "oppia_script_lib_visibility",
+    packages = [
+        "//scripts",
+    ],
+)
+
+kt_jvm_binary(
+    name = "compute_affected_tests",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ComputeAffectedTestsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts:compute_affected_tests_lib",
+    ],
+)
