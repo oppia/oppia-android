@@ -17,19 +17,18 @@ class RepoFile() {
       allowedDirectories: List<String>,
       allowedExtension: String = "",
       exemptionsList: List<String> = listOf()
-    ):
-      List<File> {
-        return File(repoPath).walk().filter { file ->
-          val isAllowed = checkIfAllowedDirectory(
-            retrieveFilePath(file, repoPath),
-            allowedDirectories
-          )
-          isAllowed &&
-            file.isFile &&
-            file.name.endsWith(allowedExtension) &&
-            file.name !in exemptionsList
-        }.toList()
-      }
+    ): List<File> {
+      return File(repoPath).walk().filter { file ->
+        val isAllowed = checkIfAllowedDirectory(
+          retrieveFilePath(file, repoPath),
+          allowedDirectories
+        )
+        isAllowed &&
+          file.isFile &&
+          file.name.endsWith(allowedExtension) &&
+          file.name !in exemptionsList
+      }.toList()
+    }
 
     /**
      * Checks if a directory is allowed to be analyzed for the check or not.
