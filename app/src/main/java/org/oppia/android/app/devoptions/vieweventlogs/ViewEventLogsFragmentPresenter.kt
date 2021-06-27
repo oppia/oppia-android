@@ -45,6 +45,8 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+    linearLayoutManager.reverseLayout = true
+    linearLayoutManager.stackFromEnd = true
 
     bindingAdapter = createRecyclerViewAdapter()
     binding.viewEventLogsRecyclerView.apply {

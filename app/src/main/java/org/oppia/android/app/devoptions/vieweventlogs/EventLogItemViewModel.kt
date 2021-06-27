@@ -17,4 +17,18 @@ class EventLogItemViewModel @Inject constructor(
       eventLog.timestamp
     )
   }
+
+  fun processPriority(): String? {
+    return eventLog.priority.name.capitalizeWord()
+  }
+
+  fun processContext(): String? =
+    eventLog.context.activityContextCase.name.capitalizeWords().substringBeforeLast(' ')
+
+  fun processActionName(): String = eventLog.actionName.name.capitalizeWords()
+
+  private fun String.capitalizeWord(): String = toLowerCase().capitalize()
+
+  private fun String.capitalizeWords(): String =
+    toLowerCase().split("_").joinToString(" ") { it.capitalize() }
 }
