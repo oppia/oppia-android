@@ -88,9 +88,9 @@
   <dimen name="content_item_exploration_view_margin_end">208dp</dimen>
 
   <dimen name="content_item_exploration_view_padding_start">12dp</dimen>
-  <dimen name="content_item_exploration_view_padding_top">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_top">16dp</dimen>
   <dimen name="content_item_exploration_view_padding_end">12dp</dimen>
-  <dimen name="content_item_exploration_view_padding_bottom">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_bottom">16dp</dimen>
 
   <!-- Content Item: Question Split View -->
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
@@ -120,9 +120,9 @@
   <dimen name="feedback_item_exploration_view_margin_end">208dp</dimen>
 
   <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_top">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_top">16dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_bottom">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_bottom">16dp</dimen>
 
   <!-- Feedback Item: Question Split View -->
   <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>

@@ -73,6 +73,8 @@ import javax.inject.Singleton
 )
 class WalkthroughActivityTest {
 
+  // TODO(#3367): Use AccessibilityTestRule
+
   @Test
   fun testWalkthroughActivity_defaultProgressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
