@@ -1,4 +1,4 @@
-package org.oppia.android.app.drawer
+package org.oppia.android.app.devoptions
 
 import dagger.Binds
 import dagger.Module
