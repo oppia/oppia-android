@@ -31,10 +31,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.logging.DebugLogReportingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -51,7 +51,7 @@ import javax.inject.Singleton
  *
  * Prod modules         Debug modules
  * [Remove]             DeveloperOptionsStarterModule
- * LogReportingModule   TestLogReportingModule
+ * LogReportingModule   DebugLogReportingModule
  *
  * To build the app in prod mode, we must replace the debug modules with the prod modules
  */
@@ -67,7 +67,7 @@ import javax.inject.Singleton
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class, TestLogReportingModule::class,
+    QuestionModule::class, DebugLogReportingModule::class,
     AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,
