@@ -12,8 +12,8 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/home_outer_margin"
-    android:paddingEnd="@dimen/home_outer_margin">
+    android:paddingStart="@dimen/home_welcome_outer_padding"
+    android:paddingEnd="@dimen/home_welcome_outer_padding">
 
     <com.google.android.flexbox.FlexboxLayout
       android:id="@+id/welcome_message_container"
