@@ -65,6 +65,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -96,6 +97,8 @@ private const val REVISION_TAB_POSITION = 3
   qualifiers = "port-xxhdpi"
 )
 class TopicFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(

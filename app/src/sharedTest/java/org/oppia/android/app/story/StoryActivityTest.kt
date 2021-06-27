@@ -60,6 +60,8 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -83,6 +85,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -129,6 +133,7 @@ class StoryActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(

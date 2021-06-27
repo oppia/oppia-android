@@ -35,6 +35,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -80,6 +81,7 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
@@ -120,6 +122,8 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
   qualifiers = "port-xxhdpi"
 )
 class HomeActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -866,7 +870,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "port-mdpi")
+  @Config(qualifiers = "+port-mdpi")
   @Test
   fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -884,7 +888,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "land-mdpi")
+  @Config(qualifiers = "+land-mdpi")
   @Test
   fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -903,7 +907,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -921,7 +925,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -1125,7 +1129,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   @Test
   fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
     // Only new users will have no progress for any topics.
@@ -1144,7 +1148,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   @Test
   fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
@@ -1164,7 +1168,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
@@ -1179,7 +1183,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
     // Only new users will have no progress for any topics.
@@ -1230,7 +1234,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -1267,7 +1271,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)

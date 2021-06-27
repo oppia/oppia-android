@@ -81,6 +81,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -108,6 +109,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AdministratorControlsActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   private val internalProfileId = 0
 

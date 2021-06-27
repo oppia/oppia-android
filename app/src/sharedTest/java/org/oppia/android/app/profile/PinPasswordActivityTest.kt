@@ -98,6 +98,7 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class PinPasswordActivityTest {
+  // TODO(#3362): Use AccessibilityTestRule
 
   @get:Rule
   val activityTestRule: ActivityTestRule<PinPasswordActivity> = ActivityTestRule(

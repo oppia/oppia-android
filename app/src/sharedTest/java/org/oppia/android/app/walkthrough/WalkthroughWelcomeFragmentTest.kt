@@ -81,6 +81,8 @@ import javax.inject.Singleton
 )
 class WalkthroughWelcomeFragmentTest {
 
+  // TODO(#3367): Use AccessibilityTestRule
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
