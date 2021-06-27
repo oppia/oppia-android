@@ -7,6 +7,10 @@ import java.util.stream.Collectors
 import java.util.stream.IntStream
 import javax.xml.parsers.DocumentBuilderFactory
 
+/**
+ * Script for ensuring that all the Activities the
+ * repo are defined with accessibility labels.
+ */
 class AccessibilityLabelCheck {
   companion object {
     @JvmStatic
@@ -72,7 +76,7 @@ class AccessibilityLabelCheck {
   }
 
   /**
-   * The [NodeList] is not iterable. This helper
+   * The [nodeList] is not iterable. This helper
    * function converts it to List<Node>.
    *
    * @param nodeList instance of NodeList

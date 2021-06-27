@@ -2,6 +2,7 @@ package org.oppia.android.scripts
 
 /** Lists of files which should be exepmted for the different script checks. */
 object ExemptionsList {
+  /** List of all activities which should be exempted for the label check. */
   val ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST = arrayOf(
     ".app.home.HomeActivity",
     ".app.home.recentlyplayed.RecentlyPlayedActivity",

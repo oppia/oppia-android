@@ -10,6 +10,7 @@ import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
+/** Tests for [AccessibilityLabelCheck]. */
 class AccessibilityLabelCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = java.lang.System.out
@@ -30,7 +31,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_labelPresent_activitiesAreDefinedWithAccessibilityLabels() {
+  fun testAccessibilityLabel_labelPresent_activitiesAreDefinedWithAccessibilityLabel() {
     val manifestContent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
       "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
       "  xmlns:tools=\"http://schemas.android.com/tools\"\n" +
@@ -72,7 +73,9 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
     manifestFile.writeText(manifestContent)
 
-    runScript("AndroidManifest.xml")
+    runScript(
+      manifestFile = "AndroidManifest.xml"
+    )
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ScriptResultConstants.ACCESSIBILITY_LABEL_CHECK_PASSED
@@ -80,7 +83,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_labelNotPresent_activityAreNotDefinedWithAccessibilityLabels() {
+  fun testAccessibilityLabel_labelNotPresent_activityIsNotDefinedWithAccessibilityLabel() {
     val manifestContent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
       "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
       "  xmlns:tools=\"http://schemas.android.com/tools\"\n" +
@@ -122,7 +125,9 @@ class AccessibilityLabelCheckTest {
     manifestFile.writeText(manifestContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript("AndroidManifest.xml")
+      runScript(
+        manifestFile = "AndroidManifest.xml"
+      )
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -175,7 +180,9 @@ class AccessibilityLabelCheckTest {
     manifestFile.writeText(manifestContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript("AndroidManifest.xml")
+      runScript(
+        manifestFile = "AndroidManifest.xml"
+      )
     }
 
     assertThat(exception).hasMessageThat().contains(
