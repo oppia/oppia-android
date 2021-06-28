@@ -63,17 +63,20 @@ class PlatformParameterSingletonTest {
 
   @Test
   fun testSingleton_initPlatformParameterMap_isNotEmpty() {
-    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isTrue()
+    assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
     platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
-    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isFalse()
+    assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
   }
 
   @Test
   fun testSingleton_initPlatformParameterMapTwice_checkIsNotUpdatedTwice() {
     platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
-    assertThat(platformParameterSingleton.getPlatformParameterMap().isEmpty()).isFalse()
+    assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
     val emptyPlatformParameterMap = mapOf<String, ParameterValue>()
     platformParameterSingleton.setPlatformParameterMap(emptyPlatformParameterMap)
+    assertThat(
+      platformParameterSingleton.getPlatformParameterMap()
+    ).isNotEqualTo(emptyPlatformParameterMap)
     assertThat(
       platformParameterSingleton.getPlatformParameterMap()
     ).isEqualTo(mockPlatformParameterMap)
