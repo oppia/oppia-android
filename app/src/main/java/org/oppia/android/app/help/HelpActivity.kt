@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+      "HelpActivity.bool_is_from_navigation_drawer"
 
     fun createHelpActivityIntent(
       context: Context,
@@ -36,7 +36,7 @@ class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, HelpActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
