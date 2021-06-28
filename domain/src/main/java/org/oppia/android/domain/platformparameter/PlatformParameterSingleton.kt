@@ -1,9 +1,9 @@
 package org.oppia.android.domain.platformparameter
 
-import org.oppia.android.app.model.PlatformParameter as ParameterValue
 import org.oppia.android.util.platformparameter.PlatformParameter
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
 /** Singleton class which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
