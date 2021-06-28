@@ -91,6 +91,8 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -122,6 +124,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
@@ -735,6 +739,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -751,6 +756,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -768,6 +774,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExpActivity_onBackPressed_showsStopExpDialog_cancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(

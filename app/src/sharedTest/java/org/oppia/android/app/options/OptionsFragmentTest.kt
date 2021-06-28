@@ -62,6 +62,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -93,6 +94,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class OptionsFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -374,7 +377,7 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -402,7 +405,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            ReadingTextSizeActivity.KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE,
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceTitle(),
+            READING_TEXT_SIZE
+          ),
+          hasExtra(
+            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
             "Medium"
           ),
           hasComponent(ReadingTextSizeActivity::class.java.name)
@@ -430,7 +437,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -458,7 +469,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AppLanguageActivity.APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
           hasComponent(AppLanguageActivity::class.java.name)
@@ -486,7 +501,11 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
+          ),
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
@@ -514,8 +533,12 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
-            AudioLanguageActivity.KEY_AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE,
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
+          ),
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
         )

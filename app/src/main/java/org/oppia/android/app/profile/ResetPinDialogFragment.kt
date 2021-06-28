@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
-const val KEY_RESET_PIN_PROFILE_ID = "RESET_PIN_PROFILE_ID"
-const val KEY_RESET_PIN_NAME = "RESET_PIN_NAME"
+const val RESET_PIN_PROFILE_ID_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_profile_id"
+const val RESET_PIN_NAME_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_name"
 
 /** Dialog Fragment to input new Pin. */
 class ResetPinDialogFragment : InjectableDialogFragment() {
@@ -15,8 +15,8 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
     fun newInstance(profileId: Int, name: String): ResetPinDialogFragment {
       val resetPinDialogFragment = ResetPinDialogFragment()
       val args = Bundle()
-      args.putInt(KEY_RESET_PIN_PROFILE_ID, profileId)
-      args.putString(KEY_RESET_PIN_NAME, name)
+      args.putInt(RESET_PIN_PROFILE_ID_ARGUMENT_KEY, profileId)
+      args.putString(RESET_PIN_NAME_ARGUMENT_KEY, name)
       resetPinDialogFragment.arguments = args
       return resetPinDialogFragment
     }
@@ -31,8 +31,8 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val profileId = arguments?.getInt(KEY_RESET_PIN_PROFILE_ID)
-    val name = arguments?.getString(KEY_RESET_PIN_NAME)
+    val profileId = arguments?.getInt(RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
+    val name = arguments?.getString(RESET_PIN_NAME_ARGUMENT_KEY)
     checkNotNull(profileId) { "Profile Id must not be null" }
     checkNotNull(name) { "Name must not be null" }
     return resetPinDialogFragmentPresenter.handleOnCreateDialog(
