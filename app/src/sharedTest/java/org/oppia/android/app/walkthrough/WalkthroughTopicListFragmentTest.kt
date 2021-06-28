@@ -18,6 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
@@ -34,6 +36,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -55,17 +58,22 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.espresso.GenericViewMatchers.Companion.withOpaqueBackground
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -80,11 +88,11 @@ import javax.inject.Singleton
 )
 class WalkthroughTopicListFragmentTest {
 
-  @Inject
-  lateinit var context: Context
+  // TODO(#3367): Use AccessibilityTestRule
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
   @Before
   fun setUp() {
@@ -114,9 +122,9 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.walkthrough_topic_recycler_view,
-          0,
-          R.id.walkthrough_topic_header_text_view
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 0,
+          targetViewId = R.id.walkthrough_topic_header_text_view
         )
       ).check(
         matches(
@@ -134,15 +142,15 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
+          /* position= */ 1
         )
       )
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.walkthrough_topic_recycler_view,
-          1,
-          R.id.walkthrough_topic_name_text_view
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 1,
+          targetViewId = R.id.walkthrough_topic_name_text_view
         )
       ).check(
         matches(
@@ -160,16 +168,16 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
+          /* position= */ 1
         )
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.walkthrough_topic_recycler_view,
-          1,
-          R.id.walkthrough_topic_name_text_view
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 1,
+          targetViewId = R.id.walkthrough_topic_name_text_view
         )
       ).check(
         matches(
@@ -181,28 +189,54 @@ class WalkthroughTopicListFragmentTest {
 
   @Test
   fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
+    // TODO(#59): Remove if-check & disable test.
+    if (!testEnvironmentConfig.isUsingBazel()) {
+      // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
+      //  thumbnail is being loaded through Glide.
+      launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+          scrollToPosition<RecyclerView.ViewHolder>(
+            /* position= */ 4
+          )
+        )
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.walkthrough_topic_recycler_view,
+            position = 4,
+            targetViewId = R.id.walkthrough_topic_thumbnail_image_view
+          )
+        ).check(
+          matches(
+            withDrawable(
+              R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+            )
+          )
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          4
+          /* position= */ 4
         )
       )
       onView(
         atPositionOnView(
-          R.id.walkthrough_topic_recycler_view,
-          4,
-          R.id.walkthrough_topic_thumbnail_image_view
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 4,
+          targetViewId = R.id.walkthrough_topic_container
         )
-      ).check(
-        matches(
-          withDrawable(
-            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-          )
-        )
-      )
+      ).check(matches(withOpaqueBackground()))
     }
   }
 
@@ -210,11 +244,31 @@ class WalkthroughTopicListFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -222,12 +276,12 @@ class WalkthroughTopicListFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

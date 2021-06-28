@@ -49,44 +49,35 @@ class InteractionObjectTypeExtractorRepository @Inject constructor() {
 
   private companion object {
     private fun computeExtractorMap(): Map<ObjectTypeCase, ExtractorMapping<*>> {
-      return mapOf(
-        ObjectTypeCase.NORMALIZED_STRING to createMapping(
-          InteractionObject::getNormalizedString
-        ),
-        ObjectTypeCase.SIGNED_INT to createMapping(
-          InteractionObject::getSignedInt
-        ),
-        ObjectTypeCase.NON_NEGATIVE_INT to createMapping(
-          InteractionObject::getNonNegativeInt
-        ),
-        ObjectTypeCase.REAL to createMapping(
-          InteractionObject::getReal
-        ),
-        ObjectTypeCase.BOOL_VALUE to createMapping(
-          InteractionObject::getBoolValue
-        ),
-        ObjectTypeCase.NUMBER_WITH_UNITS to createMapping(
-          InteractionObject::getNumberWithUnits
-        ),
-        ObjectTypeCase.SET_OF_HTML_STRING to createMapping(
-          InteractionObject::getSetOfHtmlString
-        ),
-        ObjectTypeCase.FRACTION to createMapping(
-          InteractionObject::getFraction
-        ),
-        ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING to createMapping(
-          InteractionObject::getListOfSetsOfHtmlString
-        ),
-        ObjectTypeCase.IMAGE_WITH_REGIONS to createMapping(
-          InteractionObject::getImageWithRegions
-        ),
-        ObjectTypeCase.CLICK_ON_IMAGE to createMapping(
-          InteractionObject::getClickOnImage
-        ),
-        ObjectTypeCase.RATIO_EXPRESSION to createMapping(
-          InteractionObject::getRatioExpression
-        )
-      )
+      return ObjectTypeCase.values().associate { it to computeExtractorMapping(it) }
+    }
+
+    private fun computeExtractorMapping(objectTypeCase: ObjectTypeCase): ExtractorMapping<*> {
+      // Use a 'return' to ensure future type cases are added.
+      return when (objectTypeCase) {
+        ObjectTypeCase.NORMALIZED_STRING -> createMapping(InteractionObject::getNormalizedString)
+        ObjectTypeCase.SIGNED_INT -> createMapping(InteractionObject::getSignedInt)
+        ObjectTypeCase.NON_NEGATIVE_INT -> createMapping(InteractionObject::getNonNegativeInt)
+        ObjectTypeCase.REAL -> createMapping(InteractionObject::getReal)
+        ObjectTypeCase.BOOL_VALUE -> createMapping(InteractionObject::getBoolValue)
+        ObjectTypeCase.NUMBER_WITH_UNITS -> createMapping(InteractionObject::getNumberWithUnits)
+        ObjectTypeCase.SET_OF_HTML_STRING -> createMapping(InteractionObject::getSetOfHtmlString)
+        ObjectTypeCase.FRACTION -> createMapping(InteractionObject::getFraction)
+        ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING ->
+          createMapping(InteractionObject::getListOfSetsOfHtmlString)
+        ObjectTypeCase.IMAGE_WITH_REGIONS -> createMapping(InteractionObject::getImageWithRegions)
+        ObjectTypeCase.CLICK_ON_IMAGE -> createMapping(InteractionObject::getClickOnImage)
+        ObjectTypeCase.RATIO_EXPRESSION -> createMapping(InteractionObject::getRatioExpression)
+        ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID ->
+          createMapping(InteractionObject::getTranslatableHtmlContentId)
+        ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS ->
+          createMapping(InteractionObject::getSetOfTranslatableHtmlContentIds)
+        ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS ->
+          createMapping(InteractionObject::getListOfSetsOfTranslatableHtmlContentIds)
+        ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING ->
+          createMapping(InteractionObject::getTranslatableSetOfNormalizedString)
+        ObjectTypeCase.OBJECTTYPE_NOT_SET -> createMapping { error("Invalid object type") }
+      }
     }
 
     private inline fun <reified T : Any> createMapping(

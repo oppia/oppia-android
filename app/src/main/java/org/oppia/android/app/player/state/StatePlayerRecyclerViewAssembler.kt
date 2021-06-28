@@ -67,6 +67,7 @@ import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.ContentItemBinding
 import org.oppia.android.databinding.ContinueInteractionItemBinding
@@ -88,14 +89,11 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
-
-/** The fragment tag corresponding to the concept card dialog fragment. */
-const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800

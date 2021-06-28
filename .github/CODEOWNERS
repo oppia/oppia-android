@@ -26,31 +26,28 @@
 # Codeowners ownership (for adding/changing/removing code owners).
 .github/CODEOWNERS @oppia/owners
 
-# Bazel build files.
-WORKSPACE @BenHenning
-*.bzl @BenHenning
-*.bazel @BenHenning
-.bazelrc @BenHenning
-/tools/android/ @BenHenning
-
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Gradle build files.
-*.gradle @BenHenning
-gradle.properties @BenHenning
-gradlew @BenHenning
-gradlew.bat @BenHenning
-/gradle/ @BenHenning
+*.gradle @rt4914
+gradle.properties @rt4914
+gradlew @rt4914
+gradlew.bat @rt4914
+/gradle/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # GitHub configuration files.
-.gitignore @BenHenning
-/.github/*.md @BenHenning
-/.github/ISSUE_TEMPLATE @BenHenning
+.gitignore @rt4914
+/.github/*.md @rt4914
+/.github/ISSUE_TEMPLATE @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Git secret files & related configurations.
-/.gitsecret/ @BenHenning
-*.secret @BenHenning
+/.gitsecret/ @seanlip
+*.secret @seanlip
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # CI configuration.
-/.github/workflows/ @BenHenning
+/.github/workflows/ @vinitamurthi
 
 # All tests.
 *Test.kt @anandwana001
@@ -59,34 +56,42 @@ gradlew.bat @BenHenning
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Proguard configuration.
-*.pro @BenHenning
+*.pro @rt4914
 
+# TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Lesson assets.
-/domain/src/main/assets/ @BenHenning @rt4914
+/domain/src/main/assets/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Android manifests and top-level app configuration.
-*Manifest.xml @BenHenning
+*Manifest.xml @rt4914
 
 # Linter configuration.
 buf.yaml @anandwana001
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # IDEA IDE configuration.
-.editorconfig @BenHenning
-/.idea/ @BenHenning
+.editorconfig @rt4914
+/.idea/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Robolectric configuration.
-*.properties @BenHenning
+*.properties @anandwana001
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Firebase configuration.
-/app/google-services.json @BenHenning
+/app/google-services.json @vinitamurthi
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Binary files.
-*.png @BenHenning
+*.png @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Important codebase files.
-LICENSE @BenHenning
-NOTICE @BenHenning
+LICENSE @seanlip
+NOTICE @seanlip
 
 #####################################################################################
 #                                    app module                                     #
@@ -96,37 +101,46 @@ NOTICE @BenHenning
 /app/**/*.kt @rt4914
 /app/**/*.java @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # State players.
-/app/src/*/java/org/oppia/android/app/player/ @BenHenning
+/app/src/*/java/org/oppia/android/app/player/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Bindable adapter utilities.
-/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
-/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
-/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
+/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @rt4914
+/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @rt4914
+/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Dagger configuration.
-/app/src/main/java/org/oppia/android/app/activity/ @BenHenning
-/app/src/main/java/org/oppia/android/app/application/ @BenHenning
-/app/src/main/java/org/oppia/android/app/fragment/ @BenHenning
-/app/src/main/java/org/oppia/android/app/view/ @BenHenning
+/app/src/main/java/org/oppia/android/app/activity/ @rt4914
+/app/src/main/java/org/oppia/android/app/application/ @rt4914
+/app/src/main/java/org/oppia/android/app/fragment/ @rt4914
+/app/src/main/java/org/oppia/android/app/view/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Databinding adapters.
-/app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
+/app/src/main/java/org/oppia/android/app/databinding/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # App deprecation functionality.
-/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
+/app/src/*/java/org/oppia/android/app/deprecation/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Parsing functionality needed for interactions.
-/app/src/*/java/org/oppia/android/app/parser/ @BenHenning
+/app/src/*/java/org/oppia/android/app/parser/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Bazel/data-binding shims.
-/app/src/*/java/org/oppia/android/app/shim/ @BenHenning
+/app/src/*/java/org/oppia/android/app/shim/ @fsharpasharp
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Splash screen.
-/app/src/*/java/org/oppia/android/app/splash/ @BenHenning
+/app/src/*/java/org/oppia/android/app/splash/ @rt4914
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # View model infrastructure.
-/app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
+/app/src/*/java/org/oppia/android/app/viewmodel/ @rt4914
 
 # App testing infrastructure.
 /app/src/*/java/org/oppia/android/app/testing/ @anandwana001
@@ -135,8 +149,9 @@ NOTICE @BenHenning
 #                                  domain module                                    #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Global domain module code ownership.
-/domain/**/*.kt @BenHenning
+/domain/**/*.kt @vinitamurthi
 
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
@@ -148,23 +163,26 @@ NOTICE @BenHenning
 #                                  testing module                                   #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global testing module code ownership.
-/testing/**/*.kt @anandwana001 @BenHenning
+/testing/**/*.kt @anandwana001
 
 #####################################################################################
 #                                    data module                                    #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Global data module code ownership.
-/data/**/*.kt @BenHenning
-/data/src/test/**/*.json @BenHenning
+/data/**/*.kt @rt4914
+/data/src/test/**/*.json @rt4914
 
 #####################################################################################
 #                                  utility module                                   #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # Global utility module code ownership.
-/utility/**/*.kt @BenHenning
+/utility/**/*.kt @anandwana001
 
 # Accessibility utilities.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
@@ -179,15 +197,30 @@ NOTICE @BenHenning
 #                                     scripts                                       #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global scripts code ownership.
-/scripts/ @anandwana001 @BenHenning
+/scripts/ @anandwana001
 
 #####################################################################################
 #                                      model                                        #
 #####################################################################################
 
+# TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
-*.proto @BenHenning @vinitamurthi
+*.proto @vinitamurthi
 
+# TODO(#3164): Restore code ownership for @BenHenning after 2021-05-24.
 # Global model ownership.
-/model/ @vinitamurthi @BenHenning
+/model/ @vinitamurthi
+
+#####################################################################################
+#                                global overrides                                   #
+#####################################################################################
+
+# TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
+# Bazel build files. This is added after everything else to ensure Bazel files are always reviewed by the same people.
+WORKSPACE @fsharpasharp
+*.bzl @fsharpasharp
+*.bazel @fsharpasharp
+.bazelrc @fsharpasharp
+/tools/android/ @fsharpasharp

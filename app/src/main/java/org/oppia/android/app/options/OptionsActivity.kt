@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
@@ -42,7 +42,7 @@ class OptionsActivity :
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }

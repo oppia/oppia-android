@@ -10,16 +10,16 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeH
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ObservableViewModel] for [TopicPracticeFragment]. */
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController
 ) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
@@ -53,7 +53,7 @@ class TopicPracticeViewModel @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicPracticeFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!

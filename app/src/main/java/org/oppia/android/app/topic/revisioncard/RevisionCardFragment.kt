@@ -49,4 +49,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)
     return revisionCardFragmentPresenter.handleCreateView(inflater, container, topicId, subtopicId)
   }
+
+  /** Dismisses the concept card fragment if it's currently active in this fragment. */
+  fun dismissConceptCard() = revisionCardFragmentPresenter.dismissConceptCard()
 }

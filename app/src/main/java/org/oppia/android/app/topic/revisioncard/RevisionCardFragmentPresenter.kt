@@ -7,12 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.HtmlParser
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -26,7 +28,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
   private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
-) {
+) : HtmlParser.CustomOppiaTagActionListener {
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -55,12 +57,24 @@ class RevisionCardFragmentPresenter @Inject constructor(
       fragment,
       Observer {
         view.text = htmlParserFactory.create(
-          resourceBucketName, entityType, topicId, imageCenterAlign = true
-        ).parseOppiaHtml(it.pageContents.html, view)
+          resourceBucketName, entityType, topicId, imageCenterAlign = true,
+          customOppiaTagActionListener = this
+        ).parseOppiaHtml(
+          it.pageContents.html, view, supportsLinks = true, supportsConceptCards = true
+        )
       }
     )
 
     return binding.root
+  }
+
+  /** Dismisses the concept card fragment if it's currently active in this fragment. */
+  fun dismissConceptCard() {
+    fragment.childFragmentManager.findFragmentByTag(
+      CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+    )?.let { dialogFragment ->
+      fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
   }
 
   private fun getReviewCardViewModel(): RevisionCardViewModel {
@@ -73,5 +87,11 @@ class RevisionCardFragmentPresenter @Inject constructor(
       EventLog.EventAction.OPEN_REVISION_CARD,
       oppiaLogger.createRevisionCardContext(topicId, subTopicId)
     )
+  }
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment
+      .newInstance(skillId)
+      .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

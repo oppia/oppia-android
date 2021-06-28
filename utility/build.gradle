@@ -64,7 +64,7 @@ dependencies {
       'androidx.appcompat:appcompat:1.0.2',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.work:work-runtime-ktx:2.4.0',
-      'com.caverock:androidsvg-aar:1.4',
+      'com.github.oppia:androidsvg:6bd15f69caee3e6857fcfcd123023716b4adec1d',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',

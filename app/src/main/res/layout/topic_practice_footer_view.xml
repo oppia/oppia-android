@@ -28,7 +28,7 @@
       android:clickable="@{isSubmitButtonActive}"
       android:enabled="@{isSubmitButtonActive}"
       android:fontFamily="sans-serif-medium"
-      android:minHeight="36dp"
+      android:minHeight="@dimen/clickable_item_min_height"
       android:text="@string/topic_practice_start"
       android:textColor="@{isSubmitButtonActive ? @color/white : @color/submitButtonTextInactive}"
       app:layout_constraintBottom_toBottomOf="parent"

@@ -20,8 +20,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_parent_margin_start_profile_not_added}"
-    app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_parent_margin_end_profile_not_added}"
+    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
+    android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
+    android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}"
     android:orientation="vertical">
 
     <LinearLayout
@@ -31,8 +32,8 @@
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}"
       android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER}"
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_end_profile_not_added}"
-      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_start_profile_not_added}"
+      android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_end_profile_not_added}"
+      android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_start_profile_not_added}"
       tools:ignore="RtlSymmetry">
 
       <de.hdodenhof.circleimageview.CircleImageView
@@ -50,7 +51,8 @@
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+        android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
+        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
 
         <TextView
           android:id="@+id/add_profile_text"
@@ -65,15 +67,13 @@
           android:id="@+id/add_profile_description_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:maxWidth="280dp"
-          android:layout_gravity="left"
+          android:layout_gravity="center"
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
           android:textColor="@color/white"
           android:textSize="16sp"
-          android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
-          tools:ignore="RtlHardcoded" />
+          android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>
   </LinearLayout>

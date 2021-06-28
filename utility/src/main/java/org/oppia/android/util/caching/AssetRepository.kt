@@ -1,6 +1,7 @@
 package org.oppia.android.util.caching
 
 import android.content.Context
+import com.google.protobuf.MessageLite
 import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import java.io.InputStream
@@ -11,13 +12,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-// TODO(#169): Leverage this repository or a version of it for caching all topic contents in a proto. It may also be
-//  worth keeping a version of this repository for caching audio files within certain size limits for buffering during
-//  an exploration.
+// TODO(#169): Leverage this repository or a version of it for caching all topic contents in a
+//  proto. It may also be worth keeping a version of this repository for caching audio files within
+//  certain size limits for buffering during an exploration.
 /**
- * A generic repository for access local APK asset files, and downloading remote binary files. This repository aims to
- * centralize caching management of external asset files to simplify downstream code, and allow assets to be retrieved
- * quickly and synchronously.
+ * A generic repository for accessing local APK asset files, and downloading remote binary files.
+ * This repository aims to centralize caching management of external asset files to simplify
+ * downstream code, and allow assets to be retrieved quickly and synchronously.
  */
 @Singleton
 class AssetRepository @Inject constructor(
@@ -29,6 +30,9 @@ class AssetRepository @Inject constructor(
   /** Map of asset names to file contents for text file assets. */
   private val textFileAssets = mutableMapOf<String, String>()
 
+  /** Map of asset names to file contents for proto file assets. */
+  private val protoFileAssets = mutableMapOf<String, ByteArray>()
+
   /** Returns the whole text contents of the file corresponding to the specified asset name. */
   fun loadTextFileFromLocalAssets(assetName: String): String {
     repositoryLock.withLock {
@@ -37,7 +41,9 @@ class AssetRepository @Inject constructor(
     }
   }
 
-  /** Ensures the contents corresponding to the specified asset are available for quick retrieval. */
+  /**
+   * Ensures the contents corresponding to the specified asset are available for quick retrieval.
+   */
   fun primeTextFileFromLocalAssets(assetName: String) {
     repositoryLock.withLock {
       if (assetName !in textFileAssets) {
@@ -50,8 +56,38 @@ class AssetRepository @Inject constructor(
   }
 
   /**
-   * Returns a function to retrieve the stream of the binary asset corresponding to the specified URL, to be called on a
-   * background thread.
+   * Returns a new proto of type [T] that is retrieved from the local assets for the given asset
+   * name. The [baseMessage] is used to load the proto; its value will never actually be used (so
+   * callers are recommended to use [T]'s default instance for this purpose).
+   */
+  fun <T : MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T {
+    @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.
+    return baseMessage.newBuilderForType()
+      .mergeFrom(loadProtoBlobFromLocalAssets(assetName))
+      .build() as T
+  }
+
+  /** Returns the size of the specified proto asset. */
+  fun getLocalAssetProtoSize(assetName: String): Int {
+    return loadProtoBlobFromLocalAssets(assetName).size
+  }
+
+  private fun loadProtoBlobFromLocalAssets(assetName: String): ByteArray {
+    primeProtoBlobFromLocalAssets(assetName)
+    return protoFileAssets.getValue(assetName)
+  }
+
+  private fun primeProtoBlobFromLocalAssets(assetName: String) {
+    repositoryLock.withLock {
+      if (assetName !in protoFileAssets) {
+        protoFileAssets[assetName] = context.assets.open("$assetName.pb").use { it.readBytes() }
+      }
+    }
+  }
+
+  /**
+   * Returns a function to retrieve the stream of the binary asset corresponding to the specified
+   * URL, to be called on a background thread.
    */
   fun loadRemoteBinaryAsset(url: String): () -> ByteArray {
     return {
@@ -61,9 +97,20 @@ class AssetRepository @Inject constructor(
     }
   }
 
+  /**
+   * Returns a function to retrieve the image data corresponding to the specified URL (where the
+   * image represented by that URL is assumed to be included in the app's assets directory).
+   */
+  fun loadImageAssetFromLocalAssets(url: String): () -> ByteArray {
+    return {
+      val filename = url.substring(url.lastIndexOf('/') + 1)
+      context.assets.open("images/$filename").use { it.readBytes() }
+    }
+  }
+
   /** Ensures the contents corresponding to the specified URL are available for quick retrieval. */
   fun primeRemoteBinaryAsset(url: String) {
-    if (!isRemoteBinarAssetDownloaded(url)) {
+    if (!isRemoteBinaryAssetDownloaded(url)) {
       // Otherwise, download it remotely and cache it locally.
       logger.d("AssetRepo", "Downloading binary asset: $url")
       val contents = openRemoteStream(url).use { it.readBytes() }
@@ -74,7 +121,7 @@ class AssetRepository @Inject constructor(
   /**
    * Returns whether a binary asset corresponding to the specified URL has already been downloaded.
    */
-  fun isRemoteBinarAssetDownloaded(url: String): Boolean {
+  fun isRemoteBinaryAssetDownloaded(url: String): Boolean {
     return getLocalCacheFile(url).exists()
   }
 

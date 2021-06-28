@@ -10,7 +10,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 private const val COMING_SOON_TOPIC_LIST_VIEW_TAG = "ComingSoonTopicsListView"
@@ -29,7 +29,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   lateinit var bindingInterface: ViewBindingShim
 
   @Inject
-  lateinit var logger: ConsoleLogger
+  lateinit var oppiaLogger: OppiaLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -60,7 +60,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
       adapter = createAdapter()
     }
     if (newDataList == null) {
-      logger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve upcoming topic list data")
+      oppiaLogger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve upcoming topic list data")
     } else {
       (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
     }

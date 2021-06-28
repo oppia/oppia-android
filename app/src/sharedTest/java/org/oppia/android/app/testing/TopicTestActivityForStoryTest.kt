@@ -31,6 +31,8 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.EnablePracticeTab
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.domain.classify.InteractionsModule
@@ -60,9 +62,9 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -79,6 +81,10 @@ class TopicTestActivityForStoryTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
 
   @Before
   fun setUp() {
@@ -102,7 +108,7 @@ class TopicTestActivityForStoryTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            TopicTab.getTabForPosition(1).name
+            TopicTab.getTabForPosition(position = 1, enablePracticeTab).name
           )
         )
       )
@@ -131,10 +137,11 @@ class TopicTestActivityForStoryTest {
   fun testTopicTestActivityForStory_playTopicTab_storyItemIsExpanded() {
     launch(TopicTestActivityForStory::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      // Story 0 of the topic should be expanded.
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
-          position = 2,
+          position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(isDisplayed()))
@@ -158,7 +165,7 @@ class TopicTestActivityForStoryTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

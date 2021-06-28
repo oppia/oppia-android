@@ -14,16 +14,16 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.databinding.RevisionCardActivityBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController
 ) {
 
@@ -55,7 +55,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
-    binding.revisionCardToolbar.setOnClickListener {
+    binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardToolbarTitle.isSelected = true
     }
     subscribeToSubtopicTitle()
@@ -92,6 +92,9 @@ class RevisionCardActivityPresenter @Inject constructor(
     }
   }
 
+  /** Dismisses the concept card fragment if it's currently active in this activity. */
+  fun dismissConceptCard() = getReviewCardFragment()?.dismissConceptCard()
+
   private fun subscribeToSubtopicTitle() {
     subtopicLiveData.observe(
       activity,
@@ -117,7 +120,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     revisionCardResult: AsyncResult<RevisionCard>
   ): String {
     if (revisionCardResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "RevisionCardActivity",
         "Failed to retrieve Revision Card",
         revisionCardResult.getErrorOrNull()!!

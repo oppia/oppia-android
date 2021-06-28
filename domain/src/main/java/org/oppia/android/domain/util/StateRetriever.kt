@@ -13,7 +13,7 @@ import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.Normali
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.RegionType
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Misconception
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
@@ -23,45 +23,35 @@ import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.SchemaObjectList
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
-import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import javax.inject.Inject
 
 /** Utility that helps create a [State] object given its JSON representation. */
-class StateRetriever @Inject constructor(
-  private val jsonAssetRetriever: JsonAssetRetriever
-) {
+class StateRetriever @Inject constructor() {
 
-  /** Creates a single state object from JSON */
-  fun createStateFromJson(stateName: String, stateJson: JSONObject?): State {
-    val state = State.newBuilder()
-      .setName(stateName)
-      .setContent(
-        SubtitledHtml.newBuilder().setHtml(
-          stateJson?.getJSONObject("content")?.getString("html")
-        ).setContentId(
-          stateJson?.getJSONObject("content")?.optString("content_id")
+  /** Returns a new [State] with the specified name, parsed from the specified [JSONObject]. */
+  fun createStateFromJson(stateName: String, stateJson: JSONObject): State =
+    State.newBuilder().apply {
+      name = stateName
+      content = parseSubtitledHtml(stateJson.getJSONObject("content"))
+      interaction = createInteractionFromJson(stateJson.getJSONObject("interaction"))
+      if (stateJson.has("recorded_voiceovers")) {
+        putAllRecordedVoiceovers(
+          createVoiceoverMappingsFromJson(stateJson.getJSONObject("recorded_voiceovers"))
         )
-      )
-      .setInteraction(createInteractionFromJson(stateJson?.getJSONObject("interaction")))
-
-    if (stateJson != null && stateJson.has("recorded_voiceovers")) {
-      createVoiceOverMappingsFromJson(stateJson.getJSONObject("recorded_voiceovers"), state)
-    }
-
-    return state.build()
-  }
+      }
+    }.build()
 
   // Creates an interaction from JSON
-  private fun createInteractionFromJson(interactionJson: JSONObject?): Interaction {
-    if (interactionJson == null) {
-      return Interaction.getDefaultInstance()
-    }
+  private fun createInteractionFromJson(interactionJson: JSONObject): Interaction {
     return Interaction.newBuilder()
       .setId(interactionJson.getString("id"))
       .addAllAnswerGroups(
@@ -70,20 +60,14 @@ class StateRetriever @Inject constructor(
           interactionJson.getString("id")
         )
       )
-      .addAllConfirmedUnclassifiedAnswers(
-        createAnswerGroupsFromJson(
-          interactionJson.getJSONArray("confirmed_unclassified_answers"),
-          interactionJson.getString("id")
-        )
-      )
       .setDefaultOutcome(
         createOutcomeFromJson(
-          getJsonObject(interactionJson, "default_outcome")
+          interactionJson.optJSONObject("default_outcome")
         )
       )
       .putAllCustomizationArgs(
         createCustomizationArgsMapFromJson(
-          getJsonObject(interactionJson, "customization_args"),
+          interactionJson.getJSONObject("customization_args"),
           interactionJson.getString("id")
         )
       )
@@ -94,93 +78,65 @@ class StateRetriever @Inject constructor(
       )
       .setSolution(
         createSolutionFromJson(
-          getJsonObject(interactionJson, "solution")
+          interactionJson.optJSONObject("solution")
         )
       )
       .build()
   }
 
-  // Returns a JSON Object if it exists, else returns null
-  private fun getJsonObject(parentObject: JSONObject, key: String): JSONObject? {
-    return parentObject.optJSONObject(key)
-  }
-
   // Creates the list of answer group objects from JSON
   private fun createAnswerGroupsFromJson(
-    answerGroupsJson: JSONArray?,
+    answerGroupsJson: JSONArray,
     interactionId: String
-  ): MutableList<AnswerGroup> {
+  ): List<AnswerGroup> {
     val answerGroups = mutableListOf<AnswerGroup>()
-    if (answerGroupsJson == null) {
-      return answerGroups
-    }
     for (i in 0 until answerGroupsJson.length()) {
-      answerGroups.add(
-        createSingleAnswerGroupFromJson(
-          answerGroupsJson.getJSONObject(i), interactionId
-        )
-      )
+      answerGroups +=
+        createSingleAnswerGroupFromJson(answerGroupsJson.getJSONObject(i), interactionId)
     }
     return answerGroups
   }
 
   // Creates the list of hints objects from JSON
   private fun createListOfHintsFromJson(
-    hintsJson: JSONArray?
-  ): MutableList<Hint> {
+    hintsJson: JSONArray
+  ): List<Hint> {
     val hints = mutableListOf<Hint>()
-    if (hintsJson == null) {
-      return hints
-    }
     for (i in 0 until hintsJson.length()) {
-      hints.add(
-        createSingleHintFromJson(
-          hintsJson.getJSONObject(i)
-        )
-      )
+      hints += createSingleHintFromJson(hintsJson.getJSONObject(i))
     }
     return hints
   }
 
   // Creates an hint object from JSON
-  private fun createSingleHintFromJson(hintJson: JSONObject?): Hint {
-    if (hintJson == null) {
-      return Hint.getDefaultInstance()
-    }
-    return Hint.newBuilder()
-      .setHintContent(
-        SubtitledHtml.newBuilder().setHtml(
-          hintJson.getJSONObject("hint_content")?.getString("html")
-        ).setContentId(
-          hintJson.getJSONObject("hint_content")?.optString("content_id")
-        )
-      )
-      .build()
-  }
+  private fun createSingleHintFromJson(hintJson: JSONObject): Hint = Hint.newBuilder().apply {
+    hintContent = parseSubtitledHtml(hintJson.getJSONObject("hint_content"))
+  }.build()
 
   // Creates a single answer group object from JSON
   private fun createSingleAnswerGroupFromJson(
     answerGroupJson: JSONObject,
     interactionId: String
-  ): AnswerGroup {
-    return AnswerGroup.newBuilder().apply {
-      outcome = createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
-      addAllRuleSpecs(
-        createRuleSpecsFromJson(
-          answerGroupJson.optJSONObject("rule_types_to_inputs"), interactionId
-        )
-      )
-      val misconceptionJson = answerGroupJson.optJSONObject("tagged_skill_misconception_id")
-      if (misconceptionJson != null) {
-        val misconceptionParts = misconceptionJson.toString().split("-")
-        taggedSkillMisconception =
-          Misconception.newBuilder().apply {
-            skillId = misconceptionParts[0]
-            misconceptionId = misconceptionParts[1]
-          }.build()
-      }
-    }.build()
-  }
+  ): AnswerGroup = AnswerGroup.newBuilder().apply {
+    outcome = createOutcomeFromJson(answerGroupJson.getJSONObject("outcome"))
+    val ruleSpecsArrayJson = answerGroupJson.getJSONArray("rule_specs")
+    val ruleSpecsJson = mutableListOf<JSONObject>()
+    for (i in 0 until ruleSpecsArrayJson.length()) {
+      ruleSpecsJson += ruleSpecsArrayJson.getJSONObject(i)
+    }
+    addAllRuleSpecs(ruleSpecsJson.map { convertToRuleSpec(it, interactionId) })
+    val misconceptionJson =
+      if (answerGroupJson.isNull("tagged_skill_misconception_id")) null
+      else answerGroupJson.getString("tagged_skill_misconception_id")
+    if (!misconceptionJson.isNullOrEmpty()) {
+      val misconceptionParts = misconceptionJson.split("-")
+      taggedSkillMisconception =
+        Misconception.newBuilder().apply {
+          skillId = misconceptionParts[0]
+          misconceptionId = misconceptionParts[1]
+        }.build()
+    }
+  }.build()
 
   // Creates an outcome object from JSON
   private fun createOutcomeFromJson(outcomeJson: JSONObject?): Outcome {
@@ -199,17 +155,11 @@ class StateRetriever @Inject constructor(
     if (solutionJson == null) {
       return Solution.getDefaultInstance()
     }
-    return Solution.newBuilder()
-      .setCorrectAnswer(createCorrectAnswer(solutionJson))
-      .setExplanation(
-        SubtitledHtml.newBuilder().setHtml(
-          solutionJson.getJSONObject("explanation")?.getString("html")
-        ).setContentId(
-          solutionJson.getJSONObject("explanation")?.optString("content_id")
-        )
-      )
-      .setAnswerIsExclusive(solutionJson.getBoolean("answer_is_exclusive"))
-      .build()
+    return Solution.newBuilder().apply {
+      correctAnswer = createCorrectAnswer(solutionJson)
+      explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
+      answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
+    }.build()
   }
 
   private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
@@ -228,113 +178,63 @@ class StateRetriever @Inject constructor(
     }
   }
 
-  // TODO(#298): Remove this and only parse SubtitledHtml according the latest schema after all test explorations are
-  //  updated.
   /**
-   * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry keyed on 'feedback'.
+   * Returns a new [SubtitledHtml] from a specified container [JSONObject] that contains an entry
+   * keyed on 'feedback'.
    */
   private fun createFeedbackSubtitledHtml(containerObject: JSONObject): SubtitledHtml {
-    val feedbackObject = containerObject.optJSONObject("feedback")
-    return if (feedbackObject != null) {
-      SubtitledHtml.newBuilder()
-        .setContentId(feedbackObject.getString("content_id"))
-        .setHtml(feedbackObject.getString("html"))
-        .build()
-    } else {
-      SubtitledHtml.newBuilder().setHtml(containerObject.getString("feedback")).build()
-    }
+    val feedbackObject = containerObject.getJSONObject("feedback")
+    return SubtitledHtml.newBuilder()
+      .setContentId(feedbackObject.getString("content_id"))
+      .setHtml(feedbackObject.getString("html"))
+      .build()
   }
 
-  // Creates VoiceoverMappings from JSON and adds onto State
-  private fun createVoiceOverMappingsFromJson(
-    recordedVoiceovers: JSONObject,
-    stateBuilder: State.Builder
-  ) {
-    val voiceoverMappingJson = recordedVoiceovers
-      .getJSONObject("voiceovers_mapping")
-    voiceoverMappingJson?.let {
-      for (key in it.keys()) {
-        val voiceoverMapping = VoiceoverMapping.newBuilder()
-        val voiceoverJson = it.getJSONObject(key)
-        if (voiceoverJson.length() == 0) continue
-        for (lang in voiceoverJson.keys()) {
-          voiceoverMapping.putVoiceoverMapping(
-            lang,
-            createVoiceOverFromJson(voiceoverJson.getJSONObject(lang))
-          )
-        }
-        stateBuilder.putRecordedVoiceovers(key, voiceoverMapping.build())
-      }
+  private fun createVoiceoverMappingsFromJson(
+    recordedVoiceovers: JSONObject
+  ): Map<String, VoiceoverMapping> {
+    val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
+    return voiceoverMappingJson.keys().asSequence().filter { contentId ->
+      voiceoverMappingJson.getJSONObject(contentId).length() != 0
+    }.associateWith { contentId ->
+      val voiceoverJson = voiceoverMappingJson.getJSONObject(contentId)
+      VoiceoverMapping.newBuilder().apply {
+        putAllVoiceoverMapping(
+          voiceoverJson.keys().asSequence().associateWith { languageCode ->
+            createVoiceoverFromJson(voiceoverJson.getJSONObject(languageCode))
+          }
+        )
+      }.build()
     }
   }
 
   // Creates a Voiceover from Json
-  private fun createVoiceOverFromJson(voiceoverJson: JSONObject): Voiceover {
-    return Voiceover.newBuilder()
-      .setNeedsUpdate(voiceoverJson.getBoolean("needs_update"))
-      .setFileName(voiceoverJson.getString("filename"))
-      .build()
-  }
+  private fun createVoiceoverFromJson(voiceoverJson: JSONObject): Voiceover =
+    Voiceover.newBuilder().apply {
+      needsUpdate = voiceoverJson.getBoolean("needs_update")
+      fileName = voiceoverJson.getString("filename")
+    }.build()
 
   // Creates the list of rule spec objects from JSON
-  private fun createRuleSpecsFromJson(
-    ruleSpecJson: JSONObject?,
-    interactionId: String
-  ): MutableList<RuleSpec> {
-    val ruleSpecList = mutableListOf<RuleSpec>()
-    if (ruleSpecJson == null) {
-      return ruleSpecList
-    }
-
-    for (ruleType in ruleSpecJson.keys()) {
-      val inputJsonArray = ruleSpecJson.getJSONArray(ruleType)
-      for (i in 0 until inputJsonArray.length()) {
-        val ruleSpecBuilder = RuleSpec.newBuilder()
-        ruleSpecBuilder.ruleType = ruleType
-        val inputJsonObject = inputJsonArray.getJSONObject(i)
-        val inputKeysIterator = inputJsonObject.keys()
-        while (inputKeysIterator.hasNext()) {
-          val inputName = inputKeysIterator.next()
-          when (ruleSpecBuilder.ruleType) {
-            "HasNumeratorEqualTo" -> ruleSpecBuilder.putInput(
-              inputName,
-              InteractionObject.newBuilder()
-                .setSignedInt(inputJsonObject.getInt(inputName))
-                .build()
-            )
-            "HasDenominatorEqualTo" -> ruleSpecBuilder.putInput(
-              inputName,
-              InteractionObject.newBuilder()
-                .setNonNegativeInt(inputJsonObject.getInt(inputName))
-                .build()
-            )
-            else -> ruleSpecBuilder.putInput(
-              inputName,
-              createExactInputFromJson(
-                inputJsonObject,
-                inputName,
-                interactionId,
-                ruleSpecBuilder.ruleType
-              )
-            )
-          }
+  private fun convertToRuleSpec(ruleSpecJson: JSONObject, interactionId: String): RuleSpec {
+    val inputJsonObject = ruleSpecJson.getJSONObject("inputs")
+    return RuleSpec.newBuilder().apply {
+      ruleType = ruleSpecJson.getString("rule_type")
+      putAllInput(
+        inputJsonObject.keys().asSequence().associateWith { inputName ->
+          createExactInputFromJson(inputJsonObject, inputName, interactionId, ruleType)
         }
-        ruleSpecList.add(ruleSpecBuilder.build())
-      }
-    }
-    return ruleSpecList
+      )
+    }.build()
   }
 
   // Creates an input interaction object from JSON
   private fun createExactInputFromJson(
-    inputJson: JSONObject?,
+    inputJson: JSONObject,
     keyName: String,
     interactionId: String,
     ruleType: String
   ): InteractionObject {
-    if (inputJson == null) {
-      return InteractionObject.getDefaultInstance()
-    }
     return when (interactionId) {
       "MultipleChoiceInput" ->
         InteractionObject.newBuilder()
@@ -342,11 +242,15 @@ class StateRetriever @Inject constructor(
           .build()
       "ItemSelectionInput" ->
         InteractionObject.newBuilder()
-          .setSetOfHtmlString(parseStringList(inputJson.getJSONArray(keyName)))
+          .setSetOfTranslatableHtmlContentIds(
+            parseSetOfTranslatableHtmlContentIds(inputJson.getJSONArray(keyName))
+          )
           .build()
       "TextInput" ->
         InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getString(keyName))
+          .setTranslatableSetOfNormalizedString(
+            parseTranslatableSetOfNormalizedString(inputJson.getJSONObject(keyName))
+          )
           .build()
       "NumberWithUnits" ->
         InteractionObject.newBuilder()
@@ -356,10 +260,7 @@ class StateRetriever @Inject constructor(
         InteractionObject.newBuilder()
           .setReal(inputJson.getDouble(keyName))
           .build()
-      "FractionInput" ->
-        InteractionObject.newBuilder()
-          .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
-          .build()
+      "FractionInput" -> createExactInputForFractionInput(inputJson, keyName, ruleType)
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
       "ImageClickInput" ->
         InteractionObject.newBuilder()
@@ -371,23 +272,44 @@ class StateRetriever @Inject constructor(
     }
   }
 
-  /**
-   * Returns a Drag-and-Drop-specific [InteractionObject] parsed from the specified input [JSONObject] for the given key name.
-   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
-   */
-  private fun createExactInputForDragDropAndSort(
-    inputJson: JSONObject?,
+  private fun createExactInputForFractionInput(
+    inputJson: JSONObject,
     keyName: String,
     ruleType: String
   ): InteractionObject {
-    if (inputJson == null) {
-      return InteractionObject.getDefaultInstance()
+    return when (ruleType) {
+      "HasNumeratorEqualTo" ->
+        InteractionObject.newBuilder()
+          .setSignedInt(inputJson.getInt(keyName))
+          .build()
+      "HasDenominatorEqualTo" ->
+        InteractionObject.newBuilder()
+          .setNonNegativeInt(inputJson.getInt(keyName))
+          .build()
+      else ->
+        InteractionObject.newBuilder()
+          .setFraction(parseFraction(inputJson.getJSONObject(keyName)))
+          .build()
     }
+  }
+
+  /**
+   * Returns a Drag-and-Drop-specific [InteractionObject] parsed from the specified input
+   * [JSONObject] for the given key name. This method makes assumptions about how to interpret the
+   * input type represented by the [JSONObject].
+   */
+  private fun createExactInputForDragDropAndSort(
+    inputJson: JSONObject,
+    keyName: String,
+    ruleType: String
+  ): InteractionObject {
     return when (ruleType) {
       "HasElementXAtPositionY" -> return when (keyName) {
         "x" ->
           InteractionObject.newBuilder()
-            .setNormalizedString(inputJson.getString(keyName))
+            .setTranslatableHtmlContentId(
+              parseTranslatableContentId(inputJson.getString(keyName))
+            )
             .build()
         "y" ->
           InteractionObject.newBuilder()
@@ -395,31 +317,31 @@ class StateRetriever @Inject constructor(
             .build()
         else -> throw IllegalStateException("Encountered unexpected key name: $keyName")
       }
-
       "HasElementXBeforeElementY" ->
         InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getString(keyName))
+          .setTranslatableHtmlContentId(
+            parseTranslatableContentId(inputJson.getString(keyName))
+          )
           .build()
       else ->
         InteractionObject.newBuilder()
-          .setListOfSetsOfHtmlString(parseListOfSetsOfHtmlStrings(inputJson.getJSONArray(keyName)))
+          .setListOfSetsOfTranslatableHtmlContentIds(
+            parseListOfSetsOfTranslatableHtmlContentIds(inputJson.getJSONArray(keyName))
+          )
           .build()
     }
   }
 
   /**
-   * Returns a Ratio Expression Input specific [InteractionObject] parsed from the specified input [JSONObject]
-   * for the given key name.
-   * This method makes assumptions about how to interpret the input type represented by the [JSONObject].
+   * Returns a Ratio Expression Input specific [InteractionObject] parsed from the specified input
+   * [JSONObject] for the given key name. This method makes assumptions about how to interpret the
+   * input type represented by the [JSONObject].
    */
   private fun createExactInputForRatioExpressionInput(
-    inputJson: JSONObject?,
+    inputJson: JSONObject,
     keyName: String,
     ruleType: String
   ): InteractionObject {
-    if (inputJson == null) {
-      return InteractionObject.getDefaultInstance()
-    }
     return when (ruleType) {
       "HasNumberOfTermsEqualTo" ->
         InteractionObject.newBuilder()
@@ -432,28 +354,42 @@ class StateRetriever @Inject constructor(
     }
   }
 
-  private fun parseListOfSetsOfHtmlStrings(
-    listOfSetsOfHtmlStringsAnswer: JSONArray
-  ): ListOfSetsOfHtmlStrings {
-    val listOfSetsOfHtmlStringsBuilder =
-      ListOfSetsOfHtmlStrings.newBuilder()
-    for (i in 0 until listOfSetsOfHtmlStringsAnswer.length()) {
-      listOfSetsOfHtmlStringsBuilder.addSetOfHtmlStrings(
-        parseStringList(
-          listOfSetsOfHtmlStringsAnswer.getJSONArray(i)
-        )
+  private fun parseTranslatableSetOfNormalizedString(
+    translatableSetOfStringsJson: JSONObject
+  ): TranslatableSetOfNormalizedString = TranslatableSetOfNormalizedString.newBuilder().apply {
+    contentId = translatableSetOfStringsJson.getString("contentId")
+    val strSet = translatableSetOfStringsJson.getJSONArray("normalizedStrSet")
+    for (i in 0 until strSet.length()) {
+      addNormalizedStrings(strSet.getString(i))
+    }
+  }.build()
+
+  private fun parseListOfSetsOfTranslatableHtmlContentIds(
+    listOfSetsOfContentIdsJson: JSONArray
+  ): ListOfSetsOfTranslatableHtmlContentIds {
+    val listOfSetsOfContentIdsBuilder = ListOfSetsOfTranslatableHtmlContentIds.newBuilder()
+    for (i in 0 until listOfSetsOfContentIdsJson.length()) {
+      listOfSetsOfContentIdsBuilder.addContentIdLists(
+        parseSetOfTranslatableHtmlContentIds(listOfSetsOfContentIdsJson.getJSONArray(i))
       )
     }
-    return listOfSetsOfHtmlStringsBuilder.build()
+    return listOfSetsOfContentIdsBuilder.build()
   }
 
-  private fun parseStringList(itemSelectionAnswer: JSONArray): StringList {
-    val stringListBuilder = StringList.newBuilder()
-    for (i in 0 until itemSelectionAnswer.length()) {
-      stringListBuilder.addHtml(itemSelectionAnswer.getString(i))
+  private fun parseSetOfTranslatableHtmlContentIds(
+    setOfContentIdsJson: JSONArray
+  ): SetOfTranslatableHtmlContentIds {
+    val setOfContentIdsBuilder = SetOfTranslatableHtmlContentIds.newBuilder()
+    for (i in 0 until setOfContentIdsJson.length()) {
+      setOfContentIdsBuilder.addContentIds(
+        parseTranslatableContentId(setOfContentIdsJson.getString(i))
+      )
     }
-    return stringListBuilder.build()
+    return setOfContentIdsBuilder.build()
   }
+
+  private fun parseTranslatableContentId(contentIdJson: String): TranslatableHtmlContentId =
+    TranslatableHtmlContentId.newBuilder().apply { contentId = contentIdJson }.build()
 
   private fun parseNumberWithUnitsObject(numberWithUnitsAnswer: JSONObject): NumberWithUnits {
     val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
@@ -494,12 +430,9 @@ class StateRetriever @Inject constructor(
 
   // Creates a customization arg mapping from JSON
   private fun createCustomizationArgsMapFromJson(
-    customizationArgsJson: JSONObject?,
+    customizationArgsJson: JSONObject,
     interactionId: String
-  ): MutableMap<String, SchemaObject> {
-    if (customizationArgsJson == null) {
-      return mutableMapOf()
-    }
+  ): Map<String, SchemaObject> {
     return when (interactionId) {
       "DragAndDropSortInput" -> {
         createDragAndDropSortInputCustomizationArgsMap(customizationArgsJson)
@@ -531,172 +464,141 @@ class StateRetriever @Inject constructor(
 
   private fun createRatioExpressionInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["placeholder"] =
       parseSubtitledUnicode(
-        getJsonObject(
-          customizationArgsJson, "placeholder"
-        )!!.getJSONObject("value")
+        customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
       )
     customizationArgsMap["numberOfTerms"] =
       parseIntegerSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "numberOfTerms"
-        )!!.getInt("value")
+        customizationArgsJson.getJSONObject("numberOfTerms").getInt("value")
       )
     return customizationArgsMap
   }
 
   private fun createDragAndDropSortInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["allowMultipleItemsInSamePosition"] =
       parseBooleanSchemaObject(
-        getJsonObject(
-          customizationArgsJson,
-          "allowMultipleItemsInSamePosition"
-        )!!.getBoolean("value")
+        customizationArgsJson.getJSONObject("allowMultipleItemsInSamePosition").getBoolean("value")
       )
     customizationArgsMap["choices"] =
-      parseSubtitledHtmlList(
-        getJsonObject(
-          customizationArgsJson, "choices"
-        )!!.getJSONArray("value")
+      parseSubtitledHtmlListForCustomizationArgs(
+        customizationArgsJson.getJSONObject("choices").getJSONArray("value")
       )
     return customizationArgsMap
   }
 
   private fun createFractionInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["allowNonzeroIntegerPart"] =
       parseBooleanSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "allowNonzeroIntegerPart"
-        )!!.getBoolean("value")
+        customizationArgsJson.getJSONObject("allowNonzeroIntegerPart").getBoolean("value")
       )
     customizationArgsMap["requireSimplestForm"] =
       parseBooleanSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "requireSimplestForm"
-        )!!.getBoolean("value")
+        customizationArgsJson.getJSONObject("requireSimplestForm").getBoolean("value")
       )
     customizationArgsMap["allowImproperFraction"] =
       parseBooleanSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "allowImproperFraction"
-        )!!.getBoolean("value")
+        customizationArgsJson.getJSONObject("allowImproperFraction").getBoolean("value")
       )
     customizationArgsMap["customPlaceholder"] =
       parseSubtitledUnicode(
-        getJsonObject(
-          customizationArgsJson, "customPlaceholder"
-        )!!.getJSONObject("value")
+        customizationArgsJson.getJSONObject("customPlaceholder").getJSONObject("value")
       )
     return customizationArgsMap
   }
 
   private fun createImageClickInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["highlightRegionsOnHover"] =
       parseBooleanSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "highlightRegionsOnHover"
-        )!!.getBoolean("value")
+        customizationArgsJson.getJSONObject("highlightRegionsOnHover").getBoolean("value")
       )
     customizationArgsMap["imageAndRegions"] =
       parseImageWithRegions(
-        getJsonObject(
-          customizationArgsJson, "imageAndRegions"
-        )!!.getJSONObject("value")
+        customizationArgsJson.getJSONObject("imageAndRegions").getJSONObject("value")
       )
     return customizationArgsMap
   }
 
   private fun createItemSelectionInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["minAllowableSelectionCount"] =
       parseIntegerSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "minAllowableSelectionCount"
-        )!!.getInt("value")
+        customizationArgsJson.getJSONObject("minAllowableSelectionCount").getInt("value")
       )
     customizationArgsMap["maxAllowableSelectionCount"] =
       parseIntegerSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "maxAllowableSelectionCount"
-        )!!.getInt("value")
+        customizationArgsJson.getJSONObject("maxAllowableSelectionCount").getInt("value")
       )
     customizationArgsMap["choices"] =
-      parseSubtitledHtmlList(
-        getJsonObject(
-          customizationArgsJson, "choices"
-        )!!.getJSONArray("value")
+      parseSubtitledHtmlListForCustomizationArgs(
+        customizationArgsJson.getJSONObject("choices").getJSONArray("value")
       )
     return customizationArgsMap
   }
 
   private fun createMultipleChoiceInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["choices"] =
-      parseSubtitledHtmlList(
-        getJsonObject(
-          customizationArgsJson, "choices"
-        )!!.getJSONArray("value")
+      parseSubtitledHtmlListForCustomizationArgs(
+        customizationArgsJson.getJSONObject("choices").getJSONArray("value")
       )
     return customizationArgsMap
   }
 
   private fun createTextInputCustomizationArgsMap(
     customizationArgsJson: JSONObject
-  ): MutableMap<String, SchemaObject> {
-    val customizationArgsMap: MutableMap<String, SchemaObject> = mutableMapOf()
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
     customizationArgsMap["placeholder"] =
       parseSubtitledUnicode(
-        getJsonObject(
-          customizationArgsJson, "placeholder"
-        )!!.getJSONObject("value")
+        customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
       )
     customizationArgsMap["rows"] =
       parseIntegerSchemaObject(
-        getJsonObject(
-          customizationArgsJson, "rows"
-        )!!.getInt("value")
+        customizationArgsJson.getJSONObject("rows").getInt("value")
       )
     return customizationArgsMap
   }
 
+  private fun parseSubtitledHtml(subtitledHtmlJson: JSONObject): SubtitledHtml =
+    SubtitledHtml.newBuilder().apply {
+      contentId = subtitledHtmlJson.getString("content_id")
+      html = subtitledHtmlJson.getString("html")
+    }.build()
+
   private fun parseIntegerSchemaObject(value: Int): SchemaObject {
     return SchemaObject.newBuilder().setSignedInt(value).build()
-  }
-
-  private fun parseNormalizedStringSchemaObject(value: String): SchemaObject {
-    return SchemaObject.newBuilder().setNormalizedString(value).build()
   }
 
   private fun parseBooleanSchemaObject(value: Boolean): SchemaObject {
     return SchemaObject.newBuilder().setBoolValue(value).build()
   }
 
-  private fun parseSubtitledHtmlList(jsonArray: JSONArray): SchemaObject {
+  private fun parseSubtitledHtmlListForCustomizationArgs(jsonArray: JSONArray): SchemaObject {
     val schemaObjectListBuilder = SchemaObjectList.newBuilder()
     for (i in 0 until jsonArray.length()) {
-      val subtitledHtmlJsonObject = jsonArray.getJSONObject(i)
-      val subtitledHtmlBuilder = SubtitledHtml.newBuilder()
-      subtitledHtmlBuilder.contentId = subtitledHtmlJsonObject.getString("content_id")
-      subtitledHtmlBuilder.html = subtitledHtmlJsonObject.getString("html")
-      val schemaObjectBuilder = SchemaObject.newBuilder()
-      schemaObjectBuilder.setSubtitledHtml(subtitledHtmlBuilder)
-      schemaObjectListBuilder.addSchemaObject(schemaObjectBuilder.build())
+      schemaObjectListBuilder.addSchemaObject(
+        SchemaObject.newBuilder().apply {
+          customSchemaValue = CustomSchemaValue.newBuilder().apply {
+            subtitledHtml = parseSubtitledHtml(jsonArray.getJSONObject(i))
+          }.build()
+        }.build()
+      )
     }
     return SchemaObject.newBuilder().setSchemaObjectList(
       schemaObjectListBuilder.build()
@@ -726,7 +628,7 @@ class StateRetriever @Inject constructor(
   private fun parseJsonToLabeledRegionsList(jsonArray: JSONArray): List<LabeledRegion> {
     val regionList = mutableListOf<LabeledRegion>()
     for (i in 0 until jsonArray.length()) {
-      regionList.add(parseLabeledRegion(jsonArray.getJSONObject(i)))
+      regionList += parseLabeledRegion(jsonArray.getJSONObject(i))
     }
     return regionList
   }

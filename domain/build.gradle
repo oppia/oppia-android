@@ -82,6 +82,7 @@ dependencies {
       'androidx.work:work-testing:2.4.0',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
+      'com.squareup.okhttp3:mockwebserver:4.1.0',
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
@@ -102,9 +103,6 @@ dependencies {
   api project(':data')
   implementation project(':model')
   implementation project(':utility')
-}
-repositories {
-  mavenCentral()
 }
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,

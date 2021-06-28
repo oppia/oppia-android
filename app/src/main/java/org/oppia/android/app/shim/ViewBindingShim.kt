@@ -12,7 +12,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 
 /**
  * Creates bindings for Views in order to avoid View files directly depending on Binding files.

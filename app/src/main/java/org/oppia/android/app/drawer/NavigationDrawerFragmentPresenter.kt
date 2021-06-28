@@ -32,15 +32,16 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
-const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
+const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
 /** The presenter for [NavigationDrawerFragment]. */
@@ -50,7 +51,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
   private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>
 ) : NavigationView.OnNavigationItemSelectedListener {
@@ -67,7 +68,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val headerBinding =
@@ -131,7 +132,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
@@ -160,7 +161,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
@@ -189,7 +190,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "NavigationDrawerFragment",
         "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!

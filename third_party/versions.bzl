@@ -43,12 +43,11 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.work:work-runtime": "2.4.0",
     "androidx.work:work-runtime-ktx": "2.4.0",
     "com.android.support:support-annotations": "28.0.0",
-    "com.caverock:androidsvg-aar": "1.4",
-    "com.chaos.view:pinview": "1.4.4",
     "com.crashlytics.sdk.android:crashlytics": "2.9.8",
+    "com.github.bumptech.glide:compiler": "4.11.0",
     "com.github.bumptech.glide:glide": "4.11.0",
+    "com.google.android.flexbox:flexbox": "3.0.0",
     "com.google.android.material:material": "1.2.0-alpha02",
-    "com.google.android:flexbox": "2.0.1",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
@@ -61,6 +60,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
+    "io.github.chaosleung:pinview": "1.4.4",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
@@ -76,6 +76,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
     "androidx.test.espresso:espresso-core": "3.2.0",
     "androidx.test.espresso:espresso-intents": "3.1.0",
@@ -85,6 +86,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.truth:truth": "0.43",
+    "com.squareup.okhttp3:mockwebserver": "4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
@@ -100,6 +102,9 @@ HTTP_DEPENDENCY_VERSIONS = {
     "dagger": {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
+    },
+    "protobuf_tools": {
+        "version": "3.11.0",
     },
     "rules_java": {
         "sha": "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
@@ -25,9 +25,8 @@ import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -39,7 +38,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val oppiaClock: OppiaClock,
-  private val logger: ConsoleLogger,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String
@@ -53,14 +51,14 @@ class HomeFragmentPresenter @Inject constructor(
     // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
     // data-bound view models.
 
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     logHomeActivityEvent()
 
     val homeViewModel = HomeViewModel(
       activity,
       fragment,
       oppiaClock,
-      logger,
+      oppiaLogger,
       internalProfileId,
       profileManagementController,
       topicListController,

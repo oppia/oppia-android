@@ -1,0 +1,1352 @@
+id: "test_exp_id_2"
+states {
+  key: "ItemSelectionMulti"
+  value {
+    name: "ItemSelectionMulti"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What are the primary colors of light?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "NumberInput"
+          feedback {
+            html: "<b>Correct!</b>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_0"
+                }
+                content_ids {
+                  content_id: "ca_choices_3"
+                }
+                content_ids {
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ItemSelectionMulti"
+          feedback {
+            html: "<p>\'Yellow\' is considered a primary color in the RYB color spectrum, but that doesn\'t correspond to light. Try again!</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+          }
+          rule_type: "ContainsAtLeastOneOf"
+        }
+      }
+      default_outcome {
+        dest_state_name: "ItemSelectionMulti"
+        feedback {
+          html: "<p>That\'s not quite right. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Red</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Yellow</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Green</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Blue</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Orange</p>"
+                  content_id: "ca_choices_4"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Purple</p>"
+                  content_id: "ca_choices_5"
+                }
+              }
+            }
+          }
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 3
+        }
+      }
+    }
+  }
+}
+states {
+  key: "MultipleChoice"
+  value {
+    name: "MultipleChoice"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Which bird can sustain flight for long periods of time?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "MultipleChoiceInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "ItemSelectionMinOne"
+          feedback {
+            html: "<p>Correct! Eagles can sustain flight.</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              non_negative_int: 2
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "MultipleChoice"
+        feedback {
+          html: "<p>Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Penguin</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Chicken</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>Eagle</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Fractions"
+  value {
+    name: "Fractions"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What fraction represents half of something?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "FractionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "MultipleChoice"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "f"
+            value {
+              fraction {
+                numerator: 1
+                denominator: 2
+              }
+            }
+          }
+          rule_type: "IsExactlyEqualTo"
+        }
+      }
+      solution {
+        interaction_id: "FractionInput"
+        correct_answer {
+          denominator: 2
+          numerator: 1
+        }
+        explanation {
+          html: "<p>Half of something has one part in the numerator for every two parts in the denominator.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Remember that two halves, when added together, make one whole.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Fractions"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "allowNonzeroIntegerPart"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "customPlaceholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+      customization_args {
+        key: "allowImproperFraction"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "requireSimplestForm"
+        value {
+          bool_value: false
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Continue"
+  value {
+    name: "Continue"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "Continue"
+      default_outcome {
+        dest_state_name: "Fractions"
+        feedback {
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "buttonText"
+        value {
+          normalized_string: "Continue"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "NumberInput"
+  value {
+    name: "NumberInput"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What is 11 times 11?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "NumericInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "RatioInput"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              real: 121.0
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "NumberInput"
+          feedback {
+            html: "<p>Not quite. It\'s actually larger than that. Try again.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              real: 121.0
+            }
+          }
+          rule_type: "IsLessThan"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "NumberInput"
+          feedback {
+            html: "<p>Not quite. It\'s less than that.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              real: 121.0
+            }
+          }
+          rule_type: "IsGreaterThan"
+        }
+      }
+      default_outcome {
+        dest_state_name: "NumberInput"
+        feedback {
+          html: "<p>Something went wrong. The answer is 121--try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "RatioInput"
+  value {
+    name: "RatioInput"
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "RatioExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "RatioInput"
+          feedback {
+            html: "<p>No this doesn\'t seem correct</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              non_negative_int: 3
+            }
+          }
+          rule_type: "HasNumberOfTermsEqualTo"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Text"
+          feedback {
+            html: "<p>Correct</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              ratio_expression {
+                ratio_component: 4
+                ratio_component: 5
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "Text"
+          feedback {
+            html: "<p>Correct</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              ratio_expression {
+                ratio_component: 8
+                ratio_component: 10
+              }
+            }
+          }
+          rule_type: "IsEquivalent"
+        }
+      }
+      default_outcome {
+        dest_state_name: "RatioInput"
+        feedback {
+          html: "<p>Not correct</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "numberOfTerms"
+        value {
+          signed_int: 0
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter in format of x:y"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "Text"
+  value {
+    name: "Text"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>In which language does Oppia mean \'to learn\'?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropNoGroup"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "finnish"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Text"
+        feedback {
+          html: "<p>Not quite. Try again (or maybe use a search engine).</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter a language"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "ItemSelectionMinOne"
+  value {
+    name: "ItemSelectionMinOne"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What color does the \'G\' in \'RGB\' correspond to?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "ItemSelectionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "ItemSelectionMulti"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              set_of_translatable_html_content_ids {
+                content_ids {
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      default_outcome {
+        dest_state_name: "ItemSelectionMinOne"
+        feedback {
+          html: "<p>Not quite. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p><strong>Green</strong></p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p><strong>Red</strong></p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p><strong>Blue</strong></p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+          }
+        }
+      }
+      customization_args {
+        key: "minAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "maxAllowableSelectionCount"
+        value {
+          signed_int: 1
+        }
+      }
+    }
+  }
+}
+states {
+  key: "DragDropNoGroup"
+  value {
+    name: "DragDropNoGroup"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Sort the following in descending order.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "DragAndDropSortInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropGroup"
+          feedback {
+            html: "<p>That\'s correct</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              list_of_sets_of_translatable_html_content_ids {
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_1"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_3"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_0"
+                  }
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualToOrdering"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropNoGroup"
+          feedback {
+            html: "<p>Seems like you did the ascending order</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              non_negative_int: 1
+            }
+          }
+          input {
+            key: "x"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_2"
+              }
+            }
+          }
+          rule_type: "HasElementXAtPositionY"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropNoGroup"
+          feedback {
+            html: "<p>This does not seem right to me</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_0"
+              }
+            }
+          }
+          input {
+            key: "x"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_3"
+              }
+            }
+          }
+          rule_type: "HasElementXBeforeElementY"
+        }
+      }
+      default_outcome {
+        dest_state_name: "DragDropNoGroup"
+        feedback {
+          html: "<p>Not quite. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "allowMultipleItemsInSamePosition"
+        value {
+          bool_value: false
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.35</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3/5</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.5</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.46</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "DragDropGroup"
+  value {
+    name: "DragDropGroup"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>Sort the following in descending order, putting equal items in the same position.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    interaction {
+      id: "DragAndDropSortInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "End"
+          feedback {
+            html: "<p>That\'s correct</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              list_of_sets_of_translatable_html_content_ids {
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_0"
+                  }
+                  content_ids {
+                    content_id: "ca_choices_1"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_3"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
+                  }
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualToOrdering"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropGroup"
+          feedback {
+            html: "<p>Seems like you did the ascending order</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              non_negative_int: 1
+            }
+          }
+          input {
+            key: "x"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_1"
+              }
+            }
+          }
+          rule_type: "HasElementXAtPositionY"
+        }
+      }
+      default_outcome {
+        dest_state_name: "DragDropGroup"
+        feedback {
+          html: "<p>Not quite. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "allowMultipleItemsInSamePosition"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>3/5</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.6</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.35</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>0.46</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "Congratulations, you have finished!"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "Continue"
+objective: "Demonstrate core interactions used in the Oppia prototype."
+title: "Prototype Exploration"
+language_code: "en"

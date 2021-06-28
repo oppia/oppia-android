@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.help.faq.FAQListViewModel" />
+  </data>
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/generalNavigationBackground">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/faq_fragment_recycler_view"
+      android:layout_width="560dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="center_horizontal"
+      android:background="@color/white"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingBottom="@dimen/faq_list_padding_bottom"
+      android:scrollbars="none"
+      app:list="@{viewModel.faqItemList}" />
+  </FrameLayout>
+</layout>

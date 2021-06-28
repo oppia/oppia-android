@@ -12,14 +12,6 @@ import org.oppia.android.domain.classify.rules.TextInputRules
 class TextInputRuleModule {
   @Provides
   @IntoMap
-  @StringKey("CaseSensitiveEquals")
-  @TextInputRules
-  internal fun provideTextInputCaseSensitiveEqualsRuleClassifier(
-    classifierProvider: TextInputCaseSensitiveEqualsRuleClassifierProvider
-  ): RuleClassifier = classifierProvider.createRuleClassifier()
-
-  @Provides
-  @IntoMap
   @StringKey("Contains")
   @TextInputRules
   internal fun provideTextInputContainsRuleClassifier(
