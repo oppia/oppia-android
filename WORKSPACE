@@ -146,7 +146,7 @@ maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
     fail_if_repin_required = True,
     fetch_sources = True,
-    maven_install_json = "//:maven_install.json",
+    maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.fabric.io/public",
         "https://maven.google.com",

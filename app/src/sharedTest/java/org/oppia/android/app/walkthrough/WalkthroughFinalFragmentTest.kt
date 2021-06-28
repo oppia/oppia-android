@@ -82,6 +82,8 @@ import javax.inject.Singleton
 )
 class WalkthroughFinalFragmentTest {
 
+  // TODO(#3367): Use AccessibilityTestRule
+
   @Inject
   lateinit var context: Context
 

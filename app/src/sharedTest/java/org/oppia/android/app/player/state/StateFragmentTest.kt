@@ -118,6 +118,8 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -155,6 +157,9 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -524,6 +529,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -542,6 +548,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -562,6 +569,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -581,6 +589,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -610,6 +619,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
     // Note to self: current setup allows the user to drag the view without issues (now that
     // event interception isn't a problem), however the view is going partly offscreen which
@@ -632,6 +642,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4).use {
       startPlayingExploration()
@@ -911,6 +922,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -927,6 +939,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -944,6 +957,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -958,6 +972,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1305,6 +1320,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1328,6 +1344,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1350,7 +1367,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+  fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
 
