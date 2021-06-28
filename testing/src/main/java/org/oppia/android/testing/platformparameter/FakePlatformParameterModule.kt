@@ -2,9 +2,9 @@ package org.oppia.android.testing.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.platformparameter.PlatformParameter
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.PlatformParameter
 
 @Qualifier
 @Target(AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION)

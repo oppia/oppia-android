@@ -6,11 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.PlatformParameter as ParameterValue
 import org.oppia.android.testing.platformparameter.FakePlatformParameterModule
 import org.oppia.android.testing.platformparameter.FakePlatformParameterSingleton
 import org.oppia.android.testing.platformparameter.TEST_PARAM_DEFAULT_VALUE
@@ -20,6 +17,9 @@ import org.oppia.android.testing.platformparameter.TestParam
 import org.oppia.android.util.platformparameter.PlatformParameter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)

@@ -8,13 +8,13 @@ package org.oppia.android.util.platformparameter
 interface PlatformParameter<T> {
   val value: T
 
-  companion object{
+  companion object {
     /**
      *  Creates a Platform Parameter Implementation containing the default value for a particular
      *  Platform Parameter
      *  */
-    fun <T> createDefaultParameter(defaultValue : T): PlatformParameter<T> {
-      return object : PlatformParameter<T>{
+    fun <T> createDefaultParameter(defaultValue: T): PlatformParameter<T> {
+      return object : PlatformParameter<T> {
         override val value: T
           get() = defaultValue
       }

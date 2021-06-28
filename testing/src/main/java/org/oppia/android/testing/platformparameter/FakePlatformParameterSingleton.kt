@@ -1,9 +1,9 @@
 package org.oppia.android.testing.platformparameter
 
+import org.oppia.android.util.platformparameter.PlatformParameter
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.PlatformParameter as ParameterValue
-import org.oppia.android.util.platformparameter.PlatformParameter
 
 /** Fake Singleton class which helps in testing the Platform Parameter Singleton Logic. */
 @Singleton
