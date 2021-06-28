@@ -15,41 +15,32 @@ class AccessibilityLabelCheck {
   companion object {
     @JvmStatic
     fun main(vararg args: String) {
-      // path of the repo to be analyzed.
       val repoPath = args[0] + "/"
 
-      // path of the manifest file relative to the repo.
       val manifesFilePath = args[1]
 
-      // full path of the manifest file.
       val fullPathToManifestFile = repoPath + manifesFilePath
 
-      // class object which is needed to acess the helper methods.
       val accessibilityLabelCheck: AccessibilityLabelCheck = AccessibilityLabelCheck()
 
-      // builder factory which provides the builder to parse the XMl.
       val builderFactory = DocumentBuilderFactory.newInstance()
 
-      // document builder which parses the XMl.
       val docBuilder = builderFactory.newDocumentBuilder()
 
-      // parsed DOM of manifest file.
       val doc = docBuilder.parse(File(fullPathToManifestFile))
       doc.getDocumentElement().normalize()
 
-      // list of all the activity elements.
-      val nodeList = accessibilityLabelCheck.convertNodeListToListOfNode(
+      val completeActivityList = accessibilityLabelCheck.convertNodeListToListOfNode(
         doc.getElementsByTagName("activity")
       )
 
-      // list of activity elements which lacks the label.
-      val matchedNodes = nodeList.filter { node ->
+      val activityListWithoutLabel = completeActivityList.filter { node ->
         accessibilityLabelCheck.checkIfActivityHasMissingLabel(node)
       }
 
-      accessibilityLabelCheck.logFailures(matchedNodes)
+      accessibilityLabelCheck.logFailures(activityListWithoutLabel)
 
-      if (matchedNodes.size != 0) {
+      if (activityListWithoutLabel.size != 0) {
         throw Exception(ScriptResultConstants.ACCESSIBILITY_LABEL_CHECK_FAILED)
       } else {
         println(ScriptResultConstants.ACCESSIBILITY_LABEL_CHECK_PASSED)
@@ -58,21 +49,16 @@ class AccessibilityLabelCheck {
   }
 
   /**
-   * Checks whether a node has a missing label.
+   * Checks whether a activity element has a missing label.
    *
-   * @param node instance of Node
+   * @param activityNode instance of Node
    * @return label is present or not
    */
-  private fun checkIfActivityHasMissingLabel(node: Node): Boolean {
-    val attributesList = node.getAttributes()
+  private fun checkIfActivityHasMissingLabel(activityNode: Node): Boolean {
+    val attributesList = activityNode.getAttributes()
     val activityPath = attributesList.getNamedItem("android:name").getNodeValue()
-    if (
-      activityPath !in ExemptionsList.ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST &&
+    return activityPath !in ExemptionsList.ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST &&
       attributesList.getNamedItem("android:label") == null
-    ) {
-      return true
-    }
-    return false
   }
 
   /**
@@ -83,13 +69,9 @@ class AccessibilityLabelCheck {
    * @return a list of nodes
    */
   private fun convertNodeListToListOfNode(nodeList: NodeList): List<Node> {
-    return IntStream.range(
-      0, nodeList.getLength()
-    ).mapToObj(
-      nodeList::item
-    ).collect(
-      Collectors.toList()
-    )
+    return IntStream.range(0, nodeList.getLength())
+      .mapToObj(nodeList::item)
+      .collect(Collectors.toList())
   }
 
   /**
