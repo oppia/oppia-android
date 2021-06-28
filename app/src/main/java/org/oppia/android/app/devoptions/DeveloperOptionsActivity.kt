@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity : InjectableAppCompatActivity() {
@@ -20,7 +20,7 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       return intent
     }
   }
