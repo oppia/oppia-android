@@ -159,7 +159,7 @@ fun parseArtifactName(artifactName: String): String {
 }
 
 fun runBazelQueryCommand(command: String) {
-  val rootDirectory = File("home/prayutsu/openource/oppia-android").absoluteFile
+  val rootDirectory = File("home/prayutsu/openource/oppia-android/").absoluteFile
   val bazelClient = BazelClient(rootDirectory)
   bazelClient.executeBazelCommand(
     "query",
@@ -261,8 +261,8 @@ private fun getLicenseLinksfromPOM() {
       artifactVersion.append(artifactName[lastIndex])
       lastIndex--
     }
-    var backupLicenseNamesList = mutableListOf<String>()
-    var backupLicenseLinksList = mutableListOf<String>()
+    var backupLicenseNames = mutableListOf<String>()
+    var backupLicenseLinks = mutableListOf<String>()
     try {
       val pomfile = URL(pomFileUrl).openStream().bufferedReader().readText()
       val pomText = pomfile
@@ -307,8 +307,8 @@ private fun getLicenseLinksfromPOM() {
                 url.append(pomText[cursor2])
                 ++cursor2
               }
-              backupLicenseNamesList.add(urlName.toString())
-              backupLicenseLinksList.add(url.toString())
+              backupLicenseNames.add(urlName.toString())
+              backupLicenseLinks.add(url.toString())
               linkset.add(url.toString())
             } else if (pomText.substring(cursor2, cursor2 + 12) == licenseCloseTag) {
               break
@@ -328,7 +328,7 @@ private fun getLicenseLinksfromPOM() {
       e.printStackTrace()
       exitProcess(1)
     }
-    if (backupLicenseNamesList.isEmpty()) {
+    if (backupLicenseNames.isEmpty()) {
       ++countDepsWithoutLicenseLinks
       nolicenseSet.add(it.coord)
       // Look for the license link in provide_licenses.json
@@ -365,8 +365,8 @@ private fun getLicenseLinksfromPOM() {
           println("***********")
         }
         if (licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
-          backupLicenseNamesList = licenseNames
-          backupLicenseLinksList = licenseLinks
+          backupLicenseNames = licenseNames
+          backupLicenseLinks = licenseLinks
         }
       } else {
         println("***********")
@@ -390,8 +390,8 @@ private fun getLicenseLinksfromPOM() {
       mavenDependencyItemIndex,
       it.coord,
       artifactVersion.toString(),
-      backupLicenseNamesList,
-      backupLicenseLinksList
+      backupLicenseNames,
+      backupLicenseLinks
     )
     mavenDepsList.add(dep)
     ++mavenDependencyItemIndex

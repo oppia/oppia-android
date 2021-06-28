@@ -72,7 +72,7 @@ kt_jvm_library(
 
 kt_jvm_binary(
     name = "generate_maven_dependencies_list",
-    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesList$Companion",
+    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesListKt",
     runtime_deps = [":maven_deps_list"],
 )
 
