@@ -29,6 +29,7 @@
 
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
+      android:label="@string/administrator_controls_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
@@ -48,8 +49,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.HelpActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/help_activity_title" />
+      android:label="@string/help_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -82,9 +83,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
+      android:label="@string/reading_text_size_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
+      android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
@@ -117,9 +120,12 @@
       android:name=".app.profileprogress.ProfileProgressActivity"
       android:label="@string/profile_progress_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.settings.profile.ProfileEditActivity" />
+    <activity
+      android:name=".app.settings.profile.ProfileEditActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
+      android:label="@string/profile_list_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
@@ -179,14 +185,19 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/revision_card_activity_title" />
+      android:label="@string/revision_card_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topic.TopicActivity"
       android:label="@string/topic_page"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.LessonThumbnailImageViewTestActivity" />
+    <activity
+      android:name=".app.devoptions.DeveloperOptionsActivity"
+      android:label="@string/developer_options_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider

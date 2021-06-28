@@ -5,7 +5,6 @@ buildscript {
   ext.fragment_version = '1.2.0-rc01'
   repositories {
     google()
-    jcenter()
     gradlePluginPortal()
   }
   dependencies {
@@ -22,7 +21,8 @@ buildscript {
 allprojects {
   repositories {
     google()
-    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
   }
 }
 

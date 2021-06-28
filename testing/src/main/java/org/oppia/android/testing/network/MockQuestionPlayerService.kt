@@ -2,7 +2,7 @@ package org.oppia.android.testing.network
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import org.oppia.android.data.backends.gae.NetworkInterceptor
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.QuestionPlayerService
 import org.oppia.android.data.backends.gae.model.GaeQuestionPlayer
@@ -28,7 +28,7 @@ class MockQuestionPlayerService(private val delegate: BehaviorDelegate<QuestionP
    * @return GaeQuestionPlayer: GaeQuestionPlayer with mock data
    */
   private fun createMockGaeQuestionPlayer(): GaeQuestionPlayer {
-    val networkInterceptor = NetworkInterceptor()
+    val networkInterceptor = JsonPrefixNetworkInterceptor()
     var questionPlayerResponseWithXssiPrefix =
       NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("question_player.json")
 

@@ -18,8 +18,8 @@ import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**
@@ -97,7 +97,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
-            viewModel.htmlContent.htmlList.size > 1
+            viewModel.htmlContent.contentIdsList.size > 1
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
             isAccessibilityEnabled
           viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)

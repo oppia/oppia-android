@@ -1,19 +1,24 @@
 package org.oppia.android.data.backends.gae.api
 
+import android.app.Application
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import okhttp3.OkHttpClient
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockQuestionPlayerService
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
-import retrofit2.mock.NetworkBehavior
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Test for [QuestionPlayerService] retrofit instance using [MockQuestionPlayerService]
@@ -21,24 +26,13 @@ import retrofit2.mock.NetworkBehavior
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class QuestionPlayerServiceTest {
-  private lateinit var mockRetrofit: MockRetrofit
-  private lateinit var retrofit: Retrofit
+
+  @Inject
+  lateinit var mockRetrofit: MockRetrofit
 
   @Before
   fun setUp() {
-    val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
-
-    retrofit = retrofit2.Retrofit.Builder()
-      .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
-      .build()
-
-    val behavior = NetworkBehavior.create()
-    mockRetrofit = MockRetrofit.Builder(retrofit)
-      .networkBehavior(behavior)
-      .build()
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -56,5 +50,36 @@ class QuestionPlayerServiceTest {
 
     assertThat(questionPlayerResponse.isSuccessful).isTrue()
     assertThat(questionPlayerResponse.body()!!.questions!!.size).isEqualTo(1)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerQuestionPlayerServiceTest_TestApplicationComponent
+      .builder()
+      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(modules = [TestModule::class, NetworkModule::class, RetrofitTestModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(test: QuestionPlayerServiceTest)
   }
 }

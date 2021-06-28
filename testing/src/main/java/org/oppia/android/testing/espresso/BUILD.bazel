@@ -1,0 +1,60 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for common Espresso matchers & other test utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "edit_text_input_action",
+    testonly = True,
+    srcs = [
+        "EditTextInputAction.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
+kt_android_library(
+    name = "generic_view_matchers",
+    testonly = True,
+    srcs = [
+        "GenericViewMatchers.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
+kt_android_library(
+    name = "konfetti_view_matcher",
+    testonly = True,
+    srcs = [
+        "KonfettiViewMatcher.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:nl_dionsegijn_konfetti",
+    ],
+)
+
+kt_android_library(
+    name = "image_view_matcher",
+    testonly = True,
+    srcs = [
+        "ImageViewMatcher.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
+dagger_rules()

@@ -23,6 +23,10 @@ message InteractionObject {
     ImageWithRegions image_with_regions = 10;
     ClickOnImage click_on_image = 11;
     RatioExpression ratio_expression = 12;
+    TranslatableSetOfNormalizedString translatable_set_of_normalized_string = 13;
+    TranslatableHtmlContentId translatable_html_content_id = 14;
+    SetOfTranslatableHtmlContentIds set_of_translatable_html_content_ids = 15;
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 16;
   }
 }
 
@@ -111,4 +115,28 @@ message ImageWithRegions {
 message ClickOnImage {
   Point2d click_position = 1;
   repeated string clicked_regions = 2;
+}
+
+// Corresponds to a single string value as designated by a content ID. The value for this
+// translatable content will be present in the written translations structure of the containing
+// State.
+message TranslatableHtmlContentId {
+  string content_id = 1;
+}
+
+// Corresponds to a set of TranslatableHtmlContentIds.
+message SetOfTranslatableHtmlContentIds {
+  repeated TranslatableHtmlContentId content_ids = 1;
+}
+
+// Corresponds to a list of SetOfTranslatableHtmlContentIds.
+message ListOfSetsOfTranslatableHtmlContentIds {
+  repeated SetOfTranslatableHtmlContentIds content_id_lists = 1;
+}
+
+// Corresponds to a set of normalized strings which are described in this structure, but which have
+// replacement translations findable in the written translations structure of the containing State.
+message TranslatableSetOfNormalizedString {
+  string content_id = 1;
+  repeated string normalized_strings = 2;
 }

@@ -45,6 +45,7 @@
           android:focusableInTouchMode="true"
           android:fontFamily="sans-serif"
           android:marqueeRepeatLimit="1"
+          android:minHeight="48dp"
           android:requiresFadingEdge="horizontal"
           android:scrollHorizontally="true"
           android:singleLine="true"

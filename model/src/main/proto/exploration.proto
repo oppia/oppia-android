@@ -26,6 +26,7 @@ message Exploration {
   bool correctness_feedback_enabled = 7;
   string title = 8;
   string language_code = 9;
+  int32 version = 10;
 }
 
 // Structure for a param change.
@@ -81,7 +82,7 @@ message Interaction {
   string id = 1;
   repeated AnswerGroup answer_groups = 2;
   Solution solution = 3;
-  repeated AnswerGroup confirmed_unclassified_answers = 4;
+  reserved 4;
   repeated Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
@@ -113,7 +114,13 @@ message CustomSchemaValue {
     ImageWithRegions image_with_regions = 1;
     SubtitledHtml subtitled_html = 2;
     SubtitledUnicode subtitled_unicode = 3;
+    SchemaObjectMap schema_object_map = 4;
   }
+}
+
+// Structure for a map of schema objects
+message SchemaObjectMap {
+  map<string, SchemaObject> schema_object_map = 1;
 }
 
 // Structure for a single answer group

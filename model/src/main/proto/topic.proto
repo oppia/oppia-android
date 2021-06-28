@@ -63,12 +63,12 @@ message ConceptCard {
   // A list of worked examples to present to the learner.
   repeated SubtitledHtml worked_example = 4;
 
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that has corresponding
-  // recorded audio to play.
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that
+  // has corresponding recorded audio to play.
   map<string, VoiceoverMapping> recorded_voiceover = 5;
 
-  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card that has corresponding
-  // translations.
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card
+  // that has corresponding translations.
   map<string, TranslationMapping> written_translation = 6;
 }
 
@@ -98,7 +98,8 @@ message ChapterSummary {
   // Summary of this chapter.
   string summary = 3;
 
-  // Indicates the playable state of the current chapter, including whether it's already been completed.
+  // Indicates the playable state of the current chapter, including whether it's already been
+  // completed.
   ChapterPlayState chapter_play_state = 4;
 
   // The thumbnail corresponding to this chapter.
@@ -173,8 +174,9 @@ message OngoingStoryList {
   repeated PromotedStory older_story = 2;
 }
 
-// The summary of a story that should be promoted, either because it's been started and not yet completed by the player,
-// or because they have completed all other lessons and may find this one interesting.
+// The summary of a story that should be promoted, either because it's been started and not yet
+// completed by the player, or because they have completed all other lessons and may find this one
+// interesting.
 message PromotedStory {
   // The ID of the story being promoted.
   string story_id = 1;
@@ -194,8 +196,8 @@ message PromotedStory {
   // The exploration id next chapter to complete.
   string exploration_id = 6;
 
-  // The number of lessons the player has completed in this story. This may be 0 if the promoted story is promoted for
-  // reasons other than to complete it (e.g. it's recommended).
+  // The number of lessons the player has completed in this story. This may be 0 if the promoted
+  // story is promoted for reasons other than to complete it (e.g. it's recommended).
   int32 completed_chapter_count = 7;
 
   // The total number of lessons this story contains.
@@ -238,7 +240,8 @@ enum ChapterPlayState {
   // The chapter has not yet been started, but can be started by the player.
   NOT_STARTED = 1;
 
-  // The chapter has not yet been started, and cannot be started since the player is missing prerequisites.
+  // The chapter has not yet been started, and cannot be started since the player is missing
+  // prerequisites.
   NOT_PLAYABLE_MISSING_PREREQUISITES = 2;
 
   // The chapter has been started but not completed by the player.
@@ -246,6 +249,14 @@ enum ChapterPlayState {
 
   // The chapter has been completed by the player.
   COMPLETED = 4;
+
+  // The chapter has been started but not completed by the player and the progress made in the
+  // chapter is saved.
+  IN_PROGRESS_SAVED = 5;
+
+  // The chapter has been started but not completed by the player and the progress made in the
+  // chapter is not saved.
+  IN_PROGRESS_NOT_SAVED = 6;
 }
 
 // Top level proto used to store topic progress per-profile.
@@ -273,7 +284,8 @@ message PromotedActivityList {
   }
 }
 
-// Corresponds to the list of stories the player is currently playing across all topics and recommended stories.
+// Corresponds to the list of stories the player is currently playing across all topics and
+// recommended stories.
 message PromotedStoryList {
   // Ongoing stories from within the last 7 days.
   repeated PromotedStory recently_played_story   = 1;
@@ -360,13 +372,102 @@ message RevisionCard {
   string subtopic_title = 1;
 
   // The core explanation of the subtopic being revised.
-  SubtitledHtml page_contents = 3;
+  SubtitledHtml page_contents = 2;
 
-  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that has corresponding
-  // recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceover = 5;
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that
+  // has corresponding recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
 
-  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card that has corresponding
-  // translations.
-  map<string, TranslationMapping> written_translation = 6;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card
+  // that has corresponding translations.
+  map<string, TranslationMapping> written_translation = 4;
+}
+
+
+// Corresponds to a local file cataloging all topics available to load.
+message TopicIdList {
+  // The list of IDs corresponding to topics available on the local filesystem.
+  repeated string topic_ids = 1;
+}
+
+// Corresponds to a local file cataloging all concept cards available to load.
+message ConceptCardList {
+  // The list of concept cards stored on the local filesystem.
+  repeated ConceptCard concept_cards = 1;
+}
+
+// Corresponds to a record of a topic available to be loaded from the local filesystem. This, along
+// with other local assets, can be used to constitute a Topic message.
+message TopicRecord {
+  // The topic's ID.
+  string id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The topic's description.
+  string description = 3;
+
+  // The list of canonical story IDs that can be used to load stories from the local filesystem.
+  repeated string canonical_story_ids = 4;
+
+  // The list of subtopic IDs that can be used to load subtopics from the local filesystem.
+  repeated int32 subtopic_ids = 5;
+
+  // Whether this topic is published/available to be played.
+  bool is_published = 6;
+
+  // The thumbnail corresponding to this topic.
+  LessonThumbnail topic_thumbnail = 7;
+}
+
+// Corresponds to a record of a story available to be loaded from the local filesystem. This, along
+// with other local assets, can be used to constitute a StorySummary message.
+message StoryRecord {
+  string story_id = 1;
+  string story_name = 2;
+  LessonThumbnail story_thumbnail = 3;
+  repeated ChapterRecord chapters = 4;
+}
+
+// Corresponds to a record of a chapter & exploration available to be loaded from the local
+// filesystem. This, along with other local assets, can be used to constitute a ChapterSummary
+// message.
+message ChapterRecord {
+  // The ID of the exploration corresponding to this chapter.
+  string exploration_id = 1;
+
+  // The thumbnail of the chapter.
+  LessonThumbnail chapter_thumbnail = 2;
+
+  // The title of the chapter.
+  string title = 3;
+
+  // The outline/description that is used to provide an initial summary of the chapter's contents.
+  string outline = 4;
+}
+
+// Corresponds to a record of a subtopic/revision card available to be loaded from the local
+// filesystem. This, along with other local assets, can be used to constitute both a Subtopic and
+// RevisionCard message.
+message SubtopicRecord {
+  // The title corresponding to the subtopic.
+  string subtopic_title = 1;
+
+  // The core explanation of the subtopic being revised.
+  SubtitledHtml page_contents = 2;
+
+  // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that
+  // has corresponding recorded audio to play.
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card
+  // that has corresponding translations.
+  map<string, TranslationMapping> written_translation = 4;
+
+  // The list of skill ids associated with the subtopic.
+  repeated string skill_ids = 5;
+
+  // The thumbnail corresponding to this subtopic.
+  LessonThumbnail subtopic_thumbnail = 6;
 }

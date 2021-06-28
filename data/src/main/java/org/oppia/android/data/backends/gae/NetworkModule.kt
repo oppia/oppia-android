@@ -8,7 +8,6 @@ import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /**
@@ -19,9 +18,6 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-  @Qualifier
-  private annotation class OppiaRetrofit
-
   /**
    * Provides the Retrofit object.
    * @return the Retrofit object
@@ -29,14 +25,19 @@ class NetworkModule {
   @OppiaRetrofit
   @Provides
   @Singleton
-  fun provideRetrofitInstance(): Retrofit {
+  fun provideRetrofitInstance(
+    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
+    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+  ): Retrofit {
     val client = OkHttpClient.Builder()
-    client.addInterceptor(NetworkInterceptor())
+      .addInterceptor(jsonPrefixNetworkInterceptor)
+      .addInterceptor(remoteAuthNetworkInterceptor)
+      .build()
 
     return Retrofit.Builder()
       .baseUrl(NetworkSettings.getBaseUrl())
       .addConverterFactory(MoshiConverterFactory.create())
-      .client(client.build())
+      .client(client)
       .build()
   }
 
@@ -68,4 +69,10 @@ class NetworkModule {
   fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
     return retrofit.create(FeedbackReportingService::class.java)
   }
+
+  // Provides the API key to use in authenticating remote messages sent or received. This will be
+  // replaced with a secret key in production.
+  @Provides
+  @NetworkApiKey
+  fun provideNetworkApiKey(): String = ""
 }

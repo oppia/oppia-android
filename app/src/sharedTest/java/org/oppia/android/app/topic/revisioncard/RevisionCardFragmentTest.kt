@@ -2,26 +2,39 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.style.ClickableSpan
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.Matchers.not
+import dagger.Module
+import dagger.Provides
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -34,10 +47,10 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.parser.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -60,18 +73,23 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -85,6 +103,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   private val internalProfileId = 1
 
@@ -94,7 +114,6 @@ class RevisionCardFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    context = ApplicationProvider.getApplicationContext()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
@@ -170,7 +189,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+        .check(matches(withText("What is a Fraction?")))
     }
   }
 
@@ -185,21 +204,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            withText(
-              "Description of subtopic is here."
-            )
-          )
-        )
-      onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            not(
-              containsRichText()
-            )
-          )
-        )
+        .check(matches(withText(containsString("Description of subtopic is here."))))
     }
   }
 
@@ -214,13 +219,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       onView(withId(R.id.revision_card_return_button))
-        .check(
-          matches(
-            withText(
-              R.string.return_to_topic
-            )
-          )
-        )
+        .check(matches(withText(R.string.return_to_topic)))
     }
   }
 
@@ -236,7 +235,7 @@ class RevisionCardFragmentTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.revision_card_toolbar_title))
-        .check(matches(withText("What is Fraction?")))
+        .check(matches(withText("What is a Fraction?")))
     }
   }
 
@@ -252,21 +251,7 @@ class RevisionCardFragmentTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            withText(
-              "Description of subtopic is here."
-            )
-          )
-        )
-      onView(withId(R.id.revision_card_explanation_text))
-        .check(
-          matches(
-            not(
-              containsRichText()
-            )
-          )
-        )
+        .check(matches(withText(containsString("Description of subtopic is here."))))
     }
   }
 
@@ -282,13 +267,77 @@ class RevisionCardFragmentTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.revision_card_return_button))
-        .check(
-          matches(
-            withText(
-              R.string.return_to_topic
-            )
-          )
-        )
+        .check(matches(withText(R.string.return_to_topic)))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_showsLinkTextForConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(withText(containsString("Learn more")))
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_landscape_showsLinkTextForConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.revision_card_explanation_text)).check(
+        matches(withText(containsString("Learn more")))
+      )
+    }
+  }
+
+  @Test
+  fun testRevisionCard_clickConceptCardLinkText_opensConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Given a picture divided into unequal parts"))))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_landscape_clickConceptCardLinkText_opensConceptCard() {
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        subtopicId = 2
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Given a picture divided into unequal parts"))))
     }
   }
 
@@ -297,11 +346,72 @@ class RevisionCardFragmentTest {
     Intents.release()
   }
 
+  /** See the version in StateFragmentTest for documentation details. */
+  @Suppress("SameParameterValue")
+  private fun openClickableSpan(text: String): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String = "openClickableSpan"
+
+      override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
+
+      override fun perform(uiController: UiController?, view: View?) {
+        // The view shouldn't be null if the constraints are being met.
+        (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
+      }
+    }
+  }
+
+  /** See the version in StateFragmentTest for documentation details. */
+  private fun hasClickableSpanWithText(text: String): Matcher<View> {
+    return object : TypeSafeMatcher<View>(TextView::class.java) {
+      override fun describeTo(description: Description?) {
+        description?.appendText("has ClickableSpan with text")?.appendValue(text)
+      }
+
+      override fun matchesSafely(item: View?): Boolean {
+        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
+      }
+    }
+  }
+
+  private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
+    val viewText = text
+    return (viewText as Spannable).getSpans(
+      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
+    ).map {
+      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+    }
+  }
+
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
+    text: String
+  ): ClickableSpan? = find { text in it.first }?.second
+
+  @Module
+  class TestModule {
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -309,12 +419,12 @@ class RevisionCardFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

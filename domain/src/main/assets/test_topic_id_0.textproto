@@ -1,0 +1,7 @@
+id: "test_topic_id_0"
+name: "First Test Topic"
+description: "A topic investigating the interesting aspects of the Oppia Android app."
+canonical_story_ids: "test_story_id_0"
+is_published: true
+topic_thumbnail {
+}

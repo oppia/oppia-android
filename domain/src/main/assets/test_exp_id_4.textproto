@@ -1,0 +1,292 @@
+id: "test_exp_id_4"
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "<p>This is the end&nbsp;</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "DragDropSortInput"
+  value {
+    name: "DragDropSortInput"
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "<p>Rearrange the following sentence in the correct order:</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "DragAndDropSortInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "End"
+          feedback {
+            html: "<p>Yay.This is correct</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              list_of_sets_of_translatable_html_content_ids {
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_0"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_1"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_3"
+                  }
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualToOrdering"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropSortInput"
+          feedback {
+            html: "<p>This doesn\'t seems right</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              non_negative_int: 4
+            }
+          }
+          input {
+            key: "x"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_0"
+              }
+            }
+          }
+          rule_type: "HasElementXAtPositionY"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropSortInput"
+          feedback {
+            html: "<p>Look likes you inverted the order</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "y"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_3"
+              }
+            }
+          }
+          input {
+            key: "x"
+            value {
+              translatable_html_content_id {
+                content_id: "ca_choices_0"
+              }
+            }
+          }
+          rule_type: "HasElementXBeforeElementY"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "DragDropSortInput"
+          feedback {
+            html: "<p>Sentence does not make any sense</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              list_of_sets_of_translatable_html_content_ids {
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_0"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_1"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_2"
+                  }
+                }
+                content_id_lists {
+                  content_ids {
+                    content_id: "ca_choices_3"
+                  }
+                }
+              }
+            }
+          }
+          rule_type: "IsEqualToOrderingWithOneItemAtIncorrectPosition"
+        }
+      }
+      default_outcome {
+        dest_state_name: "DragDropSortInput"
+        feedback {
+          html: "<p>This is incorrect please try again</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "allowMultipleItemsInSamePosition"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "choices"
+        value {
+          schema_object_list {
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>I bought</p>"
+                  content_id: "ca_choices_0"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>a camera at the store</p>"
+                  content_id: "ca_choices_1"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>yesterday</p>"
+                  content_id: "ca_choices_2"
+                }
+              }
+            }
+            schema_object {
+              custom_schema_value {
+                subtitled_html {
+                  html: "<p>to photograph the parade.</p>"
+                  content_id: "ca_choices_3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "DragDropSortInput"
+objective: "learn how to arrange the sentence"
+title: "Drag and Drop Test Exploration"
+language_code: "en"

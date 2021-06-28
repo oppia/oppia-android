@@ -14,3 +14,14 @@ kt_android_library(
         "//third_party:com_google_protobuf_protobuf-lite",
     ],
 )
+
+kt_android_library(
+    name = "context_extensions",
+    srcs = [
+        "ContextExtensions.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-lite",
+    ],
+)

@@ -19,7 +19,7 @@ import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**
@@ -100,7 +100,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         entityId,
         false
       ).parseOppiaHtml(
-        viewModel.htmlContent,
+        viewModel.htmlContent.html,
         binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
@@ -132,7 +132,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       htmlParserFactory.create(
         resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
       ).parseOppiaHtml(
-        viewModel.htmlContent, binding.multipleChoiceContentTextView
+        viewModel.htmlContent.html, binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
   }

@@ -77,7 +77,7 @@
         android:overScrollMode="never"
         app:itemDecorator="@{@drawable/divider}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:list="@{viewModel.htmlContent.htmlList}"
+        app:list="@{viewModel.computeStringList().htmlList}"
         tools:itemCount="3"
         tools:listitem="@layout/drag_drop_single_item" />
     </LinearLayout>

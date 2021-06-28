@@ -7,11 +7,11 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val INTERNAL_PROFILE_ID = 0
@@ -25,7 +25,7 @@ private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
 class ExplorationTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -45,14 +45,14 @@ class ExplorationTestActivityPresenter @Inject constructor(
       activity,
       Observer<AsyncResult<Any?>> { result ->
         when {
-          result.isPending() -> logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
-          result.isFailure() -> logger.e(
+          result.isPending() -> oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
             TAG_EXPLORATION_TEST_ACTIVITY,
             "Failed to load exploration",
             result.getErrorOrNull()!!
           )
           else -> {
-            logger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
+            oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               INTERNAL_PROFILE_ID,
               TOPIC_ID,

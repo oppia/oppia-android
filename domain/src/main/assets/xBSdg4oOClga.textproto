@@ -1,0 +1,19 @@
+story_id: "xBSdg4oOClga"
+story_name: "Ratios: Part 2"
+story_thumbnail {
+  background_color_rgb: 11792856
+}
+chapters {
+  exploration_id: "k2bQ7z5XHNbK"
+  chapter_thumbnail {
+    background_color_rgb: 16158584
+  }
+  title: "Equivalent Ratios"
+}
+chapters {
+  exploration_id: "tIoSb3HZFN6e"
+  chapter_thumbnail {
+    background_color_rgb: 16158584
+  }
+  title: "Writing Ratios in Simplest Form"
+}

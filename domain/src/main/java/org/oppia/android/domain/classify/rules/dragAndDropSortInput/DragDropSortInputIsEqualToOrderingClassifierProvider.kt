@@ -1,46 +1,47 @@
 package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
-import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.getContentIdSet
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether two objects of [ListOfSetsOfHtmlStrings] are equal by checking their every list of both objects at every index
+ * Provider for a classifier that determines whether two objects of
+ * [ListOfSetsOfTranslatableHtmlContentIds] are equal by checking their every list of both objects
+ * at every index.
  *
  * https://github.com/oppia/oppia/blob/7d15d813ae6577367a5884af4beb0d6995f19251/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L65
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfHtmlStrings> {
+) : RuleClassifierProvider,
+  GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfTranslatableHtmlContentIds> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
-      "x",
-      this
+      expectedObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+      inputParameterName = "x",
+      matcher = this
     )
   }
 
-  override fun matches(answer: ListOfSetsOfHtmlStrings, input: ListOfSetsOfHtmlStrings): Boolean {
-    return answer.setOfHtmlStringsCount == input.setOfHtmlStringsCount && (
-      areListOfSetsOfHtmlStringsEqual(
-        answer, input
-      )
-      )
-  }
+  override fun matches(
+    answer: ListOfSetsOfTranslatableHtmlContentIds,
+    input: ListOfSetsOfTranslatableHtmlContentIds
+  ): Boolean = areListOfSetsOfHtmlStringsEqual(answer, input)
 
   /**
-   * This functions checks the equality of two nested lists irrespective of positions of nested list only ordering of first list matters
-   * It returns true if all the list items are equal and are at correct position otherwise false
+   * Returns whether the two specified lists are equal irrespective of the item positions in each
+   * list.
    */
   private fun areListOfSetsOfHtmlStringsEqual(
-    answer: ListOfSetsOfHtmlStrings,
-    input: ListOfSetsOfHtmlStrings
+    answer: ListOfSetsOfTranslatableHtmlContentIds,
+    input: ListOfSetsOfTranslatableHtmlContentIds
   ): Boolean {
     /*
      * For Ex - list1 = [a, b, c] & list2 = [1, 2, 3]
@@ -50,17 +51,18 @@ class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject constructor(
      *          will result in  val a = false && true && false && false && false where && signifies the operator
      *          which is meant to be applied.
      */
-    if (answer.setOfHtmlStringsCount != input.setOfHtmlStringsCount) {
+    if (answer.contentIdListsCount != input.contentIdListsCount) {
       return false
     }
-    val answerStringSets = answer.setOfHtmlStringsList
-    val inputStringSets = input.setOfHtmlStringsList
+    val answerStringSets = answer.contentIdListsList
+    val inputStringSets = input.contentIdListsList
     return (answerStringSets zip inputStringSets).map { (first, second) ->
       areSetsOfHtmlStringsEqual(first, second)
     }.reduce(Boolean::and)
   }
 
-  private fun areSetsOfHtmlStringsEqual(first: StringList, second: StringList): Boolean {
-    return HashSet(first.htmlList) == HashSet(second.htmlList)
-  }
+  private fun areSetsOfHtmlStringsEqual(
+    first: SetOfTranslatableHtmlContentIds,
+    second: SetOfTranslatableHtmlContentIds
+  ): Boolean = first.getContentIdSet() == second.getContentIdSet()
 }

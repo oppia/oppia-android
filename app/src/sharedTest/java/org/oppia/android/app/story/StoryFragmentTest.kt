@@ -66,10 +66,9 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.app.utility.anyOrNull
-import org.oppia.android.app.utility.capture
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -91,9 +90,13 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.oppia.android.domain.topic.TEST_STORY_ID_1
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.mockito.anyOrNull
+import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -106,10 +109,10 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageLoader
-import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.parser.ImageTransformation
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.ImageTransformation
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -120,6 +123,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -168,6 +174,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -307,9 +314,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -335,9 +342,9 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is outline/summary for Second Exploration. It is very long but " +
-              "it has to be fully visible. You wil be learning about oppia app in Second Story. " +
-              "Learn about oppia app via testing in second exploration."
+            "This is the outline/summary for the first exploration of the story. It is very long " +
+              "but it has to be fully visible. You wil be learning about Oppia interactions. " +
+              "There is no second story to follow-up, but there is a second chapter."
           )
         )
       )
@@ -488,6 +495,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -710,8 +718,8 @@ class StoryFragmentTest {
     return StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_1
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0
     )
   }
 
@@ -756,7 +764,7 @@ class StoryFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

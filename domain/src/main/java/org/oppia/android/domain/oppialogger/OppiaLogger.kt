@@ -3,11 +3,13 @@ package org.oppia.android.domain.oppialogger
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
-  private val analyticsController: AnalyticsController
+  private val analyticsController: AnalyticsController,
+  private val consoleLogger: ConsoleLogger
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -25,6 +27,71 @@ class OppiaLogger @Inject constructor(
     eventContext: EventLog.Context?
   ) {
     analyticsController.logClickEvent(timestamp, eventAction, eventContext)
+  }
+
+  /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */
+  fun v(tag: String, msg: String) {
+    consoleLogger.v(tag, msg)
+  }
+
+  /**
+   * Logs a verbose message with the specified tag, message and exception. See [ConsoleLogger.v]
+   * for more context
+   */
+  fun v(tag: String, msg: String, tr: Throwable) {
+    consoleLogger.v(tag, msg, tr)
+  }
+
+  /** Logs a debug message with the specified tag. See [ConsoleLogger.d] for more context */
+  fun d(tag: String, msg: String) {
+    consoleLogger.d(tag, msg)
+  }
+
+  /**
+   * Logs a debug message with the specified tag, message and exception. See [ConsoleLogger.d] for
+   * more context
+   */
+  fun d(tag: String, msg: String, tr: Throwable) {
+    consoleLogger.d(tag, msg, tr)
+  }
+
+  /** Logs an info message with the specified tag. See [ConsoleLogger.i] for more context */
+  fun i(tag: String, msg: String) {
+    consoleLogger.i(tag, msg)
+  }
+
+  /**
+   * Logs an info message with the specified tag, message and exception. See [ConsoleLogger.i] for
+   * more context
+   */
+  fun i(tag: String, msg: String, tr: Throwable) {
+    consoleLogger.i(tag, msg, tr)
+  }
+
+  /** Logs a warn message with the specified tag. See [ConsoleLogger.w] for more context */
+  fun w(tag: String, msg: String) {
+    consoleLogger.w(tag, msg)
+  }
+
+  /**
+   * Logs a warn message with the specified tag, message and exception. See [ConsoleLogger.w] for
+   * more context
+   */
+  fun w(tag: String, msg: String, tr: Throwable) {
+    consoleLogger.w(tag, msg, tr)
+  }
+
+  /** Logs an error message with the specified tag. See [ConsoleLogger.e] for more context */
+  fun e(tag: String, msg: String) {
+    consoleLogger.e(tag, msg)
+  }
+
+  /**
+   * Logs an error message with the specified tag, message and exception. See [ConsoleLogger.e] for
+   * more context
+   */
+  fun e(tag: String, msg: String, tr: Throwable?) {
+    consoleLogger.e(tag, msg, tr)
   }
 
   /** Returns the context of an event related to exploration. */

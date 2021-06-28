@@ -35,6 +35,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -55,6 +56,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -77,6 +79,7 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
@@ -92,9 +95,9 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -117,6 +120,8 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
   qualifiers = "port-xxhdpi"
 )
 class HomeActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -499,8 +504,8 @@ class HomeActivityTest {
    * # Logic for recommendation system
    *
    * We always recommend the next topic that all dependencies are completed for. If a topic with
-   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is already done.
-   * In the same way, finishing test topic 2 means there's nothing else to recommend.
+   * prerequisites is completed out-of-order (e.g. test topic 1 above) then we assume fractions is
+   * already done. In the same way, finishing test topic 2 means there's nothing else to recommend.
    */
   @Test
   fun testHomeActivity_markStory0DonePlayStory1FirstTestTopic_playFractionsTopic_orderIsCorrect() {
@@ -513,7 +518,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story1Exp1(
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -525,23 +530,23 @@ class HomeActivityTest {
         targetViewId = R.id.recently_played_stories_text_view,
         stringToMatch = context.getString(R.string.stories_for_you)
       )
-      scrollToPositionOfPromotedList(position = 1)
+      scrollToPositionOfPromotedList(position = 0)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Second Test Topic"
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Fractions"
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "Ratios and Proportional Reasoning"
       )
     }
   }
@@ -825,7 +830,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "5 Lessons"
+        stringToMatch = "2 Lessons"
       )
     }
   }
@@ -863,7 +868,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "port-mdpi")
+  @Config(qualifiers = "+port-mdpi")
   @Test
   fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -881,7 +886,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "land-mdpi")
+  @Config(qualifiers = "+land-mdpi")
   @Test
   fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -900,7 +905,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -918,7 +923,7 @@ class HomeActivityTest {
 
   // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
   @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
@@ -1122,7 +1127,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "port")
+  @Config(qualifiers = "+port")
   @Test
   fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
     // Only new users will have no progress for any topics.
@@ -1141,7 +1146,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "land")
+  @Config(qualifiers = "+land")
   @Test
   fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
@@ -1161,7 +1166,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
@@ -1176,7 +1181,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
     // Only new users will have no progress for any topics.
@@ -1227,7 +1232,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-port")
+  @Config(qualifiers = "+sw600dp-port")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -1264,7 +1269,7 @@ class HomeActivityTest {
     }
   }
 
-  @Config(qualifiers = "sw600dp-land")
+  @Config(qualifiers = "+sw600dp-land")
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -1449,7 +1454,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

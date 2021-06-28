@@ -45,6 +45,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -282,6 +283,42 @@ class QuestionTrainingControllerTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = questionSeed
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -294,7 +331,7 @@ class QuestionTrainingControllerTest {
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

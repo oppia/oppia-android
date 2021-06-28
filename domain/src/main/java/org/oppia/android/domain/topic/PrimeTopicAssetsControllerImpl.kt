@@ -41,20 +41,20 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.ConceptCardHtmlParserEntityType
-import org.oppia.android.util.parser.DefaultGcsPrefix
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.image.DefaultGcsPrefix
+import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -73,7 +73,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
 @Singleton
 class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val context: Context,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val topicController: TopicController,
   private val jsonAssetRetriever: JsonAssetRetriever,
@@ -120,7 +120,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      allFiles.addAll(topicController.getAssetFileNameList(topicIdJsonArray.optString(i)))
+      allFiles.addAll(topicController.getJsonAssetFileNameList(topicIdJsonArray.optString(i)))
     }
 
     val primeAssetJobs = allFiles.map {
@@ -158,9 +158,9 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
           conceptCardImageUrls +
           revisionCardImageUrls
         ).toSet()
-      logger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
+      oppiaLogger.d("AssetRepo", "Downloading up to ${imageUrls.size} images")
       val startTime = SystemClock.elapsedRealtime()
-      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinarAssetDownloaded)
+      val downloadUrls = imageUrls.filterNot(assetRepository::isRemoteBinaryAssetDownloaded)
       val assetDownloadCount = downloadUrls.size
       primeDownloadStatus.postValue(
         PrimeAssetsStatus(currentDownloadCount.get(), assetDownloadCount)
@@ -171,7 +171,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
             assetRepository.primeRemoteBinaryAsset(url)
           } catch (e: Exception) {
             failedDownloadCount.incrementAndGet()
-            logger.w("AssetRepo", "Failed to download $url because $e")
+            oppiaLogger.w("AssetRepo", "Failed to download $url because $e")
           }
           primeDownloadStatus.postValue(
             PrimeAssetsStatus(
@@ -181,7 +181,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
         }
       }.forEach { it.await() }
       val endTime = SystemClock.elapsedRealtime()
-      logger.d(
+      oppiaLogger.d(
         "AssetRepo",
         "Finished downloading voiceovers and images in ${endTime - startTime}ms"
       )

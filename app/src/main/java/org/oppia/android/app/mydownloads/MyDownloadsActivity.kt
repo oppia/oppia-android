@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivity
 import javax.inject.Inject
 
@@ -18,18 +18,18 @@ class MyDownloadsActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     myDownloadsActivityPresenter.handleOnCreate()
-    internalProfileId = intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
   }
 
   companion object {
     fun createMyDownloadsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, MyDownloadsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 

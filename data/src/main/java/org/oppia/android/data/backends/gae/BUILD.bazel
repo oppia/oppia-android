@@ -7,16 +7,20 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "network_interceptor",
+    name = "network_interceptors",
     srcs = [
-        "NetworkInterceptor.kt",
+        "JsonPrefixNetworkInterceptor.kt",
+        "NetworkApiKey.kt",
+        "RemoteAuthNetworkInterceptor.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":constants",
         ":network_settings",
+        "//model:arguments_java_proto_lite",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 
@@ -36,6 +40,17 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "oppia_retrofit",
+    srcs = [
+        "OppiaRetrofit.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "NetworkModule.kt",
@@ -43,8 +58,9 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
-        ":network_interceptor",
+        ":network_interceptors",
         ":network_settings",
+        ":oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//third_party:com_squareup_retrofit2_converter-moshi",
     ],

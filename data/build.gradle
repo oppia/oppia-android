@@ -98,7 +98,10 @@ dependencies {
   )
   androidTestImplementation('androidx.test:runner:1.2.0',
       'androidx.test.espresso:espresso-core:3.2.0')
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.11.0")
+  kapt(
+      'com.google.dagger:dagger-compiler:2.24',
+      'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
+  )
   kaptTest(
       'com.google.dagger:dagger-compiler:2.24'
   )

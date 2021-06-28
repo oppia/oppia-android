@@ -5,15 +5,69 @@ This library contains the frontend controller and business service logic for the
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
+
+# Source files that have been migrated to their own package-based libraries. Files added to this
+# list will be excluded automatically from the top-level utility library. It is recommended to use
+# globs here to ensure that new files added to migrated packages don't accidentally get included in the
+# top-level module library.
+MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/util/*.kt",
+])
+
+DOMAIN_ASSETS = generate_assets_list_from_text_protos(
+    name = "domain_assets",
+    exploration_file_names = [
+        "test_exp_id_2",
+        "13",
+        "test_exp_id_4",
+        "umPkwp0L1M0-",
+        "MjZzEVOG47_1",
+        "2mzzFVDLuAj8",
+        "5NWuolNcwH6e",
+        "k2bQ7z5XHNbK",
+        "tIoSb3HZFN6e",
+    ],
+    skills_file_names = [
+        "skills",
+    ],
+    story_file_names = [
+        "test_story_id_0",
+        "test_story_id_2",
+        "wANbh4oOClga",
+        "wAMdg4oOClga",
+        "xBSdg4oOClga",
+    ],
+    subtopic_file_names = [
+        "GJ2rLXRKD5hw_1",
+        "GJ2rLXRKD5hw_2",
+        "GJ2rLXRKD5hw_3",
+        "GJ2rLXRKD5hw_4",
+        "omzF4oqgeTXd_1",
+    ],
+    topic_file_names = [
+        "test_topic_id_0",
+        "test_topic_id_1",
+        "test_topic_id_2",
+        "GJ2rLXRKD5hw",
+        "omzF4oqgeTXd",
+    ],
+    topic_list_file_names = [
+        "topics",
+    ],
+)
 
 kt_android_library(
     name = "domain",
     srcs = glob(
         ["src/main/java/org/oppia/android/domain/**/*.kt"],
-        exclude = ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
+        exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
     ),
-    assets = glob(["src/main/assets/**"]),
+    assets = glob(
+        ["src/main/assets/**"],
+        exclude = ["src/main/assets/**/*.textproto"],
+    ) + DOMAIN_ASSETS,
     assets_dir = "src/main/assets/",
     custom_package = "org.oppia.android.domain",
     manifest = "src/main/AndroidManifest.xml",
@@ -21,10 +75,17 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
         "//model:onboarding_java_proto_lite",
         "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
     ],
@@ -48,7 +109,6 @@ kt_android_library(
         "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
     ],
     deps = [
-        "//model",
         "//model:question_java_proto_lite",
     ],
 )
@@ -59,8 +119,8 @@ TEST_DEPS = [
     ":domain",
     ":interaction_object_test_builder",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-    "//model",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -72,6 +132,7 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
