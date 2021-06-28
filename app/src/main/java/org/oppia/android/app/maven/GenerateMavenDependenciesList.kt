@@ -1,5 +1,6 @@
 package org.oppia.android.app.maven
 
+
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.app.maven.backup.BackupDependency
@@ -10,14 +11,16 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
-const val licensesTag = "<licenses>"
-const val licenseCloseTag = "</licenses>"
-const val licenseTag = "<license>"
-const val nameTag = "<name>"
-const val urlTag = "<url>"
-const val bazelQueryCommand =
+private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
+private const val licensesTag = "<licenses>"
+private const val licenseCloseTag = "</licenses>"
+private const val licenseTag = "<license>"
+private const val nameTag = "<name>"
+private const val urlTag = "<url>"
+private const val bazelQueryCommand =
   "bazel --output_base=/tmp/diff query 'deps(deps(//:oppia) " +
     "intersect //third_party/...) intersect @maven//...'"
 
@@ -38,6 +41,7 @@ class GenerateMavenDependenciesList {
 
     @JvmStatic
     fun main(args: Array<String>) {
+      if(args.size > 0) print(args[0])
 //      runMavenRePinCommand()
       runBazelQueryCommand(bazelQueryCommand)
       findBackUpForLicenseLinks()
@@ -79,7 +83,7 @@ class GenerateMavenDependenciesList {
     fun runMavenRePinCommand() {
       val processBuilder = ProcessBuilder()
       val repinCommand = "REPIN=1 bazel run @unpinned_maven//:pin"
-      processBuilder.command("bash", "-c", repinCommand)
+      processBuilder.command(repinCommand)
       try {
         val process = processBuilder.start()
         val exitValue = process.waitFor()
@@ -161,36 +165,43 @@ class GenerateMavenDependenciesList {
     }
 
     fun runBazelQueryCommand(command: String) {
-      val processBuilder = ProcessBuilder()
-      processBuilder.command("bash", "-c", command)
-      try {
-        val process = processBuilder.start()
-        val reader = BufferedReader(InputStreamReader(process.inputStream))
-        var line: String?
-        while (true) {
-          line = reader.readLine()
-          if (line == null) break
-          val endindex = line.toString().length
-          bazelQueryDepsNames.add(line.toString().substring(9, endindex))
-        }
-        bazelQueryDepsNames.sort()
-
-        val exitValue = process.waitFor()
-        if (exitValue != 0) {
-          System.err.println(
-            "There was some unexpected error while " +
-              "running the bazel Query command."
-          )
-          throw Exception("Unexpected error.")
-        }
-      } catch (e: Exception) {
-        e.printStackTrace()
-      }
+      val rootDirectory = File("home/prayutsu/openource/oppia-android").absoluteFile
+      val bazelClient = BazelClient(rootDirectory)
+      bazelClient.executeBazelCommand(
+        "query",
+        "'deps(deps(//:oppia) " +
+        "intersect //third_party/...) intersect @maven//...'"
+      )
+//      val processBuilder = ProcessBuilder()
+//      processBuilder.command("bash", "-c", command)
+//      try {
+//        val process = processBuilder.start()
+//        val reader = BufferedReader(InputStreamReader(process.inputStream))
+//        var line: String?
+//        while (true) {
+//          line = reader.readLine()
+//          if (line == null) break
+//          val endindex = line.toString().length
+//          bazelQueryDepsNames.add(line.toString().substring(9, endindex))
+//        }
+//        bazelQueryDepsNames.sort()
+//
+//        val exitValue = process.waitFor(WAIT_PROCESS_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+//        if (exitValue) {
+//          System.err.println(
+//            "There was some unexpected error while " +
+//              "running the bazel Query command."
+//          )
+//          throw Exception("Unexpected error.")
+//        }
+//      } catch (e: Exception) {
+//        e.printStackTrace()
+//      }
     }
 
     private fun readMavenInstall() {
       val HOME = "/home/prayutsu/opensource/oppia-android/"
-      val mavenInstallJson = File("/home/prayutsu/opensource/oppia-android/maven_install.json")
+      val mavenInstallJson = File("/home/prayutsu/opensource/oppia-android/third_party/maven_install.json")
       val mavenInstallJsonText =
         mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
 
@@ -393,3 +404,73 @@ class GenerateMavenDependenciesList {
     }
   }
 }
+
+private class BazelClient(private val rootDirectory: File) {
+
+  fun executeBazelCommand(
+    vararg arguments: String,
+    allowPartialFailures: Boolean = false
+  ): List<String> {
+    val result =
+      executeCommand(rootDirectory, command = "bazel", *arguments, includeErrorOutput = false)
+    // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
+    // 3 is expected for queries since it indicates that some of the arguments don't correspond to
+    // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
+    // unlikely.
+    val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
+    check(result.exitCode in expectedExitCodes) {
+      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+        "\nStandard output:\n${result.output.joinToString("\n")}" +
+        "\nError output:\n${result.errorOutput.joinToString("\n")}"
+    }
+    return result.output
+  }
+
+  /**
+   * Executes the specified [command] in the specified working directory [workingDir] with the
+   * provided arguments being passed as arguments to the command.
+   *
+   * Any exceptions thrown when trying to execute the application will be thrown by this method.
+   * Any failures in the underlying process should not result in an exception.
+   *
+   * @param includeErrorOutput whether to include error output in the returned [CommandResult],
+   *     otherwise it's discarded
+   * @return a [CommandResult] that includes the error code & application output
+   */
+  private fun executeCommand(
+    workingDir: File,
+    command: String,
+    vararg arguments: String,
+    includeErrorOutput: Boolean = true
+  ): CommandResult {
+    check(workingDir.isDirectory) {
+      "Expected working directory to be an actual directory: $workingDir"
+    }
+    val assembledCommand = listOf(command) + arguments.toList()
+    val process =
+      ProcessBuilder(assembledCommand)
+        .directory(workingDir)
+        .redirectErrorStream(includeErrorOutput)
+        .start()
+    val finished = process.waitFor(WAIT_PROCESS_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+    check(finished) { "Process did not finish within the expected timeout" }
+    return CommandResult(
+      process.exitValue(),
+      process.inputStream.bufferedReader().readLines(),
+      if (!includeErrorOutput) process.errorStream.bufferedReader().readLines() else listOf(),
+      assembledCommand,
+    )
+  }
+}
+
+/** The result of executing a command using [executeCommand]. */
+private data class CommandResult(
+  /** The exit code of the application. */
+  val exitCode: Int,
+  /** The lines of output from the command, including both error & standard output lines. */
+  val output: List<String>,
+  /** The lines of error output, or empty if error output is redirected to [output]. */
+  val errorOutput: List<String>,
+  /** The fully-formed command line executed by the application to achieve this result. */
+  val command: List<String>,
+)
