@@ -24,6 +24,6 @@ class ViewEventLogsViewModel @Inject constructor(
     eventList.forEach { eventLog ->
       itemViewModelList.add(EventLogItemViewModel(eventLog, oppiaDateTimeFormatter))
     }
-    return itemViewModelList
+    return itemViewModelList.reversed()
   }
 }
