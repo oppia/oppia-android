@@ -99,6 +99,6 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     if (titleTextView != null) {
       outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
-    outState.putString(LAST_LOADED_FRAGMENT_KEY, lastLoadedFragment)
+    outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
   }
 }
