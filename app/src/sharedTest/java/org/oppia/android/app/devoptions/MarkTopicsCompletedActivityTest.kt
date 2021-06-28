@@ -131,22 +131,22 @@ class MarkTopicsCompletedActivityTest {
       createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Test Topic"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Second Test Topic"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Fractions"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios and Proportional Reasoning"
@@ -161,22 +161,22 @@ class MarkTopicsCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Test Topic"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Second Test Topic"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Fractions"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios and Proportional Reasoning"
@@ -212,13 +212,13 @@ class MarkTopicsCompletedActivityTest {
       createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }

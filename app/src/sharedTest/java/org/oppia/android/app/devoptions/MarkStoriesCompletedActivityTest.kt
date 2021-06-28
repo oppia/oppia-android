@@ -133,27 +133,27 @@ class MarkStoriesCompletedActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Other Interesting Story"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Matthew Goes to the Bakery"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios: Part 1"
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Ratios: Part 2"
@@ -170,27 +170,27 @@ class MarkStoriesCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Other Interesting Story"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Matthew Goes to the Bakery"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios: Part 1"
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Ratios: Part 2"
@@ -232,15 +232,15 @@ class MarkStoriesCompletedActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
     }
   }

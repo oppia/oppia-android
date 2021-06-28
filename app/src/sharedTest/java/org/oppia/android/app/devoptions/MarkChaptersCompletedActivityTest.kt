@@ -134,27 +134,27 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Other Interesting Story"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Matthew Goes to the Bakery"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios: Part 1"
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Ratios: Part 2"
@@ -169,27 +169,27 @@ class MarkChaptersCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story"
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Other Interesting Story"
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Matthew Goes to the Bakery"
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios: Part 1"
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyStoryNameOnStorySummaryListItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Ratios: Part 2"
@@ -203,15 +203,15 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 4)
     }
   }
@@ -223,15 +223,15 @@ class MarkChaptersCompletedActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyItemDisplayedOnStorySummaryListItem(itemPosition = 4)
     }
   }
