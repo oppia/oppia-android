@@ -8,11 +8,11 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter as ParameterValue
 import org.oppia.android.testing.platformparameter.FakePlatformParameterModule
+import org.oppia.android.testing.platformparameter.FakePlatformParameterSingleton
 import org.oppia.android.testing.platformparameter.TEST_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_PARAM_VALUE
@@ -33,28 +33,29 @@ class PlatformParameterModuleTest {
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
+  private val mockPlatformParameterMap by lazy {
+    val testPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+      .setString(TEST_PARAM_VALUE).build()
+
+    mapOf(
+      TEST_PARAM_NAME to testPlatformParameter,
+    )
   }
 
   @Test
   fun testFakeModule_initPlatformParameterMap_retrieveTestParameter_verifyItsValue() {
-    val testParam = ParameterValue.newBuilder().setString(TEST_PARAM_VALUE).build()
-    platformParameterSingleton.setPlatformParameterMap(
-      mapOf(
-        TEST_PARAM_NAME to testParam
-      )
-    )
+    setUpTestApplicationComponent(mockPlatformParameterMap)
     assertThat(testPlatformParameter.value).isEqualTo(TEST_PARAM_VALUE)
   }
 
   @Test
   fun testFakeModule_doNotInitPlatformParameterMap_retrieveTestParameter_verifyItsValue() {
+    setUpTestApplicationComponent(mapOf())
     assertThat(testPlatformParameter.value).isEqualTo(TEST_PARAM_DEFAULT_VALUE)
   }
 
-  fun setUpTestApplicationComponent() {
+  fun setUpTestApplicationComponent(platformParameterMap: Map<String, ParameterValue>) {
+    FakePlatformParameterSingleton.platformParameterMap = platformParameterMap
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
