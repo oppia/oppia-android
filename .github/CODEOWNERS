@@ -71,6 +71,9 @@ gradlew.bat @rt4914
 # Linter configuration.
 buf.yaml @anandwana001
 
+# Third party Dependencies.
+/third_party/ @BenHenning
+
 # TODO(#3164): Restore code ownership to @BenHenning after 2021-05-24.
 # IDEA IDE configuration.
 .editorconfig @rt4914
