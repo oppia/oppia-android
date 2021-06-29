@@ -169,4 +169,6 @@
   <color name="mergeIconDisabled">#999999</color>
   <!-- HIGHLIGHTED COLORS -->
   <color name="adminHighlighted">#A5D3EC</color>
+  <color name="comingSoonEndColor">#674172</color>
+  <color name="comingSoonStartColor">#7659B6</color>
 </resources>

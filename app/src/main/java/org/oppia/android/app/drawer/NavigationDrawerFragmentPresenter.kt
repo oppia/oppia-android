@@ -17,6 +17,7 @@ import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.devoptions.DeveloperOptionsStarter
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
@@ -42,7 +43,8 @@ import org.oppia.android.util.statusbar.StatusBarColor
 import java.util.Optional
 import javax.inject.Inject
 
-const val KEY_NAVIGATION_PROFILE_ID = "KEY_NAVIGATION_PROFILE_ID"
+const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
+  "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
 /** The presenter for [NavigationDrawerFragment]. */
@@ -70,7 +72,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
     fragment.setHasOptionsMenu(true)
 
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
+    internalProfileId = activity.intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     val headerBinding =
@@ -88,12 +90,15 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
     binding.footerViewModel = getFooterViewModel()
     binding.executePendingBindings()
 
+    // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)
     setIfDeveloperOptionsMenuItemListener()
 
     return binding.root
   }
 
+  // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)
   private fun setIfDeveloperOptionsMenuItemListener() {
+    // TODO(3383): Find a way to make this work below N
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       developerOptionsStarter.ifPresent { starter ->
         getFooterViewModel().isDebugMode.set(true)

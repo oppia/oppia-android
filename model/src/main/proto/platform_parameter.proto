@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Corresponds to platform parameters that can be used to configure application behavior (including gating features).
+message PlatformParameter {
+  // Name of the parameter.
+  string name = 1;
+  // Value of the parameter.
+  oneof value_type {
+    // Indicates a boolean-typed platform parameter.
+    bool boolean = 2;
+    // Indicates a integer-typed platform parameter.
+    int32 integer = 3;
+    // Indicates a string-typed platform parameter.
+    string string = 4;
+  }
+}
+
+// Format of platform parameters stored on disk. It closely resembles the JSON response in cache.
+message RemotePlatformParameterDatabase {
+  // Platform parameters cached from the backend.
+  repeated PlatformParameter platform_parameter = 1;
+}

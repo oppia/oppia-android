@@ -56,8 +56,8 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -106,10 +106,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerActivityDevTest.TestApplication::class,
+  application = NavigationDrawerActivityDebugTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerActivityDevTest {
+class NavigationDrawerActivityDebugTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -412,18 +412,18 @@ class NavigationDrawerActivityDevTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest)
+    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityDevTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityDebugTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest) {
-      return component.inject(navigationDrawerActivityDevTest)
+    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest) {
+      return component.inject(navigationDrawerActivityDebugTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
