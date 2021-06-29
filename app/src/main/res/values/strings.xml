@@ -105,7 +105,6 @@
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
   <string name="search">Search</string>
-  <string name="force_crash_occurred">Force crash occurred</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>

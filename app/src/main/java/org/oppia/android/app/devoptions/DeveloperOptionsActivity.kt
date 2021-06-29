@@ -15,9 +15,7 @@ const val EVENT_LOGS_FRAGMENT = "EVENT_LOGS_FRAGMENT"
 const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
 
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity :
-  InjectableAppCompatActivity(),
-  ForceCrashListener {
+class DeveloperOptionsActivity : InjectableAppCompatActivity(), ForceCrashButtonClickListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 

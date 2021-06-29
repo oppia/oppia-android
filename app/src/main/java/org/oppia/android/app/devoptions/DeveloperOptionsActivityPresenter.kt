@@ -55,7 +55,11 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       ) as DeveloperOptionsFragment?
   }
 
+  /**
+   * Called when the 'force crash' button is clicked by the user.
+   * It throws a RuntimeException which results in crashing of the app.
+   */
   fun forceCrash() {
-    throw RuntimeException(activity.getString(R.string.force_crash_occurred))
+    throw RuntimeException("Force crash occurred")
   }
 }

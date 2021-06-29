@@ -2,7 +2,6 @@ package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
@@ -14,11 +13,8 @@ import javax.inject.Inject
 
 /** [ViewModel] for [DeveloperOptionsFragment]. */
 @FragmentScope
-class DeveloperOptionsViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-) {
-  private val forceCrashListener = activity as ForceCrashListener
+class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
+  private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private lateinit var userProfileId: ProfileId
   val selectedFragmentIndex = ObservableField<Int>(1)
 
@@ -31,9 +27,7 @@ class DeveloperOptionsViewModel @Inject constructor(
       mutableListOf(DeveloperOptionsModifyLessonProgressViewModel())
     itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
     itemViewModelList.add(
-      DeveloperOptionsOverrideAppBehaviorsViewModel(
-        forceCrashListener = forceCrashListener
-      )
+      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
     )
     return itemViewModelList
   }
