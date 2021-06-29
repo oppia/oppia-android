@@ -6,29 +6,30 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.REGEX_CHECK_FAILED_OUTPUT_INDICATOR
+import org.oppia.android.scripts.common.REGEX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import org.oppia.android.scripts.common.ScriptResultConstants
 
 /** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = java.lang.System.out
+  private val originalOut: PrintStream = System.out
 
   @Rule
   @JvmField
-  public var tempFolder: TemporaryFolder = TemporaryFolder()
+  var tempFolder = TemporaryFolder()
 
   @Before
   fun setUpTests() {
     tempFolder.newFolder("testfiles")
-    java.lang.System.setOut(PrintStream(outContent))
+    System.setOut(PrintStream(outContent))
   }
 
   @After
   fun restoreStreams() {
-    java.lang.System.setOut(originalOut)
+    System.setOut(originalOut)
   }
 
   @Test
@@ -36,11 +37,9 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFolder("testfiles", "app", "src", "main")
     tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
 
-    runScript(tempFolder.getRoot().toString() + "/testfiles")
+    runScript()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      ScriptResultConstants.REGEX_CHECKS_PASSED
-    )
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   @Test
@@ -49,13 +48,15 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
 
     val exception = assertThrows(Exception::class) {
-      runScript(tempFolder.getRoot().toString() + "/testfiles")
+      runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
-      "Filename pattern violation: Activities cannot be placed outside the app or testing module\n" +
-        "Prohibited file: [ROOT]/data/src/main/TestActivity.kt"
+      """
+      File name/path violation: Activities cannot be placed outside the app or testing module
+      - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
+      """.trimIndent()
     )
   }
 
@@ -65,9 +66,7 @@ class RegexPatternValidationCheckTest {
 
     runScript()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      ScriptResultConstants.REGEX_CHECKS_PASSED
-    )
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   @Test
@@ -80,40 +79,43 @@ class RegexPatternValidationCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
       .isEqualTo(
-        "Prohibited content usage found on line no. 1\n" +
-          "File: [ROOT]/testfiles/TestFile.kt\n" +
-          "Failure message: AndroidX should be used instead of the support library"
+        "${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: AndroidX should be used instead of " +
+          "the support library"
       )
   }
 
   @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
     tempFolder.newFolder("testfiles", "data", "src", "main")
-    val prohibitedFile = tempFolder.newFile(
-      "testfiles/data/src/main/TestActivity.kt"
-    )
+    val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
     val prohibitedContent = "import android.support.v7.app"
     prohibitedFile.writeText(prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript(tempFolder.getRoot().toString() + "/testfiles")
+      runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
-      "Filename pattern violation: Activities cannot be placed outside the app or testing module\n" +
-        "Prohibited file: [ROOT]/data/src/main/TestActivity.kt\n\n" +
-        "Prohibited content usage found on line no. 1\n" +
-        "File: [ROOT]/data/src/main/TestActivity.kt\n" +
-        "Failure message: AndroidX should be used instead of the support library"
+      """
+      File name/path violation: Activities cannot be placed outside the app or testing module
+      - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
+      
+      ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
+      """.trimIndent()
     )
   }
 
-  /** Helper function which executes the main method of the script. */
-  private fun runScript(testDirectoryPath: String = tempFolder.getRoot().toString()) {
-    main(testDirectoryPath)
+  /** Helper function to retrieve the absolute path of testfiles directory. */
+  private fun retrieveTestFilesDirectoryPath(): String {
+    return tempFolder.getRoot().toString() + "/testfiles"
+  }
+
+  /** Helper function to execute the main method of the script. */
+  private fun runScript() {
+    main(retrieveTestFilesDirectoryPath())
   }
 }

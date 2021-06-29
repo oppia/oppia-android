@@ -125,6 +125,9 @@ def _generate_single_asset_proto_binary(
             definition being converted to binary.
         proto_type_name: str. The name of the proto type being converted in the text proto. This is
             assumed to be part of the shared 'model' package.
+        asset_dir: str. The path to the assets directory.
+        proto_dep_path: str. The path to the proto_dep.
+        proto_package: str. The name of the proto package.
 
     Returns:
         str. The path to the newly generated binary file.
@@ -156,6 +159,9 @@ def generate_proto_binary_assets(
         proto_dep_name: str. See _generate_single_asset_proto_binary.
         proto_type_name: str. See _generate_single_asset_proto_binary.
         name_prefix: str. A prefix to attach to the name of this target.
+        asset_dir: str. The path to the assets directory.
+        proto_dep_path: str. The path to the proto_dep.
+        proto_package: str. The name of the proto package.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.

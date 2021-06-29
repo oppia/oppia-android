@@ -34,7 +34,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     ) + generate_proto_binary_assets(
         names = topic_file_names,
         proto_dep_name = "topic",
@@ -42,7 +42,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     ) + generate_proto_binary_assets(
         names = subtopic_file_names,
         proto_dep_name = "topic",
@@ -50,7 +50,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     ) + generate_proto_binary_assets(
         names = story_file_names,
         proto_dep_name = "topic",
@@ -58,7 +58,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     ) + generate_proto_binary_assets(
         names = skills_file_names,
         proto_dep_name = "topic",
@@ -66,7 +66,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     ) + generate_proto_binary_assets(
         names = exploration_file_names,
         proto_dep_name = "exploration",
@@ -74,5 +74,5 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "src/main/assets",
         proto_dep_path = "//model",
-        proto_package = "model"
+        proto_package = "model",
     )

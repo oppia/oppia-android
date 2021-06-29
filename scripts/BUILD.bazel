@@ -31,3 +31,16 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "RepositoryFileTest",
+    testonly = True,
+    srcs = ["src/test/org/oppia/android/scripts/common/RepositoryFileTest.kt"],
+    data = REGEX_PATTERN_CHECK_ASSETS,
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:common_utilities_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

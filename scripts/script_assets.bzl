@@ -26,7 +26,7 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_path = "//scripts/src/java/org/oppia/android/scripts/proto",
-        proto_package = "proto"
+        proto_package = "proto",
     ) + generate_proto_binary_assets(
         names = file_content_validation_file_names,
         proto_dep_name = "file_content_validation_structure",
@@ -34,5 +34,5 @@ def generate_assets_list_from_text_protos(
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_path = "//scripts/src/java/org/oppia/android/scripts/proto",
-        proto_package = "proto"
+        proto_package = "proto",
     )

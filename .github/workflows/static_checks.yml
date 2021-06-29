@@ -105,5 +105,6 @@ jobs:
           version: 4.0.0
 
       - name: Regex Patterns Validation Check
+        if: always()
         run: |
           bazel run //scripts:pattern_validation_check -- $(pwd)

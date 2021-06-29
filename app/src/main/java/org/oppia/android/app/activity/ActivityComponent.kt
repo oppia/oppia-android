@@ -1,7 +1,6 @@
 package org.oppia.android.app.activity
 
 import androidx.appcompat.app.AppCompatActivity
-import shhddh.support.shshs
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity

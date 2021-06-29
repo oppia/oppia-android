@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.common
 
-/** object containing failure and pass constants for all the scripts. */
-object ScriptResultConstants {
-  /** RegexPatternValidationCheck output message constants. **/
-  val REGEX_CHECKS_PASSED: String = "REGEX PATTERN CHECKS PASSED"
-  val REGEX_CHECKS_FAILED: String = "REGEX PATTERN CHECKS FAILED"
-}
+/** RegexPatternValidationCheck successfuly passed indicator. */
+const val REGEX_CHECK_PASSED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS PASSED"
+/** RegexPatternValidationCheck failed indicator. */
+const val REGEX_CHECK_FAILED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS FAILED"

@@ -1,8 +1,9 @@
 package org.oppia.android.scripts.regex
 
-import org.oppia.android.scripts.common.RepoFile
-import org.oppia.android.scripts.common.ScriptResultConstants
 import com.google.protobuf.MessageLite
+import org.oppia.android.scripts.common.REGEX_CHECK_FAILED_OUTPUT_INDICATOR
+import org.oppia.android.scripts.common.REGEX_CHECK_PASSED_OUTPUT_INDICATOR
+import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.FileContentCheck
 import org.oppia.android.scripts.proto.FileContentChecks
 import org.oppia.android.scripts.proto.FilenameCheck
@@ -13,13 +14,22 @@ import java.io.FileInputStream
 /**
  * Script for ensuring that prohibited file contents and
  * file naming patterns are not present in the codebase.
+ *
+ * Usage:
+ *   bazel run //scripts:pattern_validation_check  -- <path_to_directory_root>
+ *
+ * Arguments:
+ * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ *
+ * Example:
+ *   bazel run //scripts:pattern_validation_check -- $(pwd)
  */
 fun main(vararg args: String) {
-  // path of the repo to be analyzed.
+  // Path of the repo to be analyzed.
   val repoPath = args[0] + "/"
 
   // a list of all files in the repo to be analyzed.
-  val searchFiles = RepoFile.collectSearchFiles(repoPath)
+  val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
 
   // check if the repo has any filename failure.
   val hasFilenameCheckFailure = retrieveFilenameChecks()
@@ -35,21 +45,16 @@ fun main(vararg args: String) {
   // check if the repo has any file content failure.
   val hasFileContentCheckFailure = retrieveFileContentChecks()
     .fold(initial = false) { isFailing, fileContentCheck ->
-      val checkFailed = checkProhibitedContent(
-        repoPath,
-        searchFiles,
-        fileContentCheck,
-      )
+      val checkFailed = checkProhibitedContent(searchFiles, fileContentCheck)
       isFailing || checkFailed
     }
 
   if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
-    throw Exception(ScriptResultConstants.REGEX_CHECKS_FAILED)
+    throw Exception(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
   } else {
-    println(ScriptResultConstants.REGEX_CHECKS_PASSED)
+    println(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 }
-
 
 /**
  * Retrieves all filename checks.
@@ -86,6 +91,8 @@ private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
   val protoBinaryFile = File("scripts/assets/$textProtoFileName")
   val builder = proto.newBuilderForType()
 
+  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+  // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
   val protoObj: T =
     FileInputStream(protoBinaryFile).use {
@@ -112,19 +119,15 @@ private fun checkProhibitedFileNamePattern(
   val matchedFiles = searchFiles.filter { file ->
     return@filter file.name !in filenameCheck.getExemptedFileNameList() &&
       prohibitedFilenameRegex.matches(
-        RepoFile.retrieveFilePath(
+        RepositoryFile.retrieveRelativeFilePath(
           file,
           repoPath
         )
       )
   }
 
-  logProhibitedFilenameFailure(
-    repoPath,
-    filenameCheck.getFailureMessage(),
-    matchedFiles,
-  )
-  return matchedFiles.toList().size != 0
+  logProhibitedFilenameFailure(filenameCheck.getFailureMessage(), matchedFiles)
+  return matchedFiles.isNotEmpty()
 }
 
 /**
@@ -136,9 +139,8 @@ private fun checkProhibitedFileNamePattern(
  * @return file content pattern is correct or not
  */
 private fun checkProhibitedContent(
-  repoPath: String,
   searchFiles: List<File>,
-  fileContentCheck: FileContentCheck,
+  fileContentCheck: FileContentCheck
 ): Boolean {
   val fileNameRegex = fileContentCheck.getFilenameRegex().toRegex()
 
@@ -153,18 +155,17 @@ private fun checkProhibitedContent(
           val matches = prohibitedContentRegex.matches(lineContent)
           if (matches) {
             logProhibitedContentFailure(
-              // Since, the line number starts from 1 and index starts
-              // from 0, therefore we have to increment index by 1, to
-              // denote the line number.
+              // Since, the line number starts from 1 and index starts from 0, therefore we have
+              // to increment index by 1, to denote the line number.
               lineIndex + 1,
               fileContentCheck.getFailureMessage(),
-              RepoFile.retrieveFilePath(file, repoPath)
+              file.toString()
             )
           }
           isFailing || matches
         }
   }
-  return matchedFiles.size != 0
+  return matchedFiles.isNotEmpty()
 }
 
 /**
@@ -173,17 +174,12 @@ private fun checkProhibitedContent(
  * @param repoPath the path of the repo to be analyzed
  * @param errorToShow the filename error to be logged
  * @param matchedFiles a list of all the files which had the filenaming violation
- * @return log the filename failures
  */
-private fun logProhibitedFilenameFailure(
-  repoPath: String,
-  errorToShow: String,
-  matchedFiles: List<File>
-) {
-  if (matchedFiles.size != 0) {
-    println("Filename pattern violation: $errorToShow")
+private fun logProhibitedFilenameFailure(errorToShow: String, matchedFiles: List<File>) {
+  if (matchedFiles.isNotEmpty()) {
+    println("File name/path violation: $errorToShow")
     matchedFiles.forEach {
-      println("Prohibited file: [ROOT]/${RepoFile.retrieveFilePath(it, repoPath)}")
+      println("- $it")
     }
     println()
   }
@@ -195,19 +191,13 @@ private fun logProhibitedFilenameFailure(
  * @param lineNumberthe line number at which the failure occured
  * @param errorToShow the failure message to be logged
  * @param filePath the path of the file relative to the repository which failed the check
- * @return log the prohibited content failures
  */
 private fun logProhibitedContentFailure(
   lineNumber: Int,
   errorToShow: String,
   filePath: String
 ) {
-  val failureMessage =
-    """
-      Prohibited content usage found on line no. $lineNumber
-      File: [ROOT]/$filePath
-      Failure message: $errorToShow
-    """.trimIndent()
+  val failureMessage = "$filePath:$lineNumber: $errorToShow"
   println(failureMessage)
   println()
 }
