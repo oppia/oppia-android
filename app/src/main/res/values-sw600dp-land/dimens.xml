@@ -143,6 +143,12 @@
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">192dp</dimen>
 
+  <!-- DragAndDrop Interaction Item -->
+  <dimen name="drag_and_drop_interaction_item_padding_start">32dp</dimen>
+  <dimen name="drag_and_drop_interaction_item_padding_top">16dp</dimen>
+  <dimen name="drag_and_drop_interaction_item_padding_end">32dp</dimen>
+  <dimen name="drag_and_drop_interaction_item_padding_bottom">16dp</dimen>
+
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">24dp</dimen>
   <dimen name="selection_interaction_item_padding_end">24dp</dimen>
