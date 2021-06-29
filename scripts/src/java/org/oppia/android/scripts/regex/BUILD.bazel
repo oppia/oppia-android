@@ -1,0 +1,15 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "pattern_validation_lib",
+    testonly = True,
+    srcs = [
+        "RegexPatternValidationCheck.kt",
+    ],
+    visibility = ["//scripts:__pkg__"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:common_utilities_lib",
+        "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_structure_java_proto_lite",
+        "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_structure_java_proto_lite",
+    ],
+)

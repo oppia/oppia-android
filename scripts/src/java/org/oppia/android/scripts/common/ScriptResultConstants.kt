@@ -1,4 +1,4 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.common
 
 /** object containing failure and pass constants for all the scripts. */
 object ScriptResultConstants {

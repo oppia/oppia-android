@@ -1,4 +1,4 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.regex
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import org.oppia.android.scripts.common.ScriptResultConstants
 
 /** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {
@@ -35,10 +36,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFolder("testfiles", "app", "src", "main")
     tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
 
-    runScript(
-      testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
-      allowedDirectories = arrayOf("app")
-    )
+    runScript(tempFolder.getRoot().toString() + "/testfiles")
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ScriptResultConstants.REGEX_CHECKS_PASSED
@@ -51,15 +49,12 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
 
     val exception = assertThrows(Exception::class) {
-      runScript(
-        testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
-        allowedDirectories = arrayOf("data")
-      )
+      runScript(tempFolder.getRoot().toString() + "/testfiles")
     }
 
     assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
     assertThat(outContent.toString().trim()).isEqualTo(
-      "Filename pattern violation: Activities cannot be placed in the data module\n" +
+      "Filename pattern violation: Activities cannot be placed outside the app or testing module\n" +
         "Prohibited file: [ROOT]/data/src/main/TestActivity.kt"
     )
   }
@@ -104,15 +99,12 @@ class RegexPatternValidationCheckTest {
     prohibitedFile.writeText(prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript(
-        testDirectoryPath = tempFolder.getRoot().toString() + "/testfiles",
-        allowedDirectories = arrayOf("data")
-      )
+      runScript(tempFolder.getRoot().toString() + "/testfiles")
     }
 
     assertThat(exception).hasMessageThat().contains(ScriptResultConstants.REGEX_CHECKS_FAILED)
     assertThat(outContent.toString().trim()).isEqualTo(
-      "Filename pattern violation: Activities cannot be placed in the data module\n" +
+      "Filename pattern violation: Activities cannot be placed outside the app or testing module\n" +
         "Prohibited file: [ROOT]/data/src/main/TestActivity.kt\n\n" +
         "Prohibited content usage found on line no. 1\n" +
         "File: [ROOT]/data/src/main/TestActivity.kt\n" +
@@ -121,13 +113,7 @@ class RegexPatternValidationCheckTest {
   }
 
   /** Helper function which executes the main method of the script. */
-  private fun runScript(
-    testDirectoryPath: String = tempFolder.getRoot().toString(),
-    allowedDirectories: Array<String> = arrayOf("testfiles")
-  ) {
-    RegexPatternValidationCheck.main(
-      testDirectoryPath,
-      *allowedDirectories
-    )
+  private fun runScript(testDirectoryPath: String = tempFolder.getRoot().toString()) {
+    main(testDirectoryPath)
   }
 }

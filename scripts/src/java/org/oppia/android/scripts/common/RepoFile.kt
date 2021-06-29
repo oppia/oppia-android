@@ -1,10 +1,25 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.common
 
 import java.io.File
 
 /** Helper class which contains all the file collection helper methods */
 class RepoFile() {
   companion object {
+
+    val alwaysExcludeFilesList = listOf<String>(
+      ".git",
+      ".gitsecret",
+      ".idea",
+      "bazel",
+      "config",
+      "gradle",
+      ".bazelrc",
+      ".editorconfig",
+      "gradlew",
+      "gradlew.bat",
+      ".aswb",
+    )
+
     /**
      * Collects the paths of all the files which are needed to be checked.
      *
@@ -14,16 +29,12 @@ class RepoFile() {
      */
     fun collectSearchFiles(
       repoPath: String,
-      allowedDirectories: List<String>,
       allowedExtension: String = "",
       exemptionsList: List<String> = listOf()
     ): List<File> {
       return File(repoPath).walk().filter { file ->
-        val isAllowed = checkIfAllowedDirectory(
-          retrieveFilePath(file, repoPath),
-          allowedDirectories
-        )
-        isAllowed &&
+        val isProhibited = checkIfProhibitedFile(retrieveFilePath(file, repoPath))
+        !isProhibited &&
           file.isFile &&
           file.name.endsWith(allowedExtension) &&
           file.name !in exemptionsList
@@ -39,11 +50,8 @@ class RepoFile() {
      * @param allowedDirectories a list of all the files which needs to be checked
      * @return check if path is allowed to be analyzed or not
      */
-    fun checkIfAllowedDirectory(
-      pathString: String,
-      allowedDirectories: List<String>
-    ): Boolean {
-      return allowedDirectories.any { pathString.startsWith(it) }
+    fun checkIfProhibitedFile(pathString: String): Boolean {
+      return alwaysExcludeFilesList.any { pathString.startsWith(it) }
     }
 
     /**

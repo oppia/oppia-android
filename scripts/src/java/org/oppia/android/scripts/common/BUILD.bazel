@@ -1,0 +1,18 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+package_group(
+    name = "common_utilities_visibility",
+    packages = [
+        "//scripts/src/java/org/oppia/android/scripts/regex",
+    ],
+)
+
+kt_jvm_library(
+    name = "common_utilities_lib",
+    testonly = True,
+    srcs = [
+        "RepoFile.kt",
+        "ScriptResultConstants.kt",
+    ],
+    visibility = [":common_utilities_visibility"],
+)
