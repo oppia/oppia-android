@@ -252,7 +252,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -274,7 +273,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -297,7 +295,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -316,7 +313,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -336,7 +332,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -394,7 +389,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -417,7 +411,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -440,7 +433,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -464,7 +456,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -497,7 +488,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -539,7 +529,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -576,7 +565,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
     setupAudio()
     launch<ExplorationActivity>(
@@ -649,7 +637,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
