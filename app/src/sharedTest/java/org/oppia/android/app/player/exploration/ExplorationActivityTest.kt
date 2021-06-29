@@ -739,6 +739,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -758,6 +759,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -778,6 +780,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
   fun testExpActivity_onBackPressed_showsStopExpDialog_cancel_dismissesDialog() {
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
