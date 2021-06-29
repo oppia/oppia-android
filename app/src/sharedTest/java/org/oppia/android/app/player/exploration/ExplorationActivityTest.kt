@@ -92,7 +92,6 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -739,7 +738,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -749,6 +747,8 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
     ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -756,7 +756,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -766,6 +765,8 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
     ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -774,7 +775,6 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testExpActivity_onBackPressed_showsStopExpDialog_cancel_dismissesDialog() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -784,6 +784,8 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
     )
+    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    testCoroutineDispatchers.runCurrent()
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
