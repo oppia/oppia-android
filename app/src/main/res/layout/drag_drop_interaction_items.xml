@@ -38,14 +38,15 @@
 
         <ImageButton
           android:id="@+id/drag_drop_move_up_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
           android:contentDescription="@string/move_item_up"
           android:enabled="@{viewModel.itemIndex != 0}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleUpMovement(adapter)}"
+          android:padding="16dp"
           android:src="@drawable/ic_arrow_up_black_24dp"
           android:tint="@{dragDropMoveUpItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
           app:layout_constraintBottom_toBottomOf="parent"
@@ -54,14 +55,15 @@
 
         <ImageButton
           android:id="@+id/drag_drop_move_down_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
           android:contentDescription="@string/move_item_down"
           android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleDownMovement(adapter)}"
+          android:padding="16dp"
           android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
           android:tint="@{dragDropMoveDownItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}" />
       </LinearLayout>
