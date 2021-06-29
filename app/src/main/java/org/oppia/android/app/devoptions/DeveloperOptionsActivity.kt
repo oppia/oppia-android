@@ -6,19 +6,11 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
-const val MARK_CHAPTERS_COMPLETED_FRAGMENT = "MARK_CHAPTERS_COMPLETED_FRAGMENT"
-const val MARK_STORIES_COMPLETED_FRAGMENT = "MARK_STORIES_COMPLETED_FRAGMENT"
-const val MARK_TOPICS_COMPLETED_FRAGMENT = "MARK_TOPICS_COMPLETED_FRAGMENT"
-const val EVENT_LOGS_FRAGMENT = "EVENT_LOGS_FRAGMENT"
-const val FORCE_NETWORK_TYPE_FRAGMENT = "FORCE_NETWORK_TYPE_FRAGMENT"
-
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity :
-  InjectableAppCompatActivity(),
-  RouteToViewEventLogsListener {
+class DeveloperOptionsActivity : InjectableAppCompatActivity(), RouteToViewEventLogsListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
@@ -37,12 +29,12 @@ class DeveloperOptionsActivity :
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 }
