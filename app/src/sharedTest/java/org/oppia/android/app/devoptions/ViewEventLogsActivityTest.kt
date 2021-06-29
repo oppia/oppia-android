@@ -33,8 +33,6 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -67,7 +65,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
-import org.oppia.android.util.logging.DebugEventLogger
 import org.oppia.android.util.logging.DebugLogReportingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -109,9 +106,6 @@ class ViewEventLogsActivityTest {
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
-  @Inject
-  lateinit var debugEventLogger: DebugEventLogger
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -140,9 +134,7 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_displaysEventLogsList() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.view_event_logs_recycler_view)).check(matches(isDisplayed()))
     }
@@ -150,45 +142,41 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_displaysCorrectNumberOfEventLogs() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.view_event_logs_recycler_view)).check(hasItemCount(5))
+      onView(withId(R.id.view_event_logs_recycler_view)).check(hasItemCount(count = 5))
     }
   }
 
   @Test
   fun testViewEventLogsActivity_checkRecentLogsAreDisplayedFirst() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Home",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Profile Chooser",
@@ -199,36 +187,34 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_configChange_checkRecentLogsAreDisplayedFirst() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Home",
         targetViewId = R.id.view_event_logs_action_name_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Profile Chooser",
@@ -238,17 +224,15 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
-  fun testViewEventLogsActivity_contextIsNull_isNotDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+  fun testViewEventLogsActivity_contextIsNull_contextIsNotDisplayed() {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemNotDisplayedOnEventLogItemViewAtPosition(
         position = 3,
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyItemNotDisplayedOnEventLogItemViewAtPosition(
         position = 4,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -257,18 +241,16 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
-  fun testViewEventLogsActivity_configChange_contextIsNull_isNotDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+  fun testViewEventLogsActivity_configChange_contextIsNull_contextIsNotDisplayed() {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyItemNotDisplayedOnEventLogItemViewAtPosition(
         position = 3,
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyItemNotDisplayedOnEventLogItemViewAtPosition(
         position = 4,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -277,12 +259,10 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
-  fun testViewEventLogsActivity_contextIsNotNull_isCorrectlyDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+  fun testViewEventLogsActivity_contextIsNotNull_contextIsCorrectlyDisplayed() {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 0,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -292,7 +272,7 @@ class ViewEventLogsActivityTest {
         stringToMatch = "Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 1,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -302,7 +282,7 @@ class ViewEventLogsActivityTest {
         stringToMatch = "Story",
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 2,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -316,13 +296,11 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
-  fun testViewEventLogsActivity_configChange_contextIsNotNull_isCorrectlyDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+  fun testViewEventLogsActivity_configChange_contextIsNotNull_contextIsCorrectlyDisplayed() {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 0,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -332,7 +310,7 @@ class ViewEventLogsActivityTest {
         stringToMatch = "Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 1,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -342,7 +320,7 @@ class ViewEventLogsActivityTest {
         stringToMatch = "Story",
         targetViewId = R.id.view_event_logs_context_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 2,
         targetViewId = R.id.view_event_logs_context_text_view
@@ -357,35 +335,33 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_dateAndTimeIsDisplayedCorrectly() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "28 Jun 11:24 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "28 Jun 11:24 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "28 Jun 11:23 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "28 Jun 11:23 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "28 Jun 11:23 PM",
@@ -396,36 +372,34 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_configChange_dateAndTimeIsDisplayedCorrectly() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "28 Jun 11:24 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "28 Jun 11:24 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "28 Jun 11:23 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "28 Jun 11:23 PM",
         targetViewId = R.id.view_event_logs_time_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "28 Jun 11:23 PM",
@@ -436,35 +410,33 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_priorityIsDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Essential",
@@ -475,36 +447,34 @@ class ViewEventLogsActivityTest {
 
   @Test
   fun testViewEventLogsActivity_configChange_priorityIsDisplayed() {
-    launch<ViewEventLogsActivity>(
-      createViewEventLogsActivityIntent()
-    ).use {
+    launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(0)
+      scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(1)
+      scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(2)
+      scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(3)
+      scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Essential",
         targetViewId = R.id.view_event_logs_priority_text_view
       )
-      scrollToPosition(4)
+      scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Essential",
