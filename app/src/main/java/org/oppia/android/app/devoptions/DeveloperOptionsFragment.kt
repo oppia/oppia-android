@@ -31,8 +31,4 @@ class DeveloperOptionsFragment : InjectableFragment() {
   ): View? {
     return developerOptionsFragmentPresenter.handleCreateView(inflater, container)
   }
-
-  fun setSelectedFragment(selectedFragment: String) {
-    developerOptionsFragmentPresenter.setSelectedFragment(selectedFragment)
-  }
 }

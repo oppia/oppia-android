@@ -10,15 +10,12 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.DeveloperOptionsFragmentBinding
 import org.oppia.android.databinding.DeveloperOptionsModifyLessonProgressViewBinding
 import org.oppia.android.databinding.DeveloperOptionsOverrideAppBehaviorsViewBinding
 import org.oppia.android.databinding.DeveloperOptionsViewLogsViewBinding
-import java.security.InvalidParameterException
 import javax.inject.Inject
 
 /** The presenter for [DeveloperOptionsFragment]. */
@@ -30,8 +27,6 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
   private lateinit var binding: DeveloperOptionsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
 
   @Inject
   lateinit var developerOptionsViewModel: DeveloperOptionsViewModel
@@ -45,10 +40,6 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-
-    internalProfileId = activity.intent.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    developerOptionsViewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -65,64 +56,44 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter():
-    BindableAdapter<DeveloperOptionsItemViewModel> {
-      return BindableAdapter.MultiTypeBuilder
-        .newBuilder<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
-          when (viewModel) {
-            is DeveloperOptionsModifyLessonProgressViewModel -> {
-              viewModel.itemIndex.set(0)
-              ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
-            }
-            is DeveloperOptionsViewLogsViewModel -> {
-              viewModel.itemIndex.set(1)
-              ViewType.VIEW_TYPE_VIEW_LOGS
-            }
-            is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
-              viewModel.itemIndex.set(2)
-              ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
-            }
-            else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+  private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is DeveloperOptionsModifyLessonProgressViewModel -> {
+            viewModel.itemIndex.set(0)
+            ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
           }
+          is DeveloperOptionsViewLogsViewModel -> {
+            viewModel.itemIndex.set(1)
+            ViewType.VIEW_TYPE_VIEW_LOGS
+          }
+          is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
+            viewModel.itemIndex.set(2)
+            ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
+          }
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
-        .registerViewDataBinder(
-          viewType = ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS,
-          inflateDataBinding = DeveloperOptionsModifyLessonProgressViewBinding::inflate,
-          setViewModel = DeveloperOptionsModifyLessonProgressViewBinding::setViewModel,
-          transformViewModel = { it as DeveloperOptionsModifyLessonProgressViewModel }
-        )
-        .registerViewDataBinder(
-          viewType = ViewType.VIEW_TYPE_VIEW_LOGS,
-          inflateDataBinding = DeveloperOptionsViewLogsViewBinding::inflate,
-          setViewModel = DeveloperOptionsViewLogsViewBinding::setViewModel,
-          transformViewModel = { it as DeveloperOptionsViewLogsViewModel }
-        )
-        .registerViewDataBinder(
-          viewType = ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
-          inflateDataBinding = DeveloperOptionsOverrideAppBehaviorsViewBinding::inflate,
-          setViewModel = DeveloperOptionsOverrideAppBehaviorsViewBinding::setViewModel,
-          transformViewModel = { it as DeveloperOptionsOverrideAppBehaviorsViewModel }
-        )
-        .build()
-    }
-
-  fun setSelectedFragment(selectedFragment: String) {
-    developerOptionsViewModel.selectedFragmentIndex.set(
-      getSelectedFragmentIndex(
-        selectedFragment
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS,
+        inflateDataBinding = DeveloperOptionsModifyLessonProgressViewBinding::inflate,
+        setViewModel = DeveloperOptionsModifyLessonProgressViewBinding::setViewModel,
+        transformViewModel = { it as DeveloperOptionsModifyLessonProgressViewModel }
       )
-    )
-  }
-
-  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
-    return when (selectedFragment) {
-      MARK_CHAPTERS_COMPLETED_FRAGMENT -> 0
-      MARK_STORIES_COMPLETED_FRAGMENT -> 1
-      MARK_TOPICS_COMPLETED_FRAGMENT -> 2
-      EVENT_LOGS_FRAGMENT -> 3
-      FORCE_NETWORK_TYPE_FRAGMENT -> 4
-      else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
-    }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_VIEW_LOGS,
+        inflateDataBinding = DeveloperOptionsViewLogsViewBinding::inflate,
+        setViewModel = DeveloperOptionsViewLogsViewBinding::setViewModel,
+        transformViewModel = { it as DeveloperOptionsViewLogsViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
+        inflateDataBinding = DeveloperOptionsOverrideAppBehaviorsViewBinding::inflate,
+        setViewModel = DeveloperOptionsOverrideAppBehaviorsViewBinding::setViewModel,
+        transformViewModel = { it as DeveloperOptionsOverrideAppBehaviorsViewModel }
+      )
+      .build()
   }
 
   private enum class ViewType {
