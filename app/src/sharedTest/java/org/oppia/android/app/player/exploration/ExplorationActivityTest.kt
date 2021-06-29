@@ -753,6 +753,7 @@ class ExplorationActivityTest {
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
+    explorationDataController.stopPlayingExploration()
   }
 
   @Test
@@ -771,6 +772,7 @@ class ExplorationActivityTest {
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
+    explorationDataController.stopPlayingExploration()
   }
 
   // TODO(#89): Check this test case too. It works in pair with below test case.
@@ -790,6 +792,7 @@ class ExplorationActivityTest {
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
+    explorationDataController.stopPlayingExploration()
   }
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
