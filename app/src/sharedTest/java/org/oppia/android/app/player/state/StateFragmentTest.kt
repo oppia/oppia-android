@@ -69,8 +69,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
@@ -120,6 +120,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -157,6 +158,9 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -1352,7 +1356,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+  fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
 

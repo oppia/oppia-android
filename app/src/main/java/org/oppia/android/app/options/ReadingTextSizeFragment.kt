@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE =
-  "READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE"
+private const val READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
+  "ReadingTextSizeFragment.reading_text_size_preference_summary_value"
 private const val SELECTED_READING_TEXT_SIZE_SAVED_KEY =
   "ReadingTextSizeFragment.selected_text_size"
 
@@ -21,7 +21,7 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
   companion object {
     fun newInstance(readingTextSize: String): ReadingTextSizeFragment {
       val args = Bundle()
-      args.putString(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, readingTextSize)
+      args.putString(READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY, readingTextSize)
       val fragment = ReadingTextSizeFragment()
       fragment.arguments = args
       return fragment
@@ -41,7 +41,7 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ReadingTextSizeFragment" }
     val readingTextSize = if (savedInstanceState == null) {
-      args.get(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE) as String
+      args.get(READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY) as String
     } else {
       savedInstanceState.get(SELECTED_READING_TEXT_SIZE_SAVED_KEY) as String
     }

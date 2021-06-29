@@ -34,6 +34,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -44,8 +45,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -74,6 +75,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -103,6 +105,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   private val internalProfileId = 1
 
