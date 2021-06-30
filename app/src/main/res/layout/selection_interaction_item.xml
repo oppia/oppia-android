@@ -12,8 +12,14 @@
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel" />
   </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
+    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}">
+
+  <LinearLayout
     android:id="@+id/interaction_container_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,10 +30,8 @@
     android:paddingTop="12dp"
     android:paddingEnd="@dimen/selection_interaction_item_padding_end"
     android:paddingBottom="12dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_end : @dimen/interaction_item_question_view_margin_end}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_start : @dimen/interaction_item_question_view_margin_start}"
-    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}"
-    app:layout_constraintBottom_toBottomOf="parent"
+     app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
     <TextView
@@ -41,8 +45,6 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="14sp"
       android:textStyle="italic"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
       android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
 
     <org.oppia.android.app.player.state.SelectionInteractionView
@@ -53,9 +55,7 @@
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
       app:data="@{viewModel.choiceItems}"
       app:entityId="@{viewModel.entityId}"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/selection_interaction_textview"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
