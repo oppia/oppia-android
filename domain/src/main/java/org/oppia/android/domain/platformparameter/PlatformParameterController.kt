@@ -10,7 +10,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val PLATFORM_PARAMETER_DATA_PROVIDER_ID = "platform_parameter_data_provider_id"
+private const val PLATFORM_PARAMETER_DATABASE_NAME = "platform_parameter_database"
 
+/** Controller for handling platform parameter database. */
 @Singleton
 class PlatformParameterController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -18,11 +20,11 @@ class PlatformParameterController @Inject constructor(
   platformParameterSingleton: PlatformParameterSingleton
 ) {
   private val platformParameterDatabaseStore = cacheStoreFactory.create(
-    "platform_parameter_database",
+    PLATFORM_PARAMETER_DATABASE_NAME,
     RemotePlatformParameterDatabase.getDefaultInstance()
   )
 
-  private val platformParameterDatabaseProvider by lazy {
+  private val platformParameterDataProvider by lazy {
     platformParameterDatabaseStore.transform(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
       platformParameterDatabase ->
       val platformParameterMap = mutableMapOf<String, PlatformParameter>()
@@ -30,9 +32,15 @@ class PlatformParameterController @Inject constructor(
         platformParameterMap[it.name] = it
       }
       platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+      return@transform
     }
   }
 
+  /**
+   * Updates the platform parameter database in cache store.
+   * @param platformParameterList [List] of [PlatformParameter] objects which needs to be cached
+   * @return [Unit]
+   * */
   fun updatePlatformParameterDatabase(
     platformParameterList: List<PlatformParameter>
   ) {
@@ -49,5 +57,9 @@ class PlatformParameterController @Inject constructor(
     }
   }
 
-  fun getParameterDatabase(): DataProvider<Unit> = platformParameterDatabaseProvider
+  /**
+   * Returns a [DataProvider] which can be used to confirm that PlatformParameterDatabase read
+   * process has been completed.
+   */
+  fun getParameterDatabase(): DataProvider<Unit> = platformParameterDataProvider
 }
