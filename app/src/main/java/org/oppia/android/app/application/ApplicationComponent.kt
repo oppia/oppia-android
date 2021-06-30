@@ -49,11 +49,9 @@ import javax.inject.Singleton
  * Root Dagger component for the application. All application-scoped modules should be included in
  * this component.
  *
- * Prod modules         Debug modules
- * [Remove]             DeveloperOptionsStarterModule
- * LogReportingModule   DebugLogReportingModule
- *
- * To build the app in prod mode, we must replace the debug modules with the prod modules
+ * At the time of building the app in prod mode -
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
+ * Add: [LogReportingModule]
  */
 @Singleton
 @Component(

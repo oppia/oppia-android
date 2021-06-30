@@ -19,15 +19,13 @@ class EventLogItemViewModel @Inject constructor(
   }
 
   fun processPriority(): String? {
-    return eventLog.priority.name.capitalizeWord()
+    return eventLog.priority.name.toLowerCase().capitalize()
   }
 
   fun processContext(): String? =
-    eventLog.context.activityContextCase.name.capitalizeWords().substringBeforeLast(' ')
+    eventLog.context.activityContextCase.name.capitalizeWords().substringBeforeLast(" ")
 
   fun processActionName(): String = eventLog.actionName.name.capitalizeWords()
-
-  private fun String.capitalizeWord(): String = toLowerCase().capitalize()
 
   private fun String.capitalizeWords(): String =
     toLowerCase().split("_").joinToString(" ") { it.capitalize() }
