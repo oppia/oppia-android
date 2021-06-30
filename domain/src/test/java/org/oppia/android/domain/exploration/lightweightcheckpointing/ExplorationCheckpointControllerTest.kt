@@ -115,8 +115,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointController.ExplorationCheckpointDatabaseState
-        .CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
@@ -129,8 +128,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointController.ExplorationCheckpointDatabaseState
-        .CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 
@@ -143,8 +141,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointController.ExplorationCheckpointDatabaseState
-        .CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
