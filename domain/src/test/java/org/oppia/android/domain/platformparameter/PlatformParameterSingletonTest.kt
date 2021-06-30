@@ -47,7 +47,7 @@ class PlatformParameterSingletonTest {
     val booleanPlatformParameter = PlatformParameter.newBuilder()
       .setBoolean(BOOLEAN_PLATFORM_PARAMETER_VALUE).build()
 
-    mapOf(
+    mapOf<String, PlatformParameter>(
       STRING_PLATFORM_PARAMETER_NAME to stringPlatformParameter,
       INTEGER_PLATFORM_PARAMETER_NAME to integerPlatformParameter,
       BOOLEAN_PLATFORM_PARAMETER_NAME to booleanPlatformParameter,
