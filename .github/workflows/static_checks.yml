@@ -107,4 +107,4 @@ jobs:
       - name: Regex Patterns Validation Check
         if: always()
         run: |
-          bazel run //scripts:pattern_validation_check -- $(pwd)
+          bazel run //scripts:regex_pattern_validation_check -- $(pwd)
