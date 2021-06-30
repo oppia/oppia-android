@@ -239,18 +239,14 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       val exception = assertThrows(RuntimeException::class) {
         scrollToPosition(position = 2)
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
-      assertThat(exception.cause)
-        .hasMessageThat()
-        .contains("Force crash occurred")
+      assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
     }
   }
 

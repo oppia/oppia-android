@@ -55,11 +55,8 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       ) as DeveloperOptionsFragment?
   }
 
-  /**
-   * Called when the 'force crash' button is clicked by the user.
-   * It throws a RuntimeException which results in crashing of the app.
-   */
-  fun forceCrash() {
+  /** Called when the 'force crash' button is clicked by the user. This function crashes the app and will not return. */
+  fun forceCrash(): Nothing {
     throw RuntimeException("Force crash occurred")
   }
 }
