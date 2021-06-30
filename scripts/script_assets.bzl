@@ -20,6 +20,7 @@ def generate_assets_list_from_text_protos(
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_proto_binary_assets(
+        name = name,
         names = filepath_pattern_validation_file_names,
         proto_dep_name = "filename_pattern_validation_structure",
         proto_type_name = "FilenameChecks",
@@ -28,6 +29,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     ) + generate_proto_binary_assets(
+        name = name,
         names = file_content_validation_file_names,
         proto_dep_name = "file_content_validation_structure",
         proto_type_name = "FileContentChecks",

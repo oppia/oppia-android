@@ -28,6 +28,7 @@ def generate_assets_list_from_text_protos(
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_proto_binary_assets(
+        name = name,
         names = topic_list_file_names,
         proto_dep_name = "topic",
         proto_type_name = "TopicIdList",
@@ -36,6 +37,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
+        name = name,
         names = topic_file_names,
         proto_dep_name = "topic",
         proto_type_name = "TopicRecord",
@@ -44,6 +46,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
+        name = name,
         names = subtopic_file_names,
         proto_dep_name = "topic",
         proto_type_name = "SubtopicRecord",
@@ -52,6 +55,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
+        name = name,
         names = story_file_names,
         proto_dep_name = "topic",
         proto_type_name = "StoryRecord",
@@ -60,6 +64,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
+        name = name,
         names = skills_file_names,
         proto_dep_name = "topic",
         proto_type_name = "ConceptCardList",
@@ -68,6 +73,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_path = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
+        name = name,
         names = exploration_file_names,
         proto_dep_name = "exploration",
         proto_type_name = "Exploration",

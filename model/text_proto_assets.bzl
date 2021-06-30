@@ -143,6 +143,7 @@ def _generate_single_asset_proto_binary(
     )
 
 def generate_proto_binary_assets(
+        name,
         names,
         proto_dep_name,
         proto_type_name,
@@ -154,6 +155,7 @@ def generate_proto_binary_assets(
     Converts a list of text proto assets to binary.
 
     Args:
+        name: str. The name of this target.
         names: list of str. The list of text proto file names under the assets directory that should
             be converted.
         proto_dep_name: str. See _generate_single_asset_proto_binary.
