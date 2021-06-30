@@ -15,8 +15,8 @@ package_group(
 kt_jvm_binary(
     name = "compute_affected_tests",
     testonly = True,
-    main_class = "org.oppia.android.scripts.ComputeAffectedTestsKt",
+    main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts:compute_affected_tests_lib",
+        "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
     ],
 )

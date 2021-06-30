@@ -1,0 +1,24 @@
+"""
+Libraries corresponding to developer scripts that help with continuous integration workflows.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
+
+kt_jvm_library(
+    name = "compute_affected_tests_lib",
+    testonly = True,
+    srcs = [
+        "ComputeAffectedTests.kt",
+    ],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+)
+
+kt_jvm_test(
+    name = "ComputeAffectedTestsTest",
+    srcs = ["ComputeAffectedTestsTest.kt"],
+    deps = [
+        ":compute_affected_tests_lib",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

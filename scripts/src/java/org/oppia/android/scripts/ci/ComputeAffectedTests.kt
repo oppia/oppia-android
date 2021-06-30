@@ -1,4 +1,4 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.ci
 
 import java.io.File
 import java.lang.IllegalArgumentException
@@ -13,19 +13,19 @@ private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
  * Oppia Android Git repository.
  *
  * Usage:
- *   bazel run //scripts:computed_affected_tests -- <path_to_directory_root> <path_to_output_file>
+ *   bazel run //scripts:compute_affected_tests -- <path_to_directory_root> <path_to_output_file>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  * - path_to_output_file: path to the file in which the affected test targets will be printed.
  *
  * Example:
- *   bazel run //scripts:computed_affected_tests -- $(pwd) /tmp/affected_tests.log
+ *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_tests.log
  */
 fun main(args: Array<String>) {
   if (args.size < 2) {
     println(
-      "Usage: bazel run //scripts:computed_affected_tests --" +
+      "Usage: bazel run //scripts:compute_affected_tests --" +
         " <path_to_directory_root> <path_to_output_file>"
     )
     exitProcess(1)
@@ -47,6 +47,7 @@ fun main(args: Array<String>) {
   val gitClient = GitClient(rootDirectory)
   val bazelClient = BazelClient(rootDirectory)
   println("Current branch: ${gitClient.currentBranch}")
+  println("Most recent common commit: ${gitClient.branchMergeBase}")
   when (gitClient.currentBranch.toLowerCase(Locale.getDefault())) {
     "develop" -> computeAffectedTargetsForDevelopBranch(bazelClient, outputFile)
     else ->
@@ -108,6 +109,7 @@ private fun computeAffectedTargetsForNonDevelopBranch(
   outputFile.printWriter().use { writer -> allAffectedTestTargets.forEach { writer.println(it) } }
 }
 
+// TODO: extract to top-level class with tests.
 private class BazelClient(private val rootDirectory: File) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
@@ -150,16 +152,20 @@ private class BazelClient(private val rootDirectory: File) {
    * directly or indirectly tied to that BUILD file, regardless of dependencies.
    */
   fun retrieveTransitiveTestTargets(buildFiles: Iterable<String>): List<String> {
-    return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand(
-        "query",
-        "--noshow_progress",
-        "--universe_scope=//...",
-        "--order_output=no",
-        "filter('^[^@]', kind(test, allrdeps(siblings(rbuildfiles(" +
-          "${buildFiles.joinToString(",")})))))",
+    val buildFileList = buildFiles.joinToString(",")
+    // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
+    return if (buildFileList.isNotEmpty()) {
+      // TODO: verify this branch is hit.
+      return correctPotentiallyBrokenTargetNames(
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "filter('^[^@]', kind(test, allrdeps(siblings(rbuildfiles($buildFileList)))))",
+        )
       )
-    )
+    } else listOf()
   }
 
   private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {
@@ -205,6 +211,7 @@ private class BazelClient(private val rootDirectory: File) {
   }
 }
 
+// TODO: consider moving to top-level utility & adding additional functionality to help tests.
 private class GitClient(private val workingDirectory: File) {
   /** The name of the current branch of the local Git repository. */
   val currentBranch: String by lazy { retrieveCurrentBranch() }
@@ -223,7 +230,7 @@ private class GitClient(private val workingDirectory: File) {
   }
 
   private fun retrieveBranchMergeBase(): String {
-    return executeGitCommandWithOneLineOutput("merge-base origin/develop HEAD")
+    return executeGitCommandWithOneLineOutput("merge-base develop HEAD")
   }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =
@@ -267,6 +274,7 @@ private class GitClient(private val workingDirectory: File) {
   }
 }
 
+// TODO: refactor into top-level utility with tests (since tests depend on this).
 /**
  * Executes the specified [command] in the specified working directory [workingDir] with the
  * provided arguments being passed as arguments to the command.
@@ -278,7 +286,7 @@ private class GitClient(private val workingDirectory: File) {
  *     otherwise it's discarded
  * @return a [CommandResult] that includes the error code & application output
  */
-private fun executeCommand(
+fun executeCommand(
   workingDir: File,
   command: String,
   vararg arguments: String,
@@ -304,7 +312,7 @@ private fun executeCommand(
 }
 
 /** The result of executing a command using [executeCommand]. */
-private data class CommandResult(
+data class CommandResult(
   /** The exit code of the application. */
   val exitCode: Int,
   /** The lines of output from the command, including both error & standard output lines. */
