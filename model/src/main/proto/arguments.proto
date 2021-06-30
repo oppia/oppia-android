@@ -25,4 +25,7 @@ enum HighlightItem {
 
   // Indicates that the Administrator Controls item needs to be highlighted.
   ADMINISTRATOR_CONTROLS_ITEM = 3;
+
+  // Indicates that the Developer Options item needs to be highlighted.
+  DEVELOPER_OPTIONS_ITEM = 4;
 }
