@@ -14,8 +14,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/replay_button_item_question_view_margin_top"
     android:gravity="center_vertical"
-    app:layoutMarginEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_end : @dimen/general_button_item_question_view_margin_end}"
-    app:layoutMarginStart="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_margin_start : @dimen/general_button_item_question_view_margin_start}">
+    android:paddingEnd="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_padding_end : @dimen/general_button_item_question_view_padding_end}"
+    android:paddingStart="@{buttonViewModel.hasConversationView ? @dimen/general_button_item_exploration_view_padding_start : @dimen/general_button_item_question_view_padding_start}">
 
     <Button
       android:id="@+id/replay_button"

@@ -176,6 +176,8 @@
   <!-- General Button: Exploration View -->
   <dimen name="general_button_item_exploration_view_margin_start">60dp</dimen>
   <dimen name="general_button_item_exploration_view_margin_end">60dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_start">60dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_end">60dp</dimen>
 
   <!-- General Button: Question Split View -->
   <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
@@ -184,6 +186,8 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">60dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">60dp</dimen>
+  <dimen name="general_button_item_question_view_padding_start">60dp</dimen>
+  <dimen name="general_button_item_question_view_padding_end">60dp</dimen>
 
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">72dp</dimen>
