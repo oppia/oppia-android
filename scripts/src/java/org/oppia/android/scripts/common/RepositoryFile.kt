@@ -5,39 +5,41 @@ import java.io.File
 /** Helper class for managing & accessing files within the project repository. */
 class RepositoryFile() {
   companion object {
-    /** a list of directories and files which should be excluded for every script check. */
-    val alwaysExcludeFilesList = listOf<String>(
+    /** A list of directories which should be excluded for every script check. */
+    private val alwaysExcludeDirectoryList = listOf<String>(
       ".git",
       ".gitsecret",
       ".idea",
-      "bazel",
-      "config",
-      "gradle",
-      ".bazelrc",
-      ".editorconfig",
-      "gradlew",
-      "gradlew.bat",
       ".aswb",
+      "gradle",
+      "bazel-bin",
+      "bazel-oppia-android",
+      "bazel-out",
+      "bazel-testlogs",
     )
 
     /**
      * Collects the paths of all the files which are needed to be checked.
+     * Files that are generated or can't be altered in style/best practices (such as those managed
+     * by Android Studio) are automatically exempted.
      *
      * @param repoPath the path of the repo
-     * @param allowedExtension files with only this extension will be included in the search list
-     * @param exemptionsList a list of files which should not be included in the search list
-     * @return all files which needs to be checked
+     * @param expectedExtension files with only this extension will be included in the search list.
+     * This defaults to the empty string which signifies no extension restriction.
+     * @param exemptionsList a list of files that are exempted from the check. This defaults to an
+     * empty list which signifies no file is exempted for the check.
+     * @return all files which need to be checked
      */
     fun collectSearchFiles(
       repoPath: String,
-      allowedExtension: String = "",
-      exemptionsList: List<String> = listOf()
+      expectedExtension: String = "",
+      exemptionsList: List<String> = listOf<String>()
     ): List<File> {
       return File(repoPath).walk().filter { file ->
         val isProhibited = checkIfProhibitedFile(retrieveRelativeFilePath(file, repoPath))
         !isProhibited &&
           file.isFile &&
-          file.name.endsWith(allowedExtension) &&
+          file.name.endsWith(expectedExtension) &&
           file.name !in exemptionsList
       }.toList()
     }
@@ -49,7 +51,7 @@ class RepositoryFile() {
      * @return check if path is allowed to be analyzed or not
      */
     private fun checkIfProhibitedFile(pathString: String): Boolean {
-      return alwaysExcludeFilesList.any { pathString.startsWith(it) }
+      return alwaysExcludeDirectoryList.any { pathString.startsWith(it) }
     }
 
     /**

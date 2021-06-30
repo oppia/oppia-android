@@ -1,19 +1,31 @@
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+"""
+Package containing all the common utilities shared between the scripts.
+"""
 
-package_group(
-    name = "common_utilities_visibility",
-    packages = [
-        "//scripts",
-        "//scripts/src/java/org/oppia/android/scripts/regex",
-    ],
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
+
+kt_jvm_library(
+    name = "repository_file",
+    testonly = True,
+    srcs = ["RepositoryFile.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
 )
 
 kt_jvm_library(
-    name = "common_utilities_lib",
+    name = "result_constants",
     testonly = True,
-    srcs = [
-        "RepositoryFile.kt",
-        "ScriptResultConstants.kt",
+    srcs = ["ScriptResultConstants.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+)
+
+kt_jvm_test(
+    name = "RepositoryFileTest",
+    testonly = True,
+    srcs = ["RepositoryFileTest.kt"],
+    deps = [
+        ":repository_file",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
-    visibility = [":common_utilities_visibility"],
 )

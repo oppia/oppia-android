@@ -225,9 +225,5 @@ WORKSPACE @fsharpasharp
 .bazelrc @fsharpasharp
 /tools/android/ @fsharpasharp
 
-#####################################################################################
-#                         Static analysis check configurations                      #
-#####################################################################################
-
-# textproto assets ownership.
+# Static analysis check configuration files ownership.
 /scripts/assets/ @BenHenning

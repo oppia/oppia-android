@@ -119,15 +119,15 @@ def _generate_single_asset_proto_binary(
     Args:
         name: str. The name of this target.
         proto_file_name: str. The file name of the text proto under the assets directory that will
-            be converted. This is assuming to correspond to 'src/main/assets/<name>.textproto' and
-            will lead to a new generated file called 'src/main/assets/<name>.pb'.
-        proto_dep_name: str. The name of the proto library under //model that contains the proto
+            be converted. This is assuming to correspond to '<asset_dir>/<name>.textproto' and
+            will lead to a new generated file called '<asset_dir>/<name>.pb'.
+        proto_dep_name: str. The name of the proto library that contains the proto
             definition being converted to binary.
-        proto_type_name: str. The name of the proto type being converted in the text proto. This is
-            assumed to be part of the shared 'model' package.
-        asset_dir: str. The path to the assets directory.
-        proto_dep_path: str. The path to the proto_dep.
-        proto_package: str. The name of the proto package.
+        proto_type_name: str. The name of the proto type being converted in the text proto.
+        asset_dir: str. The path to the assets directory where the textproto files are present.
+            Example: 'src/main/assets'
+        proto_dep_path: str. The path to the library that contains the proto_dep. Example: '//model'
+        proto_package: str. The name of the proto package. Example: 'model'
 
     Returns:
         str. The path to the newly generated binary file.
@@ -159,9 +159,9 @@ def generate_proto_binary_assets(
         proto_dep_name: str. See _generate_single_asset_proto_binary.
         proto_type_name: str. See _generate_single_asset_proto_binary.
         name_prefix: str. A prefix to attach to the name of this target.
-        asset_dir: str. The path to the assets directory.
-        proto_dep_path: str. The path to the proto_dep.
-        proto_package: str. The name of the proto package.
+        asset_dir: str. See _generate_single_asset_proto_binary.
+        proto_dep_path: str. See _generate_single_asset_proto_binary.
+        proto_package: str. See _generate_single_asset_proto_binary.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.

@@ -28,10 +28,10 @@ fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = args[0] + "/"
 
-  // a list of all files in the repo to be analyzed.
+  // A list of all files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
 
-  // check if the repo has any filename failure.
+  // Check if the repo has any filename failure.
   val hasFilenameCheckFailure = retrieveFilenameChecks()
     .fold(initial = false) { isFailing, filenameCheck ->
       val checkFailed = checkProhibitedFileNamePattern(
@@ -42,7 +42,7 @@ fun main(vararg args: String) {
       isFailing || checkFailed
     }
 
-  // check if the repo has any file content failure.
+  // Check if the repo has any file content failure.
   val hasFileContentCheckFailure = retrieveFileContentChecks()
     .fold(initial = false) { isFailing, fileContentCheck ->
       val checkFailed = checkProhibitedContent(searchFiles, fileContentCheck)
@@ -150,8 +150,9 @@ private fun checkProhibitedContent(
   val matchedFiles = searchFiles.filter { file ->
     file.name !in fileContentCheck.getExemptedFileNameList() &&
       fileNameRegex.matches(file.name) &&
-      File(file.toString()).bufferedReader().lineSequence()
-        .foldIndexed(initial = false) { lineIndex, isFailing, lineContent ->
+      File(file.toString())
+        .bufferedReader()
+        .lineSequence().foldIndexed(initial = false) { lineIndex, isFailing, lineContent ->
           val matches = prohibitedContentRegex.matches(lineContent)
           if (matches) {
             logProhibitedContentFailure(

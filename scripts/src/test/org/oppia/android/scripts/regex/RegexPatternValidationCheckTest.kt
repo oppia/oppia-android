@@ -33,7 +33,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileNamePattern_validFileNamePattern_fileNamePatternIsCorrect() {
+  fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
     tempFolder.newFolder("testfiles", "app", "src", "main")
     tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
 
@@ -43,7 +43,17 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileNamePattern_prohibitedFileNamePattern_fileNamePatternIsNotCorrect() {
+  fun testFileNamePattern_activityInTestingModule_fileNamePatternIsCorrect() {
+    tempFolder.newFolder("testfiles", "testing", "src", "main")
+    tempFolder.newFile("testfiles/testing/src/main/TestActivity.kt")
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileNamePattern_activityInDataModule_fileNamePatternIsNotCorrect() {
     tempFolder.newFolder("testfiles", "data", "src", "main")
     tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
 
@@ -111,7 +121,7 @@ class RegexPatternValidationCheckTest {
 
   /** Helper function to retrieve the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {
-    return tempFolder.getRoot().toString() + "/testfiles"
+    return "${tempFolder.root}/testfiles"
   }
 
   /** Helper function to execute the main method of the script. */
