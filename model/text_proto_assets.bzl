@@ -125,9 +125,10 @@ def _generate_single_asset_proto_binary(
             definition being converted to binary.
         proto_type_name: str. The name of the proto type being converted in the text proto.
         asset_dir: str. The path to the assets directory where the textproto files are present.
-            Example: 'src/main/assets'
-        proto_dep_path: str. The path to the library that contains the proto_dep. Example: '//model'
-        proto_package: str. The name of the proto package. Example: 'model'
+            Example: 'src/main/assets'.
+        proto_dep_path: str. The path to the library that contains the proto_dep.
+            Example: '//model'.
+        proto_package: str. The name of the proto package. Example: 'model'.
 
     Returns:
         str. The path to the newly generated binary file.
