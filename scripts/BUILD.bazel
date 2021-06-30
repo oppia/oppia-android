@@ -44,30 +44,6 @@ kt_jvm_test(
 kt_jvm_binary(
     name = "xml_syntax_check",
     testonly = True,
-    main_class = "org.oppia.android.scripts.XMLSyntaxCheck$Companion",
-    runtime_deps = [":xml_syntax_check_lib"],
-)
-
-kt_jvm_library(
-    name = "xml_syntax_check_lib",
-    testonly = True,
-    srcs = [
-        "src/java/org/oppia/android/scripts/RepoFile.kt",
-        "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
-        "src/java/org/oppia/android/scripts/SyntaxErrorHandler.kt",
-        "src/java/org/oppia/android/scripts/XMLSyntaxCheck.kt",
-    ],
-)
-
-kt_jvm_test(
-    name = "test_xml_syntax_check",
-    testonly = True,
-    srcs = ["src/test/org/oppia/android/scripts/XMLSyntaxCheckTest.kt"],
-    test_class = "org.oppia.android.scripts.XMLSyntaxCheckTest",
-    deps = [
-        ":xml_syntax_check_lib",
-        "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-    ],
+    main_class = "org.oppia.android.scripts.xml.XmlSyntaxCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
 )
