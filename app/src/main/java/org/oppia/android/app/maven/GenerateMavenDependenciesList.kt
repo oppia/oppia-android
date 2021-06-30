@@ -10,16 +10,17 @@ import java.io.File
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
+import org.oppia.android.app.maven.validatelinks.LicenseLink
+import org.oppia.android.app.maven.validatelinks.ValidateLicenseLinks
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
-private const val licensesTag = "<licenses>"
-private const val licenseCloseTag = "</licenses>"
-private const val licenseTag = "<license>"
-private const val nameTag = "<name>"
-private const val urlTag = "<url>"
+private const val LICENSES_TAG = "<licenses>"
+private const val LICENSES_CLOSE_TAG = "</licenses>"
+private const val LICENSE_TAG = "<license>"
+private const val NAME_TAG = "<name>"
+private const val URL_TAG = "<url>"
 private const val bazelQueryCommand =
-  "bazel --output_base=/tmp/diff query 'deps(deps(//:oppia) " +
-    "intersect //third_party/...) intersect @maven//...'"
+  "bazel query 'deps(deps(//:oppia) intersect //third_party/...) intersect @maven//...'"
 
 var backupLicenseLinksList: MutableSet<BackupLicense> = mutableSetOf<BackupLicense>()
 var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
@@ -31,16 +32,57 @@ var finalDependenciesList = mutableListOf<MavenListDependency>()
 var parsedArtifactsList = mutableListOf<String>()
 
 val mavenDepsList = mutableListOf<LicenseDependency>()
-val linkset = mutableSetOf<String>()
-val nolicenseSet = mutableSetOf<String>()
+val linksSet = mutableSetOf<String>()
+val noLicenseSet = mutableSetOf<String>()
+
+private var countInvalidPomUrl = 0
+private var mavenDependencyItemIndex = 0
+var countDepsWithoutLicenseLinks = 0
+
+private var writeBackup = false
+var scriptFailed = false
+
+var rootPath: String = ""
+
+fun printMessage(message: String) {
+  println("****************")
+  println(message)
+  println("****************\n")
+}
+
+// Utility function to write all the mavenListDependencies of the bazelQueryDepsList.
+fun showBazelQueryDepsList() {
+  val bazelListFile = File("bazel_list.txt")
+  bazelListFile.printWriter().use { writer ->
+    var count = 0
+    bazelQueryDepsNames.forEach {
+      writer.print("${count++} ")
+      writer.println(it)
+    }
+  }
+}
+
+// Utility function to write all the mavenListDependencies of the parsedArtifactsList.
+fun showFinalDepsList() {
+  val HOME = "/home/prayutsu/opensource/oppia-android/"
+  val finalDepsFile = File("/home/prayutsu/opensource/oppia-android/parsed_list.txt")
+  finalDepsFile.printWriter().use { writer ->
+    var count = 0
+    parsedArtifactsList.forEach {
+      writer.print("${count++} ")
+      writer.println(it)
+    }
+  }
+}
 
 fun main(args: Array<String>) {
-  if (args.size > 0) print(args[0])
-//      runMavenRePinCommand()
-  runBazelQueryCommand(bazelQueryCommand)
-  findBackUpForLicenseLinks()
+  if (args.size > 0) println(args[0])
+  rootPath = args[0]
+  runMavenRePinCommand(args[0])
+  runBazelQueryCommand(args[0])
+  findBackUpForLicenseLinks(args[0])
   readMavenInstall()
-  getLicenseLinksfromPOM()
+  getLicenseLinksFromPOM()
   showBazelQueryDepsList()
   showFinalDepsList()
 
@@ -49,12 +91,12 @@ fun main(args: Array<String>) {
     "Number of deps for which licenses have " +
       "to be provided manually = $countDepsWithoutLicenseLinks"
   )
-  println(linkset)
-  println(nolicenseSet)
+  println(linksSet)
+  println(noLicenseSet)
 
   if (writeBackup) {
     val provideLicensesJson = File(
-      "app/src/main/java/org/oppia/android/app/maven/backup/",
+      "/home/prayutsu/opensource/oppia-android/app/src/main/java/org/oppia/android/app/maven/backup/",
       "backup_license_links.json"
     )
     provideLicensesJson.printWriter().use { out ->
@@ -74,39 +116,26 @@ fun main(args: Array<String>) {
   }
 }
 
-fun runMavenRePinCommand() {
-  val processBuilder = ProcessBuilder()
+fun runMavenRePinCommand(rootPath: String) {
+  val rootDirectory = File(rootPath).absoluteFile
   val repinCommand = "REPIN=1 bazel run @unpinned_maven//:pin"
-  processBuilder.command(repinCommand)
-  try {
-    val process = processBuilder.start()
-    val exitValue = process.waitFor()
-    if (exitValue != 0) {
-      throw Exception("An error was encountered while running the $repinCommand command.")
-    }
-  } catch (e: Exception) {
-    e.printStackTrace()
+  val process = ProcessBuilder()
+    .command("bash", "-c", repinCommand)
+    .directory(rootDirectory)
+    .start()
+  val exitValue = process.waitFor()
+  if (exitValue != 0) {
     throw Exception("An error was encountered while running the $repinCommand command.")
   }
 }
 
-fun findBackUpForLicenseLinks() {
+fun findBackUpForLicenseLinks(pathToRoot: String) {
   val backupJson = File(
-    "/home/prayutsu/opensource/oppia-android/" +
-      "app/src/main/java/org/oppia/android/app/maven/backup/backup_license_links.json"
+    pathToRoot +
+      "/app/src/main/java/org/oppia/android/app/maven/backup/backup_license_links.json"
   )
   val backupJsonContent = backupJson.inputStream().bufferedReader().use {
     it.readText()
-  }
-  if (backupJsonContent.isEmpty()) {
-    println(
-      "The backup_license_links.json file is empty. " +
-        "Please add the JSON structure to provide the BackupLicense Links."
-    )
-    throw Exception(
-      "The backup_license_links.json must " +
-        "contain an array with \"artifacts\" key."
-    )
   }
   val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
   val adapter = moshi.adapter(BackupDependency::class.java)
@@ -158,43 +187,25 @@ fun parseArtifactName(artifactName: String): String {
   return parsedArtifactNameBuilder.toString()
 }
 
-fun runBazelQueryCommand(command: String) {
-  val rootDirectory = File("home/prayutsu/openource/oppia-android/").absoluteFile
+fun runBazelQueryCommand(rootPath: String) {
+  val rootDirectory = File(rootPath).absoluteFile
   val bazelClient = BazelClient(rootDirectory)
-  bazelClient.executeBazelCommand(
+  val output = bazelClient.executeBazelCommand(
     "query",
-    "'deps(deps(//:oppia) " +
-      "intersect //third_party/...) intersect @maven//...'"
+    "\'deps(deps(//:oppia)",
+    "intersect",
+    "//third_party/...)",
+    "intersect",
+    "@maven//...\'"
   )
-//      val processBuilder = ProcessBuilder()
-//      processBuilder.command("bash", "-c", command)
-//      try {
-//        val process = processBuilder.start()
-//        val reader = BufferedReader(InputStreamReader(process.inputStream))
-//        var line: String?
-//        while (true) {
-//          line = reader.readLine()
-//          if (line == null) break
-//          val endindex = line.toString().length
-//          bazelQueryDepsNames.add(line.toString().substring(9, endindex))
-//        }
-//        bazelQueryDepsNames.sort()
-//
-//        val exitValue = process.waitFor(WAIT_PROCESS_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-//        if (exitValue) {
-//          System.err.println(
-//            "There was some unexpected error while " +
-//              "running the bazel Query command."
-//          )
-//          throw Exception("Unexpected error.")
-//        }
-//      } catch (e: Exception) {
-//        e.printStackTrace()
-//      }
+  println(output)
+  output.forEach { dep ->
+    bazelQueryDepsNames.add(dep.substring(9, dep.length))
+  }
+  bazelQueryDepsNames.sort()
 }
 
 private fun readMavenInstall() {
-  val HOME = "/home/prayutsu/opensource/oppia-android/"
   val mavenInstallJson =
     File("/home/prayutsu/opensource/oppia-android/third_party/maven_install.json")
   val mavenInstallJsonText =
@@ -218,39 +229,77 @@ private fun readMavenInstall() {
   println("bazel query size = ${bazelQueryDepsNames.size}")
 }
 
-// Utility function to write all the mavenListDependencies of the bazelQueryDepsList.
-fun showBazelQueryDepsList() {
-  val bazelListFile = File("bazel_list.txt")
-  bazelListFile.printWriter().use { writer ->
-    var count = 0
-    bazelQueryDepsNames.forEach {
-      writer.print("${count++} ")
-      writer.println(it)
+private fun findLinkInBackup(licenseDependencyList: MutableList<LicenseDependency>) {
+
+}
+
+private fun validateAllLinks(pathToRoot: String, licenseLinksUrlSet: MutableSet<String>): MutableSet<String> {
+  val validateLinksJson = File(
+    pathToRoot +
+      "/app/src/main/java/org/oppia/android/app/maven/validatelinks/validate_license_links.json"
+  )
+  val validateLinksJsonContent = validateLinksJson.inputStream().bufferedReader().use {
+    it.readText()
+  }
+  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+  val adapter = moshi.adapter(ValidateLicenseLinks::class.java)
+  val validateLicenseLinks = adapter.fromJson(validateLinksJsonContent)
+  if (validateLicenseLinks == null) {
+    println(
+      "The validate_license_links.json file is empty. " +
+        "Please add the JSON structure to provide the BackupLicense Links."
+    )
+    throw Exception(
+      "The backup_license_links.json " +
+        "must contain an array with \"license_links\" key."
+    )
+  }
+  val links = validateLicenseLinks.licenseLinks
+  val allLinks: MutableSet<LicenseLink> = links.toMutableSet()
+  val invalidLinks = mutableSetOf<String>()
+  licenseLinksUrlSet.toSortedSet()
+  var validationSuccessful = true
+  licenseLinksUrlSet.forEach { licenseLinkUrl ->
+    val link = links.find { it.link == licenseLinkUrl }
+    if(link != null) {
+      if (link.isValid == null) {
+        println("here")
+        validationSuccessful = false
+      }
+      else if(link.isValid == false) {
+        invalidLinks.add(link.link)
+      }
+    } else {
+      println("there")
+      allLinks.add(LicenseLink(licenseLinkUrl, null))
+      validationSuccessful = false
     }
+  }
+  if(!validationSuccessful) {
+    writeValidateLicenseLinksJson(pathToRoot, allLinks)
+    throw java.lang.Exception("Could not verify if a link is valid or invalid for all links.")
+  }
+  return invalidLinks
+}
+
+private fun writeValidateLicenseLinksJson(pathToRoot: String, licenseLinksSet: MutableSet<LicenseLink>) {
+  licenseLinksSet.toSortedSet { link1, link2 ->
+    link1.link.compareTo(link2.link)
+  }
+  val validateLinksJson = File(
+    pathToRoot +
+      "/app/src/main/java/org/oppia/android/app/maven/validatelinks/validate_license_links.json"
+  )
+  validateLinksJson.printWriter().use { out ->
+    val validateLicenseLinks = ValidateLicenseLinks(licenseLinksSet.toSet())
+    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+    val adapter = moshi.adapter(ValidateLicenseLinks::class.java)
+    val json = adapter.indent("  ").toJson(validateLicenseLinks)
+    out.println(json)
   }
 }
 
-// Utility function to write all the mavenListDependencies of the parsedArtifactsList.
-fun showFinalDepsList() {
-  val HOME = "/home/prayutsu/opensource/oppia-android/"
-  val finalDepsFile = File("/home/prayutsu/opensource/oppia-android/parsed_list.txt")
-  finalDepsFile.printWriter().use { writer ->
-    var count = 0
-    parsedArtifactsList.forEach {
-      writer.print("${count++} ")
-      writer.println(it)
-    }
-  }
-}
-
-private var countInvalidPomUrl = 0
-private var mavenDependencyItemIndex = 0
-var countDepsWithoutLicenseLinks = 0
-
-private var writeBackup = false
-var scriptFailed = false
-
-private fun getLicenseLinksfromPOM() {
+private fun getLicenseLinksFromPOM() {
   finalDependenciesList.forEach {
     val url = it.url
     val pomFileUrl = url?.substring(0, url.length - 3) + "pom"
@@ -269,7 +318,7 @@ private fun getLicenseLinksfromPOM() {
       var cursor = -1
       if (pomText.length > 11) {
         for (index in 0..(pomText.length - 11)) {
-          if (pomText.substring(index, index + 10) == licensesTag) {
+          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
             cursor = index + 9
             break
           }
@@ -277,13 +326,13 @@ private fun getLicenseLinksfromPOM() {
         if (cursor != -1) {
           var cursor2 = cursor
           while (cursor2 < (pomText.length - 12)) {
-            if (pomText.substring(cursor2, cursor2 + 9) == licenseTag) {
+            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
               cursor2 += 9
               while (cursor2 < pomText.length - 6 &&
                 pomText.substring(
                   cursor2,
                   cursor2 + 6
-                ) != nameTag
+                ) != NAME_TAG
               ) {
                 ++cursor2
               }
@@ -298,7 +347,7 @@ private fun getLicenseLinksfromPOM() {
                 pomText.substring(
                   cursor2,
                   cursor2 + 5
-                ) != urlTag
+                ) != URL_TAG
               ) {
                 ++cursor2
               }
@@ -309,8 +358,8 @@ private fun getLicenseLinksfromPOM() {
               }
               backupLicenseNames.add(urlName.toString())
               backupLicenseLinks.add(url.toString())
-              linkset.add(url.toString())
-            } else if (pomText.substring(cursor2, cursor2 + 12) == licenseCloseTag) {
+              linksSet.add(url.toString())
+            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
               break
             }
             ++cursor2
@@ -321,71 +370,65 @@ private fun getLicenseLinksfromPOM() {
       ++countInvalidPomUrl
       scriptFailed = true
       println("****************")
-      println("Error : There was a problem while opening the provided link  - ")
-      println("URL : $pomFileUrl")
-      println("MavenListDependency Name : $artifactName")
-      println("****************")
+      val message = """
+          Error : There was a problem while opening the provided link  - 
+          URL : $pomFileUrl")
+          MavenListDependency Name : $artifactName""".trimIndent()
+      printMessage(message)
       e.printStackTrace()
       exitProcess(1)
     }
-    if (backupLicenseNames.isEmpty()) {
-      ++countDepsWithoutLicenseLinks
-      nolicenseSet.add(it.coord)
-      // Look for the license link in provide_licenses.json
-      if (backupLicenseDepsList.isNotEmpty() &&
-        backupLicenseDepsList.binarySearch(
-          it.coord,
-          0,
-          backupLicenseDepsList.lastIndex
-        ) >= 0
-      ) {
-        // Check if the URL is valid and license can be extracted.
-        val indexOfDep =
-          backupLicenseDepsList.binarySearch(it.coord, 0, backupLicenseDepsList.lastIndex)
-        val backUp = backupLicenseLinksList.elementAt(indexOfDep)
-        val licenseNames = backUp.licenseNames
-        val licenseLinks = backUp.licenseLinks
-        //  check...
-        if (licenseLinks.isEmpty()) {
-          scriptFailed = true
-          println("***********")
-          println(
-            "Please provide backup license link(s) for the artifact " +
-              "- \"${it.coord}\" in backup.json."
-          )
-          println("***********")
-        }
-        if (licenseNames.isEmpty()) {
-          scriptFailed = true
-          println("***********")
-          println(
-            "Please provide backup license " +
-              "name(s) for the artifact - \"${it.coord}\" in backup.json."
-          )
-          println("***********")
-        }
-        if (licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
-          backupLicenseNames = licenseNames
-          backupLicenseLinks = licenseLinks
-        }
-      } else {
-        println("***********")
-        println(
-          "Please provide backup license name(s) " +
-            "and link(s) for the artifact - \"${it.coord}\" in backup.json."
-        )
-        println("***********")
-        backupLicenseLinksList.add(
-          BackupLicense(
-            it.coord,
-            mutableListOf<String>(),
-            mutableListOf<String>()
-          )
-        )
-        writeBackup = true
-        scriptFailed = true
-      }
-    }
+//    if (backupLicenseNames.isEmpty()) {
+//      ++countDepsWithoutLicenseLinks
+//      noLicenseSet.add(it.coord)
+//      // Look for the license link in provide_licenses.json
+//      if (backupLicenseDepsList.isNotEmpty() &&
+//        backupLicenseDepsList.binarySearch(
+//          it.coord,
+//          0,
+//          backupLicenseDepsList.lastIndex
+//        ) >= 0
+//      ) {
+//        // Check if the URL is valid and license can be extracted.
+//        val indexOfDep =
+//          backupLicenseDepsList.binarySearch(it.coord, 0, backupLicenseDepsList.lastIndex)
+//        val backUp = backupLicenseLinksList.elementAt(indexOfDep)
+//        val licenseNames = backUp.licenseNames
+//        val licenseLinks = backUp.licenseLinks
+//        //  check...
+//        if (licenseLinks.isEmpty()) {
+//          scriptFailed = true
+//          val message = """
+//            Please provide backup license link(s) for the artifact -
+//            \"${it.coord}\" in backup.json."
+//          """.trimIndent()
+//          printMessage(message)
+//        }
+//        if (licenseNames.isEmpty()) {
+//          scriptFailed = true
+//          val message = """Please provide backup license name(s) for the artifact -
+//            \"${it.coord}\" in backup.json.""".trimIndent()
+//          printMessage(message)
+//        }
+//        if (licenseLinks.isNotEmpty() && licenseNames.isNotEmpty()) {
+//          backupLicenseNames = licenseNames
+//          backupLicenseLinks = licenseLinks
+//        }
+//      } else {
+//        val message = """Please provide backup license name(s)
+//          and link(s) for the artifact - \"${it.coord}\" in backup.json.""".trimIndent()
+//        printMessage(message)
+//        backupLicenseLinksList.add(
+//          BackupLicense(
+//            it.coord,
+//            mutableListOf<String>(),
+//            mutableListOf<String>()
+//          )
+//        )
+//        writeBackup = true
+//        scriptFailed = true
+//      }
+//    }
     val dep = LicenseDependency(
       mavenDependencyItemIndex,
       it.coord,
@@ -396,6 +439,11 @@ private fun getLicenseLinksfromPOM() {
     mavenDepsList.add(dep)
     ++mavenDependencyItemIndex
   }
+  val invalidLinks = validateAllLinks(rootPath, linksSet)
+  println(invalidLinks)
+  // Now look for backup.
+
+
 }
 
 private class BazelClient(private val rootDirectory: File) {
@@ -440,11 +488,14 @@ private class BazelClient(private val rootDirectory: File) {
       "Expected working directory to be an actual directory: $workingDir"
     }
     val assembledCommand = listOf(command) + arguments.toList()
-    val process =
-      ProcessBuilder(assembledCommand)
-        .directory(workingDir)
-        .redirectErrorStream(includeErrorOutput)
-        .start()
+    println(assembledCommand)
+    val command = assembledCommand.joinToString(" ")
+    println(command)
+    val process = ProcessBuilder()
+      .command("bash", "-c", command)
+      .directory(workingDir)
+      .redirectErrorStream(includeErrorOutput)
+      .start()
     val finished = process.waitFor(WAIT_PROCESS_TIMEOUT_MS, TimeUnit.MILLISECONDS)
     check(finished) { "Process did not finish within the expected timeout" }
     return CommandResult(
