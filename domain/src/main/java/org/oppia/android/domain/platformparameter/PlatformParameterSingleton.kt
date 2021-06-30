@@ -7,7 +7,7 @@ import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
 /** Singleton class which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
-class PlatformParameterSingleton @Inject constructor() {
+open class PlatformParameterSingleton @Inject constructor() {
   private var platformParameterMap: Map<String, ParameterValue> = mapOf()
 
   /** Get the current [platformParameterMap]. */
@@ -19,7 +19,7 @@ class PlatformParameterSingleton @Inject constructor() {
   }
 
   /** Retrieve a String type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getStringPlatformParameter(name: String): PlatformParameter<String>? {
+  open fun getStringPlatformParameter(name: String): PlatformParameter<String>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
     if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.STRING)) return null
@@ -30,7 +30,7 @@ class PlatformParameterSingleton @Inject constructor() {
   }
 
   /** Retrieve an Integer type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getIntegerPlatformParameter(name: String): PlatformParameter<Int>? {
+  open fun getIntegerPlatformParameter(name: String): PlatformParameter<Int>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
     if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.INTEGER)) return null
@@ -41,7 +41,7 @@ class PlatformParameterSingleton @Inject constructor() {
   }
 
   /** Retrieve a Boolean type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getBooleanPlatformParameter(name: String): PlatformParameter<Boolean>? {
+  open fun getBooleanPlatformParameter(name: String): PlatformParameter<Boolean>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[name] ?: return null
     if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.BOOLEAN)) return null

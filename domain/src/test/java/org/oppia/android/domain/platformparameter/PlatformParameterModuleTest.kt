@@ -8,13 +8,21 @@ import dagger.BindsInstance
 import dagger.Component
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.platformparameter.FakePlatformParameterModule
-import org.oppia.android.testing.platformparameter.FakePlatformParameterSingleton
-import org.oppia.android.testing.platformparameter.TEST_PARAM_DEFAULT_VALUE
-import org.oppia.android.testing.platformparameter.TEST_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_PARAM_VALUE
-import org.oppia.android.testing.platformparameter.TestParam
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameter
+import org.oppia.android.util.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.util.platformparameter.TEST_BOOLEAN_PARAM_VALUE
+import org.oppia.android.util.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.util.platformparameter.TEST_INTEGER_PARAM_VALUE
+import org.oppia.android.util.platformparameter.TEST_STRING_PARAM_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.TEST_STRING_PARAM_NAME
+import org.oppia.android.util.platformparameter.TEST_STRING_PARAM_VALUE
+import org.oppia.android.util.platformparameter.TestBooleanParam
+import org.oppia.android.util.platformparameter.TestIntegerParam
+import org.oppia.android.util.platformparameter.TestStringParam
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -27,41 +35,76 @@ import org.oppia.android.app.model.PlatformParameter as ParameterValue
 class PlatformParameterModuleTest {
 
   @Inject
-  @TestParam
-  lateinit var testPlatformParameter: PlatformParameter<String>
+  @TestStringParam
+  lateinit var testStringPlatformParameter: PlatformParameter<String>
 
   @Inject
-  lateinit var platformParameterSingleton: PlatformParameterSingleton
+  @TestIntegerParam
+  lateinit var testIntegerPlatformParameter: PlatformParameter<Int>
+
+  @Inject
+  @TestBooleanParam
+  lateinit var testBooleanPlatformParameter: PlatformParameter<Boolean>
 
   private val mockPlatformParameterMap by lazy {
-    val testPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
-      .setString(TEST_PARAM_VALUE).build()
+    val mockStringPlatformParameter = ParameterValue.newBuilder()
+      .setString(TEST_STRING_PARAM_VALUE).build()
+    val mockIntegerPlatformParameter = ParameterValue.newBuilder()
+      .setInteger(TEST_INTEGER_PARAM_VALUE).build()
+    val mockBooleanPlatformParameter = ParameterValue.newBuilder()
+      .setBoolean(TEST_BOOLEAN_PARAM_VALUE).build()
 
     mapOf(
-      TEST_PARAM_NAME to testPlatformParameter,
+      TEST_STRING_PARAM_NAME to mockStringPlatformParameter,
+      TEST_INTEGER_PARAM_NAME to mockIntegerPlatformParameter,
+      TEST_BOOLEAN_PARAM_NAME to mockBooleanPlatformParameter
     )
   }
 
   @Test
-  fun testFakeModule_initPlatformParameterMap_retrieveTestParameter_verifyItsValue() {
+  fun testModule_initPlatformParameterMap_retrieveTestStringParameter_returnsParamValue() {
     setUpTestApplicationComponent(mockPlatformParameterMap)
-    assertThat(testPlatformParameter.value).isEqualTo(TEST_PARAM_VALUE)
+    assertThat(testStringPlatformParameter.value).isEqualTo(TEST_STRING_PARAM_VALUE)
   }
 
   @Test
-  fun testFakeModule_doNotInitPlatformParameterMap_retrieveTestParameter_verifyItsValue() {
+  fun testModule_doNotInitPlatformParameterMap_retrieveTestStringParameter_returnsDefaultValue() {
     setUpTestApplicationComponent(mapOf())
-    assertThat(testPlatformParameter.value).isEqualTo(TEST_PARAM_DEFAULT_VALUE)
+    assertThat(testStringPlatformParameter.value).isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
   }
 
-  fun setUpTestApplicationComponent(platformParameterMap: Map<String, ParameterValue>) {
-    FakePlatformParameterSingleton.platformParameterMap = platformParameterMap
+  @Test
+  fun testModule_initPlatformParameterMap_retrieveTestIntegerParameter_returnsParamValue() {
+    setUpTestApplicationComponent(mockPlatformParameterMap)
+    assertThat(testIntegerPlatformParameter.value).isEqualTo(TEST_INTEGER_PARAM_VALUE)
+  }
+
+  @Test
+  fun testModule_doNotInitPlatformParameterMap_retrieveTestIntegerParameter_returnsDefaultValue() {
+    setUpTestApplicationComponent(mapOf())
+    assertThat(testIntegerPlatformParameter.value).isEqualTo(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+  }
+
+  @Test
+  fun testModule_initPlatformParameterMap_retrieveTestBooleanParameter_returnsParamValue() {
+    setUpTestApplicationComponent(mockPlatformParameterMap)
+    assertThat(testBooleanPlatformParameter.value).isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
+  }
+
+  @Test
+  fun testModule_doNotInitPlatformParameterMap_retrieveTestBooleanParameter_returnsDefaultValue() {
+    setUpTestApplicationComponent(mapOf())
+    assertThat(testBooleanPlatformParameter.value).isEqualTo(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
+  }
+
+  private fun setUpTestApplicationComponent(platformParameterMap: Map<String, ParameterValue>) {
+    TestPlatformParameterSingleton.mockPlatformParameterMap = platformParameterMap
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [FakePlatformParameterModule::class])
+  @Component(modules = [TestPlatformParameterModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
