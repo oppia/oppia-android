@@ -29,6 +29,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
+/**
+ * [PlatformParameterModuleTest] verifies the working of [PlatformParameterModule] by testing
+ * the [PlatformParameterValue] received in different cases
+ * */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterModuleTest.TestApplication::class)
