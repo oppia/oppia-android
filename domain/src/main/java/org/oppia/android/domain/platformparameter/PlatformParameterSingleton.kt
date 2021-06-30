@@ -1,51 +1,70 @@
 package org.oppia.android.domain.platformparameter
 
-import org.oppia.android.util.platformparameter.PlatformParameter
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
 /** Singleton class which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
 class PlatformParameterSingleton @Inject constructor() {
-  private var platformParameterMap: Map<String, ParameterValue> = mapOf()
+  private var platformParameterMap: Map<String, PlatformParameter> = mapOf()
 
-  /** Get the current [platformParameterMap]. */
+  /**
+   * Gets the current [platformParameterMap].
+   * @return [Map<String, PlatformParameter>]
+   * */
   fun getPlatformParameterMap() = platformParameterMap
 
-  /** Initialize [platformParameterMap] if it is not yet initialised. */
-  fun setPlatformParameterMap(map: Map<String, ParameterValue>) {
-    if (platformParameterMap.isEmpty()) platformParameterMap = map
+  /**
+   * Initializes a [platformParameterMap] in case it is empty.
+   * @param platformParameterMap [Map<String, PlatformParameter>]
+   * @return [Unit]
+   * */
+  fun setPlatformParameterMap(platformParameterMap: Map<String, PlatformParameter>) {
+    if (this.platformParameterMap.isEmpty()) this.platformParameterMap = platformParameterMap
   }
 
-  /** Retrieve a String type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getStringPlatformParameter(name: String): PlatformParameter<String>? {
+  /**
+   * Retrieves a String type Platform Parameter, if it exists in the [platformParameterMap].
+   * @param platformParameterName [String], Name of the String type Platform Parameter.
+   * @return [PlatformParameterValue]? which contains the value for String type Platform Parameter
+   * */
+  fun getStringPlatformParameter(platformParameterName: String): PlatformParameterValue<String>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name] ?: return null
-    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.STRING)) return null
-    return object : PlatformParameter<String> {
+    val parameter = platformParameterMap[platformParameterName] ?: return null
+    if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.STRING)) return null
+    return object : PlatformParameterValue<String> {
       override val value: String
         get() = parameter.string
     }
   }
 
-  /** Retrieve an Integer type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getIntegerPlatformParameter(name: String): PlatformParameter<Int>? {
+  /**
+   * Retrieves a Integer type Platform Parameter, if it exists in the [platformParameterMap].
+   * @param platformParameterName [String], Name of the Integer type Platform Parameter.
+   * @return [PlatformParameterValue]? which contains the value for Integer type Platform Parameter
+   * */
+  fun getIntegerPlatformParameter(platformParameterName: String): PlatformParameterValue<Int>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name] ?: return null
-    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.INTEGER)) return null
-    return object : PlatformParameter<Int> {
+    val parameter = platformParameterMap[platformParameterName] ?: return null
+    if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.INTEGER)) return null
+    return object : PlatformParameterValue<Int> {
       override val value: Int
         get() = parameter.integer
     }
   }
 
-  /** Retrieve a Boolean type [ParameterValue], if it exists in the [platformParameterMap]. */
-  fun getBooleanPlatformParameter(name: String): PlatformParameter<Boolean>? {
+  /**
+   * Retrieves a Boolean type Platform Parameter, if it exists in the [platformParameterMap].
+   * @param platformParameterName [String], Name of the Boolean type Platform Parameter.
+   * @return [PlatformParameterValue]? which contains the value for Boolean type Platform Parameter
+   * */
+  fun getBooleanPlatformParameter(platformParameterName: String): PlatformParameterValue<Boolean>? {
     if (platformParameterMap.isEmpty()) return null
-    val parameter = platformParameterMap[name] ?: return null
-    if (!parameter.valueTypeCase.equals(ParameterValue.ValueTypeCase.BOOLEAN)) return null
-    return object : PlatformParameter<Boolean> {
+    val parameter = platformParameterMap[platformParameterName] ?: return null
+    if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.BOOLEAN)) return null
+    return object : PlatformParameterValue<Boolean> {
       override val value: Boolean
         get() = parameter.boolean
     }
