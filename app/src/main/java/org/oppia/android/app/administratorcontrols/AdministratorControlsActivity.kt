@@ -7,13 +7,13 @@ import android.view.Menu
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import javax.inject.Inject
 
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
-const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
+const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
@@ -34,7 +34,7 @@ class AdministratorControlsActivity :
     activityComponent.inject(this)
     val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
-      savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
+      savedInstanceState.get(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
@@ -59,12 +59,12 @@ class AdministratorControlsActivity :
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 
