@@ -76,6 +76,35 @@ class RepositoryFileTest {
   }
 
   @Test
+  fun testRepoFile_specifyMultipleParameterCombination_collectedFilesShouldComplyWithAllSpecificationsMentioned() {
+    tempFolder.newFolder("testfiles", "app")
+    tempFolder.newFolder("testfiles", ".git")
+    val testFile1 = tempFolder.newFile("testfiles/TestFile1.kt")
+    val testFile2 = tempFolder.newFile("testfiles/app/TestFile2.kt")
+    val testFile3 = tempFolder.newFile("testfiles/app/TestFile3.kt")
+    val testFile4 = tempFolder.newFile("testfiles/TestFile4.kt")
+    val testFile5 = tempFolder.newFile("testfiles/TestFile5.xml")
+    val testFile6 = tempFolder.newFile("testfiles/.git/TestFile6.kt")
+    val exemptionList = listOf<String>(
+      "TestFile3.kt",
+      "TestFile4.kt"
+    )
+
+    val collectedFiles = RepositoryFile.collectSearchFiles(
+      repoPath = "${tempFolder.root}/testfiles/",
+      expectedExtension = ".kt",
+      exemptionsList = exemptionList
+    )
+
+    assertThat(collectedFiles).contains(testFile1)
+    assertThat(collectedFiles).contains(testFile2)
+    assertThat(collectedFiles).doesNotContain(testFile3)
+    assertThat(collectedFiles).doesNotContain(testFile4)
+    assertThat(collectedFiles).doesNotContain(testFile5)
+    assertThat(collectedFiles).doesNotContain(testFile6)
+  }
+
+  @Test
   fun testRepoFile_retrieveFilePath_filePathShouldBeRelativeToRoot() {
     tempFolder.newFolder("testfiles", "model", "src", "main", "proto")
     val file = tempFolder.newFile("testfiles/model/src/main/proto/test.proto")
