@@ -120,12 +120,13 @@
       android:name=".app.profileprogress.ProfileProgressActivity"
       android:label="@string/profile_progress_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.settings.profile.ProfileEditActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"/>
+    <activity
+      android:name=".app.settings.profile.ProfileEditActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileListActivity"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-      android:label="@string/profile_list_activity_title" />
+      android:label="@string/profile_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.settings.profile.ProfileRenameActivity"
       android:label="@string/profile_rename_activity_title"
@@ -194,6 +195,10 @@
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.LessonThumbnailImageViewTestActivity" />
+    <activity
+      android:name=".app.devoptions.DeveloperOptionsActivity"
+      android:label="@string/developer_options_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
