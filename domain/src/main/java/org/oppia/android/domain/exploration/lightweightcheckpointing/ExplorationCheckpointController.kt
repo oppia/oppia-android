@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration.lightweightcheckpointing
 
+import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
@@ -288,4 +289,7 @@ class ExplorationCheckpointController @Inject constructor(
     }
     return cacheStore
   }
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun getExplorationCheckpointDatabaseSizeLimit(): Int = explorationCheckpointDatabaseSizeLimit
 }
