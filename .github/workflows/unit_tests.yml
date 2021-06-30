@@ -20,6 +20,10 @@ jobs:
       matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
       have_tests_to_run: ${{ steps.compute-test-matrix-from-affected.outputs.have_tests_to_run || steps.compute-test-matrix-from-all.outputs.have_tests_to_run }}
     steps:
+      # First checkout the develop branch so that it exists locally (and not only as origin/develop).
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
