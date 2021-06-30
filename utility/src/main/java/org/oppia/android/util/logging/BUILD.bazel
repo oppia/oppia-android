@@ -100,12 +100,12 @@ kt_android_library(
 kt_android_library(
     name = "debug_module",
     srcs = [
-        "DebugLogReportingModule.kt"
+        "DebugLogReportingModule.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":debug_impl",
         ":dagger",
+        ":debug_impl",
     ],
 )
 
