@@ -9,6 +9,7 @@
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>

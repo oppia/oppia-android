@@ -28,7 +28,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -60,6 +60,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
@@ -116,10 +117,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityProdTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerActivityTest {
+class NavigationDrawerActivityProdTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
@@ -404,7 +405,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -518,7 +519,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -692,12 +693,39 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
+  fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(
+        internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -951,25 +979,26 @@ class NavigationDrawerActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityProdTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
-      component.inject(navigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest) {
+      return component.inject(navigationDrawerActivityProdTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
