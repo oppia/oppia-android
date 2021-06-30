@@ -1,46 +1,40 @@
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library", "kt_jvm_test")
-load("//scripts:script_assets.bzl", "generate_assets_list_from_text_protos")
+"""
+Kotlin-based scripts to help developers or perform continuous integration tasks.
+"""
 
-REGEX_PATTERN_CHECK_ASSETS = generate_assets_list_from_text_protos(
-    name = "script_assets",
-    file_content_validation_file_names = [
-        "file_content_validation_checks",
-    ],
-    filepath_pattern_validation_file_names = [
-        "filename_pattern_validation_checks",
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_test")
+load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
+
+REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets(
+    "regex_pattern_assets",
+    "//scripts/org/oppia/android/scripts/regex/assets",
+)
+
+# Visibility for libraries that have binaries defined at this package, and libraries defined at
+# subpackage level.
+package_group(
+    name = "oppia_script_lib_visibility",
+    packages = [
+        "//scripts",
+        "//scripts/src/java/org/oppia/android/scripts/...",
     ],
 )
 
 kt_jvm_binary(
-    name = "pattern_validation_check",
+    name = "regex_pattern_validation_check",
     testonly = True,
     data = REGEX_PATTERN_CHECK_ASSETS,
-    main_class = "org.oppia.android.scripts.RegexPatternValidationCheck$Companion",
-    runtime_deps = [":pattern_validation_lib"],
-)
-
-kt_jvm_library(
-    name = "pattern_validation_lib",
-    testonly = True,
-    srcs = [
-        "src/java/org/oppia/android/scripts/RegexPatternValidationCheck.kt",
-        "src/java/org/oppia/android/scripts/RepoFile.kt",
-        "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
-    ],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_structure_java_proto_lite",
-        "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_structure_java_proto_lite",
-    ],
+    main_class = "org.oppia.android.scripts.regex.RegexPatternValidationCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib"],
 )
 
 kt_jvm_test(
-    name = "test_pattern_validation_check",
+    name = "RegexPatternValidationCheckTest",
     testonly = True,
-    srcs = ["src/test/org/oppia/android/scripts/RegexPatternValidationCheckTest.kt"],
+    srcs = ["src/test/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"],
     data = REGEX_PATTERN_CHECK_ASSETS,
-    test_class = "org.oppia.android.scripts.RegexPatternValidationCheckTest",
     deps = [
-        ":pattern_validation_lib",
+        "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",

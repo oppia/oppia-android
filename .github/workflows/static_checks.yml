@@ -105,8 +105,9 @@ jobs:
           version: 4.0.0
 
       - name: Regex Patterns Validation Check
+        if: always()
         run: |
-          bazel run //scripts:pattern_validation_check -- $(pwd) app data utility domain
+          bazel run //scripts:regex_pattern_validation_check -- $(pwd)
 
       - name: XML Syntax Validation Check
         if: always()
