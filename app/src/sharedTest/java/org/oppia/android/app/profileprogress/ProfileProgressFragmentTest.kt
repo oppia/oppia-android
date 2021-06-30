@@ -82,7 +82,6 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -190,7 +189,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_profilePictureEditDialogIsDisplayed() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -201,7 +199,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3363): Enable AccessibilityChecks
   fun testProfileProgressFragment_openProfilePictureEditDialog_configChange_dialogIsStillOpen() {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,7 +210,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
@@ -232,7 +228,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
     val expectedIntent: Matcher<Intent> = allOf(
       hasAction(Intent.ACTION_PICK),
@@ -398,7 +393,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
@@ -514,7 +508,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3363): Enable AccessibilityChecks
   fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId,
@@ -537,7 +530,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3363): Enable AccessibilityChecks
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
     storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -606,7 +598,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
@@ -636,7 +627,6 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3251): Enable AccessibilityChecks
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,

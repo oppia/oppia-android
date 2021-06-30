@@ -70,6 +70,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -113,6 +114,9 @@ class DeveloperOptionsActivityTest {
     /* launchActivity= */ false
   )
 
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -141,9 +145,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_modifyLessonProgressIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -172,9 +174,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -193,9 +193,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -224,9 +222,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -261,9 +257,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
@@ -274,10 +268,7 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(
-      context = context,
-      internalProfileId = internalProfileId
-    )
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
   }
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {
