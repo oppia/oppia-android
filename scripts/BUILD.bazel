@@ -51,30 +51,6 @@ kt_jvm_binary(
 kt_jvm_binary(
     name = "test_file_check",
     testonly = True,
-    main_class = "org.oppia.android.scripts.TestFileCheck$Companion",
-    runtime_deps = [":test_file_check_lib"],
-)
-
-kt_jvm_library(
-    name = "test_file_check_lib",
-    testonly = True,
-    srcs = [
-        "src/java/org/oppia/android/scripts/ExemptionsList.kt",
-        "src/java/org/oppia/android/scripts/RepoFile.kt",
-        "src/java/org/oppia/android/scripts/ScriptResultConstants.kt",
-        "src/java/org/oppia/android/scripts/TestFileCheck.kt",
-    ],
-)
-
-kt_jvm_test(
-    name = "test_test_file_check",
-    testonly = True,
-    srcs = ["src/test/org/oppia/android/scripts/TestFileCheckTest.kt"],
-    test_class = "org.oppia.android.scripts.TestFileCheckTest",
-    deps = [
-        ":test_file_check_lib",
-        "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
-    ],
+    main_class = "org.oppia.android.scripts.testfile.TestFileCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/testfile:test_file_check_lib"],
 )

@@ -1,7 +1,13 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.common
 
-/** Lists of files which should be exepmted for the different script checks. */
-object ExemptionsList {
+/**
+ * List of files which should be exempted for the test file check.
+ *
+ * NOTE TO DEVELOPERS: New files should rarely be added here. In general, all new new files should
+ * have tests. If you think there's a valid exception, please specifically call this out in your PR
+ * description.
+ */
+object ScriptExemptions {
   /** List of files which should be exempted for the test file check. */
   val TEST_FILE_CHECK_EXEMPTIONS_LIST = listOf(
     "TestCoroutineDispatcherTestBase.kt",
@@ -609,9 +615,7 @@ object ExemptionsList {
     "GaeSubtopicSummary.kt",
     "NetworkApiKey.kt",
     "NetworkModule.kt",
-    "ExemptionsList.kt",
+    "ScriptExemptions.kt",
     "ScriptResultConstants.kt",
-    "RepoFile.kt",
-    "SyntaxErrorHandler.kt"
   )
 }

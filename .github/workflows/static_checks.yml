@@ -117,4 +117,4 @@ jobs:
       - name: Testfile Presence Check
         if: always()
         run: |
-          bazel run //scripts:test_file_check -- $(pwd) app data domain testing utility scripts
+          bazel run //scripts:test_file_check -- $(pwd)

@@ -11,3 +11,9 @@ const val XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK P
 
 /** XmlSyntaxCheck failed indicator. */
 const val XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK FAILED"
+
+/** TestFileCheck successfuly passed indicator. */
+const val TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR: String = "TEST FILE CHECK PASSED"
+
+/** TestFileCheck failed indicator. */
+const val TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR: String = "TEST FILE CHECK FAILED"

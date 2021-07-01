@@ -1,4 +1,4 @@
-package org.oppia.android.scripts
+package org.oppia.android.scripts.testfile
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
@@ -6,6 +6,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR
+import org.oppia.android.scripts.common.TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -13,21 +15,21 @@ import java.io.PrintStream
 /** Tests for [TestFileCheck]. */
 class TestFileCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
-  private val originalOut: PrintStream = java.lang.System.out
+  private val originalOut: PrintStream = System.out
 
   @Rule
   @JvmField
-  public var tempFolder: TemporaryFolder = TemporaryFolder()
+  var tempFolder = TemporaryFolder()
 
   @Before
-  fun setUpTests() {
+  fun setUp() {
     tempFolder.newFolder("testfiles")
-    java.lang.System.setOut(PrintStream(outContent))
+    System.setOut(PrintStream(outContent))
   }
 
   @After
   fun restoreStreams() {
-    java.lang.System.setOut(originalOut)
+    System.setOut(originalOut)
   }
 
   @Test
@@ -37,9 +39,7 @@ class TestFileCheckTest {
 
     runScript()
 
-    assertThat(outContent.toString().trim()).isEqualTo(
-      ScriptResultConstants.TEST_FILE_CHECK_PASSED
-    )
+    assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   @Test
@@ -52,12 +52,13 @@ class TestFileCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      ScriptResultConstants.TEST_FILE_CHECK_FAILED
-    )
-    assertThat(outContent.toString().trim()).isEqualTo(
-      "No test file found for:\nProdFile2.kt"
-    )
+    assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      No test file found for:
+      - ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
@@ -71,16 +72,23 @@ class TestFileCheckTest {
       runScript()
     }
 
-    assertThat(exception).hasMessageThat().contains(
-      ScriptResultConstants.TEST_FILE_CHECK_FAILED
-    )
-    assertThat(outContent.toString().trim()).isEqualTo(
-      "No test file found for:\nProdFile3.kt\nProdFile2.kt"
-    )
+    assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      No test file found for:
+      - ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt
+      - ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  /** Retrieves the absolute path of testfiles directory. */
+  private fun retrieveTestFilesDirectoryPath(): String {
+    return "${tempFolder.root}/testfiles"
   }
 
   /** Helper function which executes the main method of the script. */
   private fun runScript() {
-    TestFileCheck.main(tempFolder.getRoot().toString(), "testfiles")
+    main(retrieveTestFilesDirectoryPath())
   }
 }
