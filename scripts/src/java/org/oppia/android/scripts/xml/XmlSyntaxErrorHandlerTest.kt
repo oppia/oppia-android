@@ -19,7 +19,7 @@ class XmlSyntaxErrorHandlerTest {
   var tempFolder = TemporaryFolder()
 
   @Before
-  fun setUpTests() {
+  fun setUp() {
     tempFolder.newFolder("testfiles")
   }
 
