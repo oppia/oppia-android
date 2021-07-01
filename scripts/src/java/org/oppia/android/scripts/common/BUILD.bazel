@@ -1,0 +1,31 @@
+"""
+Package containing all the common utilities shared between the scripts.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
+
+kt_jvm_library(
+    name = "repository_file",
+    testonly = True,
+    srcs = ["RepositoryFile.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+)
+
+kt_jvm_library(
+    name = "result_constants",
+    testonly = True,
+    srcs = ["ScriptResultConstants.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+)
+
+kt_jvm_test(
+    name = "RepositoryFileTest",
+    testonly = True,
+    srcs = ["RepositoryFileTest.kt"],
+    deps = [
+        ":repository_file",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

@@ -1,0 +1,48 @@
+"""
+Package for XML syntax based checks.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
+
+kt_jvm_library(
+    name = "xml_syntax_error_handler_lib",
+    testonly = True,
+    srcs = ["XmlSyntaxErrorHandler.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+)
+
+kt_jvm_library(
+    name = "xml_syntax_check_lib",
+    testonly = True,
+    srcs = ["XmlSyntaxCheck.kt"],
+    visibility = ["//scripts:oppia_script_lib_visibility"],
+    deps = [
+        ":xml_syntax_error_handler_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
+    ],
+)
+
+kt_jvm_test(
+    name = "XmlSyntaxCheckTest",
+    testonly = True,
+    srcs = ["XmlSyntaxCheckTest.kt"],
+    deps = [
+        ":xml_syntax_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "XmlSyntaxErrorHandlerTest",
+    testonly = True,
+    srcs = ["XmlSyntaxErrorHandlerTest.kt"],
+    deps = [
+        ":xml_syntax_error_handler_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
