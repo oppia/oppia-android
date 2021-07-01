@@ -10,15 +10,9 @@ kt_jvm_library(
     srcs = [
         "ComputeAffectedTests.kt",
     ],
-    visibility = ["//scripts:oppia_script_lib_visibility"],
-)
-
-kt_jvm_test(
-    name = "ComputeAffectedTestsTest",
-    srcs = ["ComputeAffectedTestsTest.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":compute_affected_tests_lib",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+      "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+      "//scripts/src/java/org/oppia/android/scripts/common:git_client",
     ],
 )

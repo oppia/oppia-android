@@ -1,15 +1,18 @@
 package org.oppia.android.scripts.ci
 
 import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.testing.TestBazelWorkspace
+import org.oppia.android.scripts.testing.TestGitWorkspace
+import org.oppia.android.testing.assertThrows
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.PrintWriter
+import java.io.OutputStream
+import java.io.PrintStream
 
 /**
  * Tests for the compute_affected_tests utility.
@@ -29,18 +32,63 @@ class ComputeAffectedTestsTest {
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var testGitWorkspace: TestGitWorkspace
 
+  private lateinit var pendingOutputStream: ByteArrayOutputStream
+  private lateinit var originalStandardOutputStream: OutputStream
+
   @Before
   fun setUp() {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testGitWorkspace = TestGitWorkspace(tempFolder)
+
+    // Redirect script output for testing purposes.
+    pendingOutputStream = ByteArrayOutputStream()
+    originalStandardOutputStream = System.out
+    System.setOut(PrintStream(pendingOutputStream))
   }
 
   @After
   fun tearDown() {
+    // Reinstate test output redirection.
+    System.setOut(PrintStream(pendingOutputStream))
+
     // Print the status of the git repository to help with debugging in the cases of test failures
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
     println(testGitWorkspace.status())
+  }
+
+  @Test
+  fun testUtility_noArguments_printsUsageStringAndExits() {
+    val exception = assertThrows(SecurityException::class) { main(arrayOf()) }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_oneArgument_printsUsageStringAndExits() {
+    val exception = assertThrows(SecurityException::class) { main(arrayOf("first")) }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testUtility_directoryRootDoesNotExist_throwsException() {
+    val exception = assertThrows(IllegalStateException::class) { main(arrayOf("fake", "alsofake")) }
+
+    assertThat(exception).hasMessageThat().contains("Expected 'fake' to be a directory")
+  }
+
+  @Test
+  fun testUtility_emptyDirectory_throwsException() {
+    val exception = assertThrows(IllegalStateException::class) { runScript() }
+
+    assertThat(exception).hasMessageThat().contains("run from the workspace's root directory")
   }
 
   @Test
@@ -286,17 +334,13 @@ class ComputeAffectedTestsTest {
 
   private fun changeTestFile(testName: String): File {
     val testFile = testBazelWorkspace.retrieveTestFile(testName)
-    testFile.appendingPrintWriter().use { writer ->
-      writer.println(";") // Add a character to change the file.
-    }
+    testFile.appendText(";") // Add a character to change the file.
     return testFile
   }
 
   private fun changeDependencyFileForTest(testName: String): File {
     val depFile = testBazelWorkspace.retrieveTestDependencyFile(testName)
-    depFile.appendingPrintWriter().use { writer ->
-      writer.println(";") // Add a character to change the file.
-    }
+    depFile.appendText(";") // Add a character to change the file.
     return depFile
   }
 
@@ -348,235 +392,8 @@ class ComputeAffectedTestsTest {
 
   private fun changeAndCommitLibrary(name: String) {
     val libFile = testBazelWorkspace.retrieveLibraryFile(name)
-    libFile.appendingPrintWriter().use { writer ->
-      writer.println(";") // Add a character to change the file.
-    }
+    libFile.appendText(";") // Add a character to change the file.
     testGitWorkspace.stageFileForCommit(libFile)
     testGitWorkspace.commit(message = "Modified library $name")
   }
-
-  // TODO: extract to top-level file
-  private class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
-    private val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
-    val rootBuildFile: File by lazy { temporaryRootFolder.newFile("BUILD.bazel") }
-    private val testFileMap = mutableMapOf<String, File>()
-    private val libraryFileMap = mutableMapOf<String, File>()
-    private val testDependencyNameMap = mutableMapOf<String, String>()
-    private var isConfiguredForKotlin = false
-    private var isConfiguredForTests = false
-    private var isConfiguredForLibraries = false
-
-    fun initEmptyWorkspace() {
-      // Sanity check, but in reality this is just initializing workspaceFile to ensure that it
-      // exists.
-      assertThat(workspaceFile.exists()).isTrue()
-    }
-
-    fun addTestToBuildFile(
-      testName: String,
-      testFile: File,
-      withGeneratedDependency: Boolean = false,
-      withExtraDependency: String? = null,
-      subpackage: String? = null
-    ): List<File> {
-      val prereqFiles = ensureWorkspaceIsConfiguredForTests()
-      val (dependencyTargetName, libPrereqFiles) = if (withGeneratedDependency) {
-        createLibrary("${testName}Dependency")
-      } else null to listOf()
-      val buildFile = if (subpackage != null) {
-        if (!File(temporaryRootFolder.root, subpackage).exists()) {
-          temporaryRootFolder.newFolder(subpackage)
-        }
-        val newBuildFile = temporaryRootFolder.newFile("$subpackage/BUILD.bazel")
-        prepareBuildFileForTests(newBuildFile)
-        newBuildFile
-      } else rootBuildFile
-      return buildFile.appendingPrintWriter().use { writer ->
-        testFileMap[testName] = testFile
-        writer.println("kt_jvm_test(")
-        writer.println("    name = \"$testName\",")
-        writer.println("    srcs = [\"${testFile.name}\"],")
-        writer.println("    deps = [")
-        if (withGeneratedDependency) {
-          testDependencyNameMap[testName] = dependencyTargetName ?: error("Something went wrong.")
-          writer.print("        \":$dependencyTargetName\",")
-        }
-        withExtraDependency?.let { writer.println("        \"$it\",") }
-        writer.println("    ],")
-        writer.println(")")
-        return@use listOf(testFile, buildFile) + prereqFiles + libPrereqFiles
-      }
-    }
-
-    fun createTest(
-      testName: String,
-      withGeneratedDependency: Boolean = false,
-      withExtraDependency: String? = null,
-      subpackage: String? = null
-    ): List<File> {
-      val testFile = if (subpackage != null) {
-        if (!File(temporaryRootFolder.root, subpackage).exists()) {
-          temporaryRootFolder.newFolder(subpackage)
-        }
-        temporaryRootFolder.newFile("$subpackage/$testName.kt")
-      } else temporaryRootFolder.newFile("$testName.kt")
-      return addTestToBuildFile(
-        testName,
-        testFile,
-        withGeneratedDependency,
-        withExtraDependency,
-        subpackage
-      )
-    }
-
-    fun createLibrary(dependencyName: String): Pair<String, List<File>> {
-      val prereqFiles = ensureWorkspaceIsConfiguredForLibraries()
-      return rootBuildFile.appendingPrintWriter().use { writer ->
-        val depFile = temporaryRootFolder.newFile("$dependencyName.kt")
-        val libTargetName = "${dependencyName}_lib"
-        libraryFileMap[libTargetName] = depFile
-        writer.println("kt_jvm_library(")
-        writer.println("    name = \"$libTargetName\",")
-        writer.println("    srcs = [\"${depFile.name}\"],")
-        writer.println(")")
-        return@use libTargetName to listOf(depFile, rootBuildFile) + prereqFiles
-      }
-    }
-
-    fun retrieveTestFile(testName: String): File = testFileMap.getValue(testName)
-
-    fun retrieveLibraryFile(libraryName: String): File =
-      libraryFileMap.getValue("${libraryName}_lib")
-
-    fun retrieveTestDependencyFile(testName: String): File {
-      return libraryFileMap.getValue(
-        testDependencyNameMap[testName]
-          ?: error("No entry for $testName. Was the test created without dependencies?")
-      )
-    }
-
-    private fun ensureWorkspaceIsConfiguredForKotlin(): List<File> {
-      if (!isConfiguredForKotlin) {
-        workspaceFile.appendingPrintWriter().use { writer ->
-          // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-          writer.println("load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")")
-          writer.println("http_archive(")
-          writer.println("    name = \"io_bazel_rules_kotlin\",")
-          writer.println(
-            "    sha256 = \"6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a9" +
-              "8dcd4f07\","
-          )
-          writer.println(
-            "    urls = [\"https://github.com/bazelbuild/rules_kotlin/releases" +
-              "/download/v1.5.0-alpha-2/rules_kotlin_release.tgz\"],"
-          )
-          writer.println(")")
-          writer.println(
-            "load(\"@io_bazel_rules_kotlin//kotlin:dependencies.bzl\"," +
-              " \"kt_download_local_dev_dependencies\")"
-          )
-          writer.println(
-            "load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\"," +
-              " \"kotlin_repositories\", \"kt_register_toolchains\")"
-          )
-          writer.println("kt_download_local_dev_dependencies()")
-          writer.println("kotlin_repositories()")
-          writer.println("kt_register_toolchains()")
-        }
-        isConfiguredForKotlin = true
-        return listOf(workspaceFile)
-      }
-      return listOf()
-    }
-
-    private fun ensureWorkspaceIsConfiguredForTests(): List<File> {
-      val affectedFiles = if (!isConfiguredForTests) {
-        prepareBuildFileForTests(rootBuildFile)
-        isConfiguredForTests = true
-        listOf(rootBuildFile)
-      } else listOf()
-      return ensureWorkspaceIsConfiguredForKotlin() + affectedFiles
-    }
-
-    private fun ensureWorkspaceIsConfiguredForLibraries(): List<File> {
-      val affectedFiles = if (!isConfiguredForLibraries) {
-        rootBuildFile.appendingPrintWriter().use { writer ->
-          writer.println("load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_library\")")
-        }
-        isConfiguredForLibraries = true
-        listOf(rootBuildFile)
-      } else listOf()
-      return ensureWorkspaceIsConfiguredForKotlin() + affectedFiles
-    }
-
-    private fun prepareBuildFileForTests(buildFile: File) {
-      buildFile.appendingPrintWriter().use { writer ->
-        writer.println("load(\"@io_bazel_rules_kotlin//kotlin:kotlin.bzl\", \"kt_jvm_test\")")
-      }
-    }
-  }
-
-  // TODO: extract to top-level file
-  private class TestGitWorkspace(private val temporaryRootFolder: TemporaryFolder) {
-    private val rootDirectory by lazy { temporaryRootFolder.root }
-
-    fun setUser(email: String, name: String) {
-      executeSuccessfulGitCommand("config", "user.email", email)
-      executeSuccessfulGitCommand("config", "user.name", name)
-    }
-
-    fun init() {
-      executeSuccessfulGitCommand("init")
-    }
-
-    fun checkoutNewBranch(branchName: String) {
-      executeSuccessfulGitCommand("checkout", "-b", branchName)
-    }
-
-    fun stageFileForCommit(file: File) {
-      executeSuccessfulGitCommand("add", file.toRelativeString(rootDirectory))
-    }
-
-    fun stageFilesForCommit(files: Iterable<File>) {
-      files.forEach(this::stageFileForCommit)
-    }
-
-    fun removeFileForCommit(file: File) {
-      executeSuccessfulGitCommand("rm", file.toRelativeString(rootDirectory))
-    }
-
-    fun moveFileForCommit(oldFile: File, newFile: File) {
-      executeSuccessfulGitCommand(
-        "mv",
-        oldFile.toRelativeString(rootDirectory),
-        newFile.toRelativeString(rootDirectory)
-      )
-    }
-
-    fun commit(message: String, allowEmpty: Boolean = false) {
-      val arguments = mutableListOf("commit", "-m", message)
-      if (allowEmpty) arguments += "--allow-empty"
-      executeSuccessfulGitCommand(*arguments.toTypedArray())
-    }
-
-    fun status(): String {
-      return executeCommand(rootDirectory, "git", "status").output.joinOutputString()
-    }
-
-    private fun executeSuccessfulGitCommand(vararg arguments: String) {
-      verifySuccessfulCommand(executeCommand(rootDirectory, "git", *arguments))
-    }
-
-    private fun verifySuccessfulCommand(result: CommandResult) {
-      assertWithMessage("Output: ${result.output.joinOutputString()}")
-        .that(result.exitCode)
-        .isEqualTo(0)
-    }
-
-    private fun List<String>.joinOutputString(): String = joinToString(separator = "\n") { "  $it" }
-  }
 }
-
-// A version of File.printWriter() that appends content rather than overwriting it.
-private fun File.appendingPrintWriter(): PrintWriter =
-  PrintWriter(FileOutputStream(this, /* append= */ true).bufferedWriter())
