@@ -13,14 +13,14 @@ class PlatformParameterSingleton @Inject constructor() {
   /**
    * Gets the current [platformParameterMap].
    * @return [Map<String, PlatformParameter>]
-   * */
+   */
   fun getPlatformParameterMap() = platformParameterMap
 
   /**
    * Initializes a [platformParameterMap] in case it is empty.
    * @param platformParameterMap [Map<String, PlatformParameter>]
    * @return [Unit]
-   * */
+   */
   fun setPlatformParameterMap(platformParameterMap: Map<String, PlatformParameter>) {
     if (this.platformParameterMap.isEmpty()) this.platformParameterMap = platformParameterMap
   }
@@ -29,7 +29,7 @@ class PlatformParameterSingleton @Inject constructor() {
    * Retrieves a String type Platform Parameter, if it exists in the [platformParameterMap].
    * @param platformParameterName [String], Name of the String type Platform Parameter.
    * @return [PlatformParameterValue]? which contains the value for String type Platform Parameter
-   * */
+   */
   fun getStringPlatformParameter(platformParameterName: String): PlatformParameterValue<String>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[platformParameterName] ?: return null
@@ -44,7 +44,7 @@ class PlatformParameterSingleton @Inject constructor() {
    * Retrieves a Integer type Platform Parameter, if it exists in the [platformParameterMap].
    * @param platformParameterName [String], Name of the Integer type Platform Parameter.
    * @return [PlatformParameterValue]? which contains the value for Integer type Platform Parameter
-   * */
+   */
   fun getIntegerPlatformParameter(platformParameterName: String): PlatformParameterValue<Int>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[platformParameterName] ?: return null
@@ -59,7 +59,7 @@ class PlatformParameterSingleton @Inject constructor() {
    * Retrieves a Boolean type Platform Parameter, if it exists in the [platformParameterMap].
    * @param platformParameterName [String], Name of the Boolean type Platform Parameter.
    * @return [PlatformParameterValue]? which contains the value for Boolean type Platform Parameter
-   * */
+   */
   fun getBooleanPlatformParameter(platformParameterName: String): PlatformParameterValue<Boolean>? {
     if (platformParameterMap.isEmpty()) return null
     val parameter = platformParameterMap[platformParameterName] ?: return null

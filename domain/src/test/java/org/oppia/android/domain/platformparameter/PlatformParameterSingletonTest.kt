@@ -30,7 +30,7 @@ private const val INCORRECT_PLATFORM_PARAMETER_NAME = "incorrect_platform_parame
 /**
  * [PlatformParameterSingletonTest] verifies the working of [PlatformParameterSingleton] by testing
  * the [PlatformParameterValue] received in different cases
- * */
+ */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterSingletonTest.TestApplication::class)
