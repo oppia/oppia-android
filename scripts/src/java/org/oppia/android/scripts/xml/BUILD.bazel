@@ -1,5 +1,5 @@
 """
-Package for Xml syntax based checks.
+Package for XML syntax based checks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")

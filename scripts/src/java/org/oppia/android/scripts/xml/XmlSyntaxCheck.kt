@@ -9,7 +9,7 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
- * Script for ensuring that all Xml files in the repo are syntactically correct.
+ * Script for ensuring that all XML files in the repo are syntactically correct.
  *
  * Usage:
  *   bazel run //scripts:xml_syntax_check -- <path_to_directory_root>
@@ -30,24 +30,28 @@ fun main(vararg args: String) {
     expectedExtension = ".xml"
   )
 
-  val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
+  val allErrorsList = mutableListOf<Pair<SAXParseException, File>>()
 
   // Builder factory which provides the builder to parse the XMl.
   val builderFactory = DocumentBuilderFactory.newInstance()
 
-  // Document builder which parses the XMl.
-  val docBuilder = builderFactory.newDocumentBuilder()
-
-  docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
-
   searchFiles.forEach { file ->
+    val docBuilder = builderFactory.newDocumentBuilder()
+    val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
+    docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
     parseXml(docBuilder, file)
+    val fileErrorList = xmlSyntaxErrorHandler.retrieveErrorList()
+    if (fileErrorList.isNotEmpty()) {
+      fileErrorList.forEach { error ->
+        allErrorsList.add(Pair(error, file))
+      }
+    }
   }
 
   // Check if the repo has any syntactically incorrect XML.
-  val hasXmlSyntaxFailure = xmlSyntaxErrorHandler.retrieveErrorList().isNotEmpty()
+  val hasXmlSyntaxFailure = allErrorsList.isNotEmpty()
 
-  logXmlSyntaxFailures(xmlSyntaxErrorHandler.retrieveErrorList())
+  logXmlSyntaxFailures(allErrorsList)
 
   if (hasXmlSyntaxFailure) {
     throw Exception(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -57,7 +61,7 @@ fun main(vararg args: String) {
 }
 
 /**
- * Parses a given Xml file.
+ * Parses a given XML file.
  *
  * @param docBuilder the builder which will parse the XML file
  * @param file the file to be checked for
@@ -65,19 +69,22 @@ fun main(vararg args: String) {
 private fun parseXml(docBuilder: DocumentBuilder, file: File) {
   try {
     docBuilder.parse(file)
-  } catch (e: SAXParseException) { }
+  } catch (e: SAXParseException) {
+  }
 }
 
 /**
- * Logs the failures for Xml syntax validation.
+ * Logs the failures for XML syntax validation.
  *
  * @param errorList a list of all the errors collected by the error handler
  */
-private fun logXmlSyntaxFailures(errorList: List<SAXParseException>) {
+private fun logXmlSyntaxFailures(errorList: List<Pair<SAXParseException, File>>) {
   if (errorList.isNotEmpty()) {
-    errorList.forEach { error ->
+    errorList.forEach { errorPair ->
+      val error = errorPair.first
+      val errorFile = errorPair.second
       val failureMessage =
-        "${error.getSystemId().removePrefix("file:")}:${error.getLineNumber()}:${error.getColumnNumber()}: ${error.message}"
+        "$errorFile:${error.getLineNumber()}:${error.getColumnNumber()}: ${error.message}"
       println(failureMessage)
     }
     println()
