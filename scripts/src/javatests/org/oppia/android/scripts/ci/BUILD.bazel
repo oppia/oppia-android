@@ -1,5 +1,5 @@
 """
-Tests corresponding to to developer scripts that help with continuous integration workflows.
+Tests corresponding to developer scripts that help with continuous integration workflows.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")

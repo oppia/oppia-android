@@ -5,6 +5,8 @@ import java.lang.IllegalArgumentException
 
 // TODO: extract to top-level class with tests.
 class BazelClient(private val rootDirectory: File) {
+  private val commandExecutor by lazy { CommandExecutor() }
+
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -90,7 +92,9 @@ class BazelClient(private val rootDirectory: File) {
     allowPartialFailures: Boolean = false
   ): List<String> {
     val result =
-            executeCommand(rootDirectory, command = "bazel", *arguments, includeErrorOutput = false)
+      commandExecutor.executeCommand(
+        rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
+      )
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to
     // valid targets. Note that this COULD result in legitimate issues being ignored, but it's

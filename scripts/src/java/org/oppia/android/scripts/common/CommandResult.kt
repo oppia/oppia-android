@@ -1,6 +1,6 @@
 package org.oppia.android.scripts.common
 
-/** The result of executing a command using [executeCommand]. */
+/** The result of executing a command using [CommandExecutor.executeCommand]. */
 data class CommandResult(
   /** The exit code of the application. */
   val exitCode: Int,

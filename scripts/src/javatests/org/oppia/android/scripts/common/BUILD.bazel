@@ -1,0 +1,16 @@
+"""
+Tests corresponding to common libraries that potentially support multiple scripts by performing
+common or generic operations.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "CommandExecutorTest",
+    srcs = ["CommandExecutorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
