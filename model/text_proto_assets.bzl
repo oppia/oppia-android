@@ -177,7 +177,7 @@ def generate_proto_binary_assets(
             proto_type_name = proto_type_name,
             asset_dir = asset_dir,
             proto_dep_bazel_target_prefix = proto_dep_bazel_target_prefix,
-            proto_package = proto_package
+            proto_package = proto_package,
         )
         for name in names
     ]

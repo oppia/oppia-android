@@ -17,11 +17,11 @@ def retrieve_regex_pattern_check_assets(name, asset_dir):
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_assets_list_from_text_protos(
-       name = name,
-       file_content_validation_file_names = [
-           "file_content_validation_checks",
-       ],
-       filepath_pattern_validation_file_names = [
-           "filename_pattern_validation_checks",
-       ]
-   )
+        name = name,
+        file_content_validation_file_names = [
+            "file_content_validation_checks",
+        ],
+        filepath_pattern_validation_file_names = [
+            "filename_pattern_validation_checks",
+        ],
+    )
