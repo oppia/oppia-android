@@ -73,10 +73,10 @@ class ExplorationCheckpointController @Inject constructor(
    *
    * Success result is returned if the checkpoint is saved successfully. The success result
    * returned has the value
-   * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED]
+   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT]
    * if the database has exceeded the size limit of [explorationCheckpointDatabaseSizeLimit],
    * otherwise the success result is returned with the value
-   * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED].
+   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT].
    */
   fun recordExplorationCheckpoint(
     profileId: ProfileId,

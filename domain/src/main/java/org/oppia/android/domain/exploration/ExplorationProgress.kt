@@ -2,6 +2,7 @@ package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -17,6 +18,7 @@ internal class ExplorationProgress {
   internal lateinit var currentExplorationId: String
   internal lateinit var currentExploration: Exploration
   internal var playStage = PlayStage.NOT_PLAYING
+  internal var checkpointState: ExplorationCheckpointState  = ExplorationCheckpointState.UNSAVED
   internal val stateGraph: StateGraph by lazy {
     StateGraph(currentExploration.statesMap)
   }
@@ -68,6 +70,10 @@ internal class ExplorationProgress {
         playStage = nextPlayStage
       }
     }
+  }
+
+  fun updateCheckpointState(newCheckpointState: ExplorationCheckpointState) {
+    checkpointState = newCheckpointState
   }
 
   companion object {

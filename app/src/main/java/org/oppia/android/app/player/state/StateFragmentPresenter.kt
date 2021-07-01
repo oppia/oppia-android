@@ -45,6 +45,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -316,6 +317,7 @@ class StateFragmentPresenter @Inject constructor(
       return
     }
 
+    saveCheckpoint()
     val ephemeralState = result.getOrThrow()
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -541,6 +543,22 @@ class StateFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
+    )
+  }
+
+  private fun saveCheckpoint() {
+    explorationProgressController.saveExplorationCheckpoint(
+      profileId
+    ).toLiveData().observe(
+      fragment,
+      Observer {
+        if(it.isSuccess()) {
+          val newCheckpointState = it.getOrThrow()
+          explorationProgressController.processSaveCheckpointResult(newCheckpointState)
+        }
+        else if(it.isFailure())
+          explorationProgressController.processSaveCheckpointResult(ExplorationCheckpointState.UNSAVED)
+      }
     )
   }
 }

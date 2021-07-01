@@ -2,25 +2,31 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
+import org.oppia.android.util.system.OppiaClock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
  * exploration. Note that this controller only supports one active exploration at a time.
@@ -36,7 +42,9 @@ class ExplorationProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val oppiaClock: OppiaClock
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#182): Add support for refresher explorations.
@@ -47,6 +55,12 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+
+  /** Indicates that the checkpoint database has exceeded the allocated limit.. */
+  class CheckpointDatabaseOverflowException(msg: String) : Exception(msg)
+
+  /** Indicates that the current exploration is not completely saved. */
+  class ProgressNotSavedException(msg: String) : Exception(msg)
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
@@ -70,12 +84,13 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /** Indicates that the current exploration being played is now completed. */
-  internal fun finishExplorationAsync() {
+  internal fun finishExplorationAsync(): LiveData<AsyncResult<Any?>> {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Cannot finish playing an exploration that hasn't yet been started"
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
+      return checkCheckpointStateToExitExploration()
     }
   }
 
@@ -349,6 +364,56 @@ class ExplorationProgressController @Inject constructor(
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  fun saveExplorationCheckpoint(profileId: ProfileId): DataProvider<Any?> {
+    lateinit var checkpoint: ExplorationCheckpoint
+    lateinit var explorationId: String
+    explorationProgressLock.withLock {
+      checkpoint = explorationProgress.stateDeck.createExplorationCheckpoint(
+        explorationProgress.currentExploration.version,
+        explorationProgress.currentExploration.title,
+        oppiaClock.getCurrentTimeMs()
+      )
+      explorationId = explorationProgress.currentExplorationId
+    }
+    return explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      explorationId,
+      checkpoint
+    )
+  }
+
+  fun processSaveCheckpointResult(newCheckpointState: ExplorationCheckpointState) {
+    explorationProgressLock.withLock {
+      if (explorationProgress.checkpointState != newCheckpointState) {
+        // mark chapter as saved or not saved depending upon the checkpoint state (TODO)
+
+        // and then update the checkpoint state.
+        explorationProgress.updateCheckpointState(newCheckpointState)
+      }
+    }
+  }
+
+  private fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
+    return when (explorationProgress.checkpointState) {
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
+        MutableLiveData(AsyncResult.success(null))
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
+        MutableLiveData(
+          AsyncResult.failed(
+            CheckpointDatabaseOverflowException(
+              "Checkpoint database has exceeded the allocated size limit."
+            )
+          )
+        )
+      ExplorationCheckpointState.UNSAVED ->
+        MutableLiveData(
+          AsyncResult.failed(
+            ProgressNotSavedException("Current exploration contains unsaved progress.")
+          )
+        )
     }
   }
 

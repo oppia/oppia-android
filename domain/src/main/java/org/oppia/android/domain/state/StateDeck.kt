@@ -2,7 +2,9 @@ package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
+import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.Solution
@@ -26,6 +28,8 @@ internal class StateDeck internal constructor(
   private val hintList: MutableList<Hint> = ArrayList()
   private lateinit var solution: Solution
   private var stateIndex: Int = 0
+  private var revealedHintIndex: Int = -1
+  private var solutionIsRevealed: Boolean = false
 
   /** Resets this deck to a new, specified initial [State]. */
   internal fun resetDeck(initialState: State) {
@@ -34,6 +38,8 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     stateIndex = 0
+    revealedHintIndex = -1
+    solutionIsRevealed = false
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
@@ -170,6 +176,31 @@ internal class StateDeck internal constructor(
       .setCorrectAnswer(state.interaction.solution.correctAnswer)
       .setExplanation(state.interaction.solution.explanation)
       .build()
+  }
+
+  internal fun createExplorationCheckpoint(
+    explorationVersion: Int,
+    explorationTitle: String,
+    timestamp: Long
+  ): ExplorationCheckpoint {
+    val explorationCheckpoint = ExplorationCheckpoint.newBuilder()
+
+    previousStates.forEach { state ->
+      explorationCheckpoint.addCompletedStatesInCheckpoint(
+        CompletedStateInCheckpoint.newBuilder()
+          .setCompletedState(state.completedState)
+          .setStateName(state.state.name)
+      )
+    }
+    explorationCheckpoint.pendingStateName = pendingTopState.name
+    explorationCheckpoint.hintIndex = revealedHintIndex
+    explorationCheckpoint.solutionIsRevealed = solutionIsRevealed
+    explorationCheckpoint.addAllPendingUserAnswers(currentDialogInteractions)
+    explorationCheckpoint.explorationTitle = explorationTitle
+    explorationCheckpoint.explorationVersion = explorationVersion
+    explorationCheckpoint.timestampOfFirstCheckpoint = timestamp
+
+    return explorationCheckpoint.build()
   }
 
   private fun getCurrentPendingState(): EphemeralState {
