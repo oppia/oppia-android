@@ -24,11 +24,11 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
 
   fun addTestToBuildFile(
-          testName: String,
-          testFile: File,
-          withGeneratedDependency: Boolean = false,
-          withExtraDependency: String? = null,
-          subpackage: String? = null
+    testName: String,
+    testFile: File,
+    withGeneratedDependency: Boolean = false,
+    withExtraDependency: String? = null,
+    subpackage: String? = null
   ): List<File> {
     val prereqFiles = ensureWorkspaceIsConfiguredForTests()
     val (dependencyTargetName, libPrereqFiles) = if (withGeneratedDependency) {
@@ -36,7 +36,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     } else null to listOf()
     val buildFile = if (subpackage != null) {
       if (!File(temporaryRootFolder.root, subpackage).exists()) {
-          temporaryRootFolder.newFolder(subpackage)
+        temporaryRootFolder.newFolder(subpackage)
       }
       val newBuildFile = temporaryRootFolder.newFile("$subpackage/BUILD.bazel")
       prepareBuildFileForTests(newBuildFile)
@@ -50,7 +50,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       writer.println("    deps = [")
       if (withGeneratedDependency) {
         testDependencyNameMap[testName] = dependencyTargetName ?: error("Something went wrong.")
-        writer.print("        \":$dependencyTargetName\",")
+        writer.println("        \":$dependencyTargetName\",")
       }
       withExtraDependency?.let { writer.println("        \"$it\",") }
       writer.println("    ],")

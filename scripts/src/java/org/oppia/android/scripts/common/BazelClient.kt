@@ -3,10 +3,14 @@ package org.oppia.android.scripts.common
 import java.io.File
 import java.lang.IllegalArgumentException
 
-// TODO: extract to top-level class with tests.
-class BazelClient(private val rootDirectory: File) {
-  private val commandExecutor by lazy { CommandExecutor() }
-
+/**
+ * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
+ * the specified root directory).
+ */
+class BazelClient(
+  private val rootDirectory: File,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+) {
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -86,7 +90,7 @@ class BazelClient(private val rootDirectory: File) {
     return correctedTargets
   }
 
-  @Suppress("SameParameterValue") // The check doesn't work correctly for varargs.
+  @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
     allowPartialFailures: Boolean = false

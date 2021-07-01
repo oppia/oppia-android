@@ -34,6 +34,7 @@ kt_jvm_library(
     testonly = True,
     srcs = [
         "CommandExecutor.kt",
+        "CommandExecutorImpl.kt",
         "CommandResult.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],

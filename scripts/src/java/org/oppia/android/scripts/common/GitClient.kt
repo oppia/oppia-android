@@ -7,7 +7,7 @@ import java.io.File
  * General utility for interfacing with a Git repository located at the specified working directory.
  */
 class GitClient(private val workingDirectory: File) {
-  private val commandExecutor by lazy { CommandExecutor() }
+  private val commandExecutor by lazy { CommandExecutorImpl() }
 
   /** The name of the current branch of the local Git repository. */
   val currentBranch: String by lazy { retrieveCurrentBranch() }

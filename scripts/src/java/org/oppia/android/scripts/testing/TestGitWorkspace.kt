@@ -2,14 +2,14 @@ package org.oppia.android.scripts.testing
 
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.CommandResult
 import java.io.File
 
 // TODO: extract to top-level file & document & test
 class TestGitWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   private val rootDirectory by lazy { temporaryRootFolder.root }
-  private val commandExecutor by lazy { CommandExecutor() }
+  private val commandExecutor by lazy { CommandExecutorImpl() }
 
   fun setUser(email: String, name: String) {
     executeSuccessfulGitCommand("config", "user.email", email)

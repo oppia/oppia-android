@@ -11,21 +11,21 @@ import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 /**
- * Tests for [CommandExecutor].
+ * Tests for [CommandExecutorImpl].
  *
  * Note that this test executes real commands on the local filesystem & requires being run in an
  * environment which have echo and rmdir commands.
  */
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-class CommandExecutorTest {
+class CommandExecutorImplTest {
   @Rule
   @JvmField
   var tempFolder = TemporaryFolder()
 
   @Test
   fun testExecute_echo_oneArgument_succeedsWithOutput() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "value")
 
@@ -35,7 +35,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_echo_invalidDirectory_throwsException() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val exception = assertThrows(IllegalStateException::class) {
       commandExecutor.executeCommand(File("invaliddirectory"), "echo", "value")
@@ -46,7 +46,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_echo_largeOutput_insufficientTimeout_throwsException() {
-    val commandExecutor = CommandExecutor(
+    val commandExecutor = CommandExecutorImpl(
       processTimeout = 0L, processTimeoutUnit = TimeUnit.MILLISECONDS
     )
 
@@ -63,7 +63,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_nonexistentCommand_throwsException() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val exception = assertThrows(IOException::class) {
       commandExecutor.executeCommand(tempFolder.root, "commanddoesnotexist")
@@ -74,7 +74,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_echo_multipleArguments_succeedsWithOutput() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "first", "second", "third")
 
@@ -84,7 +84,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_echo_multipleArguments_resultHasCorrectCommand() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(tempFolder.root, "echo", "first", "second", "third")
 
@@ -93,7 +93,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_defaultErrorOutput_rmdir_failed_failsWithCombinedOutput() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(tempFolder.root, "rmdir", "filethatdoesnotexist")
 
@@ -105,7 +105,7 @@ class CommandExecutorTest {
 
   @Test
   fun testExecute_splitErrorOutput_rmdir_failed_failsWithErrorOutput() {
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result =
       commandExecutor.executeCommand(
@@ -121,7 +121,7 @@ class CommandExecutorTest {
   @Test
   fun testExecute_removeDirectoryInLocalDirectory_succeeds() {
     val newFolder = tempFolder.newFolder("newfolder")
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(tempFolder.root, "rmdir", "./newfolder")
 
@@ -135,7 +135,7 @@ class CommandExecutorTest {
   fun testExecute_removeUnknownDirectoryInOtherDirectory_fails() {
     val newFolder = tempFolder.newFolder("newfolder")
     val alternateRoot = tempFolder.newFolder("alternateroot")
-    val commandExecutor = CommandExecutor()
+    val commandExecutor = CommandExecutorImpl()
 
     val result = commandExecutor.executeCommand(alternateRoot, "rmdir", "./newfolder")
 
