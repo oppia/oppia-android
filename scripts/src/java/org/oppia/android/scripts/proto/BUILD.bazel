@@ -3,6 +3,7 @@ This library contains all protos used in the scripts module.
 In Bazel, proto files are built using the proto_library() and java_lite_proto_library() rules.
 The proto_library() rule creates a proto file library to be used in multiple languages.
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
+For more context on adding a new proto library, please refer to model/BUILD.bazel
 """
 
 load("@rules_java//java:defs.bzl", "java_lite_proto_library")

@@ -34,7 +34,7 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "TopicIdList",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
         name = name,
@@ -43,7 +43,7 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "TopicRecord",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
         name = name,
@@ -52,7 +52,7 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "SubtopicRecord",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
         name = name,
@@ -61,7 +61,7 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "StoryRecord",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
         name = name,
@@ -70,7 +70,7 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "ConceptCardList",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
         name = name,
@@ -79,6 +79,6 @@ def generate_assets_list_from_text_protos(
         proto_type_name = "Exploration",
         name_prefix = name,
         asset_dir = "src/main/assets",
-        proto_dep_path = "//model",
+        proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     )

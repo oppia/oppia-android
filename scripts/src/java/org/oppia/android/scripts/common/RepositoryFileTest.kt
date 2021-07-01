@@ -14,7 +14,7 @@ class RepositoryFileTest {
   var tempFolder = TemporaryFolder()
 
   @Before
-  fun setUpTests() {
+  fun setUp() {
     tempFolder.newFolder("testfiles")
   }
 
@@ -113,9 +113,18 @@ class RepositoryFileTest {
     assertThat(obtainedPath).isEqualTo("model/src/main/proto/test.proto")
   }
 
+  @Test
+  fun testRepoFile_fileNotHavingCommonDirectoryWithRoot_pathObtainedIsNotRelativeToRoot() {
+    val file = tempFolder.newFile("TestFile.kt")
+    val obtainedPath = retrieveRelativeFilePath(file)
+
+    assertThat(obtainedPath).contains("TestFile.kt")
+    assertThat(obtainedPath).isNotEqualTo("TestFile.kt")
+  }
+
   /**
    * Calls [RepositoryFile.retrieveRelativeFilePath] for a file and returns the relative
-   *  path to the test directory.
+   * path to the test directory.
    */
   private fun retrieveRelativeFilePath(file: File): String {
     return RepositoryFile.retrieveRelativeFilePath(

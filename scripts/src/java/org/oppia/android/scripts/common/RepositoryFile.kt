@@ -25,9 +25,9 @@ class RepositoryFile() {
      *
      * @param repoPath the path of the repo
      * @param expectedExtension files with only this extension will be included in the search list.
-     * This defaults to the empty string which signifies no extension restriction.
+     *     This defaults to the empty string which signifies no extension restriction.
      * @param exemptionsList a list of files that are exempted from the check. This defaults to an
-     * empty list which signifies no file is exempted for the check.
+     *     empty list which signifies no file is exempted for the check.
      * @return all files which need to be checked
      */
     fun collectSearchFiles(
