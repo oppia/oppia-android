@@ -22,7 +22,7 @@ class RegexPatternValidationCheckTest {
   var tempFolder = TemporaryFolder()
 
   @Before
-  fun setUpTests() {
+  fun setUp() {
     tempFolder.newFolder("testfiles")
     System.setOut(PrintStream(outContent))
   }

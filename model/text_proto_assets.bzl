@@ -111,7 +111,7 @@ def _generate_single_asset_proto_binary(
         proto_dep_name,
         proto_type_name,
         asset_dir,
-        proto_dep_path,
+        proto_dep_bazel_target_prefix,
         proto_package):
     """
     Converts a single asset text proto to a new binary asset.
@@ -126,7 +126,7 @@ def _generate_single_asset_proto_binary(
         proto_type_name: str. The name of the proto type being converted in the text proto.
         asset_dir: str. The path to the assets directory where the textproto files are present.
             Example: 'src/main/assets'.
-        proto_dep_path: str. The path to the library that contains the proto_dep.
+        proto_dep_bazel_target_prefix: str. The path to the library that contains the proto_dep.
             Example: '//model'.
         proto_package: str. The name of the proto package. Example: 'model'.
 
@@ -138,7 +138,7 @@ def _generate_single_asset_proto_binary(
         input_file = "%s/%s.textproto" % (asset_dir, proto_file_name),
         output_file = "%s/%s.pb" % (asset_dir, proto_file_name),
         proto_deps = [
-            "%s:%s_proto" % (proto_dep_path,proto_dep_name),
+            "%s:%s_proto" % (proto_dep_bazel_target_prefix, proto_dep_name),
         ],
         proto_type_name = "%s.%s" % (proto_package, proto_type_name),
     )
@@ -150,7 +150,7 @@ def generate_proto_binary_assets(
         proto_type_name,
         name_prefix,
         asset_dir,
-        proto_dep_path,
+        proto_dep_bazel_target_prefix,
         proto_package):
     """
     Converts a list of text proto assets to binary.
@@ -163,7 +163,7 @@ def generate_proto_binary_assets(
         proto_type_name: str. See _generate_single_asset_proto_binary.
         name_prefix: str. A prefix to attach to the name of this target.
         asset_dir: str. See _generate_single_asset_proto_binary.
-        proto_dep_path: str. See _generate_single_asset_proto_binary.
+        proto_dep_bazel_target_prefix: str. See _generate_single_asset_proto_binary.
         proto_package: str. See _generate_single_asset_proto_binary.
 
     Returns:
@@ -176,7 +176,7 @@ def generate_proto_binary_assets(
             proto_dep_name = proto_dep_name,
             proto_type_name = proto_type_name,
             asset_dir = asset_dir,
-            proto_dep_path = proto_dep_path,
+            proto_dep_bazel_target_prefix = proto_dep_bazel_target_prefix,
             proto_package = proto_package
         )
         for name in names
