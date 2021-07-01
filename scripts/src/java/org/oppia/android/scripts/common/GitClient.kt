@@ -2,7 +2,6 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 
-// TODO: consider moving to top-level utility & adding additional functionality to help tests.
 /**
  * General utility for interfacing with a Git repository located at the specified working directory.
  */

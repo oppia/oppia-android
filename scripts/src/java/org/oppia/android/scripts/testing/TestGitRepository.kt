@@ -7,7 +7,7 @@ import org.oppia.android.scripts.common.CommandResult
 import java.io.File
 
 // TODO: extract to top-level file & document & test
-class TestGitWorkspace(private val temporaryRootFolder: TemporaryFolder) {
+class TestGitRepository(private val temporaryRootFolder: TemporaryFolder) {
   private val rootDirectory by lazy { temporaryRootFolder.root }
   private val commandExecutor by lazy { CommandExecutorImpl() }
 

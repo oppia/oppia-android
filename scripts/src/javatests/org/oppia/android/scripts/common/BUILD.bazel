@@ -19,10 +19,21 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
-    name = "CommandExecutorTest",
+    name = "CommandExecutorImplTest",
     srcs = ["CommandExecutorImplTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "GitClientTest",
+    srcs = ["GitClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],

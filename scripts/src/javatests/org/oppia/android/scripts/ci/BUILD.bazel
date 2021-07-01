@@ -10,7 +10,7 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
-        "//scripts/src/java/org/oppia/android/scripts/testing:test_git_workspace",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",

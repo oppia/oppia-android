@@ -18,10 +18,10 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "test_git_workspace",
+    name = "test_git_repository",
     testonly = True,
     srcs = [
-        "TestGitWorkspace.kt",
+        "TestGitRepository.kt",
     ],
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [

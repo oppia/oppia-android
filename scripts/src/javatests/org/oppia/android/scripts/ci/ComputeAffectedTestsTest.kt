@@ -7,7 +7,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import org.oppia.android.scripts.testing.TestGitWorkspace
+import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -30,7 +30,7 @@ class ComputeAffectedTestsTest {
   var tempFolder = TemporaryFolder()
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-  private lateinit var testGitWorkspace: TestGitWorkspace
+  private lateinit var testGitRepository: TestGitRepository
 
   private lateinit var pendingOutputStream: ByteArrayOutputStream
   private lateinit var originalStandardOutputStream: OutputStream
@@ -38,7 +38,7 @@ class ComputeAffectedTestsTest {
   @Before
   fun setUp() {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    testGitWorkspace = TestGitWorkspace(tempFolder)
+    testGitRepository = TestGitRepository(tempFolder)
 
     // Redirect script output for testing purposes.
     pendingOutputStream = ByteArrayOutputStream()
@@ -54,7 +54,7 @@ class ComputeAffectedTestsTest {
     // Print the status of the git repository to help with debugging in the cases of test failures
     // and to help manually verify the expect git state at the end of each test.
     println("git status (at end of test):")
-    println(testGitWorkspace.status())
+    println(testGitRepository.status())
   }
 
   @Test
@@ -283,14 +283,14 @@ class ComputeAffectedTestsTest {
   private fun initializeEmptyGitRepository() {
     // Initialize the git repository with a base 'develop' branch & an initial empty commit (so that
     // there's a HEAD commit).
-    testGitWorkspace.init()
-    testGitWorkspace.setUser(email = "test@oppia.org", name = "Test User")
-    testGitWorkspace.checkoutNewBranch("develop")
-    testGitWorkspace.commit(message = "Initial commit.", allowEmpty = true)
+    testGitRepository.init()
+    testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+    testGitRepository.checkoutNewBranch("develop")
+    testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
   }
 
   private fun switchToFeatureBranch() {
-    testGitWorkspace.checkoutNewBranch("introduce-feature")
+    testGitRepository.checkoutNewBranch("introduce-feature")
   }
 
   /**
@@ -328,8 +328,8 @@ class ComputeAffectedTestsTest {
       withGeneratedDependencies = withGeneratedDependencies,
       withExtraDependency = withExtraDependency
     )
-    testGitWorkspace.stageFilesForCommit(changedFiles.toSet())
-    testGitWorkspace.commit(message = "Introduce basic tests.")
+    testGitRepository.stageFilesForCommit(changedFiles.toSet())
+    testGitRepository.commit(message = "Introduce basic tests.")
   }
 
   private fun changeTestFile(testName: String): File {
@@ -346,30 +346,30 @@ class ComputeAffectedTestsTest {
 
   private fun changeAndStageTestFile(testName: String) {
     val testFile = changeTestFile(testName)
-    testGitWorkspace.stageFileForCommit(testFile)
+    testGitRepository.stageFileForCommit(testFile)
   }
 
   private fun changeAndStageDependencyFileForTest(testName: String) {
     val depFile = changeDependencyFileForTest(testName)
-    testGitWorkspace.stageFileForCommit(depFile)
+    testGitRepository.stageFileForCommit(depFile)
   }
 
   private fun changeAndCommitTestFile(testName: String) {
     changeAndStageTestFile(testName)
-    testGitWorkspace.commit(message = "Modified test $testName")
+    testGitRepository.commit(message = "Modified test $testName")
   }
 
   private fun changeAndCommitDependencyFileForTest(testName: String) {
     changeAndStageDependencyFileForTest(testName)
-    testGitWorkspace.commit(message = "Modified dependency for test $testName")
+    testGitRepository.commit(message = "Modified dependency for test $testName")
   }
 
   private fun removeAndCommitTestFileAndResetBuildFile(testName: String) {
     val testFile = testBazelWorkspace.retrieveTestFile(testName)
-    testGitWorkspace.removeFileForCommit(testFile)
+    testGitRepository.removeFileForCommit(testFile)
     // Clear the test's BUILD file.
     testBazelWorkspace.rootBuildFile.writeText("")
-    testGitWorkspace.commit(message = "Remove test $testName")
+    testGitRepository.commit(message = "Remove test $testName")
   }
 
   private fun moveTest(oldTestName: String, newTestName: String, newSubpackage: String) {
@@ -379,21 +379,21 @@ class ComputeAffectedTestsTest {
     testBazelWorkspace.rootBuildFile.writeText("")
     val newTestFile = File(tempFolder.root, "$newSubpackage/$newTestName.kt")
     testBazelWorkspace.addTestToBuildFile(newTestName, newTestFile, subpackage = newSubpackage)
-    testGitWorkspace.moveFileForCommit(oldTestFile, newTestFile)
+    testGitRepository.moveFileForCommit(oldTestFile, newTestFile)
   }
 
   /** Creates a new library with the specified name & returns its generated target name. */
   private fun createAndCommitLibrary(name: String): String {
     val (targetName, files) = testBazelWorkspace.createLibrary(name)
-    testGitWorkspace.stageFilesForCommit(files.toSet())
-    testGitWorkspace.commit(message = "Add shareable library.")
+    testGitRepository.stageFilesForCommit(files.toSet())
+    testGitRepository.commit(message = "Add shareable library.")
     return targetName
   }
 
   private fun changeAndCommitLibrary(name: String) {
     val libFile = testBazelWorkspace.retrieveLibraryFile(name)
     libFile.appendText(";") // Add a character to change the file.
-    testGitWorkspace.stageFileForCommit(libFile)
-    testGitWorkspace.commit(message = "Modified library $name")
+    testGitRepository.stageFileForCommit(libFile)
+    testGitRepository.commit(message = "Modified library $name")
   }
 }
