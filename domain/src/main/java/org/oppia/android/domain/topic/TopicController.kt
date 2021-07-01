@@ -288,7 +288,7 @@ class TopicController @Inject constructor(
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
-  private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+  internal fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
@@ -342,7 +342,7 @@ class TopicController @Inject constructor(
   }
 
   // TODO(#21): Expose this as a data provider, or omit if it's not needed.
-  fun retrieveTopic(topicId: String): Topic {
+  internal fun retrieveTopic(topicId: String): Topic {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(

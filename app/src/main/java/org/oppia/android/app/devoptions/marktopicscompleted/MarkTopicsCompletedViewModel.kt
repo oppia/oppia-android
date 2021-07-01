@@ -3,10 +3,11 @@ package org.oppia.android.app.devoptions.marktopicscompleted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.topic.ModifyLessonProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -15,41 +16,42 @@ import javax.inject.Inject
 @FragmentScope
 class MarkTopicsCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val topicListController: TopicListController,
+  private val modifyLessonProgressController: ModifyLessonProgressController,
 ) : ObservableViewModel() {
 
   private var internalProfileId: Int = -1
   val itemList: MutableList<TopicSummaryViewModel> = ArrayList()
 
   val topicSummaryLiveData: LiveData<List<TopicSummaryViewModel>> by lazy {
-    Transformations.map(topicListLiveData, ::processTopicList)
+    Transformations.map(allTopicsLiveData, ::processAllTopics)
   }
 
-  private val topicListLiveData: LiveData<TopicList> by lazy { getTopicList() }
+  private val allTopicsLiveData: LiveData<List<Topic>> by lazy { getAllTopics() }
 
-  private fun getTopicList(): LiveData<TopicList> {
-    return Transformations.map(topicListResultLiveData, ::processTopicListResult)
+  private val allTopicsResultLiveData: LiveData<AsyncResult<List<Topic>>> by lazy {
+    modifyLessonProgressController
+      .getAllTopics(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
   }
 
-  private val topicListResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList().toLiveData()
+  private fun getAllTopics(): LiveData<List<Topic>> {
+    return Transformations.map(allTopicsResultLiveData, ::processAllTopicsResult)
   }
 
-  private fun processTopicListResult(topicList: AsyncResult<TopicList>): TopicList {
-    if (topicList.isFailure()) {
+  private fun processAllTopicsResult(allTopics: AsyncResult<List<Topic>>): List<Topic> {
+    if (allTopics.isFailure()) {
       oppiaLogger.e(
         "MarkTopicsCompletedFragment",
-        "Failed to retrieve topicList",
-        topicList.getErrorOrNull()!!
+        "Failed to retrieve all topics",
+        allTopics.getErrorOrNull()!!
       )
     }
-    return topicList.getOrDefault(TopicList.getDefaultInstance())
+    return allTopics.getOrDefault(mutableListOf())
   }
 
-  private fun processTopicList(topicList: TopicList): List<TopicSummaryViewModel> {
+  private fun processAllTopics(allTopics: List<Topic>): List<TopicSummaryViewModel> {
     itemList.clear()
-    topicList.topicSummaryList.forEach { topicSummary ->
-      itemList.add(TopicSummaryViewModel(topicSummary))
+    allTopics.forEach { topic ->
+      itemList.add(TopicSummaryViewModel(topic))
     }
     return itemList
   }

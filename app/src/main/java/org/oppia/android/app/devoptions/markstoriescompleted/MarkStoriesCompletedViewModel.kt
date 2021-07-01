@@ -50,13 +50,13 @@ class MarkStoriesCompletedViewModel @Inject constructor(
 
   private fun processTopicList(topicList: TopicList): List<StorySummaryViewModel> {
     itemList.clear()
-    topicList.topicSummaryList.forEach { topicSummary ->
-      val topicId = topicSummary.topicId
-      val topic = topicController.retrieveTopic(topicId = topicId)
-      topic.storyList.forEach { storySummary ->
-        itemList.add(StorySummaryViewModel(storySummary))
-      }
-    }
+//    topicList.topicSummaryList.forEach { topicSummary ->
+//      val topicId = topicSummary.topicId
+//      val topic = topicController.retrieveTopic(topicId = topicId)
+//      topic.storyList.forEach { storySummary ->
+//        itemList.add(StorySummaryViewModel(storySummary))
+//      }
+//    }
     return itemList
   }
 
