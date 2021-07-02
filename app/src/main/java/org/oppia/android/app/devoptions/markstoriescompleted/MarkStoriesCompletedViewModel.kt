@@ -53,7 +53,8 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   private fun processStoryList(storyList: List<StorySummary>): List<StorySummaryViewModel> {
     val itemList = mutableListOf<StorySummaryViewModel>()
     storyList.forEach { storySummary ->
-      itemList.add(StorySummaryViewModel(storySummary))
+      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+      itemList.add(StorySummaryViewModel(storySummary, isCompleted))
     }
     return itemList
   }

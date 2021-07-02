@@ -5,6 +5,4 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying a topic summary. */
-class TopicSummaryViewModel(
-  val topic: Topic
-) : ObservableViewModel()
+class TopicSummaryViewModel(val topic: Topic, val isCompleted: Boolean) : ObservableViewModel()

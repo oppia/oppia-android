@@ -51,7 +51,8 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   private fun processAllTopics(allTopics: List<Topic>): List<TopicSummaryViewModel> {
     val itemList = mutableListOf<TopicSummaryViewModel>()
     allTopics.forEach { topic ->
-      itemList.add(TopicSummaryViewModel(topic))
+      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
+      itemList.add(TopicSummaryViewModel(topic, isCompleted))
     }
     return itemList
   }
