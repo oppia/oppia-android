@@ -35,6 +35,7 @@ import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Solution
@@ -51,10 +52,14 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_STORY_ID_2
+import org.oppia.android.domain.topic.UPCOMING_TOPIC_ID_1
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -62,6 +67,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -77,7 +83,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
-import java.lang.AssertionError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -116,6 +121,9 @@ class ExplorationProgressControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
+
   @Mock
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
@@ -142,6 +150,8 @@ class ExplorationProgressControllerTest {
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
+
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -1415,6 +1425,114 @@ class ExplorationProgressControllerTest {
     assertThat(exception).hasMessageThat().contains("invalid_exp_id")
   }
 
+  @Test
+  fun testSaveExplorationCheckpoint_savesCheckpointWithoutError() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    verifyOperationSucceeds(saveCheckpointLiveData)
+  }
+
+  @Test
+  fun testProcessSaveCheckpointResult_saveCheckpoint_correctCheckpointState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    val checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
+    assertThat(checkpointState).isEqualTo(
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+    )
+  }
+
+  @Test
+  fun testProcessSaveCheckpointResult_saveMultipleCheckpoints_correctCheckpointState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    var saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    var checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
+    assertThat(checkpointState).isEqualTo(
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+    )
+    testCoroutineDispatchers.runCurrent()
+    playThroughPrototypeState2AndMoveToNextState()
+    saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
+    assertThat(checkpointState).isEqualTo(
+      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
+    )
+  }
+
+  @Test
+  fun testCheckpointState_checkCheckpointStateIsInitiallyUnsaved() {
+    assertThat(explorationProgressController.getCurrentCheckpointState())
+      .isEqualTo(ExplorationCheckpointState.UNSAVED)
+  }
+
+  @Test
+  fun testFinishExplosionWithCheckpointing_progressSaved_databaseLimitNotExceeded_isSuccessful() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    processSaveCheckpointResult(saveCheckpointLiveData)
+    testCoroutineDispatchers.runCurrent()
+    val finishExplorationWithCheckpointingLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+    verifyOperationSucceeds(finishExplorationWithCheckpointingLiveData)
+  }
+
+  @Test
+  fun testFinishExplorationAsyncWithCheckpointing_databaseLimitExceeded_isFailureWithException() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+
+    var saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    processSaveCheckpointResult(saveCheckpointLiveData)
+
+    playThroughPrototypeState2AndMoveToNextState()
+    saveCheckpointLiveData =
+      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
+    processSaveCheckpointResult(saveCheckpointLiveData)
+    testCoroutineDispatchers.runCurrent()
+    val finishExplorationWithCheckpointingLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+
+    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+
+    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
+    )
+  }
+
+  @Test
+  fun testFinishExplorationAsyncWithCheckpointing_unsavedProgress_isFailureWithException() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // Every exploration is marked as unsaved until a save operation changes the checkpoint state to
+    // some other state.
+
+    val finishExplorationWithCheckpointingLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+
+    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+
+    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.ProgressNotSavedException::class.java
+    )
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1798,6 +1916,55 @@ class ExplorationProgressControllerTest {
     reset(mockAsyncResultLiveDataObserver)
   }
 
+  /**
+   * Verifies that the specified live data provides a failure result. This will change test-wide
+   * mock state, and synchronizes background execution.
+   */
+  private fun <T : Any?> verifyOperationFails(liveData: LiveData<AsyncResult<T>>) {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      assertThat(isFailure()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
+  }
+
+  /**
+   * updates the checkpoint state for an exploration depending upon the result of the last save
+   * operation.
+   *
+   * @return the [ExplorationCheckpointState] to which the latest checkpoint state has transitioned.
+   */
+  private fun <T : Any?> processSaveCheckpointResult(
+    liveData: LiveData<AsyncResult<T>>
+  ): ExplorationCheckpointState {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      if (isFailure()) {
+        throw AssertionError("Operation failed", getErrorOrNull())
+      }
+      assertThat(isSuccess()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
+    val checkpointState = asyncResultCaptor.value.getOrThrow() as ExplorationCheckpointState
+    explorationProgressController.processSaveCheckpointResult(
+      profileId,
+      UPCOMING_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_2,
+      oppiaClock.getCurrentTimeMs(),
+      checkpointState
+    )
+    return checkpointState
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -1833,6 +2000,23 @@ class ExplorationProgressControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size of checkpoint for the the first state in [TEST_EXPLORATION_ID_2] is equal to
+     * 150 Bytes, therefore the database will exceeded the allocated limit when the second
+     * checkpoint is stored for [TEST_EXPLORATION_ID_2]
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -1842,7 +2026,8 @@ class ExplorationProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -18,7 +18,7 @@ internal class ExplorationProgress {
   internal lateinit var currentExplorationId: String
   internal lateinit var currentExploration: Exploration
   internal var playStage = PlayStage.NOT_PLAYING
-  internal var checkpointState: ExplorationCheckpointState  = ExplorationCheckpointState.UNSAVED
+  internal var checkpointState = ExplorationCheckpointState.UNSAVED
   internal val stateGraph: StateGraph by lazy {
     StateGraph(currentExploration.statesMap)
   }
@@ -72,7 +72,7 @@ internal class ExplorationProgress {
     }
   }
 
-  fun updateCheckpointState(newCheckpointState: ExplorationCheckpointState) {
+  internal fun updateCheckpointState(newCheckpointState: ExplorationCheckpointState) {
     checkpointState = newCheckpointState
   }
 

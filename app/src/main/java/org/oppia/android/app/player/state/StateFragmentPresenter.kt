@@ -37,6 +37,7 @@ import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncResult
@@ -45,7 +46,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -83,6 +83,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+
+  private val enableCheckpointing: Boolean = true
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -317,7 +319,8 @@ class StateFragmentPresenter @Inject constructor(
       return
     }
 
-    saveCheckpoint()
+    // mark a checkpoint and then update the UI with the new EphemeralState.
+    markExplorationCheckpoint()
     val ephemeralState = result.getOrThrow()
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -526,6 +529,46 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  /**
+   * This function kicks off the process to save checkpoints in the domain layer and then observes
+   * to the returned [DataProvider] as [LiveData]. It also communicates back to the domain layer to
+   * process the result of the save operation once the save operation has completed
+   * successfully/unsuccessfully.
+   */
+  private fun markExplorationCheckpoint() {
+    // Don't mark checkpoints if checkpointing is not enabled. This is expected to happen when the
+    // exploration was previously completed.
+    if (!enableCheckpointing)
+      return
+
+    explorationProgressController.saveExplorationCheckpoint(
+      profileId
+    ).toLiveData().observe(
+      fragment,
+      Observer {
+        if (it.isSuccess()) {
+          val newCheckpointState = it.getOrThrow() as ExplorationCheckpointState
+          explorationProgressController.processSaveCheckpointResult(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            oppiaClock.getCurrentTimeMs(),
+            newCheckpointState
+          )
+        } else if (it.isFailure())
+          explorationProgressController.processSaveCheckpointResult(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            oppiaClock.getCurrentTimeMs(),
+            newCheckpointState = ExplorationCheckpointState.UNSAVED
+          )
+      }
+    )
+  }
+
   private fun markExplorationAsRecentlyPlayed() {
     storyProgressController.recordRecentlyPlayedChapter(
       profileId,
@@ -543,22 +586,6 @@ class StateFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       oppiaClock.getCurrentTimeMs()
-    )
-  }
-
-  private fun saveCheckpoint() {
-    explorationProgressController.saveExplorationCheckpoint(
-      profileId
-    ).toLiveData().observe(
-      fragment,
-      Observer {
-        if(it.isSuccess()) {
-          val newCheckpointState = it.getOrThrow()
-          explorationProgressController.processSaveCheckpointResult(newCheckpointState)
-        }
-        else if(it.isFailure())
-          explorationProgressController.processSaveCheckpointResult(ExplorationCheckpointState.UNSAVED)
-      }
     )
   }
 }

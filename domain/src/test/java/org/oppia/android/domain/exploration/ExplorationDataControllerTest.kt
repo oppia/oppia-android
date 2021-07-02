@@ -33,6 +33,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -285,6 +286,23 @@ class ExplorationDataControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size of checkpoint for the the first state in [TEST_EXPLORATION_ID_2] is equal to
+     * 150 Bytes, therefore the database will exceeded the allocated limit when the second
+     * checkpoint is stored for [TEST_EXPLORATION_ID_2]
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -294,7 +312,8 @@ class ExplorationDataControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

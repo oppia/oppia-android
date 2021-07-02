@@ -114,6 +114,8 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     pendingTopState = state
+    revealedHintIndex = -1
+    solutionIsRevealed = false
   }
 
   internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
@@ -131,6 +133,7 @@ internal class StateDeck internal constructor(
       .build()
     pendingTopState = newState
     hintList.clear()
+    revealedHintIndex++
     return ephemeralState
   }
 
@@ -145,6 +148,7 @@ internal class StateDeck internal constructor(
       )
       .build()
     pendingTopState = newState
+    solutionIsRevealed = true
     return ephemeralState
   }
 
@@ -178,29 +182,33 @@ internal class StateDeck internal constructor(
       .build()
   }
 
+  /** @return an [ExplorationCheckpoint] which contains all the latest values of variables of
+   *          the [StateDeck] that are used in light weight checkpointing.
+   */
   internal fun createExplorationCheckpoint(
     explorationVersion: Int,
     explorationTitle: String,
     timestamp: Long
   ): ExplorationCheckpoint {
-    val explorationCheckpoint = ExplorationCheckpoint.newBuilder()
+    val explorationCheckpointBuilder = ExplorationCheckpoint.newBuilder()
 
     previousStates.forEach { state ->
-      explorationCheckpoint.addCompletedStatesInCheckpoint(
+      explorationCheckpointBuilder.addCompletedStatesInCheckpoint(
         CompletedStateInCheckpoint.newBuilder()
           .setCompletedState(state.completedState)
           .setStateName(state.state.name)
       )
     }
-    explorationCheckpoint.pendingStateName = pendingTopState.name
-    explorationCheckpoint.hintIndex = revealedHintIndex
-    explorationCheckpoint.solutionIsRevealed = solutionIsRevealed
-    explorationCheckpoint.addAllPendingUserAnswers(currentDialogInteractions)
-    explorationCheckpoint.explorationTitle = explorationTitle
-    explorationCheckpoint.explorationVersion = explorationVersion
-    explorationCheckpoint.timestampOfFirstCheckpoint = timestamp
 
-    return explorationCheckpoint.build()
+    return explorationCheckpointBuilder
+      .setPendingStateName(pendingTopState.name)
+      .setHintIndex(revealedHintIndex)
+      .setSolutionIsRevealed(solutionIsRevealed)
+      .addAllPendingUserAnswers(currentDialogInteractions)
+      .setExplorationVersion(explorationVersion)
+      .setExplorationTitle(explorationTitle)
+      .setTimestampOfFirstCheckpoint(timestamp)
+      .build()
   }
 
   private fun getCurrentPendingState(): EphemeralState {

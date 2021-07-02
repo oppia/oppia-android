@@ -115,6 +115,34 @@ class StoryProgressControllerTest {
     verifyRecordProgressSucceeded()
   }
 
+  @Test
+  fun testStoryProgressController_recordChapterAsInProgressSaved_isSuccessful() {
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+  }
+
+  @Test
+  fun testStoryProgressController_recordChapterAsInProgressNotSaved_isSuccessful() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+  }
+
   private fun verifyRecordProgressSucceeded() {
     verify(
       mockRecordProgressObserver,

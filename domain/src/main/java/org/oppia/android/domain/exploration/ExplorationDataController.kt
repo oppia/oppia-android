@@ -61,6 +61,7 @@ class ExplorationDataController @Inject constructor(
   fun stopPlayingExploration(): LiveData<AsyncResult<Any?>> {
     return try {
       explorationProgressController.finishExplorationAsync()
+      MutableLiveData(AsyncResult.success(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
