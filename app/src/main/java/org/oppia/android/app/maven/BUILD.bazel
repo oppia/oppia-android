@@ -11,8 +11,12 @@ kt_jvm_library(
     srcs = [
         "GenerateMavenDependenciesList.kt",
         "LicenseDependency.kt",
+        "MavenDependencies.kt",
+        "MavenDependency.kt",
         "backup/BackupDependency.kt",
         "backup/BackupLicense.kt",
+        "license/License.kt",
+        "license/LinkType.kt",
         "maveninstall/MavenListDependencies.kt",
         "maveninstall/MavenListDependency.kt",
         "maveninstall/MavenListDependencyTree.kt",
