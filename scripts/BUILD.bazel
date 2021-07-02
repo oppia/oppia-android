@@ -5,19 +5,39 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
 
+# Visibility for libraries that should be accessible to script tests.
+package_group(
+    name = "oppia_script_test_visibility",
+    packages = [
+        "//scripts/src/javatests/...",
+    ],
+)
+
+# Visibility for libraries that have binaries defined at this package & tests.
+package_group(
+    name = "oppia_script_binary_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//scripts",
+    ],
+)
+
+# Visibility for libraries that should be accessible to other script packages & tests.
+package_group(
+    name = "oppia_script_library_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//scripts/src/java/...",
+    ],
+)
+
 REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets(
     "regex_pattern_assets",
     "//scripts/org/oppia/android/scripts/regex/assets",
-)
-
-# Visibility for libraries that have binaries defined at this package, and libraries defined at
-# subpackage level.
-package_group(
-    name = "oppia_script_lib_visibility",
-    packages = [
-        "//scripts",
-        "//scripts/src/java/org/oppia/android/scripts/...",
-    ],
 )
 
 kt_jvm_binary(
@@ -31,5 +51,5 @@ kt_jvm_binary(
 kt_jvm_library(
     name = "regex_check_assets",
     data = REGEX_PATTERN_CHECK_ASSETS,
-    visibility = [":oppia_script_lib_visibility"],
+    visibility = [":oppia_script_binary_visibility"],
 )

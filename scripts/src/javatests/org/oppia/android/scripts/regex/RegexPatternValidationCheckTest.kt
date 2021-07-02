@@ -119,12 +119,12 @@ class RegexPatternValidationCheckTest {
     )
   }
 
-  /** Helper function to retrieve the absolute path of testfiles directory. */
+  /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {
     return "${tempFolder.root}/testfiles"
   }
 
-  /** Helper function to execute the main method of the script. */
+  /** Runs the regex_pattern_validation_check. */
   private fun runScript() {
     main(retrieveTestFilesDirectoryPath())
   }

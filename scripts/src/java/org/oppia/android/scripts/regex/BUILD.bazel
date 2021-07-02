@@ -1,34 +1,19 @@
 """
-Package for Regex pattern based checks.
+Libraries corresponding to regex pattern based validation checks which ensures that no prohibited
+file path/name and content is used in the codebase.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library", "kt_jvm_test")
-load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "regex_pattern_validation_check_lib",
     testonly = True,
-    srcs = [
-        "RegexPatternValidationCheck.kt",
-    ],
-    visibility = ["//scripts:oppia_script_lib_visibility"],
+    srcs = ["RegexPatternValidationCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
         "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_structure_java_proto_lite",
         "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_structure_java_proto_lite",
-    ],
-)
-
-kt_jvm_test(
-    name = "RegexPatternValidationCheckTest",
-    testonly = True,
-    srcs = ["RegexPatternValidationCheckTest.kt"],
-    deps = [
-        ":regex_pattern_validation_check_lib",
-        "//scripts:regex_check_assets",
-        "//testing:assertion_helpers",
-        "//third_party:com_google_truth_truth",
-        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
