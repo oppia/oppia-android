@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -74,6 +75,12 @@ class ModifyLessonProgressControllerTest {
 
   @Captor
   lateinit var allTopicsResultCaptor: ArgumentCaptor<AsyncResult<List<Topic>>>
+
+  @Mock
+  lateinit var mockAllStoriesObserver: Observer<AsyncResult<List<StorySummary>>>
+
+  @Captor
+  lateinit var allStoriesResultCaptor: ArgumentCaptor<AsyncResult<List<StorySummary>>>
 
   private lateinit var profileId: ProfileId
 
@@ -154,7 +161,7 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Test
-  fun testRetrieveAllTopics_firstTopic_withoutTopicCompleted_correctProgressFound() {
+  fun testRetrieveAllTopics_firstTopic_withTopicCompleted_correctProgressFound() {
     markFirstTestTopicCompleted()
     val allTopics = retrieveAllTopics()
     val firstTopic = allTopics[0]
@@ -162,6 +169,88 @@ class ModifyLessonProgressControllerTest {
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(firstTopic.storyList[0].chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.COMPLETED)
+  }
+
+  @Test
+  fun testRetrieveAllStories_isSuccessful() {
+    val allStoriesLiveData =
+      modifyLessonProgressController.getAllStoriesWithProgress(profileId).toLiveData()
+    allStoriesLiveData.observeForever(mockAllStoriesObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
+    val allStoriesResult = allStoriesResultCaptor.value
+    assertThat(allStoriesResult!!.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveAllStories_providesListOfMultipleStories() {
+    val allStories = retrieveAllStories()
+    assertThat(allStories.size).isGreaterThan(1)
+  }
+
+  @Test
+  fun testRetrieveAllStories_firstStory_hasCorrectStoryInfo() {
+    val allStories = retrieveAllStories()
+    val firstStory = allStories[0]
+    assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
+    assertThat(firstStory.storyName).isEqualTo("First Story")
+  }
+
+  @Test
+  fun testRetrieveAllStories_otherStory_hasCorrectStoryInfo() {
+    val allStories = retrieveAllStories()
+    val secondStory = allStories[1]
+    assertThat(secondStory.storyId).isEqualTo(TEST_STORY_ID_2)
+    assertThat(secondStory.storyName).isEqualTo("Other Interesting Story")
+  }
+
+  @Test
+  fun testRetrieveAllStories_fractionsStory_hasCorrectStoryInfo() {
+    val allStories = retrieveAllStories()
+    val fractionsStory = allStories[2]
+    assertThat(fractionsStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
+    assertThat(fractionsStory.storyName).isEqualTo("Matthew Goes to the Bakery")
+  }
+
+  @Test
+  fun testRetrieveAllStories_ratiosStory1_hasCorrectStoryInfo() {
+    val allStories = retrieveAllStories()
+    val ratiosStory1 = allStories[3]
+    assertThat(ratiosStory1.storyId).isEqualTo(RATIOS_STORY_ID_0)
+    assertThat(ratiosStory1.storyName).isEqualTo("Ratios: Part 1")
+  }
+
+  @Test
+  fun testRetrieveAllStories_ratiosStory2_hasCorrectStoryInfo() {
+    val allStories = retrieveAllStories()
+    val ratiosStory2 = allStories[4]
+    assertThat(ratiosStory2.storyId).isEqualTo(RATIOS_STORY_ID_1)
+    assertThat(ratiosStory2.storyName).isEqualTo("Ratios: Part 2")
+  }
+
+  @Test
+  fun testRetrieveAllStories_firstStory_withoutAnyProgress_correctProgressFound() {
+    val allStories = retrieveAllStories()
+    val firstStory = allStories[0]
+    assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
+    assertThat(firstStory.chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_STARTED)
+    assertThat(firstStory.chapterList[1].chapterPlayState)
+      .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+    assertThat(firstStory.chapterList[1].missingPrerequisiteChapter.name)
+      .isEqualTo(firstStory.chapterList[0].name)
+  }
+
+  @Test
+  fun testRetrieveAllStories_firstStory_withStoryCompleted_correctProgressFound() {
+    markFirstStoryCompleted()
+    val allStories = retrieveAllStories()
+    val firstStory = allStories[0]
+    assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
+    assertThat(firstStory.chapterList[0].chapterPlayState)
+      .isEqualTo(ChapterPlayState.COMPLETED)
+    assertThat(firstStory.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
   }
 
@@ -176,6 +265,13 @@ class ModifyLessonProgressControllerTest {
     )
   }
 
+  private fun markFirstStoryCompleted() {
+    storyProgressTestHelper.markCompletedTestTopic0Story0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
   private fun retrieveAllTopics(): List<Topic> {
     val allTopicsLiveData =
       modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
@@ -183,6 +279,15 @@ class ModifyLessonProgressControllerTest {
     testCoroutineDispatchers.runCurrent()
     verify(mockAllTopicsObserver).onChanged(allTopicsResultCaptor.capture())
     return allTopicsResultCaptor.value.getOrThrow()
+  }
+
+  private fun retrieveAllStories(): List<StorySummary> {
+    val allStoriesLiveData =
+      modifyLessonProgressController.getAllStoriesWithProgress(profileId).toLiveData()
+    allStoriesLiveData.observeForever(mockAllStoriesObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
+    return allStoriesResultCaptor.value.getOrThrow()
   }
 
   // TODO(#89): Move this to a common test application component.
