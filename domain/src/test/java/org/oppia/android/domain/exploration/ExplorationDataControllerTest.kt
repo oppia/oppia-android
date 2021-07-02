@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.FileNotFoundException
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,6 +63,9 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.FileNotFoundException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)

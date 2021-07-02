@@ -7,7 +7,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -58,6 +57,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
+import javax.inject.Singleton
 
 // Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
