@@ -1,15 +1,21 @@
 package org.oppia.android.util.logging
 
-import dagger.Binds
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
+import dagger.Provides
+import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
+import javax.inject.Singleton
 
 /** Provides debug log reporting dependencies. */
 @Module
-interface DebugLogReportingModule {
+class DebugLogReportingModule {
+  @Singleton
+  @Provides
+  fun provideExceptionLogger(): ExceptionLogger {
+    return FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+  }
 
-  @Binds
-  fun bindDebugExceptionLogger(debugExceptionLogger: DebugExceptionLogger): ExceptionLogger
-
-  @Binds
-  fun bindDebugEventLogger(debugEventLogger: DebugEventLogger): EventLogger
+  @Singleton
+  @Provides
+  fun provideDebugEventLogger(debugEventLogger: DebugEventLogger): EventLogger = debugEventLogger
 }
