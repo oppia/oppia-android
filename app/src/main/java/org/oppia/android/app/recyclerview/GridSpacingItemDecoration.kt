@@ -3,6 +3,7 @@ package org.oppia.android.app.recyclerview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -55,26 +56,40 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
 
       // If it is in column 0 you apply the full offset on the start side, else only half
       // If spanIndex + spanSize equals spanCount (it occupies the last column) you apply the full offset on the end, else only half.
-      if (spanIndex == 0) {
-        outRect.left = spacing
-      } else if (itemSpanSize + spanIndex == spanCount) {
-        outRect.right = spacing
-      } else {
-        outRect.left = spacing / 2
-        outRect.right = spacing / 2
-      }
 
-      if (position < spanCount) { // top edge
-        outRect.top = spacing.toInt();
-      }
-      outRect.bottom = halfSpacing
+      if (spanCount == 4) {
+        outRect.left = spacing - spanIndex * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+        outRect.right = (spanIndex + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+//        if (position < spanCount) { // top edge
+//          outRect.top = spacing;
+//        }
+//        outRect.bottom = spacing; // item bottom
+
+      }else{
+          if (spanIndex == 0) {
+            outRect.left = spacing
+          } else if (itemSpanSize + spanIndex == spanCount) {
+            outRect.right = spacing
+          } else {
+            outRect.left = spacing / 2
+            outRect.right = spacing / 2
+          }
+        }
 
       if (isLayoutRTL(parent)) {
         val tmp = outRect.left
         outRect.left = outRect.right
         outRect.right = tmp
       }
+
+      if (position < spanCount) { // top edge
+        outRect.top = spacing
+      }
+      outRect.bottom = halfSpacing
+//      Log.d("spacing ", "====" + outRect + "  " + spanIndex)
     }
+
   }
 
   protected fun getTotalSpan(parent: RecyclerView): Int {
