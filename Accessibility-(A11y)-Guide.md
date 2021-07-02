@@ -11,17 +11,16 @@ Making sure that the Oppia app is accessible by all resonates with overall Oppia
 Note: In short we can write Accessibility as **A11Y**.
 
 ## How to test the app for a11y users?
-* All the screens in the app should pass on [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en) 
-* Screen Reader (Talkback) should be able to navigate to all the UI items and should have logical descriptions.
-* [AccessibilityChecks](https://developer.android.com/guide/topics/ui/accessibility/testing#automated) are enabled for all Espresso based test cases
+There are various manual and automated tests to check if app is accessible by all or not. All of the below mentioned tests are required to make sure that app is accessible in most cases.
+
+**[Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en)** : Using Accessibility Scanner we can take screenshots of each and every screen in the Oppia-app manually and the Accessibility Scanner app will give the output for the individual screenshot mentioning all the errors.
+
+**Screen Reader**: Screen readers like **Talkback** can be used to test the app manually. Talkback app is used by blind people to navigate to different items in the screen and get audio based output. This app will not give any error like Accessibility Scanner. 
+
+**[AccessibilityChecks](https://developer.android.com/guide/topics/ui/accessibility/testing#automated)**: Developers can activate the `AccessibilityChecks` in all `Espresso` test cases which will give errors related to accessibility.
+
 
 ## Setting up Accessibility Scanner and Talkback
-
-### Useful Resources
-* [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
-* [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
-* [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
-* [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
 
 ### Setup Play Store in mobile emulator
 1. Create a new emulator device which contains **Google Play Store** in it. Example: Nexus 5, Nexus 5A, Pixel, Pixel 2, Pixel 3, Pixel 3a, Pixel 4.
@@ -63,7 +62,13 @@ TalkBack is the Google **screen reader** included on Android devices. TalkBack g
 5. Read all the instructions written on the screen as using Talkback requires specific steps.
 6. Turn on **Use Service** -> **Allow**
 
-Now you can use talkback. For more information visit [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677).
+
+### Useful Resources
+* [Android A11Y Overview](https://support.google.com/accessibility/android/answer/6006564)
+* [Using A11Y Menu](https://support.google.com/accessibility/android/answer/9078941)
+* [Getting started with Talkback](https://support.google.com/accessibility/android/answer/6283677)
+* [Display speech output as Text: Talkback](https://developer.android.com/guide/topics/ui/accessibility/testing#optional_talkback_developer_settings)
+
 
 ## Using AccessibilityTestRule in Espresso Tests
 [AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/develop/testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt) is a JUnit rule to enable `AccessibilityChecks` in all Espresso Tests. This rule covers all errors shown by Accessibility Scanner and more but only for all those UI elements which are getting used in the test case.
