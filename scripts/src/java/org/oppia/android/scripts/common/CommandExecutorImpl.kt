@@ -33,8 +33,8 @@ class CommandExecutorImpl(
     check(finished) { "Process did not finish within the expected timeout" }
     return CommandResult(
       process.exitValue(),
-      process.inputStream.readLines(),
-      if (!includeErrorOutput) process.errorStream.readLines() else listOf(),
+      process.inputStream.bufferedReader().readLines(),
+      if (!includeErrorOutput) process.errorStream.bufferedReader().readLines() else listOf(),
       assembledCommand,
     )
   }

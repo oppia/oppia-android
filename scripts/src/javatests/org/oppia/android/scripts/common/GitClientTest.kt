@@ -29,7 +29,7 @@ class GitClientTest {
 
   @Before
   fun setUp() {
-    testGitRepository = TestGitRepository(tempFolder)
+    testGitRepository = TestGitRepository(tempFolder, commandExecutor)
   }
 
   @After

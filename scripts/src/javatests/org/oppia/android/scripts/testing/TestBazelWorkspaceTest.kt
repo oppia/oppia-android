@@ -28,7 +28,7 @@ class TestBazelWorkspaceTest {
   var tempFolder = TemporaryFolder()
 
   @Test
-  fun testCreateTestUtility_doesNotImmediatelyCreateAndFiles() {
+  fun testCreateTestUtility_doesNotImmediatelyCreateAnyFiles() {
     TestBazelWorkspace(tempFolder)
 
     // Simply creating the utility should not create any files. This ensures later tests are

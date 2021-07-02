@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
@@ -38,7 +39,7 @@ class ComputeAffectedTestsTest {
   @Before
   fun setUp() {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    testGitRepository = TestGitRepository(tempFolder)
+    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
 
     // Redirect script output for testing purposes.
     pendingOutputStream = ByteArrayOutputStream()
