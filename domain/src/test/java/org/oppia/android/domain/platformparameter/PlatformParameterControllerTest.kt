@@ -35,6 +35,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -49,10 +50,7 @@ private const val INTEGER_PLATFORM_PARAMETER_VALUE = 1
 private const val BOOLEAN_PLATFORM_PARAMETER_NAME = "boolean_platform_parameter_name"
 private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 
-/**
- * [PlatformParameterControllerTest] verifies the working of [PlatformParameterController] by
- * testing the PlatformParameterMap given to [PlatformParameterSingleton] in different cases.
- * */
+/** Tests for [PlatformParameterController]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterControllerTest.TestApplication::class)
@@ -123,11 +121,11 @@ class PlatformParameterControllerTest {
     verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
     assertThat(unitCaptor.value.isSuccess()).isTrue()
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
-    checkEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
+    verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
   }
 
   @Test
-  fun testController_noPreviousDatabase_updatePlatformParameterDatabase_readPlatformParameters_platformParameterMapHasValues() { // ktlint-disable max-line-length
+  fun testController_updateEmptyDatabase_readPlatformParameters_platformParameterMapHasValues() {
     setUpTestApplicationComponent()
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
     testCoroutineDispatchers.runCurrent()
@@ -138,11 +136,11 @@ class PlatformParameterControllerTest {
     verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
     assertThat(unitCaptor.value.isSuccess()).isTrue()
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
-    checkEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
+    verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
   }
 
   @Test
-  fun testController_existingDatabase_updatePlatformParameterDatabase_readPlatformParameters_platformParameterMapHasNewValues() { // ktlint-disable max-line-length
+  fun testController_updateExistingDatabase_readPlatformParameters_platformParameterMapHasNewValues() { // ktlint-disable max-line-length
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
@@ -168,8 +166,8 @@ class PlatformParameterControllerTest {
    * This function checks does all the entries inside the [mockPlatformParameterList] exist inside
    * [platformParameterMap] that was retrieved from cache store.
    * @param platformParameterMap Map<String, PlatformParameter> map of cached values
-   * */
-  private fun checkEntriesInsidePlatformParameterMap(
+   */
+  private fun verifyEntriesInsidePlatformParameterMap(
     platformParameterMap: Map<String, PlatformParameter>
   ) {
     assertThat(platformParameterMap.size).isEqualTo(mockPlatformParameterList.size)
@@ -201,6 +199,12 @@ class PlatformParameterControllerTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterSingleton(
+      platformParameterSingletonImpl: PlatformParameterSingletonImpl
+    ): PlatformParameterSingleton = platformParameterSingletonImpl
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
