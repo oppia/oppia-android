@@ -8,19 +8,26 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ViewModel] for [DeveloperOptionsFragment]. */
+/**
+ * [ViewModel] for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
+ * [DeveloperOptionsItemViewModel] which in turn implement corresponding functionalities.
+ */
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor() {
 
+  /**
+   * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
+   * [DeveloperOptionsFragment] to enable corresponding functionalities.
+   */
   val developerOptionsList: List<DeveloperOptionsItemViewModel> by lazy {
     processDeveloperOptionsList()
   }
 
   private fun processDeveloperOptionsList(): List<DeveloperOptionsItemViewModel> {
-    val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
-      mutableListOf(DeveloperOptionsModifyLessonProgressViewModel())
-    itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
-    itemViewModelList.add(DeveloperOptionsOverrideAppBehaviorsViewModel())
-    return itemViewModelList
+    return listOf(
+      DeveloperOptionsModifyLessonProgressViewModel(),
+      DeveloperOptionsViewLogsViewModel(),
+      DeveloperOptionsOverrideAppBehaviorsViewModel()
+    )
   }
 }
