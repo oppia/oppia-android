@@ -100,7 +100,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
 
   @Mock
-  lateinit var mockScoreCalculationsLiveDataObserver:
+  lateinit var mockScoreAndMasteryLiveDataObserver:
     Observer<AsyncResult<UserAssessmentPerformance>>
 
   @Mock
@@ -125,7 +125,7 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Captor
-  lateinit var scoreCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
+  lateinit var performanceCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
 
   @Captor
   lateinit var asyncNullableResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
@@ -1010,6 +1010,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
@@ -1038,6 +1039,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     viewSolutionForQuestion2()
@@ -1067,6 +1069,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_2)
 
     // Question 2
+    // Submit question 2 wrong answers
     submitIncorrectAnswerForQuestion2(4.0)
     submitIncorrectAnswerForQuestion2(4.0)
     submitIncorrectAnswerForQuestion2(4.0)
@@ -1126,17 +1129,20 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answers
     submitIncorrectAnswerForQuestion1(2)
     submitIncorrectAnswerForQuestion1(2)
     submitIncorrectAnswerForQuestion1(2)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1170,16 +1176,19 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewSolutionForQuestion1()
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
+    // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
@@ -1213,11 +1222,13 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
+    // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
@@ -1254,6 +1265,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
+    // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     viewHintForQuestion1(1)
@@ -1286,6 +1298,222 @@ class QuestionAssessmentProgressControllerTest {
       .isEqualTo(skill1Score)
   }
 
+  @Test
+  fun solutionViewedForAllQuestions_returnMaxMasteryLossPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewSolutionForQuestion1()
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewSolutionForQuestion2()
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = -0.2
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun correctAnswerOnFirstTryForAllQuestions_returnMaxMasteryGainPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.2
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun hintsAndSolutionsViewedWithWrongAnswers_noMisconceptions_returnDifferingMasteryDegrees() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    // Submit question 1 wrong answers
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    viewSolutionForQuestion3()
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.03
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun maxMasteryLossPerQuestionSurpassed_returnMaxMasteryLossForQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answers (surpass max mastery loss lower bound for this question)
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.2
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point11ForLinkedSkill() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(0)
+    viewHintForQuestion1(1)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.11
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun wrongAnswersAllSubmittedWithMisconception_onlyMisconceptionSkillIdMasteryDegreesAffected() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 0
+    // Submit question 0 wrong answers
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.3
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
+  @Test
+  fun someWrongAnswersSubmittedWithTaggedMisconceptionSkillId() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    subscribeToCurrentQuestionToAllowSessionToLoad()
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startTrainingSession(TEST_SKILL_ID_LIST_01)
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 0
+    // Submit question 0 wrong answers
+    submitIncorrectAnswerForQuestion0("4/5")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.25
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Mastery)
+  }
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1302,9 +1530,9 @@ class QuestionAssessmentProgressControllerTest {
       .observeForever(mockCurrentQuestionLiveDataObserver)
   }
 
-  private fun subscribeToScoreCalculations(skillIdList: List<String>) {
+  private fun subscribeToScoreAndMasteryCalculations(skillIdList: List<String>) {
     questionAssessmentProgressController.calculateScores(skillIdList).toLiveData()
-      .observeForever(mockScoreCalculationsLiveDataObserver)
+      .observeForever(mockScoreAndMasteryLiveDataObserver)
   }
 
   private fun startTrainingSession(skillIdList: List<String>) {
@@ -1379,6 +1607,19 @@ class QuestionAssessmentProgressControllerTest {
       .setAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
       .setPlainAnswer(numericAnswer.toString())
       .build()
+  }
+
+  private fun submitCorrectAnswerForQuestion0() {
+    submitTextInputAnswerAndMoveToNextQuestion("1/2")
+  }
+
+  private fun submitIncorrectAnswerForQuestion0(answer: String) {
+    assertThat(answer).isNotEqualTo("1/2")
+    submitTextInputAnswerAndMoveToNextQuestion(answer)
+    verify(
+      mockCurrentQuestionLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentQuestionResultCaptor.capture())
   }
 
   private fun submitCorrectAnswerForQuestion1() {
@@ -1476,13 +1717,13 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
-    subscribeToScoreCalculations(skillIdList)
+    subscribeToScoreAndMasteryCalculations(skillIdList)
     testCoroutineDispatchers.runCurrent()
     verify(
-      mockScoreCalculationsLiveDataObserver,
+      mockScoreAndMasteryLiveDataObserver,
       atLeastOnce()
-    ).onChanged(scoreCalculationCaptor.capture())
-    return scoreCalculationCaptor.value.getOrThrow()
+    ).onChanged(performanceCalculationCaptor.capture())
+    return performanceCalculationCaptor.value.getOrThrow()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1538,6 +1779,26 @@ class QuestionAssessmentProgressControllerTest {
     @Provides
     @InternalScoreMultiplyFactor
     fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#89): Move this to a common test application component.
