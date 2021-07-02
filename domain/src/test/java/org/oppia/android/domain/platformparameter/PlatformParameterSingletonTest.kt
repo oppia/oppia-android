@@ -6,16 +6,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.PlatformParameter as ParameterValue
 
 private const val STRING_PLATFORM_PARAMETER_NAME = "string_platform_parameter_name"
 private const val STRING_PLATFORM_PARAMETER_VALUE = "string_platform_parameter_value"
@@ -28,6 +30,10 @@ private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 
 private const val INCORRECT_PLATFORM_PARAMETER_NAME = "incorrect_platform_parameter_name"
 
+/**
+ * [PlatformParameterSingletonTest] verifies the working of [PlatformParameterSingleton] by testing
+ * the [PlatformParameterValue] received in different cases
+ */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterSingletonTest.TestApplication::class)
@@ -37,14 +43,14 @@ class PlatformParameterSingletonTest {
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
   private val mockPlatformParameterMap by lazy {
-    val stringPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+    val stringPlatformParameter = PlatformParameter.newBuilder()
       .setString(STRING_PLATFORM_PARAMETER_VALUE).build()
-    val integerPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+    val integerPlatformParameter = PlatformParameter.newBuilder()
       .setInteger(INTEGER_PLATFORM_PARAMETER_VALUE).build()
-    val booleanPlatformParameter = ParameterValue.getDefaultInstance().toBuilder()
+    val booleanPlatformParameter = PlatformParameter.newBuilder()
       .setBoolean(BOOLEAN_PLATFORM_PARAMETER_VALUE).build()
 
-    mapOf(
+    mapOf<String, PlatformParameter>(
       STRING_PLATFORM_PARAMETER_NAME to stringPlatformParameter,
       INTEGER_PLATFORM_PARAMETER_NAME to integerPlatformParameter,
       BOOLEAN_PLATFORM_PARAMETER_NAME to booleanPlatformParameter,
@@ -72,8 +78,10 @@ class PlatformParameterSingletonTest {
   fun testSingleton_initPlatformParameterMapTwice_checkIsNotUpdatedTwice() {
     platformParameterSingleton.setPlatformParameterMap(mockPlatformParameterMap)
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
-    val emptyPlatformParameterMap = mapOf<String, ParameterValue>()
+
+    val emptyPlatformParameterMap = mapOf<String, PlatformParameter>()
     platformParameterSingleton.setPlatformParameterMap(emptyPlatformParameterMap)
+
     assertThat(
       platformParameterSingleton.getPlatformParameterMap()
     ).isNotEqualTo(emptyPlatformParameterMap)
@@ -127,16 +135,22 @@ class PlatformParameterSingletonTest {
     assertThat(incorrectPlatformParameter).isNull()
   }
 
-  fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Module
+  class TestModule {
+    @Provides
+    fun providePlatformParameterSingleton(
+      platformParameterSingletonImpl: PlatformParameterSingletonImpl
+    ): PlatformParameterSingleton = platformParameterSingletonImpl
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
-    modules = [
-      RobolectricModule::class, TestDispatcherModule::class
-    ]
+    modules = [TestModule::class]
   )
   interface TestApplicationComponent {
     @Component.Builder
