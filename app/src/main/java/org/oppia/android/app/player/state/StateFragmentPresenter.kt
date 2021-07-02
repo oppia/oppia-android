@@ -84,7 +84,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private val enableCheckpointing: Boolean = true
+  private val enableCheckpointing: Boolean = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -320,8 +320,10 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     // mark a checkpoint and then update the UI with the new EphemeralState.
-    markExplorationCheckpoint()
     val ephemeralState = result.getOrThrow()
+    // only mark checkpoint if the current state is either of type PENDING_STATE or TERMINAL_STATE.
+    if(ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.COMPLETED_STATE)
+      markExplorationCheckpoint()
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
