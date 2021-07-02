@@ -86,7 +86,8 @@ class ModifyLessonProgressControllerTest {
 
   @Test
   fun testRetrieveAllTopics_isSuccessful() {
-    val allTopicsLiveData = modifyLessonProgressController.getAllTopics(profileId).toLiveData()
+    val allTopicsLiveData =
+      modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
     allTopicsLiveData.observeForever(mockAllTopicsObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockAllTopicsObserver).onChanged(allTopicsResultCaptor.capture())
@@ -176,7 +177,8 @@ class ModifyLessonProgressControllerTest {
   }
 
   private fun retrieveAllTopics(): List<Topic> {
-    val allTopicsLiveData = modifyLessonProgressController.getAllTopics(profileId).toLiveData()
+    val allTopicsLiveData =
+      modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
     allTopicsLiveData.observeForever(mockAllTopicsObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockAllTopicsObserver).onChanged(allTopicsResultCaptor.capture())

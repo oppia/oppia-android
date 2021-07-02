@@ -20,7 +20,6 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   private var internalProfileId: Int = -1
-  val itemList: MutableList<TopicSummaryViewModel> = ArrayList()
 
   val topicSummaryLiveData: LiveData<List<TopicSummaryViewModel>> by lazy {
     Transformations.map(allTopicsLiveData, ::processAllTopics)
@@ -30,7 +29,8 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private val allTopicsResultLiveData: LiveData<AsyncResult<List<Topic>>> by lazy {
     modifyLessonProgressController
-      .getAllTopics(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
+      .getAllTopicsWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+      .toLiveData()
   }
 
   private fun getAllTopics(): LiveData<List<Topic>> {
@@ -49,7 +49,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   }
 
   private fun processAllTopics(allTopics: List<Topic>): List<TopicSummaryViewModel> {
-    itemList.clear()
+    val itemList = mutableListOf<TopicSummaryViewModel>()
     allTopics.forEach { topic ->
       itemList.add(TopicSummaryViewModel(topic))
     }

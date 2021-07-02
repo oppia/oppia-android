@@ -1,6 +1,7 @@
 package org.oppia.android.domain.topic
 
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.util.data.AsyncResult
@@ -12,6 +13,7 @@ import javax.inject.Singleton
 
 private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
 private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
+private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 
 /** Controller to modify lesson progress such as marking chapters/stories/topics completed. */
 @Singleton
@@ -27,7 +29,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @return a [DataProvider] for [List] of [Topic] combined with [TopicProgress].
    */
-  fun getAllTopics(profileId: ProfileId): DataProvider<List<Topic>> {
+  fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<Topic>> {
     val allTopicsDataProvider = topicListController.getTopicList()
       .transformAsync(GET_ALL_TOPICS_PROVIDER_ID) { topicList ->
         val listOfTopics = mutableListOf<Topic>()
@@ -44,6 +46,23 @@ class ModifyLessonProgressController @Inject constructor(
       GET_ALL_TOPICS_COMBINED_PROVIDER_ID,
       ::combineTopicListAndTopicProgressList
     )
+  }
+
+  /**
+   * Fetches a list of stories given a profile ID.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs fetched.
+   * @return a [DataProvider] for [List] of [StorySummary] combined with [StoryProgress].
+   */
+  fun getAllStoriesWithProgress(profileId: ProfileId): DataProvider<List<StorySummary>> {
+    return getAllTopicsWithProgress(profileId)
+      .transformAsync(GET_ALL_STORIES_PROVIDER_ID) { listOfTopics ->
+        val storyList = mutableListOf<StorySummary>()
+        listOfTopics.forEach { topic ->
+          storyList.addAll(topic.storyList)
+        }
+        AsyncResult.success(storyList.toList())
+      }
   }
 
   /** Combines all the topics without progress and topic-progresses into a topic. */
