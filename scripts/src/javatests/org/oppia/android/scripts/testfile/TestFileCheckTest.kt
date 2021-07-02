@@ -87,7 +87,7 @@ class TestFileCheckTest {
     return "${tempFolder.root}/testfiles"
   }
 
-  /** Helper function which executes the main method of the script. */
+  /** Runs the test_file_check. */
   private fun runScript() {
     main(retrieveTestFilesDirectoryPath())
   }

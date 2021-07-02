@@ -617,5 +617,14 @@ object ScriptExemptions {
     "NetworkModule.kt",
     "ScriptExemptions.kt",
     "ScriptResultConstants.kt",
+    "AccessibilityTestRule.kt",
+    "DisableAccessibilityChecks.kt",
+    "DeveloperOptionsFragment.kt",
+    "DeveloperOptionsActivityPresenter.kt",
+    "DeveloperOptionsStarterModule.kt",
+    "DeveloperOptionsStarter.kt",
+    "DeveloperOptionsStarterImpl.kt",
+    "DeveloperOptionsFragmentPresenter.kt",
+    "DeveloperOptionsModule.kt",
   )
 }
