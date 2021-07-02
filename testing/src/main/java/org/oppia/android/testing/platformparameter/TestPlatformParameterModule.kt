@@ -2,7 +2,8 @@ package org.oppia.android.testing.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.platformparameter.PlatformParameter
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.util.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
@@ -21,26 +22,30 @@ class TestPlatformParameterModule {
   @TestStringParam
   @Provides
   @Singleton
-  fun provideTestStringParam(singleton: TestPlatformParameterSingleton): PlatformParameter<String> {
-    return singleton.getStringPlatformParameter(TEST_STRING_PARAM_NAME)
-      ?: PlatformParameter.createDefaultParameter(TEST_STRING_PARAM_DEFAULT_VALUE)
+  fun provideTestStringParam(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<String> {
+    return platformParameterSingleton.getStringPlatformParameter(TEST_STRING_PARAM_NAME)
+      ?: PlatformParameterValue.createDefaultParameter(TEST_STRING_PARAM_DEFAULT_VALUE)
   }
 
   @TestIntegerParam
   @Provides
   @Singleton
-  fun provideTestIntegerParam(singleton: TestPlatformParameterSingleton): PlatformParameter<Int> {
-    return singleton.getIntegerPlatformParameter(TEST_INTEGER_PARAM_NAME)
-      ?: PlatformParameter.createDefaultParameter(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+  fun provideTestIntegerParam(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(TEST_INTEGER_PARAM_NAME)
+      ?: PlatformParameterValue.createDefaultParameter(TEST_INTEGER_PARAM_DEFAULT_VALUE)
   }
 
   @TestBooleanParam
   @Provides
   @Singleton
   fun provideTestBooleanParam(
-    singleton: TestPlatformParameterSingleton
-  ): PlatformParameter<Boolean> {
-    return singleton.getBooleanPlatformParameter(TEST_BOOLEAN_PARAM_NAME)
-      ?: PlatformParameter.createDefaultParameter(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(TEST_BOOLEAN_PARAM_NAME)
+      ?: PlatformParameterValue.createDefaultParameter(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
   }
 }

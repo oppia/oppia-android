@@ -3,6 +3,8 @@
   <dimen name="home_padding_end">64dp</dimen>
   <dimen name="home_padding_start">64dp</dimen>
   <dimen name="home_outer_margin">72dp</dimen>
+  <dimen name="home_welcome_outer_padding">72dp</dimen>
+  <dimen name="home_welcome_text_view_margin_end">8dp</dimen>
   <dimen name="home_inner_margin">36dp</dimen>
   <dimen name="recently_played_margin_max">72dp</dimen>
   <dimen name="recently_played_margin_min">36dp</dimen>
@@ -123,6 +125,17 @@
   <dimen name="interaction_item_question_view_margin_start">64dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">64dp</dimen>
+
+  <!-- DragAndDrop Interaction Item -->
+  <dimen name="drag_drop_interaction_item_padding_start">16dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_top">16dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_end">16dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_bottom">16dp</dimen>
+
+  <dimen name="drag_drop_interaction_item_recycler_view_margin_top">4dp</dimen>
+
+  <dimen name="drag_drop_interaction_items_margin_top">4dp</dimen>
+  <dimen name="drag_drop_interaction_items_margin_bottom">4dp</dimen>
 
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">16dp</dimen>

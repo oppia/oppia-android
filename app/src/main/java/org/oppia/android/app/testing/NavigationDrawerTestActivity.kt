@@ -7,11 +7,18 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivityPresenter
+import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
-class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopicListener {
+class NavigationDrawerTestActivity :
+  InjectableAppCompatActivity(),
+  RouteToTopicListener,
+  RouteToTopicPlayStoryListener,
+  RouteToRecentlyPlayedListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
@@ -39,5 +46,25 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
     startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  }
+
+  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
+  }
+
+  override fun routeToRecentlyPlayed() {
+    startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 }
