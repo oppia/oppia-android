@@ -20,7 +20,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
     prefSummaryValue = if (savedInstanceState == null) {
       intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)
     } else {
-      savedInstanceState.get(KEY_SELECTED_LANGUAGE) as String
+      savedInstanceState.get(SELECTED_LANGUAGE_EXTRA_KEY) as String
     }
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
@@ -30,7 +30,7 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       "AppLanguageActivity.app_language_preference_title"
     const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
       "AppLanguageActivity.app_language_preference_summary_value"
-    internal const val KEY_SELECTED_LANGUAGE = "SELECTED_LANGUAGE"
+    internal const val SELECTED_LANGUAGE_EXTRA_KEY = "AppLanguageActivity.selected_language"
 
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
     fun createAppLanguageActivityIntent(
@@ -63,6 +63,9 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putString(KEY_SELECTED_LANGUAGE, appLanguageActivityPresenter.getLanguageSelected())
+    outState.putString(
+      SELECTED_LANGUAGE_EXTRA_KEY,
+      appLanguageActivityPresenter.getLanguageSelected()
+    )
   }
 }
