@@ -273,7 +273,7 @@ class ComputeAffectedTestsTest {
   private fun runScript(): List<String> {
     val outputLog = tempFolder.newFile("output.log")
     main(arrayOf(tempFolder.root.absolutePath, outputLog.absolutePath))
-    return outputLog.bufferedReader().readLines()
+    return outputLog.readLines()
   }
 
   private fun createEmptyWorkspace() {

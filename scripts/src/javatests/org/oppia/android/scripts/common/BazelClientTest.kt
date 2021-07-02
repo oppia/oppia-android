@@ -199,7 +199,7 @@ class BazelClientTest {
         listOf("//:SecondTestDependency.kt", "//subpackage:FourthTest.kt", "//:ExtraDep.kt")
       )
 
-    println(testBazelWorkspace.rootBuildFile.bufferedReader().readLines().joinToString("\n"))
+    println(testBazelWorkspace.rootBuildFile.readLines().joinToString("\n"))
 
     // The function should provide all test targets related to the file targets provided (either via
     // dependencies or because that file is part of the test itself).
