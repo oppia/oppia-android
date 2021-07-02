@@ -80,6 +80,7 @@
   <color name="appVersionBackground">#E5E5E5</color>
   <color name="navigationGeneralBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#BE563C</color>
+  <color name="highlightedDeveloperOptionsNavMenuItem">#00609C</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="audioLanguageActivityRadioButton">#00A89F</color>
