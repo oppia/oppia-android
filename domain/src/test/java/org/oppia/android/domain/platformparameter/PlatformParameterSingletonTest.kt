@@ -6,10 +6,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -136,9 +139,19 @@ class PlatformParameterSingletonTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    fun providePlatformParameterSingleton(
+      platformParameterSingletonImpl: PlatformParameterSingletonImpl
+    ): PlatformParameterSingleton = platformParameterSingletonImpl
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component
+  @Component(
+    modules = [TestModule::class]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
