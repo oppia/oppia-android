@@ -54,28 +54,27 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
         outRect.left = halfSpacing
       }
 
-      // If it is in column 0 you apply the full offset on the start side, else only half
-      // If spanIndex + spanSize equals spanCount (it occupies the last column) you apply the full offset on the end, else only half.
-
       if (spanCount == 4) {
-        outRect.left = spacing - spanIndex * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-        outRect.right = (spanIndex + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-//        if (position < spanCount) { // top edge
-//          outRect.top = spacing;
-//        }
-//        outRect.bottom = spacing; // item bottom
-
-      }else{
-          if (spanIndex == 0) {
+        outRect.left =
+          (spacing ) - spanIndex * (spacing ) / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+        outRect.right =
+          (spanIndex + 1) * (spacing) / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+      } else {
+        // If it is in column 0 you apply the full offset on the start side, else only half
+        // If spanIndex + spanSize equals spanCount (it occupies the last column) you apply the full offset on the end, else only half.
+        when {
+          spanIndex == 0 -> {
             outRect.left = spacing
-          } else if (itemSpanSize + spanIndex == spanCount) {
+          }
+          itemSpanSize + spanIndex == spanCount -> {
             outRect.right = spacing
-          } else {
+          }
+          else -> {
             outRect.left = spacing / 2
             outRect.right = spacing / 2
           }
         }
+      }
 
       if (isLayoutRTL(parent)) {
         val tmp = outRect.left
@@ -83,11 +82,11 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
         outRect.right = tmp
       }
 
-      if (position < spanCount) { // top edge
-        outRect.top = spacing
+      if (spanIndex < spanCount) { // top edge
+        outRect.top = halfSpacing
       }
       outRect.bottom = halfSpacing
-//      Log.d("spacing ", "====" + outRect + "  " + spanIndex)
+      Log.d("spacing ", "====" + outRect + "  " + spanIndex)
     }
 
   }
