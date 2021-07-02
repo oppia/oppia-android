@@ -6,13 +6,14 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val PLATFORM_PARAMETER_DATA_PROVIDER_ID = "platform_parameter_data_provider_id"
 private const val PLATFORM_PARAMETER_DATABASE_NAME = "platform_parameter_database"
 
-/** Controller for handling platform parameter database. */
+/** Controller for fetching and updating platform parameters in the database. */
 @Singleton
 class PlatformParameterController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
@@ -25,6 +26,9 @@ class PlatformParameterController @Inject constructor(
   )
 
   private val platformParameterDataProvider by lazy {
+    // After this transformation the cached List of Platform Parameters gets converted into a simple
+    // Mpp where the keys corresponds to the name of Platform Parameter and value will correspond to
+    // the PlatformParameter object itself
     platformParameterDatabaseStore.transform(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
       platformParameterDatabase ->
       val platformParameterMap = mutableMapOf<String, PlatformParameter>()
@@ -40,7 +44,7 @@ class PlatformParameterController @Inject constructor(
    * Updates the platform parameter database in cache store.
    * @param platformParameterList [List] of [PlatformParameter] objects which needs to be cached
    * @return [Unit]
-   * */
+   */
   fun updatePlatformParameterDatabase(
     platformParameterList: List<PlatformParameter>
   ) {
