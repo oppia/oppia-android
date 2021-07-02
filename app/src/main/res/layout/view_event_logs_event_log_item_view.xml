@@ -51,7 +51,7 @@
         android:paddingTop="6dp"
         android:paddingEnd="20dp"
         android:paddingBottom="6dp"
-        android:text="@{viewModel.processPriority()}"
+        android:text="@{viewModel.formatPriorityString()}"
         android:textColor="@color/white"
         android:visibility="@{viewModel.eventLog.priority != EventLog.Priority.PRIORITY_UNSPECIFIED ? View.VISIBLE : View.GONE }" />
     </LinearLayout>
@@ -65,7 +65,7 @@
       android:paddingTop="6dp"
       android:paddingEnd="16dp"
       android:paddingBottom="6dp"
-      android:text="@{viewModel.processContext()}"
+      android:text="@{viewModel.formatContextString()}"
       android:textColor="@color/oppiaPrimaryTextDark"
       android:visibility="@{viewModel.eventLog.context.activityContextCase != EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toTopOf="@id/view_event_logs_action_name_text_view"
@@ -82,7 +82,7 @@
       android:paddingTop="6dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.processActionName()}"
+      android:text="@{viewModel.formatActionNameString()}"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

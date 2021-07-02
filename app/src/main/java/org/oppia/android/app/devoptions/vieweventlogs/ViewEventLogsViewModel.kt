@@ -6,15 +6,22 @@ import org.oppia.android.util.logging.DebugEventLogger
 import org.oppia.android.util.system.OppiaDateTimeFormatter
 import javax.inject.Inject
 
-/** The ViewModel for [ViewEventLogsFragment]. */
+/**
+ * [ViewModel] for [ViewEventLogsFragment]. It populates the recyclerview with a list of
+ * [EventLogItemViewModel] which in turn display the event log.
+ */
 @FragmentScope
 class ViewEventLogsViewModel @Inject constructor(
   debugEventLogger: DebugEventLogger,
   private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
 ) : ObservableViewModel() {
 
-  val eventList = debugEventLogger.getEventList()
+  private val eventList = debugEventLogger.getEventList()
 
+  /**
+   * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]
+   * to display event logs.
+   */
   val eventLogsList: List<EventLogItemViewModel> by lazy {
     processEventLogsList()
   }
