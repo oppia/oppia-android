@@ -297,7 +297,6 @@ class ExplorationDataControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageModule::class
-
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
