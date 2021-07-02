@@ -14,7 +14,6 @@ import javax.inject.Inject
  */
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor() {
-
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
    * [DeveloperOptionsFragment] to enable corresponding functionalities.
