@@ -1,17 +1,15 @@
 """
-Package for Regex pattern based checks.
+Libraries corresponding to regex pattern based validation checks which ensures that no prohibited
+file path/name and content is used in the codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
-load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
 
 kt_jvm_library(
     name = "regex_pattern_validation_check_lib",
     testonly = True,
-    srcs = [
-        "RegexPatternValidationCheck.kt",
-    ],
-    visibility = ["//scripts:oppia_script_lib_visibility"],
+    srcs = ["RegexPatternValidationCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/common:result_constants",

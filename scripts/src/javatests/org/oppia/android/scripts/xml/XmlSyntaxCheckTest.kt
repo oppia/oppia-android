@@ -121,7 +121,7 @@ class XmlSyntaxCheckTest {
     return "${tempFolder.root}/testfiles"
   }
 
-  /** Helper function which executes the main method of the script. */
+  /** Runs the xml_syntax_check. */
   private fun runScript() {
     main(retrieveTestFilesDirectoryPath())
   }

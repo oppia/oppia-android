@@ -1,0 +1,18 @@
+"""
+Tests corresponding to TestFile based check to ensure that all the production (all kotlin files)
+files have a corresponding test file present.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "TestFileCheckTest",
+    testonly = True,
+    srcs = ["TestFileCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/testfile:test_file_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
