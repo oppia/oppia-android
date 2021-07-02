@@ -173,6 +173,26 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Test
+  fun testRetrieveAllTopics_withoutAnyProgress_noTopicIsCompleted() {
+    val allTopics = retrieveAllTopics()
+    allTopics.forEach { topic ->
+      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
+      assertThat(isCompleted).isFalse()
+    }
+  }
+
+  @Test
+  fun testRetrieveAllTopics_markFirstTestTopicCompleted_onlyFirstTestTopicIsCompleted() {
+    markFirstTestTopicCompleted()
+    val allTopics = retrieveAllTopics()
+    allTopics.forEach { topic ->
+      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
+      if (topic.topicId.equals(TEST_TOPIC_ID_0)) assertThat(isCompleted).isTrue()
+      else assertThat(isCompleted).isFalse()
+    }
+  }
+
+  @Test
   fun testRetrieveAllStories_isSuccessful() {
     val allStoriesLiveData =
       modifyLessonProgressController.getAllStoriesWithProgress(profileId).toLiveData()
@@ -252,6 +272,26 @@ class ModifyLessonProgressControllerTest {
       .isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(firstStory.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
+  }
+
+  @Test
+  fun testRetrieveAllStories_withoutAnyProgress_noStoryIsCompleted() {
+    val allStories = retrieveAllStories()
+    allStories.forEach { storySummary ->
+      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+      assertThat(isCompleted).isFalse()
+    }
+  }
+
+  @Test
+  fun testRetrieveAllStories_markFirstStoryCompleted_onlyFirstStoryIsCompleted() {
+    markFirstStoryCompleted()
+    val allStories = retrieveAllStories()
+    allStories.forEach { storySummary ->
+      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+      if (storySummary.storyId.equals(TEST_STORY_ID_0)) assertThat(isCompleted).isTrue()
+      else assertThat(isCompleted).isFalse()
+    }
   }
 
   private fun setUpTestApplicationComponent() {

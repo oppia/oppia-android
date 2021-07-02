@@ -1,5 +1,6 @@
 package org.oppia.android.domain.topic
 
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
@@ -63,6 +64,34 @@ class ModifyLessonProgressController @Inject constructor(
         }
         AsyncResult.success(storyList.toList())
       }
+  }
+
+  /**
+   * Checks if a topic is completed or not.
+   *
+   * @param topicWithProgress the topic for which progress needs to be fetched.
+   * @return a [Boolean] indicating whether the topic is completed or not.
+   */
+  fun checkIfTopicIsCompleted(topicWithProgress: Topic): Boolean {
+    topicWithProgress.storyList.forEach { storySummary ->
+      storySummary.chapterList.forEach { chapterSummary ->
+        if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
+      }
+    }
+    return true
+  }
+
+  /**
+   * Checks if a story is completed or not.
+   *
+   * @param storyWithProgress the story for which progress needs to be fetched.
+   * @return a [Boolean] indicating whether the story is completed or not.
+   */
+  fun checkIfStoryIsCompleted(storyWithProgress: StorySummary): Boolean {
+    storyWithProgress.chapterList.forEach { chapterSummary ->
+      if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
+    }
+    return true
   }
 
   /** Combines all the topics without progress and topic-progresses into a topic. */
