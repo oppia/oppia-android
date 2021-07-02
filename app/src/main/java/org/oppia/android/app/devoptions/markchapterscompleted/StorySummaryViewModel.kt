@@ -16,11 +16,11 @@ class StorySummaryViewModel(
   private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
     return storySummary.chapterList.mapIndexed { index, chapterSummary ->
       ChapterSummaryViewModel(
+        chapterName = chapterSummary.name,
         chapterPlayState = chapterSummary.chapterPlayState,
         explorationId = chapterSummary.explorationId,
-        chapterName = chapterSummary.name,
-        storyId = storySummary.storyId,
         index = index,
+        storyId = storySummary.storyId
       )
     }
   }

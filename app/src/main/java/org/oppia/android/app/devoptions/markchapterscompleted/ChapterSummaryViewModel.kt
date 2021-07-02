@@ -6,9 +6,9 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying a chapter summary. */
 class ChapterSummaryViewModel(
+  val chapterName: String,
   val chapterPlayState: ChapterPlayState,
   val explorationId: String,
-  val chapterName: String,
-  val storyId: String,
   val index: Int,
+  val storyId: String
 ) : ObservableViewModel()

@@ -3,11 +3,11 @@ package org.oppia.android.app.devoptions.markchapterscompleted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.topic.TopicController
-import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.topic.ModifyLessonProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -16,47 +16,45 @@ import javax.inject.Inject
 @FragmentScope
 class MarkChaptersCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val topicListController: TopicListController,
-  private val topicController: TopicController
+  private val modifyLessonProgressController: ModifyLessonProgressController
 ) : ObservableViewModel() {
 
   private var internalProfileId: Int = -1
-  val itemList: MutableList<StorySummaryViewModel> = ArrayList()
 
   val storySummaryLiveData: LiveData<List<StorySummaryViewModel>> by lazy {
-    Transformations.map(topicListLiveData, ::processTopicList)
+    Transformations.map(storyListLiveData, ::processStoryList)
   }
 
-  private val topicListLiveData: LiveData<TopicList> by lazy { getTopicList() }
+  private val storyListLiveData: LiveData<List<StorySummary>> by lazy { getStoryList() }
 
-  private fun getTopicList(): LiveData<TopicList> {
-    return Transformations.map(topicListResultLiveData, ::processTopicListResult)
+  private fun getStoryList(): LiveData<List<StorySummary>> {
+    return Transformations.map(storyListResultLiveData, ::processStoryListResult)
   }
 
-  private val topicListResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList().toLiveData()
+  private val storyListResultLiveData: LiveData<AsyncResult<List<StorySummary>>> by lazy {
+    modifyLessonProgressController
+      .getAllStoriesWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+      .toLiveData()
   }
 
-  private fun processTopicListResult(topicList: AsyncResult<TopicList>): TopicList {
-    if (topicList.isFailure()) {
+  private fun processStoryListResult(
+    storyList: AsyncResult<List<StorySummary>>
+  ): List<StorySummary> {
+    if (storyList.isFailure()) {
       oppiaLogger.e(
         "MarkChaptersCompletedFragment",
-        "Failed to retrieve topicList",
-        topicList.getErrorOrNull()!!
+        "Failed to retrieve storyList",
+        storyList.getErrorOrNull()!!
       )
     }
-    return topicList.getOrDefault(TopicList.getDefaultInstance())
+    return storyList.getOrDefault(mutableListOf())
   }
 
-  private fun processTopicList(topicList: TopicList): List<StorySummaryViewModel> {
-    itemList.clear()
-//    topicList.topicSummaryList.forEach { topicSummary ->
-//      val topicId = topicSummary.topicId
-//      val topic = topicController.retrieveTopic(topicId = topicId)
-//      topic.storyList.forEach { storySummary ->
-//        itemList.add(StorySummaryViewModel(storySummary))
-//      }
-//    }
+  private fun processStoryList(storyList: List<StorySummary>): List<StorySummaryViewModel> {
+    val itemList = mutableListOf<StorySummaryViewModel>()
+    storyList.forEach { storySummary ->
+      itemList.add(StorySummaryViewModel(storySummary))
+    }
     return itemList
   }
 
