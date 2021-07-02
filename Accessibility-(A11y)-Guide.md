@@ -85,6 +85,16 @@ In case of test failure there are two options to fix it:
 * Solve the test case by updating the UI as per the error details.
 * If by solving the error the user experience will become worse than we should actually suppress that error instead of changing the UI. This can be done in [AccessibilityTestRule](https://github.com/oppia/oppia-android/blob/fe553d32e0161f6efa6e465109306b909dbcc476/testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt#L34)
 
+## Auditing the app
+The app should be audited by covering different use cases across 23 different manual tests mentioned [here](https://docs.google.com/spreadsheets/d/1lFQo2XE0dSGZcMvr7paxdL3zXB3FVcRnZOqD70DT3a4/edit?usp=sharing). 
+This sheet has been divided based on `primary` and `secondary` use cases and `basic` and `advanced` test cases. 
+* Level 1 = `Primary + Basic`, which means that all primary use cases passes all `Basic` tests.
+* Level 2 = `Secondary + Basic`, which means that all secondary use cases passes all `Basic` tests.
+* Level 3 = `Primary + Advanced`, which means that all primary use cases passes all `Advanced` tests.
+* Level 4 = `Secondary + Advanced`, which means that all secondary use cases passes all `Advanced` tests.
+
+This entire sheet should be filled with each release as a part of audit process.
+
 ## General Tips to make app Accessible
 * All Clickable items should have a minimum size of `48x48dp`.
 * Buttons should use `android:enabled` instead of `android:clickable` to disable/enable it.
