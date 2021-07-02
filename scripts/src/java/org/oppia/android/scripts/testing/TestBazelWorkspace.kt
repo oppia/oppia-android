@@ -43,7 +43,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * automatically set up the local WORKSPACE file, if needed, to support kt_jvm_test.
    *
    * @param testName the name of the generated test target (must be unique)
-   * @param testFile the local test file
+   * @param testFile the local test file (which does not necessarily need to exist yet)
    * @param withGeneratedDependency whether to automatically generate a new library (see
    *     [createLibrary]) and add it to the new test target as a dependency
    * @param withExtraDependency if present, will be added as an additional dependency to the
@@ -61,7 +61,6 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     subpackage: String? = null
   ): Iterable<File> {
     check(testName !in testFileMap) { "Test '$testName' already set up" }
-    check(testFile.exists()) { "Test file '$testFile' does not exist" }
     val prereqFiles = ensureWorkspaceIsConfiguredForKotlin()
     val (dependencyTargetName, libPrereqFiles) = if (withGeneratedDependency) {
       createLibrary("${testName}Dependency")

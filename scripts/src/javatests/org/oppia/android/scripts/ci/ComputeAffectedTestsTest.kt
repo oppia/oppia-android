@@ -79,8 +79,20 @@ class ComputeAffectedTestsTest {
   }
 
   @Test
+  fun testUtility_twoArguments_printsUsageStringAndExits() {
+    val exception = assertThrows(SecurityException::class) { main(arrayOf("first", "second")) }
+
+    // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
+    // to verify that System.exit() is called, but it's helpful.
+    assertThat(exception).hasMessageThat().contains("System.exit()")
+    assertThat(pendingOutputStream.toString()).contains("Usage:")
+  }
+
+  @Test
   fun testUtility_directoryRootDoesNotExist_throwsException() {
-    val exception = assertThrows(IllegalStateException::class) { main(arrayOf("fake", "alsofake")) }
+    val exception = assertThrows(IllegalStateException::class) {
+      main(arrayOf("fake", "alsofake", "andstillfake"))
+    }
 
     assertThat(exception).hasMessageThat().contains("Expected 'fake' to be a directory")
   }
@@ -273,7 +285,7 @@ class ComputeAffectedTestsTest {
    */
   private fun runScript(): List<String> {
     val outputLog = tempFolder.newFile("output.log")
-    main(arrayOf(tempFolder.root.absolutePath, outputLog.absolutePath))
+    main(arrayOf(tempFolder.root.absolutePath, outputLog.absolutePath, "develop"))
     return outputLog.readLines()
   }
 

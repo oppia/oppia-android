@@ -99,21 +99,6 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
-  fun testAddTestToBuildFile_unusedTestName_nonexistentTestFile_throwsException() {
-    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    testBazelWorkspace.initEmptyWorkspace()
-
-    val exception = assertThrows(IllegalStateException::class) {
-      testBazelWorkspace.addTestToBuildFile(
-        testName = "FirstTest",
-        testFile = File(tempFolder.root, "FirstTest.kt")
-      )
-    }
-
-    assertThat(exception).hasMessageThat().contains("FirstTest.kt' does not exist")
-  }
-
-  @Test
   fun testAddTestToBuildFile_reusedTestName_throwsException() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.initEmptyWorkspace()

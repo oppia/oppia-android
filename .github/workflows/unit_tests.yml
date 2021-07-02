@@ -37,7 +37,7 @@ jobs:
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log
+          bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log origin/develop
           TEST_TARGET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"

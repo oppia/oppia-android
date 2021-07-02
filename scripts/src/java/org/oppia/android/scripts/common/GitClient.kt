@@ -3,9 +3,14 @@ package org.oppia.android.scripts.common
 import java.io.File
 
 /**
- * General utility for interfacing with a Git repository located at the specified working directory.
+ * General utility for interfacing with a Git repository located at the specified working directory
+ * and using the specified relative branch reference that should be used when computing changes from
+ * the develop branch.
  */
-class GitClient(private val workingDirectory: File) {
+class GitClient(
+  private val workingDirectory: File,
+  private val baseDevelopBranchReference: String
+) {
   private val commandExecutor by lazy { CommandExecutorImpl() }
 
   /** The name of the current branch of the local Git repository. */
@@ -25,7 +30,7 @@ class GitClient(private val workingDirectory: File) {
   }
 
   private fun retrieveBranchMergeBase(): String {
-    return executeGitCommandWithOneLineOutput("merge-base develop HEAD")
+    return executeGitCommandWithOneLineOutput("merge-base $baseDevelopBranchReference HEAD")
   }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =
