@@ -7,7 +7,6 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "RegexPatternValidationCheckTest",
-    testonly = True,
     srcs = ["RegexPatternValidationCheckTest.kt"],
     deps = [
         "//scripts:regex_check_assets",
