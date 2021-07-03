@@ -58,6 +58,8 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+  // TODO(): Update the saving mechanism for checkpoints once internal locking of this controller
+  //  updated.
 
   /** Indicates that the checkpoint database has exceeded the allocated limit.. */
   class CheckpointDatabaseOverflowException(msg: String) : Exception(msg)
@@ -99,30 +101,39 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * This function checks the current checkpoint state so that the learner can exit a partially
-   * complete exploration.
+   * complete exploration. This function returns a success result if the progress for the current
+   * exploration is saved and the checkpoint database has not exceeded the allocated limit.
+   * Failure result is returned in any one of the following two cases,
+   * if the exploration contains unsaved progress or the progress is saved but the checkpoint
+   * database has exceeded the allocated size limit. In the progress is not saved the failure result
+   * is returned with the exception [ProgressNotSavedException]. If the progress is saved but the
+   * checkpoint database has exceeded the allocated size limit, failure result is returned with the
+   * exception [CheckpointDatabaseOverflowException].
    *
    * @return a one-time [LiveData] that indicates success/failure depending upon the checkpoint
-   * state.
+   *         state. Failure result is returned with an appropriate exception.
    */
   internal fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
-
-    return when (explorationProgress.checkpointState) {
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
-        MutableLiveData(AsyncResult.success(null))
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
-        MutableLiveData(
-          AsyncResult.failed(
-            CheckpointDatabaseOverflowException(
-              "Checkpoint database has exceeded the allocated size limit."
+    return explorationProgressLock.withLock {
+      when (explorationProgress.checkpointState) {
+        ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
+          MutableLiveData(AsyncResult.success(null))
+        ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
+          MutableLiveData(
+            AsyncResult.failed(
+              CheckpointDatabaseOverflowException(
+                "Checkpoint database has exceeded the allocated size limit."
+              )
             )
           )
-        )
-      ExplorationCheckpointState.UNSAVED ->
-        MutableLiveData(
-          AsyncResult.failed(
-            ProgressNotSavedException("Current exploration contains unsaved progress.")
+        ExplorationCheckpointState.UNSAVED -> {
+          MutableLiveData(
+            AsyncResult.failed(
+              ProgressNotSavedException("Current exploration contains unsaved progress.")
+            )
           )
-        )
+        }
+      }
     }
   }
 
@@ -423,9 +434,20 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Marks the exploration as in_progress_saved or in_progress_not_saved if it is marked correctly
-   * already. This function also updates the checkpoint state of the exploration if it has changed
-   * after the last save operation.
+   * This function process the result obtained upon observing the function
+   * [saveExplorationCheckpoint].
+   *
+   * Marks the exploration as in_progress_saved or in_progress_not_saved if it is not already marked
+   * correctly. This function also updates the checkpoint state of the exploration to the
+   * specified new checkpoint state.
+   *
+   * @param profileId is the profile id currently playing the exploration.
+   * @param topicId is the id of the topic which contains the story with the current exploration.
+   * @param storyId is the id of the story which contains the current exploration.
+   * @param lastPlayedTimestamp timestamp of the time when the checkpoints state for the exploration
+   *        was last updated.
+   * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
+   *        unsuccessfully.
    */
   fun processSaveCheckpointResult(
     profileId: ProfileId,

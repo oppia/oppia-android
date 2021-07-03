@@ -84,7 +84,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private val enableCheckpointing: Boolean = false
+  private val isCheckpointingEnabled: Boolean = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -324,6 +324,7 @@ class StateFragmentPresenter @Inject constructor(
     // only mark checkpoint if the current state is either of type PENDING_STATE or TERMINAL_STATE.
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.COMPLETED_STATE)
       markExplorationCheckpoint()
+
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
@@ -533,14 +534,14 @@ class StateFragmentPresenter @Inject constructor(
 
   /**
    * This function kicks off the process to save checkpoints in the domain layer and then observes
-   * to the returned [DataProvider] as [LiveData]. It also communicates back to the domain layer to
+   * the returned [DataProvider] as [LiveData]. It also communicates back to the domain layer to
    * process the result of the save operation once the save operation has completed
    * successfully/unsuccessfully.
    */
   private fun markExplorationCheckpoint() {
     // Don't mark checkpoints if checkpointing is not enabled. This is expected to happen when the
     // exploration was previously completed.
-    if (!enableCheckpointing)
+    if (!isCheckpointingEnabled)
       return
 
     explorationProgressController.saveExplorationCheckpoint(
