@@ -31,8 +31,12 @@
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="exploration_progress_not_saved_dialog_title">Leave to Topic Page?</string>
+  <string name="exploration_progress_not_saved_dialog_description">Your progress will not be saved.</string>
+  <string name="exploration_progress_not_saved_dialog_leave_button">Leave</string>
+  <string name="exploration_progress_not_saved_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
-  <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
+  <string name="stop_exploration_dialog_description">Your progress has been saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="maximum_storage_capacity_reached_dialog_title">Maximum storage capacity reached</string>

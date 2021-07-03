@@ -74,7 +74,6 @@ class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
   private fun createMaximumStorageCapacityReachedDialogDescription(
     oldestSavedExplorationTitle: String
   ): String {
-    return "Saved progress for the lesson $oldestSavedExplorationTitle will be deleted." +
-      "\n\nClick Continue to proceed."
+    return "Saved progress for the lesson \"$oldestSavedExplorationTitle\" will be deleted."
   }
 }

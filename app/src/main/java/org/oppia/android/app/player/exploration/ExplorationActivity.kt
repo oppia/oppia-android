@@ -21,7 +21,9 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSaved
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
+const val TAG_EXPLORATION_PROGRESS_NOT_SAVED_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
+const val TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG = "MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
@@ -63,7 +65,7 @@ class ExplorationActivity :
       storyId,
       explorationId,
       backflowScreen,
-      // checkpointing is set to false till mechanism to save and retrieved is full implemented.
+      // checkpointing is disabled until mechanism to resume exploration is implemented.
       isCheckpointingEnabled = false
     )
   }
