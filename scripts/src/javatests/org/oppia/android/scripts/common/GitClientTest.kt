@@ -47,7 +47,7 @@ class GitClientTest {
     val exception = assertThrows(IllegalStateException::class) { gitClient.currentBranch }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
-    assertThat(exception).hasMessageThat().contains("Not a git repository")
+    assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
   }
 
   @Test

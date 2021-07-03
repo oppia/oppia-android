@@ -12,7 +12,7 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-      "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
-      "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
     ],
 )

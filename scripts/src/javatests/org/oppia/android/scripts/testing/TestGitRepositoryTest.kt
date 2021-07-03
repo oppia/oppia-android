@@ -96,7 +96,7 @@ class TestGitRepositoryTest {
       testGitRepository.checkoutNewBranch("develop")
     }
 
-    assertThat(error).hasMessageThat().contains("Not a git repository")
+    assertThat(error).hasMessageThat().ignoringCase().contains("not a git repository")
   }
 
   @Test
@@ -362,7 +362,7 @@ class TestGitRepositoryTest {
 
     val status = testGitRepository.status()
 
-    assertThat(status).contains("Not a git repository")
+    assertThat(status).ignoringCase().contains("not a git repository")
   }
 
   @Test
