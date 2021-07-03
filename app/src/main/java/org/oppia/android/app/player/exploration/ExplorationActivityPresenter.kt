@@ -2,7 +2,6 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -19,8 +18,9 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.stopplaying.MaximumStorageCapacityReachedDialogFragment
 import org.oppia.android.app.player.stopplaying.ExplorationProgressNotSavedDialogFragment
+import org.oppia.android.app.player.stopplaying.MaximumStorageCapacityReachedDialogFragment
+import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -31,7 +31,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
