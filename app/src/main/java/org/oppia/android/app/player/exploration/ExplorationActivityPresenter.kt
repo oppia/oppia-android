@@ -267,7 +267,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun backButtonPressed() {
     // if checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
-    if(!isCheckpointingEnabled)
+    if (!isCheckpointingEnabled)
       showStopExplorationDialogFragment()
     // if checkpointing is enabled, get the current checkpoint state to figure out the if
     // so far checkpointing has been successful in the exploration.
