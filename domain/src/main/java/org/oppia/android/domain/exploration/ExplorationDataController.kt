@@ -3,13 +3,13 @@ package org.oppia.android.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
   "get_exploration_by_id_provider_id"
