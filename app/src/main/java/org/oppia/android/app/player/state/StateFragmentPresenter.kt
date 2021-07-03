@@ -46,6 +46,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -53,6 +54,8 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_f
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_story_id"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_exploration_id"
+const val STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY =
+  "StateFragmentPresenter.state_fragment_is_checkpointing_enabled"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -84,7 +87,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private val enableCheckpointing: Boolean = false
+  private var isCheckpointingEnabled: Boolean = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -100,12 +103,14 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    this.isCheckpointingEnabled = isCheckpointingEnabled
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -179,7 +184,14 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionListener).stopSession()
+    // delete progress if checkpointing was enabled and exit exploration.
+    if(isCheckpointingEnabled)
+      (activity as StopStatePlayingSessionWithSavedProgressListener)
+        .deleteCurrentProgressStopCurrentSession()
+    // exit exploration without deleting progress if checkpointing was not enabled.
+    else
+      (activity as StopStatePlayingSessionListener)
+        .stopSession()
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -540,7 +552,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun markExplorationCheckpoint() {
     // Don't mark checkpoints if checkpointing is not enabled. This is expected to happen when the
     // exploration was previously completed.
-    if (!enableCheckpointing)
+    if (!isCheckpointingEnabled)
       return
 
     explorationProgressController.saveExplorationCheckpoint(

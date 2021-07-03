@@ -11,25 +11,31 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.player.stopplaying.MaximumStorageCapacityReachedDialogFragment
+import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
 const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
+const val TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG_FRAGMENT =
+  "MAXIMUM STORAGE CAPACITY REACHED DIALOG FRAGMENT"
 
 /** The Presenter for [ExplorationActivity]. */
 @ActivityScope
@@ -49,6 +55,11 @@ class ExplorationActivityPresenter @Inject constructor(
   private lateinit var context: Context
   private var backflowScreen: Int? = null
 
+  private var isCheckpointingEnabled: Boolean = false
+
+  private var oldestExplorationId: String? = null
+  private var oldestExplorationTitle: String? = null
+
   enum class ParentActivityForExploration(val value: Int) {
     BACKFLOW_SCREEN_LESSONS(0),
     BACKFLOW_SCREEN_STORY(1);
@@ -64,7 +75,8 @@ class ExplorationActivityPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
@@ -92,12 +104,14 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
+    subscribeToOldestSavedExplorationDetails()
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
     this.context = context
     this.backflowScreen = backflowScreen
+    this.isCheckpointingEnabled = isCheckpointingEnabled
     if (getExplorationManagerFragment() == null) {
       val explorationManagerFragment = ExplorationManagerFragment()
       val args = Bundle()
@@ -123,7 +137,8 @@ class ExplorationActivityPresenter @Inject constructor(
           internalProfileId = internalProfileId,
           storyId = storyId,
           readingTextSize = readingTextSize.name,
-          explorationId = explorationId
+          explorationId = explorationId,
+          isCheckpointEnabled = isCheckpointingEnabled
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -195,6 +210,23 @@ class ExplorationActivityPresenter @Inject constructor(
     ) as HintsAndSolutionExplorationManagerFragment?
   }
 
+  fun deleteCurrentProgressAndStopExploration() {
+    explorationDataController.deleteExplorationProgressById(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      explorationId
+    )
+    stopExploration()
+  }
+
+  fun deleteOldestExplorationAndStopExploration() {
+    if (oldestExplorationId != null)
+      explorationDataController.deleteExplorationProgressById(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        oldestExplorationId!!
+      )
+    stopExploration()
+  }
+
   fun stopExploration() {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
     explorationDataController.stopPlayingExploration()
@@ -225,6 +257,18 @@ class ExplorationActivityPresenter @Inject constructor(
       ) as? ExplorationFragment
       explorationFragment?.onKeyboardAction()
     }
+  }
+
+  fun backButtonPressed() {
+    // stop exploration if checkpointing is not enabled. This can happen if the exploration was
+    // completed previously and checkpoints are not being saved for the current exploration.
+    if(!isCheckpointingEnabled) {
+      stopExploration()
+      return
+    }
+    // if checkpointing is enabled, get the current checkpoint state to figure out the if
+    // so far checkpointing has been successful in the exploration.
+    subscribeToCheckpointState(explorationDataController.checkExplorationCheckpointStatus())
   }
 
   fun dismissConceptCard() {
@@ -298,5 +342,88 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_FRAGMENT
       ) as ExplorationFragment
     explorationFragment.revealSolution()
+  }
+
+  private fun showMaximumStorageReachedDialogFragment() {
+    val previousFragment = activity.supportFragmentManager.findFragmentByTag(
+      TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG_FRAGMENT
+    )
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+
+    if (oldestExplorationId == null) {
+      stopExploration()
+      return
+    }
+
+    val dialogFragment =
+      MaximumStorageCapacityReachedDialogFragment.newInstance(oldestExplorationId!!)
+    dialogFragment.showNow(
+      activity.supportFragmentManager,
+      TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG_FRAGMENT
+    )
+  }
+
+  // TODO("Remove this dialog fragment once checkpointing is enabled")
+  private fun showStopExplorationDialogFragment() {
+    val previousFragment = activity.supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val dialogFragment = StopExplorationDialogFragment.newInstance()
+    dialogFragment.showNow(activity.supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
+  }
+
+
+  /** This function listens to the result of the function
+   * [ExplorationDataController.getExplorationById].
+   *
+   * If the result is success it updates the value of the variables oldestExplorationId and
+   * oldestExplorationTitle. If the result fails, it does not change the values of the variables
+   * oldestExplorationId and oldestExplorationTitle and they remain equal null.
+   *
+   * Since this function is kicked off before any other save operation, therefore it is expected
+   * to complete before any following save operation completes.
+   */
+  private fun subscribeToOldestSavedExplorationDetails() {
+    explorationDataController.getOldestExplorationDetailsDataProvider(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    ).toLiveData().observe(
+      activity,
+      Observer {
+        if (it.isSuccess()) {
+          oldestExplorationId = it.getOrThrow().explorationId
+          oldestExplorationTitle = it.getOrThrow().explorationTitle
+        }
+      }
+    )
+  }
+
+  /** This function listens to the result of the function
+   * [ExplorationDataController.checkExplorationCheckpointStatus]
+   *
+   * Once the result is available this functions performs appropriate action to exit the exploration.
+   */
+  private fun subscribeToCheckpointState(checkpointStateLiveData: LiveData<AsyncResult<Any?>>) {
+    checkpointStateLiveData.observe(
+      activity,
+      Observer {
+        if (it.isSuccess()) {
+          stopExploration()
+        } else if (it.isFailure()) {
+          when (it.getErrorOrNull()) {
+            is ExplorationProgressController.ProgressNotSavedException -> {
+              // delete the current progress if any because the saved progress for the current
+              // exploration is incomplete.
+              showStopExplorationDialogFragment()
+            }
+            is ExplorationProgressController.CheckpointDatabaseOverflowException -> {
+              showMaximumStorageReachedDialogFragment()
+            }
+          }
+        }
+      }
+    )
   }
 }

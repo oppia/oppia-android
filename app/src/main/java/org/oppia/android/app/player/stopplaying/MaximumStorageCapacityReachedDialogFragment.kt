@@ -8,8 +8,16 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 
+const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
+  "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
+
 /**
- * DialogFragment that gives option to learner to stop exploration in between.
+ * DialogFragment that is visible to the learner when they try to exit a partially complete
+ * exploration if the checkpoint database has exceeded the allocated limit.
+ *
+ * This dialog fragment gives the user the option to either overwrite the oldest saved progress with
+ * the current progress, leave the exploration without saving the current progress, or go back to
+ * continue the current exploration.
  */
 class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
   companion object {
@@ -18,26 +26,56 @@ class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
      *
      * @return [MaximumStorageCapacityReachedDialogFragment]: DialogFragment
      */
-    fun newInstance(): MaximumStorageCapacityReachedDialogFragment {
-      return MaximumStorageCapacityReachedDialogFragment()
+    fun newInstance(
+      oldestSavedExplorationTitle: String
+    ): MaximumStorageCapacityReachedDialogFragment {
+      val maximumStorageCapacityReachedDialogFragment =
+        MaximumStorageCapacityReachedDialogFragment()
+      val args = Bundle()
+      args.putString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY, oldestSavedExplorationTitle)
+      maximumStorageCapacityReachedDialogFragment.arguments = args
+      return maximumStorageCapacityReachedDialogFragment
     }
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val stopStatePlayingSessionListener: StopStatePlayingSessionListener =
-      activity as StopStatePlayingSessionListener
+    val oldestSavedExplorationTitle = arguments
+      ?.getString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+    val stopStatePlayingSessionListenerWithSavedProgressListener:
+      StopStatePlayingSessionWithSavedProgressListener =
+      activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.stop_exploration_dialog_title)
-      .setMessage(R.string.stop_exploration_dialog_description)
-      .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { _, _ ->
-        stopStatePlayingSessionListener.stopSession()
+      .setTitle(R.string.maximum_storage_capacity_reached_dialog_title)
+      .setMessage(
+        createMaximumStorageCapacityReachedDialogDescription(oldestSavedExplorationTitle!!)
+      )
+      .setPositiveButton(R.string.maximum_storage_capacity_reached_dialog_continue_button) { _, _ ->
+        stopStatePlayingSessionListenerWithSavedProgressListener
+          .deleteOldestProgressAndStopCurrentSession()
         dismiss()
       }
-      .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { _, _ ->
+      .setNeutralButton(
+        R.string.maximum_storage_capacity_reached_dialog_leave_without_saving_progress_button
+      ) { _, _ ->
+        stopStatePlayingSessionListenerWithSavedProgressListener
+          .deleteCurrentProgressStopCurrentSession()
+        dismiss()
+      }
+      .setNegativeButton(
+        R.string.maximum_storage_capacity_reached_dialog_back_to_lesson_button
+      ) { _, _ ->
         dismiss()
       }
       .create()
+
+  }
+
+  private fun createMaximumStorageCapacityReachedDialogDescription(
+    oldestSavedExplorationTitle: String
+  ): String {
+    return "Saved progress for the lesson $oldestSavedExplorationTitle will be deleted." +
+      "\n\nClick Continue to proceed."
   }
 }

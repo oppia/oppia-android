@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -18,16 +19,17 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import javax.inject.Inject
 
-private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
+const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity :
   InjectableAppCompatActivity(),
   StopStatePlayingSessionListener,
+  StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
   HintsAndSolutionListener,
@@ -61,7 +63,8 @@ class ExplorationActivity :
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      isCheckpointingEnabled = false // checkpointing is set to false till mechanism to save and retrieved is full implemented.
     )
   }
 
@@ -77,6 +80,8 @@ class ExplorationActivity :
       "ExplorationActivity.exploration_id"
     const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ExplorationActivity.backflow_screen"
+    const val EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY =
+      "ExplorationActivity.is_checkpointing_enabled_key"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -97,20 +102,19 @@ class ExplorationActivity :
   }
 
   override fun onBackPressed() {
-    showStopExplorationDialogFragment()
-  }
-
-  private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
-    if (previousFragment != null) {
-      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = StopExplorationDialogFragment.newInstance()
-    dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
+    explorationActivityPresenter.backButtonPressed()
   }
 
   override fun stopSession() {
     explorationActivityPresenter.stopExploration()
+  }
+
+  override fun deleteCurrentProgressStopCurrentSession() {
+    explorationActivityPresenter.deleteCurrentProgressAndStopExploration()
+  }
+
+  override fun deleteOldestProgressAndStopCurrentSession() {
+    explorationActivityPresenter.deleteOldestExplorationAndStopExploration()
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {

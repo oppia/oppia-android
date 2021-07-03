@@ -3,6 +3,10 @@ package org.oppia.android.domain.exploration
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
@@ -22,10 +26,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -105,24 +105,28 @@ class ExplorationProgressController @Inject constructor(
    * state.
    */
   internal fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
+    return explorationProgressLock.withLock {
+      when (explorationProgress.checkpointState) {
 
-    return when (explorationProgress.checkpointState) {
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
-        MutableLiveData(AsyncResult.success(null))
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
-        MutableLiveData(
-          AsyncResult.failed(
-            CheckpointDatabaseOverflowException(
-              "Checkpoint database has exceeded the allocated size limit."
+        ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
+          MutableLiveData(AsyncResult.success(null))
+
+        ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
+          MutableLiveData(
+            AsyncResult.failed(
+              CheckpointDatabaseOverflowException(
+                "Checkpoint database has exceeded the allocated size limit."
+              )
             )
           )
-        )
-      ExplorationCheckpointState.UNSAVED ->
-        MutableLiveData(
-          AsyncResult.failed(
-            ProgressNotSavedException("Current exploration contains unsaved progress.")
+
+        ExplorationCheckpointState.UNSAVED ->
+          MutableLiveData(
+            AsyncResult.failed(
+              ProgressNotSavedException("Current exploration contains unsaved progress.")
+            )
           )
-        )
+      }
     }
   }
 

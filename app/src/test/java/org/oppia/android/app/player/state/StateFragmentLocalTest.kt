@@ -183,7 +183,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_loadExploration_explorationLoads() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
 
       // Due to the exploration activity loading, the play button should no longer be visible.
@@ -193,7 +193,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_advanceToNextState_loadsSecondState() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
@@ -210,7 +210,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_advanceToNextState_hintNotAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
 
       playThroughState1()
@@ -221,7 +221,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait10seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -233,7 +233,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait30seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -245,7 +245,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_hintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -257,7 +257,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -270,7 +270,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait120seconds_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -284,7 +284,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -296,7 +296,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -308,7 +308,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -319,7 +319,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -329,7 +329,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_submitTwoWrongAnswers_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -343,7 +343,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -357,7 +357,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -377,7 +377,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -398,7 +398,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_expandCollapseResponse_checkPreviousHeaderCollapsed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -435,7 +435,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -448,7 +448,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait10seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -462,7 +462,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait30seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -476,7 +476,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitTwoWrongAnswers_hintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -489,7 +489,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -505,7 +505,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -517,7 +517,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -537,7 +537,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -567,7 +567,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -580,7 +580,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitThreeWrongAnswers_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -594,7 +594,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_newHintIsNoLongerAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswersAndWait()
@@ -610,7 +610,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait10seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -623,7 +623,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait30seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -637,7 +637,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -652,7 +652,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait30seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -668,7 +668,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait60seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -684,7 +684,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait60seconds_submitWrongAnswer_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -701,7 +701,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -715,7 +715,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -730,7 +730,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -746,7 +746,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait30seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -763,7 +763,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait10seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -776,7 +776,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait30seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -790,7 +790,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait30seconds_canViewSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -813,7 +813,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -827,7 +827,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -842,7 +842,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_canViewSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -866,7 +866,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -895,7 +895,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -915,7 +915,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -935,7 +935,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -955,7 +955,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -975,7 +975,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -989,7 +989,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_wait30seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1004,7 +1004,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_submitWrongAnswer_wait10s_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1020,7 +1020,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_stateWithoutHints_wait60s_noHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
@@ -1032,7 +1032,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_stateWithoutSolution_viewAllHints_wrongAnswerAndWait_noHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playUpToFinalTestSecondTry()
       produceAndViewThreeHintsInState13()
@@ -1048,7 +1048,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1060,7 +1060,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1074,7 +1074,7 @@ class StateFragmentLocalTest {
   // for the sw600dp layouts.
   @Config(qualifiers = "sw600dp-w1600dp-h1200dp-port-mdpi")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1088,7 +1088,7 @@ class StateFragmentLocalTest {
   // for the sw600dp layouts.
   @Config(qualifiers = "sw600dp-w1600dp-h1200dp-land-mdpi")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1100,7 +1100,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1123,7 +1123,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1145,7 +1145,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -1155,7 +1155,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       // Play through all questions but do not reach the last screen of the exploration.
       playThroughAllStates()
@@ -1166,7 +1166,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1204,11 +1204,17 @@ class StateFragmentLocalTest {
   }
 
   private fun launchForExploration(
-    explorationId: String
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
-        context, internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, explorationId
+        context, 
+        internalProfileId,
+        TEST_TOPIC_ID_0, 
+        TEST_STORY_ID_0, 
+        explorationId, 
+        isCheckpointingEnabled
       )
     )
   }

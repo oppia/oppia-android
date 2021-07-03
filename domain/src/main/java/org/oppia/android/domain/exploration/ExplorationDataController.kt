@@ -8,6 +8,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
   "get_exploration_by_id_provider_id"
@@ -22,7 +24,8 @@ class ExplorationDataController @Inject constructor(
   private val explorationProgressController: ExplorationProgressController,
   private val explorationRetriever: ExplorationRetriever,
   private val dataProviders: DataProviders,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val explorationCheckpointController: ExplorationCheckpointController
 ) {
   /** Returns an [Exploration] given an ID. */
   fun getExplorationById(id: String): DataProvider<Exploration> {
@@ -66,6 +69,31 @@ class ExplorationDataController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       MutableLiveData(AsyncResult.failed(e))
     }
+  }
+
+  /**
+   * Checks the checkpoint state to make sure that checkpointing has been successful up-to that
+   * point in the exploration.
+   *
+   * @return a one-time [LiveData] with success result if checkpointing has been successful
+   *         otherwise a failure result with an appropriate exception is returned.
+   */
+  fun checkExplorationCheckpointStatus() =
+    explorationProgressController.checkCheckpointStateToExitExploration()
+
+  /** Function to fetch the details of the oldest saved exploration for a specified profileId.*/
+  fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =
+    explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(profileId)
+
+  /**
+   * Kicks off the operation to delete the saved progress for the exploration specified by the
+   * exploration id and profile id.
+   */
+  fun deleteExplorationProgressById(profileId: ProfileId, explorationId: String) {
+    explorationCheckpointController.deleteSavedExplorationCheckpoint(
+      profileId,
+      explorationId
+    )
   }
 
   // DataProviders expects this function to be a suspend function.
