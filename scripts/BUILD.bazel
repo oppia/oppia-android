@@ -62,3 +62,10 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.regex.RegexPatternValidationCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib"],
 )
+
+kt_jvm_binary(
+    name = "proto_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.regex.ProtoClassKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:proto_class_lib"],
+)
