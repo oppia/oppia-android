@@ -12,7 +12,10 @@ kt_android_library(
     srcs = [
         "MockitoKotlinHelper.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//scripts:oppia_script_test_visibility",
+    ],
     deps = [
         "//third_party:org_mockito_mockito-core",
     ],

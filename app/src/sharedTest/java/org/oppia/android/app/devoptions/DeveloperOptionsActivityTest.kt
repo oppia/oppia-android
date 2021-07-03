@@ -55,8 +55,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -78,6 +76,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -119,6 +118,9 @@ class DeveloperOptionsActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Before
   fun setUp() {
@@ -224,6 +226,8 @@ class DeveloperOptionsActivityTest {
     }
   }
 
+  // TODO(#3397): When the logic to show all hints and solutions is implemented, write a test to
+  //  check for click operation of the 'Show all hints/solution' switch
   @Test
   fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
     launch<DeveloperOptionsActivity>(
@@ -291,9 +295,7 @@ class DeveloperOptionsActivityTest {
   }
 
   private fun createDeveloperOptionsActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(
-      context, internalProfileId
-    )
+    return DeveloperOptionsActivity.createDeveloperOptionsActivityIntent(context, internalProfileId)
   }
 
   private fun ActivityScenario<DeveloperOptionsActivity>.openNavigationDrawer() {

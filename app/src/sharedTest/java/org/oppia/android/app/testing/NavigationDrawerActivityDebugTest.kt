@@ -56,8 +56,8 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
-import org.oppia.android.app.drawer.DeveloperOptionsModule
-import org.oppia.android.app.drawer.DeveloperOptionsStarterModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -80,6 +80,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -106,10 +107,13 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerActivityDevTest.TestApplication::class,
+  application = NavigationDrawerActivityDebugTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerActivityDevTest {
+class NavigationDrawerActivityDebugTest {
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -152,7 +156,9 @@ class NavigationDrawerActivityDevTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -161,7 +167,9 @@ class NavigationDrawerActivityDevTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -412,18 +420,18 @@ class NavigationDrawerActivityDevTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest)
+    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityDevTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityDebugTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityDevTest: NavigationDrawerActivityDevTest) {
-      return component.inject(navigationDrawerActivityDevTest)
+    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest) {
+      return component.inject(navigationDrawerActivityDebugTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

@@ -1,8 +1,6 @@
 package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsItemViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel
@@ -11,40 +9,37 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.fragment.FragmentScope
 import javax.inject.Inject
 
-/** [ViewModel] for [DeveloperOptionsFragment]. */
+/**
+ * [ViewModel] for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
+ * [DeveloperOptionsItemViewModel] which in turn implement corresponding functionalities.
+ */
 @FragmentScope
-class DeveloperOptionsViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-) {
+class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
+
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
   private val routeToMarkStoriesCompletedListener =
     activity as RouteToMarkStoriesCompletedListener
   private val routeToMarkTopicsCompletedListener =
     activity as RouteToMarkTopicsCompletedListener
-  private var internalProfileId: Int = -1
-  val selectedFragmentIndex = ObservableField<Int>(1)
 
+  /**
+   * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
+   * [DeveloperOptionsFragment] to enable corresponding functionalities.
+   */
   val developerOptionsList: List<DeveloperOptionsItemViewModel> by lazy {
     processDeveloperOptionsList()
   }
 
   private fun processDeveloperOptionsList(): List<DeveloperOptionsItemViewModel> {
-    val itemViewModelList: MutableList<DeveloperOptionsItemViewModel> =
-      mutableListOf(
-        DeveloperOptionsModifyLessonProgressViewModel(
-          routeToMarkChaptersCompletedListener,
-          routeToMarkStoriesCompletedListener,
-          routeToMarkTopicsCompletedListener
-        )
-      )
-    itemViewModelList.add(DeveloperOptionsViewLogsViewModel())
-    itemViewModelList.add(DeveloperOptionsOverrideAppBehaviorsViewModel())
-    return itemViewModelList
-  }
-
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+    return listOf(
+      DeveloperOptionsModifyLessonProgressViewModel(
+        routeToMarkChaptersCompletedListener,
+        routeToMarkStoriesCompletedListener,
+        routeToMarkTopicsCompletedListener
+      ),
+      DeveloperOptionsViewLogsViewModel(),
+      DeveloperOptionsOverrideAppBehaviorsViewModel()
+    )
   }
 }

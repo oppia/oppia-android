@@ -4,7 +4,10 @@ import org.oppia.android.app.devoptions.RouteToMarkChaptersCompletedListener
 import org.oppia.android.app.devoptions.RouteToMarkStoriesCompletedListener
 import org.oppia.android.app.devoptions.RouteToMarkTopicsCompletedListener
 
-/** [ViewModel] for the recycler view in [DeveloperOptionsFragment]. */
+/**
+ * [DeveloperOptionsItemViewModel] to provide features to modify lesson progress such as
+ * marking chapters completed, marking stories completed and marking topics completed.
+ */
 class DeveloperOptionsModifyLessonProgressViewModel(
   private val routeToMarkChaptersCompletedListener: RouteToMarkChaptersCompletedListener,
   private val routeToMarkStoriesCompletedListener: RouteToMarkStoriesCompletedListener,
