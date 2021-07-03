@@ -10,7 +10,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import javax.inject.Inject
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
   "get_exploration_by_id_provider_id"
