@@ -322,7 +322,7 @@ class StateFragmentPresenter @Inject constructor(
     // mark a checkpoint and then update the UI with the new EphemeralState.
     val ephemeralState = result.getOrThrow()
     // only mark checkpoint if the current state is either of type PENDING_STATE or TERMINAL_STATE.
-    if(ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.COMPLETED_STATE)
+    if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.COMPLETED_STATE)
       markExplorationCheckpoint()
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
