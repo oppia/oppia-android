@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import javax.inject.Inject
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -32,7 +33,6 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -46,7 +46,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -54,8 +53,6 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_f
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_story_id"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_exploration_id"
-const val STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY =
-  "StateFragmentPresenter.state_fragment_is_checkpointing_enabled"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -87,7 +84,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private var isCheckpointingEnabled: Boolean = false
+  private val isCheckpointingEnabled: Boolean = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -103,14 +100,12 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    isCheckpointingEnabled: Boolean
+    explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-    this.isCheckpointingEnabled = isCheckpointingEnabled
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -184,14 +179,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    // delete progress if checkpointing was enabled and exit exploration.
-    if (isCheckpointingEnabled)
-    (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressStopCurrentSession()
-    // exit exploration without deleting progress if checkpointing was not enabled.
-    else
-    (activity as StopStatePlayingSessionListener)
-      .stopSession()
+    (activity as StopStatePlayingSessionListener).stopSession()
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -336,6 +324,7 @@ class StateFragmentPresenter @Inject constructor(
     // only mark checkpoint if the current state is either of type PENDING_STATE or TERMINAL_STATE.
     if (ephemeralState.stateTypeCase != EphemeralState.StateTypeCase.COMPLETED_STATE)
       markExplorationCheckpoint()
+
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
@@ -545,7 +534,7 @@ class StateFragmentPresenter @Inject constructor(
 
   /**
    * This function kicks off the process to save checkpoints in the domain layer and then observes
-   * to the returned [DataProvider] as [LiveData]. It also communicates back to the domain layer to
+   * the returned [DataProvider] as [LiveData]. It also communicates back to the domain layer to
    * process the result of the save operation once the save operation has completed
    * successfully/unsuccessfully.
    */
