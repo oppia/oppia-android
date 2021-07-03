@@ -27,7 +27,7 @@ class PlatformParameterController @Inject constructor(
 
   private val platformParameterDataProvider by lazy {
     // After this transformation the cached List of Platform Parameters gets converted into a simple
-    // Mpp where the keys corresponds to the name of Platform Parameter and value will correspond to
+    // map where the keys corresponds to the name of Platform Parameter and value will correspond to
     // the PlatformParameter object itself
     platformParameterDatabaseStore.transform(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
       platformParameterDatabase ->
