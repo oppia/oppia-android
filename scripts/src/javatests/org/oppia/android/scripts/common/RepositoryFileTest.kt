@@ -76,8 +76,8 @@ class RepositoryFileTest {
   }
 
   @Test
-  fun testRepoFile_specifyMultipleParameterCombination_collectedFilesShouldComplyWithAllSpecificationsMentioned() {
-    // ktlint-disable max-line-length
+  fun testRepoFile_specifyMultipleParameterCombination_collectedFilesShouldComplyWithAllSpecificationsMentioned()
+  { // ktlint-disable max-line-length
     tempFolder.newFolder("testfiles", "app")
     tempFolder.newFolder("testfiles", ".git")
     val testFile1 = tempFolder.newFile("testfiles/TestFile1.kt")
