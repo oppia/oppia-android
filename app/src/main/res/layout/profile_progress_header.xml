@@ -23,6 +23,7 @@
       android:layout_width="100dp"
       android:layout_height="100dp"
       android:clickable="true"
+      android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       app:add_shadow="true"
@@ -35,6 +36,7 @@
     <ImageView
       android:layout_width="48dp"
       android:layout_height="48dp"
+      android:contentDescription="@string/edit_profile_picture_content_description"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
