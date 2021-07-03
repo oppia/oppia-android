@@ -5,7 +5,6 @@
   <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
-  <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
@@ -52,13 +51,11 @@
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
-  <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Oppia Introduction</string>
-  <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
@@ -449,4 +446,10 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
+
+<!--  Help Activity-->
+  <string name="menu_help">Help</string>
+  <!--  FAQ (Help Activity)-->
+    <string name="FAQs">FAQs</string>
+    <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
 </resources>
