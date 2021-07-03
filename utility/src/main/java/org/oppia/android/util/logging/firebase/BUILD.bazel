@@ -6,6 +6,20 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "firebase_exception_logger",
+    srcs = [
+        "FirebaseExceptionLogger.kt",
+    ],
+    visibility = [
+        "//utility/src/main/java/org/oppia/android/util/logging:__pkg__",
+    ],
+    deps = [
+        "//third_party:com_google_firebase_firebase-crashlytics",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+    ],
+)
+
+kt_android_library(
     name = "impl",
     srcs = [
         "FirebaseEventLogger.kt",
