@@ -219,6 +219,8 @@ class DeveloperOptionsActivityTest {
     }
   }
 
+  // TODO(#3397): When the logic to show all hints and solutions is implemented, write a test to
+  //  check for click operation of the 'Show all hints/solution' switch
   @Test
   fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
     launch<DeveloperOptionsActivity>(
