@@ -35,9 +35,24 @@ package_group(
     ],
 )
 
+kt_jvm_binary(
+    name = "compute_affected_tests",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
+    ],
+)
+
 REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets(
     "regex_pattern_assets",
     "//scripts/org/oppia/android/scripts/regex/assets",
+)
+
+kt_jvm_library(
+    name = "regex_check_assets",
+    data = REGEX_PATTERN_CHECK_ASSETS,
+    visibility = [":oppia_script_binary_visibility"],
 )
 
 kt_jvm_binary(
@@ -46,12 +61,6 @@ kt_jvm_binary(
     data = REGEX_PATTERN_CHECK_ASSETS,
     main_class = "org.oppia.android.scripts.regex.RegexPatternValidationCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib"],
-)
-
-kt_jvm_library(
-    name = "regex_check_assets",
-    data = REGEX_PATTERN_CHECK_ASSETS,
-    visibility = [":oppia_script_binary_visibility"],
 )
 
 kt_jvm_binary(
