@@ -360,6 +360,8 @@
   <!-- General Button: Exploration View -->
   <dimen name="general_button_item_exploration_view_margin_start">24dp</dimen>
   <dimen name="general_button_item_exploration_view_margin_end">24dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_start">24dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_end">24dp</dimen>
 
   <!-- General Button: Question Split View -->
   <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
@@ -368,6 +370,8 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">24dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">24dp</dimen>
+  <dimen name="general_button_item_question_view_padding_start">24dp</dimen>
+  <dimen name="general_button_item_question_view_padding_end">24dp</dimen>
 
   <!-- Return to Topic Button: Exploration View -->
   <dimen name="return_to_topic_button_item_exploration_view_margin_top">44dp</dimen>
