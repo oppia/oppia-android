@@ -626,5 +626,7 @@ object ScriptExemptions {
     "DeveloperOptionsStarterImpl.kt",
     "DeveloperOptionsFragmentPresenter.kt",
     "DeveloperOptionsModule.kt",
+    "CommandResult.kt",
+    "CommandExecutor.kt",
   )
 }
