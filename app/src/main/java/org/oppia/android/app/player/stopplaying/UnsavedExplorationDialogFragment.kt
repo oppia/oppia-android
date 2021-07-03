@@ -33,7 +33,7 @@ class UnsavedExplorationDialogFragment : DialogFragment() {
       .setTitle(R.string.unsaved_exploration_dialog_title)
       .setMessage(R.string.unsaved_exploration_dialog_description)
       .setPositiveButton(R.string.unsaved_exploration_dialog_leave_button) { _, _ ->
-        stopStatePlayingSessionWithSavedProgressListener.deleteCurrentProgressStopCurrentSession()
+        stopStatePlayingSessionWithSavedProgressListener.deleteCurrentProgressAndStopCurrentSession()
         dismiss()
       }
       .setNegativeButton(R.string.unsaved_exploration_dialog_cancel_button) { _, _ ->

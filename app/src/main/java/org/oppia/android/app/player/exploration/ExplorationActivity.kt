@@ -21,9 +21,9 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSaved
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
-const val TAG_EXPLORATION_PROGRESS_NOT_SAVED_DIALOG = "STOP_EXPLORATION_DIALOG"
+const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
-const val TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG = "MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG"
+const val TAG_PROGRESS_DATABASE_FULL_DIALOG = "PROGRESS_DATABASE_FULL_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
@@ -68,7 +68,6 @@ class ExplorationActivity :
       storyId,
       explorationId,
       backflowScreen,
-      // checkpointing is disabled until mechanism to resume exploration is implemented.
       isCheckpointingEnabled
     )
   }
@@ -95,6 +94,7 @@ class ExplorationActivity :
       storyId: String,
       explorationId: String,
       backflowScreen: Int?,
+      // checkpointing is disabled until mechanism to resume exploration is implemented.
       isCheckpointingEnabled: Boolean = false
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
@@ -116,7 +116,7 @@ class ExplorationActivity :
     explorationActivityPresenter.stopExploration()
   }
 
-  override fun deleteCurrentProgressStopCurrentSession() {
+  override fun deleteCurrentProgressAndStopCurrentSession() {
     explorationActivityPresenter.deleteCurrentProgressAndStopExploration()
   }
 

@@ -213,7 +213,6 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun deleteCurrentProgressAndStopExploration() {
-    val t = internalProfileId
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       explorationId
@@ -222,6 +221,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun deleteOldestExplorationAndStopExploration() {
+    // if the value of oldestExplorationId is null, it means that there was an error while
+    // retrieving the oldest saved checkpoint details. In that the exploration is exited without
+    // deleting the any checkpoints.
     if (oldestExplorationId != null)
       explorationDataController.deleteExplorationProgressById(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -263,6 +265,10 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun backButtonPressed() {
+    // if checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
+    // this is expected to happen if the exploration is marked as completed.
+    if(!isCheckpointingEnabled)
+      showStopExplorationDialogFragment()
     // if checkpointing is enabled, get the current checkpoint state to figure out the if
     // so far checkpointing has been successful in the exploration.
     subscribeToCheckpointState(explorationDataController.checkExplorationCheckpointStatus())
@@ -341,14 +347,17 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationFragment.revealSolution()
   }
 
-  private fun showMaximumStorageReachedDialogFragment() {
+  private fun showProgressDatabaseFullDialogFragment() {
     val previousFragment = activity.supportFragmentManager.findFragmentByTag(
-      TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG
+      TAG_PROGRESS_DATABASE_FULL_DIALOG
     )
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
 
+    // if the value of oldestExplorationId is null, it means that there was an error while
+    // retrieving the oldest saved checkpoint details. In that the exploration is exited without
+    // deleting the any checkpoints.
     if (oldestExplorationId == null || oldestExplorationTitle == null) {
       stopExploration()
       return
@@ -358,7 +367,7 @@ class ExplorationActivityPresenter @Inject constructor(
       ProgressDatabaseFullDialogFragment.newInstance(oldestExplorationTitle!!)
     dialogFragment.showNow(
       activity.supportFragmentManager,
-      TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG
+      TAG_PROGRESS_DATABASE_FULL_DIALOG
     )
   }
 
@@ -372,16 +381,16 @@ class ExplorationActivityPresenter @Inject constructor(
     dialogFragment.showNow(activity.supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
   }
 
-  private fun showExplorationProgressNotSavedDialogFragment() {
+  private fun showUnsavedExplorationDialogFragment() {
     val previousFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_EXPLORATION_PROGRESS_NOT_SAVED_DIALOG)
+      activity.supportFragmentManager.findFragmentByTag(TAG_UNSAVED_EXPLORATION_DIALOG)
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = UnsavedExplorationDialogFragment.newInstance()
     dialogFragment.showNow(
       activity.supportFragmentManager,
-      TAG_EXPLORATION_PROGRESS_NOT_SAVED_DIALOG
+      TAG_UNSAVED_EXPLORATION_DIALOG
     )
   }
 
@@ -394,6 +403,9 @@ class ExplorationActivityPresenter @Inject constructor(
    *
    * Since this function is kicked off before any other save operation, therefore it is expected
    * to complete before any following save operation completes.
+   *
+   * In case this operations fails, the values of the variables oldestExplorationId and
+   * oldestExplorationTitle is not changed and they remain equal to null.
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
@@ -425,10 +437,10 @@ class ExplorationActivityPresenter @Inject constructor(
             is ExplorationProgressController.ProgressNotSavedException -> {
               // delete the current progress if any because the saved progress for the current
               // exploration is incomplete.
-              showExplorationProgressNotSavedDialogFragment()
+              showUnsavedExplorationDialogFragment()
             }
             is ExplorationProgressController.CheckpointDatabaseOverflowException -> {
-              showMaximumStorageReachedDialogFragment()
+              showProgressDatabaseFullDialogFragment()
             }
           }
         }
