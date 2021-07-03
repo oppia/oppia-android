@@ -19,18 +19,18 @@ const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
  * the current progress, leave the exploration without saving the current progress, or go back to
  * continue the current exploration.
  */
-class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
+class ProgressDatabaseFullDialogFragment : DialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
-     * @return [MaximumStorageCapacityReachedDialogFragment]: DialogFragment
+     * @return [ProgressDatabaseFullDialogFragment]: DialogFragment
      */
     fun newInstance(
       oldestSavedExplorationTitle: String
-    ): MaximumStorageCapacityReachedDialogFragment {
+    ): ProgressDatabaseFullDialogFragment {
       val maximumStorageCapacityReachedDialogFragment =
-        MaximumStorageCapacityReachedDialogFragment()
+        ProgressDatabaseFullDialogFragment()
       val args = Bundle()
       args.putString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY, oldestSavedExplorationTitle)
       maximumStorageCapacityReachedDialogFragment.arguments = args

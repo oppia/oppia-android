@@ -18,7 +18,7 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.stopplaying.MaximumStorageCapacityReachedDialogFragment
+import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.topic.TopicActivity
@@ -355,7 +355,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     val dialogFragment =
-      MaximumStorageCapacityReachedDialogFragment.newInstance(oldestExplorationTitle!!)
+      ProgressDatabaseFullDialogFragment.newInstance(oldestExplorationTitle!!)
     dialogFragment.showNow(
       activity.supportFragmentManager,
       TAG_MAXIMUM_STORAGE_CAPACITY_REACHED_DIALOG
