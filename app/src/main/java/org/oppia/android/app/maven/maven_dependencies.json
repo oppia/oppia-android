@@ -515,13 +515,27 @@
       "index": 37,
       "artifact_name": "com.google.auto.service:auto-service-annotations:1.0-rc7",
       "artifact_version": "7cr-0.1",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 38,
       "artifact_name": "com.google.auto.value:auto-value-annotations:1.6.5",
       "artifact_version": "5.6.1",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 39,
@@ -592,19 +606,40 @@
       "index": 44,
       "artifact_name": "com.google.guava:failureaccess:1.0.1",
       "artifact_version": "1.0.1",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 45,
       "artifact_name": "com.google.guava:guava:28.1-android",
       "artifact_version": "diordna-1.82",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 46,
       "artifact_name": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
       "artifact_version": "avaug-htiw-tcilfnoc-diova-ot-ytpme-0.9999",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "11",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 47,
@@ -623,7 +658,14 @@
       "index": 48,
       "artifact_name": "com.google.protobuf:protobuf-lite:3.0.0",
       "artifact_version": "0.0.3",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 49,
@@ -694,7 +736,14 @@
       "index": 54,
       "artifact_name": "com.squareup.retrofit2:converter-moshi:2.5.0",
       "artifact_version": "0.5.2",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 55,
@@ -836,7 +885,14 @@
       "index": 65,
       "artifact_name": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
       "artifact_version": "81.1",
-      "licenses": []
+      "licenses": [
+        {
+          "name": "1",
+          "extracted_link": "",
+          "alternate_link": "1",
+          "link_type": "EASY_TO_SCRAPE"
+        }
+      ]
     },
     {
       "index": 66,
