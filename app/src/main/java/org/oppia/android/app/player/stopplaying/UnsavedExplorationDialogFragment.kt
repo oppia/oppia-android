@@ -11,15 +11,15 @@ import org.oppia.android.R
 /**
  * DialogFragment that gives option to learner to stop exploration in between.
  */
-class ExplorationProgressNotSavedDialogFragment : DialogFragment() {
+class UnsavedExplorationDialogFragment : DialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
-     * @return [ExplorationProgressNotSavedDialogFragment]: DialogFragment
+     * @return [UnsavedExplorationDialogFragment]: DialogFragment
      */
-    fun newInstance(): ExplorationProgressNotSavedDialogFragment {
-      return ExplorationProgressNotSavedDialogFragment()
+    fun newInstance(): UnsavedExplorationDialogFragment {
+      return UnsavedExplorationDialogFragment()
     }
   }
 
@@ -30,13 +30,13 @@ class ExplorationProgressNotSavedDialogFragment : DialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.exploration_progress_not_saved_dialog_title)
-      .setMessage(R.string.exploration_progress_not_saved_dialog_description)
-      .setPositiveButton(R.string.exploration_progress_not_saved_dialog_leave_button) { _, _ ->
+      .setTitle(R.string.unsaved_exploration_dialog_title)
+      .setMessage(R.string.unsaved_exploration_dialog_description)
+      .setPositiveButton(R.string.unsaved_exploration_dialog_leave_button) { _, _ ->
         stopStatePlayingSessionWithSavedProgressListener.deleteCurrentProgressStopCurrentSession()
         dismiss()
       }
-      .setNegativeButton(R.string.exploration_progress_not_saved_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.unsaved_exploration_dialog_cancel_button) { _, _ ->
         dismiss()
       }
       .create()

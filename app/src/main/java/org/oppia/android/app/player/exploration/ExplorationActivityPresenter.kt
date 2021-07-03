@@ -18,9 +18,9 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.stopplaying.ExplorationProgressNotSavedDialogFragment
 import org.oppia.android.app.player.stopplaying.MaximumStorageCapacityReachedDialogFragment
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -213,6 +213,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun deleteCurrentProgressAndStopExploration() {
+    val t = internalProfileId
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       explorationId
@@ -377,7 +378,7 @@ class ExplorationActivityPresenter @Inject constructor(
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    val dialogFragment = ExplorationProgressNotSavedDialogFragment.newInstance()
+    val dialogFragment = UnsavedExplorationDialogFragment.newInstance()
     dialogFragment.showNow(
       activity.supportFragmentManager,
       TAG_EXPLORATION_PROGRESS_NOT_SAVED_DIALOG

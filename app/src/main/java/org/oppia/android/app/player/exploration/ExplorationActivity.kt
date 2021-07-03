@@ -49,6 +49,7 @@ class ExplorationActivity :
   private lateinit var explorationId: String
   private lateinit var state: State
   private var backflowScreen: Int? = null
+  private var isCheckpointingEnabled: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -58,6 +59,8 @@ class ExplorationActivity :
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
+    isCheckpointingEnabled =
+      intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, false)
     explorationActivityPresenter.handleOnCreate(
       this,
       internalProfileId,
@@ -66,7 +69,7 @@ class ExplorationActivity :
       explorationId,
       backflowScreen,
       // checkpointing is disabled until mechanism to resume exploration is implemented.
-      isCheckpointingEnabled = false
+      isCheckpointingEnabled
     )
   }
 
@@ -91,7 +94,8 @@ class ExplorationActivity :
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?
+      backflowScreen: Int?,
+      isCheckpointingEnabled: Boolean = false
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -99,6 +103,7 @@ class ExplorationActivity :
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+      intent.putExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, isCheckpointingEnabled)
       return intent
     }
   }

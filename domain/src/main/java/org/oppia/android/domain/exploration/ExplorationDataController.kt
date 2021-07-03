@@ -10,6 +10,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import javax.inject.Inject
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
   "get_exploration_by_id_provider_id"
@@ -78,7 +79,7 @@ class ExplorationDataController @Inject constructor(
    * @return a one-time [LiveData] with success result if checkpointing has been successful
    *         otherwise a failure result with an appropriate exception is returned.
    */
-  fun checkExplorationCheckpointStatus() =
+  fun checkExplorationCheckpointStatus(): LiveData<AsyncResult<Any?>> =
     explorationProgressController.checkCheckpointStateToExitExploration()
 
   /** Function to fetch the details of the oldest saved exploration for a specified profileId.*/

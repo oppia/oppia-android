@@ -7,7 +7,9 @@ import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -24,6 +26,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
@@ -61,6 +64,14 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -71,6 +82,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
@@ -108,7 +121,10 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -140,6 +156,8 @@ import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -159,6 +177,11 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
@@ -180,6 +203,24 @@ class StateFragmentTest {
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+
+  @Mock
+  lateinit var mockCheckpointStateObserver: Observer<AsyncResult<Any?>>
+
+  @Captor
+  lateinit var checkpointStateCaptor: ArgumentCaptor<AsyncResult<Any?>>
+
+  @Inject
+  lateinit var explorationCheckpointController: ExplorationCheckpointController
+
+  @Mock
+  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
+
+  @Captor
+  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
 
   private val internalProfileId: Int = 1
 
@@ -1393,6 +1434,319 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_checkpointingDisabled_checkExplorationProgressNotSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = false).use {
+      startPlayingExploration()
+      verifyCheckpointStateIsUnsaved()
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExploration_checkexplorationProgressIsSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
+    }
+  }
+
+  @Test
+  fun testStateFragment_playToSecondState_checkCheckpointStateIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
+      playThroughPrototypeState2()
+      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
+    }
+  }
+
+  @Test
+  fun testStateFragment_playToThirdState_checkCheckpointStateIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit()
+    }
+  }
+
+  @Test
+  fun testStateFragment_playThroughStates_checkProgressIsSavedOnEveryState() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "Continue"
+      )
+      playThroughPrototypeState1()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "Fractions"
+      )
+      playThroughPrototypeState2()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "MultipleChoice"
+      )
+      playThroughPrototypeState3()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "ItemSelectionMinOne"
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_advanceToThirdState_goBackToPreviousState_checkCorrectProgressIsSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "ItemSelectionMinOne"
+      )
+      clickPreviousNavigationButton()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "ItemSelectionMinOne"
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_advanceToThirdState_navigatePreviousStates_checkCorrectProgressIsSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "ItemSelectionMinOne"
+      )
+      clickPreviousNavigationButton()
+      clickPreviousNavigationButton()
+      clickNextNavigationButton()
+      verifySavedCheckpointHasCorrectPendingState(
+        TEST_EXPLORATION_ID_2,
+        pendingStateName = "ItemSelectionMinOne"
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_checkpointing_playToSecondState_submitAnswer_checkCorrectProgressIsSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      // Attempt to submit a wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+      // Attempt to submit a wrong answer.
+      typeFractionText("1/3")
+      clickSubmitAnswerButton()
+      verifyAnswerIsSaved(TEST_EXPLORATION_ID_2, countOfAnswers = 2)
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitAnswers_navigatePreviousStates_goToPendingState_progressIsSaved() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      // Attempt to submit a wrong answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      testCoroutineDispatchers.runCurrent()
+      // Attempt to submit a wrong answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      testCoroutineDispatchers.runCurrent()
+      clickPreviousNavigationButton()
+      clickPreviousNavigationButton()
+      clickNextNavigationButton()
+      clickNextNavigationButton()
+      verifyAnswerIsSaved(TEST_EXPLORATION_ID_2, countOfAnswers = 2)
+    }
+  }
+
+  @Test
+  fun testStateFragment_advanceToSecondState_submitWrongAnswers_revealHint_checkProgressIsSaved() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Submit wrong answer twice to make hints visible.
+      typeFractionText("3/2")
+      clickSubmitAnswerButton()
+      typeFractionText("3/2")
+      clickSubmitAnswerButton()
+      testCoroutineDispatchers.runCurrent()
+      openHintsAndSolutionDialog()
+      clickRevealNewHintAndSolution(hintAndSolutionIndex = 0, isSolution = false)
+      verifyHintIsSaved(FRACTIONS_EXPLORATION_ID_1, indexOfRevealedHint = 0)
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_playThroughExploration_clickReturnToTopicButton_checkProgressIsDeleted() {
+    launchForExploration(TEST_EXPLORATION_ID_2, isCheckpointingEnabled = true).use {
+      startPlayingExploration()
+      playThroughPrototypeExploration()
+      clickReturnToTopicButton()
+      verifyProgressNotSaved(TEST_EXPLORATION_ID_2)
+    }
+  }
+
+  private fun verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit() {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockCheckpointStateObserver)
+    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
+    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
+    assertThat(checkpointStateCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit() {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockCheckpointStateObserver)
+    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
+    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
+    assertThat(checkpointStateCaptor.value.isFailure()).isTrue()
+
+    assertThat(checkpointStateCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
+    )
+  }
+
+  private fun verifyCheckpointStateIsUnsaved() {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockCheckpointStateObserver)
+    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
+    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
+    assertThat(checkpointStateCaptor.value.isFailure()).isTrue()
+
+    assertThat(checkpointStateCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.ProgressNotSavedException::class.java
+    )
+  }
+
+  private fun verifyProgressNotSaved(explorationId: String) {
+    reset(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockExplorationCheckpointObserver, atLeastOnce()).onChanged(
+      explorationCheckpointCaptor.capture()
+    )
+    assertThat(explorationCheckpointCaptor.value.isFailure()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
+  }
+
+  private fun verifySavedCheckpointHasCorrectPendingState(
+    explorationId: String,
+    pendingStateName: String
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(pendingStateName)
+  }
+
+  private fun verifyAnswerIsSaved(
+    explorationId: String,
+    countOfAnswers: Int
+  ) {
+    reset(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingUserAnswersCount)
+      .isEqualTo(countOfAnswers)
+  }
+
+  private fun verifyHintIsSaved(explorationId: String, indexOfRevealedHint: Int) {
+    reset(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
+      .isEqualTo(indexOfRevealedHint)
+  }
+
+  /** opens HintsAndSolutionDialogFragment provided the hints and solution button is visible. */
+  private fun openHintsAndSolutionDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /** clicks revel button inside for a new hint or solution.*/
+  private fun clickRevealNewHintAndSolution(hintAndSolutionIndex: Int, isSolution: Boolean) {
+    val buttonId = if (isSolution) R.id.reveal_solution_button else R.id.reveal_hint_button
+    pressRevealHintOrSolutionButton(hintAndSolutionIndex, buttonId)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /** Scrolls to the hint or solution that has not been viewed yet and clicks the reveal button. */
+  private fun pressRevealHintOrSolutionButton(hintOrSolIndex: Int, @IdRes buttonId: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          hintOrSolIndex * 2
+        )
+      )
+    onView(allOf(withId(buttonId), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
@@ -1919,6 +2273,22 @@ class StateFragmentTest {
     fun provideLoadImagesFromAssets(): Boolean = false
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * Each test checkpoint is estimated to be about 60 bytes in size, it is expected that the
+     * database will exceed this limit when the third test checkpoint is saved.
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   @Singleton
   @Component(
     modules = [
@@ -1936,7 +2306,7 @@ class StateFragmentTest {
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
       LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      TestExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

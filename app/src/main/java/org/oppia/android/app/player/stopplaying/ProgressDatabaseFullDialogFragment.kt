@@ -47,24 +47,24 @@ class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.maximum_storage_capacity_reached_dialog_title)
+      .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
         createMaximumStorageCapacityReachedDialogDescription(oldestSavedExplorationTitle!!)
       )
-      .setPositiveButton(R.string.maximum_storage_capacity_reached_dialog_continue_button) { _, _ ->
+      .setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteOldestProgressAndStopCurrentSession()
         dismiss()
       }
       .setNeutralButton(
-        R.string.maximum_storage_capacity_reached_dialog_leave_without_saving_progress_button
+        R.string.progress_database_full_dialog_leave_without_saving_progress_button
       ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteCurrentProgressStopCurrentSession()
         dismiss()
       }
       .setNegativeButton(
-        R.string.maximum_storage_capacity_reached_dialog_back_to_lesson_button
+        R.string.progress_database_full_dialog_back_to_lesson_button
       ) { _, _ ->
         dismiss()
       }
