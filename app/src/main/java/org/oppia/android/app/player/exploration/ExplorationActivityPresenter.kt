@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -30,6 +29,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
 const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
@@ -262,7 +262,7 @@ class ExplorationActivityPresenter @Inject constructor(
   fun backButtonPressed() {
     // stop exploration if checkpointing is not enabled. This can happen if the exploration was
     // completed previously and checkpoints are not being saved for the current exploration.
-    if(!isCheckpointingEnabled) {
+    if (!isCheckpointingEnabled) {
       stopExploration()
       return
     }
@@ -367,14 +367,14 @@ class ExplorationActivityPresenter @Inject constructor(
 
   // TODO("Remove this dialog fragment once checkpointing is enabled")
   private fun showStopExplorationDialogFragment() {
-    val previousFragment = activity.supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
+    val previousFragment =
+      activity.supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     val dialogFragment = StopExplorationDialogFragment.newInstance()
     dialogFragment.showNow(activity.supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
   }
-
 
   /** This function listens to the result of the function
    * [ExplorationDataController.getExplorationById].

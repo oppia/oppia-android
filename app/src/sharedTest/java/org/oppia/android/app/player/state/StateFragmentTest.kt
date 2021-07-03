@@ -1429,8 +1429,8 @@ class StateFragmentTest {
         context,
         internalProfileId,
         TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0, 
-        explorationId, 
+        TEST_STORY_ID_0,
+        explorationId,
         isCheckpointingEnabled
       )
     )

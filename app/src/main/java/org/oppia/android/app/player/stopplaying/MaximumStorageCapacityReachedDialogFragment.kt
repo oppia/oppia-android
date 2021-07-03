@@ -43,7 +43,7 @@ class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
       ?.getString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
-      activity as StopStatePlayingSessionWithSavedProgressListener
+        activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
@@ -69,7 +69,6 @@ class MaximumStorageCapacityReachedDialogFragment : DialogFragment() {
         dismiss()
       }
       .create()
-
   }
 
   private fun createMaximumStorageCapacityReachedDialogDescription(

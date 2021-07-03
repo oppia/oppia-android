@@ -4,7 +4,6 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
@@ -18,6 +17,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
+import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
 

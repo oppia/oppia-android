@@ -895,7 +895,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -915,7 +918,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -935,7 +941,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -955,7 +964,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -975,7 +987,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -989,7 +1004,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_wait30seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1004,7 +1022,10 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_submitWrongAnswer_wait10s_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use { scenario ->
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      isCheckpointingEnabled = false
+    ).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1209,11 +1230,11 @@ class StateFragmentLocalTest {
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
-        context, 
+        context,
         internalProfileId,
-        TEST_TOPIC_ID_0, 
-        TEST_STORY_ID_0, 
-        explorationId, 
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        explorationId,
         isCheckpointingEnabled
       )
     )

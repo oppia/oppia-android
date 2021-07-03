@@ -26,7 +26,7 @@ class StopExplorationDialogFragment : DialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val stopStatePlayingSessionWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
-    activity as StopStatePlayingSessionWithSavedProgressListener
+        activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))

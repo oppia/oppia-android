@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -17,10 +16,10 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import javax.inject.Inject
 
 const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
@@ -64,7 +63,8 @@ class ExplorationActivity :
       storyId,
       explorationId,
       backflowScreen,
-      isCheckpointingEnabled = false // checkpointing is set to false till mechanism to save and retrieved is full implemented.
+      // checkpointing is set to false till mechanism to save and retrieved is full implemented.
+      isCheckpointingEnabled = false
     )
   }
 
