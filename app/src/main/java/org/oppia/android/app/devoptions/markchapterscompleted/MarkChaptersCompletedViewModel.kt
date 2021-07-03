@@ -12,7 +12,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** The ViewModel for [MarkChaptersCompletedActivity]. */
+/**
+ * [ViewModel] for [MarkChaptersCompletedFragment]. It populates the recyclerview with a list of
+ * [StorySummaryViewModel] which in turn display the story.
+ */
 @FragmentScope
 class MarkChaptersCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
@@ -21,6 +24,10 @@ class MarkChaptersCompletedViewModel @Inject constructor(
 
   private var internalProfileId: Int = -1
 
+  /**
+   * List of [StorySummaryViewModel] used to populate recyclerview of [MarkChaptersCompletedFragment]
+   * to display stories.
+   */
   val storySummaryLiveData: LiveData<List<StorySummaryViewModel>> by lazy {
     Transformations.map(storyListLiveData, ::processStoryList)
   }

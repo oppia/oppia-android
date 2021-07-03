@@ -12,7 +12,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** The ViewModel for [MarkTopicsCompletedFragment]. */
+/**
+ * [ViewModel] for [MarkTopicsCompletedFragment]. It populates the recyclerview with a list of
+ * [TopicSummaryViewModel] which in turn display the topic.
+ */
 @FragmentScope
 class MarkTopicsCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
@@ -21,6 +24,10 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private var internalProfileId: Int = -1
 
+  /**
+   * List of [TopicSummaryViewModel] used to populate recyclerview of [MarkTopicsCompletedFragment]
+   * to display topics.
+   */
   val topicSummaryLiveData: LiveData<List<TopicSummaryViewModel>> by lazy {
     Transformations.map(allTopicsLiveData, ::processAllTopics)
   }

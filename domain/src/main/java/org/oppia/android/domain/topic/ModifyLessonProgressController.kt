@@ -94,7 +94,7 @@ class ModifyLessonProgressController @Inject constructor(
     return true
   }
 
-  /** Combines all the topics without progress and topic-progresses into a topic. */
+  /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */
   private fun combineTopicListAndTopicProgressList(
     allTopics: List<Topic>,
     topicProgressList: List<TopicProgress>

@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
-/** [ViewModel] for displaying a story summary. */
+/** [ViewModel] for displaying a story and list of chapters in a story as [ChapterSummaryViewModel] */
 class StorySummaryViewModel(
   val storySummary: StorySummary
 ) : ObservableViewModel() {
 
+  /** List of [ChapterSummaryViewModel] used to populate the recyclerview to display chapters. */
   val chapterSummaryItemList: List<ChapterSummaryViewModel> by lazy {
     computeChapterSummaryItemList()
   }
