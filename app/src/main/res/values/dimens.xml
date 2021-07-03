@@ -274,11 +274,16 @@
   <dimen name="interaction_item_exploration_view_margin_start">40dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_end">24dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_start">40dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_end">24dp</dimen>
 
   <!-- Interaction Item: Question View -->
   <dimen name="interaction_item_question_view_margin_start">32dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">32dp</dimen>
+  <dimen name="interaction_item_question_view_padding_start">32dp</dimen>
+  <dimen name="interaction_item_question_view_padding_end">32dp</dimen>
+
 
   <!-- Interaction Item: Exploration/Question Split View -->
   <dimen name="interaction_item_split_view_margin_start">32dp</dimen>
