@@ -4,6 +4,30 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.protobuf'
+
+
+protobuf {
+  protoc {
+    artifact = 'com.google.protobuf:protoc:3.0.0'
+  }
+  plugins {
+    javalite {
+      artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+    }
+  }
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        remove java
+      }
+      task.plugins {
+        javalite {}
+      }
+    }
+  }
+}
+
 
 android {
   compileSdkVersion 29
@@ -79,6 +103,11 @@ android {
 
   // https://proandroiddev.com/isolated-fragments-unit-tests-that-run-both-instrumented-and-on-the-jvm-with-the-same-source-code-283db2e9be5d
   sourceSets {
+    main {
+      proto {
+        srcDir 'src/main/java/org/oppia/android/app/maven/proto'
+      }
+    }
     androidTest {
       java.srcDirs += "src/sharedTest/java"
       kotlin.srcDirs += "src/sharedTest/java"
@@ -113,6 +142,7 @@ dependencies {
       'io.github.chaosleung:pinview:1.4.4',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.flexbox:flexbox:3.0.0',
+      'com.google.protobuf:protobuf-lite:3.0.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics:17.5.0',
@@ -121,8 +151,8 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.github.oppia:CircularImageview:35d08ba88a',
-      'com.squareup.moshi:moshi-kotlin:1.11.0',
-      'com.squareup.moshi:moshi-kotlin-codegen:1.11.0',
+      'com.squareup.moshi:moshi-kotlin:1.12.0',
+      'com.squareup.moshi:moshi-kotlin-codegen:1.12.0',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
@@ -164,7 +194,7 @@ dependencies {
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
-  androidTestImplementation (project(":testing")) {
+  androidTestImplementation(project(":testing")) {
     exclude group: 'org.apache.maven', module: 'maven-artifact'
     exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
     exclude group: 'org.apache.maven', module: 'maven-model'

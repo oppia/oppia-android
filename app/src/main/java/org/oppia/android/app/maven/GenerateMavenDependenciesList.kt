@@ -3,20 +3,19 @@ package org.oppia.android.app.maven
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.io.File
 
 import org.oppia.android.app.maven.maveninstall.MavenListDependency
 import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
 import org.oppia.android.app.maven.proto.MavenDependencyList
 import org.oppia.android.app.maven.proto.MavenDependency
 import org.oppia.android.app.maven.proto.License
-import org.oppia.android.app.maven.proto.PrimaryLinkType
-import org.oppia.android.app.maven.proto.SecondaryLinkType
-import org.oppia.android.app.maven.proto.OriginOfLicense
-import java.io.File
+
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
-
+import org.oppia.android.app.maven.proto.PrimaryLinkType
+import org.oppia.android.app.model.Test
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -83,9 +82,12 @@ fun main(args: Array<String>) {
   runMavenRePinCommand(args[0])
   runBazelQueryCommand(args[0])
   readMavenInstall()
-//  val latestList = getLicenseLinksFromPOM()
+  val latestList = getLicenseLinksFromPOM()
+  println(latestList)
 //  readMavenDependenciesJson(args[1], latestList)
 //  showFinalDepsList()
+
+//  proto.Test.TestMessage.newBuilder()
 
   println("Number of deps with Invalid URL = $countInvalidPomUrl")
   println(
@@ -292,7 +294,7 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
                   .newBuilder()
                   .setLicenseName(urlName.toString())
                   .setPrimaryLink(url.toString())
-                  .setPrimaryLinkType(PrimaryLinkType.UNKNOWN)
+                  .setPrimaryLinkType(PrimaryLinkType.UNSPECIFIED)
                   .build()
               )
               linksSet.add(url.toString())
@@ -315,15 +317,14 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
       e.printStackTrace()
       exitProcess(1)
     }
-//    val mavenDependency = MavenDependency
-//      .newBuilder()
-//      .setIndex(index++)
-//      .setArtifactName(it.coord)
-//      .setArtifactVersion(artifactVersion.toString())
-//      .setLicenseList
-//      licenseList
-//    )
-    mavenDependencyList.add(mavenDependency)
+    val mavenDependency = MavenDependency
+      .newBuilder()
+      .setIndex(index++)
+      .setArtifactName(it.coord)
+      .setArtifactVersion(artifactVersion.toString())
+      .addAllLicense(licenseList)
+
+    mavenDependencyList.add(mavenDependency.build())
   }
   return mavenDependencyList
 }
