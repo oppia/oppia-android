@@ -53,14 +53,14 @@ class ProgressDatabaseFullDialogFragment : DialogFragment() {
       )
       .setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
-          .deleteOldestProgressAndStopCurrentSession()
+          .deleteOldestProgressAndStopSession()
         dismiss()
       }
       .setNeutralButton(
         R.string.progress_database_full_dialog_leave_without_saving_progress_button
       ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
-          .deleteCurrentProgressAndStopCurrentSession()
+          .deleteCurrentProgressAndStopSession()
         dismiss()
       }
       .setNegativeButton(

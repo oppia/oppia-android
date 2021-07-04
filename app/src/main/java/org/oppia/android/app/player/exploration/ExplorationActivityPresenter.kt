@@ -220,10 +220,10 @@ class ExplorationActivityPresenter @Inject constructor(
     stopExploration()
   }
 
-  fun deleteOldestExplorationAndStopExploration() {
+  fun deleteOldestSavedProgressAndStopExploration() {
     // if the value of oldestExplorationId is null, it means that there was an error while
-    // retrieving the oldest saved checkpoint details. In that the exploration is exited without
-    // deleting the any checkpoints.
+    // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
+    // without deleting the any checkpoints.
     if (oldestExplorationId != null)
       explorationDataController.deleteExplorationProgressById(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -267,8 +267,10 @@ class ExplorationActivityPresenter @Inject constructor(
   fun backButtonPressed() {
     // if checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
-    if (!isCheckpointingEnabled)
-      showStopExplorationDialogFragment()
+    if (!isCheckpointingEnabled) {
+      showUnsavedExplorationDialogFragment()
+      return
+    }
     // if checkpointing is enabled, get the current checkpoint state to figure out the if
     // so far checkpointing has been successful in the exploration.
     subscribeToCheckpointState(explorationDataController.checkExplorationCheckpointStatus())
@@ -424,7 +426,17 @@ class ExplorationActivityPresenter @Inject constructor(
   /** This function listens to the result of the function
    * [ExplorationDataController.checkExplorationCheckpointStatus]
    *
-   * Once the result is available this functions performs appropriate action to exit the exploration.
+   * Once the result is available this functions either exits the exploration or shows an
+   * appropriate dialog box.
+   *
+   * If a success result returned by the function
+   * [ExplorationDataController.checkExplorationCheckpointStatus], this functions displays the
+   * [StopExplorationDialogFragment].
+   *
+   * If case of a failure result, if the exception is [ExplorationProgressController.ProgressNotSavedException],
+   * [UnsavedExplorationDialogFragment] is displayed.
+   * If the exception is [ExplorationProgressController.CheckpointDatabaseOverflowException],
+   * [ProgressDatabaseFullDialogFragment] is displayed.
    */
   private fun subscribeToCheckpointState(checkpointStateLiveData: LiveData<AsyncResult<Any?>>) {
     checkpointStateLiveData.observe(

@@ -49,11 +49,11 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun deleteCurrentProgressAndStopCurrentSession() {
+  override fun deleteCurrentProgressAndStopSession() {
     stateFragmentTestActivityPresenter.deleteCurrentProgressAndStopExploration()
   }
 
-  override fun deleteOldestProgressAndStopCurrentSession() {}
+  override fun deleteOldestProgressAndStopSession() {}
 
   override fun onEditorAction(actionCode: Int) {}
 
