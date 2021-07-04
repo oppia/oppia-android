@@ -315,14 +315,14 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
       e.printStackTrace()
       exitProcess(1)
     }
-    val mavenDependency = MavenDependency
-      .newBuilder()
-      .setIndex(index++)
-      .setArtifactName(it.coord)
-      .setArtifactVersion(artifactVersion.toString())
-      .setLicenseList
-      licenseList
-    )
+//    val mavenDependency = MavenDependency
+//      .newBuilder()
+//      .setIndex(index++)
+//      .setArtifactName(it.coord)
+//      .setArtifactVersion(artifactVersion.toString())
+//      .setLicenseList
+//      licenseList
+//    )
     mavenDependencyList.add(mavenDependency)
   }
   return mavenDependencyList
