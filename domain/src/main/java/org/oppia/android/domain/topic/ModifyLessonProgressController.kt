@@ -99,11 +99,16 @@ class ModifyLessonProgressController @Inject constructor(
     allTopics: List<Topic>,
     topicProgressList: List<TopicProgress>
   ): List<Topic> {
-    return (allTopics.indices).map {
-      topicController.combineTopicAndTopicProgress(
-        allTopics[it],
-        topicProgressList.getOrElse(it) { TopicProgress.getDefaultInstance() }
+    val topicProgressMap = topicProgressList.associateBy({ it.topicId }, { it })
+    val allTopicsWithProgress = mutableListOf<Topic>()
+    allTopics.forEach { topic ->
+      allTopicsWithProgress.add(
+        topicController.combineTopicAndTopicProgress(
+          topic = topic,
+          topicProgress = topicProgressMap[topic.topicId] ?: TopicProgress.getDefaultInstance()
+        )
       )
     }
+    return allTopicsWithProgress
   }
 }
