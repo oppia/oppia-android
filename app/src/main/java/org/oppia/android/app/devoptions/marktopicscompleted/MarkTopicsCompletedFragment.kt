@@ -14,6 +14,8 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     internal const val MARK_TOPICS_COMPLETED_FRAGMENT_PROFILE_ID_KEY =
       "MarkTopicsCompletedFragment.internal_profile_id"
 
+    private const val TOPIC_ID_LIST_ARGUMENT_KEY = "MarkTopicsCompletedFragment.topic_id_list"
+
     /** Returns a new [MarkTopicsCompletedFragment]. */
     fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment()
@@ -41,10 +43,23 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
     val internalProfileId = args
       .getInt(MARK_TOPICS_COMPLETED_FRAGMENT_PROFILE_ID_KEY, -1)
+    var selectedTopicIdList = ArrayList<String>()
+    if (savedInstanceState != null) {
+      selectedTopicIdList = savedInstanceState.getStringArrayList(TOPIC_ID_LIST_ARGUMENT_KEY)!!
+    }
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      internalProfileId,
+      selectedTopicIdList
+    )
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putStringArrayList(
+      TOPIC_ID_LIST_ARGUMENT_KEY,
+      markTopicsCompletedFragmentPresenter.selectedTopicIdList
     )
   }
 }

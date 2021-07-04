@@ -25,6 +25,12 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   /**
+   * List of topic ids used in [MarkTopicsCompletedFragmentPresenter] to check if all topics are
+   * selected or not.
+   */
+  val availableTopicIdList = ArrayList<String>()
+
+  /**
    * List of [TopicSummaryViewModel] used to populate recyclerview of [MarkTopicsCompletedFragment]
    * to display topics.
    */
@@ -57,9 +63,11 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private fun processAllTopics(allTopics: List<Topic>): List<TopicSummaryViewModel> {
     val itemList = mutableListOf<TopicSummaryViewModel>()
+    availableTopicIdList.clear()
     allTopics.forEach { topic ->
       val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
       itemList.add(TopicSummaryViewModel(topic, isCompleted))
+      if (!isCompleted) availableTopicIdList.add(topic.topicId)
     }
     return itemList
   }
