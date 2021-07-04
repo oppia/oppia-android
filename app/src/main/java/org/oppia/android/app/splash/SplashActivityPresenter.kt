@@ -23,7 +23,6 @@ import javax.inject.Inject
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 
 /** The presenter for [SplashActivity]. */
-@ActivityScope
 class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,

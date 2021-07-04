@@ -17,40 +17,40 @@ import javax.inject.Provider
 @ActivityScope
 class SplashTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val platformParameterController: PlatformParameterController,
+//  private val platformParameterController: PlatformParameterController,
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_test_activity)
-    loadPlatformParameters()
+    //loadPlatformParameters()
   }
 
-  fun loadPlatformParameters() {
-    getPlatformParameterLoadingStatus().observe(
-      activity,
-      Observer {
-        val splashScreenWelcomeMsgParam = (activity as SplashTestActivity)
-          .splashScreenWelcomeMsgParam
-        showToastIfAllowed(splashScreenWelcomeMsgParam)
-      }
-    )
-  }
-
-  private fun getPlatformParameterLoadingStatus(): LiveData<Boolean> {
-    return Transformations.map(
-      platformParameterController.getParameterDatabase().toLiveData(),
-      ::processPlatformParameterLoadingStatus
-    )
-  }
-
-  private fun processPlatformParameterLoadingStatus(loadingStatus: AsyncResult<Unit>): Boolean {
-    return loadingStatus.isSuccess()
-  }
-
-  private fun showToastIfAllowed(
-    splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
-  ) {
-    if (splashScreenWelcomeMsgParam.get().value) {
-      Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
-    }
-  }
+//  fun loadPlatformParameters() {
+//    getPlatformParameterLoadingStatus().observe(
+//      activity,
+//      Observer {
+//        val splashScreenWelcomeMsgParam = (activity as SplashTestActivity)
+//          .splashScreenWelcomeMsgParam
+//        showToastIfAllowed(splashScreenWelcomeMsgParam)
+//      }
+//    )
+//  }
+//
+//  private fun getPlatformParameterLoadingStatus(): LiveData<Boolean> {
+//    return Transformations.map(
+//      platformParameterController.getParameterDatabase().toLiveData(),
+//      ::processPlatformParameterLoadingStatus
+//    )
+//  }
+//
+//  private fun processPlatformParameterLoadingStatus(loadingStatus: AsyncResult<Unit>): Boolean {
+//    return loadingStatus.isSuccess()
+//  }
+//
+//  private fun showToastIfAllowed(
+//    splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
+//  ) {
+//    if (splashScreenWelcomeMsgParam.get().value) {
+//      Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
+//    }
+//  }
 }

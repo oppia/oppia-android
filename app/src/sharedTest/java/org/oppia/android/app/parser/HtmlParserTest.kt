@@ -92,6 +92,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 // TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
@@ -543,6 +544,7 @@ class HtmlParserTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
