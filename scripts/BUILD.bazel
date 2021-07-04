@@ -44,10 +44,7 @@ kt_jvm_binary(
     ],
 )
 
-REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets(
-    "regex_pattern_assets",
-    "//scripts/org/oppia/android/scripts/regex/assets",
-)
+REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets("regex_pattern_assets")
 
 kt_jvm_library(
     name = "regex_check_assets",
