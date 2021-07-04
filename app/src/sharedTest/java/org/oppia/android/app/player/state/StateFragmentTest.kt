@@ -1605,7 +1605,7 @@ class StateFragmentTest {
     }
   }
 
-  private fun verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit() {
+  private inline fun verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit() {
     testCoroutineDispatchers.runCurrent()
     reset(mockCheckpointStateObserver)
     val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
@@ -1615,7 +1615,7 @@ class StateFragmentTest {
     assertThat(checkpointStateCaptor.value.isSuccess()).isTrue()
   }
 
-  private fun verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit() {
+  private inline fun verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit() {
     testCoroutineDispatchers.runCurrent()
     reset(mockCheckpointStateObserver)
     val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
@@ -1629,7 +1629,7 @@ class StateFragmentTest {
     )
   }
 
-  private fun verifyCheckpointStateIsUnsaved() {
+  private inline fun verifyCheckpointStateIsUnsaved() {
     testCoroutineDispatchers.runCurrent()
     reset(mockCheckpointStateObserver)
     val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
@@ -1643,7 +1643,7 @@ class StateFragmentTest {
     )
   }
 
-  private fun verifyProgressNotSaved(explorationId: String) {
+  private inline fun verifyProgressNotSaved(explorationId: String) {
     reset(mockExplorationCheckpointObserver)
     testCoroutineDispatchers.runCurrent()
     val explorationCheckpointLiveData =
@@ -1662,7 +1662,7 @@ class StateFragmentTest {
     )
   }
 
-  private fun verifySavedCheckpointHasCorrectPendingState(
+  private inline fun verifySavedCheckpointHasCorrectPendingState(
     explorationId: String,
     pendingStateName: String
   ) {
@@ -1682,7 +1682,7 @@ class StateFragmentTest {
       .isEqualTo(pendingStateName)
   }
 
-  private fun verifyAnswerIsSaved(
+  private inline fun verifyAnswerIsSaved(
     explorationId: String,
     countOfAnswers: Int
   ) {
@@ -2279,14 +2279,16 @@ class StateFragmentTest {
     /**
      * Provides the size allocated to exploration checkpoint database.
      *
-     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 250 Bytes.
      *
-     * Each test checkpoint is estimated to be about 60 bytes in size, it is expected that the
-     * database will exceed this limit when the third test checkpoint is saved.
+     * For [TEST_EXPLORATION_ID_2], the size of the checkpoint after loading the exploration and
+     * then upon completing the first, second and third state is 72, 150, 218 and 323 bytes
+     * respectively. Therefore it is expected that the size of the database will exceed the
+     * allocated limit of 250 bytes when the fourth checkpoint is saved.
      */
     @Provides
     @ExplorationStorageDatabaseSize
-    fun provideExplorationStorageDatabaseSize(): Int = 150
+    fun provideExplorationStorageDatabaseSize(): Int = 250
   }
 
   @Singleton
