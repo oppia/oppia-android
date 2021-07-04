@@ -11,5 +11,5 @@ message License {
 }
 
 message Licenses {
-  repeated License licenseList = 1;
+  repeated License license_list = 1;
 }
