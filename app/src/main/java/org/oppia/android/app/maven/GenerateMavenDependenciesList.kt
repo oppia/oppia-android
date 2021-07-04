@@ -13,9 +13,12 @@ import org.oppia.android.app.maven.proto.License
 
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.Path
+import kotlin.io.path.outputStream
 import kotlin.system.exitProcess
+import org.oppia.android.app.maven.proto.OriginOfLicenses
 import org.oppia.android.app.maven.proto.PrimaryLinkType
-import org.oppia.android.app.model.Test
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -76,6 +79,7 @@ fun showFinalDepsList() {
   }
 }
 
+@ExperimentalPathApi
 fun main(args: Array<String>) {
   if (args.size > 0) println(args[0])
   rootPath = args[0]
@@ -84,6 +88,7 @@ fun main(args: Array<String>) {
   readMavenInstall()
   val latestList = getLicenseLinksFromPOM()
   println(latestList)
+  writeTextProto(args[1], latestList)
 //  readMavenDependenciesJson(args[1], latestList)
 //  showFinalDepsList()
 
@@ -227,7 +232,7 @@ private fun readMavenInstall() {
   println("bazel query size = ${bazelQueryDepsNames.size}")
 }
 
-private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
+private fun getLicenseLinksFromPOM(): MavenDependencyList {
   var index = 0
   val mavenDependencyList = arrayListOf<MavenDependency>()
   finalDependenciesList.forEach {
@@ -294,7 +299,7 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
                   .newBuilder()
                   .setLicenseName(urlName.toString())
                   .setPrimaryLink(url.toString())
-                  .setPrimaryLinkType(PrimaryLinkType.UNSPECIFIED)
+                  .setPrimaryLinkType(PrimaryLinkType.SCRAPE_DIRECTLY)
                   .build()
               )
               linksSet.add(url.toString())
@@ -323,10 +328,22 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
       .setArtifactName(it.coord)
       .setArtifactVersion(artifactVersion.toString())
       .addAllLicense(licenseList)
+      .setOriginOfLicense(OriginOfLicenses.ENTIRELY_FROM_POM)
 
     mavenDependencyList.add(mavenDependency.build())
   }
-  return mavenDependencyList
+  return MavenDependencyList.newBuilder().addAllMavenDependencyList(mavenDependencyList).build()
+}
+
+@ExperimentalPathApi
+fun writeTextProto(
+  pathToTextProto: String,
+  mavenDependencyList: MavenDependencyList
+) {
+  val path = Path(pathToTextProto)
+  path.outputStream().use {
+    mavenDependencyList.writeTo(it)
+  }
 }
 
 fun runMavenRePinCommand(rootPath: String) {
