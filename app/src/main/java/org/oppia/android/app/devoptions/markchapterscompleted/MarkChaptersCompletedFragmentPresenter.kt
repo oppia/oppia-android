@@ -20,16 +20,18 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkChaptersCompletedViewModel>
-) {
-
+) : ChapterSelector {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<StorySummaryViewModel>
+  lateinit var selectedExplorationIdList: ArrayList<String>
+  private lateinit var availableExplorationIdList: ArrayList<String>
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    internalProfileId: Int,
+    selectedExplorationIdList: ArrayList<String>
   ): View? {
     binding = MarkChaptersCompletedFragmentBinding.inflate(
       inflater,
@@ -45,6 +47,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       this.lifecycleOwner = fragment
       this.viewModel = getMarkChaptersCompletedViewModel()
     }
+
+    this.selectedExplorationIdList = selectedExplorationIdList
 
     getMarkChaptersCompletedViewModel().setInternalProfileId(internalProfileId)
 
@@ -73,6 +77,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     binding: MarkChaptersCompletedStorySummaryViewBinding,
     storySummaryViewModel: StorySummaryViewModel
   ) {
+    availableExplorationIdList = storySummaryViewModel.availableExplorationIdList
     binding.viewModel = storySummaryViewModel
     binding.markChaptersCompletedChapterSummaryRecyclerView.adapter =
       createChapterRecyclerViewAdapter()
@@ -83,12 +88,41 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       .newBuilder<ChapterSummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkChaptersCompletedChapterSummaryViewBinding::inflate,
-        setViewModel = MarkChaptersCompletedChapterSummaryViewBinding::setViewModel
+        setViewModel = this::bindChapterSummaryView
       )
       .build()
   }
 
+  private fun bindChapterSummaryView(
+    binding: MarkChaptersCompletedChapterSummaryViewBinding,
+    model: ChapterSummaryViewModel
+  ) {
+    binding.viewModel = model
+    if (model.isCompleted) {
+      binding.isChapterChecked = true
+      binding.isChapterCheckboxEnabled = false
+    } else {
+      binding.isChapterChecked =
+        selectedExplorationIdList.contains(model.chapterSummary.explorationId)
+      binding.markChaptersCompletedChapterCheckBox.setOnCheckedChangeListener { _, isChecked ->
+        if (isChecked) {
+          chapterSelected(model.index, model.chapterSummary.explorationId)
+        } else {
+          chapterUnselected(model.index, model.chapterSummary.explorationId)
+        }
+      }
+    }
+  }
+
   private fun getMarkChaptersCompletedViewModel(): MarkChaptersCompletedViewModel {
     return viewModelProvider.getForFragment(fragment, MarkChaptersCompletedViewModel::class.java)
+  }
+
+  override fun chapterSelected(index: Int, explorationId: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun chapterUnselected(index: Int, explorationId: String) {
+    TODO("Not yet implemented")
   }
 }

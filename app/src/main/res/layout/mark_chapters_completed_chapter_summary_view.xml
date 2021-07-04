@@ -9,6 +9,10 @@
       type="Boolean" />
 
     <variable
+      name="isChapterCheckboxEnabled"
+      type="Boolean" />
+
+    <variable
       name="viewModel"
       type="org.oppia.android.app.devoptions.markchapterscompleted.ChapterSummaryViewModel" />
   </data>
@@ -26,12 +30,13 @@
       android:checked="@{isChapterChecked}"
       android:drawableStart="@android:color/transparent"
       android:drawablePadding="20dp"
+      android:enabled="@{isChapterCheckboxEnabled}"
       android:fontFamily="sans-serif"
       android:gravity="start|top"
       android:paddingBottom="26dp"
-      android:text="@{viewModel.chapterName}"
+      android:text="@{viewModel.chapterSummary.name}"
       android:textAlignment="viewStart"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/checkbox_text_color"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
