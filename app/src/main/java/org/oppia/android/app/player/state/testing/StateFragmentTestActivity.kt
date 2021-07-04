@@ -14,7 +14,7 @@ import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManag
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
@@ -31,7 +31,7 @@ internal const val TEST_ACTIVITY_IS_CHECKPOINTING_ENABLED_EXTRA_KEY =
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
   InjectableAppCompatActivity(),
-  StopStatePlayingSessionListener,
+  StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
   HintsAndSolutionListener,
@@ -49,7 +49,11 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun stopSession() = stateFragmentTestActivityPresenter.stopExploration()
+  override fun deleteCurrentProgressAndStopCurrentSession() {
+    stateFragmentTestActivityPresenter.deleteCurrentProgressAndStopExploration()
+  }
+
+  override fun deleteOldestProgressAndStopCurrentSession() {}
 
   override fun onEditorAction(actionCode: Int) {}
 
