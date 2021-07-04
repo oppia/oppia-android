@@ -46,15 +46,15 @@ class PlatformParameterModuleTest {
 
   @Inject
   @TestStringParam
-  lateinit var testStringPlatformParameter: Provider<PlatformParameterValue<String>>
+  lateinit var stringPlatformParameterProvider: Provider<PlatformParameterValue<String>>
 
   @Inject
   @TestIntegerParam
-  lateinit var testIntegerPlatformParameter: Provider<PlatformParameterValue<Int>>
+  lateinit var integerPlatformParameterProvider: Provider<PlatformParameterValue<Int>>
 
   @Inject
   @TestBooleanParam
-  lateinit var testBooleanPlatformParameter: Provider<PlatformParameterValue<Boolean>>
+  lateinit var booleanPlatformParameterProvider: Provider<PlatformParameterValue<Boolean>>
 
   private val platformParameterMapWithValues by lazy {
     val mockStringPlatformParameter = PlatformParameter.newBuilder()
@@ -86,49 +86,56 @@ class PlatformParameterModuleTest {
   @Test
   fun testModule_initPlatformParameterMap_retrieveTestStringParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
-    assertThat(testStringPlatformParameter.get().value).isEqualTo(TEST_STRING_PARAM_VALUE)
+    assertThat(stringPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_STRING_PARAM_VALUE)
   }
 
   @Test
   fun testModule_doNotInitPlatformParameterMap_retrieveTestStringParameter_returnsDefaultValue() {
     setUpTestApplicationComponent(mapOf())
-    assertThat(testStringPlatformParameter.get().value).isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
+    assertThat(stringPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
   }
 
   @Test
   fun testModule_initPlatformParameterMap_retrieveTestIntegerParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
-    assertThat(testIntegerPlatformParameter.get().value).isEqualTo(TEST_INTEGER_PARAM_VALUE)
+    assertThat(integerPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_INTEGER_PARAM_VALUE)
   }
 
   @Test
   fun testModule_doNotInitPlatformParameterMap_retrieveTestIntegerParameter_returnsDefaultValue() {
     setUpTestApplicationComponent(mapOf())
-    assertThat(testIntegerPlatformParameter.get().value).isEqualTo(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+    assertThat(integerPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_INTEGER_PARAM_DEFAULT_VALUE)
   }
 
   @Test
   fun testModule_initPlatformParameterMap_retrieveTestBooleanParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
-    assertThat(testBooleanPlatformParameter.get().value).isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
+    assertThat(booleanPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
   }
 
   @Test
   fun testModule_doNotInitPlatformParameterMap_retrieveTestBooleanParameter_returnsDefaultValue() {
     setUpTestApplicationComponent(mapOf())
-    assertThat(testBooleanPlatformParameter.get().value).isEqualTo(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
+    assertThat(booleanPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
   }
 
   @Test
-  fun testModule_initPlatformParameterMapPartially_retrieveTestStringParameter_returnsDefaultValue() { // ktlint-disable max-line-length
+  fun testModule_initPlatformParameterMapPartially_returnsExpectedDefaultsAndValues() {
     setUpTestApplicationComponent(partialPlatformParameterMapWithValues)
 
     // As the partial map didn't had String Parameter therefore default parameter value was injected
-    assertThat(testStringPlatformParameter.get().value).isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
+    assertThat(stringPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
 
     // As the partial map had Integer and Boolean Parameter therefore true parameter value was injected
-    assertThat(testIntegerPlatformParameter.get().value).isEqualTo(TEST_INTEGER_PARAM_VALUE)
-    assertThat(testBooleanPlatformParameter.get().value).isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
+    assertThat(integerPlatformParameterProvider.get().value).isEqualTo(TEST_INTEGER_PARAM_VALUE)
+    assertThat(booleanPlatformParameterProvider.get().value).isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
   }
 
   private fun setUpTestApplicationComponent(platformParameterMap: Map<String, PlatformParameter>) {
@@ -157,14 +164,14 @@ class PlatformParameterModuleTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
-      fun build(): PlatformParameterModuleTest.TestApplicationComponent
+      fun build(): TestApplicationComponent
     }
 
     fun inject(platformParameterModuleTest: PlatformParameterModuleTest)
   }
 
   class TestApplication : Application() {
-    private val component: PlatformParameterModuleTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerPlatformParameterModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
