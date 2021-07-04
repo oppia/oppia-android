@@ -2,9 +2,9 @@
 Macro for retrieving the regex pattern check assets.
 """
 
-load("//scripts:script_assets.bzl", "generate_assets_list_from_text_protos")
+load("//app:fake_script_assets.bzl", "generate_assets_list_from_text_protos")
 
-def retrieve_regex_pattern_check_assets(name, asset_dir):
+def retrieve_maven_assets(name, asset_dir):
     """
     Converts a single asset text proto to a new binary asset.
 
@@ -18,10 +18,7 @@ def retrieve_regex_pattern_check_assets(name, asset_dir):
     """
     return generate_assets_list_from_text_protos(
         name = name,
-        file_content_validation_file_names = [
-            "file_content_validation_checks",
-        ],
-        filepath_pattern_validation_file_names = [
-            "filename_pattern_validation_checks",
+        maven_dependencies_file_name = [
+            "maven_dependencies",
         ],
     )

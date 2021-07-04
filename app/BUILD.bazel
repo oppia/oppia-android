@@ -16,6 +16,8 @@ load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library"
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
+load("//app/src/main/java/org/oppia/android/app/maven:maven_assets.bzl", "retrieve_maven_assets")
 
 package(default_visibility = ["//utility:__subpackages__"])
 
@@ -789,6 +791,60 @@ android_library(
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:io_fabric_sdk_android_fabric",
     ],
+)
+
+# Visibility for libraries that should be accessible to script tests.
+package_group(
+    name = "oppia_script_test_visibility",
+    packages = [
+        "//app/src/main/...",
+    ],
+)
+
+# Visibility for libraries that have binaries defined at this package & tests.
+package_group(
+    name = "oppia_script_binary_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//app",
+    ],
+)
+
+# Visibility for libraries that should be accessible to other script packages & tests.
+package_group(
+    name = "oppia_script_library_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//app/src/main/java/...",
+    ],
+)
+
+MAVEN_ASSETS = retrieve_maven_assets(
+    "maven_assets",
+    "//scripts/org/oppia/android/scripts/regex/assets",
+)
+
+kt_jvm_library(
+    name = "maven_assets",
+    data = MAVEN_ASSETS,
+)
+
+#kt_jvm_binary(
+#    name = "generate_maven_dependencies",
+#    data = MAVEN_ASSETS,
+#    main_class = "org.oppia.android.maven.GenerateMavenDependenciesListKt",
+#    runtime_deps = ["//app/src/main/java/org/oppia/android/maven:maven_lib"],
+#)
+
+kt_jvm_binary(
+    name = "proto_check",
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.app.maven.ProtoClassKt",
+    runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:maven_lib"],
 )
 
 dagger_rules()
