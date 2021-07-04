@@ -10,6 +10,6 @@ data class License(
   @Json(name = "name") val name: String,
   @Json(name = "extracted_link") val extractedLink: String,
   @Json(name = "alternate_link") val alternateLink: String,
-  @Json(name = "link_type") val linkType: LinkType
+  @Json(name = "extr") val linkType: LinkType
 
 )

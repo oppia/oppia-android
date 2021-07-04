@@ -22,7 +22,7 @@ def generate_assets_list_from_text_protos(
         name = name,
         names = maven_dependencies_file_name,
         proto_dep_name = "maven_dependencies",
-        proto_type_name = "Licenses",
+        proto_type_name = "MavenLicenses",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//app/src/main/java/org/oppia/android/app/maven/proto",

@@ -5,11 +5,11 @@ package proto;
 option java_package = "org.oppia.android.app.maven.proto";
 option java_multiple_files = true;
 
-message License {
+message MavenLicense {
   string license_name = 1;
   string primary_license_link = 2;
 }
 
-message Licenses {
-  repeated License license_list = 1;
+message MavenLicenses {
+  repeated MavenLicense license_list = 1;
 }

@@ -1,5 +1,7 @@
 package org.oppia.android.app.maven
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.app.maven.backup.BackupDependency
@@ -136,73 +138,25 @@ fun readMavenDependenciesJson(
     }
     if (breakLoop) break
   }
-
-  when (scriptCode) {
-    ScriptCode.FIX_UNSPECIFIED_LINK_TYPE -> fixUnspecifiedLinkType(
-      pathToMavenDependenciesJson,
-      licenseSet,
-      generatedList
-    )
-    ScriptCode.FIX_INVALID_LINK_TYPE -> {
-      val scriptPassed = fixEmptyAndInvalidLinkType(
-        pathToMavenDependenciesJson,
-        licenseSet,
-        generatedList
-      )
-      check(scriptPassed) { "Some license links are unavailable. Please contact the team and discuss the alternatives of the dependencies." }
-    }
-    ScriptCode.FIX_UNAVAILABLE_LINK_TYPE -> fixInvalidLinkType()
-  }
+//
+//  when (scriptCode) {
+//    ScriptCode.FIX_UNSPECIFIED_LINK_TYPE -> fixUnspecifiedLinkType(
+//      pathToMavenDependenciesJson,
+//      licenseSet,
+//      generatedList
+//    )
+//    ScriptCode.FIX_INVALID_LINK_TYPE -> {
+//      val scriptPassed = fixEmptyAndInvalidLinkType(
+//        pathToMavenDependenciesJson,
+//        licenseSet,
+//        generatedList
+//      )
+//      check(scriptPassed) { "Some license links are unavailable. Please contact the team and discuss the alternatives of the dependencies." }
+//    }
+//    ScriptCode.FIX_UNAVAILABLE_LINK_TYPE -> fixInvalidLinkType()
+//  }
 }
 
-fun findIfLinkCanBeScrapedDirectly(licenseLinkType: LinkType, license: License): LinkType {
-  var linkType = licenseLinkType
-  var number: Int
-  do {
-    println(
-      """
-      Enter the correct number :
-      1 -> If the link can be scraped directly.
-      2 -> If the link can not be scraped directly but license is plain text.
-      3 -> If the link can not be extracted directly.
-      """.trimIndent()
-    )
-    number = readLine()!!.toInt()
-    when (number) {
-      1 -> linkType = LinkType.EASY_TO_SCRAPE
-      2 -> linkType = LinkType.SCRAPE_FROM_LOCAL_COPY
-      3 -> linkType = LinkType.DIFFICULT_TO_SCRAPE
-    }
-  } while (number !in 1..3)
-  return linkType
-}
-
-fun findIfLinkIsValid(licenseLinkType: LinkType, license: License): LinkType {
-  var linkType: LinkType = licenseLinkType
-  println(
-    """Please specify the link_type of the below license link :
-    ${license.extractedLink}
-    """.trimIndent()
-  )
-  var number: Int
-  var flag = false
-  do {
-    println(
-      """
-      Enter the correct number :
-      1 -> If the link is valid.
-      2 -> If the link is invalid.
-      """.trimIndent()
-    )
-    number = readLine()!!.toInt()
-    when (number) {
-      1 -> linkType = findIfLinkCanBeScrapedDirectly(linkType, license)
-      2 -> linkType = LinkType.INVALID
-      else -> flag = true
-    }
-  } while (flag)
-  return linkType
-}
 
 fun writeMavenDependenciesJson(
   pathToMavenDependenciesJson: String,
@@ -217,237 +171,6 @@ fun writeMavenDependenciesJson(
     val json = adapter.indent("  ").toJson(mavenDependencies)
     out.println(json)
   }
-}
-
-fun fixUnspecifiedLinkType(
-  pathToMavenDependenciesJson: String,
-  licenseSet: MutableSet<License>,
-  mavenDependenciesList: MutableList<MavenDependency>
-) {
-  for (index in mavenDependenciesList.indices) {
-    val dependency = mavenDependenciesList[index]
-    val licenses = dependency.licensesList
-    val licenseList = mutableListOf<License>()
-    for (i in licenses.indices) {
-      var linkType = licenses[i].linkType
-      var license = licenses[i]
-      if (linkType == LinkType.UNSPECIFIED) {
-        // Verify the link and provide the link type in command line.
-        val licenseInSet = licenseSet.find { it.extractedLink == licenses[i].extractedLink }
-        if (licenseInSet != null && licenseInSet.linkType != LinkType.UNSPECIFIED) {
-          license = licenseInSet
-        } else {
-          linkType = findIfLinkIsValid(linkType, license)
-          license = License(
-            licenses[i].name,
-            licenses[i].extractedLink,
-            licenses[i].alternateLink,
-            linkType
-          )
-          if (licenseInSet != null) licenseSet.remove(licenseInSet)
-          licenseSet.add(license)
-        }
-        licenseList.add(license)
-      } else {
-        licenseList.add(licenses[i])
-      }
-    }
-    mavenDependenciesList[index] = MavenDependency(
-      dependency.index,
-      dependency.artifactName,
-      dependency.artifact_version,
-      licenseList.toList()
-    )
-  }
-  writeMavenDependenciesJson(pathToMavenDependenciesJson, mavenDependenciesList)
-}
-
-fun askForAlternateLink(
-  licenseList: MutableList<License>,
-  artifactName: String
-): MutableList<License> {
-  val validLinks = mutableListOf<License>()
-  val invalidLinks = mutableListOf<License>()
-  licenseList.forEach {
-    if (it.linkType != LinkType.INVALID) {
-      validLinks.add(it)
-    } else {
-      invalidLinks.add(it)
-    }
-  }
-  if (validLinks.isNotEmpty()) {
-    println(
-      """
-      The $artifactName has following valid license links. 
-      """.trimIndent()
-    )
-    validLinks.forEach {
-      println(it.extractedLink)
-    }
-  }
-  println(
-    """
-      The $artifactName has following invalid license links. 
-    """.trimIndent()
-  )
-  var invalidLinksSize = invalidLinks.size
-  validLinks.forEach {
-    println(it.extractedLink)
-    ++invalidLinksSize
-  }
-  for (i in 0..invalidLinksSize) {
-    println(
-      """Please provide a valid license link (if any).
-      Enter the number of valid links you want to enter:
-      """.trimIndent()
-    )
-    val numberOfNewLicenseLinks = readLine()!!.toInt()
-    for (i in 0 until numberOfNewLicenseLinks) {
-      println("Enter the ${i}th valid link :")
-      val link = readLine().toString()
-      println(
-        """
-      Enter the correct number for the provided link:
-      1 -> If the link can be scraped directly.
-      2 -> If the link can not be scraped directly but license is plain text.
-      3 -> If the link can not be extracted directly.
-      """.trimIndent()
-      )
-      val code = readLine()!!.toInt()
-      check(code in 1..3) { "You entered wrong number." }
-      validLinks.add(
-        License(
-          invalidLinks[i].name,
-          "",
-          link,
-          when (code) {
-            1 -> LinkType.EASY_TO_SCRAPE
-            2 -> LinkType.SCRAPE_FROM_LOCAL_COPY
-            else -> LinkType.DIFFICULT_TO_SCRAPE
-          }
-        )
-      )
-    }
-  }
-  return validLinks
-}
-
-fun askForAlternateLinksWhenNoLicenseIsPresent(artifactName: String): MutableList<License> {
-  println(
-    """Couldn't find any license links for the artifact - $artifactName
-      Please find the correct license links and provide them below.
-      Enter the number of links associated with the above artifact :
-    """.trimIndent()
-  )
-  val numberOfLicenseLinks = readLine()!!.toInt()
-  val licenseLinks = mutableListOf<License>()
-  if (numberOfLicenseLinks == 0) {
-    // No license link found, fail the script in the end.
-    licenseLinks.add(
-      License(
-        "",
-        "",
-        "",
-        LinkType.NOT_AVAILABLE
-      )
-    )
-  } else {
-    for (licenseIndex in 0 until numberOfLicenseLinks) {
-      println("Please provide the name of the ${licenseIndex}th license -")
-      val licenseName = readLine().toString()
-      println("Please provide the name of the ${licenseIndex}th license -")
-      val licenseLink = readLine().toString()
-      println(
-        """
-      Enter the correct number for the provided link:
-      1 -> If the link can be scraped directly.
-      2 -> If the link can not be scraped directly but license is plain text.
-      3 -> If the link can not be extracted directly.
-      """.trimIndent()
-      )
-      val code = readLine()!!.toInt()
-      check(code in 1..3) { "You entered wrong number." }
-      licenseLinks.add(
-        License(
-          licenseName,
-          "",
-          licenseLink,
-          when (code) {
-            1 -> LinkType.EASY_TO_SCRAPE
-            2 -> LinkType.SCRAPE_FROM_LOCAL_COPY
-            else -> LinkType.DIFFICULT_TO_SCRAPE
-          }
-        )
-      )
-    }
-
-  }
-  return licenseLinks
-}
-
-fun isLicenseUnavailable(licenseList: MutableList<License>): Boolean {
-  licenseList.forEach { license ->
-    if (license.linkType == LinkType.INVALID) return true
-  }
-  return false
-}
-
-fun fixEmptyAndInvalidLinkType(
-  pathToMavenDependenciesJson: String,
-  licenseSet: MutableSet<License>,
-  mavenDependenciesList: MutableList<MavenDependency>
-): Boolean {
-  var isAnyLicenseUnavailable = false
-  for (index in mavenDependenciesList.indices) {
-    val dependency = mavenDependenciesList[index]
-    val licenses = dependency.licensesList
-    // If no license is present.
-    var licenseList = mutableListOf<License>()
-    licenseList.addAll(licenses)
-    if (licenses.isEmpty()) {
-      // Handle cases.
-      println("I am here in empty one.")
-      print("my dep name is ${dependency.artifactName}, ${dependency.artifact_version}" +
-        "${dependency.licensesList}")
-      licenseList = askForAlternateLinksWhenNoLicenseIsPresent(dependency.artifactName)
-      if (!isAnyLicenseUnavailable) isAnyLicenseUnavailable = isLicenseUnavailable(licenseList)
-      mavenDependenciesList[index] = MavenDependency(
-        dependency.index,
-        dependency.artifactName,
-        dependency.artifact_version,
-        licenseList.toList()
-      )
-      continue
-    }
-    for (i in licenses.indices) {
-      val linkType = licenses[i].linkType
-      val licenseInSet = licenseSet.find { it.extractedLink == licenses[i].extractedLink }
-      if (linkType == LinkType.INVALID) {
-        // Verify the link and provide the link type in command line.
-          println("I am here.")
-        print("my license name is ${licenses[i].name}")
-        val licenseMutableList = mutableListOf<License>()
-        licenseMutableList.addAll(licenses)
-        licenseList = askForAlternateLink(licenseMutableList, dependency.artifactName)
-        break
-      } else if (licenseInSet != null) {
-        licenseList[i] = licenseInSet
-      }
-    }
-    if (!isAnyLicenseUnavailable) isAnyLicenseUnavailable = isLicenseUnavailable(licenseList)
-    mavenDependenciesList[index] = MavenDependency(
-      dependency.index,
-      dependency.artifactName,
-      dependency.artifact_version,
-      licenseList.toList()
-    )
-  }
-  writeMavenDependenciesJson(pathToMavenDependenciesJson, mavenDependenciesList)
-  return isAnyLicenseUnavailable
-}
-
-fun fixInvalidLinkType() {
-
 }
 
 fun parseArtifactName(artifactName: String): String {
@@ -699,3 +422,285 @@ private data class CommandResult(
   /** The fully-formed command line executed by the application to achieve this result. */
   val command: List<String>,
 )
+
+//fun fixUnspecifiedLinkType(
+//  pathToMavenDependenciesJson: String,
+//  licenseSet: MutableSet<License>,
+//  mavenDependenciesList: MutableList<MavenDependency>
+//) {
+//  for (index in mavenDependenciesList.indices) {
+//    val dependency = mavenDependenciesList[index]
+//    val licenses = dependency.licensesList
+//    val licenseList = mutableListOf<License>()
+//    for (i in licenses.indices) {
+//      var linkType = licenses[i].linkType
+//      var license = licenses[i]
+//      if (linkType == LinkType.UNSPECIFIED) {
+//        // Verify the link and provide the link type in command line.
+//        val licenseInSet = licenseSet.find { it.extractedLink == licenses[i].extractedLink }
+//        if (licenseInSet != null && licenseInSet.linkType != LinkType.UNSPECIFIED) {
+//          license = licenseInSet
+//        } else {
+//          linkType = findIfLinkIsValid(linkType, license)
+//          license = License(
+//            licenses[i].name,
+//            licenses[i].extractedLink,
+//            licenses[i].alternateLink,
+//            linkType
+//          )
+//          if (licenseInSet != null) licenseSet.remove(licenseInSet)
+//          licenseSet.add(license)
+//        }
+//        licenseList.add(license)
+//      } else {
+//        licenseList.add(licenses[i])
+//      }
+//    }
+//    mavenDependenciesList[index] = MavenDependency(
+//      dependency.index,
+//      dependency.artifactName,
+//      dependency.artifact_version,
+//      licenseList.toList()
+//    )
+//  }
+//  writeMavenDependenciesJson(pathToMavenDependenciesJson, mavenDependenciesList)
+//}
+//
+//fun askForAlternateLink(
+//  licenseList: MutableList<License>,
+//  artifactName: String
+//): MutableList<License> {
+//  val validLinks = mutableListOf<License>()
+//  val invalidLinks = mutableListOf<License>()
+//  licenseList.forEach {
+//    if (it.linkType != LinkType.INVALID) {
+//      validLinks.add(it)
+//    } else {
+//      invalidLinks.add(it)
+//    }
+//  }
+//  if (validLinks.isNotEmpty()) {
+//    println(
+//      """
+//      The $artifactName has following valid license links.
+//      """.trimIndent()
+//    )
+//    validLinks.forEach {
+//      println(it.extractedLink)
+//    }
+//  }
+//  println(
+//    """
+//      The $artifactName has following invalid license links.
+//    """.trimIndent()
+//  )
+//  var invalidLinksSize = invalidLinks.size
+//  validLinks.forEach {
+//    println(it.extractedLink)
+//    ++invalidLinksSize
+//  }
+//  for (i in 0..invalidLinksSize) {
+//    println(
+//      """Please provide a valid license link (if any).
+//      Enter the number of valid links you want to enter:
+//      """.trimIndent()
+//    )
+//    val numberOfNewLicenseLinks = readLine()!!.toInt()
+//    for (i in 0 until numberOfNewLicenseLinks) {
+//      println("Enter the ${i}th valid link :")
+//      val link = readLine().toString()
+//      println(
+//        """
+//      Enter the correct number for the provided link:
+//      1 -> If the link can be scraped directly.
+//      2 -> If the link can not be scraped directly but license is plain text.
+//      3 -> If the link can not be extracted directly.
+//      """.trimIndent()
+//      )
+//      val code = readLine()!!.toInt()
+//      check(code in 1..3) { "You entered wrong number." }
+//      validLinks.add(
+//        License(
+//          invalidLinks[i].name,
+//          "",
+//          link,
+//          when (code) {
+//            1 -> LinkType.EASY_TO_SCRAPE
+//            2 -> LinkType.SCRAPE_FROM_LOCAL_COPY
+//            else -> LinkType.DIFFICULT_TO_SCRAPE
+//          }
+//        )
+//      )
+//    }
+//  }
+//  return validLinks
+//}
+
+//fun askForAlternateLinksWhenNoLicenseIsPresent(artifactName: String): MutableList<License> {
+//  println(
+//    """Couldn't find any license links for the artifact - $artifactName
+//      Please find the correct license links and provide them below.
+//      Enter the number of links associated with the above artifact :
+//    """.trimIndent()
+//  )
+//  val numberOfLicenseLinks = readLine()!!.toInt()
+//  val licenseLinks = mutableListOf<License>()
+//  if (numberOfLicenseLinks == 0) {
+//    // No license link found, fail the script in the end.
+//    licenseLinks.add(
+//      License(
+//        "",
+//        "",
+//        "",
+//        LinkType.NOT_AVAILABLE
+//      )
+//    )
+//  } else {
+//    for (licenseIndex in 0 until numberOfLicenseLinks) {
+//      println("Please provide the name of the ${licenseIndex}th license -")
+//      val licenseName = readLine().toString()
+//      println("Please provide the name of the ${licenseIndex}th license -")
+//      val licenseLink = readLine().toString()
+//      println(
+//        """
+//      Enter the correct number for the provided link:
+//      1 -> If the link can be scraped directly.
+//      2 -> If the link can not be scraped directly but license is plain text.
+//      3 -> If the link can not be extracted directly.
+//      """.trimIndent()
+//      )
+//      val code = readLine()!!.toInt()
+//      check(code in 1..3) { "You entered wrong number." }
+//      licenseLinks.add(
+//        License(
+//          licenseName,
+//          "",
+//          licenseLink,
+//          when (code) {
+//            1 -> LinkType.EASY_TO_SCRAPE
+//            2 -> LinkType.SCRAPE_FROM_LOCAL_COPY
+//            else -> LinkType.DIFFICULT_TO_SCRAPE
+//          }
+//        )
+//      )
+//    }
+//
+//  }
+//  return licenseLinks
+//}
+//
+//fun isLicenseUnavailable(licenseList: MutableList<License>): Boolean {
+//  licenseList.forEach { license ->
+//    if (license.linkType == LinkType.INVALID) return true
+//  }
+//  return false
+//}
+//
+//fun fixEmptyAndInvalidLinkType(
+//  pathToMavenDependenciesJson: String,
+//  licenseSet: MutableSet<License>,
+//  mavenDependenciesList: MutableList<MavenDependency>
+//): Boolean {
+//  var isAnyLicenseUnavailable = false
+//  for (index in mavenDependenciesList.indices) {
+//    val dependency = mavenDependenciesList[index]
+//    val licenses = dependency.licensesList
+//    // If no license is present.
+//    var licenseList = mutableListOf<License>()
+//    licenseList.addAll(licenses)
+//    if (licenses.isEmpty()) {
+//      // Handle cases.
+//      println("I am here in empty one.")
+//      print("my dep name is ${dependency.artifactName}, ${dependency.artifact_version}" +
+//        "${dependency.licensesList}")
+//      licenseList = askForAlternateLinksWhenNoLicenseIsPresent(dependency.artifactName)
+//      if (!isAnyLicenseUnavailable) isAnyLicenseUnavailable = isLicenseUnavailable(licenseList)
+//      mavenDependenciesList[index] = MavenDependency(
+//        dependency.index,
+//        dependency.artifactName,
+//        dependency.artifact_version,
+//        licenseList.toList()
+//      )
+//      continue
+//    }
+//    for (i in licenses.indices) {
+//      val linkType = licenses[i].linkType
+//      val licenseInSet = licenseSet.find { it.extractedLink == licenses[i].extractedLink }
+//      if (linkType == LinkType.INVALID) {
+//        // Verify the link and provide the link type in command line.
+//          println("I am here.")
+//        print("my license name is ${licenses[i].name}")
+//        val licenseMutableList = mutableListOf<License>()
+//        licenseMutableList.addAll(licenses)
+//        licenseList = askForAlternateLink(licenseMutableList, dependency.artifactName)
+//        break
+//      } else if (licenseInSet != null) {
+//        licenseList[i] = licenseInSet
+//      }
+//    }
+//    if (!isAnyLicenseUnavailable) isAnyLicenseUnavailable = isLicenseUnavailable(licenseList)
+//    mavenDependenciesList[index] = MavenDependency(
+//      dependency.index,
+//      dependency.artifactName,
+//      dependency.artifact_version,
+//      licenseList.toList()
+//    )
+//  }
+//  writeMavenDependenciesJson(pathToMavenDependenciesJson, mavenDependenciesList)
+//  return isAnyLicenseUnavailable
+//}
+//
+//fun fixInvalidLinkType() {
+//
+//}
+//
+//fun findIfLinkCanBeScrapedDirectly(licenseLinkType: LinkType, license: License): LinkType {
+//  var linkType = licenseLinkType
+//  var number: Int
+//  do {
+//    println(
+//      """
+//      Enter the correct number :
+//      1 -> If the link can be scraped directly.
+//      2 -> If the link can not be scraped directly but license is plain text.
+//      3 -> If the link can not be extracted directly.
+//      """.trimIndent()
+//    )
+//    number = readLine()!!.toInt()
+//    when (number) {
+//      1 -> linkType = LinkType.EASY_TO_SCRAPE
+//      2 -> linkType = LinkType.SCRAPE_FROM_LOCAL_COPY
+//      3 -> linkType = LinkType.DIFFICULT_TO_SCRAPE
+//    }
+//  } while (number !in 1..3)
+//  return linkType
+//}
+//
+//fun findIfLinkIsValid(licenseLinkType: LinkType, license: License): LinkType {
+//  var linkType: LinkType = licenseLinkType
+//  println(
+//    """Please specify the link_type of the below license link :
+//    ${license.extractedLink}
+//    """.trimIndent()
+//  )
+//  var number: Int
+//  var flag = false
+//  do {
+//    println(
+//      """
+//      Enter the correct number :
+//      1 -> If the link is valid.
+//      2 -> If the link is invalid.
+//      """.trimIndent()
+//    )
+//    number = readLine()!!.toInt()
+//    when (number) {
+//      1 -> linkType = findIfLinkCanBeScrapedDirectly(linkType, license)
+//      2 -> linkType = LinkType.INVALID
+//      else -> flag = true
+//    }
+//  } while (flag)
+//  return linkType
+//}
+
+
