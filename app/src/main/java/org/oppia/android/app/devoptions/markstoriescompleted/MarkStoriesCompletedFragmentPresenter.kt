@@ -20,7 +20,6 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkStoriesCompletedViewModel>
 ) : StorySelector {
-
   private lateinit var binding: MarkStoriesCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<StorySummaryViewModel>

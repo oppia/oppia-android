@@ -26,7 +26,6 @@
       android:checked="@{isStoryChecked}"
       android:drawableStart="@android:color/transparent"
       android:drawablePadding="20dp"
-      android:enabled="@{!viewModel.isCompleted}"
       android:fontFamily="sans-serif"
       android:gravity="start|top"
       android:paddingBottom="26dp"
