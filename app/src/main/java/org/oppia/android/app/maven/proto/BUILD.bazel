@@ -10,13 +10,13 @@ load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(
-    name = "maven_dependencies_proto",
+    name = "generate_maven_dependencies_list_proto",
     srcs = ["maven_dependencies.proto"],
     visibility = ["//visibility:public"],
 )
 
 java_lite_proto_library(
-    name = "maven_dependencies_java_proto_lite",
+    name = "generate_maven_dependencies_list_java_proto_lite",
     visibility = ["//visibility:public"],
-    deps = [":maven_dependencies_proto"],
+    deps = [":generate_maven_dependencies_list_proto"],
 )

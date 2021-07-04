@@ -823,10 +823,7 @@ package_group(
     ],
 )
 
-MAVEN_ASSETS = retrieve_maven_assets(
-    "maven_assets",
-    "//scripts/org/oppia/android/scripts/regex/assets",
-)
+MAVEN_ASSETS = retrieve_maven_assets("maven_assets")
 
 kt_jvm_library(
     name = "maven_assets",
@@ -841,10 +838,11 @@ kt_jvm_library(
 #)
 
 kt_jvm_binary(
-    name = "proto_check",
+    name = "generate_maven_deps",
     data = MAVEN_ASSETS,
-    main_class = "org.oppia.android.app.maven.ProtoClassKt",
-    runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:maven_lib"],
+    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesListKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:generate_maven_dependencies_lib"],
 )
 
 dagger_rules()

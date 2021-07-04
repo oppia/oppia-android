@@ -1,27 +1,18 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library", "kt_jvm_test")
 
-kt_jvm_binary(
-    name = "generate_maven_dependencies_list",
-    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesListKt",
-    runtime_deps = [":maven_deps_list"],
-)
+#kt_jvm_binary(
+#    name = "generate_maven_dependencies_list",
+#    main_class = "org.oppia.android.app.maven.GenerateMavenDependenciesListKt",
+#    runtime_deps = [":maven_deps_list"],
+#)
 
 kt_jvm_library(
-    name = "maven_deps_list",
+    name = "maven_dependencies_lib",
     srcs = [
         "GenerateMavenDependenciesList.kt",
-        "LicenseDependency.kt",
-        "MavenDependencies.kt",
-        "MavenDependency.kt",
-        "backup/BackupDependency.kt",
-        "backup/BackupLicense.kt",
-        "license/License.kt",
-        "license/LinkType.kt",
         "maveninstall/MavenListDependencies.kt",
         "maveninstall/MavenListDependency.kt",
         "maveninstall/MavenListDependencyTree.kt",
-        "validatelinks/LicenseLink.kt",
-        "validatelinks/ValidateLicenseLinks.kt",
     ],
     deps = [
         "//third_party:moshi",
@@ -29,10 +20,11 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "maven_lib",
-    srcs = ["ProtoClass.kt"],
+    name = "generate_maven_dependencies_lib",
+    srcs = ["GenerateMavenDependenciesList.kt"],
     visibility = ["//visibility:public"],
     deps = [
-        "//app/src/main/java/org/oppia/android/app/maven/proto:maven_dependencies_java_proto_lite",
+        ":maven_dependencies_lib",
+        "//app/src/main/java/org/oppia/android/app/maven/proto:generate_maven_dependencies_list_java_proto_lite",
     ],
 )

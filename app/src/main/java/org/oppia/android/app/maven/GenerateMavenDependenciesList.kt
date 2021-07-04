@@ -1,19 +1,22 @@
 package org.oppia.android.app.maven
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.oppia.android.app.maven.backup.BackupDependency
-import org.oppia.android.app.maven.backup.BackupLicense
+
 import org.oppia.android.app.maven.maveninstall.MavenListDependency
 import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
+import org.oppia.android.app.maven.proto.MavenDependencyList
+import org.oppia.android.app.maven.proto.MavenDependency
+import org.oppia.android.app.maven.proto.License
+import org.oppia.android.app.maven.proto.PrimaryLinkType
+import org.oppia.android.app.maven.proto.SecondaryLinkType
+import org.oppia.android.app.maven.proto.OriginOfLicense
 import java.io.File
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
-import org.oppia.android.app.maven.license.License
-import org.oppia.android.app.maven.license.LinkType
+
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -22,7 +25,7 @@ private const val LICENSE_TAG = "<license>"
 private const val NAME_TAG = "<name>"
 private const val URL_TAG = "<url>"
 
-var backupLicenseLinksList: MutableSet<BackupLicense> = mutableSetOf<BackupLicense>()
+//var backupLicenseLinksList: MutableSet<BackupLicense> = mutableSetOf<BackupLicense>()
 var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
 
 var bazelQueryDepsNames: MutableList<String> = mutableListOf<String>()
@@ -80,8 +83,8 @@ fun main(args: Array<String>) {
   runMavenRePinCommand(args[0])
   runBazelQueryCommand(args[0])
   readMavenInstall()
-  val latestList = getLicenseLinksFromPOM()
-  readMavenDependenciesJson(args[1], latestList)
+//  val latestList = getLicenseLinksFromPOM()
+//  readMavenDependenciesJson(args[1], latestList)
 //  showFinalDepsList()
 
   println("Number of deps with Invalid URL = $countInvalidPomUrl")
@@ -100,78 +103,62 @@ fun main(args: Array<String>) {
   }
 }
 
-fun readMavenDependenciesJson(
-  pathToMavenDependenciesJson: String,
-  generatedList: ArrayList<MavenDependency>
-) {
-  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
-  val jsonContent = mavenDependenciesJson.inputStream().bufferedReader().use {
-    it.readText()
-  }
-  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-  val adapter = moshi.adapter(MavenDependencies::class.java)
-  val mavenDependencies = adapter.fromJson(jsonContent)
-  val mavenDependenciesList = mavenDependencies?.dependencies
-  val licenseSet = mutableSetOf<License>()
-  var scriptCode: ScriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
-  mavenDependenciesList?.forEach { item ->
-    item.licensesList.forEach { license ->
-      licenseSet.add(license)
-    }
-  }
-  // Decide the behavior of the script.
-  for (dep in generatedList) {
-    var breakLoop = false
-    for (license in dep.licensesList) {
-      val licenseInSet = licenseSet.find { it.extractedLink == license.extractedLink }
-      if (licenseInSet == null || licenseInSet.linkType == LinkType.UNSPECIFIED) {
-        println("hjjj")
-        scriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
-        breakLoop = true
-        break
-      } else if (licenseInSet.linkType == LinkType.INVALID) {
-        println("here")
-        scriptCode = ScriptCode.FIX_INVALID_LINK_TYPE
-      } else if (licenseInSet.linkType == LinkType.NOT_AVAILABLE) {
-        scriptCode = ScriptCode.FIX_UNAVAILABLE_LINK_TYPE
-      }
-    }
-    if (breakLoop) break
-  }
-//
-//  when (scriptCode) {
-//    ScriptCode.FIX_UNSPECIFIED_LINK_TYPE -> fixUnspecifiedLinkType(
-//      pathToMavenDependenciesJson,
-//      licenseSet,
-//      generatedList
-//    )
-//    ScriptCode.FIX_INVALID_LINK_TYPE -> {
-//      val scriptPassed = fixEmptyAndInvalidLinkType(
-//        pathToMavenDependenciesJson,
-//        licenseSet,
-//        generatedList
-//      )
-//      check(scriptPassed) { "Some license links are unavailable. Please contact the team and discuss the alternatives of the dependencies." }
-//    }
-//    ScriptCode.FIX_UNAVAILABLE_LINK_TYPE -> fixInvalidLinkType()
+//fun readMavenDependenciesJson(
+//  pathToMavenDependenciesJson: String,
+//  generatedList: ArrayList<MavenDependency>
+//) {
+//  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
+//  val jsonContent = mavenDependenciesJson.inputStream().bufferedReader().use {
+//    it.readText()
 //  }
-}
+//  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+//  val adapter = moshi.adapter(MavenDependencies::class.java)
+//  val mavenDependencies = adapter.fromJson(jsonContent)
+//  val mavenDependenciesList = mavenDependencies?.dependencies
+//  val licenseSet = mutableSetOf<License>()
+//  var scriptCode: ScriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
+//  mavenDependenciesList?.forEach { item ->
+//    item.licensesList.forEach { license ->
+//      licenseSet.add(license)
+//    }
+//  }
+//  // Decide the behavior of the script.
+////  for (dep in generatedList) {
+////    var breakLoop = false
+////    for (license in dep.licensesList) {
+////      val licenseInSet = licenseSet.find { it.extractedLink == license.extractedLink }
+////      if (licenseInSet == null || licenseInSet.linkType == LinkType.UNSPECIFIED) {
+////        println("hjjj")
+////        scriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
+////        breakLoop = true
+////        break
+////      } else if (licenseInSet.linkType == LinkType.INVALID) {
+////        println("here")
+////        scriptCode = ScriptCode.FIX_INVALID_LINK_TYPE
+////      } else if (licenseInSet.linkType == LinkType.NOT_AVAILABLE) {
+////        scriptCode = ScriptCode.FIX_UNAVAILABLE_LINK_TYPE
+////      }
+////    }
+////    if (breakLoop) break
+////  }
+//
+//}
 
 
-fun writeMavenDependenciesJson(
-  pathToMavenDependenciesJson: String,
-  depsList: MutableList<MavenDependency>
-) {
-  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
-
-  mavenDependenciesJson.printWriter().use { out ->
-    val mavenDependencies = MavenDependencies(depsList)
-    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-    val adapter = moshi.adapter(MavenDependencies::class.java)
-    val json = adapter.indent("  ").toJson(mavenDependencies)
-    out.println(json)
-  }
-}
+//fun writeMavenDependenciesJson(
+//  pathToMavenDependenciesJson: String,
+//  depsList: MutableList<MavenDependency>
+//) {
+//  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
+//
+//  mavenDependenciesJson.printWriter().use { out ->
+//    val mavenDependencies = MavenDependencies(depsList)
+//    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+//    val adapter = moshi.adapter(MavenDependencies::class.java)
+//    val json = adapter.indent("  ").toJson(mavenDependencies)
+//    out.println(json)
+//  }
+//}
 
 fun parseArtifactName(artifactName: String): String {
   var colonIndex = artifactName.length - 1
@@ -300,7 +287,14 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
               }
               licenseNamesFromPom.add(urlName.toString())
               licenseLinksFromPom.add(url.toString())
-              licenseList.add(License(urlName.toString(), url.toString(), "", LinkType.UNSPECIFIED))
+              licenseList.add(
+                License
+                  .newBuilder()
+                  .setLicenseName(urlName.toString())
+                  .setPrimaryLink(url.toString())
+                  .setPrimaryLinkType(PrimaryLinkType.UNKNOWN)
+                  .build()
+              )
               linksSet.add(url.toString())
             } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
               break
@@ -314,17 +308,19 @@ private fun getLicenseLinksFromPOM(): ArrayList<MavenDependency> {
       scriptFailed = true
       println("****************")
       val message = """
-          Error : There was a problem while opening the provided link  - 
+          Error : There was a problem while opening the provided link  -
           URL : $pomFileUrl")
           MavenListDependency Name : $artifactName""".trimIndent()
       printMessage(message)
       e.printStackTrace()
       exitProcess(1)
     }
-    val mavenDependency = MavenDependency(
-      index++,
-      it.coord,
-      artifactVersion.toString(),
+    val mavenDependency = MavenDependency
+      .newBuilder()
+      .setIndex(index++)
+      .setArtifactName(it.coord)
+      .setArtifactVersion(artifactVersion.toString())
+      .setLicenseList
       licenseList
     )
     mavenDependencyList.add(mavenDependency)

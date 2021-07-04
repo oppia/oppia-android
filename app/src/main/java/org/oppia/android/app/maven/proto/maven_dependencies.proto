@@ -5,11 +5,42 @@ package proto;
 option java_package = "org.oppia.android.app.maven.proto";
 option java_multiple_files = true;
 
-message MavenLicense {
-  string license_name = 1;
-  string primary_license_link = 2;
+message MavenDependencyList {
+  repeated MavenDependency maven_dependency_list = 1;
 }
 
-message MavenLicenses {
-  repeated MavenLicense license_list = 1;
+message MavenDependency {
+  int32 index = 1;
+  string artifact_name = 2;
+  string artifact_version = 3;
+  repeated License license = 4;
+  OriginOfLicenses origin_of_license = 5;
+}
+
+message License {
+  string license_name = 1;
+  string primary_link = 2;
+  string secondary_link = 3;
+  PrimaryLinkType primary_link_type = 4;
+  SecondaryLinkType secondary_link_type = 5;
+}
+
+enum PrimaryLinkType {
+  UNSPECIFIED = 0;
+  SCRAPE_DIRECTLY = 1;
+  SCRAPE_FROM_LOCAL_COPY = 2;
+  SHOW_LINK_ONLY = 3;
+  NEEDS_INTERVENTION = 4;
+}
+
+enum SecondaryLinkType {
+  SCRAPE = 0;
+  SHOW_LINK = 1;
+}
+
+enum OriginOfLicenses {
+  UNKNOWN = 0;
+  ENTIRELY_FROM_POM = 1;
+  PARTIALLY_FROM_POM = 2;
+  MANUAL = 3;
 }

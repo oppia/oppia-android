@@ -16,6 +16,11 @@ fun main(args: Array<String>) {
   rep.addLicenseList(license)
   rep.addLicenseList(license2)
   rep.addLicenseList(license3)
+//  val licensem = license {
+//    this.licenseName = "LicenseName"
+//    this.licenseLink = "LicenseLink"
+//  }
+//  println(licensem)
   val lic = rep.build()
 //  rep.addLicenseList(license)
   println(license)
