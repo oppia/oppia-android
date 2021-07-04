@@ -140,7 +140,7 @@ class PlatformParameterControllerTest {
   }
 
   @Test
-  fun testController_updateExistingDatabase_readPlatformParameters_platformParameterMapHasNewValues() { // ktlint-disable max-line-length
+  fun testController_updateExistingDatabase_readPlatformParameters_mapHasNewValues() {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
