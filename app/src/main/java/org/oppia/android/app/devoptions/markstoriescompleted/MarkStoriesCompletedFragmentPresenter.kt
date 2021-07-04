@@ -19,16 +19,18 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkStoriesCompletedViewModel>
-) {
+) : StorySelector {
 
   private lateinit var binding: MarkStoriesCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<StorySummaryViewModel>
+  lateinit var selectedStoryIdList: ArrayList<String>
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    internalProfileId: Int,
+    selectedStoryIdList: ArrayList<String>
   ): View? {
     binding = MarkStoriesCompletedFragmentBinding.inflate(
       inflater,
@@ -45,6 +47,8 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       this.viewModel = getMarkStoriesCompletedViewModel()
     }
 
+    this.selectedStoryIdList = selectedStoryIdList
+
     getMarkStoriesCompletedViewModel().setInternalProfileId(internalProfileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -55,6 +59,18 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       adapter = bindingAdapter
     }
 
+    binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
+      if (isChecked) {
+        getMarkStoriesCompletedViewModel().availableStoryIdList.forEach { storyId ->
+          storySelected(storyId)
+        }
+        binding.markStoriesCompletedAllCheckBox.isEnabled = false
+      } else {
+        binding.markStoriesCompletedAllCheckBox.isEnabled = true
+      }
+      bindingAdapter.notifyDataSetChanged()
+    }
+
     return binding.root
   }
 
@@ -63,12 +79,52 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       .newBuilder<StorySummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkStoriesCompletedStorySummaryViewBinding::inflate,
-        setViewModel = MarkStoriesCompletedStorySummaryViewBinding::setViewModel
+        setViewModel = this::bindStorySummaryView
       )
       .build()
   }
 
+  private fun bindStorySummaryView(
+    binding: MarkStoriesCompletedStorySummaryViewBinding,
+    model: StorySummaryViewModel
+  ) {
+    binding.viewModel = model
+    if (model.isCompleted) {
+      binding.isStoryChecked = true
+      binding.markStoriesCompletedStoryCheckBox.isEnabled = false
+    } else {
+      binding.isStoryChecked = selectedStoryIdList.contains(model.storySummary.storyId)
+      binding.markStoriesCompletedStoryCheckBox.setOnCheckedChangeListener { _, isChecked ->
+        if (isChecked) {
+          storySelected(model.storySummary.storyId)
+        } else {
+          storyUnselected(model.storySummary.storyId)
+        }
+      }
+    }
+  }
+
   private fun getMarkStoriesCompletedViewModel(): MarkStoriesCompletedViewModel {
     return viewModelProvider.getForFragment(fragment, MarkStoriesCompletedViewModel::class.java)
+  }
+
+  override fun storySelected(storyId: String) {
+    if (!selectedStoryIdList.contains(storyId)) {
+      selectedStoryIdList.add(storyId)
+    }
+
+    if (selectedStoryIdList.size == getMarkStoriesCompletedViewModel().availableStoryIdList.size) {
+      binding.isAllChecked = true
+    }
+  }
+
+  override fun storyUnselected(storyId: String) {
+    if (selectedStoryIdList.contains(storyId)) {
+      selectedStoryIdList.remove(storyId)
+    }
+
+    if (selectedStoryIdList.size != getMarkStoriesCompletedViewModel().availableStoryIdList.size) {
+      binding.isAllChecked = false
+    }
   }
 }

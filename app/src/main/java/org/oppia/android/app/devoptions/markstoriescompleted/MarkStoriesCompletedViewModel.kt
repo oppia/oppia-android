@@ -25,6 +25,12 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   /**
+   * List of topic ids used in [MarkStoriesCompletedFragmentPresenter] to check if all stories are
+   * selected or not.
+   */
+  val availableStoryIdList = ArrayList<String>()
+
+  /**
    * List of [StorySummaryViewModel] used to populate recyclerview of [MarkStoriesCompletedFragment]
    * to display stories.
    */
@@ -59,9 +65,11 @@ class MarkStoriesCompletedViewModel @Inject constructor(
 
   private fun processStoryList(storyList: List<StorySummary>): List<StorySummaryViewModel> {
     val itemList = mutableListOf<StorySummaryViewModel>()
+    availableStoryIdList.clear()
     storyList.forEach { storySummary ->
       val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
       itemList.add(StorySummaryViewModel(storySummary, isCompleted))
+      if (!isCompleted) availableStoryIdList.add(storySummary.storyId)
     }
     return itemList
   }
