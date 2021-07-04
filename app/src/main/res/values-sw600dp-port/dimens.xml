@@ -150,7 +150,7 @@
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">128dp</dimen>
   <dimen name="interaction_item_question_view_padding_start">128dp</dimen>
-  <dimen name="interaction_item_question_view_padding_end">128dp</dimen>
+   <dimen name="interaction_item_question_view_padding_end">128dp</dimen>
 
   <!-- DragAndDrop Interaction Item -->
   <dimen name="drag_drop_interaction_item_padding_start">24dp</dimen>
