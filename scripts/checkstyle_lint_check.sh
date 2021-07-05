@@ -14,7 +14,7 @@ else
     jar_file_path="$github_actions_path/oppia-android-tools/checkstyle-8.37-all.jar"
 fi
 
-lint_results=$(java -jar $jar_file_path -c /google_checks.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/ 2>&1)
+lint_results=$(java -jar $jar_file_path -c /google_checks.xml app/src/ data/src/ domain/src/ utility/src/ testing/src/ scripts/src/ 2>&1)
 
 lint_command_result=$?
 

@@ -5,13 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivityPresenter
+import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
-class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopicListener {
+class NavigationDrawerTestActivity :
+  InjectableAppCompatActivity(),
+  RouteToTopicListener,
+  RouteToTopicPlayStoryListener,
+  RouteToRecentlyPlayedListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
@@ -19,7 +26,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
   companion object {
     fun createNavigationDrawerTestActivity(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
   }
@@ -27,7 +34,7 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
+    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
   }
@@ -39,5 +46,25 @@ class NavigationDrawerTestActivity : InjectableAppCompatActivity(), RouteToTopic
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {
     startActivity(TopicActivity.createTopicActivityIntent(this, internalProfileId, topicId))
+  }
+
+  override fun routeToTopicPlayStory(internalProfileId: Int, topicId: String, storyId: String) {
+    startActivity(
+      TopicActivity.createTopicPlayStoryActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId
+      )
+    )
+  }
+
+  override fun routeToRecentlyPlayed() {
+    startActivity(
+      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+        this,
+        internalProfileId
+      )
+    )
   }
 }

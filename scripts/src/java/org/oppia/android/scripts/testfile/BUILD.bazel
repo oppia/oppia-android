@@ -1,0 +1,18 @@
+"""
+Libraries corresponding to TestFile based check to ensure that all the production (all kotlin files)
+files have a corresponding test file present.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "test_file_check_lib",
+    testonly = True,
+    srcs = ["TestFileCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
+        "//scripts/src/java/org/oppia/android/scripts/common:script_exemptions",
+    ],
+)

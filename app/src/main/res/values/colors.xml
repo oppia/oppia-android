@@ -80,6 +80,7 @@
   <color name="appVersionBackground">#E5E5E5</color>
   <color name="navigationGeneralBackground">#E5E5E5</color>
   <color name="highlightedNavMenuItem">#BE563C</color>
+  <color name="highlightedDeveloperOptionsNavMenuItem">#00609C</color>
   <color name="navBarHeaderBackground">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="audioLanguageActivityRadioButton">#00A89F</color>
@@ -168,4 +169,6 @@
   <color name="mergeIconDisabled">#999999</color>
   <!-- HIGHLIGHTED COLORS -->
   <color name="adminHighlighted">#A5D3EC</color>
+  <color name="comingSoonEndColor">#674172</color>
+  <color name="comingSoonStartColor">#7659B6</color>
 </resources>

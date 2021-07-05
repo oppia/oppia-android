@@ -1,0 +1,51 @@
+"""
+Tests corresponding to common libraries that potentially support multiple scripts by performing
+common or generic operations.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "BazelClientTest",
+    srcs = ["BazelClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/mockito",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_mockito_mockito-core",
+    ],
+)
+
+kt_jvm_test(
+    name = "CommandExecutorImplTest",
+    srcs = ["CommandExecutorImplTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "GitClientTest",
+    srcs = ["GitClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "RepositoryFileTest",
+    srcs = ["RepositoryFileTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

@@ -1,0 +1,62 @@
+"""
+Package for common libraries that potentially support multiple scripts by performing common or
+generic operations.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "bazel_client",
+    testonly = True,
+    srcs = [
+        "BazelClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "git_client",
+    testonly = True,
+    srcs = [
+        "GitClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "command_executor",
+    testonly = True,
+    srcs = [
+        "CommandExecutor.kt",
+        "CommandExecutorImpl.kt",
+        "CommandResult.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "repository_file",
+    testonly = True,
+    srcs = ["RepositoryFile.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "result_constants",
+    testonly = True,
+    srcs = ["ScriptResultConstants.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "script_exemptions",
+    testonly = True,
+    srcs = ["ScriptExemptions.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
