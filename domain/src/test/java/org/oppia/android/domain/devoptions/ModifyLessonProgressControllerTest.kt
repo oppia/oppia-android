@@ -1,4 +1,4 @@
-package org.oppia.android.domain.topic
+package org.oppia.android.domain.devoptions
 
 import android.app.Application
 import android.content.Context
@@ -53,6 +53,20 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ModifyLessonProgressControllerTest.TestApplication::class)
 class ModifyLessonProgressControllerTest {
+
+  companion object {
+    private const val TEST_TOPIC_ID_0 = "test_topic_id_0"
+    private const val TEST_TOPIC_ID_1 = "test_topic_id_1"
+    private const val TEST_TOPIC_ID_2 = "test_topic_id_2"
+    private const val FRACTIONS_TOPIC_ID = "GJ2rLXRKD5hw"
+    private const val RATIOS_TOPIC_ID = "omzF4oqgeTXd"
+
+    private const val TEST_STORY_ID_0 = "test_story_id_0"
+    private const val TEST_STORY_ID_2 = "test_story_id_2"
+    private const val FRACTIONS_STORY_ID_0 = "wANbh4oOClga"
+    private const val RATIOS_STORY_ID_0 = "wAMdg4oOClga"
+    private const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
+  }
 
   @Rule
   @JvmField

@@ -1,10 +1,13 @@
-package org.oppia.android.domain.topic
+package org.oppia.android.domain.devoptions
 
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
