@@ -299,6 +299,7 @@ class AdministratorControlsActivityTest {
           targetViewId = R.id.topic_update_on_wifi_constraint_layout
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       onView(
@@ -350,6 +351,7 @@ class AdministratorControlsActivityTest {
           targetViewId = R.id.topic_update_on_wifi_constraint_layout
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
@@ -376,6 +378,7 @@ class AdministratorControlsActivityTest {
           targetViewId = R.id.auto_update_topic_constraint_layout
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
