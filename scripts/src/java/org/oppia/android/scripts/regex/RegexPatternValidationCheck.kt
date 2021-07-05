@@ -200,5 +200,4 @@ private fun logProhibitedContentFailure(
 ) {
   val failureMessage = "$filePath:$lineNumber: $errorToShow"
   println(failureMessage)
-  println()
 }
