@@ -77,10 +77,10 @@ class ModifyLessonProgressControllerTest {
   lateinit var allTopicsResultCaptor: ArgumentCaptor<AsyncResult<List<Topic>>>
 
   @Mock
-  lateinit var mockAllStoriesObserver: Observer<AsyncResult<List<StorySummary>>>
+  lateinit var mockAllStoriesObserver: Observer<AsyncResult<Map<String, List<StorySummary>>>>
 
   @Captor
-  lateinit var allStoriesResultCaptor: ArgumentCaptor<AsyncResult<List<StorySummary>>>
+  lateinit var allStoriesResultCaptor: ArgumentCaptor<AsyncResult<Map<String, List<StorySummary>>>>
 
   private lateinit var profileId: ProfileId
 
@@ -195,7 +195,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_isSuccessful() {
     val allStoriesLiveData =
-      modifyLessonProgressController.getAllStoriesWithProgress(profileId).toLiveData()
+      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
     allStoriesLiveData.observeForever(mockAllStoriesObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
@@ -323,11 +323,11 @@ class ModifyLessonProgressControllerTest {
 
   private fun retrieveAllStories(): List<StorySummary> {
     val allStoriesLiveData =
-      modifyLessonProgressController.getAllStoriesWithProgress(profileId).toLiveData()
+      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
     allStoriesLiveData.observeForever(mockAllStoriesObserver)
     testCoroutineDispatchers.runCurrent()
     verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
-    return allStoriesResultCaptor.value.getOrThrow()
+    return allStoriesResultCaptor.value.getOrThrow().values.flatten()
   }
 
   // TODO(#89): Move this to a common test application component.
