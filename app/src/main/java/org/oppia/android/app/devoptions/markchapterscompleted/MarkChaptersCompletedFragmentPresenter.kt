@@ -60,6 +60,11 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       adapter = bindingAdapter
     }
 
+    binding.markChaptersCompletedAllCheckBoxContainer.setOnClickListener {
+      if (binding.isAllChecked == null || binding.isAllChecked == false)
+        binding.isAllChecked = true
+    }
+
     binding.markChaptersCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         getMarkChaptersCompletedViewModel().itemList.forEach { viewModel ->
@@ -72,9 +77,6 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
               )
           }
         }
-        binding.markChaptersCompletedAllCheckBox.isEnabled = false
-      } else {
-        binding.markChaptersCompletedAllCheckBox.isEnabled = true
       }
       bindingAdapter.notifyDataSetChanged()
     }

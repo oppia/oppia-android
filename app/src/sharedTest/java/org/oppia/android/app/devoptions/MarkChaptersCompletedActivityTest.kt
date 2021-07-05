@@ -58,6 +58,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -108,6 +109,9 @@ class MarkChaptersCompletedActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Before
   fun setUp() {
@@ -348,8 +352,8 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box))
-        .perform(click()).check(matches(isChecked()))
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
     }
   }
 
@@ -359,7 +363,7 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box)).perform(click())
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
     }
@@ -371,7 +375,7 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box)).perform(click())
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
       scrollToPosition(position = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
       scrollToPosition(position = 2)
@@ -399,7 +403,7 @@ class MarkChaptersCompletedActivityTest {
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_all_check_box)).perform(click())
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
