@@ -70,11 +70,17 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.junit.Rule
+import org.oppia.android.testing.OppiaTestRule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SplashTestActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashTestActivityTest {
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -96,14 +102,18 @@ class SplashTestActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
   fun testSplashTestActivity_readEmptyDatabase_checkWelcomeMsgIsInvisibleByDefault() {
     launch(SplashTestActivity::class.java).use {
-      onView(withText(SplashTestActivity.WELCOME_MSG))
-        .inRoot(getToastMatcher())
-        .check(doesNotExist())
+      onView(withText(SplashTestActivity.WELCOME_MSG)).check(doesNotExist())
     }
   }
 
@@ -114,8 +124,8 @@ class SplashTestActivityTest {
 
     launch(SplashTestActivity::class.java).use {
       onView(withText(SplashTestActivity.WELCOME_MSG))
-        .inRoot(getToastMatcher())
-        .check(matches(isDisplayed()))
+          .inRoot(getToastMatcher())
+          .check(matches(isDisplayed()))
     }
   }
 

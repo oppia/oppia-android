@@ -11,7 +11,6 @@ import javax.inject.Qualifier
  */
 
 @Qualifier
-@Target(AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION)
 annotation class SplashScreenWelcomeMsg
 
 val SPLASH_SCREEN_WELCOME_MSG = "splash_screen_welcome_msg"

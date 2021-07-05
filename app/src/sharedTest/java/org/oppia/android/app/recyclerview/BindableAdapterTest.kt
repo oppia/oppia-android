@@ -96,6 +96,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
@@ -715,7 +716,7 @@ class BindableAdapterTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class,
+      RobolectricModule::class, TestModule::class, PlatformParameterModule::class,
       TestDispatcherModule::class, TestApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
