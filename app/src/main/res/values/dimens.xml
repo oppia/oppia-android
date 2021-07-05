@@ -127,7 +127,6 @@
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
-  <dimen name="content_item_exploration_split_view_margin_top">24dp</dimen>
   <dimen name="content_item_exploration_split_view_margin_end">40dp</dimen>
 
   <dimen name="content_item_exploration_split_view_padding_start">12dp</dimen>
@@ -137,7 +136,6 @@
 
   <!-- Content Item: Exploration View -->
   <dimen name="content_item_exploration_view_margin_start">24dp</dimen>
-  <dimen name="content_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="content_item_exploration_view_margin_end">40dp</dimen>
 
   <dimen name="content_item_exploration_view_padding_start">12dp</dimen>
