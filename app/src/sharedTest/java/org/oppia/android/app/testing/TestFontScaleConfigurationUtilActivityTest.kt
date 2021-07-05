@@ -63,6 +63,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [TestFontScaleConfigurationUtilActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -157,6 +158,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

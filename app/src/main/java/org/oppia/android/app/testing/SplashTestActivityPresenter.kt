@@ -13,11 +13,13 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 
 @ActivityScope
 class SplashTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val platformParameterController: PlatformParameterController,
+  @SplashScreenWelcomeMsg private val splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_test_activity)
@@ -28,9 +30,7 @@ class SplashTestActivityPresenter @Inject constructor(
     getPlatformParameterLoadingStatus().observe(
       activity,
       Observer {
-        val splashScreenWelcomeMsgParam = (activity as SplashTestActivity)
-          .splashScreenWelcomeMsgParam
-        showToastIfAllowed(splashScreenWelcomeMsgParam)
+        showToastIfAllowed()
       }
     )
   }
@@ -46,9 +46,7 @@ class SplashTestActivityPresenter @Inject constructor(
     return loadingStatus.isSuccess()
   }
 
-  private fun showToastIfAllowed(
-    splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
-  ) {
+  private fun showToastIfAllowed() {
     if (splashScreenWelcomeMsgParam.get().value) {
       Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
     }

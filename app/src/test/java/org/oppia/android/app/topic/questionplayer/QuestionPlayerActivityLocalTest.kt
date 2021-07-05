@@ -88,6 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /**
  * Tests for [QuestionPlayerActivity] that can only be run locally, e.g. using Robolectric, and not on an
@@ -378,6 +379,7 @@ class QuestionPlayerActivityLocalTest {
   @Component(
     modules = [
       QuestionPlayerActivityLocalTestModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

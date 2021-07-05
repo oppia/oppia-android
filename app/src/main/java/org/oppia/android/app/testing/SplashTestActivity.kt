@@ -12,9 +12,6 @@ class SplashTestActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var splashTestActivityPresenter: SplashTestActivityPresenter
 
-  @SplashScreenWelcomeMsg
-  lateinit var splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
