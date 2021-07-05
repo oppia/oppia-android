@@ -449,7 +449,6 @@
 
 <!--  Help Activity-->
   <string name="menu_help">Help</string>
-  <!--  FAQ (Help Activity)-->
-    <string name="FAQs">FAQs</string>
-    <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
+  <string name="FAQs">FAQs</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
 </resources>
