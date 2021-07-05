@@ -1,6 +1,7 @@
 package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 import org.oppia.android.domain.state.StateDeck
@@ -15,10 +16,16 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
  * instances, but calling code is responsible for ensuring it is properly reset.
  */
 internal class ExplorationProgress {
+  internal lateinit var currentProfileId: ProfileId
+  internal lateinit var currentTopicId: String
+  internal lateinit var currentStoryId: String
   internal lateinit var currentExplorationId: String
   internal lateinit var currentExploration: Exploration
-  internal var playStage = PlayStage.NOT_PLAYING
+
+  internal var isLightweightCheckpointingEnabled: Boolean = false
   internal var checkpointState = ExplorationCheckpointState.UNSAVED
+
+  internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
     StateGraph(currentExploration.statesMap)
   }

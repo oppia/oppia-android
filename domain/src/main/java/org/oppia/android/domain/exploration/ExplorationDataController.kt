@@ -44,9 +44,21 @@ class ExplorationDataController @Inject constructor(
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded. The exploration may still
    *     fail to load, but this provides early-failure detection.
    */
-  fun startPlayingExploration(explorationId: String): LiveData<AsyncResult<Any?>> {
+  fun startPlayingExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
+  ): LiveData<AsyncResult<Any?>> {
     return try {
-      explorationProgressController.beginExplorationAsync(explorationId)
+      explorationProgressController.beginExplorationAsync(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        isCheckpointingEnabled
+      )
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)

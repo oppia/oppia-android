@@ -218,7 +218,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private fun playExploration(topicId: String, storyId: String, explorationId: String) {
     explorationDataController.startPlayingExploration(
-      explorationId
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      isCheckpointingEnabled = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

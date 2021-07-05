@@ -33,7 +33,11 @@ class StoryChapterSummaryViewModel(
   fun onExplorationClicked() {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
-      explorationId
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      isCheckpointingEnabled = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

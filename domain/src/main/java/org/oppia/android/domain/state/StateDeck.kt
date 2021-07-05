@@ -38,7 +38,7 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     stateIndex = 0
-    revealedHintIndex = -1
+    revealedHintIndex = -1 // the value -1 indicates that no hint has been revealed yet.
     solutionIsRevealed = false
   }
 
@@ -206,6 +206,7 @@ internal class StateDeck internal constructor(
       .setHintIndex(revealedHintIndex)
       .setSolutionIsRevealed(solutionIsRevealed)
       .addAllPendingUserAnswers(currentDialogInteractions)
+      .setStateIndex(stateIndex)
       .setExplorationVersion(explorationVersion)
       .setExplorationTitle(explorationTitle)
       .setTimestampOfFirstCheckpoint(timestamp)

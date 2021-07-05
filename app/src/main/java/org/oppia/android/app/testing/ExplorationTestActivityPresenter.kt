@@ -40,7 +40,11 @@ class ExplorationTestActivityPresenter @Inject constructor(
   private fun playExplorationButton() {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
-      EXPLORATION_ID
+      INTERNAL_PROFILE_ID,
+      TOPIC_ID,
+      STORY_ID,
+      EXPLORATION_ID,
+      isCheckpointingEnabled = false
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->
