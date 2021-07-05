@@ -84,7 +84,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private val isCheckpointingEnabled: Boolean = false
+  private var isCheckpointingEnabled: Boolean = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -100,12 +100,14 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    this.isCheckpointingEnabled = isCheckpointingEnabled
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -559,7 +561,8 @@ class StateFragmentPresenter @Inject constructor(
             oppiaClock.getCurrentTimeMs(),
             newCheckpointState
           )
-        } else if (it.isFailure())
+        } else if (it.isFailure()) {
+          // new checkpointState will be UNSAVED if the checkpoint was not saved.
           explorationProgressController.processSaveCheckpointResult(
             profileId,
             topicId,
@@ -568,6 +571,7 @@ class StateFragmentPresenter @Inject constructor(
             oppiaClock.getCurrentTimeMs(),
             newCheckpointState = ExplorationCheckpointState.UNSAVED
           )
+        }
       }
     )
   }

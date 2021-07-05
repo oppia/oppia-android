@@ -82,7 +82,8 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId
+      explorationId,
+      isCheckpointingEnabled = false
     )
   }
 

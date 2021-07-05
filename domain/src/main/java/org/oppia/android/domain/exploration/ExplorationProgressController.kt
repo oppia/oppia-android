@@ -1,6 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnswerOutcome
@@ -413,7 +412,7 @@ class ExplorationProgressController @Inject constructor(
   /**
    *  Creates an [ExplorationCheckpoint] and then saves it using [ExplorationCheckpointController].
    *
-   *  @return a [DataProvider] that indicates the result of the save operation.
+   *  @return a [DataProvider] that indicates the success/failure of the save operation.
    */
   fun saveExplorationCheckpoint(profileId: ProfileId): DataProvider<Any?> {
     lateinit var checkpoint: ExplorationCheckpoint
@@ -601,10 +600,4 @@ class ExplorationProgressController @Inject constructor(
       lastPlayedTimestamp
     )
   }
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  fun getCurrentCheckpointState(): ExplorationCheckpointState =
-    explorationProgressLock.withLock {
-      explorationProgress.checkpointState
-    }
 }

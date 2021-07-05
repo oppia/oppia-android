@@ -1470,12 +1470,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointState_checkCheckpointStateIsInitiallyUnsaved() {
-    assertThat(explorationProgressController.getCurrentCheckpointState())
-      .isEqualTo(ExplorationCheckpointState.UNSAVED)
-  }
-
-  @Test
   fun testFinishExplosionWithCheckpointing_progressSaved_databaseLimitNotExceeded_isSuccessful() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)

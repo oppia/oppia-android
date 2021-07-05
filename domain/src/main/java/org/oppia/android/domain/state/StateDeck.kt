@@ -182,7 +182,8 @@ internal class StateDeck internal constructor(
       .build()
   }
 
-  /** @return an [ExplorationCheckpoint] which contains all the latest values of variables of
+  /**
+   * @return an [ExplorationCheckpoint] which contains all the latest values of variables of
    *          the [StateDeck] that are used in light weight checkpointing.
    */
   internal fun createExplorationCheckpoint(
