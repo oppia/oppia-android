@@ -23,27 +23,28 @@ class AdministratorControlsDownloadPermissionsViewModel(
   val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
-  fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {
-    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked)
-      .toLiveData()
-      .observe(
-        fragment,
-        Observer {
-          if (it.isFailure()) {
-            oppiaLogger.e(
-              "AdministratorControlsFragment",
-              "Failed to update topic update on wifi permission",
-              it.getErrorOrNull()!!
-            )
-          }
+  fun onTopicWifiUpdatePermissionChanged() {
+    profileManagementController.updateWifiPermissionDeviceSettings(
+      userProfileId,
+      !isTopicWifiUpdatePermission.get()!!
+    ).toLiveData().observe(
+      fragment,
+      Observer {
+        if (it.isFailure()) {
+          oppiaLogger.e(
+            "AdministratorControlsFragment",
+            "Failed to update topic update on wifi permission",
+            it.getErrorOrNull()!!
+          )
         }
-      )
+      }
+    )
   }
 
-  fun onTopicAutoUpdatePermissionChanged(checked: Boolean) {
+  fun onTopicAutoUpdatePermissionChanged() {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
-      checked
+      !isTopicAutoUpdatePermission.get()!!
     ).toLiveData().observe(
       fragment,
       Observer {
