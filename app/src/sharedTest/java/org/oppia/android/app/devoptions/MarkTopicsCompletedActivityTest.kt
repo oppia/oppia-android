@@ -194,17 +194,6 @@ class MarkTopicsCompletedActivityTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedActivity_selectAll_unselect_isNotChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box))
-        .perform(click()).perform(click()).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
   fun testMarkTopicsCompletedActivity_selectTopics_topicsAreChecked() {
     launch<MarkTopicsCompletedActivity>(
       createMarkTopicsCompletedActivityIntent(internalProfileId)

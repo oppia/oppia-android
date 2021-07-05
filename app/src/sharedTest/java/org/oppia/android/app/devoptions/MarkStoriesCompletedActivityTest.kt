@@ -210,19 +210,6 @@ class MarkStoriesCompletedActivityTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedActivity_selectAll_unselect_isNotChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box))
-        .perform(click()).perform(click()).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
   fun testMarkStoriesCompletedActivity_selectStories_storiesAreChecked() {
     launch<MarkStoriesCompletedActivity>(
       createMarkStoriesCompletedActivityIntent(

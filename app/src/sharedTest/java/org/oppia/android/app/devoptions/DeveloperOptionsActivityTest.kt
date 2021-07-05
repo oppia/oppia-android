@@ -29,6 +29,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -59,6 +60,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -179,6 +181,36 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
+  fun testDeveloperOptionsFragment_configChange_modifyLessonProgressIsDisplayed() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 0)
+      verifyItemDisplayedOnDeveloperOptionsListItem(
+        itemPosition = 0,
+        targetView = R.id.modify_lesson_progress_text_view
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.mark_chapters_completed_text_view,
+        stringIdToMatch = R.string.developer_options_mark_chapters_completed
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.mark_stories_completed_text_view,
+        stringIdToMatch = R.string.developer_options_mark_stories_completed
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.mark_topics_completed_text_view,
+        stringIdToMatch = R.string.developer_options_mark_topics_completed
+      )
+    }
+  }
+
+  @Test
   fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
@@ -198,11 +230,61 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
+  fun testDeveloperOptionsFragment_configChange_viewLogsIsDisplayed() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      verifyItemDisplayedOnDeveloperOptionsListItem(
+        itemPosition = 1,
+        targetView = R.id.view_logs_text_view
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.event_logs_text_view,
+        stringIdToMatch = R.string.developer_options_event_logs
+      )
+    }
+  }
+
+  @Test
   fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      verifyItemDisplayedOnDeveloperOptionsListItem(
+        itemPosition = 2,
+        targetView = R.id.override_app_behaviors_text_view
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.show_all_hints_solution_text_view,
+        stringIdToMatch = R.string.developer_options_show_all_hints_solution
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.force_network_type_text_view,
+        stringIdToMatch = R.string.developer_options_force_network_type
+      )
+      verifyTextOnDeveloperOptionsListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.force_crash_text_view,
+        stringIdToMatch = R.string.developer_options_force_crash
+      )
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_changeConfig_overrideAppBehaviorsIsDisplayed() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 2,
@@ -258,11 +340,37 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
+  fun testDeveloperOptionsFragment_configChange_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() { // ktlint-disable max-line-length
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_chapters_completed_text_view)).perform(click())
+      intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testDeveloperOptionsFragment_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_stories_completed_text_view)).perform(click())
+      intended(hasComponent(MarkStoriesCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_configChange_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() { // ktlint-disable max-line-length
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
       onView(withId(R.id.mark_stories_completed_text_view)).perform(click())
       intended(hasComponent(MarkStoriesCompletedActivity::class.java.name))
@@ -282,10 +390,37 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
+  fun testDeveloperOptionsFragment_configChange_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() { // ktlint-disable max-line-length
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 0)
+      onView(withId(R.id.mark_topics_completed_text_view)).perform(click())
+      intended(hasComponent(MarkTopicsCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
+        .perform(click())
+      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_configChange_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
