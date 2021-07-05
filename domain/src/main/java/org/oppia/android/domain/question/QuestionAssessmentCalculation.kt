@@ -2,6 +2,7 @@ package org.oppia.android.domain.question
 
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.UserAssessmentPerformance
+import java.util.Collections
 import javax.inject.Inject
 
 /**
@@ -14,6 +15,11 @@ internal class QuestionAssessmentCalculation private constructor(
   private val wrongAnswerPenalty: Int,
   private val maxScorePerQuestion: Int,
   private val internalScoreMultiplyFactor: Int,
+  private val maxMasteryGainPerQuestion: Int,
+  private val maxMasteryLossPerQuestion: Int,
+  private val viewHintPenaltyForMastery: Int,
+  private val wrongAnswerPenaltyForMastery: Int,
+  private val internalMasteryMultiplyFactor: Int,
   private val questionSessionMetrics: List<QuestionSessionMetrics>,
   private val skillIdList: List<String>
 ) {
@@ -22,7 +28,7 @@ internal class QuestionAssessmentCalculation private constructor(
     return UserAssessmentPerformance.newBuilder().apply {
       totalFractionScore = computeTotalScore()
       putAllFractionScorePerSkillMapping(computeScoresPerSkill())
-      // TODO(#3067): Set up finalMasteryPerSkillMapping
+      putAllMasteryPerSkillMapping(computeMasteryPerSkill())
     }.build()
   }
 
@@ -59,6 +65,36 @@ internal class QuestionAssessmentCalculation private constructor(
       }.build()
     }
 
+  private fun computeMasteryPerSkill(): Map<String, Double> =
+    questionSessionMetrics.flatMap { questionMetric ->
+      // Convert to List<Pair<String, QuestionSessionMetrics>>>.
+      questionMetric.question.linkedSkillIdsList.filter { skillId ->
+        skillIdList.contains(skillId)
+      }.map { skillId -> skillId to questionMetric }
+    }.groupBy(
+      // Covert to Map<String, List<QuestionSessionMetrics>> for each linked skill ID.
+      { (skillId, _) -> skillId },
+      valueTransform = { (_, questionMetric) -> questionMetric }
+    ).mapValues { (skillId, questionMetrics) ->
+      // Compute the mastery change per question, converting type to Map<String, List<Int>>.
+      questionMetrics.map { it.computeMasteryChangeForSkill(skillId) }
+    }.mapValues { (_, masteryChanges) ->
+      // Convert to Map<String, Double> for each linked skill ID.
+      masteryChanges.sum().toDouble() / internalMasteryMultiplyFactor
+    }
+
+  private fun QuestionSessionMetrics.computeMasteryChangeForSkill(skillId: String): Int =
+    if (!didViewSolution) {
+      val hintsPenalty = numberOfHintsUsed * viewHintPenaltyForMastery
+      val wrongAnswersPenalty =
+        Collections.frequency(taggedMisconceptionSkillIds, skillId) * wrongAnswerPenaltyForMastery +
+          (getAdjustedWrongAnswerCount() - taggedMisconceptionSkillIds.size).coerceAtLeast(0) *
+          wrongAnswerPenaltyForMastery
+      (maxMasteryGainPerQuestion - hintsPenalty - wrongAnswersPenalty).coerceAtLeast(
+        maxMasteryLossPerQuestion
+      )
+    } else maxMasteryLossPerQuestion
+
   private fun QuestionSessionMetrics.computeQuestionScore(): Int = if (!didViewSolution) {
     val hintsPenalty = numberOfHintsUsed * viewHintPenalty
     val wrongAnswerPenalty = getAdjustedWrongAnswerCount() * wrongAnswerPenalty
@@ -73,7 +109,12 @@ internal class QuestionAssessmentCalculation private constructor(
     @ViewHintScorePenalty private val viewHintPenalty: Int,
     @WrongAnswerScorePenalty private val wrongAnswerPenalty: Int,
     @MaxScorePerQuestion private val maxScorePerQuestion: Int,
-    @InternalScoreMultiplyFactor private val internalScoreMultiplyFactor: Int
+    @InternalScoreMultiplyFactor private val internalScoreMultiplyFactor: Int,
+    @MaxMasteryGainPerQuestion private val maxMasteryGainPerQuestion: Int,
+    @MaxMasteryLossPerQuestion private val maxMasteryLossPerQuestion: Int,
+    @ViewHintMasteryPenalty private val viewHintMasteryPenalty: Int,
+    @WrongAnswerMasteryPenalty private val wrongAnswerMasteryPenalty: Int,
+    @InternalMasteryMultiplyFactor private val internalMasteryMultiplyFactor: Int
   ) {
     /**
      * Creates a new [QuestionAssessmentCalculation] with its state set up.
@@ -91,6 +132,11 @@ internal class QuestionAssessmentCalculation private constructor(
         wrongAnswerPenalty,
         maxScorePerQuestion,
         internalScoreMultiplyFactor,
+        maxMasteryGainPerQuestion,
+        maxMasteryLossPerQuestion,
+        viewHintMasteryPenalty,
+        wrongAnswerMasteryPenalty,
+        internalMasteryMultiplyFactor,
         questionSessionMetrics,
         skillIdList
       )

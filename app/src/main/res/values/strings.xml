@@ -9,6 +9,7 @@
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
@@ -62,6 +63,7 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
+  <string name="developer_options_activity_title">Developer Options</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
@@ -75,7 +77,7 @@
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="numeric_input_hint">Enter a number.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
@@ -349,6 +351,10 @@
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
+  <string name="reading_text_size_small">Small</string>
+  <string name="reading_text_size_medium">Medium</string>
+  <string name="reading_text_size_large">Large</string>
+  <string name="reading_text_size_extra_large">Extra Large</string>
   <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
@@ -387,10 +393,12 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
-  <string name="link_to_item_below">Link to item below</string>
-  <string name="unlink_items">Unlink Items</string>
-  <string name="move_item_down">Move Item Down</string>
-  <string name="move_item_up">Move Item Up</string>
+  <string name="link_to_item_below">Link to item %d</string>
+  <string name="unlink_items">Unlink items at %d</string>
+  <string name="move_item_down_content_description">Move item down to %d</string>
+  <string name="move_item_up_content_description">Move item up to %d</string>
+  <string name="up_button_disabled">Up</string>
+  <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
@@ -437,4 +445,8 @@
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
   <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="correct_submitted_answer">Correct submitted answer</string>
+  <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
+  <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
 </resources>

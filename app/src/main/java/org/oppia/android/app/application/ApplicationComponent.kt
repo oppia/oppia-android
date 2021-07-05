@@ -5,6 +5,8 @@ import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -68,6 +70,7 @@ import javax.inject.Singleton
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {
