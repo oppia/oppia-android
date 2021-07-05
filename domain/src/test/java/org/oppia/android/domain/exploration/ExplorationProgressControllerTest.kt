@@ -1484,7 +1484,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExplorationAsyncWithCheckpointing_databaseLimitExceeded_isFailureWithException() {
+  fun testCheckCheckpointStateToExitExploration_databaseLimitExceeded_isFailureWithException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
@@ -1498,10 +1498,11 @@ class ExplorationProgressControllerTest {
       explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
     processSaveCheckpointResult(saveCheckpointLiveData)
     testCoroutineDispatchers.runCurrent()
-    val finishExplorationWithCheckpointingLiveData =
+
+    val checkCheckpointStateToExitExploration =
       explorationProgressController.checkCheckpointStateToExitExploration()
 
-    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+    verifyOperationFails(checkCheckpointStateToExitExploration)
 
     assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
       ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
@@ -1509,7 +1510,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExplorationAsyncWithCheckpointing_unsavedProgress_isFailureWithException() {
+  fun testCheckCheckpointStateToExitExploration_unsavedProgress_isFailureWithException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
@@ -1517,10 +1518,10 @@ class ExplorationProgressControllerTest {
     // Every exploration is marked as unsaved until a save operation changes the checkpoint state to
     // some other state.
 
-    val finishExplorationWithCheckpointingLiveData =
+    val checkpointStateToExitExplorationLiveData =
       explorationProgressController.checkCheckpointStateToExitExploration()
 
-    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+    verifyOperationFails(checkpointStateToExitExplorationLiveData)
 
     assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
       ExplorationProgressController.ProgressNotSavedException::class.java
