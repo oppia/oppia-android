@@ -10,6 +10,8 @@ import javax.inject.Inject
 
 /** Fragment to display all chapters and provide functionality to mark them completed. */
 class MarkChaptersCompletedFragment : InjectableFragment() {
+  @Inject
+  lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   companion object {
     internal const val MARK_CHAPTERS_COMPLETED_FRAGMENT_PROFILE_ID_KEY =
@@ -27,9 +29,6 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
       return markChaptersCompletedFragment
     }
   }
-
-  @Inject
-  lateinit var markChaptersCompletedFragmentPresenter: MarkChaptersCompletedFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

@@ -14,17 +14,17 @@ class DeveloperOptionsModifyLessonProgressViewModel(
   private val routeToMarkTopicsCompletedListener: RouteToMarkTopicsCompletedListener
 ) : DeveloperOptionsItemViewModel() {
 
-  /** Called when the 'mark chapters completed' button is clicked by the user. */
+  /** Routes user to [MarkChaptersCompletedActivity] screen for modifying the progress of chapters. */
   fun onMarkChaptersCompletedClicked() {
     routeToMarkChaptersCompletedListener.routeToMarkChaptersCompleted()
   }
 
-  /** Called when the 'mark stories completed' button is clicked by the user. */
+  /** Routes user to [MarkStoriesCompletedActivity] screen for modifying the progress of stories. */
   fun onMarkStoriesCompletedClicked() {
     routeToMarkStoriesCompletedListener.routeToMarkStoriesCompleted()
   }
 
-  /** Called when the 'mark topics completed' button is clicked by the user. */
+  /** Routes user to [MarkTopicsCompletedActivity] screen for modifying the progress of topics. */
   fun onMarkTopicsCompletedClicked() {
     routeToMarkTopicsCompletedListener.routeToMarkTopicsCompleted()
   }

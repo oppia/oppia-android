@@ -10,6 +10,9 @@ import javax.inject.Inject
 
 /** Fragment to display all topics and provide functionality to mark them completed. */
 class MarkTopicsCompletedFragment : InjectableFragment() {
+  @Inject
+  lateinit var markTopicsCompletedFragmentPresenter: MarkTopicsCompletedFragmentPresenter
+
   companion object {
     internal const val MARK_TOPICS_COMPLETED_FRAGMENT_PROFILE_ID_KEY =
       "MarkTopicsCompletedFragment.internal_profile_id"
@@ -25,9 +28,6 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
       return markTopicsCompletedFragment
     }
   }
-
-  @Inject
-  lateinit var markTopicsCompletedFragmentPresenter: MarkTopicsCompletedFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

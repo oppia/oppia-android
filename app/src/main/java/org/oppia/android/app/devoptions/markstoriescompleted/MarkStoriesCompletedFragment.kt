@@ -10,6 +10,9 @@ import javax.inject.Inject
 
 /** Fragment to display all stories and provide functionality to mark them completed. */
 class MarkStoriesCompletedFragment : InjectableFragment() {
+  @Inject
+  lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
+
   companion object {
     internal const val MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_KEY =
       "MarkStoriesCompletedFragment.internal_profile_id"
@@ -25,9 +28,6 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
       return markStoriesCompletedFragment
     }
   }
-
-  @Inject
-  lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
