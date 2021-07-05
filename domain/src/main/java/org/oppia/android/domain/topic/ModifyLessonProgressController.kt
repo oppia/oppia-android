@@ -50,19 +50,22 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Fetches a list of stories given a profile ID.
+   * Fetches a list of stories mapped to their corresponding topic ids given a profile ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
-   * @return a [DataProvider] for [List] of [StorySummary] combined with [StoryProgress].
+   * @return a [DataProvider] for [Map] of topic id mapped to list of [StorySummary] combined
+   * with [StoryProgress].
    */
-  fun getAllStoriesWithProgress(profileId: ProfileId): DataProvider<List<StorySummary>> {
+  fun getStoryMapWithProgress(
+    profileId: ProfileId
+  ): DataProvider<Map<String, List<StorySummary>>> {
     return getAllTopicsWithProgress(profileId)
       .transformAsync(GET_ALL_STORIES_PROVIDER_ID) { listOfTopics ->
-        val storyList = mutableListOf<StorySummary>()
+        val storyMap = linkedMapOf<String, List<StorySummary>>()
         listOfTopics.forEach { topic ->
-          storyList.addAll(topic.storyList)
+          storyMap[topic.topicId] = topic.storyList
         }
-        AsyncResult.success(storyList.toList())
+        AsyncResult.success(storyMap.toMap())
       }
   }
 

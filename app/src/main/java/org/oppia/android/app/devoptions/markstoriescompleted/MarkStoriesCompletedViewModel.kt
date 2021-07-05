@@ -25,51 +25,54 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   private var internalProfileId: Int = -1
 
   /**
-   * List of topic ids used in [MarkStoriesCompletedFragmentPresenter] to check if all stories are
-   * selected or not.
+   * List of [StorySummaryViewModel] used in [MarkStoriesCompletedFragmentPresenter] to check if
+   * all stories are selected or not.
    */
-  val availableStoryIdList = ArrayList<String>()
+  val itemList = mutableListOf<StorySummaryViewModel>()
 
   /**
    * List of [StorySummaryViewModel] used to populate recyclerview of [MarkStoriesCompletedFragment]
    * to display stories.
    */
   val storySummaryLiveData: LiveData<List<StorySummaryViewModel>> by lazy {
-    Transformations.map(storyListLiveData, ::processStoryList)
+    Transformations.map(storyMapLiveData, ::processStoryMap)
   }
 
-  private val storyListLiveData: LiveData<List<StorySummary>> by lazy { getStoryList() }
+  private val storyMapLiveData: LiveData<Map<String, List<StorySummary>>> by lazy { getStoryMap() }
 
-  private val storyListResultLiveData: LiveData<AsyncResult<List<StorySummary>>> by lazy {
-    modifyLessonProgressController
-      .getAllStoriesWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-      .toLiveData()
+  private val storyMapResultLiveData:
+    LiveData<AsyncResult<Map<String, List<StorySummary>>>> by lazy {
+      modifyLessonProgressController
+        .getStoryMapWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .toLiveData()
+    }
+
+  private fun getStoryMap(): LiveData<Map<String, List<StorySummary>>> {
+    return Transformations.map(storyMapResultLiveData, ::processStoryMapResult)
   }
 
-  private fun getStoryList(): LiveData<List<StorySummary>> {
-    return Transformations.map(storyListResultLiveData, ::processStoryListResult)
-  }
-
-  private fun processStoryListResult(
-    storyList: AsyncResult<List<StorySummary>>
-  ): List<StorySummary> {
-    if (storyList.isFailure()) {
+  private fun processStoryMapResult(
+    storyMap: AsyncResult<Map<String, List<StorySummary>>>
+  ): Map<String, List<StorySummary>> {
+    if (storyMap.isFailure()) {
       oppiaLogger.e(
         "MarkStoriesCompletedFragment",
         "Failed to retrieve storyList",
-        storyList.getErrorOrNull()!!
+        storyMap.getErrorOrNull()!!
       )
     }
-    return storyList.getOrDefault(mutableListOf())
+    return storyMap.getOrDefault(mapOf())
   }
 
-  private fun processStoryList(storyList: List<StorySummary>): List<StorySummaryViewModel> {
-    val itemList = mutableListOf<StorySummaryViewModel>()
-    availableStoryIdList.clear()
-    storyList.forEach { storySummary ->
-      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
-      itemList.add(StorySummaryViewModel(storySummary, isCompleted))
-      if (!isCompleted) availableStoryIdList.add(storySummary.storyId)
+  private fun processStoryMap(
+    storyMap: Map<String, List<StorySummary>>
+  ): List<StorySummaryViewModel> {
+    itemList.clear()
+    storyMap.forEach {
+      it.value.forEach { storySummary ->
+        val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+        itemList.add(StorySummaryViewModel(storySummary, isCompleted, topicId = it.key))
+      }
     }
     return itemList
   }

@@ -23,9 +23,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 ) : ChapterSelector {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private lateinit var bindingAdapter: BindableAdapter<StorySummaryViewModel>
+  private lateinit var bindingAdapter: BindableAdapter<MarkChaptersCompletedItemViewModel>
   lateinit var selectedExplorationIdList: ArrayList<String>
-  private lateinit var availableExplorationIdList: ArrayList<String>
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -55,7 +54,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     bindingAdapter = createRecyclerViewAdapter()
-    binding.markChaptersCompletedStorySummaryRecyclerView.apply {
+    binding.markChaptersCompletedRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
     }
@@ -63,32 +62,26 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<StorySummaryViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<StorySummaryViewModel>()
-      .registerViewDataBinderWithSameModelType(
+  private fun createRecyclerViewAdapter(): BindableAdapter<MarkChaptersCompletedItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
+        when (viewModel) {
+          is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
+          is ChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
+          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_STORY,
         inflateDataBinding = MarkChaptersCompletedStorySummaryViewBinding::inflate,
-        setViewModel = this::bindMarkChaptersCompletedStorySummary
+        setViewModel = MarkChaptersCompletedStorySummaryViewBinding::setViewModel,
+        transformViewModel = { it as StorySummaryViewModel }
       )
-      .build()
-  }
-
-  private fun bindMarkChaptersCompletedStorySummary(
-    binding: MarkChaptersCompletedStorySummaryViewBinding,
-    storySummaryViewModel: StorySummaryViewModel
-  ) {
-    availableExplorationIdList = storySummaryViewModel.availableExplorationIdList
-    binding.viewModel = storySummaryViewModel
-    binding.markChaptersCompletedChapterSummaryRecyclerView.adapter =
-      createChapterRecyclerViewAdapter()
-  }
-
-  private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<ChapterSummaryViewModel>()
-      .registerViewDataBinderWithSameModelType(
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_CHAPTER,
         inflateDataBinding = MarkChaptersCompletedChapterSummaryViewBinding::inflate,
-        setViewModel = this::bindChapterSummaryView
+        setViewModel = this::bindChapterSummaryView,
+        transformViewModel = { it as ChapterSummaryViewModel }
       )
       .build()
   }
@@ -98,17 +91,28 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     model: ChapterSummaryViewModel
   ) {
     binding.viewModel = model
-    if (model.isCompleted) {
+    if (model.checkIfChapterIsCompleted()) {
       binding.isChapterChecked = true
       binding.isChapterCheckboxEnabled = false
     } else {
       binding.isChapterChecked =
         selectedExplorationIdList.contains(model.chapterSummary.explorationId)
+
+      binding.isChapterCheckboxEnabled = !model.chapterSummary.hasMissingPrerequisiteChapter() ||
+        model.chapterSummary.hasMissingPrerequisiteChapter() &&
+        selectedExplorationIdList.contains(
+          model.chapterSummary.missingPrerequisiteChapter.explorationId
+        )
+
       binding.markChaptersCompletedChapterCheckBox.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked) {
-          chapterSelected(model.index, model.chapterSummary.explorationId)
+          chapterSelected(
+            model.chapterIndex,
+            model.nextStoryIndex,
+            model.chapterSummary.explorationId
+          )
         } else {
-          chapterUnselected(model.index, model.chapterSummary.explorationId)
+          chapterUnselected(model.chapterIndex, model.nextStoryIndex)
         }
       }
     }
@@ -118,11 +122,28 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, MarkChaptersCompletedViewModel::class.java)
   }
 
-  override fun chapterSelected(index: Int, explorationId: String) {
-    TODO("Not yet implemented")
+  override fun chapterSelected(chapterIndex: Int, nextStoryIndex: Int, explorationId: String) {
+    if (!selectedExplorationIdList.contains(explorationId)) {
+      selectedExplorationIdList.add(explorationId)
+    }
+    if (chapterIndex + 1 < nextStoryIndex)
+      bindingAdapter.notifyItemChanged(chapterIndex + 1)
   }
 
-  override fun chapterUnselected(index: Int, explorationId: String) {
-    TODO("Not yet implemented")
+  override fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
+    for (index in chapterIndex until nextStoryIndex) {
+      val explorationId =
+        (getMarkChaptersCompletedViewModel().itemList[index] as ChapterSummaryViewModel)
+          .chapterSummary.explorationId
+      if (selectedExplorationIdList.contains(explorationId)) {
+        selectedExplorationIdList.remove(explorationId)
+      }
+    }
+    bindingAdapter.notifyItemRangeChanged(chapterIndex, nextStoryIndex - chapterIndex)
+  }
+
+  private enum class ViewType {
+    VIEW_TYPE_STORY,
+    VIEW_TYPE_CHAPTER
   }
 }

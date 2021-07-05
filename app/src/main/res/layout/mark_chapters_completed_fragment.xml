@@ -93,7 +93,7 @@
       app:layout_constraintTop_toBottomOf="@id/mark_chapters_completed_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mark_chapters_completed_story_summary_recycler_view"
+        android:id="@+id/mark_chapters_completed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/profileEditBackground"

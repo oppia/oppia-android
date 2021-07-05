@@ -60,8 +60,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkStoriesCompletedViewModel().availableStoryIdList.forEach { storyId ->
-          storySelected(storyId)
+        getMarkStoriesCompletedViewModel().itemList.forEach { storySummaryViewModel ->
+          if (!storySummaryViewModel.isCompleted)
+            storySelected(storySummaryViewModel.storySummary.storyId)
         }
         binding.markStoriesCompletedAllCheckBox.isEnabled = false
       } else {
@@ -112,7 +113,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       selectedStoryIdList.add(storyId)
     }
 
-    if (selectedStoryIdList.size == getMarkStoriesCompletedViewModel().availableStoryIdList.size) {
+    if (selectedStoryIdList.size ==
+      getMarkStoriesCompletedViewModel().itemList.count { !it.isCompleted }
+    ) {
       binding.isAllChecked = true
     }
   }
@@ -122,7 +125,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       selectedStoryIdList.remove(storyId)
     }
 
-    if (selectedStoryIdList.size != getMarkStoriesCompletedViewModel().availableStoryIdList.size) {
+    if (selectedStoryIdList.size !=
+      getMarkStoriesCompletedViewModel().itemList.count { !it.isCompleted }
+    ) {
       binding.isAllChecked = false
     }
   }

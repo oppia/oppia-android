@@ -11,7 +11,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp">
 
     <TextView
       android:id="@+id/mark_chapters_completed_story_name_text_view"
@@ -22,23 +23,10 @@
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.storySummary.storyName}"
+      android:text="@{viewModel.storyName}"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/mark_chapters_completed_chapter_summary_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
-      android:layout_marginBottom="8dp"
-      android:paddingVertical="10dp"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/mark_chapters_completed_story_name_text_view"
-      app:list="@{viewModel.chapterSummaryItemList}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
