@@ -57,7 +57,7 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
-  // TODO(): Update the saving mechanism for checkpoints once internal locking of this controller
+  // TODO(): Update the saving mechanism for checkpoints once internal locking of this controller is
   //  updated.
 
   /** Indicates that the checkpoint database has exceeded the allocated limit.. */
@@ -112,7 +112,7 @@ class ExplorationProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure depending upon the checkpoint
    *         state. Failure result is returned with an appropriate exception.
    */
-  internal fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
+  fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
     return explorationProgressLock.withLock {
       when (explorationProgress.checkpointState) {
         ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
