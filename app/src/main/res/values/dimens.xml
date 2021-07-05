@@ -283,8 +283,7 @@
   <dimen name="interaction_item_question_view_margin_end">32dp</dimen>
   <dimen name="interaction_item_question_view_padding_start">32dp</dimen>
   <dimen name="interaction_item_question_view_padding_end">32dp</dimen>
-
-
+  
   <!-- Interaction Item: Exploration/Question Split View -->
   <dimen name="interaction_item_split_view_margin_start">32dp</dimen>
   <dimen name="interaction_item_split_view_margin_top">24dp</dimen>
@@ -382,6 +381,14 @@
   <!-- Replay Button: Question View -->
   <dimen name="replay_button_item_question_view_margin_top">44dp</dimen>
 
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">16dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">124dp</dimen>
+  
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">24dp</dimen>
   <dimen name="faq_single_padding_top">22dp</dimen>

@@ -206,6 +206,14 @@
   <dimen name="general_button_item_question_view_padding_start">60dp</dimen>
   <dimen name="general_button_item_question_view_padding_end">60dp</dimen>
 
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">16dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">124dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">72dp</dimen>
   <dimen name="faq_single_padding_top">28dp</dimen>
