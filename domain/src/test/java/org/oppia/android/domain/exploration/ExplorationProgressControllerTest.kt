@@ -11,6 +11,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.FileNotFoundException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -82,9 +85,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.FileNotFoundException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -1470,12 +1470,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointState_checkCheckpointStateIsInitiallyUnsaved() {
-    assertThat(explorationProgressController.getCurrentCheckpointState())
-      .isEqualTo(ExplorationCheckpointState.UNSAVED)
-  }
-
-  @Test
   fun testFinishExplosionWithCheckpointing_progressSaved_databaseLimitNotExceeded_isSuccessful() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)
@@ -1490,7 +1484,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExplorationAsyncWithCheckpointing_databaseLimitExceeded_isFailureWithException() {
+  fun testCheckCheckpointStateToExitExploration_databaseLimitExceeded_isFailureWithException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
@@ -1504,10 +1498,11 @@ class ExplorationProgressControllerTest {
       explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
     processSaveCheckpointResult(saveCheckpointLiveData)
     testCoroutineDispatchers.runCurrent()
-    val finishExplorationWithCheckpointingLiveData =
+
+    val checkCheckpointStateToExitExploration =
       explorationProgressController.checkCheckpointStateToExitExploration()
 
-    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+    verifyOperationFails(checkCheckpointStateToExitExploration)
 
     assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
       ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
@@ -1515,7 +1510,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExplorationAsyncWithCheckpointing_unsavedProgress_isFailureWithException() {
+  fun testCheckCheckpointStateToExitExploration_unsavedProgress_isFailureWithException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
@@ -1523,10 +1518,10 @@ class ExplorationProgressControllerTest {
     // Every exploration is marked as unsaved until a save operation changes the checkpoint state to
     // some other state.
 
-    val finishExplorationWithCheckpointingLiveData =
+    val checkpointStateToExitExplorationLiveData =
       explorationProgressController.checkCheckpointStateToExitExploration()
 
-    verifyOperationFails(finishExplorationWithCheckpointingLiveData)
+    verifyOperationFails(checkpointStateToExitExplorationLiveData)
 
     assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
       ExplorationProgressController.ProgressNotSavedException::class.java

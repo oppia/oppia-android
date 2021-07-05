@@ -16,6 +16,7 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
@@ -28,6 +29,7 @@ const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 /** The starting point for exploration. */
 class ExplorationActivity :
   InjectableAppCompatActivity(),
+  StopStatePlayingSessionListener,
   StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
@@ -108,6 +110,10 @@ class ExplorationActivity :
 
   override fun onBackPressed() {
     explorationActivityPresenter.backButtonPressed()
+  }
+
+  override fun stopSession() {
+    explorationActivityPresenter.stopExploration()
   }
 
   override fun deleteCurrentProgressAndStopSession() {
