@@ -16,7 +16,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -51,6 +53,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -70,9 +73,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
-import org.junit.Rule
-import org.oppia.android.testing.OppiaTestRule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -124,8 +124,8 @@ class SplashTestActivityTest {
 
     launch(SplashTestActivity::class.java).use {
       onView(withText(SplashTestActivity.WELCOME_MSG))
-          .inRoot(getToastMatcher())
-          .check(matches(isDisplayed()))
+        .inRoot(getToastMatcher())
+        .check(matches(isDisplayed()))
     }
   }
 
