@@ -517,30 +517,32 @@ class ExplorationProgressController @Inject constructor(
     lastPlayedTimestamp: Long,
     newCheckpointState: ExplorationCheckpointState
   ) {
-    if (explorationProgress.checkpointState != newCheckpointState) {
-      if (
-        explorationProgress.checkpointState != ExplorationCheckpointState.UNSAVED &&
-        newCheckpointState == ExplorationCheckpointState.UNSAVED
-      )
-        markExplorationAsInProgressNotSaved(
-          profileId,
-          topicId,
-          storyId,
-          explorationId,
-          lastPlayedTimestamp
+    explorationProgressLock.withLock {
+      if (explorationProgress.checkpointState != newCheckpointState) {
+        if (
+          explorationProgress.checkpointState != ExplorationCheckpointState.UNSAVED &&
+          newCheckpointState == ExplorationCheckpointState.UNSAVED
         )
-      else if (
-        explorationProgress.checkpointState == ExplorationCheckpointState.UNSAVED &&
-        newCheckpointState != ExplorationCheckpointState.UNSAVED
-      )
-        markExplorationAsInProgressSaved(
-          profileId,
-          topicId,
-          storyId,
-          explorationId,
-          lastPlayedTimestamp
+          markExplorationAsInProgressNotSaved(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            lastPlayedTimestamp
+          )
+        else if (
+          explorationProgress.checkpointState == ExplorationCheckpointState.UNSAVED &&
+          newCheckpointState != ExplorationCheckpointState.UNSAVED
         )
-      explorationProgress.updateCheckpointState(newCheckpointState)
+          markExplorationAsInProgressSaved(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            lastPlayedTimestamp
+          )
+        explorationProgress.updateCheckpointState(newCheckpointState)
+      }
     }
   }
 
