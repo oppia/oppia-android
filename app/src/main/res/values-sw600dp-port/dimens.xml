@@ -3,6 +3,8 @@
   <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_outer_margin">120dp</dimen>
+  <dimen name="home_welcome_outer_padding">120dp</dimen>
+  <dimen name="home_welcome_text_view_margin_end">8dp</dimen>
   <dimen name="home_inner_margin">60dp</dimen>
   <dimen name="recently_played_margin_max">120dp</dimen>
   <dimen name="recently_played_margin_min">60dp</dimen>
@@ -140,11 +142,26 @@
   <dimen name="interaction_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_end">112dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_start">144dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_end">112dp</dimen>
 
   <!-- Interaction Item: Question View -->
   <dimen name="interaction_item_question_view_margin_start">128dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">128dp</dimen>
+  <dimen name="interaction_item_question_view_padding_start">128dp</dimen>
+   <dimen name="interaction_item_question_view_padding_end">128dp</dimen>
+
+  <!-- DragAndDrop Interaction Item -->
+  <dimen name="drag_drop_interaction_item_padding_start">24dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_top">16dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_end">24dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_bottom">16dp</dimen>
+
+  <dimen name="drag_drop_interaction_item_recycler_view_margin_top">0dp</dimen>
+
+  <dimen name="drag_drop_interaction_items_margin_top">8dp</dimen>
+  <dimen name="drag_drop_interaction_items_margin_bottom">8dp</dimen>
 
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">24dp</dimen>
@@ -198,6 +215,8 @@
   <!-- General Button: Exploration View -->
   <dimen name="general_button_item_exploration_view_margin_start">108dp</dimen>
   <dimen name="general_button_item_exploration_view_margin_end">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_start">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_end">108dp</dimen>
 
   <!-- General Button: Question Split View -->
   <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
@@ -206,6 +225,8 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">124dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_start">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_end">124dp</dimen>
 
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">64dp</dimen>

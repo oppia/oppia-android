@@ -49,11 +49,41 @@
           android:orientation="vertical" />
 
         <LinearLayout
-          android:id="@+id/administrator_controls_linear_layout"
+          android:id="@+id/developer_options_linear_layout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="bottom"
           android:layout_marginTop="16dp"
+          android:orientation="horizontal"
+          android:paddingStart="24dp"
+          android:paddingTop="16dp"
+          android:paddingEnd="24dp"
+          android:paddingBottom="16dp"
+          android:visibility="@{footerViewModel.isDebugMode ? View.VISIBLE : View.GONE}">
+
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_baseline_code_24"
+            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"/>
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/developer_options"
+            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"
+            android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/administrator_controls_linear_layout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
           android:layout_marginBottom="36dp"
           android:orientation="horizontal"
           android:paddingStart="24dp"
