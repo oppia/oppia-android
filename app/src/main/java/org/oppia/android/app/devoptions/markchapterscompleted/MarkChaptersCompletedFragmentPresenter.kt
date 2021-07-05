@@ -60,6 +60,25 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       adapter = bindingAdapter
     }
 
+    binding.markChaptersCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
+      if (isChecked) {
+        getMarkChaptersCompletedViewModel().itemList.forEach { viewModel ->
+          if (viewModel is ChapterSummaryViewModel) {
+            if (!viewModel.checkIfChapterIsCompleted())
+              chapterSelected(
+                viewModel.chapterIndex,
+                viewModel.nextStoryIndex,
+                viewModel.chapterSummary.explorationId
+              )
+          }
+        }
+        binding.markChaptersCompletedAllCheckBox.isEnabled = false
+      } else {
+        binding.markChaptersCompletedAllCheckBox.isEnabled = true
+      }
+      bindingAdapter.notifyDataSetChanged()
+    }
+
     return binding.root
   }
 
@@ -127,6 +146,13 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     if (!selectedExplorationIdList.contains(explorationId)) {
       selectedExplorationIdList.add(explorationId)
     }
+    if (selectedExplorationIdList.size ==
+      getMarkChaptersCompletedViewModel().itemList.count {
+        it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
+      }
+    ) {
+      binding.isAllChecked = true
+    }
     if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
       binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
     ) {
@@ -143,6 +169,13 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       if (selectedExplorationIdList.contains(explorationId)) {
         selectedExplorationIdList.remove(explorationId)
       }
+    }
+    if (selectedExplorationIdList.size !=
+      getMarkChaptersCompletedViewModel().itemList.count {
+        it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
+      }
+    ) {
+      binding.isAllChecked = false
     }
     if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
       binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE

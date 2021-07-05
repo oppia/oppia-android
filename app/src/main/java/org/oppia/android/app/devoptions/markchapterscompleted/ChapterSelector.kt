@@ -5,6 +5,9 @@ interface ChapterSelector {
   /** This chapter will get added to selectedTopicList in [MarkChaptersCompletedFragmentPresenter]. */
   fun chapterSelected(chapterIndex: Int, nextStoryIndex: Int, explorationId: String)
 
-  /** This chapter will get removed from selectedTopicList in [MarkChaptersCompletedFragmentPresenter]. */
+  /**
+   * Chapters from 'chapterIndex' until 'nextStoryIndex' will get removed from selectedTopicList in
+   * [MarkChaptersCompletedFragmentPresenter].
+   */
   fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int)
 }
