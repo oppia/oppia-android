@@ -58,15 +58,17 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
       adapter = bindingAdapter
     }
 
+    binding.markStoriesCompletedAllCheckBoxContainer.setOnClickListener {
+      if (binding.isAllChecked == null || binding.isAllChecked == false)
+        binding.isAllChecked = true
+    }
+
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         getMarkStoriesCompletedViewModel().itemList.forEach { storySummaryViewModel ->
           if (!storySummaryViewModel.isCompleted)
             storySelected(storySummaryViewModel.storySummary.storyId)
         }
-        binding.markStoriesCompletedAllCheckBox.isEnabled = false
-      } else {
-        binding.markStoriesCompletedAllCheckBox.isEnabled = true
       }
       bindingAdapter.notifyDataSetChanged()
     }

@@ -58,14 +58,16 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       adapter = bindingAdapter
     }
 
+    binding.markTopicsCompletedAllCheckBoxContainer.setOnClickListener {
+      if (binding.isAllChecked == null || binding.isAllChecked == false)
+        binding.isAllChecked = true
+    }
+
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         getMarkTopicsCompletedViewModel().availableTopicIdList.forEach { topicId ->
           topicSelected(topicId)
         }
-        binding.markTopicsCompletedAllCheckBox.isEnabled = false
-      } else {
-        binding.markTopicsCompletedAllCheckBox.isEnabled = true
       }
       bindingAdapter.notifyDataSetChanged()
     }

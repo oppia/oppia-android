@@ -56,6 +56,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -97,6 +98,9 @@ class MarkTopicsCompletedActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Before
   fun setUp() {
@@ -188,8 +192,8 @@ class MarkTopicsCompletedActivityTest {
       createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box))
-        .perform(click()).check(matches(isChecked()))
+      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
+      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
     }
   }
 

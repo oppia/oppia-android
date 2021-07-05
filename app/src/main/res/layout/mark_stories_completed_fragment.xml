@@ -45,30 +45,43 @@
         android:layout_height="wrap_content"
         android:background="@color/oppiaPrimaryDark">
 
-        <TextView
-          android:id="@+id/mark_stories_completed_all_text_view"
-          style="@style/Heading5"
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/mark_stories_completed_all_check_box_container"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="20dp"
-          android:text="@string/all"
-          android:textColor="@color/white"
-          app:layout_constraintBottom_toTopOf="@id/mark_stories_completed_all_check_box"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-
-        <CheckBox
-          android:id="@+id/mark_stories_completed_all_check_box"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:button="@drawable/selector_checkbox"
-          android:checked="@{isAllChecked}"
-          android:paddingBottom="10dp"
-          app:buttonTint="@color/white"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_all_text_view" />
+          app:layout_constraintTop_toTopOf="parent">
+
+          <TextView
+            android:id="@+id/mark_stories_completed_all_text_view"
+            style="@style/Heading5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/all"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/mark_stories_completed_all_check_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <CheckBox
+            android:id="@+id/mark_stories_completed_all_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:button="@drawable/selector_checkbox"
+            android:checked="@{isAllChecked}"
+            android:clickable="false"
+            android:focusable="false"
+            android:paddingBottom="10dp"
+            app:buttonTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_all_text_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
           android:id="@+id/mark_stories_completed_mark_completed_text_view"
