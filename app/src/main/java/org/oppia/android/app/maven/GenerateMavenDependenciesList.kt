@@ -1,9 +1,11 @@
 package org.oppia.android.app.maven
 
 
+import com.google.protobuf.MessageLite
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.File
+import java.io.FileInputStream
 
 import org.oppia.android.app.maven.maveninstall.MavenListDependency
 import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
@@ -86,11 +88,11 @@ fun main(args: Array<String>) {
   runMavenRePinCommand(args[0])
   runBazelQueryCommand(args[0])
   readMavenInstall()
+//  println(retrieveMavenDependencyList())
   val latestList = getLicenseLinksFromPOM()
   println(latestList)
-  writeTextProto(args[1], latestList)
-//  readMavenDependenciesJson(args[1], latestList)
-//  showFinalDepsList()
+//  writeTextProto(args[1], latestList)
+
 
 //  proto.Test.TestMessage.newBuilder()
 
@@ -110,62 +112,41 @@ fun main(args: Array<String>) {
   }
 }
 
-//fun readMavenDependenciesJson(
-//  pathToMavenDependenciesJson: String,
-//  generatedList: ArrayList<MavenDependency>
-//) {
-//  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
-//  val jsonContent = mavenDependenciesJson.inputStream().bufferedReader().use {
-//    it.readText()
-//  }
-//  val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-//  val adapter = moshi.adapter(MavenDependencies::class.java)
-//  val mavenDependencies = adapter.fromJson(jsonContent)
-//  val mavenDependenciesList = mavenDependencies?.dependencies
-//  val licenseSet = mutableSetOf<License>()
-//  var scriptCode: ScriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
-//  mavenDependenciesList?.forEach { item ->
-//    item.licensesList.forEach { license ->
-//      licenseSet.add(license)
-//    }
-//  }
-//  // Decide the behavior of the script.
-////  for (dep in generatedList) {
-////    var breakLoop = false
-////    for (license in dep.licensesList) {
-////      val licenseInSet = licenseSet.find { it.extractedLink == license.extractedLink }
-////      if (licenseInSet == null || licenseInSet.linkType == LinkType.UNSPECIFIED) {
-////        println("hjjj")
-////        scriptCode = ScriptCode.FIX_UNSPECIFIED_LINK_TYPE
-////        breakLoop = true
-////        break
-////      } else if (licenseInSet.linkType == LinkType.INVALID) {
-////        println("here")
-////        scriptCode = ScriptCode.FIX_INVALID_LINK_TYPE
-////      } else if (licenseInSet.linkType == LinkType.NOT_AVAILABLE) {
-////        scriptCode = ScriptCode.FIX_UNAVAILABLE_LINK_TYPE
-////      }
-////    }
-////    if (breakLoop) break
-////  }
-//
-//}
+
+/**
+ * Retrieves all file content checks.
+ *
+ * @return a list of all the FileContentChecks
+ */
+private fun retrieveMavenDependencyList(): List<MavenDependency> {
+  return getProto(
+    "maven_dependencies.pb",
+    MavenDependencyList.getDefaultInstance()
+  ).mavenDependencyListList.toList()
+}
+
+/**
+ * Helper function to parse the textproto file to a proto class.
+ *
+ * @param textProtoFileName name of the textproto file to be parsed
+ * @param proto instance of the proto class
+ * @return proto class from the parsed textproto file
+ */
+private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
+  val protoBinaryFile = File("app/assets/$textProtoFileName")
+  val builder = proto.newBuilderForType()
+
+  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+  // and this method is bounded by the generic type T.
+  @Suppress("UNCHECKED_CAST")
+  val protoObj: T =
+    FileInputStream(protoBinaryFile).use {
+      builder.mergeFrom(it)
+    }.build() as T
+  return protoObj
+}
 
 
-//fun writeMavenDependenciesJson(
-//  pathToMavenDependenciesJson: String,
-//  depsList: MutableList<MavenDependency>
-//) {
-//  val mavenDependenciesJson = File(pathToMavenDependenciesJson)
-//
-//  mavenDependenciesJson.printWriter().use { out ->
-//    val mavenDependencies = MavenDependencies(depsList)
-//    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-//    val adapter = moshi.adapter(MavenDependencies::class.java)
-//    val json = adapter.indent("  ").toJson(mavenDependencies)
-//    out.println(json)
-//  }
-//}
 
 fun parseArtifactName(artifactName: String): String {
   var colonIndex = artifactName.length - 1
@@ -299,7 +280,7 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
                   .newBuilder()
                   .setLicenseName(urlName.toString())
                   .setPrimaryLink(url.toString())
-                  .setPrimaryLinkType(PrimaryLinkType.SCRAPE_DIRECTLY)
+                  .setPrimaryLinkTypeValue(PrimaryLinkType.SCRAPE_DIRECTLY_VALUE)
                   .build()
               )
               linksSet.add(url.toString())
@@ -328,7 +309,7 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
       .setArtifactName(it.coord)
       .setArtifactVersion(artifactVersion.toString())
       .addAllLicense(licenseList)
-      .setOriginOfLicense(OriginOfLicenses.ENTIRELY_FROM_POM)
+      .setOriginOfLicenseValue(OriginOfLicenses.ENTIRELY_FROM_POM_VALUE)
 
     mavenDependencyList.add(mavenDependency.build())
   }
@@ -340,10 +321,16 @@ fun writeTextProto(
   pathToTextProto: String,
   mavenDependencyList: MavenDependencyList
 ) {
-  val path = Path(pathToTextProto)
-  path.outputStream().use {
-    mavenDependencyList.writeTo(it)
+  val path = File(pathToTextProto)
+  val list = mavenDependencyList.toString()
+//  val md = MavenDependencyList.p
+//  mavenDependencyList.toByteString()
+  path.printWriter().use { out ->
+    out.println(list)
   }
+//  path.outputStream().use {
+//    mavenDependencyList.toString().writeTo(it)
+//  }
 }
 
 fun runMavenRePinCommand(rootPath: String) {
