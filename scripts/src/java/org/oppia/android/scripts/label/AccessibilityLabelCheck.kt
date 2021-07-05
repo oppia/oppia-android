@@ -55,7 +55,7 @@ fun main(vararg args: String) {
 }
 
 /**
- * Checks whether a activity element has a missing label.
+ * Checks whether an activity element has a missing label.
  *
  * @param activityNode instance of Node
  * @return label is present or not
