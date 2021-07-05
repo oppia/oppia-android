@@ -222,7 +222,7 @@
   <dimen name="faq_item_header_margin_bottom">8dp</dimen>
 
   <!-- General Bottom Padding -->
-  <dimen name="general_screen_padding_bottom">108dp</dimen>
+  <dimen name="general_screen_padding_bottom">128dp</dimen>
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">108dp</dimen>
