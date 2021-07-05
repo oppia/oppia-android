@@ -845,4 +845,11 @@ kt_jvm_binary(
     runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:generate_maven_dependencies_list_lib"],
 )
 
+kt_jvm_binary(
+    name = "second_script",
+    main_class = "org.oppia.android.app.maven.SecondScriptKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:second_script_lib"],
+)
+
 dagger_rules()
