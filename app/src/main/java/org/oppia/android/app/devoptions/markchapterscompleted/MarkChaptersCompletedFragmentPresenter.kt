@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -126,8 +127,12 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     if (!selectedExplorationIdList.contains(explorationId)) {
       selectedExplorationIdList.add(explorationId)
     }
-    if (chapterIndex + 1 < nextStoryIndex)
-      bindingAdapter.notifyItemChanged(chapterIndex + 1)
+    if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
+      binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
+    ) {
+      if (chapterIndex + 1 < nextStoryIndex)
+        bindingAdapter.notifyItemChanged(chapterIndex + 1)
+    }
   }
 
   override fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
@@ -139,7 +144,14 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
         selectedExplorationIdList.remove(explorationId)
       }
     }
-    bindingAdapter.notifyItemRangeChanged(chapterIndex, nextStoryIndex - chapterIndex)
+    if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
+      binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
+    ) {
+      bindingAdapter.notifyItemRangeChanged(
+        chapterIndex,
+        /*itemCount = */nextStoryIndex - chapterIndex
+      )
+    }
   }
 
   private enum class ViewType {
