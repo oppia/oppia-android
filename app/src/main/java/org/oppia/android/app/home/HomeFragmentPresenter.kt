@@ -78,7 +78,7 @@ class HomeFragmentPresenter @Inject constructor(
         else spanCount
       }
     }
-    binding.homeRecyclerView.addItemDecoration(GridSpacingItemDecoration(activity));
+    binding.homeRecyclerView.addItemDecoration(GridSpacingItemDecoration(activity))
 
     binding.homeRecyclerView.apply {
       adapter = homeAdapter

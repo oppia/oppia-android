@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeFragmentPresenter
 
+/** An [RecyclerView.ItemDecoration] that adds spacing between cells in a
+ * [GridLayoutManager].
+ * Reference: https://stackoverflow.com/a/30701422/4500099
+ */
 class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
   private var orientation = -1
   private var spanCount = -1
@@ -45,8 +49,8 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
     val viewType = parent.adapter!!.getItemViewType(position)
 
     if (viewType == HomeFragmentPresenter.ViewType.TOPIC_LIST.ordinal) {
-//
-      /* INVALID SPAN */if (spanCount < 1) return
+
+      if (spanCount < 1) return
 
       if (spanCount == 2) {
         outRect.right = halfSpacing
@@ -55,7 +59,7 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
 
       if (spanCount == 4) {
         outRect.left =
-          (spacing ) - spanIndex * (spacing ) / spanCount // spacing - column * ((1f / spanCount) * spacing)
+          (spacing) - spanIndex * (spacing) / spanCount // spacing - column * ((1f / spanCount) * spacing)
         outRect.right =
           (spanIndex + 1) * (spacing) / spanCount // (column + 1) * ((1f / spanCount) * spacing)
       } else {
@@ -81,7 +85,7 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
         outRect.right = tmp
       }
 
-      if (spanIndex < spanCount) { // top edge
+      if (spanIndex < spanCount) {
         outRect.top = halfSpacing
       }
       outRect.bottom = halfSpacing
@@ -89,33 +93,33 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
   }
 
   private fun getTotalSpan(parent: RecyclerView): Int {
-    val mgr = parent.layoutManager
-    if (mgr is GridLayoutManager) {
-      return mgr.spanCount
+    val layoutManager = parent.layoutManager
+    if (layoutManager is GridLayoutManager) {
+      return layoutManager.spanCount
     }
     return -1
   }
 
   private fun getItemSpanSize(parent: RecyclerView, childIndex: Int): Int {
-    val mgr = parent.layoutManager
-    if (mgr is GridLayoutManager) {
-      return mgr.spanSizeLookup.getSpanSize(childIndex)
+    val layoutManager = parent.layoutManager
+    if (layoutManager is GridLayoutManager) {
+      return layoutManager.spanSizeLookup.getSpanSize(childIndex)
     }
     return -1
   }
 
   private fun getItemSpanIndex(parent: RecyclerView, childIndex: Int): Int {
-    val mgr = parent.layoutManager
-    if (mgr is GridLayoutManager) {
-      return mgr.spanSizeLookup.getSpanIndex(childIndex, spanCount)
+    val layoutManager = parent.layoutManager
+    if (layoutManager is GridLayoutManager) {
+      return layoutManager.spanSizeLookup.getSpanIndex(childIndex, spanCount)
     }
     return -1
   }
 
   private fun getOrientation(parent: RecyclerView): Int {
-    val mgr = parent.layoutManager
-    if (mgr is GridLayoutManager) {
-      return mgr.orientation
+    val gridLayoutManager = parent.layoutManager
+    if (gridLayoutManager is GridLayoutManager) {
+      return gridLayoutManager.orientation
     }
     return VERTICAL
   }
