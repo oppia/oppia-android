@@ -15,6 +15,7 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import javax.inject.Inject
 import javax.inject.Provider
 
+/** The presenter for [SplashTestActivity]. */
 @ActivityScope
 class SplashTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -27,7 +28,7 @@ class SplashTestActivityPresenter @Inject constructor(
     loadPlatformParameters()
   }
 
-  fun loadPlatformParameters() {
+  private fun loadPlatformParameters() {
     getPlatformParameterLoadingStatus().observe(
       activity,
       Observer {

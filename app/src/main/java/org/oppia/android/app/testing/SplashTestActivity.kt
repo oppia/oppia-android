@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** This is a dummy activity to test the injection of Platform Parameters. */
 class SplashTestActivity : InjectableAppCompatActivity() {
 
   @Inject

@@ -49,14 +49,14 @@ class SplashActivityPresenter @Inject constructor(
     activity.finish()
   }
 
-  fun loadPlatformParameters() {
+  private fun loadPlatformParameters() {
     getParameterLoadingStatus().observe(
       activity,
       Observer { loadSuccessful ->
         if (!loadSuccessful) {
           oppiaLogger.w(
             "SplashActivity",
-            "Default PlatformParameters will be used",
+            "Failed to load platform parameters, defaults will be used instead.",
           )
         }
         subscribeToOnboardingFlow()
