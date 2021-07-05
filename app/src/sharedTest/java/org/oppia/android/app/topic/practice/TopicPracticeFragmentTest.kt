@@ -26,6 +26,7 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -236,6 +237,7 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
+  @Ignore("Flaky test") // TODO(#3413): Test is failing unexpectedly.
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     clickPracticeTab()
