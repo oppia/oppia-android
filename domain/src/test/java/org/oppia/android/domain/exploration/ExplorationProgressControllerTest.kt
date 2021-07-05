@@ -2025,7 +2025,6 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
 
-    // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     verify(
       mockCurrentStateLiveDataObserver,
       atLeastOnce()
@@ -2076,6 +2075,77 @@ class ExplorationProgressControllerTest {
       profileId,
       TEST_EXPLORATION_ID_2,
       isSolutionRevealed = true
+    )
+  }
+
+  @Test
+  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val checkpointStateLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+
+    // checkpointStateLiveData returns a failed result with the exception
+    // ProgressNotSavedException when checkpointState is SAVED_DATABASE_EXCEEDED_LIMIT.
+    verifyOperationFails(checkpointStateLiveData)
+
+    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.ProgressNotSavedException::class.java
+    )
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val checkpointStateLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+
+    // checkCheckpointStateToExitExploration returns a success result when checkpointState is
+    // SAVED_DATABASE_NOT_EXCEEDED_LIMIT.
+    verifyOperationSucceeds(checkpointStateLiveData)
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_databaseFull_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    val checkpointStateLiveData =
+      explorationProgressController.checkCheckpointStateToExitExploration()
+
+    // checkpointStateLiveData returns a failed result with the exception
+    // CheckpointDatabaseOverflowException when checkpointState is SAVED_DATABASE_EXCEEDED_LIMIT.
+    verifyOperationFails(checkpointStateLiveData)
+
+    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
     )
   }
 

@@ -101,7 +101,13 @@ class ExplorationActivityLocalTest {
 
   @Test
   fun testExploration_onLaunch_logsEvent() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    getApplicationDependencies(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -122,12 +128,24 @@ class ExplorationActivityLocalTest {
     }
   }
 
-  private fun getApplicationDependencies(id: String) {
+  private fun getApplicationDependencies(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
+  ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingExploration(id)
+        explorationDataController.startPlayingExploration(
+          internalProfileId,
+          topicId,
+          storyId,
+          explorationId,
+          isCheckpointingEnabled
+        )
       }
     }
   }
