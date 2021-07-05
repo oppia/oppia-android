@@ -427,6 +427,29 @@ class ProfileEditActivityTest {
     }
   }
 
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
+      onView(withId(R.id.profile_edit_allow_download_container)).perform(click())
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isChecked())))
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
