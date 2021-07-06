@@ -80,7 +80,7 @@ class StateFragment :
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
     val isCheckpointingEnabled =
-      arguments!!.getBoolean(STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY)
+      arguments!!.getBoolean(STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY, false)
 
     return stateFragmentPresenter.handleCreateView(
       inflater,
