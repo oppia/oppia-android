@@ -71,11 +71,7 @@ class XmlSyntaxCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim()).isEqualTo(
-      """
-      ${retrieveTestFilesDirectoryPath()}/TestFile.xml:6:8: The end-tag for element type "shape" must end with a '>' delimiter.
-      """.trimIndent()
-    )
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile.xml")
   }
 
   @Test
@@ -108,12 +104,8 @@ class XmlSyntaxCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim()).isEqualTo(
-      """
-      ${retrieveTestFilesDirectoryPath()}/TestFile2.xml:6:8: The end-tag for element type "shape" must end with a '>' delimiter.
-      ${retrieveTestFilesDirectoryPath()}/TestFile1.xml:4:4: The content of elements must consist of well-formed character data or markup.
-      """.trimIndent()
-    )
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile2.xml")
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile1.xml")
   }
 
   /** Retrieves the absolute path of testfiles directory. */

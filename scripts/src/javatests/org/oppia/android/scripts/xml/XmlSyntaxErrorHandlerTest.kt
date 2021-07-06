@@ -66,7 +66,7 @@ class XmlSyntaxErrorHandlerTest {
     parseXml(docBuilder = docBuilder, file = tempFile)
 
     val errorList = xmlSyntaxErrorHandler.retrieveErrorList()
-    assertThat(errorList.size).isEqualTo(1)
+    assertThat(errorList).hasSize(1)
     assertThat(errorList.first().message).isEqualTo(
       "Content is not allowed in trailing section."
     )
@@ -83,6 +83,11 @@ class XmlSyntaxErrorHandlerTest {
   private fun parseXml(docBuilder: DocumentBuilder, file: File) {
     try {
       docBuilder.parse(file)
-    } catch (e: SAXParseException) { }
+    } catch (e: SAXParseException) {
+      // For any syntax error in the XML file, if the custom error handler does not throws any
+      // exception then the default error handler throws a [SaxParseException]. In order to prevent
+      // the script check from getting terminated in between, we need to catch and ignore the
+      // exception.
+    }
   }
 }

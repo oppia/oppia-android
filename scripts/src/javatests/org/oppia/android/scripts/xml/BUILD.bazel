@@ -20,8 +20,7 @@ kt_jvm_test(
     name = "XmlSyntaxErrorHandlerTest",
     srcs = ["XmlSyntaxErrorHandlerTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_error_handler_lib",
-        "//testing:assertion_helpers",
+        "//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_error_handler",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],

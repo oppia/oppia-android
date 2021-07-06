@@ -6,10 +6,10 @@ are syntactically correct.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "xml_syntax_error_handler_lib",
+    name = "xml_syntax_error_handler",
     testonly = True,
     srcs = ["XmlSyntaxErrorHandler.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
 )
 
 kt_jvm_library(
@@ -18,7 +18,7 @@ kt_jvm_library(
     srcs = ["XmlSyntaxCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":xml_syntax_error_handler_lib",
+        ":xml_syntax_error_handler",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
         "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
     ],
