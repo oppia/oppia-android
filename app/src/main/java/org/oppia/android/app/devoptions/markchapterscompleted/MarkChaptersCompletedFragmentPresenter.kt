@@ -61,12 +61,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markChaptersCompletedAllCheckBoxContainer.setOnClickListener {
-      if (binding.isAllChecked == null || binding.isAllChecked == false)
+      if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
-    }
-
-    binding.markChaptersCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
-      if (isChecked) {
         getMarkChaptersCompletedViewModel().itemList.forEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
@@ -78,7 +74,6 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
           }
         }
       }
-      bindingAdapter.notifyDataSetChanged()
     }
 
     return binding.root
@@ -158,6 +153,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     if (!binding.markChaptersCompletedRecyclerView.isComputingLayout &&
       binding.markChaptersCompletedRecyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE
     ) {
+      bindingAdapter.notifyItemChanged(chapterIndex)
       if (chapterIndex + 1 < nextStoryIndex)
         bindingAdapter.notifyItemChanged(chapterIndex + 1)
     }
