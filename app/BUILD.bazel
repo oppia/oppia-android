@@ -582,7 +582,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
-        "//utility/src/main/java/org/oppia/android/util/logging:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
     ],
 )
 

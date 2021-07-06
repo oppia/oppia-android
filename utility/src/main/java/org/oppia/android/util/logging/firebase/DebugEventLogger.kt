@@ -1,6 +1,7 @@
-package org.oppia.android.util.logging
+package org.oppia.android.util.logging.firebase
 
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 

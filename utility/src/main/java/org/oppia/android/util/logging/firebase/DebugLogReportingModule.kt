@@ -1,9 +1,10 @@
-package org.oppia.android.util.logging
+package org.oppia.android.util.logging.firebase
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Singleton
 
 /** Provides debug log reporting dependencies. */

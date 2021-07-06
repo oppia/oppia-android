@@ -2,7 +2,7 @@ package org.oppia.android.app.devoptions.vieweventlogs
 
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.util.logging.DebugEventLogger
+import org.oppia.android.util.logging.firebase.DebugEventLogger
 import org.oppia.android.util.system.OppiaDateTimeFormatter
 import javax.inject.Inject
 
