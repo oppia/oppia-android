@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeFragmentPresenter
 
-/** An [RecyclerView.ItemDecoration] that adds spacing between cells in a
- * [GridLayoutManager].
+/**
+ * An [RecyclerView.ItemDecoration] that adds spacing between cells in a [GridLayoutManager].
+ *
  * Reference: https://stackoverflow.com/a/30701422/4500099
  */
 class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
@@ -79,7 +80,7 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
         }
       }
 
-      if (isLayoutRTL(parent)) {
+      if (isRtlLayout(parent)) {
         val tmp = outRect.left
         outRect.left = outRect.right
         outRect.right = tmp
@@ -128,7 +129,7 @@ class GridSpacingItemDecoration(context: Context) : ItemDecoration() {
     private const val VERTICAL = OrientationHelper.VERTICAL
 
     @SuppressLint("NewApi", "WrongConstant")
-    private fun isLayoutRTL(parent: RecyclerView): Boolean {
+    private fun isRtlLayout(parent: RecyclerView): Boolean {
       return parent.layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL
     }
   }
