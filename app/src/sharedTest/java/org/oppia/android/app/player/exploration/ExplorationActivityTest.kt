@@ -40,6 +40,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
@@ -82,7 +84,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -100,6 +102,9 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FAKE_EXPLORATION_ID_1
+import org.oppia.android.testing.lightweightcheckpointing.FAKE_EXPLORATION_ID_2
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -121,9 +126,6 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val FAKE_EXPLORATION_ID = "fake_exploration_id"
-private const val FAKE_EXPLORATION_TITLE = "Fake exploration title"
-
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -132,6 +134,9 @@ private const val FAKE_EXPLORATION_TITLE = "Fake exploration title"
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
@@ -854,6 +859,51 @@ class ExplorationActivityTest {
   }
 
   @Test
+  fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = false
+      )
+    )
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FAKE_EXPLORATION_ID_1
+    )
+  }
+
+  // TODO(#89): Check this test case too.
+  @Test
+  fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = false
+      )
+    )
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FAKE_EXPLORATION_ID_1
+    )
+  }
+
+  @Test
   fun testExplorationActivity_progressSaved_onBackPressed_showsStopExplorationDialog() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -901,7 +951,7 @@ class ExplorationActivityTest {
 
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
-  fun testExpActivity_showsStopExpDialog_cancel_dismissesDialog() {
+  fun testExpActivity_showStopExpDialog_cancel_dismissesDialog() {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -924,20 +974,326 @@ class ExplorationActivityTest {
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExpActivity_showsStopExpDialog_leave_closesExpActivity() {
+  fun testExpActivity_showStopExpDialog_leave_closesExpActivity() {
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        isCheckpointingEnabled = true
       )
     )
+    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    testCoroutineDispatchers.runCurrent()
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  @Test
+  fun testExpActivity_showStopExpDialog_leave_checkNoProgressDeleted() {
+
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    )
+    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    testCoroutineDispatchers.runCurrent()
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FAKE_EXPLORATION_ID_1
+    )
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  @Test
+  fun testExpActivity_showStopExpDialog_cancel_checkNoProgressDeleted() {
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    )
+    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    testCoroutineDispatchers.runCurrent()
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FAKE_EXPLORATION_ID_1
+    )
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      internalProfileId,
+      FRACTIONS_EXPLORATION_ID_0
+    )
+  }
+
+  @Test
+  fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+      pressBack()
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  @Test
+  fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+        .inRoot(isDialog()).perform(click())
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_continue_button))
+        .inRoot(isDialog()).perform(click())
+
+      assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+        .inRoot(isDialog()).perform(click())
+
+      assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+        .inRoot(isDialog()).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FAKE_EXPLORATION_ID_1
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FAKE_EXPLORATION_ID_2
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
+        internalProfileId,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_continue_button))
+        .inRoot(isDialog()).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FAKE_EXPLORATION_ID_2
+      )
+    }
+    explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
+      internalProfileId,
+      FAKE_EXPLORATION_ID_1
+    )
+
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+        .inRoot(isDialog()).perform(click())
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FAKE_EXPLORATION_ID_1
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        internalProfileId,
+        FAKE_EXPLORATION_ID_2
+      )
+    }
+    explorationDataController.stopPlayingExploration()
   }
 
   private fun createExplorationActivityIntent(
@@ -1085,6 +1441,25 @@ class ExplorationActivityTest {
     }
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size is set to 100 bytes because size of the checkpoint saved just after the exploration
+     * with explorationId [FRACTIONS_EXPLORATION_ID_0] is loaded is equal to 73 bytes, and the total
+     * size of the two fake checkpoints saved using [ExplorationCheckpointTestHelper] is equal to
+     * 137 bytes. Therefore it is expected that the database will exceeded the allocated size limit
+     * when the checkpoint after all three checkpoints are saved.
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -1104,9 +1479,10 @@ class ExplorationActivityTest {
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      TestExplorationStorageModule::class
     ]
   )
+
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
