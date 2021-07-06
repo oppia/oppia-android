@@ -274,13 +274,20 @@ class BazelClientTest {
     testBazelWorkspace.createTest("ThirdTest", subpackage = "three")
     testBazelWorkspace.createTest("FourthTest")
     // Generate Bazel file that will be added into the build graph.
-    val bzlFile = generateCustomJvmTestRuleBazelFile("custom_jvm_test_rule.bzl")
+    val bzlFile =
+      generateCustomJvmTestRuleBazelFile(
+        "custom_jvm_test_rule_base.bzl",
+        "custom_jvm_test_rule.bzl"
+      )
     // Update build files to depend on the new Bazel file.
     val packageTwoDirectory = File(tempFolder.root, "two")
     updateBuildFileToUseCustomJvmTestRule(bzlFile, File(tempFolder.root, "BUILD.bazel"))
     updateBuildFileToUseCustomJvmTestRule(bzlFile, File(packageTwoDirectory, "BUILD.bazel"))
 
-    val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("custom_jvm_test_rule.bzl"))
+    val testTargets =
+      bazelClient.retrieveTransitiveTestTargets(
+        listOf("custom_jvm_test_rule_base.bzl", "custom_jvm_test_rule.bzl")
+      )
 
     // All tests corresponding to build files that use the affected .bzl file should be returned.
     assertThat(testTargets).containsExactly("//:FirstTest", "//two:SecondTest", "//:FourthTest")
@@ -330,12 +337,16 @@ class BazelClientTest {
       )
   }
 
-  private fun generateCustomJvmTestRuleBazelFile(filename: String): File {
-    val newFile = File(tempFolder.root, filename)
-    newFile.appendText(
+  private fun generateCustomJvmTestRuleBazelFile(
+    firstFilename: String,
+    secondFilename: String
+  ): File {
+    val firstNewFile = File(tempFolder.root, firstFilename)
+    val secondNewFile = File(tempFolder.root, secondFilename)
+    firstNewFile.appendText(
       """
       load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
-      def custom_jvm_test(name, srcs, deps):
+      def custom_jvm_test_base(name, srcs, deps):
           kt_jvm_test(
               name = name,
               srcs = srcs,
@@ -343,7 +354,18 @@ class BazelClientTest {
           )
       """.trimIndent()
     )
-    return newFile
+    secondNewFile.appendText(
+      """
+      load("//:$firstFilename", "custom_jvm_test_base")
+      def custom_jvm_test(name, srcs, deps):
+          custom_jvm_test_base(
+              name = name,
+              srcs = srcs,
+              deps = deps
+          )
+      """.trimIndent()
+    )
+    return secondNewFile
   }
 
   private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {
