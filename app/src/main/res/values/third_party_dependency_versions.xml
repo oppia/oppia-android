@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+  <string name="third_party_dependency_version_0">4.5.0</string>
+  <string name="third_party_dependency_version_1">3.4.5</string>
+  <string name="third_party_dependency_version_2">9.0.8</string>
+  <string-array name="third_party_dependencies_versions_array">
+    <item>@string/third_party_dependency_version_0</item>
+    <item>@string/third_party_dependency_version_1</item>
+    <item>@string/third_party_dependency_version_2</item>
+  </string-array>
+</resources>

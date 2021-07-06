@@ -852,4 +852,11 @@ kt_jvm_binary(
     runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:second_script_lib"],
 )
 
+kt_jvm_binary(
+    name = "generate_license_texts",
+    main_class = "org.oppia.android.app.maven.GenerateLicensesKt",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["//app/src/main/java/org/oppia/android/app/maven:generate_licenses_lib"],
+)
+
 dagger_rules()
