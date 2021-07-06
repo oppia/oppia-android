@@ -28,7 +28,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasTextColor
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -60,6 +60,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
@@ -87,6 +88,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -115,10 +117,13 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = NavigationDrawerActivityTest.TestApplication::class,
+  application = NavigationDrawerActivityProdTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class NavigationDrawerActivityTest {
+class NavigationDrawerActivityProdTest {
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -175,7 +180,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -184,7 +191,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -194,9 +203,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -212,9 +219,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -237,9 +242,7 @@ class NavigationDrawerActivityTest {
       timestampOlderThanOneWeek = false
     )
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -255,9 +258,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -273,9 +274,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -396,7 +395,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -510,7 +509,7 @@ class NavigationDrawerActivityTest {
           withText(R.string.administrator_controls),
           isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
         )
-      ).check(matches(ViewMatchers.hasTextColor(R.color.highlightedNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlightedNavMenuItem)))
     }
   }
 
@@ -684,12 +683,35 @@ class NavigationDrawerActivityTest {
   }
 
   @Test
+  fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
+      it.openNavigationDrawer()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.drawer_nested_scroll_view)).perform(swipeUp())
+      onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).check(matches(isDisplayed()))
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -708,9 +730,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
@@ -723,9 +743,7 @@ class NavigationDrawerActivityTest {
   @Test
   fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
@@ -737,7 +755,9 @@ class NavigationDrawerActivityTest {
   @Test
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
       intended(hasComponent(MyDownloadsActivity::class.java.name))
@@ -746,7 +766,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_switchProfileMenu_exitToProfileChooserDialogIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -757,7 +779,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_switchProfileMenu_clickExit_opensProfileChooserActivity() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -773,7 +797,9 @@ class NavigationDrawerActivityTest {
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_openNavDrawerAndClose_navDrawerIsClosed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
       onView(withId(R.id.home_activity_drawer_layout)).perform(close())
@@ -784,7 +810,9 @@ class NavigationDrawerActivityTest {
   @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testNavDrawer_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -800,7 +828,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_selectSwitchProfile_configChange_dialogIsVisible() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -813,7 +843,9 @@ class NavigationDrawerActivityTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_selectHelpMenu_opensHelpActivity() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
@@ -929,25 +961,26 @@ class NavigationDrawerActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityProdTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityTest: NavigationDrawerActivityTest) {
-      component.inject(navigationDrawerActivityTest)
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest) {
+      return component.inject(navigationDrawerActivityProdTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

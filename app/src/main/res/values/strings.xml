@@ -9,6 +9,7 @@
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
@@ -62,7 +63,6 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
-  <string name="developer_options_activity_title">Developer Options</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
@@ -392,10 +392,12 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
-  <string name="link_to_item_below">Link to item below</string>
-  <string name="unlink_items">Unlink Items</string>
-  <string name="move_item_down">Move Item Down</string>
-  <string name="move_item_up">Move Item Up</string>
+  <string name="link_to_item_below">Link to item %d</string>
+  <string name="unlink_items">Unlink items at %d</string>
+  <string name="move_item_down_content_description">Move item down to %d</string>
+  <string name="move_item_up_content_description">Move item up to %d</string>
+  <string name="up_button_disabled">Up</string>
+  <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
@@ -446,4 +448,16 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
+  <!-- DeveloperOptionsFragment -->
+  <string name="developer_options_activity_title">Developer Options</string>
+  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label">View Logs</string>
+  <string name="developer_options_event_logs">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
+  <string name="developer_options_force_network_type">Force network type</string>
+  <string name="developer_options_force_crash">Force crash</string>
 </resources>

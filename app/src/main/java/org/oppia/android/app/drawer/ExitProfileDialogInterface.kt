@@ -4,5 +4,6 @@ package org.oppia.android.app.drawer
 interface ExitProfileDialogInterface {
   fun highlightLastCheckedMenuItem()
   fun highlightAdministratorControlsItem()
+  fun highlightDeveloperOptionsItem()
   fun unhighlightSwitchProfileMenuItem()
 }

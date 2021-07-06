@@ -51,6 +51,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
@@ -205,7 +207,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
@@ -238,7 +240,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testQuestionPlayer_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
@@ -517,7 +519,8 @@ class QuestionPlayerActivityTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
