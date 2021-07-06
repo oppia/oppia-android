@@ -50,7 +50,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun loadPlatformParameters() {
-    getParameterLoadingStatus().observe(
+    fetchPlatformParametersFromDatabase().observe(
       activity,
       Observer { loadSuccessful ->
         if (!loadSuccessful) {
@@ -100,7 +100,7 @@ class SplashActivityPresenter @Inject constructor(
     )
   }
 
-  private fun getParameterLoadingStatus(): LiveData<Boolean> {
+  private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
     return Transformations.map(
       platformParameterController.getParameterDatabase().toLiveData(),
       ::processParameterLoadingStatus
