@@ -26,7 +26,7 @@ import java.io.FileInputStream
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
-  val repoPath =  "${args[0]}/"
+  val repoPath = "${args[0]}/"
 
   // A list of all files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
