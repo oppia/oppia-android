@@ -93,6 +93,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO(#3418):  Separate DeveloperOptionsActivityTest into activity and fragment test files
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -256,15 +257,14 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
+  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
   }
 

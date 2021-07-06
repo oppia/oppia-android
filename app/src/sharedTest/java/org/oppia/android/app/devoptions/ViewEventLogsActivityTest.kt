@@ -81,6 +81,7 @@ private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_STORY_ID = "test_storyId"
 private const val TEST_SUB_TOPIC_ID = 1
 
+// TODO(#3419):  Separate ViewEventLogsActivityTest into activity and fragment test files
 /** Tests for [ViewEventLogsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)

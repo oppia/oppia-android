@@ -11,10 +11,7 @@ class EventLogItemViewModel @Inject constructor(
   private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
 ) : ObservableViewModel() {
 
-  /**
-   * It processes timestamp and converts it to a proper date and time string format to show in the
-   * event log item.
-   */
+  /** Returns the event log timestamp in a human readable format. */
   fun processDateAndTime(): String {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_hh_mm_aa,
@@ -22,14 +19,14 @@ class EventLogItemViewModel @Inject constructor(
     )
   }
 
-  /** It formats the event log priority to a proper string format to show in the event log item. */
+  /** Returns the event log priority in a human readable format. */
   fun formatPriorityString(): String? = eventLog.priority.name.toLowerCase().capitalize()
 
-  /** It formats the event log context to a proper string format to show in the event log item. */
+  /** Returns the event log context in a human readable format. */
   fun formatContextString(): String? =
     eventLog.context.activityContextCase.name.capitalizeWords().substringBeforeLast(" ")
 
-  /** It formats the event log action name to a proper string format to show in the event log item. */
+  /** Returns the event log action name in a human readable format. */
   fun formatActionNameString(): String = eventLog.actionName.name.capitalizeWords()
 
   private fun String.capitalizeWords(): String =

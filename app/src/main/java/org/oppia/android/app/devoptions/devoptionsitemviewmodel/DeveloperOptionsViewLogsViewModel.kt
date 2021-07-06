@@ -7,7 +7,7 @@ class DeveloperOptionsViewLogsViewModel(
   private val routeToViewEventLogsListener: RouteToViewEventLogsListener
 ) : DeveloperOptionsItemViewModel() {
   /**
-   * Called when the 'event logs' button is clicked by the user. It routes user to
+   * Called when the 'event logs' button is clicked by the user and routes the user to
    * [ViewEventLogsActivity] for displaying the event logs.
    */
   fun onEventLogsClicked() {
