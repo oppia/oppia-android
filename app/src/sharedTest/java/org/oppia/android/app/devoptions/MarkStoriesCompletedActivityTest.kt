@@ -79,6 +79,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO(#3421): Separate MarkStoriesCompletedActivityTest into activity and fragment test files.
 /** Tests for [MarkStoriesCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -143,9 +144,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_storiesAreShown() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -179,9 +178,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_configChange_storiesAreShown() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -216,9 +213,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAll_isChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -229,9 +224,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAll_configChange_isChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -243,9 +236,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAll_selectsAllStories() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -265,9 +256,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAll_configChange_selectsAllStories() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
@@ -288,9 +277,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectStories_storiesAreChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -319,9 +306,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectStories_configChange_storiesAreChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -351,9 +336,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAllStories_allCheckBoxIsChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -373,9 +356,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAllStories_configChange__allCheckBoxIsChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -396,9 +377,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAllStories_unselectOneStory_allCheckBoxIsNotChecked() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -420,9 +399,7 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_selectAllStories_unselectOneStory_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -446,9 +423,7 @@ class MarkStoriesCompletedActivityTest {
   fun testMarkStoriesCompletedActivity_ratiosFirstStoryIsCompleted_isCheckedAndDisabled() {
     markRatiosFirstStoryCompleted()
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -466,9 +441,7 @@ class MarkStoriesCompletedActivityTest {
   fun testMarkStoriesCompletedActivity_ratiosFirstStoryIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
     markRatiosFirstStoryCompleted()
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())

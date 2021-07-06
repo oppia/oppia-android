@@ -19,6 +19,7 @@ private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
 private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
 private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 
+// TODO(#3423): Remove ModifyLessonProgressController from prod build of the app.
 /** Controller to modify lesson progress such as marking chapters/stories/topics completed. */
 @Singleton
 class ModifyLessonProgressController @Inject constructor(

@@ -79,6 +79,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO(#3420): Separate MarkChaptersCompletedActivityTest into activity and fragment test files.
 /** Tests for [MarkChaptersCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
