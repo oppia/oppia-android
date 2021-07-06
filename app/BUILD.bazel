@@ -176,6 +176,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsViewLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt",
