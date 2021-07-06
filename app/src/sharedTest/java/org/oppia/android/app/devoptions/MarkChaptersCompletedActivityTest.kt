@@ -689,14 +689,7 @@ class MarkChaptersCompletedActivityTest {
           position = 6,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
-      ).check(matches(isChecked()))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 6,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
-      ).check(matches(not(isEnabled())))
+      ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
 
@@ -715,14 +708,7 @@ class MarkChaptersCompletedActivityTest {
           position = 6,
           targetViewId = R.id.mark_chapters_completed_chapter_check_box
         )
-      ).check(matches(isChecked()))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_chapters_completed_recycler_view,
-          position = 6,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
-      ).check(matches(not(isEnabled())))
+      ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
 

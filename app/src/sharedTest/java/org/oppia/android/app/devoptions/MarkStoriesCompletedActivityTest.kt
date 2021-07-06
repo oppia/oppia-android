@@ -458,14 +458,7 @@ class MarkStoriesCompletedActivityTest {
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
-      ).check(matches(isChecked()))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(not(isEnabled())))
+      ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
 
@@ -486,14 +479,7 @@ class MarkStoriesCompletedActivityTest {
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
-      ).check(matches(isChecked()))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(not(isEnabled())))
+      ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
 
