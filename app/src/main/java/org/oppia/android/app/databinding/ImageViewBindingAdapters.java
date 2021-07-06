@@ -13,6 +13,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import org.oppia.android.R;
+import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.LessonThumbnailGraphic;
 import org.oppia.android.app.model.ProfileAvatar;
 
@@ -41,6 +42,29 @@ public final class ImageViewBindingAdapters {
       @DrawableRes int drawableResourceId
   ) {
     imageView.setImageResource(drawableResourceId);
+  }
+
+  /**
+   * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
+   * "android:src".
+   * Reference: https://stackoverflow.com/a/35809319/3689782.
+   */
+  @BindingAdapter("android:src")
+  public static void setImageDrawable(
+      @NonNull ImageView imageView,
+      ChapterPlayState chapterPlayState
+  ) {
+    switch (chapterPlayState) {
+      case COMPLETED:
+        setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
+        break;
+      case NOT_STARTED:
+      case STARTED_NOT_COMPLETED:
+        setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
+        break;
+      default:
+        setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
+    }
   }
 
   /**
