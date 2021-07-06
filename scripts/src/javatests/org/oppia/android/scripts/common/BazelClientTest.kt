@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
+import java.io.File
 
 /**
  * Tests for [BazelClient].
@@ -20,8 +21,9 @@ import org.oppia.android.testing.mockito.anyOrNull
  * Note that this test executes real commands on the local filesystem & requires Bazel in the local
  * environment.
  */
+// Same parameter value: helpers reduce test context, even if they are used by 1 test.
 // Function name: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
   @Rule
   @JvmField
@@ -263,6 +265,28 @@ class BazelClientTest {
   }
 
   @Test
+  fun testRetrieveTransitiveTestTargets_forBzlFile_returnsRelatedTests() {
+    val bazelClient = BazelClient(tempFolder.root)
+    testBazelWorkspace.initEmptyWorkspace()
+    // Generate tests.
+    testBazelWorkspace.createTest("FirstTest")
+    testBazelWorkspace.createTest("SecondTest", subpackage = "two")
+    testBazelWorkspace.createTest("ThirdTest", subpackage = "three")
+    testBazelWorkspace.createTest("FourthTest")
+    // Generate Bazel file that will be added into the build graph.
+    val bzlFile = generateCustomJvmTestRuleBazelFile("custom_jvm_test_rule.bzl")
+    // Update build files to depend on the new Bazel file.
+    val packageTwoDirectory = File(tempFolder.root, "two")
+    updateBuildFileToUseCustomJvmTestRule(bzlFile, File(tempFolder.root, "BUILD.bazel"))
+    updateBuildFileToUseCustomJvmTestRule(bzlFile, File(packageTwoDirectory, "BUILD.bazel"))
+
+    val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("custom_jvm_test_rule.bzl"))
+
+    // All tests corresponding to build files that use the affected .bzl file should be returned.
+    assertThat(testTargets).containsExactly("//:FirstTest", "//two:SecondTest", "//:FourthTest")
+  }
+
+  @Test
   @Ignore("Fails in GitHub Actions") // TODO(#2691): Re-enable this test once it can pass in CI.
   fun testRetrieveTransitiveTestTargets_forWorkspace_returnsAllTests() {
     val bazelClient = BazelClient(tempFolder.root)
@@ -274,7 +298,7 @@ class BazelClientTest {
 
     val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("WORKSPACE"))
 
-    // No test targets for no related build files.
+    // All test targets should be returned for WORKSPACE since it affects all files.
     assertThat(testTargets).containsExactly(
       "//:FirstTest", "//two:SecondTest", "//three:ThirdTest", "//:FourthTest"
     )
@@ -304,5 +328,40 @@ class BazelClientTest {
           command = listOf()
         )
       )
+  }
+
+  private fun generateCustomJvmTestRuleBazelFile(filename: String): File {
+    val newFile = File(tempFolder.root, filename)
+    newFile.appendText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+      def custom_jvm_test(name, srcs, deps):
+          kt_jvm_test(
+              name = name,
+              srcs = srcs,
+              deps = deps
+          )
+      """.trimIndent()
+    )
+    return newFile
+  }
+
+  private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {
+    buildFile.prependText(
+      "load(\"//:${bazelFile.name}\", \"custom_jvm_test\")\n"
+    )
+    buildFile.replaceLines("kt_jvm_test(", "custom_jvm_test(")
+  }
+
+  private fun File.prependText(line: String) {
+    writeLines(listOf(line) + readLines())
+  }
+
+  private fun File.replaceLines(find: String, replace: String) {
+    writeLines(readLines().map { it.replace(find, replace) })
+  }
+
+  private fun File.writeLines(lines: List<String>) {
+    writeText(lines.joinToString(separator = "\n"))
   }
 }
