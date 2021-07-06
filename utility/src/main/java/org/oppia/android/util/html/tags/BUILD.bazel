@@ -1,0 +1,19 @@
+"""
+General purpose utilities for html tags.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "tag_handler",
+    srcs = [
+        "BulletTagHandler.kt",
+        "ConceptCardTagHandler.kt",
+        "MathTagHandler.kt",
+    ],
+    visibility = ["//utility:__subpackages__"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/html:custom",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)

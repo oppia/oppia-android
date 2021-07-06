@@ -48,7 +48,6 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
-        "//utility",
     ],
 )
 
@@ -64,7 +63,6 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
-        "//utility",
     ],
 )
 
@@ -79,7 +77,6 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:robolectric_android-all",
-        "//utility",
     ],
 )
 

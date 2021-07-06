@@ -15,6 +15,11 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.getJsonObjectValue
+import org.oppia.android.util.html.getJsonStringValue
+import org.oppia.android.util.html.tags.BulletTagHandler
+import org.oppia.android.util.html.tags.CUSTOM_BULLET_LIST_TAG
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl

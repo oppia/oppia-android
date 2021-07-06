@@ -8,7 +8,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.FaqSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.html.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */

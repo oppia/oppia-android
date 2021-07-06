@@ -12,7 +12,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */

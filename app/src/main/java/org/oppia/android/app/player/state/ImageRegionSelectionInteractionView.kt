@@ -15,11 +15,11 @@ import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.image.ImageLoader
-import org.oppia.android.util.parser.image.ImageViewTarget
+import org.oppia.android.util.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.image.DefaultGcsPrefix
+import org.oppia.android.util.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.image.ImageLoader
+import org.oppia.android.util.image.ImageViewTarget
 import javax.inject.Inject
 
 /**
@@ -29,6 +29,7 @@ import javax.inject.Inject
  * In order to correctly work with this interaction make sure you've called attached an listener
  * using setListener function.
  */
+
 class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
