@@ -15,13 +15,9 @@ import org.oppia.android.app.maven.proto.License
 
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.Path
-import kotlin.io.path.outputStream
 import kotlin.system.exitProcess
 import org.oppia.android.app.maven.proto.OriginOfLicenses
 import org.oppia.android.app.maven.proto.PrimaryLinkType
-import com.google.protobuf.TextFormat
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -83,16 +79,16 @@ fun showFinalDepsList() {
 }
 
 fun main(args: Array<String>) {
-  if (args.size > 0) println(args[0])
+  if (args.isNotEmpty()) println(args[0])
   rootPath = args[0]
   runMavenRePinCommand(args[0])
   runBazelQueryCommand(args[0])
   readMavenInstall()
-  println(retrieveMavenDependencyList())
-  val latestList = getLicenseLinksFromPOM()
+  val savedDependenciesList = retrieveMavenDependencyList()
+  val latestDependenciesList = getLicenseLinksFromPOM()
 //  println(latestList)
 //  val tf = TextFormat.printer().print(latestList)
-//  writeTextProto(args[1], latestList)
+  writeTextProto(args[1], latestDependenciesList)
 
   println("Number of deps with Invalid URL = $countInvalidPomUrl")
   println(
@@ -110,6 +106,17 @@ fun main(args: Array<String>) {
   }
 }
 
+
+fun updateMavenDependenciesList(
+  savedDependenciesList: ArrayList<MavenDependency>,
+  latestDependenciesList: ArrayList<MavenDependency>
+) : List<MavenDependency> {
+  val finalUpdatedList = mutableListOf<MavenDependency>()
+  latestDependenciesList.forEach { it ->
+    savedDependenciesList.binarySearchBy(it.artifactName) { it.artifactName }
+
+  }
+}
 
 /**
  * Retrieves all file content checks.
@@ -316,16 +323,12 @@ fun writeTextProto(
   pathToTextProto: String,
   mavenDependencyList: MavenDependencyList
 ) {
-  val path = File(pathToTextProto)
+  val file = File(pathToTextProto)
   val list = mavenDependencyList.toString()
-//  val md = MavenDependencyList.p
-//  mavenDependencyList.toByteString()
-  path.printWriter().use { out ->
+
+  file.printWriter().use { out ->
     out.println(list)
   }
-//  path.outputStream().use {
-//    mavenDependencyList.toString().writeTo(it)
-//  }
 }
 
 fun runMavenRePinCommand(rootPath: String) {
