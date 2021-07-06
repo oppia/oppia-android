@@ -78,6 +78,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+        "//model:exploration_checkpoint_java_proto_lite",
         "//model:onboarding_java_proto_lite",
         "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
