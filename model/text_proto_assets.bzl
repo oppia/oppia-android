@@ -1,5 +1,5 @@
 """
-Macros for preparing & creating assets to include in any module.
+Macros for preparing & creating textproto-converted assets to include in any module.
 """
 
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
