@@ -53,10 +53,3 @@ kt_jvm_library(
     srcs = ["ScriptResultConstants.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
-
-kt_jvm_library(
-    name = "script_exemptions",
-    testonly = True,
-    srcs = ["ScriptExemptions.kt"],
-    visibility = ["//scripts:oppia_script_library_visibility"],
-)

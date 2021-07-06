@@ -53,12 +53,7 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    val failureMessage =
-      """
-      No test file found for:
-      - ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt
-      """.trimIndent()
-    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile2.kt")
   }
 
   @Test
@@ -73,13 +68,22 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    val failureMessage =
-      """
-      No test file found for:
-      - ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt
-      - ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt
-      """.trimIndent()
-    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile2.kt")
+    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile3.kt")
+  }
+
+  @Test
+  fun testTestFileCheck_exemptedFile_testFileIsNotRequired() {
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "activity"
+    )
+    tempFolder.newFile(
+      "testfiles/app/src/main/java/org/oppia/android/app/activity/ActivityModule.kt"
+    )
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   /** Retrieves the absolute path of testfiles directory. */

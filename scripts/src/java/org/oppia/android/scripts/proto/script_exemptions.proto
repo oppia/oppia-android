@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Exemptions for the script checks.
+message ScriptExemptions {
+  // List of all the exemptions.
+  repeated string exempt = 1;
+}

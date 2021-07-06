@@ -4,6 +4,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
+load("//scripts:script_assets.bzl", "generate_assets_list_from_text_protos_for_test_file")
 
 # Visibility for libraries that should be accessible to script tests.
 package_group(
@@ -67,9 +68,21 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
 )
 
+TEST_FILE_EXEMPTION_ASSETS = generate_assets_list_from_text_protos_for_test_file(
+    name = "test_file_exemption_assets",
+    test_file_exemptions_name = ["test_file_exemptions"],
+)
+
+kt_jvm_library(
+    name = "test_file_check_assets",
+    data = TEST_FILE_EXEMPTION_ASSETS,
+    visibility = [":oppia_script_binary_visibility"],
+)
+
 kt_jvm_binary(
     name = "test_file_check",
     testonly = True,
+    data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.testfile.TestFileCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/testfile:test_file_check_lib"],
 )

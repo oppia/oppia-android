@@ -9,6 +9,7 @@ kt_jvm_test(
     name = "TestFileCheckTest",
     srcs = ["TestFileCheckTest.kt"],
     deps = [
+        "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/testfile:test_file_check_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
