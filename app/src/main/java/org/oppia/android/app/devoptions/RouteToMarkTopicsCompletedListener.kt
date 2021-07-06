@@ -1,7 +1,7 @@
 package org.oppia.android.app.devoptions
 
-/** Listener for when an activity should route to a [MarkTopicsCompletedActivity]. */
+/** Listener for when the user wants to modify progress of topics. */
 interface RouteToMarkTopicsCompletedListener {
-  /** This function routes user to [MarkTopicsCompletedActivity]. */
+  /** Called when the user indicates that they want to modify progress of topics. */
   fun routeToMarkTopicsCompleted()
 }

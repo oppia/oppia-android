@@ -403,20 +403,19 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
+  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testDeveloperOptions_configChange_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
+  fun testDeveloperOptions_configChange_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -424,8 +423,7 @@ class DeveloperOptionsActivityTest {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
   }
 
