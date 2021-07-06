@@ -112,7 +112,7 @@ class ExplorationProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure depending upon the checkpoint
    *         state. Failure result is returned with an appropriate exception.
    */
-  internal fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
+  fun checkCheckpointStateToExitExploration(): LiveData<AsyncResult<Any?>> {
     return explorationProgressLock.withLock {
       when (explorationProgress.checkpointState) {
         ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
