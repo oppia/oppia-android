@@ -6,7 +6,10 @@ import org.oppia.android.app.devoptions.RouteToViewEventLogsListener
 class DeveloperOptionsViewLogsViewModel(
   private val routeToViewEventLogsListener: RouteToViewEventLogsListener
 ) : DeveloperOptionsItemViewModel() {
-  /** Called when the 'event logs' button is clicked by the user. */
+  /**
+   * Called when the 'event logs' button is clicked by the user. It routes user to
+   * [ViewEventLogsActivity] for displaying the event logs.
+   */
   fun onEventLogsClicked() {
     routeToViewEventLogsListener.routeToViewEventLogs()
   }

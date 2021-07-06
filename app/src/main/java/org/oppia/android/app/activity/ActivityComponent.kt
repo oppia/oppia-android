@@ -71,7 +71,6 @@ interface ActivityComponent {
 
   fun getFragmentComponentBuilderProvider(): Provider<FragmentComponent.Builder>
 
-  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(administratorControlsActivity: AdministratorControlsActivity)
@@ -121,5 +120,6 @@ interface ActivityComponent {
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
+  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }
