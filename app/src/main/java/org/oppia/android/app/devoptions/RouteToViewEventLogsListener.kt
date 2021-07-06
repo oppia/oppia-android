@@ -1,7 +1,7 @@
 package org.oppia.android.app.devoptions
 
-/** Listener for when an activity should route to [ViewEventLogsActivity]. */
+/** Listener for when the user wants to view event logs. */
 interface RouteToViewEventLogsListener {
-  /** This function routes user to [ViewEventLogsActivity]. */
+  /** Called when the user indicates that they want to view event logs. */
   fun routeToViewEventLogs()
 }
