@@ -55,6 +55,38 @@ class BazelClient(
     val buildFileList = buildFiles.joinToString(",")
     // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
     return if (buildFileList.isNotEmpty()) {
+      val referenceFiles =
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "rbuildfiles($buildFileList)")
+      println("@@@@@ Reference build files: $referenceFiles")
+      val siblingFiles =
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "siblings(rbuildfiles($buildFileList))")
+      println("@@@@@ Sibling files: $siblingFiles")
+      val rdeps =
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "allrdeps(siblings(rbuildfiles($buildFileList)))")
+      println("@@@@@ Sibling rdeps: $rdeps")
+      val tests =
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "kind(test, allrdeps(siblings(rbuildfiles($buildFileList))))")
+      println("@@@@@ tests: $tests")
       return correctPotentiallyBrokenTargetNames(
         executeBazelCommand(
           "query",
@@ -109,6 +141,7 @@ class BazelClient(
         "\nStandard output:\n${result.output.joinToString("\n")}" +
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }
+    println("@@@@@ ${result.command.joinToString(separator = " ")}")
     return result.output
   }
 }
