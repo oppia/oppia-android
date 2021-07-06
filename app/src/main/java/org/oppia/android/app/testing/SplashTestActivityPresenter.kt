@@ -29,7 +29,7 @@ class SplashTestActivityPresenter @Inject constructor(
   }
 
   private fun loadPlatformParameters() {
-    getPlatformParameterLoadingStatus().observe(
+    fetchPlatformParametersFromDatabase().observe(
       activity,
       Observer {
         showToastIfAllowed()
@@ -37,7 +37,7 @@ class SplashTestActivityPresenter @Inject constructor(
     )
   }
 
-  private fun getPlatformParameterLoadingStatus(): LiveData<Boolean> {
+  private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
     return Transformations.map(
       platformParameterController.getParameterDatabase().toLiveData(),
       ::processPlatformParameterLoadingStatus

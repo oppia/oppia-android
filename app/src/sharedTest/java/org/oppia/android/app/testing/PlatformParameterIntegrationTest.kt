@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.os.IBinder
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -74,11 +75,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [SplashTestActivity]. */
+/** Tests to verify the working of Platform Parameter Architecture. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = SplashTestActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class SplashTestActivityTest {
+@Config(
+  application = PlatformParameterIntegrationTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class PlatformParameterIntegrationTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -130,6 +134,7 @@ class SplashTestActivityTest {
     }
   }
 
+  /** Returns a [TypeSafeMatcher] which checks for a [Toast] message in the screen */
   private fun getToastMatcher(): TypeSafeMatcher<Root?> {
     return object : TypeSafeMatcher<Root?>() {
       override fun describeTo(description: Description?) {
@@ -141,7 +146,8 @@ class SplashTestActivityTest {
         if (type == WindowManager.LayoutParams.TYPE_TOAST) {
           val windowToken: IBinder = item.decorView.windowToken
           val appToken: IBinder = item.decorView.applicationWindowToken
-          if (windowToken === appToken) { // means this window isn't contained by any other windows.
+          if (windowToken === appToken) {
+            // means this window isn't contained by any other windows.
             return true
           }
         }
@@ -179,18 +185,18 @@ class SplashTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(splashTestActivityTest: SplashTestActivityTest)
+    fun inject(platformParameterIntegrationTest: PlatformParameterIntegrationTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSplashTestActivityTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterIntegrationTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(splashTestActivityTest: SplashTestActivityTest) {
-      component.inject(splashTestActivityTest)
+    fun inject(platformParameterIntegrationTest: PlatformParameterIntegrationTest) {
+      component.inject(platformParameterIntegrationTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
