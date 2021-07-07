@@ -40,7 +40,6 @@ class StateFragment :
      * @param topicId used by StateFragment to mark progress.
      * @param storyId used by StateFragment to mark progress.
      * @param explorationId used by StateFragment to mark progress and manage exploration.
-     * @param isCheckpointingEnabled indicates if checkpointing is enabled for the current exploration.
      * @return a new instance of [StateFragment].
      */
     fun newInstance(
@@ -77,7 +76,6 @@ class StateFragment :
     val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,

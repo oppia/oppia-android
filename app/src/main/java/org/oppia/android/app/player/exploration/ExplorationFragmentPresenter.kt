@@ -30,12 +30,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   ): View? {
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-    val stateFragment = StateFragment.newInstance(
-      profileId,
-      topicId,
-      storyId,
-      explorationId
-    )
+    val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     logPracticeFragmentEvent(topicId, storyId, explorationId)
     if (getStateFragment() == null) {
       fragment.childFragmentManager.beginTransaction().add(

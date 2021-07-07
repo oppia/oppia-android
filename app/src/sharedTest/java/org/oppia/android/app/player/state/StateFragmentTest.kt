@@ -1429,7 +1429,7 @@ class StateFragmentTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        explorationId,
+        explorationId
       )
     )
   }

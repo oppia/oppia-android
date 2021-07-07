@@ -87,7 +87,7 @@ class ExplorationFragment : InjectableFragment() {
       profileId,
       topicId,
       storyId,
-      explorationId,
+      explorationId
     )
   }
 
