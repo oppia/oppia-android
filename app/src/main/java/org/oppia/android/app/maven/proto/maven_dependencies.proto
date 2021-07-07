@@ -36,7 +36,8 @@ enum PrimaryLinkType {
   SCRAPE_DIRECTLY = 1;
   SCRAPE_FROM_LOCAL_COPY = 2;
   SHOW_LINK_ONLY = 3;
-  NEEDS_INTERVENTION = 4;
+  INVALID_LINK = 4;
+  NEEDS_INTERVENTION = 5;
 }
 
 enum SecondaryLinkType {
