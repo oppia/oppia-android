@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.xml
 
 import org.oppia.android.scripts.common.RepositoryFile
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.xml.sax.SAXParseException
 import java.io.File
 import javax.xml.parsers.DocumentBuilder
@@ -48,9 +46,9 @@ fun main(vararg args: String) {
   logXmlSyntaxFailures(allErrorsList)
 
   if (hasXmlSyntaxFailure) {
-    throw Exception(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("XML SYNTAX CHECK FAILED")
   } else {
-    println(XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("XML SYNTAX CHECK PASSED")
   }
 }
 

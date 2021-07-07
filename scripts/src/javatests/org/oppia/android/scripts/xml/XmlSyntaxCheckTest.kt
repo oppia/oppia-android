@@ -6,8 +6,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -16,6 +14,8 @@ import java.io.PrintStream
 class XmlSyntaxCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
+  private val XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK PASSED"
+  private val XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK FAILED"
 
   @Rule
   @JvmField

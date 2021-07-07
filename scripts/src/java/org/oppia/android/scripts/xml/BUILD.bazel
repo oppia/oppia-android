@@ -20,6 +20,5 @@ kt_jvm_library(
     deps = [
         ":xml_syntax_error_handler",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
     ],
 )
