@@ -993,6 +993,7 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExpActivity_showUnsavedExpDialog_leave_closesExpActivity() {
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1020,6 +1021,7 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
     explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1052,6 +1054,7 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
     explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
