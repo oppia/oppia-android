@@ -143,9 +143,27 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
+  fun testViewEventLogsActivity_configChange_displaysEventLogsList() {
+    launch(ViewEventLogsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.view_event_logs_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testViewEventLogsActivity_displaysCorrectNumberOfEventLogs() {
     launch(ViewEventLogsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.view_event_logs_recycler_view)).check(hasItemCount(count = 5))
+    }
+  }
+
+  @Test
+  fun testViewEventLogsActivity_configChange_displaysCorrectNumberOfEventLogs() {
+    launch(ViewEventLogsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.view_event_logs_recycler_view)).check(hasItemCount(count = 5))
     }
   }
@@ -488,6 +506,7 @@ class ViewEventLogsActivityTest {
   private fun createViewEventLogsActivityIntent(): Intent =
     ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
 
+  /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
   private fun logMultipleEvents() {
     oppiaLogger.logTransitionEvent(
       timestamp = TEST_TIMESTAMP,
