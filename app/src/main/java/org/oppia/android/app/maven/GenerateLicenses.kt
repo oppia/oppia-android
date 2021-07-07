@@ -9,7 +9,6 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import org.oppia.android.app.maven.proto.CopyrightLicense
 import org.oppia.android.app.maven.proto.LicenseDetails
 import org.oppia.android.app.maven.proto.MavenDependency
 import org.w3c.dom.Document
@@ -25,6 +24,12 @@ fun main(args: Array<String>) {
   // Generate Licenses List by reading textproto.
   writeDependenciesNamesXml(pathToNamesXml, listOf("Abhay", "Apache", "MIT"))
   writeDependenciesVersionsXml(pathToVersionsXml, listOf("4.5.0", "3.4.5", "9.0.8"))
+
+}
+
+fun getMavenDependenciesList(
+  pathToFile: String
+) : List<MavenDependency> {
 
 }
 
