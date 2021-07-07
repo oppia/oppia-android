@@ -68,8 +68,8 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkTopicsCompletedViewModel().getTopicList().forEach { topicViewModel ->
-          if (!topicViewModel.isCompleted) topicSelected(topicViewModel.topic.topicId)
+        getMarkTopicsCompletedViewModel().getTopicList().forEach { viewModel ->
+          if (!viewModel.isCompleted) topicSelected(viewModel.topic.topicId)
         }
       }
       bindingAdapter.notifyDataSetChanged()

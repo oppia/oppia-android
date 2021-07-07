@@ -66,7 +66,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     binding.markChaptersCompletedAllCheckBoxContainer.setOnClickListener {
       if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
-        getMarkChaptersCompletedViewModel().itemList.forEach { viewModel ->
+        getMarkChaptersCompletedViewModel().getItemList().forEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
               chapterSelected(
@@ -147,7 +147,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
       selectedExplorationIdList.add(explorationId)
     }
     if (selectedExplorationIdList.size ==
-      getMarkChaptersCompletedViewModel().itemList.count {
+      getMarkChaptersCompletedViewModel().getItemList().count {
         it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
       }
     ) {
@@ -165,14 +165,14 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   override fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
     for (index in chapterIndex until nextStoryIndex) {
       val explorationId =
-        (getMarkChaptersCompletedViewModel().itemList[index] as ChapterSummaryViewModel)
+        (getMarkChaptersCompletedViewModel().getItemList()[index] as ChapterSummaryViewModel)
           .chapterSummary.explorationId
       if (selectedExplorationIdList.contains(explorationId)) {
         selectedExplorationIdList.remove(explorationId)
       }
     }
     if (selectedExplorationIdList.size !=
-      getMarkChaptersCompletedViewModel().itemList.count {
+      getMarkChaptersCompletedViewModel().getItemList().count {
         it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
       }
     ) {

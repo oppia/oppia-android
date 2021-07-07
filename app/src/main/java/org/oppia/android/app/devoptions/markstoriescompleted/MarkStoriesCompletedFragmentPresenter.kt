@@ -68,9 +68,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkStoriesCompletedViewModel().getStorySummaryList().forEach { storySummaryViewModel ->
-          if (!storySummaryViewModel.isCompleted)
-            storySelected(storySummaryViewModel.storySummary.storyId)
+        getMarkStoriesCompletedViewModel().getStorySummaryList().forEach { viewModel ->
+          if (!viewModel.isCompleted)
+            storySelected(viewModel.storySummary.storyId)
         }
       }
       bindingAdapter.notifyDataSetChanged()

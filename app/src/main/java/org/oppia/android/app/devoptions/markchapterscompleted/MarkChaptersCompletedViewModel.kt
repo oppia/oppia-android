@@ -24,11 +24,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
 
   private lateinit var profileId: ProfileId
 
-  /**
-   * List of [MarkChaptersCompletedItemViewModel] used in [MarkChaptersCompletedFragmentPresenter]
-   * to implement the selection logic of chapters.
-   */
-  val itemList = mutableListOf<MarkChaptersCompletedItemViewModel>()
+  private val itemList = mutableListOf<MarkChaptersCompletedItemViewModel>()
 
   /**
    * List of [MarkChaptersCompletedItemViewModel] used to populate recyclerview of
@@ -93,4 +89,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
+
+  /** Returns a list of [MarkChaptersCompletedItemViewModel]. */
+  fun getItemList(): List<MarkChaptersCompletedItemViewModel> = itemList.toList()
 }
