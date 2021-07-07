@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="third_party_dependency_name_0">Abhay</string>
+  <string name="license_0">Apache License</string>
+  <string name="license_0">Apache License</string>
   <string name="third_party_dependency_name_1">Apache</string>
   <string name="third_party_dependency_name_2">MIT</string>
+
+
+
+
   <string-array name="third_party_dependencies_names_array">
     <item>@string/third_party_dependency_name_0</item>
     <item>@string/third_party_dependency_name_1</item>
