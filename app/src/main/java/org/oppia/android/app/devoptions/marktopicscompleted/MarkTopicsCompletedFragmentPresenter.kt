@@ -103,6 +103,9 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     model: TopicViewModel
   ) {
     binding.viewModel = model
+    if (getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted } == 0) {
+      this.binding.isAllChecked = true
+    }
     if (model.isCompleted) {
       binding.isTopicChecked = true
       binding.markTopicsCompletedTopicCheckBox.isEnabled = false

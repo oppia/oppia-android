@@ -105,6 +105,11 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     model: StorySummaryViewModel
   ) {
     binding.viewModel = model
+    if (getMarkStoriesCompletedViewModel().getStorySummaryMap().values
+      .count { !it.isCompleted } == 0
+    ) {
+      this.binding.isAllChecked = true
+    }
     if (model.isCompleted) {
       binding.isStoryChecked = true
       binding.markStoriesCompletedStoryCheckBox.isEnabled = false
