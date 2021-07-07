@@ -93,6 +93,9 @@ import javax.inject.Singleton
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
+private const val INVALID_TOPIC_ID = "invalid_topic_id"
+private const val INVALID_STORY_ID = "invalid_story_id"
+private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
 
 /** Tests for [ExplorationProgressController]. */
 @Suppress("SameParameterValue") // To avoid ignorable warnings for test helper methods.
@@ -191,9 +194,9 @@ class ExplorationProgressControllerTest {
     val resultLiveData =
       explorationDataController.startPlayingExploration(
         profileId.internalId,
-        "invalid_topic_id",
-        "invalid_story_id",
-        "invalid_exp_id",
+        INVALID_TOPIC_ID,
+        INVALID_STORY_ID,
+        INVALID_EXPLORATION_ID,
         isCheckpointingEnabled = false
       )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
@@ -213,9 +216,9 @@ class ExplorationProgressControllerTest {
 
     playExploration(
       profileId.internalId,
-      topicId = "invalid_topic_id",
-      storyId = "invalid_story_id",
-      explorationId = "invalid_exp_id",
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
       isCheckpointingEnabled = false
     )
 
@@ -302,9 +305,9 @@ class ExplorationProgressControllerTest {
     // Start with playing an invalid exploration.
     playExploration(
       profileId.internalId,
-      topicId = "invalid_topic_id",
-      storyId = "invalid_story_id",
-      explorationId = "invalid_exp_id",
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
       isCheckpointingEnabled = false
     )
     endExploration()
@@ -1332,8 +1335,8 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
     testCoroutineDispatchers.runCurrent()
 
-    // The new observer should observe the completed second state since it's the current pending
-    // state.
+    // The new observer should observe the completed second state
+    // since it's the current pending state.
     verify(
       mockCurrentStateLiveDataObserver2,
       atLeastOnce()
@@ -1781,15 +1784,15 @@ class ExplorationProgressControllerTest {
 
     playExploration(
       profileId.internalId,
-      topicId = "invalid_topic_id",
-      storyId = "invalid_story_id",
-      explorationId = "invalid_exp_id",
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
       isCheckpointingEnabled = false
     )
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("invalid_exp_id")
+    assertThat(exception).hasMessageThat().contains(INVALID_EXPLORATION_ID)
   }
 
   @Test

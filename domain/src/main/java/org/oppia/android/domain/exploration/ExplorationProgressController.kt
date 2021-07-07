@@ -471,7 +471,10 @@ class ExplorationProgressController @Inject constructor(
     newCheckpointState: CheckpointState
   ) {
     explorationProgressLock.withLock {
+      // Only processes the result of the last save operation if the checkpointState has changed.
       if (explorationProgress.checkpointState != newCheckpointState) {
+        // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
+        // either changed from UNSAVED to SAVED or vice versa.
         if (
           explorationProgress.checkpointState != CheckpointState.UNSAVED &&
           newCheckpointState == CheckpointState.UNSAVED
