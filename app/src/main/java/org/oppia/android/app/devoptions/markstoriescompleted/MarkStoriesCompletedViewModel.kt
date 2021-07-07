@@ -22,7 +22,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   private val modifyLessonProgressController: ModifyLessonProgressController
 ) : ObservableViewModel() {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   /**
    * List of [StorySummaryViewModel] used in [MarkStoriesCompletedFragmentPresenter] to check if
@@ -42,9 +42,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
 
   private val storyMapResultLiveData:
     LiveData<AsyncResult<Map<String, List<StorySummary>>>> by lazy {
-      modifyLessonProgressController
-        .getStoryMapWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .toLiveData()
+      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
     }
 
   private fun getStoryMap(): LiveData<Map<String, List<StorySummary>>> {
@@ -77,7 +75,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
     return itemList
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkStoriesCompletedFragmentBinding
@@ -48,7 +49,9 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     this.selectedStoryIdList = selectedStoryIdList
 
-    getMarkStoriesCompletedViewModel().setInternalProfileId(internalProfileId)
+    getMarkStoriesCompletedViewModel().setProfileId(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 

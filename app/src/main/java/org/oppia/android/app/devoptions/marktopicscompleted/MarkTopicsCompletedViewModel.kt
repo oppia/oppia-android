@@ -22,7 +22,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   private val modifyLessonProgressController: ModifyLessonProgressController,
 ) : ObservableViewModel() {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   /**
    * List of topic ids used in [MarkTopicsCompletedFragmentPresenter] to check if all topics are
@@ -41,9 +41,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   private val allTopicsLiveData: LiveData<List<Topic>> by lazy { getAllTopics() }
 
   private val allTopicsResultLiveData: LiveData<AsyncResult<List<Topic>>> by lazy {
-    modifyLessonProgressController
-      .getAllTopicsWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-      .toLiveData()
+    modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
   }
 
   private fun getAllTopics(): LiveData<List<Topic>> {
@@ -72,7 +70,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
     return itemList
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 }

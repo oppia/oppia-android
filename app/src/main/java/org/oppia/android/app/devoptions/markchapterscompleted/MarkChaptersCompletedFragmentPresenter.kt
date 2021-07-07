@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkChaptersCompletedChapterSummaryViewBinding
@@ -50,7 +51,9 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 
     this.selectedExplorationIdList = selectedExplorationIdList
 
-    getMarkChaptersCompletedViewModel().setInternalProfileId(internalProfileId)
+    getMarkChaptersCompletedViewModel().setProfileId(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    )
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 

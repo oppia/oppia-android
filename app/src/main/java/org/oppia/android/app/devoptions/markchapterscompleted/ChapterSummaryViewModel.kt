@@ -11,10 +11,7 @@ class ChapterSummaryViewModel(
   val storyId: String,
   val topicId: String
 ) : MarkChaptersCompletedItemViewModel() {
-  /**
-   * Function to check if a chapter is completed or not. It is used in
-   * [MarkChaptersCompletedFragmentPresenter] to decide if a chapter should be checked and disabled.
-   */
+  /** Returns whether the chapter represented by the current view model is completed. */
   fun checkIfChapterIsCompleted(): Boolean =
     chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED
 }

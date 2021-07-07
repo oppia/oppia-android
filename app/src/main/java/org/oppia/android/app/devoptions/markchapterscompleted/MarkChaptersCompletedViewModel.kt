@@ -22,7 +22,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
   private val modifyLessonProgressController: ModifyLessonProgressController
 ) : ObservableViewModel() {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   /**
    * List of [MarkChaptersCompletedItemViewModel] used in [MarkChaptersCompletedFragmentPresenter]
@@ -46,9 +46,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
 
   private val storyMapResultLiveData:
     LiveData<AsyncResult<Map<String, List<StorySummary>>>> by lazy {
-      modifyLessonProgressController
-        .getStoryMapWithProgress(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .toLiveData()
+      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
     }
 
   private fun processStoryMapResult(
@@ -92,7 +90,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     return itemList
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 }
