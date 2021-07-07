@@ -14,6 +14,7 @@ import javax.inject.Inject
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
   InjectableAppCompatActivity(),
+  ForceCrashButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener {
@@ -63,5 +64,9 @@ class DeveloperOptionsActivity :
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
+  }
+
+  override fun forceCrash() {
+    developerOptionsActivityPresenter.forceCrash()
   }
 }

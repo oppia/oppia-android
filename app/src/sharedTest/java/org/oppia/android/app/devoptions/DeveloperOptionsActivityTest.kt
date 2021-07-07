@@ -80,6 +80,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -325,6 +326,35 @@ class DeveloperOptionsActivityTest {
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      val exception = assertThrows(RuntimeException::class) {
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_crash_text_view)).perform(click())
+      }
+      assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_configChange_clickForceCrash_assertException() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      val exception = assertThrows(RuntimeException::class) {
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_crash_text_view)).perform(click())
+      }
+      assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
     }
   }
 

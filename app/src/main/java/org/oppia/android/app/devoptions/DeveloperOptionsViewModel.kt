@@ -16,6 +16,7 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
 
+  private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
   private val routeToMarkStoriesCompletedListener =
@@ -39,7 +40,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
         routeToMarkTopicsCompletedListener
       ),
       DeveloperOptionsViewLogsViewModel(),
-      DeveloperOptionsOverrideAppBehaviorsViewModel()
+      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
     )
   }
 }
