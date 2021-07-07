@@ -111,7 +111,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.backflowScreen = backflowScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
 
-    // get the oldest checkpoint details.
+    // Retrieve oldest save checkpoint details.
     subscribeToOldestSavedExplorationDetails()
 
     if (getExplorationManagerFragment() == null) {
@@ -139,8 +139,7 @@ class ExplorationActivityPresenter @Inject constructor(
           internalProfileId = internalProfileId,
           storyId = storyId,
           readingTextSize = readingTextSize.name,
-          explorationId = explorationId,
-          isCheckpointEnabled = isCheckpointingEnabled
+          explorationId = explorationId
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -221,14 +220,15 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun deleteOldestSavedProgressAndStopExploration() {
-    // if the value of oldestExplorationId is null, it means that there was an error while
+    // If the value of oldestExplorationId is null, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
     // without deleting the any checkpoints.
-    if (oldestExplorationId != null)
+    if (oldestExplorationId != null) {
       explorationDataController.deleteExplorationProgressById(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         oldestExplorationId!!
       )
+    }
     stopExploration()
   }
 
@@ -265,15 +265,15 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun backButtonPressed() {
-    // if checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
+    // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
       showUnsavedExplorationDialogFragment()
       return
     }
-    // if checkpointing is enabled, get the current checkpoint state to figure out the if
+    // If checkpointing is enabled, get the current checkpoint state to figure out the if
     // so far checkpointing has been successful in the exploration.
-    subscribeToCheckpointState(explorationDataController.checkExplorationCheckpointStatus())
+    subscribeToCheckpointState(explorationDataController.checkHasCheckpointingBeenSuccessful())
   }
 
   fun dismissConceptCard() {
@@ -396,8 +396,8 @@ class ExplorationActivityPresenter @Inject constructor(
     )
   }
 
-  /** This function listens to the result of the function
-   * [ExplorationDataController.getExplorationById].
+  /**
+   * This function listens to the result of [ExplorationDataController.getExplorationById].
    *
    * If the result is success it updates the value of the variables oldestExplorationId and
    * oldestExplorationTitle. If the result fails, it does not change the values of the variables
@@ -406,8 +406,10 @@ class ExplorationActivityPresenter @Inject constructor(
    * Since this function is kicked off before any other save operation, therefore it is expected
    * to complete before any following save operation completes.
    *
-   * In case this operations fails, the values of the variables oldestExplorationId and
-   * oldestExplorationTitle is not changed and they remain equal to null.
+   * If operations fails or this function does not get enough time to complete, user is not blocked
+   * instead the flow of the application proceeds as if the checkpoints were not found. In that case,
+   * the values of the variables oldestExplorationId and oldestExplorationTitle is not changed and
+   * they remain equal to null.
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
@@ -418,22 +420,29 @@ class ExplorationActivityPresenter @Inject constructor(
         if (it.isSuccess()) {
           oldestExplorationId = it.getOrThrow().explorationId
           oldestExplorationTitle = it.getOrThrow().explorationTitle
+        } else if (it.isFailure()) {
+          oppiaLogger.e(
+            "Exploration Activity",
+            "Failed to retrieve oldest saved checkpoint details.",
+            it.getErrorOrNull()
+          )
         }
       }
     )
   }
 
-  /** This function listens to the result of the function
-   * [ExplorationDataController.checkExplorationCheckpointStatus]
+  /**
+   * This function listens to the result of the function
+   * [ExplorationDataController.checkHasCheckpointingBeenSuccessful]
    *
-   * Once the result is available this functions either exits the exploration or shows an
-   * appropriate dialog box.
+   * Once the result is available this functions  shows an appropriate dialog box.
    *
    * If a success result returned by the function
-   * [ExplorationDataController.checkExplorationCheckpointStatus], this functions displays the
+   * [ExplorationDataController.checkHasCheckpointingBeenSuccessful], this functions displays the
    * [StopExplorationDialogFragment].
    *
-   * If case of a failure result, if the exception is [ExplorationProgressController.ProgressNotSavedException],
+   * If case of a failure result, if the exception is
+   * [ExplorationProgressController.ProgressNotSavedException],
    * [UnsavedExplorationDialogFragment] is displayed.
    * If the exception is [ExplorationProgressController.CheckpointDatabaseOverflowException],
    * [ProgressDatabaseFullDialogFragment] is displayed.
@@ -447,8 +456,6 @@ class ExplorationActivityPresenter @Inject constructor(
         } else if (it.isFailure()) {
           when (it.getErrorOrNull()) {
             is ExplorationProgressController.ProgressNotSavedException -> {
-              // delete the current progress if any because the saved progress for the current
-              // exploration is incomplete.
               showUnsavedExplorationDialogFragment()
             }
             is ExplorationProgressController.CheckpointDatabaseOverflowException -> {

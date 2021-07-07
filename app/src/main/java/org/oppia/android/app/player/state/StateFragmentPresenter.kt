@@ -85,8 +85,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
-  private var isCheckpointingEnabled: Boolean = false
-
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -101,14 +99,12 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    isCheckpointingEnabled: Boolean
+    explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-    this.isCheckpointingEnabled = isCheckpointingEnabled
 
     binding = StateFragmentBinding.inflate(
       inflater,

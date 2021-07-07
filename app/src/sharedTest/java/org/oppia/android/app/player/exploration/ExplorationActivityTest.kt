@@ -974,7 +974,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = false
       )
     )
-    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = false
+    )
     testCoroutineDispatchers.runCurrent()
     pressBack()
     onView(withText(R.string.unsaved_exploration_dialog_cancel_button)).inRoot(isDialog())
@@ -996,6 +1002,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = false
       )
     )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
@@ -1014,6 +1029,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = false
       )
     )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
@@ -1037,6 +1061,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = false
       )
     )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
@@ -1059,8 +1092,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
+
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1082,8 +1122,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
+
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1114,6 +1161,7 @@ class ExplorationActivityTest {
       isCheckpointingEnabled = false
     )
     testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
@@ -1135,8 +1183,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     )
-    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = true
+    )
     testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
@@ -1158,8 +1213,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     )
-    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = true
+    )
     testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
@@ -1188,8 +1250,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     )
-    explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      isCheckpointingEnabled = true
+    )
     testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
@@ -1217,8 +1286,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
+
       pressBack()
       onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1239,8 +1315,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
+
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1262,8 +1345,15 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
+
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1288,7 +1378,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1316,7 +1412,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1343,7 +1445,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1382,7 +1490,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1422,7 +1536,13 @@ class ExplorationActivityTest {
         isCheckpointingEnabled = true
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        isCheckpointingEnabled = true
+      )
       testCoroutineDispatchers.runCurrent()
 
       pressBack()

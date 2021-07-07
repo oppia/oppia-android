@@ -162,7 +162,8 @@ class ExplorationActivityLocalTest {
       topicId,
       storyId,
       explorationId,
-      backflowScreen = null
+      backflowScreen = null,
+      isCheckpointingEnabled = false
     )
   }
 

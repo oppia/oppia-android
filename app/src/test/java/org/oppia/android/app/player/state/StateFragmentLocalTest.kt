@@ -8,7 +8,6 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -34,8 +33,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -45,17 +42,8 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -68,8 +56,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
-import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -97,10 +83,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.ExplorationProgressController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -122,8 +105,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -148,11 +129,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
@@ -173,24 +149,6 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-
-  @Mock
-  lateinit var mockCheckpointStateObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var checkpointStateCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Inject
-  lateinit var explorationCheckpointController: ExplorationCheckpointController
-
-  @Mock
-  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
-
-  @Captor
-  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
 
   private val internalProfileId: Int = 1
   private val solutionIndex: Int = 4
@@ -225,7 +183,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_loadExploration_explorationLoads() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
       // Due to the exploration activity loading, the play button should no longer be visible.
@@ -235,7 +193,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_advanceToNextState_loadsSecondState() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
@@ -252,7 +210,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_advanceToNextState_hintNotAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
       playThroughState1()
@@ -263,7 +221,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait10seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -275,7 +233,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait30seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -287,7 +245,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_hintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -299,7 +257,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -312,7 +270,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait120seconds_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -326,7 +284,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -338,7 +296,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -350,7 +308,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -361,7 +319,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -371,7 +329,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_wait60seconds_submitTwoWrongAnswers_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -385,7 +343,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -399,7 +357,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -419,7 +377,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -440,7 +398,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_expandCollapseResponse_checkPreviousHeaderCollapsed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -477,7 +435,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -490,7 +448,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait10seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -504,7 +462,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait30seconds_noHintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -518,7 +476,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitTwoWrongAnswers_hintAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -531,7 +489,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -547,7 +505,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -559,7 +517,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswers()
@@ -579,7 +537,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -600,7 +558,7 @@ class StateFragmentLocalTest {
       onView(isRoot()).check(
         matches(
           not(
-            withText("In a fraction, the pieces representing the denominator must be equal")
+            withText("In a fraction, the pieces representing the denominator must be equal")
           )
         )
       )
@@ -609,7 +567,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -622,7 +580,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_submitThreeWrongAnswers_canViewOneHint() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -636,7 +594,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_newHintIsNoLongerAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       submitTwoWrongAnswersAndWait()
@@ -652,7 +610,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait10seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -665,7 +623,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait30seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -679,7 +637,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -694,7 +652,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait30seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -710,7 +668,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait60seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -726,7 +684,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_wait60seconds_submitWrongAnswer_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -743,7 +701,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -757,7 +715,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -772,7 +730,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -788,7 +746,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait30seconds_canViewTwoHints() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
@@ -805,7 +763,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait10seconds_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -818,7 +776,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait30seconds_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -832,7 +790,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_wait30seconds_canViewSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -855,7 +813,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_noNewHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -869,7 +827,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_newHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -884,7 +842,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_canViewSolution() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -908,7 +866,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -937,10 +895,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -960,10 +915,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -983,10 +935,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1006,10 +955,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1029,10 +975,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1046,10 +989,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_wait30seconds_noNewHintIsAvailable() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1064,10 +1004,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_nextState_viewSolution_submitWrongAnswer_wait10s_noNewHintIsAvailable() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = false
-    ).use { scenario ->
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughState1()
       produceAndViewFourHints()
@@ -1083,7 +1020,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_stateWithoutHints_wait60s_noHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
@@ -1095,7 +1032,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_stateWithoutSolution_viewAllHints_wrongAnswerAndWait_noHintIsAvailable() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playUpToFinalTestSecondTry()
       produceAndViewThreeHintsInState13()
@@ -1111,7 +1048,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1123,7 +1060,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1137,7 +1074,7 @@ class StateFragmentLocalTest {
   // for the sw600dp layouts.
   @Config(qualifiers = "sw600dp-w1600dp-h1200dp-port-mdpi")
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1151,7 +1088,7 @@ class StateFragmentLocalTest {
   // for the sw600dp layouts.
   @Config(qualifiers = "sw600dp-w1600dp-h1200dp-land-mdpi")
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1163,7 +1100,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1186,7 +1123,7 @@ class StateFragmentLocalTest {
   @Test
   @Config(qualifiers = "+land")
   fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1208,7 +1145,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
 
@@ -1218,7 +1155,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       // Play through all questions but do not reach the last screen of the exploration.
       playThroughAllStates()
@@ -1229,7 +1166,7 @@ class StateFragmentLocalTest {
 
   @Test
   fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughAllStates()
       clickContinueButton()
@@ -1257,305 +1194,6 @@ class StateFragmentLocalTest {
     }
   }
 
-  @Test
-  fun testStateFragment_checkpointingDisabled_checkExplorationProgressNotSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = false).use {
-      startPlayingExploration()
-      verifyCheckpointStateIsUnsaved()
-    }
-  }
-
-  @Test
-  fun testStateFragment_checkpointing_loadExploration_checkProgressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
-    }
-  }
-
-  @Test
-  fun testStateFragment_checkpointing_playToSecondState_checkCheckpointStateIsCorrect() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
-      playThroughState2()
-      verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit()
-    }
-  }
-
-  @Test
-  fun testStateFragment_checkpointing_playToThirdState_checkCheckpointStateIsCorrect() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      playThroughState2()
-      playThroughState3()
-      verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit()
-    }
-  }
-
-  @Test
-  fun testStateFragment_checkpointing_playThroughStates_checkProgressIsSavedOnEveryState() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Into the Bakery"
-      )
-      playThroughState1()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Matthew gets conned"
-      )
-      playThroughState2()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 1"
-      )
-      playThroughState3()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 2"
-      )
-    }
-  }
-
-  @Test
-  fun testStateFrag_checkpointing_advToThirdState_goBackToPrevState_checkCorrectProgressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      playThroughState2()
-      playThroughState3()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 2"
-      )
-      clickPreviousStateNavigationButton()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 2"
-      )
-    }
-  }
-
-  @Test
-  fun testStateFrag_checkpointing_advToThirdState_navigatePrevStates_checkCorrectProgressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      playThroughState2()
-      playThroughState3()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 2"
-      )
-      clickPreviousStateNavigationButton()
-      clickPreviousStateNavigationButton()
-      clickNextStateNavigationButton()
-      verifySavedCheckpointHasCorrectPendingState(
-        FRACTIONS_EXPLORATION_ID_1,
-        pendingStateName = "Question 2"
-      )
-    }
-  }
-
-  @Test
-  fun testStateFragment_checkpointing_playToSecondState_submitAnswer_checkCorrectProgressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswers()
-      verifyAnswerIsSaved(FRACTIONS_EXPLORATION_ID_1, countOfAnswers = 2)
-    }
-  }
-
-  @Test
-  fun testStateFragment_submitAnswers_navigatePreviousState_goToPendingState_progressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswers()
-      clickPreviousStateNavigationButton()
-      clickNextStateNavigationButton()
-      verifyAnswerIsSaved(FRACTIONS_EXPLORATION_ID_1, countOfAnswers = 2)
-    }
-  }
-
-  @Test
-  fun testStateFragment_advToSecondState_submitWrongAnswers_revealHint_checkProgressIsSaved() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughState1()
-      // Submit wrong answer twice to make hints visible.
-      produceAndViewFirstHint()
-      verifyHintIsSaved(FRACTIONS_EXPLORATION_ID_1, indexOfRevealedHint = 0)
-    }
-  }
-
-  @Test
-  fun testStateFragment_advToSecondState_revealSolution_checkProgressIsSaved() {
-    launchForExploration(
-      FRACTIONS_EXPLORATION_ID_1,
-      isCheckpointingEnabled = true
-    ).use { scenario ->
-      startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
-
-      submitWrongAnswerToState2()
-      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
-
-      openHintsAndSolutionsDialog()
-      showRevealSolutionDialog()
-      clickConfirmRevealSolutionButton(scenario)
-      verifySolutionIsSaved(FRACTIONS_EXPLORATION_ID_1)
-    }
-  }
-
-  @Test
-  fun testStateFragment_playThroughExploration_clickReturnToTopicButton_checkProgressIsDeleted() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, isCheckpointingEnabled = true).use {
-      startPlayingExploration()
-      playThroughAllStates()
-      // there is one more state before return to topic button is visible.
-      clickContinueButton()
-      clickReturnToTopicButton()
-      verifyProgressNotSaved(FRACTIONS_EXPLORATION_ID_1)
-    }
-  }
-
-  private fun verifyCheckpointStateIsCheckpointSavedDatabaseNotExceededLimit() {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockCheckpointStateObserver)
-    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
-    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
-    assertThat(checkpointStateCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyCheckpointStateIsCheckpointSavedDatabaseExceededLimit() {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockCheckpointStateObserver)
-    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
-    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
-    assertThat(checkpointStateCaptor.value.isFailure()).isTrue()
-
-    assertThat(checkpointStateCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
-    )
-  }
-
-  private fun verifyCheckpointStateIsUnsaved() {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockCheckpointStateObserver)
-    val checkpointStateLiveData = explorationDataController.checkExplorationCheckpointStatus()
-    checkpointStateLiveData.observeForever(mockCheckpointStateObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockCheckpointStateObserver, atLeastOnce()).onChanged(checkpointStateCaptor.capture())
-    assertThat(checkpointStateCaptor.value.isFailure()).isTrue()
-
-    assertThat(checkpointStateCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.ProgressNotSavedException::class.java
-    )
-  }
-
-  private fun verifyProgressNotSaved(explorationId: String) {
-    reset(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationCheckpointObserver, atLeastOnce()).onChanged(
-      explorationCheckpointCaptor.capture()
-    )
-    assertThat(explorationCheckpointCaptor.value.isFailure()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
-    )
-  }
-
-  private fun verifySavedCheckpointHasCorrectPendingState(
-    explorationId: String,
-    pendingStateName: String
-  ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
-      .isEqualTo(pendingStateName)
-  }
-
-  private fun verifyAnswerIsSaved(
-    explorationId: String,
-    countOfAnswers: Int
-  ) {
-    reset(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingUserAnswersCount)
-      .isEqualTo(countOfAnswers)
-  }
-
-  private fun verifyHintIsSaved(explorationId: String, indexOfRevealedHint: Int) {
-    reset(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
-      .isEqualTo(indexOfRevealedHint)
-  }
-
-  private fun verifySolutionIsSaved(explorationId: String) {
-    reset(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().solutionIsRevealed).isTrue()
-  }
-
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1566,17 +1204,11 @@ class StateFragmentLocalTest {
   }
 
   private fun launchForExploration(
-    explorationId: String,
-    isCheckpointingEnabled: Boolean
+    explorationId: String
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
-        context,
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        explorationId,
-        isCheckpointingEnabled
+        context, internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, explorationId
       )
     )
   }
@@ -1709,14 +1341,7 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickReturnToTopicButton() {
-    onView(withId(R.id.return_to_topic_button)).perform(click())
-    testCoroutineDispatchers.runCurrent()
-  }
-
   private fun clickNextStateNavigationButton() {
-    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
-    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -1821,10 +1446,7 @@ class StateFragmentLocalTest {
     // Two wrong answers need to be submitted for the first hint to show up, so submit an extra one
     // in advance of the standard show & reveal hint flow.
     submitWrongAnswerToState2()
-    produceAndViewNextHint(
-      hintPosition = 0,
-      submitAnswer = this::submitWrongAnswerToState2AndWait
-    )
+    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToState2AndWait)
   }
 
   /**
@@ -1840,36 +1462,18 @@ class StateFragmentLocalTest {
 
   private fun produceAndViewThreeHintsInState13() {
     submitWrongAnswerToState13()
-    produceAndViewNextHint(
-      hintPosition = 0,
-      submitAnswer = this::submitWrongAnswerToState13AndWait
-    )
-    produceAndViewNextHint(
-      hintPosition = 1,
-      submitAnswer = this::submitWrongAnswerToState13AndWait
-    )
-    produceAndViewNextHint(
-      hintPosition = 2,
-      submitAnswer = this::submitWrongAnswerToState13AndWait
-    )
+    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToState13AndWait)
+    produceAndViewNextHint(hintPosition = 1, submitAnswer = this::submitWrongAnswerToState13AndWait)
+    produceAndViewNextHint(hintPosition = 2, submitAnswer = this::submitWrongAnswerToState13AndWait)
   }
 
   private fun produceAndViewFourHints() {
     // Cause three hints to show, and reveal each of them one at a time (to allow the later hints
     // to be shown).
     produceAndViewFirstHint()
-    produceAndViewNextHint(
-      hintPosition = 1,
-      submitAnswer = this::submitWrongAnswerToState2AndWait
-    )
-    produceAndViewNextHint(
-      hintPosition = 2,
-      submitAnswer = this::submitWrongAnswerToState2AndWait
-    )
-    produceAndViewNextHint(
-      hintPosition = 3,
-      submitAnswer = this::submitWrongAnswerToState2AndWait
-    )
+    produceAndViewNextHint(hintPosition = 1, submitAnswer = this::submitWrongAnswerToState2AndWait)
+    produceAndViewNextHint(hintPosition = 2, submitAnswer = this::submitWrongAnswerToState2AndWait)
+    produceAndViewNextHint(hintPosition = 3, submitAnswer = this::submitWrongAnswerToState2AndWait)
   }
 
   private fun produceAndViewSolution(
@@ -1977,26 +1581,6 @@ class StateFragmentLocalTest {
       })
   }
 
-  @Module
-  class TestExplorationStorageModule {
-
-    /**
-     * Provides the size allocated to exploration checkpoint database.
-     *
-     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 490 Bytes.
-     *
-     * For [FRACTIONS_EXPLORATION_ID_1], the size of the checkpoint after loading the exploration
-     * and then upon completing the first, second and third state is 85, 340, 425 and 499 bytes
-     * respectively. Therefore it is expected that the size of the database will exceed the
-     * allocated limit of 250 bytes when the fourth checkpoint is saved. One important thing to note
-     * is that the checkpoint sizes mentioned above by submitting the correct answer on every state
-     * on the first attempt and no hint is viewed on any state.
-     */
-    @Provides
-    @ExplorationStorageDatabaseSize
-    fun provideExplorationStorageDatabaseSize(): Int = 490
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -2015,7 +1599,7 @@ class StateFragmentLocalTest {
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      TestExplorationStorageModule::class
+      ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

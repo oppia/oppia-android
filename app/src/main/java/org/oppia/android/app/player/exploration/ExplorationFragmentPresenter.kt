@@ -26,8 +26,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    isCheckpointingEnabled: Boolean
+    explorationId: String
   ): View? {
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
@@ -35,8 +34,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       profileId,
       topicId,
       storyId,
-      explorationId,
-      isCheckpointingEnabled
+      explorationId
     )
     logPracticeFragmentEvent(topicId, storyId, explorationId)
     if (getStateFragment() == null) {

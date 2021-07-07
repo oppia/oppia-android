@@ -47,8 +47,7 @@ class StateFragment :
       internalProfileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String,
-      isCheckpointingEnabled: Boolean
+      explorationId: String
     ): StateFragment {
       val stateFragment = StateFragment()
       val args = Bundle()
@@ -56,7 +55,6 @@ class StateFragment :
       args.putString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY, storyId)
       args.putString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      args.putBoolean(STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY, isCheckpointingEnabled)
       stateFragment.arguments = args
       return stateFragment
     }
@@ -79,8 +77,6 @@ class StateFragment :
     val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
     val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    val isCheckpointingEnabled =
-      arguments!!.getBoolean(STATE_FRAGMENT_IS_CHECKPOINTING_ENABLED_ARGUMENT_KEY, false)
 
     return stateFragmentPresenter.handleCreateView(
       inflater,
@@ -88,8 +84,7 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId,
-      isCheckpointingEnabled
+      explorationId
     )
   }
 

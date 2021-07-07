@@ -25,8 +25,6 @@ internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_story_id"
 internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_exploration_id"
-internal const val TEST_ACTIVITY_IS_CHECKPOINTING_ENABLED_EXTRA_KEY =
-  "StateFragmentTestActivity.test_activity_is_checkpointing_enabled"
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
@@ -63,15 +61,13 @@ class StateFragmentTestActivity :
       profileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String,
-      isCheckpointingEnabled: Boolean
+      explorationId: String
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
       intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
       intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
       intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
-      intent.putExtra(TEST_ACTIVITY_IS_CHECKPOINTING_ENABLED_EXTRA_KEY, isCheckpointingEnabled)
       return intent
     }
   }

@@ -32,6 +32,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 ) {
 
   private var profileId: Int = 1
+  private lateinit var topicId: String
+  private lateinit var storyId: String
   private lateinit var explorationId: String
 
   fun handleOnCreate() {
@@ -45,20 +47,15 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
 
     profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
-    explorationId =
-      activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
-      ?: TEST_EXPLORATION_ID_2
-    val topicId =
+    topicId =
       activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
-    val storyId =
+    storyId =
       activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
-    val isCheckpointEnabled =
-      activity.intent.getBooleanExtra(TEST_ACTIVITY_IS_CHECKPOINTING_ENABLED_EXTRA_KEY, false)
     explorationId =
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
       ?: TEST_EXPLORATION_ID_2
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId, isCheckpointEnabled)
+      startPlayingExploration(profileId, topicId, storyId, explorationId)
     }
 
     if (getHintsAndSolutionManagerFragment() == null) {
@@ -91,8 +88,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    isCheckpointEnabled: Boolean
+    explorationId: String
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
@@ -116,7 +112,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
             )
             else -> {
               oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-              initializeExploration(profileId, topicId, storyId, explorationId, isCheckpointEnabled)
+              initializeExploration(profileId, topicId, storyId, explorationId)
             }
           }
         }
@@ -127,13 +123,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    isCheckpointEnabled: Boolean
+    explorationId: String
   ) {
     getStateFragmentTestViewModel().hasExplorationStarted.set(true)
 
     val stateFragment =
-      StateFragment.newInstance(profileId, topicId, storyId, explorationId, isCheckpointEnabled)
+      StateFragment.newInstance(profileId, topicId, storyId, explorationId)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,
       stateFragment

@@ -94,8 +94,7 @@ class ExplorationActivity :
       storyId: String,
       explorationId: String,
       backflowScreen: Int?,
-      // checkpointing is disabled until mechanism to resume exploration is implemented.
-      isCheckpointingEnabled: Boolean = false
+      isCheckpointingEnabled: Boolean
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)

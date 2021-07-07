@@ -33,8 +33,7 @@ class ExplorationFragment : InjectableFragment() {
       topicId: String,
       storyId: String,
       readingTextSize: String,
-      explorationId: String,
-      isCheckpointEnabled: Boolean
+      explorationId: String
     ): ExplorationFragment {
       val explorationFragment = ExplorationFragment()
       val args = Bundle()
@@ -51,10 +50,6 @@ class ExplorationFragment : InjectableFragment() {
       args.putString(
         EXPLORATION_ID_ARGUMENT_KEY,
         explorationId
-      )
-      args.putBoolean(
-        ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-        isCheckpointEnabled
       )
       explorationFragment.arguments = args
       return explorationFragment
@@ -86,11 +81,6 @@ class ExplorationFragment : InjectableFragment() {
     val explorationId =
       arguments!!.getString(EXPLORATION_ID_ARGUMENT_KEY)
     checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
-    val isCheckpointingEnabled =
-      arguments!!.getBoolean(
-        ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-        /* defaultValue= */ false
-      )
     return explorationFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -98,7 +88,6 @@ class ExplorationFragment : InjectableFragment() {
       topicId,
       storyId,
       explorationId,
-      isCheckpointingEnabled
     )
   }
 

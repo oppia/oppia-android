@@ -15,7 +15,9 @@ private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
   "get_exploration_by_id_provider_id"
 
 /**
- * Controller for loading explorations by ID, or beginning to play an exploration.
+ * Controller for loading explorations by ID, or beginning to play an exploration. This controller
+ * is also responsible for controlling the saved checkpoints when the exploration is started or
+ * stopped.
  *
  * At most one exploration may be played at a given time, and its state will be managed by
  * [ExplorationProgressController].
@@ -90,8 +92,15 @@ class ExplorationDataController @Inject constructor(
    * @return a one-time [LiveData] with success result if checkpointing has been successful
    *         otherwise a failure result with an appropriate exception is returned.
    */
-  fun checkExplorationCheckpointStatus(): LiveData<AsyncResult<Any?>> =
-    explorationProgressController.checkCheckpointStateToExitExploration()
+  fun checkHasCheckpointingBeenSuccessful(): LiveData<AsyncResult<Any?>> {
+    return try {
+      explorationProgressController.isCurrentCheckpointStateIsSavedDatabaseNotExceededLimit()
+      MutableLiveData(AsyncResult.success(null))
+    } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e)
+      MutableLiveData(AsyncResult.failed(e))
+    }
+  }
 
   /** Function to fetch the details of the oldest saved exploration for a specified profileId.*/
   fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =

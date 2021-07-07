@@ -1430,7 +1430,6 @@ class StateFragmentTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
-        isCheckpointingEnabled = false
       )
     )
   }

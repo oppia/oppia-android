@@ -240,7 +240,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              /* backflowScreen = */ null
+              /* backflowScreen = */ null,
+              isCheckpointingEnabled = false
             )
             activity.finish()
           }
