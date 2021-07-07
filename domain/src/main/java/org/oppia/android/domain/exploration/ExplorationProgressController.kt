@@ -2,7 +2,6 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -40,7 +39,6 @@ private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_
  * take care to ensure that uses of this class do not specifically depend on ordering.
  */
 @Singleton
-@ExperimentalCoroutinesApi
 class ExplorationProgressController @Inject constructor(
   dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
