@@ -6,8 +6,7 @@ The java_lite_proto_library() rule takes in a proto_library target and generates
 For more context on adding a new proto library, please refer to model/BUILD.bazel
 """
 
-load("@rules_java//java:defs.bzl", "java_lite_proto_library")
-load("@rules_java//java:defs.bzl", "java_proto_library")
+load("@rules_java//java:defs.bzl", "java_lite_proto_library", "java_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(

@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.maven
 
-import com.google.protobuf.MessageLite
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
