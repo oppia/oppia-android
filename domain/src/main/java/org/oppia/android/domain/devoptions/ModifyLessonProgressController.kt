@@ -104,7 +104,7 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Marks multiple topics completed given a profile ID and list of topics.
+   * Marks multiple topics completed given a profile ID and list of topic IDs.
    *
    * @param profileId the ID corresponding to the profile for which progress needs modified.
    * @param topicIdList the list of topic IDs for which progress needs modified.
@@ -123,6 +123,33 @@ class ModifyLessonProgressController @Inject constructor(
             completionTimestamp = oppiaClock.getCurrentTimeMs()
           )
         }
+      }
+    }
+    return true
+  }
+
+  /**
+   * Marks multiple stories completed given a profile ID and list of topic and story Ids.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs modified.
+   * @param storyMap the list of topic IDs mapped to corresponding story IDs for which progress
+   * needs modified.
+   * @return a [Boolean] indicating whether the process is completed or not.
+   */
+  fun markMultipleStoriesCompleted(
+    profileId: ProfileId,
+    storyMap: Map<String, String>
+  ): Boolean {
+    storyMap.forEach {
+      val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
+      storySummary.chapterList.forEach { chapterSummary ->
+        storyProgressController.recordCompletedChapter(
+          profileId = profileId,
+          topicId = it.value,
+          storyId = storySummary.storyId,
+          explorationId = chapterSummary.explorationId,
+          completionTimestamp = oppiaClock.getCurrentTimeMs()
+        )
       }
     }
     return true
