@@ -125,7 +125,7 @@ class ImageTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withImageCardMarkup_missingAltValue_hasNoReadableText() {
+  fun testParseHtml_withImageCardMarkup_missingAltValue_hasReadableText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = IMAGE_TAG_MARKUP_1,
