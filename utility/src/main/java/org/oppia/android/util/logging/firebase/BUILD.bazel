@@ -70,7 +70,7 @@ kt_android_library(
     srcs = [
         "DebugLogReportingModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":debug_impl",

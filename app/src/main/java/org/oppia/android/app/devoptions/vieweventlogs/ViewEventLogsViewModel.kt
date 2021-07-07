@@ -27,10 +27,8 @@ class ViewEventLogsViewModel @Inject constructor(
   }
 
   private fun processEventLogsList(): List<EventLogItemViewModel> {
-    val itemViewModelList: MutableList<EventLogItemViewModel> = ArrayList()
-    eventList.forEach { eventLog ->
-      itemViewModelList.add(EventLogItemViewModel(eventLog, oppiaDateTimeFormatter))
-    }
-    return itemViewModelList.reversed()
+    return eventList.map {
+      EventLogItemViewModel(it, oppiaDateTimeFormatter)
+    }.reversed()
   }
 }
