@@ -183,7 +183,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedViewModel.kt",
-    "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicSummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerFooterViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",

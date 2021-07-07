@@ -12,6 +12,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,7 +26,8 @@ private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 class ModifyLessonProgressController @Inject constructor(
   private val topicController: TopicController,
   private val topicListController: TopicListController,
-  private val storyProgressController: StoryProgressController
+  private val storyProgressController: StoryProgressController,
+  private val oppiaClock: OppiaClock
 ) {
 
   /**
@@ -97,6 +99,31 @@ class ModifyLessonProgressController @Inject constructor(
   fun checkIfStoryIsCompleted(storyWithProgress: StorySummary): Boolean {
     storyWithProgress.chapterList.forEach { chapterSummary ->
       if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
+    }
+    return true
+  }
+
+  /**
+   * Marks multiple topics completed given a profile ID and list of topics.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs modified.
+   * @param topicIdList the list of topic IDs for which progress needs modified.
+   * @return a [Boolean] indicating whether the process is completed or not.
+   */
+  fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>): Boolean {
+    topicIdList.forEach { topicId ->
+      val topic = topicController.retrieveTopic(topicId)
+      topic.storyList.forEach { storySummary ->
+        storySummary.chapterList.forEach { chapterSummary ->
+          storyProgressController.recordCompletedChapter(
+            profileId = profileId,
+            topicId = topic.topicId,
+            storyId = storySummary.storyId,
+            explorationId = chapterSummary.explorationId,
+            completionTimestamp = oppiaClock.getCurrentTimeMs()
+          )
+        }
+      }
     }
     return true
   }
