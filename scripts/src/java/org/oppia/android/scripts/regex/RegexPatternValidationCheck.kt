@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.regex
 
 import com.google.protobuf.MessageLite
-import org.oppia.android.scripts.common.REGEX_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.REGEX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.FileContentCheck
 import org.oppia.android.scripts.proto.FileContentChecks
@@ -12,8 +10,8 @@ import java.io.File
 import java.io.FileInputStream
 
 /**
- * Script for ensuring that prohibited file contents and
- * file naming patterns are not present in the codebase.
+ * Script for ensuring that prohibited file contents and file naming patterns are not present in the
+ * codebase.
  *
  * Usage:
  *   bazel run //scripts:pattern_validation_check  -- <path_to_directory_root>
@@ -26,7 +24,7 @@ import java.io.FileInputStream
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
-  val repoPath = args[0] + "/"
+  val repoPath = "${args[0]}/"
 
   // A list of all files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
@@ -45,14 +43,18 @@ fun main(vararg args: String) {
   // Check if the repo has any file content failure.
   val hasFileContentCheckFailure = retrieveFileContentChecks()
     .fold(initial = false) { isFailing, fileContentCheck ->
-      val checkFailed = checkProhibitedContent(searchFiles, fileContentCheck)
+      val checkFailed = checkProhibitedContent(
+        repoPath,
+        searchFiles,
+        fileContentCheck
+      )
       isFailing || checkFailed
     }
 
   if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
-    throw Exception(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("REGEX PATTERN CHECKS FAILED")
   } else {
-    println(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("REGEX PATTERN CHECKS PASSED")
   }
 }
 
@@ -62,7 +64,7 @@ fun main(vararg args: String) {
  * @return a list of all the FilenameChecks
  */
 private fun retrieveFilenameChecks(): List<FilenameCheck> {
-  return getProto(
+  return loadProto(
     "filename_pattern_validation_checks.pb",
     FilenameChecks.getDefaultInstance()
   ).getFilenameChecksList()
@@ -74,7 +76,7 @@ private fun retrieveFilenameChecks(): List<FilenameCheck> {
  * @return a list of all the FileContentChecks
  */
 private fun retrieveFileContentChecks(): List<FileContentCheck> {
-  return getProto(
+  return loadProto(
     "file_content_validation_checks.pb",
     FileContentChecks.getDefaultInstance()
   ).getFileContentChecksList()
@@ -87,7 +89,7 @@ private fun retrieveFileContentChecks(): List<FileContentCheck> {
  * @param proto instance of the proto class
  * @return proto class from the parsed textproto file
  */
-private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
+private fun <T : MessageLite> loadProto(textProtoFileName: String, proto: T): T {
   val protoBinaryFile = File("scripts/assets/$textProtoFileName")
   val builder = proto.newBuilderForType()
 
@@ -107,7 +109,7 @@ private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
  * @param repoPath the path of the repo
  * @param searchFiles a list of all the files which needs to be checked
  * @param filenameCheck proto object of FilenameCheck
- * @return file name pattern is correct or not
+ * @return whether the file name pattern is correct or not
  */
 private fun checkProhibitedFileNamePattern(
   repoPath: String,
@@ -117,7 +119,8 @@ private fun checkProhibitedFileNamePattern(
   val prohibitedFilenameRegex = filenameCheck.getProhibitedFilenameRegex().toRegex()
 
   val matchedFiles = searchFiles.filter { file ->
-    return@filter file.name !in filenameCheck.getExemptedFileNameList() &&
+    return@filter RepositoryFile.retrieveRelativeFilePath(file, repoPath) !in
+      filenameCheck.getExemptedFileNameList() &&
       prohibitedFilenameRegex.matches(
         RepositoryFile.retrieveRelativeFilePath(
           file,
@@ -136,9 +139,10 @@ private fun checkProhibitedFileNamePattern(
  * @param repoPath the path of the repo
  * @param searchFiles a list of all the files which needs to be checked
  * @param fileContentCheck proto object of FileContentCheck
- * @return file content pattern is correct or not
+ * @return whether the file content pattern is correct or not
  */
 private fun checkProhibitedContent(
+  repoPath: String,
   searchFiles: List<File>,
   fileContentCheck: FileContentCheck
 ): Boolean {
@@ -148,7 +152,8 @@ private fun checkProhibitedContent(
     fileContentCheck.getProhibitedContentRegex().toRegex()
 
   val matchedFiles = searchFiles.filter { file ->
-    file.name !in fileContentCheck.getExemptedFileNameList() &&
+    RepositoryFile.retrieveRelativeFilePath(file, repoPath) !in
+      fileContentCheck.getExemptedFileNameList() &&
       fileNameRegex.matches(file.name) &&
       File(file.toString())
         .bufferedReader()
@@ -200,5 +205,4 @@ private fun logProhibitedContentFailure(
 ) {
   val failureMessage = "$filePath:$lineNumber: $errorToShow"
   println(failureMessage)
-  println()
 }
