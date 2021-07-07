@@ -4,22 +4,6 @@ file path/name and content are used in the codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
-load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "generate_assets_list_from_text_protos")
-
-REGEX_PATTERN_CHECK_ASSETS = generate_assets_list_from_text_protos(
-    name = "regex_asset_files",
-    file_content_validation_file_names = [
-        "file_content_validation_checks",
-    ],
-    filepath_pattern_validation_file_names = [
-        "filename_pattern_validation_checks",
-    ],
-)
-
-kt_jvm_library(
-    name = "regex_check_assets",
-    data = REGEX_PATTERN_CHECK_ASSETS,
-)
 
 kt_jvm_library(
     name = "regex_pattern_validation_check_lib",
@@ -27,9 +11,7 @@ kt_jvm_library(
     srcs = ["RegexPatternValidationCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":regex_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
         "//scripts/src/java/org/oppia/android/scripts/proto:file_content_validation_structure_java_proto_lite",
         "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_structure_java_proto_lite",
     ],

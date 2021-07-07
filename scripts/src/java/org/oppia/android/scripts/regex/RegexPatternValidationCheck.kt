@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.regex
 
 import com.google.protobuf.MessageLite
-import org.oppia.android.scripts.common.REGEX_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.REGEX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.proto.FileContentCheck
 import org.oppia.android.scripts.proto.FileContentChecks
@@ -45,14 +43,18 @@ fun main(vararg args: String) {
   // Check if the repo has any file content failure.
   val hasFileContentCheckFailure = retrieveFileContentChecks()
     .fold(initial = false) { isFailing, fileContentCheck ->
-      val checkFailed = checkProhibitedContent(searchFiles, fileContentCheck)
+      val checkFailed = checkProhibitedContent(
+        repoPath,
+        searchFiles,
+        fileContentCheck
+      )
       isFailing || checkFailed
     }
 
   if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
-    throw Exception(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("REGEX PATTERN CHECKS FAILED")
   } else {
-    println(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("REGEX PATTERN CHECKS PASSED")
   }
 }
 
@@ -117,7 +119,8 @@ private fun checkProhibitedFileNamePattern(
   val prohibitedFilenameRegex = filenameCheck.getProhibitedFilenameRegex().toRegex()
 
   val matchedFiles = searchFiles.filter { file ->
-    return@filter file.name !in filenameCheck.getExemptedFileNameList() &&
+    return@filter RepositoryFile.retrieveRelativeFilePath(file, repoPath) !in
+      filenameCheck.getExemptedFileNameList() &&
       prohibitedFilenameRegex.matches(
         RepositoryFile.retrieveRelativeFilePath(
           file,
@@ -139,6 +142,7 @@ private fun checkProhibitedFileNamePattern(
  * @return whether the file content pattern is correct or not
  */
 private fun checkProhibitedContent(
+  repoPath: String,
   searchFiles: List<File>,
   fileContentCheck: FileContentCheck
 ): Boolean {
@@ -148,7 +152,8 @@ private fun checkProhibitedContent(
     fileContentCheck.getProhibitedContentRegex().toRegex()
 
   val matchedFiles = searchFiles.filter { file ->
-    file.name !in fileContentCheck.getExemptedFileNameList() &&
+    RepositoryFile.retrieveRelativeFilePath(file, repoPath) !in
+      fileContentCheck.getExemptedFileNameList() &&
       fileNameRegex.matches(file.name) &&
       File(file.toString())
         .bufferedReader()

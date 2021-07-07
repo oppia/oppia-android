@@ -1,10 +1,10 @@
 """
-Macro for retrieving the regex pattern check assets.
+Macro for retrieving the proto assets for script checks.
 """
 
 load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 
-def generate_assets_list_from_text_protos(
+def generate_regex_assets_list_from_text_protos(
         name,
         filepath_pattern_validation_file_names,
         file_content_validation_file_names):
@@ -25,7 +25,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "filename_pattern_validation_structure",
         proto_type_name = "FilenameChecks",
         name_prefix = name,
-        asset_dir = "//scripts/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     ) + generate_proto_binary_assets(
@@ -34,7 +34,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "file_content_validation_structure",
         proto_type_name = "FileContentChecks",
         name_prefix = name,
-        asset_dir = "//scripts/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     )

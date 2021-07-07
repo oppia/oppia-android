@@ -12,7 +12,7 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 proto_library(
     name = "filename_pattern_validation_structure_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
-    visibility = ["//scripts:oppia_script_library_visibility"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
@@ -24,7 +24,7 @@ java_lite_proto_library(
 proto_library(
     name = "file_content_validation_structure_proto",
     srcs = ["file_content_validation_checks.proto"],
-    visibility = ["//scripts:oppia_script_library_visibility"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
