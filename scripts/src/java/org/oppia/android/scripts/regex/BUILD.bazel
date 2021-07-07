@@ -16,13 +16,3 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/proto:filename_pattern_validation_structure_java_proto_lite",
     ],
 )
-
-kt_jvm_library(
-    name = "proto_class_lib",
-    testonly = True,
-    srcs = ["ProtoClass.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependency_java_proto_lite",
-    ],
-)

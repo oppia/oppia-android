@@ -6,7 +6,5 @@ import com.squareup.moshi.JsonClass
 /** Data class to parse the list of mavenListDependencies from maven_install.json. */
 @JsonClass(generateAdapter = true)
 data class MavenListDependencyTree(
-
   @Json(name = "dependency_tree") val mavenListDependencies: MavenListDependencies
-
 )

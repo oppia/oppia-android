@@ -9,7 +9,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MavenListDependency(
-
   @Json(name = "coord") val coord: String,
   @Json(name = "mavenListDependencies") val dependencies: List<String>? = null,
   @Json(name = "directDependencies") val directDependencies: List<String>? = null,
@@ -17,5 +16,4 @@ data class MavenListDependency(
   @Json(name = "mirror_urls") val mirrorUrls: List<String>? = null,
   @Json(name = "sha256") val sha: String? = null,
   @Json(name = "url") val url: String? = null
-
 )
