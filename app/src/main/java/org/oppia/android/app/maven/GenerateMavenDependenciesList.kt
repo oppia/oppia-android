@@ -1,23 +1,21 @@
 package org.oppia.android.app.maven
 
-
 import com.google.protobuf.MessageLite
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.File
 import java.io.FileInputStream
-
 import org.oppia.android.app.maven.maveninstall.MavenListDependency
 import org.oppia.android.app.maven.maveninstall.MavenListDependencyTree
 import org.oppia.android.app.maven.proto.MavenDependencyList
 import org.oppia.android.app.maven.proto.MavenDependency
 import org.oppia.android.app.maven.proto.License
-
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import org.oppia.android.app.maven.proto.OriginOfLicenses
 import org.oppia.android.app.maven.proto.PrimaryLinkType
+import org.oppia.android.app.maven.proto.SecondaryLinkType
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -35,15 +33,12 @@ var mavenInstallDependencyList: MutableList<MavenListDependency>? =
 var finalDependenciesList = mutableListOf<MavenListDependency>()
 var parsedArtifactsList = mutableListOf<String>()
 
-//val mavenDepsList = mutableListOf<LicenseDependency>()
 val linksSet = mutableSetOf<String>()
 val noLicenseSet = mutableSetOf<String>()
 
 private var countInvalidPomUrl = 0
-private var mavenDependencyItemIndex = 0
 var countDepsWithoutLicenseLinks = 0
 
-private var writeBackup = false
 var scriptFailed = false
 
 var rootPath: String = ""
@@ -86,17 +81,30 @@ fun main(args: Array<String>) {
   readMavenInstall()
   val savedDependenciesList = retrieveMavenDependencyList()
   val latestDependenciesList = getLicenseLinksFromPOM()
-//  println(latestList)
-//  val tf = TextFormat.printer().print(latestList)
-  writeTextProto(args[1], latestDependenciesList)
 
-  println("Number of deps with Invalid URL = $countInvalidPomUrl")
-  println(
-    "Number of deps for which licenses have " +
-      "to be provided manually = $countDepsWithoutLicenseLinks"
+  writeTextProto(args[1], latestDependenciesList)
+  val finalList = updateMavenDependenciesList(
+    savedDependenciesList,
+    latestDependenciesList.mavenDependencyListList
   )
-  println(linksSet)
-  println(noLicenseSet)
+  val licensesToBeFixed = getAllBrokenLicenses(finalList)
+
+  if (licensesToBeFixed.isNotEmpty()) {
+    println("Please provide the details of the following licenses manually:")
+    licensesToBeFixed.forEach {
+      println(it)
+    }
+    throw Exception("Licenses details are not completed.")
+  }
+
+  val dependenciesWithoutAnyLinks = getDependenciesWithNoLinks(finalList)
+  if (dependenciesWithoutAnyLinks.isNotEmpty()) {
+    println("Please provide the license links for the following dependencies manually:")
+    dependenciesWithoutAnyLinks.forEach {
+      println(it)
+    }
+    throw Exception("There does not exist any license links for some dependencies.")
+  }
 
   if (scriptFailed) {
     throw Exception(
@@ -106,16 +114,65 @@ fun main(args: Array<String>) {
   }
 }
 
+fun getDependenciesWithNoLinks(
+  mavenDependenciesList: List<MavenDependency>
+) : Set<MavenDependency> {
+  val dependenciesWithoutLicenses = mutableSetOf<MavenDependency>()
+  mavenDependenciesList.forEach {
+    if (it.licenseList.isEmpty()) {
+      dependenciesWithoutLicenses.add(it)
+    }
+  }
+  return dependenciesWithoutLicenses
+}
+
+fun getAllBrokenLicenses(
+  mavenDependenciesList: List<MavenDependency>
+): Set<License> {
+  val licenseSet = mutableSetOf<License>()
+  mavenDependenciesList.forEach { dependency ->
+    dependency.licenseList.forEach { license ->
+      if (
+        license.primaryLinkType == PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED ||
+        license.primaryLinkType == PrimaryLinkType.UNRECOGNIZED
+      ) {
+        licenseSet.add(license)
+      } else if (
+        license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY &&
+        (license.secondaryLink.isEmpty() || license.secondaryLinkType == SecondaryLinkType.UNRECOGNIZED ||
+          license.secondaryLinkType == SecondaryLinkType.SECONDARY_LINK_TYPE_UNSPECIFIED ||
+          license.secondaryLicenseName.isEmpty()
+        )
+      ) {
+        licenseSet.add(license)
+      } else if (
+        license.primaryLinkType == PrimaryLinkType.SHOW_LINK_ONLY &&
+        (license.secondaryLink.isEmpty() || license.secondaryLinkType == SecondaryLinkType.UNRECOGNIZED ||
+          license.secondaryLinkType == SecondaryLinkType.SECONDARY_LINK_TYPE_UNSPECIFIED ||
+          license.secondaryLicenseName.isEmpty()
+          )
+      ) {
+        licenseSet.add(license)
+      }
+    }
+  }
+  return licenseSet
+}
 
 fun updateMavenDependenciesList(
-  savedDependenciesList: ArrayList<MavenDependency>,
-  latestDependenciesList: ArrayList<MavenDependency>
-) : List<MavenDependency> {
+  savedDependenciesList: List<MavenDependency>,
+  latestDependenciesList: List<MavenDependency>
+): MutableList<MavenDependency> {
   val finalUpdatedList = mutableListOf<MavenDependency>()
   latestDependenciesList.forEach { it ->
-    savedDependenciesList.binarySearchBy(it.artifactName) { it.artifactName }
-
+    val index = savedDependenciesList.binarySearchBy(it.artifactName) { it.artifactName }
+    if (index >= 0) {
+      finalUpdatedList.add(savedDependenciesList[index])
+    } else {
+      finalUpdatedList.add(it)
+    }
   }
+  return finalUpdatedList
 }
 
 /**
@@ -184,12 +241,10 @@ fun runBazelQueryCommand(rootPath: String) {
     "@maven//...\'"
   )
 
-  println(output)
   output.forEach { dep ->
     bazelQueryDepsNames.add(dep.substring(9, dep.length))
   }
   bazelQueryDepsNames.sort()
-  showBazelQueryDepsList()
 }
 
 private fun readMavenInstall() {
@@ -283,7 +338,7 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
                   .newBuilder()
                   .setLicenseName(urlName.toString())
                   .setPrimaryLink(url.toString())
-                  .setPrimaryLinkTypeValue(PrimaryLinkType.SCRAPE_DIRECTLY_VALUE)
+                  .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
                   .build()
               )
               linksSet.add(url.toString())
@@ -312,7 +367,7 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
       .setArtifactName(it.coord)
       .setArtifactVersion(artifactVersion.toString())
       .addAllLicense(licenseList)
-      .setOriginOfLicenseValue(OriginOfLicenses.ENTIRELY_FROM_POM_VALUE)
+      .setOriginOfLicenseValue(OriginOfLicenses.UNKNOWN_VALUE)
 
     mavenDependencyList.add(mavenDependency.build())
   }
@@ -333,15 +388,13 @@ fun writeTextProto(
 
 fun runMavenRePinCommand(rootPath: String) {
   val rootDirectory = File(rootPath).absoluteFile
-  val repinCommand = "REPIN=1 bazel run @unpinned_maven//:pin"
-  val process = ProcessBuilder()
-    .command("bash", "-c", repinCommand)
-    .directory(rootDirectory)
-    .start()
-  val exitValue = process.waitFor()
-  if (exitValue != 0) {
-    throw Exception("An error was encountered while running the $repinCommand command.")
-  }
+  val bazelClient = BazelClient(rootDirectory)
+  val output = bazelClient.executeBazelRePinCommand(
+    "bazel",
+    "run",
+    "@unpinned_maven//:pin"
+  )
+  println(output)
 }
 
 private class BazelClient(private val rootDirectory: File) {
@@ -351,6 +404,25 @@ private class BazelClient(private val rootDirectory: File) {
   ): List<String> {
     val result =
       executeCommand(rootDirectory, command = "bazel", *arguments, includeErrorOutput = false)
+    // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
+    // 3 is expected for queries since it indicates that some of the arguments don't correspond to
+    // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
+    // unlikely.
+    val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
+    check(result.exitCode in expectedExitCodes) {
+      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
+        "\nStandard output:\n${result.output.joinToString("\n")}" +
+        "\nError output:\n${result.errorOutput.joinToString("\n")}"
+    }
+    return result.output
+  }
+
+  fun executeBazelRePinCommand(
+    vararg arguments: String,
+    allowPartialFailures: Boolean = false
+  ): List<String> {
+    val result =
+      executeCommand(rootDirectory, command = "REPIN=1", *arguments, includeErrorOutput = false)
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to
     // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
@@ -402,12 +474,6 @@ private class BazelClient(private val rootDirectory: File) {
       assembledCommand,
     )
   }
-}
-
-private enum class ScriptCode {
-  FIX_UNSPECIFIED_LINK_TYPE,
-  FIX_INVALID_LINK_TYPE,
-  FIX_UNAVAILABLE_LINK_TYPE
 }
 
 /** The result of executing a command using [executeCommand]. */

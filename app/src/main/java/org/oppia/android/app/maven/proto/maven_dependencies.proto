@@ -23,10 +23,16 @@ message License {
   string secondary_link = 3;
   PrimaryLinkType primary_link_type = 4;
   SecondaryLinkType secondary_link_type = 5;
+  string secondary_license_name = 6;
+}
+
+message Link {
+  string license_link = 1;
+  PrimaryLinkType link_type = 2;
 }
 
 enum PrimaryLinkType {
-  UNSPECIFIED = 0;
+  PRIMARY_LINK_TYPE_UNSPECIFIED = 0;
   SCRAPE_DIRECTLY = 1;
   SCRAPE_FROM_LOCAL_COPY = 2;
   SHOW_LINK_ONLY = 3;
@@ -34,8 +40,9 @@ enum PrimaryLinkType {
 }
 
 enum SecondaryLinkType {
-  SCRAPE = 0;
-  SHOW_LINK = 1;
+  SECONDARY_LINK_TYPE_UNSPECIFIED = 0;
+  SCRAPE = 1;
+  SHOW_LINK = 2;
 }
 
 enum OriginOfLicenses {
