@@ -58,9 +58,9 @@ class ImageTagHandler(
     if (contentDescription != null) {
       val spannableBuilder = SpannableStringBuilder(contentDescription)
       spannableBuilder.setSpan(
-        contentDescription, /* start= */
-        0, /* end= */
-        contentDescription.length,
+        contentDescription,
+        /* start= */0,
+        /* end= */ contentDescription.length,
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, closeIndex, spannableBuilder)
