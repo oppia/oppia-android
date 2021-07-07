@@ -59,6 +59,6 @@ def generate_maven_assets_list_from_text_protos(
         proto_type_name = "MavenDependencyList",
         name_prefix = name,
         asset_dir = "assets",
-        proto_dep_bazel_target_prefix = "//app/src/main/java/org/oppia/android/app/maven/proto",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     )

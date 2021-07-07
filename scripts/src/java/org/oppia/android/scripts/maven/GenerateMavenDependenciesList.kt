@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.maven
 
 import com.google.protobuf.MessageLite
+import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
@@ -14,7 +15,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -23,35 +23,22 @@ private const val LICENSE_TAG = "<license>"
 private const val NAME_TAG = "<name>"
 private const val URL_TAG = "<url>"
 
-var backupLicenseDepsList: MutableList<String> = mutableListOf<String>()
-
-var bazelQueryDepsNames: MutableList<String> = mutableListOf<String>()
-var mavenInstallDependencyList: MutableList<MavenListDependency>? =
-  mutableListOf<MavenListDependency>()
-var finalDependenciesList = mutableListOf<MavenListDependency>()
-var parsedArtifactsList = mutableListOf<String>()
-
-val linksSet = mutableSetOf<String>()
-val noLicenseSet = mutableSetOf<String>()
-
-private var countInvalidPomUrl = 0
-var countDepsWithoutLicenseLinks = 0
-
-var scriptFailed = false
-
-var rootPath: String = ""
-
-fun printMessage(message: String) {
-  println(
-    """*********************
-    $message  
-    *********************
-    """.trimIndent()
-  )
-}
-
 /**
+ * Script to compile the list of the third-party Maven dependencies (direct and indirect both)
+ * on which Oppia-android depends.
+ *
  * Usage:
+ *   bazel run //scripts:generate_maven_dependencies_list  -- <path_to_directory_root>
+ *   <path_to_maven_install_json> <path_to_maven_dependencies_textproto>
+ *
+ * Arguments:
+ * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ * - path_to_maven_install_json: absoulte path to the maven_install.json file.
+ * - path_to_maven_dependencies_textproto: absoulte path to the maven_dependencies.textproto
+ * that stores the list of maven dependencies compiled through the script.
+ * Example:
+ *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
+ *   $(pwd)/third_party/maven_install.json $(pwd)/scripts/assets/maven_dependencies.textproto
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
@@ -61,11 +48,12 @@ fun main(args: Array<String>) {
   val pathToMavenInstall = args[1]
   val pathToMavenDependenciesTextProto = args[2]
   runMavenRePinCommand(pathToRoot)
-  runBazelQueryCommand(pathToRoot)
-  readMavenInstall(pathToMavenInstall)
+  val bazelQueryDepsNames = runBazelQueryCommand(pathToRoot)
+  val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDepsNames)
 
   val dependenciesListFromTextproto = retrieveMavenDependencyList()
-  val dependenciesListFromPom = getLicenseLinksFromPOM().mavenDependencyListList
+  val dependenciesListFromPom =
+    getLicenseLinksFromPOM(finalMavenInstallList).mavenDependencyListList
 
   val licenseSetFromTextproto = mutableSetOf<License>()
   val licenseSetFromPom = mutableSetOf<License>()
@@ -139,7 +127,7 @@ fun main(args: Array<String>) {
   println("Maven Dependencies updated successfully.")
 }
 
-fun updateLicensesSet(
+private fun updateLicensesSet(
   licenseSetFromTextproto: Set<License>,
   licenseSetFromPom: Set<License>
 ): Set<License> {
@@ -155,7 +143,7 @@ fun updateLicensesSet(
   return finalLicensesSet
 }
 
-fun getDependenciesThatNeedHumanIntervention(
+private fun getDependenciesThatNeedHumanIntervention(
   mavenDependenciesList: List<MavenDependency>
 ): Set<MavenDependency> {
   val dependencies = mutableSetOf<MavenDependency>()
@@ -169,7 +157,7 @@ fun getDependenciesThatNeedHumanIntervention(
   return dependencies
 }
 
-fun getDependenciesWithNoAndInvalidLinks(
+private fun getDependenciesWithNoAndInvalidLinks(
   mavenDependenciesList: List<MavenDependency>
 ): Set<MavenDependency> {
   val dependenciesWithoutLicenses = mutableSetOf<MavenDependency>()
@@ -187,7 +175,7 @@ fun getDependenciesWithNoAndInvalidLinks(
   return dependenciesWithoutLicenses
 }
 
-fun getAllBrokenLicenses(
+private fun getAllBrokenLicenses(
   mavenDependenciesList: List<MavenDependency>
 ): Set<License> {
   val licenseSet = mutableSetOf<License>()
@@ -217,7 +205,7 @@ fun getAllBrokenLicenses(
   return licenseSet
 }
 
-fun updateMavenDependenciesList(
+private fun updateMavenDependenciesList(
   latestDependenciesList: List<MavenDependency>,
   finalLicensesSet: Set<License>
 ): MutableList<MavenDependency> {
@@ -249,27 +237,22 @@ fun updateMavenDependenciesList(
       .setArtifactVersion(mavenDependency.artifactVersion)
       .addAllLicense(updateLicenseList)
       .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
-    if (numberOfLicensesToBeProvidedManually == updateLicenseList.size &&
-      updateLicenseList.isNotEmpty()
-    ) {
-      dependency.originOfLicense = OriginOfLicenses.MANUAL
-    } else if (numberOfLicensesToBeProvidedManually != updateLicenseList.size &&
-      updateLicenseList.isNotEmpty()
-    ) {
-      dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
-    } else if (numberOfLicensesToBeProvidedManually == 0 && updateLicenseList.isNotEmpty()) {
-      dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
+
+    if (updateLicenseList.isNotEmpty()) {
+      if (numberOfLicensesToBeProvidedManually == updateLicenseList.size) {
+        dependency.originOfLicense = OriginOfLicenses.MANUAL
+      } else if (numberOfLicensesToBeProvidedManually == 0) {
+        dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
+      } else if (numberOfLicensesToBeProvidedManually != updateLicenseList.size) {
+        dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
+      }
     }
     finalUpdatedList.add(dependency.build())
   }
   return finalUpdatedList
 }
 
-/**
- * Retrieves all file content checks.
- *
- * @return a list of all the FileContentChecks
- */
+/** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
 private fun retrieveMavenDependencyList(): List<MavenDependency> {
   return getProto(
     "maven_dependencies.pb",
@@ -291,11 +274,11 @@ private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
-  val protoObj: T =
+  val protoObject: T =
     FileInputStream(protoBinaryFile).use {
       builder.mergeFrom(it)
     }.build() as T
-  return protoObj
+  return protoObject
 }
 
 fun parseArtifactName(artifactName: String): String {
@@ -319,9 +302,10 @@ fun parseArtifactName(artifactName: String): String {
   return parsedArtifactNameBuilder.toString()
 }
 
-fun runBazelQueryCommand(rootPath: String) {
+fun runBazelQueryCommand(rootPath: String): List<String> {
   val rootDirectory = File(rootPath).absoluteFile
   val bazelClient = BazelClient(rootDirectory)
+  val bazelQueryDepsNames = mutableListOf<String>()
   val output = bazelClient.executeBazelCommand(
     "query",
     "\'deps(deps(//:oppia)",
@@ -334,33 +318,39 @@ fun runBazelQueryCommand(rootPath: String) {
     bazelQueryDepsNames.add(dep.substring(9, dep.length))
   }
   bazelQueryDepsNames.sort()
+  return bazelQueryDepsNames.toList()
 }
 
-private fun readMavenInstall(pathToMavenInstall: String) {
+private fun readMavenInstall(
+  pathToMavenInstall: String,
+  bazelQueryDepsNames: List<String>
+): List<MavenListDependency> {
   val mavenInstallJson = File(pathToMavenInstall)
   val mavenInstallJsonText = mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
   val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
   val adapter = moshi.adapter(MavenListDependencyTree::class.java)
   val dependencyTree = adapter.fromJson(mavenInstallJsonText)
-  mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
+  val mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
   mavenInstallDependencyList?.sortBy { it -> it.coord }
-
+  val finalDependenciesList = mutableListOf<MavenListDependency>()
   mavenInstallDependencyList?.forEach { dep ->
     val artifactName = dep.coord
     val parsedArtifactName = parseArtifactName(artifactName)
     if (bazelQueryDepsNames.contains(parsedArtifactName)) {
-      parsedArtifactsList.add(parsedArtifactName)
       finalDependenciesList.add(dep)
     }
   }
+  return finalDependenciesList
 }
 
-private fun getLicenseLinksFromPOM(): MavenDependencyList {
+private fun getLicenseLinksFromPOM(
+  finalDependenciesList: List<MavenListDependency>
+): MavenDependencyList {
   var index = 0
   val mavenDependencyList = arrayListOf<MavenDependency>()
   finalDependenciesList.forEach {
     val url = it.url
-    val pomFileUrl = url?.substring(0, url.length - 3) + "pom"
+    val pomFileUrl = "${url?.substring(0, url.length - 3)}pom"
     val artifactName = it.coord
     val artifactVersion = StringBuilder()
     var lastIndex = artifactName.length - 1
@@ -372,79 +362,65 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
     val licenseNamesFromPom = mutableListOf<String>()
     val licenseLinksFromPom = mutableListOf<String>()
     val licenseList = arrayListOf<License>()
-    try {
-      val pomFile = URL(pomFileUrl).openStream().bufferedReader().readText()
-      val pomText = pomFile
-      var cursor = -1
-      if (pomText.length > 11) {
-        for (index in 0..(pomText.length - 11)) {
-          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
-            cursor = index + 9
-            break
-          }
-        }
-        if (cursor != -1) {
-          var cursor2 = cursor
-          while (cursor2 < (pomText.length - 12)) {
-            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
-              cursor2 += 9
-              while (cursor2 < pomText.length - 6 &&
-                pomText.substring(
-                  cursor2,
-                  cursor2 + 6
-                ) != NAME_TAG
-              ) {
-                ++cursor2
-              }
-              cursor2 += 6
-              val url = StringBuilder()
-              val urlName = StringBuilder()
-              while (pomText[cursor2] != '<') {
-                urlName.append(pomText[cursor2])
-                ++cursor2
-              }
-              while (cursor2 < pomText.length - 4 &&
-                pomText.substring(
-                  cursor2,
-                  cursor2 + 5
-                ) != URL_TAG
-              ) {
-                ++cursor2
-              }
-              cursor2 += 5
-              while (pomText[cursor2] != '<') {
-                url.append(pomText[cursor2])
-                ++cursor2
-              }
-              licenseNamesFromPom.add(urlName.toString())
-              licenseLinksFromPom.add(url.toString())
-              licenseList.add(
-                License
-                  .newBuilder()
-                  .setLicenseName(urlName.toString())
-                  .setPrimaryLink(url.toString())
-                  .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
-                  .build()
-              )
-              linksSet.add(url.toString())
-            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
-              break
-            }
-            ++cursor2
-          }
+    val pomFile = URL(pomFileUrl).openStream().bufferedReader().readText()
+    val pomText = pomFile
+    var cursor = -1
+    if (pomText.length > 11) {
+      for (index in 0..(pomText.length - 11)) {
+        if (pomText.substring(index, index + 10) == LICENSES_TAG) {
+          cursor = index + 9
+          break
         }
       }
-    } catch (e: Exception) {
-      ++countInvalidPomUrl
-      scriptFailed = true
-      val message =
-        """Error : There was a problem while opening the provided link  -
-        URL : $pomFileUrl")
-        MavenListDependency Name : $artifactName
-        """.trimIndent()
-      printMessage(message)
-      e.printStackTrace()
-      exitProcess(1)
+      if (cursor != -1) {
+        var cursor2 = cursor
+        while (cursor2 < (pomText.length - 12)) {
+          if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
+            cursor2 += 9
+            while (cursor2 < pomText.length - 6 &&
+              pomText.substring(
+                cursor2,
+                cursor2 + 6
+              ) != NAME_TAG
+            ) {
+              ++cursor2
+            }
+            cursor2 += 6
+            val url = StringBuilder()
+            val urlName = StringBuilder()
+            while (pomText[cursor2] != '<') {
+              urlName.append(pomText[cursor2])
+              ++cursor2
+            }
+            while (cursor2 < pomText.length - 4 &&
+              pomText.substring(
+                cursor2,
+                cursor2 + 5
+              ) != URL_TAG
+            ) {
+              ++cursor2
+            }
+            cursor2 += 5
+            while (pomText[cursor2] != '<') {
+              url.append(pomText[cursor2])
+              ++cursor2
+            }
+            licenseNamesFromPom.add(urlName.toString())
+            licenseLinksFromPom.add(url.toString())
+            licenseList.add(
+              License
+                .newBuilder()
+                .setLicenseName(urlName.toString())
+                .setPrimaryLink(url.toString())
+                .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
+                .build()
+            )
+          } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
+            break
+          }
+          ++cursor2
+        }
+      }
     }
     val mavenDependency = MavenDependency
       .newBuilder()
@@ -452,7 +428,7 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
       .setArtifactName(it.coord)
       .setArtifactVersion(artifactVersion.toString())
       .addAllLicense(licenseList)
-      .setOriginOfLicenseValue(OriginOfLicenses.UNKNOWN_VALUE)
+      .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
 
     mavenDependencyList.add(mavenDependency.build())
   }

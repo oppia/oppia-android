@@ -20,7 +20,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "generate_maven_dependencies_list_lib",
     srcs = ["GenerateMavenDependenciesList.kt"],
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":maven_dependencies_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto",

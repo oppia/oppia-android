@@ -37,18 +37,18 @@ java_lite_proto_library(
 proto_library(
     name = "generate_maven_dependencies_list_proto",
     srcs = ["maven_dependencies.proto"],
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_proto_library(
     name = "generate_maven_dependencies_list_java_proto",
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":generate_maven_dependencies_list_proto"],
 )
 
 java_lite_proto_library(
     name = "generate_maven_dependencies_list_java_proto_lite",
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":generate_maven_dependencies_list_proto",
     ],
