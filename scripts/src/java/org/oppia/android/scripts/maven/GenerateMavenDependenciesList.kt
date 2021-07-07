@@ -1,21 +1,20 @@
 package org.oppia.android.scripts.maven
 
 import com.google.protobuf.MessageLite
-import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import java.io.File
-import java.io.FileInputStream
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
-import org.oppia.android.scripts.proto.MavenDependencyList
-import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.License
-import java.net.URL
-import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
+import org.oppia.android.scripts.proto.MavenDependency
+import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.OriginOfLicenses
 import org.oppia.android.scripts.proto.PrimaryLinkType
 import org.oppia.android.scripts.proto.SecondaryLinkType
+import java.io.File
+import java.io.FileInputStream
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 private const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 private const val LICENSES_TAG = "<licenses>"
@@ -133,7 +132,7 @@ fun main(args: Array<String>) {
       """There are still some dependencies that need human intervention.
       Try to find the license links for these dependencies and coordinate with the Oppia-android maintainers
       to fix the issue.
-    """.trimIndent()
+      """.trimIndent()
     )
     throw Exception("Human Intervention needed.")
   }
@@ -205,7 +204,8 @@ fun getAllBrokenLicenses(
             license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
           ) &&
         (
-          license.secondaryLink.isEmpty() || license.secondaryLinkType == SecondaryLinkType.UNRECOGNIZED ||
+          license.secondaryLink.isEmpty() ||
+            license.secondaryLinkType == SecondaryLinkType.UNRECOGNIZED ||
             license.secondaryLinkType == SecondaryLinkType.SECONDARY_LINK_TYPE_UNSPECIFIED ||
             license.secondaryLicenseName.isEmpty()
           )
@@ -249,9 +249,13 @@ fun updateMavenDependenciesList(
       .setArtifactVersion(mavenDependency.artifactVersion)
       .addAllLicense(updateLicenseList)
       .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
-    if (numberOfLicensesToBeProvidedManually == updateLicenseList.size && updateLicenseList.isNotEmpty()) {
+    if (numberOfLicensesToBeProvidedManually == updateLicenseList.size &&
+      updateLicenseList.isNotEmpty()
+    ) {
       dependency.originOfLicense = OriginOfLicenses.MANUAL
-    } else if (numberOfLicensesToBeProvidedManually != updateLicenseList.size && updateLicenseList.isNotEmpty()) {
+    } else if (numberOfLicensesToBeProvidedManually != updateLicenseList.size &&
+      updateLicenseList.isNotEmpty()
+    ) {
       dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
     } else if (numberOfLicensesToBeProvidedManually == 0 && updateLicenseList.isNotEmpty()) {
       dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
@@ -436,7 +440,8 @@ private fun getLicenseLinksFromPOM(): MavenDependencyList {
       val message =
         """Error : There was a problem while opening the provided link  -
         URL : $pomFileUrl")
-        MavenListDependency Name : $artifactName""".trimIndent()
+        MavenListDependency Name : $artifactName
+        """.trimIndent()
       printMessage(message)
       e.printStackTrace()
       exitProcess(1)
