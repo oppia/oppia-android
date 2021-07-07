@@ -5,7 +5,9 @@ Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. 
 
 **WARNING: We recommend to not use the Android Studio Bazel plugin since it currently has compatibility issues with the project.**
 
-**We don't officially support Windows for now so the Windows instructions may not be complete and may require additional tweaking.** Note that it's fine to try to use Windows but keep in mind that you might not receive help much. If you plan on contributing to the project with Bazel-specific work, we suggest either sideloading or virtualizing Ubuntu (e.g. with VirtualBox).<br>
+**NOTE: If you're using Windows, please follow [these instructions](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows) instead.**
+
+Instructions for setting up Bazel on Unix-based machines:
 
 1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). 
 
