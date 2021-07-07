@@ -22,6 +22,7 @@ fun main(vararg args: String) {
   val repoPath = args[0] + "/"
 
   // A list of all the files to be exempted for this check.
+  // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
   val testFileExemptionList = loadTestFileExemptionsProto().getExemptList()
 
   // A list of all kotlin files in the repo to be analyzed.
