@@ -10,7 +10,10 @@ import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity : InjectableAppCompatActivity(), RouteToViewEventLogsListener {
+class DeveloperOptionsActivity :
+  InjectableAppCompatActivity(),
+  ForceCrashButtonClickListener,
+  RouteToViewEventLogsListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
@@ -36,5 +39,9 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity(), RouteToViewEvent
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
+  }
+
+  override fun forceCrash() {
+    developerOptionsActivityPresenter.forceCrash()
   }
 }

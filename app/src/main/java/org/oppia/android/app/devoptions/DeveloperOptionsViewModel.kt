@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
-
+  private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
 
   /**
@@ -30,7 +30,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
     return listOf(
       DeveloperOptionsModifyLessonProgressViewModel(),
       DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
-      DeveloperOptionsOverrideAppBehaviorsViewModel()
+      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
     )
   }
 }

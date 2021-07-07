@@ -61,6 +61,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
+    "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
