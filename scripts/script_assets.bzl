@@ -1,10 +1,10 @@
 """
-Macros for preparing & creating assets to include in the scripts module.
+Macro for retrieving the proto assets for script checks.
 """
 
 load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 
-def generate_assets_list_from_text_protos(
+def generate_regex_assets_list_from_text_protos(
         name,
         filepath_pattern_validation_file_names,
         file_content_validation_file_names):
@@ -39,7 +39,7 @@ def generate_assets_list_from_text_protos(
         proto_package = "proto",
     )
 
-def generate_assets_list_from_text_protos_for_test_file(
+def generate_test_file_assets_list_from_text_protos(
         name,
         test_file_exemptions_name,
         ):

@@ -6,8 +6,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.common.TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -16,6 +14,8 @@ import java.io.PrintStream
 class TestFileCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
+  private val TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR = "TEST FILE CHECK PASSED"
+  private val TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR = "TEST FILE CHECK FAILED"
 
   @Rule
   @JvmField

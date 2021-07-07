@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.testfile
 
 import org.oppia.android.scripts.common.RepositoryFile
-import org.oppia.android.scripts.common.TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR
 import org.oppia.android.scripts.proto.ScriptExemptions
 import java.io.File
 import java.io.FileInputStream
@@ -49,9 +47,9 @@ fun main(vararg args: String) {
   logFailures(matchedFiles)
 
   if (matchedFiles.isNotEmpty()) {
-    throw Exception(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("TEST FILE CHECK FAILED")
   } else {
-    println(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("TEST FILE CHECK PASSED")
   }
 }
 

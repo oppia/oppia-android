@@ -48,7 +48,7 @@ class RepositoryFile() {
      * Checks if a file/directory is prohibited to be analyzed for the check.
      *
      * @param pathString the path of the repo
-     * @return check if path is allowed to be analyzed or not
+     * @return whether the specified path should be analyzed per allow rules
      */
     private fun checkIfProhibitedFile(pathString: String): Boolean {
       return alwaysExcludeDirectoryList.any { pathString.startsWith(it) }

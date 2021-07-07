@@ -516,7 +516,6 @@ exempt: "domain/src/main/java/org/oppia/android/domain/util/JsonAssetRetriever.k
 exempt: "domain/src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt"
 exempt: "scripts/src/java/org/oppia/android/scripts/common/CommandExecutor.kt"
 exempt: "scripts/src/java/org/oppia/android/scripts/common/CommandResult.kt"
-exempt: "scripts/src/java/org/oppia/android/scripts/common/ScriptResultConstants.kt"
 exempt: "testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt"
 exempt: "testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt"
 exempt: "testing/src/main/java/org/oppia/android/testing/DisableAccessibilityChecks.kt"

@@ -3,8 +3,8 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
-load("//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_assets.bzl", "retrieve_regex_pattern_check_assets")
-load("//scripts:script_assets.bzl", "generate_assets_list_from_text_protos_for_test_file")
+load("//scripts:script_assets.bzl", "generate_regex_assets_list_from_text_protos")
+load("//scripts:script_assets.bzl", "generate_test_file_assets_list_from_text_protos")
 
 # Visibility for libraries that should be accessible to script tests.
 package_group(
@@ -45,12 +45,20 @@ kt_jvm_binary(
     ],
 )
 
-REGEX_PATTERN_CHECK_ASSETS = retrieve_regex_pattern_check_assets("regex_pattern_assets")
+REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
+    name = "regex_asset_files",
+    file_content_validation_file_names = [
+        "file_content_validation_checks",
+    ],
+    filepath_pattern_validation_file_names = [
+        "filename_pattern_validation_checks",
+    ],
+)
 
 kt_jvm_library(
     name = "regex_check_assets",
     data = REGEX_PATTERN_CHECK_ASSETS,
-    visibility = [":oppia_script_binary_visibility"],
+    visibility = [":oppia_script_test_visibility"],
 )
 
 kt_jvm_binary(
@@ -58,7 +66,9 @@ kt_jvm_binary(
     testonly = True,
     data = REGEX_PATTERN_CHECK_ASSETS,
     main_class = "org.oppia.android.scripts.regex.RegexPatternValidationCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib"],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
+    ],
 )
 
 kt_jvm_binary(
@@ -68,7 +78,7 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
 )
 
-TEST_FILE_EXEMPTION_ASSETS = generate_assets_list_from_text_protos_for_test_file(
+TEST_FILE_EXEMPTION_ASSETS = generate_test_file_assets_list_from_text_protos(
     name = "test_file_exemption_assets",
     test_file_exemptions_name = ["test_file_exemptions"],
 )
