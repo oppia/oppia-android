@@ -155,6 +155,31 @@ class ModifyLessonProgressController @Inject constructor(
     return true
   }
 
+  /**
+   * Marks multiple chapters completed given a profile ID and list of topic IDs, story IDs and
+   * exploration IDs.
+   *
+   * @param profileId the ID corresponding to the profile for which progress needs modified.
+   * @param chapterMap the list of [Pair] of topic IDs and story IDs mapped to corresponding
+   * exploration IDs for which progress needs modified.
+   * @return a [Boolean] indicating whether the process is completed or not.
+   */
+  fun markMultipleChaptersCompleted(
+    profileId: ProfileId,
+    chapterMap: Map<String, Pair<String, String>>
+  ): Boolean {
+    chapterMap.forEach {
+      storyProgressController.recordCompletedChapter(
+        profileId = profileId,
+        topicId = it.value.second,
+        storyId = it.value.first,
+        explorationId = it.key,
+        completionTimestamp = oppiaClock.getCurrentTimeMs()
+      )
+    }
+    return true
+  }
+
   /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */
   private fun combineTopicListAndTopicProgressList(
     allTopics: List<Topic>,
