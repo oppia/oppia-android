@@ -86,8 +86,9 @@ kt_jvm_binary(
 )
 
 kt_jvm_library(
-    name = "maven_assets",
+    name = "maven_assets_lib",
     data = MAVEN_ASSETS,
+    visibility = [":oppia_script_test_visibility"],
 )
 
 kt_jvm_binary(

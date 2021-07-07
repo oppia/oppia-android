@@ -267,17 +267,15 @@ private fun retrieveMavenDependencyList(): List<MavenDependency> {
  * @param proto instance of the proto class
  * @return proto class from the parsed textproto file
  */
-private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
+private fun getProto(
+  textProtoFileName: String,
+  proto: MavenDependencyList
+): MavenDependencyList {
   val protoBinaryFile = File("scripts/assets/$textProtoFileName")
   val builder = proto.newBuilderForType()
-
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  val protoObject: T =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as T
+  val protoObject = FileInputStream(protoBinaryFile).use {
+    builder.mergeFrom(it)
+  }.build() as MavenDependencyList
   return protoObject
 }
 
