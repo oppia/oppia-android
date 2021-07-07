@@ -62,7 +62,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     storyMap: Map<String, List<StorySummary>>
   ): List<MarkChaptersCompletedItemViewModel> {
     itemList.clear()
-    var nextStoryIndex = 0
+    var nextStoryIndex: Int
     var chapterIndex = 0
     storyMap.forEach { storyMapItem ->
       storyMapItem.value.forEach { storySummary ->
