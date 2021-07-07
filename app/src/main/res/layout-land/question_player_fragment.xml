@@ -17,9 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
