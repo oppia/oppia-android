@@ -152,5 +152,3 @@ private fun getTransformer(): Transformer {
   transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
   return transformer
 }
-
-private class LicenseAndText
