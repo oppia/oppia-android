@@ -25,11 +25,13 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
@@ -52,14 +54,16 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
-import org.oppia.android.domain.topic.UPCOMING_TOPIC_ID_1
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -124,6 +128,9 @@ class ExplorationProgressControllerTest {
   @Inject
   lateinit var oppiaClock: FakeOppiaClock
 
+  @Inject
+  lateinit var explorationCheckpointController: ExplorationCheckpointController
+
   @Mock
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
@@ -151,6 +158,12 @@ class ExplorationProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
+  @Mock
+  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
+
+  @Captor
+  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
+
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
@@ -176,7 +189,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultLiveData =
-      explorationDataController.startPlayingExploration("invalid_exp_id")
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        "invalid_topic_id",
+        "invalid_story_id",
+        "invalid_exp_id",
+        isCheckpointingEnabled = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -192,7 +211,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      topicId = "invalid_topic_id",
+      storyId = "invalid_story_id",
+      explorationId = "invalid_exp_id",
+      isCheckpointingEnabled = false
+    )
 
     verify(
       mockCurrentStateLiveDataObserver,
@@ -207,7 +232,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_valid_returnsSuccess() {
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        isCheckpointingEnabled = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -222,7 +253,13 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     // The second-to-latest result stays pending since the exploration was loading (the actual
     // result is the fully loaded exploration). This is only true if the observer begins before
@@ -237,7 +274,13 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
@@ -257,11 +300,23 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() {
     // Start with playing an invalid exploration.
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      topicId = "invalid_topic_id",
+      storyId = "invalid_story_id",
+      explorationId = "invalid_exp_id",
+      isCheckpointingEnabled = false
+    )
     endExploration()
 
     // Then a valid one.
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
@@ -295,11 +350,23 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_withoutFinishingPrevious_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     // Try playing another exploration without finishing the previous one.
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        isCheckpointingEnabled = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -316,11 +383,23 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     // Start with playing a valid exploration, then stop.
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     endExploration()
 
     // Then another valid one.
-    playExploration(TEST_EXPLORATION_ID_4)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      isCheckpointingEnabled = false
+    )
 
     // The latest result should correspond to the valid ID, and the progress controller should
     // gracefully recover.
@@ -357,7 +436,13 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_whileLoading_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -378,7 +463,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -397,7 +488,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -418,7 +515,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -437,7 +540,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefFeedbackAndSameStateTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -460,7 +569,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(2)
@@ -484,7 +599,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(0)
@@ -507,7 +628,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeMultipleChoiceState()
     submitMultipleChoiceAnswer(0)
 
@@ -547,7 +674,13 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -562,7 +695,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -579,7 +718,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     submitPrototypeState1Answer()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -595,7 +740,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     submitPrototypeState1Answer()
 
     moveToNextState()
@@ -613,7 +764,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_afterMovingFromCompletedState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     submitPrototypeState1Answer()
     moveToNextState()
 
@@ -649,7 +806,13 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -666,7 +829,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -684,7 +853,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onCompletedInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     submitPrototypeState1Answer()
 
     val moveToStateResult =
@@ -703,7 +878,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     val moveToStateResult =
@@ -722,7 +903,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -743,7 +930,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
@@ -764,7 +957,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -785,7 +984,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -807,7 +1012,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forFractionInput_wrongAnswer_returnsDefaultOutcome_hasHint() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeFractionInputState()
 
     submitWrongAnswerForPrototypeState2()
@@ -833,7 +1044,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
 
@@ -872,7 +1089,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
 
@@ -904,7 +1127,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeFractionInputState()
 
     submitWrongAnswerForPrototypeState2()
@@ -933,7 +1162,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -958,7 +1193,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -985,7 +1226,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_eighthState_submitWrongAnswer_updatePendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -1013,7 +1260,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1035,7 +1288,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     submitPrototypeState2Answer() // Submit the answer but do not proceed to the next state.
 
@@ -1056,7 +1315,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterMoveToPrev_onThirdState_newObserver_receivesCompletedSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
@@ -1085,7 +1350,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     // The initial state should not have a next state.
     verify(
@@ -1101,7 +1372,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     submitPrototypeState1Answer()
 
@@ -1120,7 +1397,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1138,7 +1421,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1157,7 +1446,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1175,7 +1470,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
@@ -1195,7 +1496,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(
@@ -1217,7 +1524,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     // The first state of the exploration is the Continue interaction.
 
     val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
@@ -1239,7 +1552,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
 
     playThroughPrototypeExploration()
 
@@ -1258,7 +1577,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
@@ -1286,7 +1611,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_onFinalState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeExploration()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -1307,7 +1638,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      isCheckpointingEnabled = false
+    )
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
     moveToNextState()
 
@@ -1329,7 +1666,13 @@ class ExplorationProgressControllerTest {
 
     // Click on Jupiter before Saturn to take a slightly different (valid) path through the
     // exploration. (Note that this does not include actual branching).
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      isCheckpointingEnabled = false
+    )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
     moveToNextState()
@@ -1349,11 +1692,23 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeExploration()
     endExploration()
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      isCheckpointingEnabled = false
+    )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
 
     // Verify that we're on the second-to-last state of the second exploration.
@@ -1383,7 +1738,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
@@ -1418,7 +1779,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      topicId = "invalid_topic_id",
+      storyId = "invalid_story_id",
+      explorationId = "invalid_exp_id",
+      isCheckpointingEnabled = false
+    )
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
@@ -1426,105 +1793,383 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSaveExplorationCheckpoint_savesCheckpointWithoutError() {
+  fun testCheckpointing_loadExploration_checkCheckpointIsSaved() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
-    playThroughPrototypeState1AndMoveToNextState()
-    val saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    verifyOperationSucceeds(saveCheckpointLiveData)
-  }
-
-  @Test
-  fun testProcessSaveCheckpointResult_saveCheckpoint_correctCheckpointState() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
-    playThroughPrototypeState1AndMoveToNextState()
-    val saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    val checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
-    assertThat(checkpointState).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
-    )
-  }
-
-  @Test
-  fun testProcessSaveCheckpointResult_saveMultipleCheckpoints_correctCheckpointState() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
-    playThroughPrototypeState1AndMoveToNextState()
-    var saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    var checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
-    assertThat(checkpointState).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
     )
     testCoroutineDispatchers.runCurrent()
-    playThroughPrototypeState2AndMoveToNextState()
-    saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    checkpointState = processSaveCheckpointResult(saveCheckpointLiveData)
-    assertThat(checkpointState).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
+
+    val retrieveCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        TEST_EXPLORATION_ID_2
+      ).toLiveData()
+
+    verifyOperationSucceeds(retrieveCheckpointLiveData)
+  }
+
+  @Test
+  fun testCheckpointing_playThroughMultipleStates_verifyCheckpointHasCorrectPendingStateName() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
     )
-  }
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Continue"
+    )
 
-  @Test
-  fun testFinishExplosionWithCheckpointing_progressSaved_databaseLimitNotExceeded_isSuccessful() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
-    val saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    processSaveCheckpointResult(saveCheckpointLiveData)
-    testCoroutineDispatchers.runCurrent()
-    val finishExplorationWithCheckpointingLiveData =
-      explorationProgressController.checkCheckpointStateToExitExploration()
-    verifyOperationSucceeds(finishExplorationWithCheckpointingLiveData)
-  }
-
-  @Test
-  fun testCheckCheckpointStateToExitExploration_databaseLimitExceeded_isFailureWithException() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
-    playThroughPrototypeState1AndMoveToNextState()
-
-    var saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    processSaveCheckpointResult(saveCheckpointLiveData)
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Fractions",
+    )
 
     playThroughPrototypeState2AndMoveToNextState()
-    saveCheckpointLiveData =
-      explorationProgressController.saveExplorationCheckpoint(profileId).toLiveData()
-    processSaveCheckpointResult(saveCheckpointLiveData)
-    testCoroutineDispatchers.runCurrent()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "MultipleChoice",
+    )
 
-    val checkCheckpointStateToExitExploration =
-      explorationProgressController.checkCheckpointStateToExitExploration()
-
-    verifyOperationFails(checkCheckpointStateToExitExploration)
-
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
+    playThroughPrototypeState3AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
     )
   }
 
   @Test
-  fun testCheckCheckpointStateToExitExploration_unsavedProgress_isFailureWithException() {
+  fun testCheckpointing_advToFourthState_backToPrevState_verifyCheckpointHasCorrectPendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
     playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+    moveToPreviousState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+  }
 
-    // Every exploration is marked as unsaved until a save operation changes the checkpoint state to
-    // some other state.
+  @Test
+  fun testCheckpointing_backTwoStates_nextState_verifyCheckpointHasCorrectPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    moveToPreviousState()
+    moveToPreviousState()
+    moveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+  }
 
-    val checkpointStateToExitExplorationLiveData =
-      explorationProgressController.checkCheckpointStateToExitExploration()
+  @Test
+  fun testCheckpointing_advanceToThirdState_submitMultipleAns_checkCheckpointIsSavedAfterEachAns() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
 
-    verifyOperationFails(checkpointStateToExitExplorationLiveData)
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+    testCoroutineDispatchers.runCurrent()
 
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.ProgressNotSavedException::class.java
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 1
+    )
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 2
+    )
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // count should be equal to zero because on submission of the correct answer, the
+    // pendingTopState changes.
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 0
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_submitAns_prevState_checkCheckpointIsSavedAfterEachAns() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    moveToPreviousState()
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_moveToPrevState_checkCheckpointHasStateIndexOfThirdState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    moveToPreviousState()
+
+    verifyCheckpointHasCorrectStateIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      stateIndex = 2
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_prevStates_nextState_checkCheckpointHasCorrectStateIndex() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    moveToPreviousState()
+    moveToPreviousState()
+    moveToNextState()
+
+    verifyCheckpointHasCorrectStateIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      stateIndex = 2
+    )
+  }
+
+  @Test
+  fun testCheckpointing_revealHint_checkHintIsSavedInCheckpoint() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
+
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      state = currentState.state,
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectHintIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      indexOfRevealedHint = 0
+    )
+  }
+
+  @Test
+  fun testCheckpointing_revealSolution_checkCheckpointIsSaved() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
+
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    result.observeForever(mockAsyncSolutionObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      isSolutionRevealed = true
+    )
+  }
+
+  @Test
+  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
+
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(currentState.checkpointState).isEqualTo(CheckpointState.UNSAVED)
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
+
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(currentState.checkpointState).isEqualTo(
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+    )
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_databaseFull_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      isCheckpointingEnabled = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
+
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(currentState.checkpointState).isEqualTo(
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 
@@ -1544,8 +2189,22 @@ class ExplorationProgressControllerTest {
       .observeForever(mockCurrentStateLiveDataObserver)
   }
 
-  private fun playExploration(explorationId: String) {
-    verifyOperationSucceeds(explorationDataController.startPlayingExploration(explorationId))
+  private fun playExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    isCheckpointingEnabled: Boolean
+  ) {
+    verifyOperationSucceeds(
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        isCheckpointingEnabled
+      )
+    )
   }
 
   private fun submitContinueButtonAnswer() {
@@ -1892,6 +2551,121 @@ class ExplorationProgressControllerTest {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
+  private fun verifyCheckpointHasCorrectPendingStateName(
+    profileId: ProfileId,
+    explorationId: String,
+    pendingStateName: String
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(pendingStateName)
+  }
+
+  private fun verifyCheckpointHasCorrectCountOfAnswers(
+    profileId: ProfileId,
+    explorationId: String,
+    countOfAnswers: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingUserAnswersCount)
+      .isEqualTo(countOfAnswers)
+  }
+
+  private fun verifyCheckpointHasCorrectStateIndex(
+    profileId: ProfileId,
+    explorationId: String,
+    stateIndex: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().stateIndex)
+      .isEqualTo(stateIndex)
+  }
+
+  private fun verifyCheckpointHasCorrectHintIndex(
+    profileId: ProfileId,
+    explorationId: String,
+    indexOfRevealedHint: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
+      .isEqualTo(indexOfRevealedHint)
+  }
+
+  private fun verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
+    profileId: ProfileId,
+    explorationId: String,
+    isSolutionRevealed: Boolean
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().solutionIsRevealed)
+      .isEqualTo(isSolutionRevealed)
+  }
+
   /**
    * Verifies that the specified live data provides at least one successful operation. This will
    * change test-wide mock state, and synchronizes background execution.
@@ -1925,39 +2699,6 @@ class ExplorationProgressControllerTest {
       assertThat(isFailure()).isTrue()
     }
     reset(mockAsyncResultLiveDataObserver)
-  }
-
-  /**
-   * updates the checkpoint state for an exploration depending upon the result of the last save
-   * operation.
-   *
-   * @return the [ExplorationCheckpointState] to which the latest checkpoint state has transitioned.
-   */
-  private fun <T : Any?> processSaveCheckpointResult(
-    liveData: LiveData<AsyncResult<T>>
-  ): ExplorationCheckpointState {
-    reset(mockAsyncResultLiveDataObserver)
-    liveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    asyncResultCaptor.value.apply {
-      // This bit of conditional logic is used to add better error reporting when failures occur.
-      if (isFailure()) {
-        throw AssertionError("Operation failed", getErrorOrNull())
-      }
-      assertThat(isSuccess()).isTrue()
-    }
-    reset(mockAsyncResultLiveDataObserver)
-    val checkpointState = asyncResultCaptor.value.getOrThrow() as ExplorationCheckpointState
-    explorationProgressController.processSaveCheckpointResult(
-      profileId,
-      UPCOMING_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_2,
-      oppiaClock.getCurrentTimeMs(),
-      checkpointState
-    )
-    return checkpointState
   }
 
   // TODO(#89): Move this to a common test application component.

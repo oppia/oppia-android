@@ -202,7 +202,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     backflowScreen: Int?
   ) {
     explorationDataController.startPlayingExploration(
-      explorationId
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      isCheckpointingEnabled = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
