@@ -1,6 +1,7 @@
 package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.AnswerAndResponse
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
@@ -70,15 +71,18 @@ internal class StateDeck internal constructor(
   internal fun getTopStateIndex(): Int = stateIndex
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-  internal fun getCurrentEphemeralState(): EphemeralState {
+  internal fun getCurrentEphemeralState(checkpointState: CheckpointState): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
     // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
     // the second case assumes the top of the deck must be pending.
-    return when {
+    val ephemeralState = when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
       stateIndex == previousStates.size -> getCurrentPendingState()
       else -> getPreviousState()
     }
+    return ephemeralState.toBuilder()
+      .setCheckpointState(checkpointState)
+      .build()
   }
 
   /**

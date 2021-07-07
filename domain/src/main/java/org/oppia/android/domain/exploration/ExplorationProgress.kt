@@ -1,9 +1,9 @@
 package org.oppia.android.domain.exploration
 
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -23,7 +23,7 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var isLightweightCheckpointingEnabled: Boolean = false
-  internal var checkpointState = ExplorationCheckpointState.UNSAVED
+  internal var checkpointState = CheckpointState.UNSAVED
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
@@ -86,7 +86,7 @@ internal class ExplorationProgress {
    * @param newCheckpointState is the latest checkpoint state that is returned upon
    *        completion of the save operation for checkpoints either successfully or unsuccessfully.
    */
-  internal fun updateCheckpointState(newCheckpointState: ExplorationCheckpointState) {
+  internal fun updateCheckpointState(newCheckpointState: CheckpointState) {
     checkpointState = newCheckpointState
   }
 

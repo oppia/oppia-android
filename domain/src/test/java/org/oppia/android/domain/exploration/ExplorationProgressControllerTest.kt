@@ -25,6 +25,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
@@ -2090,16 +2091,21 @@ class ExplorationProgressControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val checkpointStateLiveData =
-      explorationProgressController.checkCheckpointStateToExitExploration()
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
 
-    // checkpointStateLiveData returns a failed result with the exception
-    // ProgressNotSavedException when checkpointState is SAVED_DATABASE_EXCEEDED_LIMIT.
-    verifyOperationFails(checkpointStateLiveData)
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.ProgressNotSavedException::class.java
-    )
+    assertThat(currentState.checkpointState).isEqualTo(CheckpointState.UNSAVED)
   }
 
   @Test
@@ -2114,12 +2120,23 @@ class ExplorationProgressControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val checkpointStateLiveData =
-      explorationProgressController.checkCheckpointStateToExitExploration()
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
 
-    // checkCheckpointStateToExitExploration returns a success result when checkpointState is
-    // SAVED_DATABASE_NOT_EXCEEDED_LIMIT.
-    verifyOperationSucceeds(checkpointStateLiveData)
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    assertThat(currentState.checkpointState).isEqualTo(
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+    )
   }
 
   @Test
@@ -2137,15 +2154,22 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
-    val checkpointStateLiveData =
-      explorationProgressController.checkCheckpointStateToExitExploration()
+    val currentStateLiveData =
+      explorationProgressController.getCurrentState().toLiveData()
+    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
+    testCoroutineDispatchers.runCurrent()
 
-    // checkpointStateLiveData returns a failed result with the exception
-    // CheckpointDatabaseOverflowException when checkpointState is SAVED_DATABASE_EXCEEDED_LIMIT.
-    verifyOperationFails(checkpointStateLiveData)
+    // The new observer should observe the completed second state since it's the current pending
+    // state.
+    verify(
+      mockCurrentStateLiveDataObserver2,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
+    assertThat(currentState.checkpointState).isEqualTo(
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 

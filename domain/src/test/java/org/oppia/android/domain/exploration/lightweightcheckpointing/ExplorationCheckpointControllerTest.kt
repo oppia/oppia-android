@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Deferred
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,6 +22,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
@@ -32,6 +34,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -43,6 +46,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
+  "record_exploration_checkpoint_provider_id"
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -100,6 +106,9 @@ class ExplorationCheckpointControllerTest {
   @Captor
   lateinit var checkpointDetailsCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpointDetails>>
 
+  @Inject
+  lateinit var dataProviders: DataProviders
+
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
@@ -115,7 +124,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
@@ -128,7 +137,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 
@@ -141,7 +150,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
@@ -282,12 +291,18 @@ class ExplorationCheckpointControllerTest {
   private fun saveCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> =
-    explorationCheckpointController.recordExplorationCheckpoint(
+  ): DataProvider<Any?> {
+    val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
       explorationCheckpoint = createCheckpoint(index)
     )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(deferred)
+    }
+  }
 
   /**
    * updates the saved checkpoint for the test exploration specified by the [index] supplied.
@@ -300,12 +315,18 @@ class ExplorationCheckpointControllerTest {
   private fun saveUpdatedCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> =
-    explorationCheckpointController.recordExplorationCheckpoint(
+  ): DataProvider<Any?> {
+    val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
       explorationCheckpoint = createUpdatedCheckpoint(index)
     )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(deferred)
+    }
+  }
 
   private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {
@@ -377,6 +398,13 @@ class ExplorationCheckpointControllerTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
+  }
+
+  private suspend fun getDeferredResult(
+    deferred: Deferred<CheckpointState>
+  ): AsyncResult<Any?> {
+    val checkpointState = deferred.await()
+    return AsyncResult.success(checkpointState)
   }
 
   // TODO(#89): Move this to a common test application component.
