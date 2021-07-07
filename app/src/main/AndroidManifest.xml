@@ -164,7 +164,6 @@
     <activity android:name=".app.testing.HomeFragmentTestActivity" />
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
-    <activity android:name=".app.testing.SplashTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity
@@ -188,6 +187,7 @@
       android:name=".app.topic.revisioncard.RevisionCardActivity"
       android:label="@string/revision_card_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.SplashTestActivity" />
     <activity
       android:name=".app.topic.TopicActivity"
       android:label="@string/topic_page"
