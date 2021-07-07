@@ -24,11 +24,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
 
   private lateinit var profileId: ProfileId
 
-  /**
-   * List of [StorySummaryViewModel] used in [MarkStoriesCompletedFragmentPresenter] to check if
-   * all stories are selected or not.
-   */
-  val itemList = mutableListOf<StorySummaryViewModel>()
+  private val itemList = mutableListOf<StorySummaryViewModel>()
 
   /**
    * List of [StorySummaryViewModel] used to populate recyclerview of [MarkStoriesCompletedFragment]
@@ -78,4 +74,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
+
+  /** Returns a list of [StorySummaryViewModel] whose progress can be modified */
+  fun getStorySummaryList(): List<StorySummaryViewModel> = itemList.toList()
 }

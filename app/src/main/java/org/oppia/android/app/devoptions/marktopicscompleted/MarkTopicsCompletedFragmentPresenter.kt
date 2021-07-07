@@ -11,7 +11,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkTopicsCompletedFragmentBinding
-import org.oppia.android.databinding.MarkTopicsCompletedTopicSummaryViewBinding
+import org.oppia.android.databinding.MarkTopicsCompletedTopicViewBinding
 import javax.inject.Inject
 
 /** The presenter for [MarkTopicsCompletedFragment]. */
@@ -23,7 +23,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private lateinit var bindingAdapter: BindableAdapter<TopicSummaryViewModel>
+  private lateinit var bindingAdapter: BindableAdapter<TopicViewModel>
   lateinit var selectedTopicIdList: ArrayList<String>
 
   fun handleCreateView(
@@ -56,7 +56,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     bindingAdapter = createRecyclerViewAdapter()
-    binding.markTopicsCompletedTopicSummaryRecyclerView.apply {
+    binding.markTopicsCompletedRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
     }
@@ -68,8 +68,8 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkTopicsCompletedViewModel().availableTopicIdList.forEach { topicId ->
-          topicSelected(topicId)
+        getMarkTopicsCompletedViewModel().getTopicList().forEach { topicViewModel ->
+          if (!topicViewModel.isCompleted) topicSelected(topicViewModel.topic.topicId)
         }
       }
       bindingAdapter.notifyDataSetChanged()
@@ -78,19 +78,19 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<TopicSummaryViewModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicSummaryViewModel>()
+      .newBuilder<TopicViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = MarkTopicsCompletedTopicSummaryViewBinding::inflate,
+        inflateDataBinding = MarkTopicsCompletedTopicViewBinding::inflate,
         setViewModel = this::bindTopicSummaryView
       )
       .build()
   }
 
   private fun bindTopicSummaryView(
-    binding: MarkTopicsCompletedTopicSummaryViewBinding,
-    model: TopicSummaryViewModel
+    binding: MarkTopicsCompletedTopicViewBinding,
+    model: TopicViewModel
   ) {
     binding.viewModel = model
     if (model.isCompleted) {
@@ -117,7 +117,9 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       selectedTopicIdList.add(topicId)
     }
 
-    if (selectedTopicIdList.size == getMarkTopicsCompletedViewModel().availableTopicIdList.size) {
+    if (selectedTopicIdList.size ==
+      getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted }
+    ) {
       binding.isAllChecked = true
     }
   }
@@ -127,7 +129,9 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       selectedTopicIdList.remove(topicId)
     }
 
-    if (selectedTopicIdList.size != getMarkTopicsCompletedViewModel().availableTopicIdList.size) {
+    if (selectedTopicIdList.size !=
+      getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted }
+    ) {
       binding.isAllChecked = false
     }
   }

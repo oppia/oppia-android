@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 /**
  * [ViewModel] for [MarkTopicsCompletedFragment]. It populates the recyclerview with a list of
- * [TopicSummaryViewModel] which in turn display the topic.
+ * [TopicViewModel] which in turn display the topic.
  */
 @FragmentScope
 class MarkTopicsCompletedViewModel @Inject constructor(
@@ -24,17 +24,13 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private lateinit var profileId: ProfileId
 
-  /**
-   * List of topic ids used in [MarkTopicsCompletedFragmentPresenter] to check if all topics are
-   * selected or not.
-   */
-  val availableTopicIdList = ArrayList<String>()
+  private val itemList = mutableListOf<TopicViewModel>()
 
   /**
-   * List of [TopicSummaryViewModel] used to populate recyclerview of [MarkTopicsCompletedFragment]
+   * List of [TopicViewModel] used to populate recyclerview of [MarkTopicsCompletedFragment]
    * to display topics.
    */
-  val topicSummaryLiveData: LiveData<List<TopicSummaryViewModel>> by lazy {
+  val topicLiveData: LiveData<List<TopicViewModel>> by lazy {
     Transformations.map(allTopicsLiveData, ::processAllTopics)
   }
 
@@ -59,13 +55,11 @@ class MarkTopicsCompletedViewModel @Inject constructor(
     return allTopics.getOrDefault(mutableListOf())
   }
 
-  private fun processAllTopics(allTopics: List<Topic>): List<TopicSummaryViewModel> {
-    val itemList = mutableListOf<TopicSummaryViewModel>()
-    availableTopicIdList.clear()
+  private fun processAllTopics(allTopics: List<Topic>): List<TopicViewModel> {
+    itemList.clear()
     allTopics.forEach { topic ->
       val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
-      itemList.add(TopicSummaryViewModel(topic, isCompleted))
-      if (!isCompleted) availableTopicIdList.add(topic.topicId)
+      itemList.add(TopicViewModel(topic, isCompleted))
     }
     return itemList
   }
@@ -73,4 +67,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
+
+  /** Returns a list of [TopicViewModel] whose progress can be modified */
+  fun getTopicList(): List<TopicViewModel> = itemList.toList()
 }

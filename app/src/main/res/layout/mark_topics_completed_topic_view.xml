@@ -10,7 +10,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.devoptions.marktopicscompleted.TopicSummaryViewModel" />
+      type="org.oppia.android.app.devoptions.marktopicscompleted.TopicViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

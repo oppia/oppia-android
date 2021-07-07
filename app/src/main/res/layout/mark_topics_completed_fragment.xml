@@ -106,7 +106,7 @@
       app:layout_constraintTop_toBottomOf="@id/mark_topics_completed_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mark_topics_completed_topic_summary_recycler_view"
+        android:id="@+id/mark_topics_completed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/profileEditBackground"
@@ -114,7 +114,7 @@
         android:overScrollMode="never"
         android:paddingVertical="40dp"
         android:scrollbars="none"
-        app:data="@{viewModel.topicSummaryLiveData}"
+        app:data="@{viewModel.topicLiveData}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

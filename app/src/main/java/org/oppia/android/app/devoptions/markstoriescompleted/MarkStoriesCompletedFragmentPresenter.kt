@@ -56,7 +56,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     bindingAdapter = createRecyclerViewAdapter()
-    binding.markStoriesCompletedStorySummaryRecyclerView.apply {
+    binding.markStoriesCompletedRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
     }
@@ -68,7 +68,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkStoriesCompletedViewModel().itemList.forEach { storySummaryViewModel ->
+        getMarkStoriesCompletedViewModel().getStorySummaryList().forEach { storySummaryViewModel ->
           if (!storySummaryViewModel.isCompleted)
             storySelected(storySummaryViewModel.storySummary.storyId)
         }
@@ -119,7 +119,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     if (selectedStoryIdList.size ==
-      getMarkStoriesCompletedViewModel().itemList.count { !it.isCompleted }
+      getMarkStoriesCompletedViewModel().getStorySummaryList().count { !it.isCompleted }
     ) {
       binding.isAllChecked = true
     }
@@ -131,7 +131,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     if (selectedStoryIdList.size !=
-      getMarkStoriesCompletedViewModel().itemList.count { !it.isCompleted }
+      getMarkStoriesCompletedViewModel().getStorySummaryList().count { !it.isCompleted }
     ) {
       binding.isAllChecked = false
     }
