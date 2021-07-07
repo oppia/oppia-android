@@ -247,7 +247,8 @@ class ExplorationDataControllerTest {
     explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0, TEST_EXPLORATION_ID_2,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
       isCheckpointingEnabled = false
     )
     explorationDataController.startPlayingExploration(
