@@ -402,8 +402,9 @@ class ExplorationProgressController @Inject constructor(
    *  Checks if checkpointing is enabled, if checkpointing is enabled this function creates a
    *  checkpoint with the latest progress and saves it using [ExplorationCheckpointController].
    *
-   *  This function also waits for the save operation to complete inside of CoroutineScope and then
-   *  process the result of the save operation using the the function [processSaveCheckpointResult].
+   *  This function also waits for the save operation to complete, upon completion this function
+   *  uses the function [processSaveCheckpointResult] to mark the exploration as
+   *  IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
    */
   private fun saveExplorationCheckpoint() {
     // Do not save checkpoints if checkpointing is not enabled. This is expected to happen when
