@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
 
   val dependenciesListFromTextproto = retrieveMavenDependencyList()
   val dependenciesListFromPom =
-    getLicenseLinksFromPOM(finalMavenInstallList).mavenDependencyListList
+    getLicenseLinksFromPOM(finalMavenInstallList).mavenDependencyList
 
   val licenseSetFromTextproto = mutableSetOf<License>()
   val licenseSetFromPom = mutableSetOf<License>()
@@ -81,7 +81,7 @@ fun main(args: Array<String>) {
   )
   writeTextProto(
     pathToMavenDependenciesTextProto,
-    MavenDependencyList.newBuilder().addAllMavenDependencyList(finalDependenciesList).build()
+    MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build()
   )
 
   val licensesToBeFixed = getAllBrokenLicenses(finalDependenciesList)
@@ -257,7 +257,7 @@ private fun retrieveMavenDependencyList(): List<MavenDependency> {
   return getProto(
     "maven_dependencies.pb",
     MavenDependencyList.getDefaultInstance()
-  ).mavenDependencyListList.toList()
+  ).mavenDependencyList.toList()
 }
 
 /**
@@ -424,7 +424,6 @@ private fun getLicenseLinksFromPOM(
     }
     val mavenDependency = MavenDependency
       .newBuilder()
-      .setIndex(index++)
       .setArtifactName(it.coord)
       .setArtifactVersion(artifactVersion.toString())
       .addAllLicense(licenseList)
@@ -432,7 +431,7 @@ private fun getLicenseLinksFromPOM(
 
     mavenDependencyList.add(mavenDependency.build())
   }
-  return MavenDependencyList.newBuilder().addAllMavenDependencyList(mavenDependencyList).build()
+  return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
 }
 
 fun writeTextProto(

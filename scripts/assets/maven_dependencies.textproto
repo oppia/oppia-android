@@ -1,4 +1,4 @@
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.annotation:annotation:1.1.0"
   artifact_version: "1.1.0"
   license {
@@ -7,7 +7,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.appcompat:appcompat:1.2.0"
   artifact_version: "1.2.0"
   license {
@@ -16,7 +16,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.arch.core:core-common:2.1.0"
   artifact_version: "2.1.0"
   license {
@@ -25,7 +25,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.collection:collection:1.1.0"
   artifact_version: "1.1.0"
   license {
@@ -34,7 +34,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.constraintlayout:constraintlayout-solver:1.1.3"
   artifact_version: "1.1.3"
   license {
@@ -43,7 +43,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.constraintlayout:constraintlayout:1.1.3"
   artifact_version: "1.1.3"
   license {
@@ -52,7 +52,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.core:core-ktx:1.0.1"
   artifact_version: "1.0.1"
   license {
@@ -61,7 +61,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.core:core:1.3.0"
   artifact_version: "1.3.0"
   license {
@@ -70,7 +70,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.databinding:databinding-adapters:3.4.2"
   artifact_version: "3.4.2"
   license {
@@ -79,7 +79,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.databinding:databinding-common:3.4.2"
   artifact_version: "3.4.2"
   license {
@@ -88,7 +88,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.databinding:databinding-runtime:3.4.2"
   artifact_version: "3.4.2"
   license {
@@ -97,7 +97,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.drawerlayout:drawerlayout:1.1.0"
   artifact_version: "1.1.0"
   license {
@@ -106,7 +106,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.exifinterface:exifinterface:1.0.0"
   artifact_version: "1.0.0"
   license {
@@ -115,7 +115,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.fragment:fragment:1.2.0"
   artifact_version: "1.2.0"
   license {
@@ -124,7 +124,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.legacy:legacy-support-core-utils:1.0.0"
   artifact_version: "1.0.0"
   license {
@@ -133,7 +133,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-common:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -142,7 +142,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-extensions:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -151,7 +151,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-livedata-core:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -160,7 +160,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -169,7 +169,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-runtime:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -178,7 +178,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.multidex:multidex:2.0.1"
   artifact_version: "2.0.1"
   license {
@@ -187,7 +187,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.recyclerview:recyclerview:1.1.0"
   artifact_version: "1.1.0"
   license {
@@ -196,7 +196,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.room:room-common:2.2.5"
   artifact_version: "2.2.5"
   license {
@@ -205,7 +205,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.room:room-runtime:2.2.5"
   artifact_version: "2.2.5"
   license {
@@ -214,7 +214,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.vectordrawable:vectordrawable-animated:1.1.0"
   artifact_version: "1.1.0"
   license {
@@ -223,7 +223,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.viewpager2:viewpager2:1.0.0"
   artifact_version: "1.0.0"
   license {
@@ -232,7 +232,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.viewpager:viewpager:1.0.0"
   artifact_version: "1.0.0"
   license {
@@ -241,7 +241,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.work:work-runtime-ktx:2.4.0"
   artifact_version: "2.4.0"
   license {
@@ -250,7 +250,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "androidx.work:work-runtime:2.4.0"
   artifact_version: "2.4.0"
   license {
@@ -259,7 +259,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.crashlytics.sdk.android:crashlytics:2.9.8"
   artifact_version: "2.9.8"
   license {
@@ -268,7 +268,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:annotations:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -281,7 +281,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:compiler:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -294,7 +294,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:disklrucache:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -307,7 +307,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:gifdecoder:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -320,7 +320,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.github.bumptech.glide:glide:4.11.0"
   artifact_version: "4.11.0"
   license {
@@ -333,7 +333,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.android.flexbox:flexbox:3.0.0"
   artifact_version: "3.0.0"
   license {
@@ -342,7 +342,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.android.material:material:1.2.0-alpha02"
   artifact_version: "1.2.0-alpha02"
   license {
@@ -351,15 +351,15 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.auto.service:auto-service-annotations:1.0-rc7"
   artifact_version: "1.0-rc7"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.auto.value:auto-value-annotations:1.6.5"
   artifact_version: "1.6.5"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.code.findbugs:jsr305:3.0.2"
   artifact_version: "3.0.2"
   license {
@@ -368,7 +368,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.dagger:dagger:2.28.1"
   artifact_version: "2.28.1"
   license {
@@ -377,7 +377,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.errorprone:error_prone_annotations:2.3.4"
   artifact_version: "2.3.4"
   license {
@@ -386,7 +386,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
   artifact_version: "17.5.0"
   license {
@@ -395,7 +395,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.firebase:firebase-crashlytics:17.1.1"
   artifact_version: "17.1.1"
   license {
@@ -404,19 +404,19 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.guava:failureaccess:1.0.1"
   artifact_version: "1.0.1"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.guava:guava:29.0-jre"
   artifact_version: "29.0-jre"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"
   artifact_version: "9999.0-empty-to-avoid-conflict-with-guava"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.j2objc:j2objc-annotations:1.3"
   artifact_version: "1.3"
   license {
@@ -425,11 +425,11 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.google.protobuf:protobuf-lite:3.0.0"
   artifact_version: "3.0.0"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.12.0"
   artifact_version: "1.12.0"
   license {
@@ -438,7 +438,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.moshi:moshi-kotlin:1.12.0"
   artifact_version: "1.12.0"
   license {
@@ -447,7 +447,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.moshi:moshi:1.12.0"
   artifact_version: "1.12.0"
   license {
@@ -456,7 +456,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.okhttp3:okhttp:4.1.0"
   artifact_version: "4.1.0"
   license {
@@ -465,7 +465,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.okio:okio:2.10.0"
   artifact_version: "2.10.0"
   license {
@@ -474,11 +474,11 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.retrofit2:converter-moshi:2.5.0"
   artifact_version: "2.5.0"
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup.retrofit2:retrofit:2.9.0"
   artifact_version: "2.9.0"
   license {
@@ -487,7 +487,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup:kotlinpoet-classinspector-elements:1.8.0"
   artifact_version: "1.8.0"
   license {
@@ -496,7 +496,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup:kotlinpoet-metadata-specs:1.8.0"
   artifact_version: "1.8.0"
   license {
@@ -505,7 +505,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup:kotlinpoet-metadata:1.8.0"
   artifact_version: "1.8.0"
   license {
@@ -514,7 +514,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "com.squareup:kotlinpoet:1.8.0"
   artifact_version: "1.8.0"
   license {
@@ -523,7 +523,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "de.hdodenhof:circleimageview:3.0.1"
   artifact_version: "3.0.1"
   license {
@@ -532,7 +532,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "io.fabric.sdk.android:fabric:1.4.7"
   artifact_version: "1.4.7"
   license {
@@ -541,7 +541,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "io.github.chaosleung:pinview:1.4.4"
   artifact_version: "1.4.4"
   license {
@@ -550,7 +550,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "javax.annotation:javax.annotation-api:1.3.2"
   artifact_version: "1.3.2"
   license {
@@ -559,7 +559,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "javax.inject:javax.inject:1"
   artifact_version: "1"
   license {
@@ -568,7 +568,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "net.ltgt.gradle.incap:incap:0.3"
   artifact_version: "0.3"
   license {
@@ -577,7 +577,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "nl.dionsegijn:konfetti:1.2.5"
   artifact_version: "1.2.5"
   license {
@@ -586,7 +586,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.checkerframework:checker-qual:2.11.1"
   artifact_version: "2.11.1"
   license {
@@ -595,7 +595,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
   artifact_version: "1.4.31"
   license {
@@ -604,7 +604,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32"
   artifact_version: "1.4.32"
   license {
@@ -613,7 +613,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31"
   artifact_version: "1.4.31"
   license {
@@ -622,7 +622,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
   artifact_version: "1.4.31"
   license {
@@ -631,7 +631,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
   artifact_version: "1.4.32"
   license {
@@ -640,7 +640,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4"
   artifact_version: "1.3.4"
   license {
@@ -649,7 +649,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4"
   artifact_version: "1.3.4"
   license {
@@ -658,7 +658,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.2.0"
   artifact_version: "0.2.0"
   license {
@@ -667,7 +667,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.jetbrains:annotations:13.0"
   artifact_version: "13.0"
   license {
@@ -676,7 +676,7 @@ maven_dependency_list {
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
-maven_dependency_list {
+maven_dependency {
   artifact_name: "org.ow2.asm:asm:7.2"
   artifact_version: "7.2"
   license {

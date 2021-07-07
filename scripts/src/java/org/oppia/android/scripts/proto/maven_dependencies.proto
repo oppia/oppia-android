@@ -5,50 +5,98 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
+// Represents the list of all third-party maven dependencies.
 message MavenDependencyList {
-  repeated MavenDependency maven_dependency_list = 1;
+  // Stores the list of all third-party maven dependencies.
+  repeated MavenDependency maven_dependency = 1;
 }
 
+// Stores all the information about a third-party maven dependency.
 message MavenDependency {
-  int32 index = 1;
+  // Name of the third-party dependency.
   string artifact_name = 2;
+
+  // Version of the third-party dependency.
   string artifact_version = 3;
+
+  // List of licenses corresponding to a third-party dependency.
   repeated License license = 4;
+
+  // Represents the origin of the source of the license links.
   OriginOfLicenses origin_of_license = 5;
 }
 
+// Stores all the details corresponding to a copyright license.
 message License {
+  // Name of the license.
   string license_name = 1;
+
+  // Primary link of the license extracted from the POM file of the dependency.
   string primary_link = 2;
+
+  // Alternate link that would be provided manually if the primary link can't be directly
+  // extracted, or is invalid.
   string secondary_link = 3;
+
+  // Represents whether the type of the primary_link .
   PrimaryLinkType primary_link_type = 4;
+
+  // Represents whether the type of the secondary_link .
   SecondaryLinkType secondary_link_type = 5;
+
+  // Alternate name for the license if the secondary_link has a different name from
+  // the one extracted from POM.
   string secondary_license_name = 6;
 }
 
-message Link {
-  string license_link = 1;
-  PrimaryLinkType link_type = 2;
-}
-
+// Enum that determines if the license link is invalid, license text should be scraped directly,
+// license text should be scraped from the secondary link, only link should be shown for the
+// license or it needs some human intervention,
 enum PrimaryLinkType {
+  // Represents that the primary_link_type is unspecified or unknown.
   PRIMARY_LINK_TYPE_UNSPECIFIED = 0;
+
+  // Represents that the link can be scraped directly.
   SCRAPE_DIRECTLY = 1;
+
+  // Represents that the license text should be scraped from the oppia-android-licenses repository.
   SCRAPE_FROM_LOCAL_COPY = 2;
+
+  // Represents that the license text can't be scraped easily and hence only link should be shown.
   SHOW_LINK_ONLY = 3;
+
+  // Represents that the extracted link is invalid.
   INVALID_LINK = 4;
+
+  // Represents that the extracted link is still needs human intervention.
   NEEDS_INTERVENTION = 5;
 }
 
+// Enum that determines if the alternate link provided for a license should be scraped or not.
 enum SecondaryLinkType {
+  // Represents that the secondary_link_type is unspecified.
   SECONDARY_LINK_TYPE_UNSPECIFIED = 0;
+
+  // Represents that the alternate link provided manually can be scraped directly.
   SCRAPE = 1;
+
+  // Represents that the alternate link can't be scraped directly and hence only link
+  // should be shown.
   SHOW_LINK = 2;
 }
 
+// Enum that determines the origin of licenses extracted for a dependency.
 enum OriginOfLicenses {
+  // Represents that the origin is unspecified.
   UNKNOWN = 0;
+
+  // Represents that all the licenses for the dependency were extracted from POM.
   ENTIRELY_FROM_POM = 1;
+
+  // Represents that some of the licenses for the dependency were extracted from POM
+  // and some of them were updated manually.
   PARTIALLY_FROM_POM = 2;
+
+  // Represents that all the licenses for the dependency were updated manually.
   MANUAL = 3;
 }
