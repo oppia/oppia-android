@@ -64,6 +64,17 @@ class BazelClient(
           "rbuildfiles($buildFileList)"
         )
       println("@@@@@ Reference build files: $referenceFiles")
+      for (file in referenceFiles) {
+        val siblingFiles1 =
+          executeBazelCommand(
+            "query",
+            "--noshow_progress",
+            "--universe_scope=//...",
+            "--order_output=no",
+            "siblings(rbuildfiles($file))"
+          )
+        println("@@@@@ Sibling files for $file: $siblingFiles1")
+      }
       val siblingFiles =
         executeBazelCommand(
           "query",
