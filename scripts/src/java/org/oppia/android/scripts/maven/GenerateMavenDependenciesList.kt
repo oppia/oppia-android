@@ -21,6 +21,7 @@ private const val LICENSES_CLOSE_TAG = "</licenses>"
 private const val LICENSE_TAG = "<license>"
 private const val NAME_TAG = "<name>"
 private const val URL_TAG = "<url>"
+private const val MAVEN_PREFIX_LENGTH = 9
 
 /**
  * Script to compile the list of the third-party Maven dependencies (direct and indirect both)
@@ -32,20 +33,20 @@ private const val URL_TAG = "<url>"
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: absolute path to the maven_install.json file.
- * - path_to_maven_dependencies_textproto: absoulte path to the maven_dependencies.textproto
+ * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_dependencies_textproto: realtive path to the maven_dependencies.textproto
  * that stores the list of maven dependencies compiled through the script.
  * Example:
  *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
- *   $(pwd)/third_party/maven_install.json $(pwd)/scripts/assets/maven_dependencies.textproto
+ *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
     throw Exception("Too less arguments passed.")
   }
   val pathToRoot = args[0]
-  val pathToMavenInstall = args[1]
-  val pathToMavenDependenciesTextProto = args[2]
+  val pathToMavenInstall = "$pathToRoot/${args[1]}"
+  val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
 
   val bazelQueryDepsNames = runBazelQueryCommand(pathToRoot)
   val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDepsNames)
@@ -110,7 +111,7 @@ fun main(args: Array<String>) {
   if (dependenciesThatNeedHumanIntervention.isNotEmpty()) {
     println(
       """There are still some dependencies that need human intervention.
-      Try to find the license links for these dependencies and coordinate with the Oppia-android maintainers
+      Try to find the license links for these dependencies and coordinate with the Oppia Android maintainers
       to fix the issue.
       """.trimIndent()
     )
@@ -305,7 +306,7 @@ private fun runBazelQueryCommand(rootPath: String): List<String> {
     "@maven//...\'"
   )
   output.forEach { dep ->
-    bazelQueryDepsNames.add(dep.substring(9, dep.length))
+    bazelQueryDepsNames.add(dep.substring(MAVEN_PREFIX_LENGTH, dep.length))
   }
   bazelQueryDepsNames.sort()
   return bazelQueryDepsNames.toList()
