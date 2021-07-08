@@ -55,7 +55,7 @@ class BazelClient(
     val buildFileList = buildFiles.joinToString(",")
     // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
     return if (buildFileList.isNotEmpty()) {
-      val referenceFiles =
+      val referencingBuildFiles =
         executeBazelCommand(
           "query",
           "--noshow_progress",
@@ -63,63 +63,36 @@ class BazelClient(
           "--order_output=no",
           "rbuildfiles($buildFileList)"
         )
-      println("@@@@@ Reference build files: $referenceFiles")
-      for (file in referenceFiles) {
-        val siblingFiles1 =
-          executeBazelCommand(
-            "query",
-            "--noshow_progress",
-            "--universe_scope=//...",
-            "--order_output=no",
-            "kind(test, siblings($file))"
-          )
-        val siblingFiles2 =
-          executeBazelCommand(
-            "query",
-            "--noshow_progress",
-            "--universe_scope=//...",
-            "--order_output=no",
-            "kind(android_library, siblings($file))"
-          )
-        println("@@@@@ Sibling files for $file: ${siblingFiles1 + siblingFiles2}")
-      }
-      val siblingFiles =
-        executeBazelCommand(
-          "query",
-          "--noshow_progress",
-          "--universe_scope=//...",
-          "--order_output=no",
-          "siblings(rbuildfiles($buildFileList))"
-        )
-      println("@@@@@ Sibling files: $siblingFiles")
-      val rdeps =
-        executeBazelCommand(
-          "query",
-          "--noshow_progress",
-          "--universe_scope=//...",
-          "--order_output=no",
-          "allrdeps(siblings(rbuildfiles($buildFileList)))"
-        )
-      println("@@@@@ Sibling rdeps: $rdeps")
-      val tests =
-        executeBazelCommand(
-          "query",
-          "--noshow_progress",
-          "--universe_scope=//...",
-          "--order_output=no",
-          "kind(test, allrdeps(siblings(rbuildfiles($buildFileList))))"
-        )
-      println("@@@@@ tests: $tests")
+      // Compute only test & library siblings for each individual build file. While this is both
+      // much slower than a fully combined query & can potentially miss targets, it runs
+      // substantially faster per query and helps to avoid potential hanging in CI.
+      val relevantSiblings = referencingBuildFiles.flatMap { buildFileTarget ->
+        retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
+          retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
+      }.toSet()
       return correctPotentiallyBrokenTargetNames(
         executeBazelCommand(
           "query",
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "filter('^[^@]', kind(test, allrdeps(siblings(rbuildfiles($buildFileList)))))",
+          "filter('^[^@]', kind(test, allrdeps(${relevantSiblings.joinToString(",")})))",
         )
       )
     } else listOf()
+  }
+
+  private fun retrieveFilteredSiblings(
+    filterRuleType: String,
+    buildFileTarget: String
+  ): List<String> {
+    return executeBazelCommand(
+      "query",
+      "--noshow_progress",
+      "--universe_scope=//...",
+      "--order_output=no",
+      "kind($filterRuleType, siblings($buildFileTarget))"
+    )
   }
 
   private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {
