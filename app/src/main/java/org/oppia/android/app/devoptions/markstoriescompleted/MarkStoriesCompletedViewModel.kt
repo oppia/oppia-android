@@ -75,6 +75,6 @@ class MarkStoriesCompletedViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  /** Returns a list of [StorySummaryViewModel] whose progress can be modified. */
+  /** Returns a list of [StorySummaryViewModel]s whose progress can be modified. */
   fun getStorySummaryList(): List<StorySummaryViewModel> = itemList.toList()
 }

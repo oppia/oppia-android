@@ -68,6 +68,6 @@ class MarkTopicsCompletedViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  /** Returns a list of [TopicViewModel] whose progress can be modified. */
+  /** Returns a list of [TopicViewModel]s whose progress can be modified. */
   fun getTopicList(): List<TopicViewModel> = itemList.toList()
 }

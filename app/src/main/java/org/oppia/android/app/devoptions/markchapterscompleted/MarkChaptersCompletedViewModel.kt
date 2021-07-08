@@ -90,6 +90,6 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  /** Returns a list of [MarkChaptersCompletedItemViewModel]. */
+  /** Returns a list of [MarkChaptersCompletedItemViewModel]s. */
   fun getItemList(): List<MarkChaptersCompletedItemViewModel> = itemList.toList()
 }
