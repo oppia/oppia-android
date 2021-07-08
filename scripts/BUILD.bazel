@@ -47,12 +47,8 @@ kt_jvm_binary(
 # TODO(#3428): Refactor textproto assets to subpackage level.
 REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
     name = "regex_asset_files",
-    file_content_validation_file_names = [
-        "file_content_validation_checks",
-    ],
-    filepath_pattern_validation_file_names = [
-        "filename_pattern_validation_checks",
-    ],
+    file_content_validation_file_names = ["file_content_validation_checks"],
+    filepath_pattern_validation_file_names = ["filename_pattern_validation_checks"],
 )
 
 kt_jvm_library(
