@@ -9,12 +9,12 @@ import javax.inject.Singleton
 /** Singleton which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
 class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSingleton {
-  private var platformParameterMap: Map<String, PlatformParameter> = mapOf()
+  private val platformParameterMap = mutableMapOf<String, PlatformParameter>()
 
   override fun getPlatformParameterMap() = platformParameterMap
 
   override fun setPlatformParameterMap(platformParameterMap: Map<String, PlatformParameter>) {
-    if (this.platformParameterMap.isEmpty()) this.platformParameterMap = platformParameterMap
+    if (this.platformParameterMap.isEmpty()) this.platformParameterMap.putAll(platformParameterMap)
   }
 
   override fun getStringPlatformParameter(

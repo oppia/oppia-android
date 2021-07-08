@@ -91,7 +91,6 @@ import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -208,7 +207,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
@@ -241,8 +240,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
-  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
