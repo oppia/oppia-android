@@ -1,6 +1,5 @@
 package org.oppia.android.app.maven
 
-
 import com.google.protobuf.MessageLite
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -93,7 +92,6 @@ fun main(args: Array<String>) {
   println(latestList)
 //  writeTextProto(args[1], latestList)
 
-
 //  proto.Test.TestMessage.newBuilder()
 
   println("Number of deps with Invalid URL = $countInvalidPomUrl")
@@ -111,7 +109,6 @@ fun main(args: Array<String>) {
     )
   }
 }
-
 
 /**
  * Retrieves all file content checks.
@@ -145,8 +142,6 @@ private fun <T : MessageLite> getProto(textProtoFileName: String, proto: T): T {
     }.build() as T
   return protoObj
 }
-
-
 
 fun parseArtifactName(artifactName: String): String {
   var colonIndex = artifactName.length - 1
