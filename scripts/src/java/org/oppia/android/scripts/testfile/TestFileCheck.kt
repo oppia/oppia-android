@@ -21,9 +21,12 @@ fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
+  val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
+
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-  val testFileExemptionList = loadTestFileExemptionsProto().getExemptList()
+  val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
+    .getExemptionList()
 
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -45,7 +48,7 @@ fun main(vararg args: String) {
     }
   }
 
-  logFailures(matchedFiles)
+  logFailures(matchedFiles, testFileExemptiontextProto)
 
   if (matchedFiles.isNotEmpty()) {
     throw Exception("TEST FILE CHECK FAILED")
@@ -68,13 +71,14 @@ private fun computeExpectedTestFileName(prodFile: File): String {
  * Logs the file names of all the prod files that do not have a test file.
  *
  * @param matchedFiles list of all the files missing a test file
+ * @param testFileExemptiontextProto the location of the test file exemption textproto file
  */
-private fun logFailures(matchedFiles: List<File>) {
+private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: String) {
   if (matchedFiles.isNotEmpty()) {
     matchedFiles.forEach { file ->
       println("File $file does not have a corresponding test file.")
     }
-    println("If this is correct, please update scripts/assets/testfile_exemptions.textproto")
+    println("If this is correct, please update $testFileExemptiontextProto.textproto")
     println(
       "Note that, in general, all new files should have tests. If you choose to add an" +
         " exemption, please specifically call this out in your PR description."
@@ -86,10 +90,11 @@ private fun logFailures(matchedFiles: List<File>) {
 /**
  * Loads the test file exemptions list to proto.
  *
+ * @param testFileExemptiontextProto the location of the test file exemption textproto file
  * @return proto class from the parsed textproto file
  */
-private fun loadTestFileExemptionsProto(): ScriptExemptions {
-  val protoBinaryFile = File("scripts/assets/test_file_exemptions.pb")
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): ScriptExemptions {
+  val protoBinaryFile = File("$testFileExemptiontextProto.pb")
   val builder = ScriptExemptions.getDefaultInstance().newBuilderForType()
 
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),

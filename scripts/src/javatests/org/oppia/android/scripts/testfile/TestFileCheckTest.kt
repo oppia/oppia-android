@@ -53,7 +53,17 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile2.kt")
+    assertThat(outContent.toString()).contains(
+      "File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test" +
+        " file."
+    )
+    assertThat(outContent.toString()).contains(
+      "If this is correct, please update scripts/assets/test_file_exemptions.textproto"
+    )
+    assertThat(outContent.toString()).contains(
+      "Note that, in general, all new files should have tests. If you choose to add an" +
+        " exemption, please specifically call this out in your PR description."
+    )
   }
 
   @Test
@@ -68,8 +78,21 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile2.kt")
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/ProdFile3.kt")
+    assertThat(outContent.toString()).contains(
+      "File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test" +
+        " file."
+    )
+    assertThat(outContent.toString()).contains(
+      "File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test" +
+        " file."
+    )
+    assertThat(outContent.toString()).contains(
+      "If this is correct, please update scripts/assets/test_file_exemptions.textproto"
+    )
+    assertThat(outContent.toString()).contains(
+      "Note that, in general, all new files should have tests. If you choose to add an" +
+        " exemption, please specifically call this out in your PR description."
+    )
   }
 
   @Test
@@ -87,7 +110,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun testTestFileCheck_addEmptyDirectory_scriptCheckShouldPass(){
+  fun testTestFileCheck_emptyDirectory_scriptCheckShouldPass(){
     tempFolder.newFolder("testfiles", "testfolder")
 
     runScript()
