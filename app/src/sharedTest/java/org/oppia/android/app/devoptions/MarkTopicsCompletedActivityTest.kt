@@ -428,25 +428,19 @@ class MarkTopicsCompletedActivityTest {
 
   @Test
   fun testMarkTopicsCompletedActivity_clickMarkCompleted_activityFinishes() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-      assertThat(activityTestRule.activity).isNull()
-    }
+    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
   fun testMarkTopicsCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-      assertThat(activityTestRule.activity).isNull()
-    }
+    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test

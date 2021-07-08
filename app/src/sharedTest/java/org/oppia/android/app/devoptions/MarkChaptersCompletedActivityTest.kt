@@ -752,25 +752,19 @@ class MarkChaptersCompletedActivityTest {
 
   @Test
   fun testMarkChaptersCompletedActivity_clickMarkCompleted_activityFinishes() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
-      assertThat(activityTestRule.activity).isNull()
-    }
+    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
   fun testMarkChaptersCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
-      assertThat(activityTestRule.activity).isNull()
-    }
+    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   @Test
