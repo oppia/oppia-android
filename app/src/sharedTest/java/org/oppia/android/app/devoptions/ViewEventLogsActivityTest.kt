@@ -72,6 +72,7 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -94,6 +95,9 @@ class ViewEventLogsActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
 
   @Inject
   lateinit var context: Context
@@ -360,31 +364,31 @@ class ViewEventLogsActivityTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "28 Jun 11:24 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "28 Jun 11:24 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -398,31 +402,31 @@ class ViewEventLogsActivityTest {
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "28 Jun 11:24 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "28 Jun 11:24 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = "28 Jun 11:23 PM",
+        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -577,6 +581,13 @@ class ViewEventLogsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(isDisplayed()))
+  }
+
+  private fun convertTimeStampToDateAndTime(timestamp: Long): String {
+    return oppiaDateTimeFormatter.formatDateFromDateString(
+      OppiaDateTimeFormatter.DD_MMM_hh_mm_aa,
+      timestamp
+    )
   }
 
   private fun scrollToPosition(position: Int) {
