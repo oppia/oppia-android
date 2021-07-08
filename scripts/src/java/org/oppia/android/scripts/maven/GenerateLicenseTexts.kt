@@ -4,6 +4,7 @@ import org.oppia.android.scripts.proto.CopyrightLicense
 import org.oppia.android.scripts.proto.LicenseDetails
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
+import org.oppia.android.scripts.proto.PrimaryLinkType
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -166,90 +167,122 @@ fun writeDependenciesVersionsXml(
 
 private fun writeDependenciesLicensesXml(
   path: String,
-  copyrightLicenseList: Set<LicenseDetails>,
+  copyrightLicenseList: Set<CopyrightLicense>,
   mavenDependenciesList: List<MavenDependency>
-  // Final list of MavenDependency data type that will contain a list of dependencies read
-  // from maven_dependencies.textproto.
-) {
-  // Create a map that maps a license name to its transformed named in xml.
-  // e.g -  "Apache License 2.0" -> "third_party_dependency_license_5"
+) : HashMap<String, String> {
+  val file = File(path)
+
   val licenseMap = hashMapOf<String, String>()
+
+  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+  val doc: Document = docBuilder.newDocument()
+  val rootResourcesElement: Element = doc.createElement("resources")
+
+  for (index in copyrightLicenseList.indices) {
+    val licenseLink = copyrightLicenseList.elementAt(index).licenseLink
+    val licenseText = "<![CDATA[${copyrightLicenseList.elementAt(index).licenseText}]]>"
+    val stringElement = doc.createElement("string")
+    stringElement.setAttribute("name", "license_$index")
+    stringElement.appendChild(doc.createTextNode(licenseText))
+    rootResourcesElement.appendChild(stringElement)
+    licenseMap[licenseLink] = "license_$index"
+  }
+
+  doc.appendChild(rootResourcesElement)
+  doc.xmlStandalone = true
+
+  getTransformer().transform(DOMSource(doc), StreamResult(file))
+  return licenseMap
+}
+
+private fun writeDependenciesLicenseTextArray(
+  path: String,
+  licenseLinksToIndexMap: HashMap<String, String>,
+  mavenDependenciesList: List<MavenDependency>
+) {
   val file = File(path)
 
   val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
   val doc: Document = docBuilder.newDocument()
   val rootResourcesElement: Element = doc.createElement("resources")
 
-  // Write all licenses names as string resources.
-  for (index in copyrightLicenseList.indices) {
-    val licenseName = copyrightLicenseList.elementAt(index).name
-    val stringElement = doc.createElement("string")
-    stringElement.setAttribute("name", "license_$index")
-    stringElement.appendChild(doc.createTextNode(licenseName))
-    rootResourcesElement.appendChild(stringElement)
-    licenseMap[licenseName] = "license_$index"
+  // Write all dependencies versions as string resources.
+  for (index in mavenDependenciesList.indices) {
+    val dependency = mavenDependenciesList[index]
+    val stringArrayElement = doc.createElement("string-array")
+    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_$index")
+    dependency.licenseList.forEach {
+      val licenseLink = if (li)dependency.licenseList[j].primarylicenseLink
+      val indexOfLicenseText = licenseLinksToIndexMap[licenseLink]
+      val stringItemElement = doc.createElement("item")
+      stringItemElement.appendChild("@string/license$indexOfLicenseText")
+      stringArrayElement.appendChild(stringItemElement)
+    }
+    rootResourcesElement.appendChild(stringArrayElement)
   }
 
-  // Write all license texts, names with license_0 etc.
-
-  // Write all licenses corresponding to each dependency.
-
-  // Write an array of dependencies names.
-  val stringArrayElement = doc.createElement("string-array")
-  stringArrayElement.setAttribute("name", "third_party_dependencies_versions_array")
-  for (index in copyrightLicenseList.indices) {
+  // Write an array of dependencies versions.
+  val arrayElement = doc.createElement("array")
+  arrayElement.setAttribute("name", "third_party_dependency_license_texts_array")
+  for (index in mavenDependenciesList.indices) {
     val itemElement = doc.createElement("item")
-    itemElement.appendChild(doc.createTextNode("@string/third_party_dependency_version_$index"))
-    stringArrayElement.appendChild(itemElement)
+    itemElement.appendChild(doc.createTextNode("@array/third_party_dependency_licenses_$index"))
+    arrayElement.appendChild(itemElement)
   }
 
-  rootResourcesElement.appendChild(stringArrayElement)
+  rootResourcesElement.appendChild(arrayElement)
   doc.appendChild(rootResourcesElement)
   doc.xmlStandalone = true
-
   getTransformer().transform(DOMSource(doc), StreamResult(file))
 }
 
-//fun retrieveAllLicensesSet(
-//  mavenDependencyList: List<MavenDependency>
-//) {
-//  val copyrightLicensesSet = mutableSetOf<CopyrightLicense>
-//  mavenDependencyList.forEach { dependency ->
-//    val licenseList = dependency.licenseList
-//    if (licenseList.isEmpty()) {
-//      throw Exception(MAVEN_DEPENDENCY_LIST_INCOMPLETE)
-//    }
-//    licenseList.forEach { license ->
-//      var licenseText: String = ""
-//      when (license.primaryLinkType) {
-//        PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED, PrimaryLinkType.NEEDS_INTERVENTION -> {
-//          throw Exception(MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK)
-//        }
-//        PrimaryLinkType.SCRAPE_DIRECTLY -> {
-//          licenseText = scrapeLicenseText(license.primaryLink)
-////          copyrightLicensesSet.add(
-////            CopyrightLicense
-////              .newBuilder()
-////              .setLicenseName(license.licenseName)
-////              .set
-////
-////          )
-//        }
-//        PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY -> {
-//          licenseText = if (license.alternativeLinkType == AlternativeLinkType.SCRAPE) {
-//            scrapeLicenseText(license.alterantiveLink)
-//          } else {
-//            licenseText.alternativeLink
-//          }
-//        }
-//        PrimaryLinkType.SHOW_LINK_ONLY -> licenseText = license.primaryLink
-//        PrimaryLinkType.INVALID_LINK -> {
-//          if (license.alternativeLink)
-//        }
-//      }
-//    }
-//  }
-//}
+private fun writeDependenciesLicenseNamesArray(
+  path: String,
+  licenseLinksToIndexMap: HashMap<String, String>,
+  mavenDependenciesList: List<MavenDependency>
+) {
+
+}
+
+fun retrieveAllLicensesSet(
+  mavenDependencyList: List<MavenDependency>
+) : Set<CopyrightLicense> {
+  val copyrightLicensesSet = mutableSetOf<CopyrightLicense>()
+  mavenDependencyList.forEach { dependency ->
+    val licenseList = dependency.licenseList
+    if (licenseList.isEmpty()) {
+      throw Exception(MAVEN_DEPENDENCY_LIST_INCOMPLETE)
+    }
+    licenseList.forEach { license ->
+      var licenseText: String = ""
+      var licenseLink = ""
+      when (license.primaryLinkType) {
+        PrimaryLinkType.SCRAPE_DIRECTLY -> {
+          licenseText = scrapeLicenseText(license.primaryLink)
+          licenseLink = license.primaryLink
+        }
+        PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY -> {
+          licenseText = scrapeLicenseText(license.alternativeLink)
+          licenseLink = license.alternativeLink
+        }
+        PrimaryLinkType.SHOW_LINK_ONLY -> {
+          licenseText = license.primaryLink
+          licenseLink = license.primaryLink
+        }
+        else -> throw Exception(MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK)
+      }
+      copyrightLicensesSet.add(
+        CopyrightLicense
+          .newBuilder()
+          .setLicenseName(license.licenseName)
+          .setLicenseText(licenseText)
+          .setLicenseLink(licenseLink)
+          .build()
+      )
+    }
+  }
+  return copyrightLicensesSet
+}
 
 fun scrapeLicenseText(url: String): String {
   return URL(url).openStream().bufferedReader().readText()
