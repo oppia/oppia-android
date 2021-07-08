@@ -67,3 +67,10 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
     ],
 )
+
+kt_jvm_binary(
+    name = "xml_syntax_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.XmlSyntaxCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
+)
