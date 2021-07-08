@@ -249,7 +249,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -263,7 +263,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_configChange_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
