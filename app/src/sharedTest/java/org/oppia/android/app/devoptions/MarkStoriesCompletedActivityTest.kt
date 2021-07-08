@@ -429,7 +429,7 @@ class MarkStoriesCompletedActivityTest {
       scrollToPosition(position = 3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_recycler_view,
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
@@ -448,7 +448,7 @@ class MarkStoriesCompletedActivityTest {
       scrollToPosition(position = 3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_recycler_view,
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
@@ -468,7 +468,7 @@ class MarkStoriesCompletedActivityTest {
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -478,7 +478,7 @@ class MarkStoriesCompletedActivityTest {
   private fun verifyItemCheckedOnStorySummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -488,7 +488,7 @@ class MarkStoriesCompletedActivityTest {
   private fun performItemCheckOnStorySummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -503,7 +503,7 @@ class MarkStoriesCompletedActivityTest {
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_stories_completed_story_summary_recycler_view)).perform(
+    onView(withId(R.id.mark_stories_completed_recycler_view)).perform(
       scrollToPosition<ViewHolder>(position)
     )
   }

@@ -399,7 +399,7 @@ class MarkTopicsCompletedActivityTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+          recyclerViewId = R.id.mark_topics_completed_recycler_view,
           position = 2,
           targetViewId = R.id.mark_topics_completed_topic_check_box
         )
@@ -418,7 +418,7 @@ class MarkTopicsCompletedActivityTest {
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+          recyclerViewId = R.id.mark_topics_completed_recycler_view,
           position = 2,
           targetViewId = R.id.mark_topics_completed_topic_check_box
         )
@@ -438,7 +438,7 @@ class MarkTopicsCompletedActivityTest {
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+        recyclerViewId = R.id.mark_topics_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_topics_completed_topic_check_box
       )
@@ -448,7 +448,7 @@ class MarkTopicsCompletedActivityTest {
   private fun verifyItemCheckedOnTopicSummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+        recyclerViewId = R.id.mark_topics_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_topics_completed_topic_check_box
       )
@@ -458,7 +458,7 @@ class MarkTopicsCompletedActivityTest {
   private fun performItemCheckOnTopicSummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_topic_summary_recycler_view,
+        recyclerViewId = R.id.mark_topics_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_topics_completed_topic_check_box
       )
@@ -473,7 +473,7 @@ class MarkTopicsCompletedActivityTest {
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_topics_completed_topic_summary_recycler_view)).perform(
+    onView(withId(R.id.mark_topics_completed_recycler_view)).perform(
       scrollToPosition<ViewHolder>(position)
     )
   }
