@@ -47,7 +47,7 @@ def generate_maven_assets_list_from_text_protos(
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        maven_dependencies_file_name: The list of maven_dependencies text proto file names under the
+        maven_dependency_filenames: The list of maven_dependencies text proto file names under the
             assets directory that should be converted.
 
     Returns:
