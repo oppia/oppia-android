@@ -59,8 +59,6 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
-  // TODO(): Update the saving mechanism for checkpoints once internal locking in this controller is
-  //  updated.
 
   /** Indicates that the checkpoint database has exceeded the allocated limit.. */
   class CheckpointDatabaseOverflowException(msg: String) : Exception(msg)
@@ -487,9 +485,9 @@ class ExplorationProgressController @Inject constructor(
    * @param topicId is the id of the topic which contains the story with the current exploration.
    * @param storyId is the id of the story which contains the current exploration.
    * @param lastPlayedTimestamp timestamp of the time when the checkpoints state for the exploration
-   *        was last updated.
+   *     was last updated.
    * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
-   *        unsuccessfully.
+   *     unsuccessfully.
    */
   private fun processSaveCheckpointResult(
     profileId: ProfileId,
@@ -500,7 +498,10 @@ class ExplorationProgressController @Inject constructor(
     newCheckpointState: CheckpointState
   ) {
     explorationProgressLock.withLock {
+      // Only processes the result of the last save operation if the checkpointState has changed.
       if (explorationProgress.checkpointState != newCheckpointState) {
+        // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
+        // either changed from UNSAVED to SAVED or vice versa.
         if (
           explorationProgress.checkpointState != CheckpointState.UNSAVED &&
           newCheckpointState == CheckpointState.UNSAVED

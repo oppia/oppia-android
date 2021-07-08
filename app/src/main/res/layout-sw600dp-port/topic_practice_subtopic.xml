@@ -41,7 +41,7 @@
         android:drawablePadding="20dp"
         android:fontFamily="sans-serif"
         android:gravity="start|top"
-        android:paddingBottom="24dp"
+        android:minHeight="@dimen/clickable_item_min_height"
         android:text="@{viewModel.subtopic.title}"
         android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"

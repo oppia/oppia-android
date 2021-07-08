@@ -204,9 +204,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -222,9 +220,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -247,9 +243,7 @@ class NavigationDrawerActivityProdTest {
       timestampOlderThanOneWeek = false
     )
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -265,9 +259,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -283,9 +275,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -696,9 +686,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
@@ -708,9 +696,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -745,9 +731,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
@@ -760,9 +744,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
