@@ -1,0 +1,22 @@
+# Contains jobs corresponding to Oppiabot.
+
+name: Oppiabot
+
+on:
+  pull_request_target:
+    branches:
+      - test-oppiabot-change
+
+jobs:
+  oppiabot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: CLA Check
+        uses: oppia/oppiabot@1.3.0
+        with:
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+        env:
+          SHEETS_TOKEN: ${{ secrets.SHEETS_TOKEN }}
+          SHEETS_CRED: ${{ secrets.SHEETS_CRED }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
