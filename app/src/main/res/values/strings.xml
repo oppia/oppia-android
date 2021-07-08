@@ -6,8 +6,10 @@
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
+  <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
@@ -61,6 +63,7 @@
   <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
   <string name="revision">Revision</string>
+  <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
@@ -68,12 +71,12 @@
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="chapter_completed">Chapter is completed</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="numeric_input_hint">Enter a number.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
@@ -108,29 +111,19 @@
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
-  <string
-    name="ratio_error_invalid_chars"
-    description="The error message for ratio when there is any other character used than 0123456789:. ">
+  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
     Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
   </string>
-  <string
-    name="ratio_error_invalid_format"
-    description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
+  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
     Please enter a valid ratio (e.g. 1:2 or 1:2:3).
   </string>
-  <string
-    name="ratio_error_invalid_colons"
-    description="The error message for ratio when there is colons next to each other.">
+  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">
     Your answer has two colons (:) next to each other.
   </string>
-  <string
-    name="ratio_error_invalid_size"
-    description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
+  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
     Number of terms is not equal to the required terms.
   </string>
-  <string
-    name="ratio_error_includes_zero"
-    description="The error message for ratio when there is 0 term in the ratio.">
+  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
     Ratios cannot have 0 as an element.
   </string>
   <string name="unknown_size">Unknown size</string>
@@ -350,12 +343,17 @@
   <!-- OptionsActivity -->
   <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Default Audio Language</string>
+  <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="title_reading_text_size">Reading Text Size</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Default Audio</string>
   <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
+  <string name="reading_text_size_small">Small</string>
+  <string name="reading_text_size_medium">Medium</string>
+  <string name="reading_text_size_large">Large</string>
+  <string name="reading_text_size_extra_large">Extra Large</string>
   <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
   <string name="story_count_text_view">2 Stories</string>
@@ -394,10 +392,12 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
-  <string name="link_to_item_below">Link to item below</string>
-  <string name="unlink_items">Unlink Items</string>
-  <string name="move_item_down">Move Item Down</string>
-  <string name="move_item_up">Move Item Up</string>
+  <string name="link_to_item_below">Link to item %d</string>
+  <string name="unlink_items">Unlink items at %d</string>
+  <string name="move_item_down_content_description">Move item down to %d</string>
+  <string name="move_item_up_content_description">Move item up to %d</string>
+  <string name="up_button_disabled">Up</string>
+  <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
@@ -417,29 +417,19 @@
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select at least one choice.</string>
   <!-- SplashActivity -->
-  <string
-    name="unsupported_app_version_dialog_title"
-    description="The title of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
     Unsupported app version
   </string>
-  <string
-    name="unsupported_app_version_dialog_message"
-    description="The main message of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
     This version of the app is no longer supported. Please update it through the Play Store.
   </string>
-  <string
-    name="unsupported_app_version_dialog_close_button_text"
-    description="The close button text of the dialog shown when a user's pre-release app has expired.">
+  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
-  <string
-    name="ratio_content_description_separator"
-    description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
+  <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020
   </string>
-  <string
-    name="ratio_default_hint_text"
-    description="The default hint text for the ratio interaction if the placeholder text is not available.">
+  <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
@@ -449,4 +439,25 @@
   <string name="stories_for_you">Stories For You</string>
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="revision_card_activity_title">Skill revision page</string>
+  <string name="audio_player_seekbar_content_description">Audio progress</string>
+  <string name="audio_language_icon_content_description">Change language</string>
+  <string name="audio_player_on">Audio, ON</string>
+  <string name="audio_player_off">Audio, OFF</string>
+  <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="correct_submitted_answer">Correct submitted answer</string>
+  <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
+  <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
+  <!-- DeveloperOptionsFragment -->
+  <string name="developer_options_activity_title">Developer Options</string>
+  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label">View Logs</string>
+  <string name="developer_options_event_logs">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
+  <string name="developer_options_force_network_type">Force network type</string>
+  <string name="developer_options_force_crash">Force crash</string>
 </resources>

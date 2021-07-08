@@ -15,10 +15,11 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
@@ -26,8 +27,9 @@ import javax.inject.Inject
 class AdministratorControlsViewModel @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
+  private val oppiaLogger: OppiaLogger,
+  private val profileManagementController: ProfileManagementController,
+  private val IntentFactoryShim: IntentFactoryShim
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -50,7 +52,7 @@ class AdministratorControlsViewModel @Inject constructor(
     deviceSettingsResult: AsyncResult<DeviceSettings>
   ): DeviceSettings {
     if (deviceSettingsResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "AdministratorControlsFragment",
         "Failed to retrieve profile",
         deviceSettingsResult.getErrorOrNull()!!
@@ -74,7 +76,7 @@ class AdministratorControlsViewModel @Inject constructor(
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,
-        logger,
+        oppiaLogger,
         profileManagementController,
         userProfileId,
         deviceSettings

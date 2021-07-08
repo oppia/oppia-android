@@ -9,39 +9,26 @@
       type="org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel" />
   </data>
 
-  <FrameLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="24dp"
-    android:layout_marginBottom="0dp"
+    android:paddingEnd="@{viewModel.hasConversationView ?@dimen/interaction_item_exploration_view_padding_end : @dimen/interaction_item_question_view_padding_end}"
+    android:paddingStart="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_padding_start : @dimen/interaction_item_question_view_padding_start}"
+    app:layoutMarginTop="@{viewModel.hasConversationView ? @dimen/interaction_item_exploration_view_margin_top : @dimen/interaction_item_question_view_margin_top}"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:padding="0dp"
-    app:layoutMarginEnd="@{viewModel.hasConversationView ? @dimen/text_input_interaction_item_conversation_view_margin_end : @dimen/text_input_interaction_item_non_conversation_view_margin_end}"
-    app:layoutMarginStart="@{viewModel.hasConversationView ? @dimen/text_input_interaction_item_conversation_view_margin_start : @dimen/text_input_interaction_item_non_conversation_view_margin_start}">
+    android:focusableInTouchMode="true">
 
     <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/edit_text_background"
+      style="@style/InputInteractionEditText"
       android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_default_content_description : ``}"
-      android:fontFamily="sans-serif"
       android:hint="@{viewModel.hintText}"
-      android:imeOptions="actionDone"
       android:inputType="text"
-      android:longClickable="false"
-      android:maxLength="200"
-      android:minHeight="48dp"
-      android:paddingStart="16dp"
-      android:paddingEnd="16dp"
-      android:paddingBottom="8dp"
-      android:singleLine="true"
       android:text="@={viewModel.answerText}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/editTextHint"
-      android:textSize="14sp"
-      android:textStyle="italic"
-      app:textChangedListener="@{viewModel.answerTextWatcher}" />
-  </FrameLayout>
+      app:textChangedListener="@{viewModel.answerTextWatcher}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+    
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

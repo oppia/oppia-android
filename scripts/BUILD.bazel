@@ -1,0 +1,44 @@
+"""
+Kotlin-based scripts to help developers or perform continuous integration tasks.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary")
+
+# Visibility for libraries that should be accessible to script tests.
+package_group(
+    name = "oppia_script_test_visibility",
+    packages = [
+        "//scripts/src/javatests/...",
+    ],
+)
+
+# Visibility for libraries that have binaries defined at this package & tests.
+package_group(
+    name = "oppia_script_binary_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//scripts",
+    ],
+)
+
+# Visibility for libraries that should be accessible to other script packages & tests.
+package_group(
+    name = "oppia_script_library_visibility",
+    includes = [
+        ":oppia_script_test_visibility",
+    ],
+    packages = [
+        "//scripts/src/java/...",
+    ],
+)
+
+kt_jvm_binary(
+    name = "compute_affected_tests",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
+    ],
+)

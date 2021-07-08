@@ -125,9 +125,11 @@ class StateRetriever @Inject constructor() {
       ruleSpecsJson += ruleSpecsArrayJson.getJSONObject(i)
     }
     addAllRuleSpecs(ruleSpecsJson.map { convertToRuleSpec(it, interactionId) })
-    val misconceptionJson = answerGroupJson.optJSONObject("tagged_skill_misconception_id")
-    if (misconceptionJson != null) {
-      val misconceptionParts = misconceptionJson.toString().split("-")
+    val misconceptionJson =
+      if (answerGroupJson.isNull("tagged_skill_misconception_id")) null
+      else answerGroupJson.getString("tagged_skill_misconception_id")
+    if (!misconceptionJson.isNullOrEmpty()) {
+      val misconceptionParts = misconceptionJson.split("-")
       taggedSkillMisconception =
         Misconception.newBuilder().apply {
           skillId = misconceptionParts[0]
@@ -192,7 +194,9 @@ class StateRetriever @Inject constructor() {
     recordedVoiceovers: JSONObject
   ): Map<String, VoiceoverMapping> {
     val voiceoverMappingJson = recordedVoiceovers.getJSONObject("voiceovers_mapping")
-    return voiceoverMappingJson.keys().asSequence().associateWith { contentId ->
+    return voiceoverMappingJson.keys().asSequence().filter { contentId ->
+      voiceoverMappingJson.getJSONObject(contentId).length() != 0
+    }.associateWith { contentId ->
       val voiceoverJson = voiceoverMappingJson.getJSONObject(contentId)
       VoiceoverMapping.newBuilder().apply {
         putAllVoiceoverMapping(

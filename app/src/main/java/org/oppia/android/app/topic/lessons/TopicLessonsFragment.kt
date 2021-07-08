@@ -19,7 +19,8 @@ private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
 class TopicLessonsFragment :
   InjectableFragment(),
   ExpandedChapterListIndexListener,
-  StorySummarySelector {
+  StorySummarySelector,
+  ChapterSummarySelector {
 
   companion object {
     /** Returns a new [TopicLessonsFragment]. */
@@ -93,5 +94,9 @@ class TopicLessonsFragment :
 
   override fun selectStorySummary(storySummary: StorySummary) {
     topicLessonsFragmentPresenter.storySummaryClicked(storySummary)
+  }
+
+  override fun selectChapterSummary(storyId: String, explorationId: String) {
+    topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId)
   }
 }

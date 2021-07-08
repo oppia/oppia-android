@@ -29,8 +29,11 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -54,6 +57,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,6 +69,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
@@ -114,6 +120,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -135,9 +142,9 @@ import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -151,6 +158,9 @@ import javax.inject.Singleton
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
 class StateFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -289,7 +299,7 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -309,7 +319,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsClickable() {
+  fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -317,7 +327,7 @@ class StateFragmentTest {
       typeFractionText("1/2")
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -338,7 +348,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsClickable() {
+  fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -347,7 +357,7 @@ class StateFragmentTest {
       typeFractionText("1/2")
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -380,7 +390,7 @@ class StateFragmentTest {
 
       // The submission button should now be disabled and there should be an error.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -398,7 +408,7 @@ class StateFragmentTest {
 
       // The submission button should now be disabled and there should be an error.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -413,7 +423,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -430,7 +440,7 @@ class StateFragmentTest {
 
       // The submit button should be re-enabled since the text view changed.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -445,7 +455,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -463,7 +473,49 @@ class StateFragmentTest {
 
       // The submit button should be re-enabled since the text view changed.
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Incorrect submitted answer: 1/4"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Correct submitted answer: 1/2"
+          )
+        )
+      )
     }
   }
 
@@ -516,6 +568,53 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_4).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_recycler_view_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.incorrect_submitted_answer)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_recycler_view_container)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.correct_submitted_answer)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
     // Note to self: current setup allows the user to drag the view without issues (now that
@@ -559,7 +658,8 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
-  fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
+  fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -567,12 +667,13 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.5f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -592,6 +693,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -599,12 +701,13 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
 
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -613,12 +716,13 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.1f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isClickable())))
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -627,12 +731,13 @@ class StateFragmentTest {
       clickImageRegion(pointX = 0.5f, pointY = 0.5f)
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(isClickable()))
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -652,6 +757,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -671,6 +777,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -686,6 +793,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -906,7 +1014,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withContentDescription("4 to 5")))
+        .check(matches(withContentDescription("Correct submitted answer: 4 to 5")))
     }
   }
 
@@ -1059,6 +1167,22 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyAccessibilityForItemSelection(
+        position = 0,
+        targetViewId = R.id.multiple_choice_radio_button
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1072,6 +1196,21 @@ class StateFragmentTest {
       // Verify that the user is now on the fifth state.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       verifyContentContains("What are the primary colors of light?")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      verifyAccessibilityForItemSelection(position = 1, targetViewId = R.id.item_selection_checkbox)
     }
   }
 
@@ -1109,6 +1248,23 @@ class StateFragmentTest {
       // Verify that the user is now on the seventh state.
       verifyViewTypeIsPresent(RATIO_EXPRESSION_INPUT_INTERACTION)
       verifyContentContains("The ratio of the two numbers is:")
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      // Multi-selection item selection.
+      playThroughPrototypeState5()
+
+      // Verify that the user is now on the sixth state.
+      verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
+      verifyHint(context.resources.getString(R.string.numeric_input_hint))
     }
   }
 
@@ -1200,7 +1356,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_fractionInput_textViewwHasTextInputType() {
+  fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
       startPlayingExploration()
 
@@ -1565,9 +1721,39 @@ class StateFragmentTest {
     ).check(matches(withText(containsString(expectedHtml))))
   }
 
+  private fun verifyHint(hint: String) {
+    scrollToViewType(NUMERIC_INPUT_INTERACTION)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 1,
+        targetViewId = R.id.numeric_input_interaction_view
+      )
+    ).check(matches(withHint(containsString(hint))))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
+  }
+
+  private fun verifyAccessibilityForItemSelection(position: Int, targetViewId: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = position,
+        targetViewId = targetViewId
+      )
+    ).check(matches(not(isClickable())))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = position,
+        targetViewId = targetViewId
+      )
+    ).check(matches(not(isFocusable())))
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
@@ -1742,7 +1928,7 @@ class StateFragmentTest {
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
       LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      PracticeTabModule::class
+      PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

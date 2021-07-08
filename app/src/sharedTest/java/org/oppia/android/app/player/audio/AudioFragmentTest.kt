@@ -41,7 +41,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -67,6 +68,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -79,13 +81,12 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -105,6 +106,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AudioFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -154,36 +157,42 @@ class AudioFragmentTest {
   }
 
   @Test
-  fun testAudioFragment_withDefaultProfile_showsAudioLanguageAsEnglish() {
+  fun testAudioFragment_seekbar_hasContentDescription() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
       )
     ).use {
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("en")))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_progress_seek_bar))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.audio_player_seekbar_content_description)
+            )
+          )
+        )
     }
   }
 
-  // TODO(#2417): Re-enable once this test passes on robolectric
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
-  fun testAudioFragment_withHindiAudioLanguageProfile_showsHindiAudioLanguage() {
+  fun testAudioFragment_languageIcon_hasContentDescription() {
     addMediaInfo()
-    profileTestHelper.addOnlyAdminProfile()
-    val data = profileManagementController.updateAudioLanguage(
-      profileId,
-      AudioLanguage.HINDI_AUDIO_LANGUAGE
-    ).toLiveData()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
       )
     ).use {
-      it.onActivity {
-        profileTestHelper.waitForOperationToComplete(data)
-      }
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi")))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.audio_language_icon))
+        .check(
+          matches(
+            withContentDescription(
+              context.getString(R.string.audio_language_icon_content_description)
+            )
+          )
+        )
     }
   }
 
@@ -440,7 +449,8 @@ class AudioFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
