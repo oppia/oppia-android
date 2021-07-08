@@ -225,6 +225,22 @@
   <dimen name="general_button_item_question_view_padding_start">188dp</dimen>
   <dimen name="general_button_item_question_view_padding_end">188dp</dimen>
 
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">192dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">192dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">24dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">132dp</dimen>
+
+  <!-- Audio Player: Non Split View -->
+  <dimen name="audio_player_non_split_view_margin_start">192dp</dimen>
+  <dimen name="audio_player_non_split_view_margin_end">192dp</dimen>
+
+  <!-- Audio Player: Split View -->
+  <dimen name="audio_player_split_view_margin_start">64dp</dimen>
+  <dimen name="audio_player_split_view_margin_end">64dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">32dp</dimen>
   <dimen name="faq_single_padding_top">48dp</dimen>
