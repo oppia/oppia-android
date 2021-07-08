@@ -10,25 +10,25 @@ load("@rules_java//java:defs.bzl", "java_lite_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(
-    name = "filename_pattern_validation_structure_proto",
+    name = "filename_pattern_validation_checks_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
-    name = "filename_pattern_validation_structure_java_proto_lite",
+    name = "filename_pattern_validation_checks_java_proto_lite",
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":filename_pattern_validation_structure_proto"],
+    deps = [":filename_pattern_validation_checks_proto"],
 )
 
 proto_library(
-    name = "file_content_validation_structure_proto",
+    name = "file_content_validation_checks_proto",
     srcs = ["file_content_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
-    name = "file_content_validation_structure_java_proto_lite",
+    name = "file_content_validation_checks_java_proto_lite",
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":file_content_validation_structure_proto"],
+    deps = [":file_content_validation_checks_proto"],
 )
