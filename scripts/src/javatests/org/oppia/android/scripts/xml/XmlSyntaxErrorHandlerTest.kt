@@ -99,12 +99,12 @@ class XmlSyntaxErrorHandlerTest {
   @Test
   fun testXmlErrorHandler_invokeFatalErrorCase_errorShouldBeCollected() {
     val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
-    xmlSyntaxErrorHandler.fatalError(SAXParseException("test_error_message", "", "", 1, 1))
+    xmlSyntaxErrorHandler.fatalError(SAXParseException("test_error_message", "", "", 2, 2))
     val errorList = xmlSyntaxErrorHandler.retrieveErrorList()
     assertThat(errorList).hasSize(1)
     assertThat(errorList.first().message).isEqualTo("test_error_message")
-    assertThat(errorList.first().getLineNumber()).isEqualTo(1)
-    assertThat(errorList.first().getColumnNumber()).isEqualTo(1)
+    assertThat(errorList.first().getLineNumber()).isEqualTo(2)
+    assertThat(errorList.first().getColumnNumber()).isEqualTo(2)
   }
 
   @Test
