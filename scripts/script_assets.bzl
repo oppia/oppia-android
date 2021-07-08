@@ -55,8 +55,8 @@ def generate_test_file_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = test_file_exemptions_name,
-        proto_dep_name = "script_exemptions",
-        proto_type_name = "ScriptExemptions",
+        proto_dep_name = "test_file_exemptions",
+        proto_type_name = "TestFileExemptions",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",

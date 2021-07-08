@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.testfile
 
 import org.oppia.android.scripts.common.RepositoryFile
-import org.oppia.android.scripts.proto.ScriptExemptions
+import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
 import java.io.FileInputStream
 
@@ -26,7 +26,7 @@ fun main(vararg args: String) {
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
   val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-    .getExemptionList()
+    .getExemptedFilePathList()
 
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -93,16 +93,16 @@ private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: St
  * @param testFileExemptiontextProto the location of the test file exemption textproto file
  * @return proto class from the parsed textproto file
  */
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): ScriptExemptions {
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
   val protoBinaryFile = File("$testFileExemptiontextProto.pb")
-  val builder = ScriptExemptions.getDefaultInstance().newBuilderForType()
+  val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
 
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
-  val protoObj: ScriptExemptions =
+  val protoObj: TestFileExemptions =
     FileInputStream(protoBinaryFile).use {
       builder.mergeFrom(it)
-    }.build() as ScriptExemptions
+    }.build() as TestFileExemptions
   return protoObj
 }

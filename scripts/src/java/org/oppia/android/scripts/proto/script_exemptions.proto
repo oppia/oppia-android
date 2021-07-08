@@ -5,18 +5,17 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
-// Exemptions for the script checks.
-// An exemption is an entity that should not be tested for a corresponding script check.
-// In general the exemptions are files, which should be skipped for any particular
-// script check. Also, note that the exemptions are maintained lexicographically sorted in the
-// textproto files. To add any new exemption, please add it at the correct lexicographical
-// position, so that the list remains sorted.
-message ScriptExemptions {
-  // List of all the exemptions.
-  // For exempting any file for a script check, provide its relative path to root in the
-  // corresponding textproto file of the script exemption.
-  // For example if we want 'ActivityComponent.kt' file to be exempted for the test file check, then
-  // add 'exemption: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"' at
-  // the correct lexicographical position of the 'test_file_exemptions.textproto' file.
-  repeated string exemption = 1;
+// Exemptions for the test-file check.
+// Here, exemption implies those files, which we do not wish to check for the test-file presence.
+message TestFileExemptions {
+  // List of all the files which should be exempted for the test-file check.
+  // For exempting any file, provide its relative path to root in
+  // 'script/assets/test_file_exemptions.textproto'. Also, note that the file paths in the textproto
+  // file are maintained in lexicographical order. While adding any new file, please add it only at
+  // the correct lexicographical position, so that the list remains sorted.
+  //
+  // For example if we want to add the 'ActivityComponent.kt' file to the exemption list, add:
+  // 'exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"'
+  // at the correct lexicographical position in the textproto file.
+  repeated string exempted_file_path = 1;
 }
