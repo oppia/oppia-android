@@ -40,7 +40,7 @@ class RepositoryFile() {
         !isProhibited &&
           file.isFile &&
           file.name.endsWith(expectedExtension) &&
-          file.name !in exemptionsList
+          retrieveRelativeFilePath(file, repoPath) !in exemptionsList
       }.toList()
     }
 

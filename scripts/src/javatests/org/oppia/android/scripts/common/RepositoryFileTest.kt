@@ -60,7 +60,7 @@ class RepositoryFileTest {
     val testFile3 = tempFolder.newFile("testfiles/app/TestFile3.kt")
     val testFile4 = tempFolder.newFile("testfiles/TestFile4.kt")
     val exemptionList = listOf<String>(
-      "TestFile3.kt",
+      "app/TestFile3.kt",
       "TestFile4.kt"
     )
 
@@ -86,7 +86,7 @@ class RepositoryFileTest {
     val testFile5 = tempFolder.newFile("testfiles/TestFile5.xml")
     val testFile6 = tempFolder.newFile("testfiles/.git/TestFile6.kt")
     val exemptionList = listOf<String>(
-      "TestFile3.kt",
+      "app/TestFile3.kt",
       "TestFile4.kt"
     )
 

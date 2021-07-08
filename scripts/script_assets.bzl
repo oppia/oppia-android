@@ -22,7 +22,7 @@ def generate_regex_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = filepath_pattern_validation_file_names,
-        proto_dep_name = "filename_pattern_validation_structure",
+        proto_dep_name = "filename_pattern_validation_checks",
         proto_type_name = "FilenameChecks",
         name_prefix = name,
         asset_dir = "assets",
@@ -31,7 +31,7 @@ def generate_regex_assets_list_from_text_protos(
     ) + generate_proto_binary_assets(
         name = name,
         names = file_content_validation_file_names,
-        proto_dep_name = "file_content_validation_structure",
+        proto_dep_name = "file_content_validation_checks",
         proto_type_name = "FileContentChecks",
         name_prefix = name,
         asset_dir = "assets",
@@ -47,7 +47,7 @@ def generate_maven_assets_list_from_text_protos(
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        maven_dependencies_file_name: The list of maven_dependencies text proto file names under the
+        maven_dependency_filenames: The list of maven_dependencies text proto file names under the
             assets directory that should be converted.
 
     Returns:
