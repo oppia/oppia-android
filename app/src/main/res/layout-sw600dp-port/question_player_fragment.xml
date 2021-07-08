@@ -164,10 +164,10 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="128dp"
         android:layout_marginEnd="128dp"
         android:layout_marginBottom="24dp"
-        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
@@ -181,7 +181,7 @@
       <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/congratulations_text_confetti_view"
         android:layout_width="match_parent"
-        android:layout_height="132dp"/>
+        android:layout_height="132dp" />
     </FrameLayout>
   </FrameLayout>
 </layout>

@@ -157,14 +157,14 @@ class PlatformParameterSingletonTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
-      fun build(): PlatformParameterSingletonTest.TestApplicationComponent
+      fun build(): TestApplicationComponent
     }
 
     fun inject(platformParameterSingletonTest: PlatformParameterSingletonTest)
   }
 
   class TestApplication : Application() {
-    private val component: PlatformParameterSingletonTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerPlatformParameterSingletonTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
