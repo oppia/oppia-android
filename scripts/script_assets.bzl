@@ -41,21 +41,22 @@ def generate_regex_assets_list_from_text_protos(
 
 def generate_maven_assets_list_from_text_protos(
         name,
-        maven_dependencies_file_name):
+        maven_dependency_filenames):
     """
-    Converts multiple lists of text proto assets to binary.
+    Converts a single list of text proto assets to binary.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        maven_dependencies_file_name: list of str. The list of prohibited filepath pattern file names.
+        maven_dependencies_file_name: The list of maven_dependencies text proto file names under the
+            assets directory that should be converted.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_proto_binary_assets(
         name = name,
-        names = maven_dependencies_file_name,
-        proto_dep_name = "generate_maven_dependencies_list",
+        names = maven_dependency_filenames,
+        proto_dep_name = "maven_dependencies",
         proto_type_name = "MavenDependencyList",
         name_prefix = name,
         asset_dir = "assets",
