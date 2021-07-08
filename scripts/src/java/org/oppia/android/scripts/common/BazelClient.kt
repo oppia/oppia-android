@@ -76,7 +76,7 @@ class BazelClient(
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "filter('^[^@]', kind(test, allrdeps(${relevantSiblings.joinToString(",")})))",
+          "filter('^[^@]', kind(test, allrdeps(set(${relevantSiblings.joinToString(" ")}))))",
         )
       )
     } else listOf()
