@@ -82,6 +82,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -203,9 +204,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -221,9 +220,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -246,9 +243,7 @@ class NavigationDrawerActivityProdTest {
       timestampOlderThanOneWeek = false
     )
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -264,9 +259,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -282,9 +275,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -695,9 +686,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
@@ -707,9 +696,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -744,9 +731,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+      createNavigationDrawerActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
@@ -759,9 +744,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(
-        internalProfileId1
-      )
+      createNavigationDrawerActivityIntent(internalProfileId1)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
@@ -980,7 +963,7 @@ class NavigationDrawerActivityProdTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsModule::class
+      DeveloperOptionsModule::class, ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
