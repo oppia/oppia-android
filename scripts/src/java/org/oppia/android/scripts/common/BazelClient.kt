@@ -71,9 +71,17 @@ class BazelClient(
             "--noshow_progress",
             "--universe_scope=//...",
             "--order_output=no",
-            "siblings($file)"
+            "kind(test, siblings($file))"
           )
-        println("@@@@@ Sibling files for $file: $siblingFiles1")
+        val siblingFiles2 =
+          executeBazelCommand(
+            "query",
+            "--noshow_progress",
+            "--universe_scope=//...",
+            "--order_output=no",
+            "kind(android_library, siblings($file))"
+          )
+        println("@@@@@ Sibling files for $file: ${siblingFiles1 + siblingFiles2}")
       }
       val siblingFiles =
         executeBazelCommand(
@@ -142,6 +150,7 @@ class BazelClient(
     vararg arguments: String,
     allowPartialFailures: Boolean = false
   ): List<String> {
+    println("@@@@@ bazel ${arguments.joinToString(separator = " ")}")
     val result =
       commandExecutor.executeCommand(
         rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
@@ -156,7 +165,6 @@ class BazelClient(
         "\nStandard output:\n${result.output.joinToString("\n")}" +
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }
-    println("@@@@@ ${result.command.joinToString(separator = " ")}")
     return result.output
   }
 }
