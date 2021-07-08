@@ -1,10 +1,13 @@
 package org.oppia.android.scripts.maven
 
+import org.oppia.android.scripts.proto.CopyrightLicense
 import org.oppia.android.scripts.proto.LicenseDetails
 import org.oppia.android.scripts.proto.MavenDependency
+import org.oppia.android.scripts.proto.MavenDependencyList
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
+import java.io.FileInputStream
 import java.net.URL
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
@@ -14,23 +17,85 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
+private const val MAVEN_DEPENDENCY_LIST_INCOMPLETE = "maven_dependencies.textproto is incomplete."
+private const val MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK =
+  "maven_dependencies.textproto still needs some manual work."
+
+/**
+ * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
+ * on which Oppia Android depends.
+ *
+ * Usage:
+ *   bazel run //scripts:generate_license_texts -- <path_to_directory_root>
+ *   <path_to_maven_install_json> <path_to_maven_dependencies_textproto>
+ *
+ * Arguments:
+ * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ * - path_to_maven_install_json: absolute path to the maven_install.json file.
+ * - path_to_maven_dependencies_textproto: absoulte path to the maven_dependencies.textproto
+ * that stores the list of maven dependencies compiled through the script.
+ * Example:
+ *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
+ *   $(pwd)/third_party/maven_install.json $(pwd)/scripts/assets/maven_dependencies.textproto
+ */
 fun main(args: Array<String>) {
   val pathToNamesXml = args[0]
   val pathToVersionsXml = args[1]
-  val pathToDependenciesXml = args[0]
-  val pathToLicensesXml = args[0]
-  // Generate Maven Dependencies Names List by reading textproto.
-  // Generate Maven Dependencies Versions List by reading textproto.
+
+  val mavenDependencyList = retrieveMavenDependencyList()
+
+  writeDependenciesNamesXml(pathToNamesXml, retrieveArtifactsNamesList(mavenDependencyList))
+  writeDependenciesVersionsXml(
+    pathToVersionsXml,
+    retrieveArtifactsVersionsList(mavenDependencyList)
+  )
   // Generate Licenses List by reading textproto.
-  writeDependenciesNamesXml(pathToNamesXml, listOf("Abhay", "Apache", "MIT"))
-  writeDependenciesVersionsXml(pathToVersionsXml, listOf("4.5.0", "3.4.5", "9.0.8"))
 }
 
-// fun getMavenDependenciesList(
-//  pathToFile: String
-// ) : List<MavenDependency> {
-//
-// }
+private fun retrieveArtifactsNamesList(mavenDependencyList: List<MavenDependency>): List<String> {
+  val artifactNamesList = mutableListOf<String>()
+  mavenDependencyList.forEach { dependency ->
+    artifactNamesList.add(dependency.artifactName)
+  }
+  return artifactNamesList.toList()
+}
+
+private fun retrieveArtifactsVersionsList(
+  mavenDependencyList: List<MavenDependency>
+): List<String> {
+  val artifactVersionsList = mutableListOf<String>()
+  mavenDependencyList.forEach { dependency ->
+    artifactVersionsList.add(dependency.artifactVersion)
+  }
+  return artifactVersionsList.toList()
+}
+
+/** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
+private fun retrieveMavenDependencyList(): List<MavenDependency> {
+  return getProto(
+    "maven_dependencies.pb",
+    MavenDependencyList.getDefaultInstance()
+  ).mavenDependencyList.toList()
+}
+
+/**
+ * Helper function to parse the textproto file to a proto class.
+ *
+ * @param textProtoFileName name of the textproto file to be parsed
+ * @param proto instance of the proto class
+ * @return proto class from the parsed textproto file
+ */
+private fun getProto(
+  textProtoFileName: String,
+  proto: MavenDependencyList
+): MavenDependencyList {
+  val protoBinaryFile = File("scripts/assets/$textProtoFileName")
+  val builder = proto.newBuilderForType()
+  val protoObject = FileInputStream(protoBinaryFile).use {
+    builder.mergeFrom(it)
+  }.build() as MavenDependencyList
+  return protoObject
+}
 
 fun writeDependenciesNamesXml(
   path: String,
@@ -99,7 +164,7 @@ fun writeDependenciesVersionsXml(
   getTransformer().transform(DOMSource(doc), StreamResult(file))
 }
 
-fun writeDependenciesLicensesXml(
+private fun writeDependenciesLicensesXml(
   path: String,
   copyrightLicenseList: Set<LicenseDetails>,
   mavenDependenciesList: List<MavenDependency>
@@ -144,6 +209,47 @@ fun writeDependenciesLicensesXml(
 
   getTransformer().transform(DOMSource(doc), StreamResult(file))
 }
+
+//fun retrieveAllLicensesSet(
+//  mavenDependencyList: List<MavenDependency>
+//) {
+//  val copyrightLicensesSet = mutableSetOf<CopyrightLicense>
+//  mavenDependencyList.forEach { dependency ->
+//    val licenseList = dependency.licenseList
+//    if (licenseList.isEmpty()) {
+//      throw Exception(MAVEN_DEPENDENCY_LIST_INCOMPLETE)
+//    }
+//    licenseList.forEach { license ->
+//      var licenseText: String = ""
+//      when (license.primaryLinkType) {
+//        PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED, PrimaryLinkType.NEEDS_INTERVENTION -> {
+//          throw Exception(MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK)
+//        }
+//        PrimaryLinkType.SCRAPE_DIRECTLY -> {
+//          licenseText = scrapeLicenseText(license.primaryLink)
+////          copyrightLicensesSet.add(
+////            CopyrightLicense
+////              .newBuilder()
+////              .setLicenseName(license.licenseName)
+////              .set
+////
+////          )
+//        }
+//        PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY -> {
+//          licenseText = if (license.alternativeLinkType == AlternativeLinkType.SCRAPE) {
+//            scrapeLicenseText(license.alterantiveLink)
+//          } else {
+//            licenseText.alternativeLink
+//          }
+//        }
+//        PrimaryLinkType.SHOW_LINK_ONLY -> licenseText = license.primaryLink
+//        PrimaryLinkType.INVALID_LINK -> {
+//          if (license.alternativeLink)
+//        }
+//      }
+//    }
+//  }
+//}
 
 fun scrapeLicenseText(url: String): String {
   return URL(url).openStream().bufferedReader().readText()
