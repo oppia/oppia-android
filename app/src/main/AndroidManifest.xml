@@ -154,8 +154,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.AudioFragmentTestActivity" />
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
-    <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
+    <activity android:name=".app.testing.ConceptCardFragmentTestActivity"/>
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
     <activity

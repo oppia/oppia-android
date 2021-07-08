@@ -403,4 +403,12 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
+
+  <!--  Concept Card Fragment-->
+  <dimen name="concept_card_heading_text_marginStart">28dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">40dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">40dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
 </resources>
