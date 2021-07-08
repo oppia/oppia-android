@@ -108,9 +108,8 @@ class ModifyLessonProgressController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile for which progress needs modified.
    * @param topicIdList the list of topic IDs for which progress needs modified.
-   * @return a [Boolean] indicating whether the process is completed or not.
    */
-  fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>): Boolean {
+  fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
       val topic = topicController.retrieveTopic(topicId)
       topic.storyList.forEach { storySummary ->
@@ -125,7 +124,6 @@ class ModifyLessonProgressController @Inject constructor(
         }
       }
     }
-    return true
   }
 
   /**
@@ -134,12 +132,8 @@ class ModifyLessonProgressController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs modified.
    * @param storyMap the list of topic IDs mapped to corresponding story IDs for which progress
    * needs modified.
-   * @return a [Boolean] indicating whether the process is completed or not.
    */
-  fun markMultipleStoriesCompleted(
-    profileId: ProfileId,
-    storyMap: Map<String, String>
-  ): Boolean {
+  fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
     storyMap.forEach {
       val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
       storySummary.chapterList.forEach { chapterSummary ->
@@ -152,7 +146,6 @@ class ModifyLessonProgressController @Inject constructor(
         )
       }
     }
-    return true
   }
 
   /**
@@ -162,12 +155,11 @@ class ModifyLessonProgressController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs modified.
    * @param chapterMap the list of [Pair] of topic IDs and story IDs mapped to corresponding
    * exploration IDs for which progress needs modified.
-   * @return a [Boolean] indicating whether the process is completed or not.
    */
   fun markMultipleChaptersCompleted(
     profileId: ProfileId,
     chapterMap: Map<String, Pair<String, String>>
-  ): Boolean {
+  ) {
     chapterMap.forEach {
       storyProgressController.recordCompletedChapter(
         profileId = profileId,
@@ -177,7 +169,6 @@ class ModifyLessonProgressController @Inject constructor(
         completionTimestamp = oppiaClock.getCurrentTimeMs()
       )
     }
-    return true
   }
 
   /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */

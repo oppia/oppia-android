@@ -78,11 +78,11 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markTopicsCompletedMarkCompletedTextView.setOnClickListener {
-      val topicsAreMarkedCompleted = modifyLessonProgressController.markMultipleTopicsCompleted(
+      modifyLessonProgressController.markMultipleTopicsCompleted(
         profileId,
         selectedTopicIdList
       )
-      if (topicsAreMarkedCompleted) activity.finish()
+      activity.finish()
     }
 
     return binding.root

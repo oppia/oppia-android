@@ -79,12 +79,12 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markStoriesCompletedMarkCompletedTextView.setOnClickListener {
-      val storiesAreMarkedCompleted = modifyLessonProgressController.markMultipleStoriesCompleted(
+      modifyLessonProgressController.markMultipleStoriesCompleted(
         profileId,
         getMarkStoriesCompletedViewModel().getStorySummaryMap()
           .filterKeys { selectedStoryIdList.contains(it) }.mapValues { it.value.topicId }
       )
-      if (storiesAreMarkedCompleted) activity.finish()
+      activity.finish()
     }
 
     return binding.root
