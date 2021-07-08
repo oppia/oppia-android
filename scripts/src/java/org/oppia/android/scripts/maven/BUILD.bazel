@@ -25,6 +25,5 @@ kt_jvm_library(
         ":maven_dependencies_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto_lite",
-        "//third_party:com_google_protobuf_protobuf-java",
     ],
 )
