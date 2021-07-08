@@ -97,6 +97,17 @@ class XmlSyntaxErrorHandlerTest {
   }
 
   @Test
+  fun testXmlErrorHandler_invokeFatalErrorCase_errorShouldBeCollected() {
+    val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
+    xmlSyntaxErrorHandler.fatalError(SAXParseException("test_error_message", "", "", 1, 1))
+    val errorList = xmlSyntaxErrorHandler.retrieveErrorList()
+    assertThat(errorList).hasSize(1)
+    assertThat(errorList.first().message).isEqualTo("test_error_message")
+    assertThat(errorList.first().getLineNumber()).isEqualTo(1)
+    assertThat(errorList.first().getColumnNumber()).isEqualTo(1)
+  }
+
+  @Test
   fun testXmlErrorHandler_multipleErrors_allErrorsShouldBeCollected() {
     val invalidXml =
       """
