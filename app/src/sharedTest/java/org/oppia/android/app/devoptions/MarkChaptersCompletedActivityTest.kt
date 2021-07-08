@@ -750,6 +750,116 @@ class MarkChaptersCompletedActivityTest {
     }
   }
 
+  @Test
+  fun testMarkChaptersCompletedActivity_clickMarkCompleted_activityFinishes() {
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+      assertThat(activityTestRule.activity).isNull()
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+      assertThat(activityTestRule.activity).isNull()
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_selectMultipleChapters_clickMarkCompleted_reopenActivity_completedChaptersAreChecked() { // ktlint-disable max-line-length
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 4)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 4)
+      scrollToPosition(position = 9)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 9)
+      scrollToPosition(position = 10)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    }
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 4)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 4)
+      scrollToPosition(position = 9)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 9)
+      scrollToPosition(position = 10)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_configChange_selectMultipleChapters_clickMarkCompleted_reopenActivity_completedChaptersAreChecked() { // ktlint-disable max-line-length
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 4)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 4)
+      scrollToPosition(position = 9)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 9)
+      scrollToPosition(position = 10)
+      performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
+      onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    }
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 4)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 4)
+      scrollToPosition(position = 9)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 9)
+      scrollToPosition(position = 10)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
   private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
       context, internalProfileId
@@ -792,6 +902,13 @@ class MarkChaptersCompletedActivityTest {
 
   private fun markFractionsFirstChapterCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
+  private fun markAllLessonsCompleted() {
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId,
       timestampOlderThanOneWeek = false
     )

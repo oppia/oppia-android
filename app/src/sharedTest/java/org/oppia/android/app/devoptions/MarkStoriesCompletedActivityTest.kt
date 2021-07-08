@@ -429,7 +429,7 @@ class MarkStoriesCompletedActivityTest {
       scrollToPosition(position = 3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_recycler_view,
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
@@ -448,11 +448,113 @@ class MarkStoriesCompletedActivityTest {
       scrollToPosition(position = 3)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+          recyclerViewId = R.id.mark_stories_completed_recycler_view,
           position = 3,
           targetViewId = R.id.mark_stories_completed_story_check_box
         )
       ).check(matches(isChecked())).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_clickMarkCompleted_activityFinishes() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+      assertThat(activityTestRule.activity).isNull()
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+      assertThat(activityTestRule.activity).isNull()
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_selectMultipleStories_clickMarkCompleted_reopenActivity_completedStoriesAreChecked() { // ktlint-disable max-line-length
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      performItemCheckOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 3)
+      performItemCheckOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      performItemCheckOnStorySummaryListItem(itemPosition = 4)
+      onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+    }
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 3)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_configChange_selectMultipleStories_clickMarkCompleted_reopenActivity_completedStoriesAreChecked() { // ktlint-disable max-line-length
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      performItemCheckOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 3)
+      performItemCheckOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      performItemCheckOnStorySummaryListItem(itemPosition = 4)
+      onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+    }
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 3)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
     }
   }
 
@@ -468,7 +570,7 @@ class MarkStoriesCompletedActivityTest {
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -478,7 +580,7 @@ class MarkStoriesCompletedActivityTest {
   private fun verifyItemCheckedOnStorySummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -488,7 +590,7 @@ class MarkStoriesCompletedActivityTest {
   private fun performItemCheckOnStorySummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_story_summary_recycler_view,
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
         position = itemPosition,
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
@@ -502,8 +604,15 @@ class MarkStoriesCompletedActivityTest {
     )
   }
 
+  private fun markAllLessonsCompleted() {
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_stories_completed_story_summary_recycler_view)).perform(
+    onView(withId(R.id.mark_stories_completed_recycler_view)).perform(
       scrollToPosition<ViewHolder>(position)
     )
   }
