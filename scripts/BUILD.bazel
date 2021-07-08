@@ -3,8 +3,11 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
-load("//scripts:script_assets.bzl", "generate_regex_assets_list_from_text_protos",
-"generate_test_file_assets_list_from_text_protos")
+load(
+    "//scripts:script_assets.bzl",
+    "generate_regex_assets_list_from_text_protos",
+    "generate_test_file_assets_list_from_text_protos",
+)
 
 # Visibility for libraries that should be accessible to script tests.
 package_group(
