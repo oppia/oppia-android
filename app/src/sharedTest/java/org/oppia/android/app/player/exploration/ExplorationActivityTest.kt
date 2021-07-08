@@ -1050,7 +1050,7 @@ class ExplorationActivityTest {
     )
   }
 
-  // TODO(#89): Check this test case too.
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
     explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
@@ -1201,7 +1201,7 @@ class ExplorationActivityTest {
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
-  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showStopExpDialog_leave_checkNoProgressDeleted() {
 
@@ -1239,7 +1239,7 @@ class ExplorationActivityTest {
     )
   }
 
-  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showStopExpDialog_cancel_checkNoProgressDeleted() {
     explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
@@ -1434,7 +1434,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
