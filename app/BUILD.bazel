@@ -508,7 +508,6 @@ android_library(
         "//third_party:com_google_android_material_material",
         "//third_party:de_hdodenhof_circleimageview",
         "//third_party:io_github_chaosleung_pinview",
-        "//third_party:javax_annotation_javax_annotation-api_jar",
         "//third_party:nl_dionsegijn_konfetti",
     ],
 )
@@ -644,7 +643,6 @@ kt_android_library(
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox_flexbox",
-        "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
