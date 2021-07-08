@@ -1,5 +1,5 @@
 """
-Libraries corresponding to attributing third-party library Copyright licenses in Oppia-android.
+Libraries corresponding to attributing third-party library copyright licenses in Oppia Android.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
@@ -11,7 +11,7 @@ kt_jvm_library(
         "maveninstall/MavenListDependency.kt",
         "maveninstall/MavenListDependencyTree.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//third_party:moshi",
     ],
@@ -23,9 +23,8 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":maven_dependencies_lib",
-        "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto_lite",
-        "//third_party:com_google_protobuf_protobuf-java",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
     ],
 )
 

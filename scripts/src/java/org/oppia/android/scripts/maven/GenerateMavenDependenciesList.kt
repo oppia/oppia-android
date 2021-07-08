@@ -4,12 +4,12 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
+import org.oppia.android.scripts.proto.AlternativeLinkType
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.OriginOfLicenses
 import org.oppia.android.scripts.proto.PrimaryLinkType
-import org.oppia.android.scripts.proto.SecondaryLinkType
 import java.io.File
 import java.io.FileInputStream
 import java.net.URL
@@ -24,7 +24,7 @@ private const val URL_TAG = "<url>"
 
 /**
  * Script to compile the list of the third-party Maven dependencies (direct and indirect both)
- * on which Oppia-android depends.
+ * on which Oppia Android depends.
  *
  * Usage:
  *   bazel run //scripts:generate_maven_dependencies_list  -- <path_to_directory_root>
@@ -32,7 +32,7 @@ private const val URL_TAG = "<url>"
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: absoulte path to the maven_install.json file.
+ * - path_to_maven_install_json: absolute path to the maven_install.json file.
  * - path_to_maven_dependencies_textproto: absoulte path to the maven_dependencies.textproto
  * that stores the list of maven dependencies compiled through the script.
  * Example:
@@ -46,32 +46,25 @@ fun main(args: Array<String>) {
   val pathToRoot = args[0]
   val pathToMavenInstall = args[1]
   val pathToMavenDependenciesTextProto = args[2]
-  runMavenRePinCommand(pathToRoot)
+
   val bazelQueryDepsNames = runBazelQueryCommand(pathToRoot)
   val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDepsNames)
 
   val dependenciesListFromTextproto = retrieveMavenDependencyList()
   val dependenciesListFromPom =
-    getLicenseLinksFromPOM(finalMavenInstallList).mavenDependencyList
+    getLicenseLinksFromPom(finalMavenInstallList).mavenDependencyList
 
-  val licenseSetFromTextproto = mutableSetOf<License>()
-  val licenseSetFromPom = mutableSetOf<License>()
+  val licenseSetFromPom = dependenciesListFromPom.flatMap { dependency ->
+    dependency.licenseList
+  }.toSet()
 
-  dependenciesListFromTextproto.forEach { dependency ->
-    dependency.licenseList.forEach {
-      licenseSetFromTextproto.add(it)
-    }
-  }
-
-  dependenciesListFromPom.forEach { dependency ->
-    dependency.licenseList.forEach {
-      licenseSetFromPom.add(it)
-    }
-  }
+  val licenseSetFromTextproto = dependenciesListFromTextproto.flatMap { dependency ->
+    dependency.licenseList
+  }.toSet()
 
   val finalLicensesSet = updateLicensesSet(
     licenseSetFromTextproto,
-    licenseSetFromTextproto
+    licenseSetFromPom
   )
 
   val finalDependenciesList = updateMavenDependenciesList(
@@ -90,9 +83,9 @@ fun main(args: Array<String>) {
       println("\nlicense_name: ${it.licenseName}")
       println("primary_link: ${it.primaryLink}")
       println("primary_link_type: ${it.primaryLinkType}")
-      println("secondary_link: ${it.secondaryLink}")
-      println("secondary_link_type: ${it.secondaryLinkType}")
-      println("secondary_license_name: ${it.secondaryLicenseName}\n")
+      println("alternative_link: ${it.alternativeLink}")
+      println("alternative_link_type: ${it.alternativeLinkType}")
+      println("alternative_license_name: ${it.alternativeLicenseName}\n")
     }
     throw Exception("Licenses details are not completed.")
   }
@@ -191,10 +184,10 @@ private fun getAllBrokenLicenses(
             license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
           ) &&
         (
-          license.secondaryLink.isEmpty() ||
-            license.secondaryLinkType == SecondaryLinkType.UNRECOGNIZED ||
-            license.secondaryLinkType == SecondaryLinkType.SECONDARY_LINK_TYPE_UNSPECIFIED ||
-            license.secondaryLicenseName.isEmpty()
+          license.alternativeLink.isEmpty() ||
+            license.alternativeLinkType == AlternativeLinkType.UNRECOGNIZED ||
+            license.alternativeLinkType == AlternativeLinkType.ALTERNATIVE_LINK_TYPE_UNSPECIFIED ||
+            license.alternativeLicenseName.isEmpty()
           )
       ) {
         licenseSet.add(license)
@@ -278,7 +271,7 @@ private fun getProto(
   return protoObject
 }
 
-fun parseArtifactName(artifactName: String): String {
+private fun parseArtifactName(artifactName: String): String {
   var colonIndex = artifactName.length - 1
   while (artifactName.isNotEmpty() && artifactName[colonIndex] != ':') {
     colonIndex--
@@ -299,7 +292,7 @@ fun parseArtifactName(artifactName: String): String {
   return parsedArtifactNameBuilder.toString()
 }
 
-fun runBazelQueryCommand(rootPath: String): List<String> {
+private fun runBazelQueryCommand(rootPath: String): List<String> {
   val rootDirectory = File(rootPath).absoluteFile
   val bazelClient = BazelClient(rootDirectory)
   val bazelQueryDepsNames = mutableListOf<String>()
@@ -328,7 +321,6 @@ private fun readMavenInstall(
   val adapter = moshi.adapter(MavenListDependencyTree::class.java)
   val dependencyTree = adapter.fromJson(mavenInstallJsonText)
   val mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
-  mavenInstallDependencyList?.sortBy { it -> it.coord }
   val finalDependenciesList = mutableListOf<MavenListDependency>()
   mavenInstallDependencyList?.forEach { dep ->
     val artifactName = dep.coord
@@ -340,7 +332,7 @@ private fun readMavenInstall(
   return finalDependenciesList
 }
 
-private fun getLicenseLinksFromPOM(
+private fun getLicenseLinksFromPom(
   finalDependenciesList: List<MavenListDependency>
 ): MavenDependencyList {
   var index = 0
@@ -431,7 +423,7 @@ private fun getLicenseLinksFromPOM(
   return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
 }
 
-fun writeTextProto(
+private fun writeTextProto(
   pathToTextProto: String,
   mavenDependencyList: MavenDependencyList
 ) {
@@ -441,17 +433,6 @@ fun writeTextProto(
   file.printWriter().use { out ->
     out.println(list)
   }
-}
-
-fun runMavenRePinCommand(rootPath: String) {
-  val rootDirectory = File(rootPath).absoluteFile
-  val bazelClient = BazelClient(rootDirectory)
-  val output = bazelClient.executeBazelRePinCommand(
-    "bazel",
-    "run",
-    "@unpinned_maven//:pin"
-  )
-  println(output)
 }
 
 private class BazelClient(private val rootDirectory: File) {

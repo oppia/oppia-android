@@ -378,8 +378,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "com.google.errorprone:error_prone_annotations:2.3.4"
-  artifact_version: "2.3.4"
+  artifact_name: "com.google.errorprone:error_prone_annotations:2.3.2"
+  artifact_version: "2.3.2"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -409,8 +409,8 @@ maven_dependency {
   artifact_version: "1.0.1"
 }
 maven_dependency {
-  artifact_name: "com.google.guava:guava:29.0-jre"
-  artifact_version: "29.0-jre"
+  artifact_name: "com.google.guava:guava:28.1-android"
+  artifact_version: "28.1-android"
 }
 maven_dependency {
   artifact_name: "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"
@@ -430,8 +430,8 @@ maven_dependency {
   artifact_version: "3.0.0"
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.12.0"
-  artifact_version: "1.12.0"
+  artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
+  artifact_version: "1.11.0"
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -439,8 +439,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi-kotlin:1.12.0"
-  artifact_version: "1.12.0"
+  artifact_name: "com.squareup.moshi:moshi-kotlin:1.11.0"
+  artifact_version: "1.11.0"
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -448,8 +448,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "com.squareup.moshi:moshi:1.12.0"
-  artifact_version: "1.12.0"
+  artifact_name: "com.squareup.moshi:moshi:1.11.0"
+  artifact_version: "1.11.0"
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -466,8 +466,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "com.squareup.okio:okio:2.10.0"
-  artifact_version: "2.10.0"
+  artifact_name: "com.squareup.okio:okio:2.2.2"
+  artifact_version: "2.2.2"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -488,35 +488,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "com.squareup:kotlinpoet-classinspector-elements:1.8.0"
-  artifact_version: "1.8.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  }
-  origin_of_license: ENTIRELY_FROM_POM
-}
-maven_dependency {
-  artifact_name: "com.squareup:kotlinpoet-metadata-specs:1.8.0"
-  artifact_version: "1.8.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  }
-  origin_of_license: ENTIRELY_FROM_POM
-}
-maven_dependency {
-  artifact_name: "com.squareup:kotlinpoet-metadata:1.8.0"
-  artifact_version: "1.8.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
-  }
-  origin_of_license: ENTIRELY_FROM_POM
-}
-maven_dependency {
-  artifact_name: "com.squareup:kotlinpoet:1.8.0"
-  artifact_version: "1.8.0"
+  artifact_name: "com.squareup:kotlinpoet:1.6.0"
+  artifact_version: "1.6.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -587,8 +560,12 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "org.checkerframework:checker-qual:2.11.1"
-  artifact_version: "2.11.1"
+  artifact_name: "org.checkerframework:checker-compat-qual:2.5.5"
+  artifact_version: "2.5.5"
+  license {
+    license_name: "GNU General Public License, version 2 (GPL2), with the classpath exception"
+    primary_link: "http://www.gnu.org/software/classpath/license.html"
+  }
   license {
     license_name: "The MIT License"
     primary_link: "http://opensource.org/licenses/MIT"
@@ -596,8 +573,12 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
-  artifact_version: "1.4.31"
+  artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.18"
+  artifact_version: "1.18"
+}
+maven_dependency {
+  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.10"
+  artifact_version: "1.4.10"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -614,8 +595,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31"
-  artifact_version: "1.4.31"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+  artifact_version: "1.4.10"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -623,8 +604,8 @@ maven_dependency {
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
-  artifact_version: "1.4.31"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
+  artifact_version: "1.4.10"
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -655,15 +636,6 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-  }
-  origin_of_license: ENTIRELY_FROM_POM
-}
-maven_dependency {
-  artifact_name: "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.2.0"
-  artifact_version: "0.2.0"
-  license {
-    license_name: "The Apache Software License, Version 2.0"
-    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
