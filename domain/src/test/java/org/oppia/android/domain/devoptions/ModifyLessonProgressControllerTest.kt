@@ -316,7 +316,7 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Test
-  fun markFirstAndFractionsTopicsCompleted_TopicsAreCompleted() {
+  fun markFirstAndFractionsTopicsCompleted_bothTopicsAreCompleted() {
     modifyLessonProgressController.markMultipleTopicsCompleted(
       profileId,
       listOf(TEST_TOPIC_ID_0, FRACTIONS_TOPIC_ID)
@@ -337,7 +337,7 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Test
-  fun markFirstAndRatios2StoriesCompleted_StoriesAreCompleted() {
+  fun markFirstAndRatios2StoriesCompleted_bothStoriesAreCompleted() {
     modifyLessonProgressController.markMultipleStoriesCompleted(
       profileId,
       mapOf(TEST_STORY_ID_0 to TEST_TOPIC_ID_0, RATIOS_STORY_ID_1 to RATIOS_TOPIC_ID)
@@ -354,7 +354,7 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Test
-  fun markPrototypeAndBothFractionsExplorationsCompleted_ExplorationsAreCompleted() {
+  fun markPrototypeAndBothFractionsExplorationsCompleted_allThreeExplorationsAreCompleted() {
     modifyLessonProgressController.markMultipleChaptersCompleted(
       profileId,
       mapOf(
