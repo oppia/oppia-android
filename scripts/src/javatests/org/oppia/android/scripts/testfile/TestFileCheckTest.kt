@@ -86,6 +86,15 @@ class TestFileCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
+  @Test
+  fun testTestFileCheck_addEmptyDirectory_scriptCheckShouldPass(){
+    tempFolder.newFolder("testfiles", "testfolder")
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
   /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {
     return "${tempFolder.root}/testfiles"

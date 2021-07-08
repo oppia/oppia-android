@@ -34,13 +34,13 @@ java_lite_proto_library(
 )
 
 proto_library(
-    name = "script_exemptions_structure_proto",
+    name = "script_exemptions_proto",
     srcs = ["script_exemptions.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
-    name = "script_exemptions_structure_java_proto_lite",
+    name = "script_exemptions_java_proto_lite",
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":script_exemptions_structure_proto"],
+    deps = [":script_exemptions_proto"],
 )

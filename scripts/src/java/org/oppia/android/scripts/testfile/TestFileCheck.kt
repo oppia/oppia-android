@@ -19,7 +19,7 @@ import java.io.FileInputStream
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
-  val repoPath = args[0] + "/"
+  val repoPath = "${args[0]}/"
 
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
