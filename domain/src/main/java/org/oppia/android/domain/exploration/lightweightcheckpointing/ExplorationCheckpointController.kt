@@ -25,6 +25,7 @@ private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
+
 /**
  * Controller for saving, retrieving, updating, and deleting exploration checkpoints.
  */
@@ -68,12 +69,12 @@ class ExplorationCheckpointController @Inject constructor(
    * Records an exploration checkpoint for the specified profile.
    *
    * @return a [Deferred] that upon completion indicates the current state of the checkpoint
-   *         database. If the size of the checkpoint database is less than the allocated limit of
-   *         [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
-   *         [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
-   *         checkpoint database exceeded [ExplorationStorageDatabaseSize] then
-   *         [CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] is returned upon successful
-   *         completion of deferred
+   *     database. If the size of the checkpoint database is less than the allocated limit of
+   *     [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
+   *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
+   *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
+   *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] is returned upon successful
+   *     completion of deferred
    */
   internal fun recordExplorationCheckpointAsync(
     profileId: ProfileId,
@@ -145,7 +146,7 @@ class ExplorationCheckpointController @Inject constructor(
 
   /**
    * @return [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
-   * and explorationVersion of the oldest saved checkpoint for the specified profile.
+   *      and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
   fun retrieveOldestSavedExplorationCheckpointDetails(
     profileId: ProfileId

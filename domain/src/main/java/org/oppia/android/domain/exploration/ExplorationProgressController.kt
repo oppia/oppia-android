@@ -59,8 +59,6 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
-  // TODO(): Update the saving mechanism for checkpoints once internal locking of this controller is
-  //  updated.
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
@@ -458,9 +456,9 @@ class ExplorationProgressController @Inject constructor(
    * @param topicId is the id of the topic which contains the story with the current exploration.
    * @param storyId is the id of the story which contains the current exploration.
    * @param lastPlayedTimestamp timestamp of the time when the checkpoints state for the exploration
-   *        was last updated.
+   *     was last updated.
    * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
-   *        unsuccessfully.
+   *     unsuccessfully.
    */
   private fun processSaveCheckpointResult(
     profileId: ProfileId,
