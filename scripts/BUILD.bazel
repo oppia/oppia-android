@@ -97,3 +97,10 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.maven.GenerateMavenDependenciesListKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib"],
 )
+
+kt_jvm_binary(
+    name = "generate_license_texts",
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.scripts.maven.GenerateLicenseTextsKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:generate_license_texts_lib"],
+)

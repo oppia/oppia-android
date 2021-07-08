@@ -28,3 +28,13 @@ kt_jvm_library(
         "//third_party:com_google_protobuf_protobuf-java",
     ],
 )
+
+kt_jvm_library(
+    name = "generate_license_texts_lib",
+    srcs = ["GenerateLicenseTexts.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/proto:copyright_license_java_proto_lite",
+        "//scripts/src/java/org/oppia/android/scripts/proto:generate_maven_dependencies_list_java_proto_lite",
+    ],
+)

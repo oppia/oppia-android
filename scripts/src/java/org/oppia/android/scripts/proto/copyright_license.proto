@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+message CopyrightLicense {
+  string license_name = 1;
+  string license_text = 2;
+  bool show_only_link = 3;
+  string license_link = 4;
+}
+
+message LicenseDetails {
+  string name = 1;
+  string license_text = 2;
+}
