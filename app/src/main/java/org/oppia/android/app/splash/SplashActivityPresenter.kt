@@ -14,7 +14,6 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -28,7 +27,6 @@ class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
   private val appStartupStateController: AppStartupStateController,
-  private val platformParameterController: PlatformParameterController,
   private val primeTopicAssetsController: PrimeTopicAssetsController
 ) {
 
@@ -40,28 +38,13 @@ class SplashActivityPresenter @Inject constructor(
     )
     // Initiate download support before any additional processing begins.
     primeTopicAssetsController.downloadAssets(R.style.AlertDialogTheme)
-    loadPlatformParameters()
+    subscribeToOnboardingFlow()
   }
 
   fun handleOnCloseAppButtonClicked() {
     // If the app close button is clicked for the deprecation notice, finish the activity to close
     // the app.
     activity.finish()
-  }
-
-  private fun loadPlatformParameters() {
-    fetchPlatformParametersFromDatabase().observe(
-      activity,
-      Observer { loadSuccessful ->
-        if (!loadSuccessful) {
-          oppiaLogger.w(
-            "SplashActivity",
-            "Failed to load platform parameters, defaults will be used instead.",
-          )
-        }
-        subscribeToOnboardingFlow()
-      }
-    )
   }
 
   private fun subscribeToOnboardingFlow() {
@@ -98,25 +81,6 @@ class SplashActivityPresenter @Inject constructor(
       appStartupStateController.getAppStartupState().toLiveData(),
       ::processStartupState
     )
-  }
-
-  private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
-    return Transformations.map(
-      platformParameterController.getParameterDatabase().toLiveData(),
-      ::processPlatformParameters
-    )
-  }
-
-  private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
-    if (loadingStatus.isFailure()) {
-      oppiaLogger.e(
-        "SplashActivity",
-        "Failed to read platform parameter database",
-        loadingStatus.getErrorOrNull()
-      )
-      return false
-    }
-    return true
   }
 
   private fun processStartupState(

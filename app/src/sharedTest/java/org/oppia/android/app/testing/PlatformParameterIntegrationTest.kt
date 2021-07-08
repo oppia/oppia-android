@@ -54,7 +54,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -121,6 +123,7 @@ class PlatformParameterIntegrationTest {
     }
   }
 
+  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testSplashTestActivity_updateEmptyDatabase_readDatabaseValues_checkWelcomeMsgIsVisible() {
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
