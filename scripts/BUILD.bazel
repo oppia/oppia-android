@@ -70,9 +70,7 @@ kt_jvm_binary(
     testonly = True,
     data = REGEX_PATTERN_CHECK_ASSETS,
     main_class = "org.oppia.android.scripts.regex.RegexPatternValidationCheckKt",
-    runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
-    ],
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib"],
 )
 
 kt_jvm_library(

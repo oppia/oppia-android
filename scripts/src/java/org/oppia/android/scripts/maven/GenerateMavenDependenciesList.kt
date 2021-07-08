@@ -4,7 +4,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
-import org.oppia.android.scripts.proto.AlternativeLinkType
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
@@ -21,6 +20,7 @@ private const val LICENSES_CLOSE_TAG = "</licenses>"
 private const val LICENSE_TAG = "<license>"
 private const val NAME_TAG = "<name>"
 private const val URL_TAG = "<url>"
+private const val MAVEN_PREFIX_LENGTH = 9
 
 /**
  * Script to compile the list of the third-party Maven dependencies (direct and indirect both)
@@ -32,23 +32,23 @@ private const val URL_TAG = "<url>"
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: absolute path to the maven_install.json file.
- * - path_to_maven_dependencies_textproto: absoulte path to the maven_dependencies.textproto
- * that stores the list of maven dependencies compiled through the script.
+ * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_dependencies_textproto: realtive path to the maven_dependencies.textproto
+ *   that stores the list of maven dependencies compiled through the script.
  * Example:
  *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
- *   $(pwd)/third_party/maven_install.json $(pwd)/scripts/assets/maven_dependencies.textproto
+ *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
     throw Exception("Too less arguments passed.")
   }
   val pathToRoot = args[0]
-  val pathToMavenInstall = args[1]
-  val pathToMavenDependenciesTextProto = args[2]
+  val pathToMavenInstall = "$pathToRoot/${args[1]}"
+  val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
 
-  val bazelQueryDepsNames = runBazelQueryCommand(pathToRoot)
-  val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDepsNames)
+  val bazelQueryDependenciesList = runBazelQueryCommand(pathToRoot)
+  val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDependenciesList)
 
   val dependenciesListFromTextproto = retrieveMavenDependencyList()
   val dependenciesListFromPom =
@@ -78,23 +78,26 @@ fun main(args: Array<String>) {
 
   val licensesToBeFixed = getAllBrokenLicenses(finalDependenciesList)
   if (licensesToBeFixed.isNotEmpty()) {
-    println("Please provide all the details of the following licenses manually:")
+    println("\nPlease complete all the details for the following licenses manually:")
     licensesToBeFixed.forEach {
       println("\nlicense_name: ${it.licenseName}")
       println("primary_link: ${it.primaryLink}")
       println("primary_link_type: ${it.primaryLinkType}")
       println("alternative_link: ${it.alternativeLink}")
-      println("alternative_link_type: ${it.alternativeLinkType}")
-      println("alternative_license_name: ${it.alternativeLicenseName}\n")
     }
     throw Exception("Licenses details are not completed.")
   }
 
-  val dependenciesWithoutAnyLinks = getDependenciesWithNoAndInvalidLinks(finalDependenciesList)
+  val dependenciesWithoutAnyLinks = getDependenciesThatNeedIntervention(finalDependenciesList)
   if (dependenciesWithoutAnyLinks.isNotEmpty()) {
-    println("Please provide the license links for the following dependencies manually:")
-    dependenciesWithoutAnyLinks.forEach {
-      println(it)
+    println(
+      """
+      Please remove all the invalid links (if any) for the below mentioned dependencies
+      and provide the valid license links manually:
+      """.trimIndent()
+    )
+    dependenciesWithoutAnyLinks.forEach { dependency ->
+      println(dependency)
     }
     throw Exception(
       """
@@ -104,19 +107,7 @@ fun main(args: Array<String>) {
     )
   }
 
-  val dependenciesThatNeedHumanIntervention = getDependenciesThatNeedHumanIntervention(
-    finalDependenciesList
-  )
-  if (dependenciesThatNeedHumanIntervention.isNotEmpty()) {
-    println(
-      """There are still some dependencies that need human intervention.
-      Try to find the license links for these dependencies and coordinate with the Oppia-android maintainers
-      to fix the issue.
-      """.trimIndent()
-    )
-    throw Exception("Human Intervention needed.")
-  }
-  println("Maven Dependencies updated successfully.")
+  println("maven_dependencies.textproto updated successfully.")
 }
 
 private fun updateLicensesSet(
@@ -135,66 +126,30 @@ private fun updateLicensesSet(
   return finalLicensesSet
 }
 
-private fun getDependenciesThatNeedHumanIntervention(
+private fun getDependenciesThatNeedIntervention(
   mavenDependenciesList: List<MavenDependency>
 ): Set<MavenDependency> {
-  val dependencies = mutableSetOf<MavenDependency>()
-  mavenDependenciesList.forEach { dependency ->
-    dependency.licenseList.forEach { license ->
-      if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
-        dependencies.add(dependency)
-      }
-    }
-  }
-  return dependencies
-}
-
-private fun getDependenciesWithNoAndInvalidLinks(
-  mavenDependenciesList: List<MavenDependency>
-): Set<MavenDependency> {
-  val dependenciesWithoutLicenses = mutableSetOf<MavenDependency>()
-  mavenDependenciesList.forEach {
-    if (it.licenseList.isEmpty()) {
-      dependenciesWithoutLicenses.add(it)
-    } else {
-      it.licenseList.forEach { license ->
-        if (license.primaryLinkType == PrimaryLinkType.INVALID_LINK) {
-          dependenciesWithoutLicenses.add(it)
-        }
-      }
-    }
-  }
-  return dependenciesWithoutLicenses
+  return mavenDependenciesList.filter { dependency ->
+    dependency.licenseList.isEmpty() ||
+      dependency.licenseList.filter { license ->
+        license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
+      }.isNotEmpty()
+  }.toSet()
 }
 
 private fun getAllBrokenLicenses(
   mavenDependenciesList: List<MavenDependency>
 ): Set<License> {
-  val licenseSet = mutableSetOf<License>()
-  mavenDependenciesList.forEach { dependency ->
-    dependency.licenseList.forEach { license ->
-      if (
-        license.primaryLinkType == PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED ||
-        license.primaryLinkType == PrimaryLinkType.UNRECOGNIZED
-      ) {
-        licenseSet.add(license)
-      } else if (
+  return mavenDependenciesList.flatMap { dependency ->
+    dependency.licenseList.filter { license ->
+      license.primaryLinkType == PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED ||
+        license.primaryLinkType == PrimaryLinkType.UNRECOGNIZED ||
         (
-          license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY ||
-            license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
-          ) &&
-        (
-          license.alternativeLink.isEmpty() ||
-            license.alternativeLinkType == AlternativeLinkType.UNRECOGNIZED ||
-            license.alternativeLinkType == AlternativeLinkType.ALTERNATIVE_LINK_TYPE_UNSPECIFIED ||
-            license.alternativeLicenseName.isEmpty()
+          license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY &&
+            license.alternativeLink.isEmpty()
           )
-      ) {
-        licenseSet.add(license)
-      }
     }
-  }
-  return licenseSet
+  }.toSet()
 }
 
 private fun updateMavenDependenciesList(
@@ -205,37 +160,37 @@ private fun updateMavenDependenciesList(
 
   latestDependenciesList.forEach { mavenDependency ->
     val updateLicenseList = mutableListOf<License>()
-    var numberOfLicensesToBeProvidedManually = 0
+    var numberOfLicensesThatRequireHumanEffort = 0
     mavenDependency.licenseList.forEach { license ->
       val updatedLicense = finalLicensesSet.find { it.primaryLink == license.primaryLink }
       if (updatedLicense != null) {
         updateLicenseList.add(updatedLicense)
-        if (updatedLicense.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
-          updatedLicense.primaryLinkType == PrimaryLinkType.INVALID_LINK
+        if (
+          updatedLicense.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
+          updatedLicense.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY
         ) {
-          numberOfLicensesToBeProvidedManually++
+          numberOfLicensesThatRequireHumanEffort++
         }
       } else {
-        if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
-          license.primaryLinkType == PrimaryLinkType.INVALID_LINK
-        ) {
-          numberOfLicensesToBeProvidedManually++
+        if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
+          numberOfLicensesThatRequireHumanEffort++
         }
         updateLicenseList.add(license)
       }
     }
-    val dependency = MavenDependency.newBuilder()
+    val dependency = MavenDependency
+      .newBuilder()
       .setArtifactName(mavenDependency.artifactName)
       .setArtifactVersion(mavenDependency.artifactVersion)
       .addAllLicense(updateLicenseList)
       .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
 
     if (updateLicenseList.isNotEmpty()) {
-      if (numberOfLicensesToBeProvidedManually == updateLicenseList.size) {
+      if (numberOfLicensesThatRequireHumanEffort == updateLicenseList.size) {
         dependency.originOfLicense = OriginOfLicenses.MANUAL
-      } else if (numberOfLicensesToBeProvidedManually == 0) {
+      } else if (numberOfLicensesThatRequireHumanEffort == 0) {
         dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
-      } else if (numberOfLicensesToBeProvidedManually != updateLicenseList.size) {
+      } else if (numberOfLicensesThatRequireHumanEffort != updateLicenseList.size) {
         dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
       }
     }
@@ -305,7 +260,7 @@ private fun runBazelQueryCommand(rootPath: String): List<String> {
     "@maven//...\'"
   )
   output.forEach { dep ->
-    bazelQueryDepsNames.add(dep.substring(9, dep.length))
+    bazelQueryDepsNames.add(dep.substring(MAVEN_PREFIX_LENGTH, dep.length))
   }
   bazelQueryDepsNames.sort()
   return bazelQueryDepsNames.toList()
@@ -427,11 +382,8 @@ private fun writeTextProto(
   pathToTextProto: String,
   mavenDependencyList: MavenDependencyList
 ) {
-  val file = File(pathToTextProto)
-  val list = mavenDependencyList.toString()
-
-  file.printWriter().use { out ->
-    out.println(list)
+  File(pathToTextProto).printWriter().use { out ->
+    out.println(mavenDependencyList)
   }
 }
 
