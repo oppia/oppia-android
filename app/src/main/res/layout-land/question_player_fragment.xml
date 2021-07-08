@@ -17,9 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
@@ -59,6 +57,7 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -70,9 +69,11 @@
         android:id="@+id/extra_interaction_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -156,10 +157,10 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
@@ -173,7 +174,7 @@
       <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/congratulations_text_confetti_view"
         android:layout_width="match_parent"
-        android:layout_height="124dp"/>
+        android:layout_height="124dp" />
     </FrameLayout>
   </FrameLayout>
 </layout>

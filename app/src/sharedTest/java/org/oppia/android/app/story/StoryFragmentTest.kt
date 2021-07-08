@@ -216,6 +216,26 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_completedExp0_tickHasCorrectContentDescription() {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.story_chapter_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_completed_tick
+        )
+      ).check(matches(withContentDescription(R.string.chapter_completed)))
+    }
+  }
+
+  @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
