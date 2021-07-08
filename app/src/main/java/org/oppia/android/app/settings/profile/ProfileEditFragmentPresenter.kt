@@ -85,24 +85,24 @@ class ProfileEditFragmentPresenter @Inject constructor(
       }
     )
 
-    binding.profileEditAllowDownloadSwitch.setOnCheckedChangeListener { compoundButton, checked ->
-      if (compoundButton.isPressed) {
-        profileManagementController.updateAllowDownloadAccess(
-          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-          checked
-        ).toLiveData().observe(
-          activity,
-          Observer {
-            if (it.isFailure()) {
-              oppiaLogger.e(
-                "ProfileEditActivityPresenter",
-                "Failed to updated allow download access",
-                it.getErrorOrNull()!!
-              )
-            }
+    binding.profileEditAllowDownloadContainer.setOnClickListener {
+      binding.profileEditAllowDownloadSwitch.isChecked =
+        !binding.profileEditAllowDownloadSwitch.isChecked
+      profileManagementController.updateAllowDownloadAccess(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        binding.profileEditAllowDownloadSwitch.isChecked
+      ).toLiveData().observe(
+        activity,
+        Observer {
+          if (it.isFailure()) {
+            oppiaLogger.e(
+              "ProfileEditActivityPresenter",
+              "Failed to updated allow download access",
+              it.getErrorOrNull()!!
+            )
           }
-        )
-      }
+        }
+      )
     }
     return binding.root
   }

@@ -21,11 +21,10 @@ private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "retrieve_exploration_checkpoint_provider_id"
 private const val RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID =
   "retrieve_oldest_checkpoint_details_provider_id"
-private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
-  "delete_exploration_checkpoint_provider_id"
 private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
-
+private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
+  "delete_exploration_checkpoint_provider_id"
 /**
  * Controller for saving, retrieving, updating, and deleting exploration checkpoints.
  */
