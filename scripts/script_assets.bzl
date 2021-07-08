@@ -41,8 +41,7 @@ def generate_regex_assets_list_from_text_protos(
 
 def generate_test_file_assets_list_from_text_protos(
         name,
-        test_file_exemptions_name,
-        ):
+        test_file_exemptions_name):
     """
     Converts multiple lists of text proto assets to binary.
 

@@ -110,7 +110,7 @@ class TestFileCheckTest {
   }
 
   @Test
-  fun testTestFileCheck_emptyDirectory_scriptCheckShouldPass(){
+  fun testTestFileCheck_emptyDirectory_scriptCheckShouldPass() {
     tempFolder.newFolder("testfiles", "testfolder")
 
     runScript()
