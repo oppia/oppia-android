@@ -40,61 +40,54 @@ message License {
 
   // Represents whether the type of the primary_link .
   PrimaryLinkType primary_link_type = 4;
-
-  // Represents whether the type of the secondary_link .
-  AlternativeLinkType alternative_link_type = 5;
-
-  // Alternate name for the license if the secondary_link has a different name from
-  // the one extracted from POM.
-  string alternative_license_name = 6;
 }
 
-// Enum that determines if the license link is invalid, license text should be scraped directly,
-// license text should be scraped from the secondary link, only link should be shown for the
-// license or it needs some human intervention,
+// Enum that determines if the primary license link is that is extracted from the POM file of the
+// dependency falls in either of the category -
+// 1. The link contains plain license text and can be directly scraped.
+// 2. The link contains plain license text but can't be scraped directly and hence an
+//    an alternate link should be provided that can be scraped directly.
+// 3. The link does not contain plain license text and therefore can't be scraped. Only
+//    the link should be shown in this case.
+// 4. The link is invalid or it does not point to a valid license and therefore needs
+//    further intervention. Developers must coordinate with Oppia Android team immediately
+//    for assistance.
 enum PrimaryLinkType {
-  // Represents that the primary_link_type is unspecified or unknown.
+  // Represents the default case when the link type is unknown.
   PRIMARY_LINK_TYPE_UNSPECIFIED = 0;
 
-  // Represents that the link can be scraped directly.
+  // Represents that the license text is plain text and can be scraped directly from
+  // the automatically extracted link by the script.
   SCRAPE_DIRECTLY = 1;
 
-  // Represents that the license text should be scraped from the oppia-android-licenses repository.
+  // Represents that the license text is plain text but can not be extracted directly from the
+  // extracted link by the script and hence an alternative_link should be provided to scrape
+  // the text. The alternative_link in this case would point to some license stored in
+  // Oppia-android-licenses repository.
+  // Link to the Oppia-android-licenses repository: https://github.com/oppia/oppia-android-licenses
   SCRAPE_FROM_LOCAL_COPY = 2;
 
-  // Represents that the license text can't be scraped easily and hence only link should be shown.
+  // Represents that the license text is not plain text and therefore can not be scraped.
+  // Only the license link should be shown in this case.
   SHOW_LINK_ONLY = 3;
 
-  // Represents that the extracted link is invalid.
-  INVALID_LINK = 4;
-
-  // Represents that the extracted link is still needs human intervention.
-  NEEDS_INTERVENTION = 5;
-}
-
-// Enum that determines if the alternate link provided for a license should be scraped or not.
-enum AlternativeLinkType {
-  // Represents that the secondary_link_type is unspecified.
-  ALTERNATIVE_LINK_TYPE_UNSPECIFIED = 0;
-
-  // Represents that the alternate link provided manually can be scraped directly.
-  SCRAPE = 1;
-
-  // Represents that the alternate link can't be scraped directly and hence only link
-  // should be shown.
-  SHOW_LINK = 2;
+  // Represents that the extracted link is either empty, or invalid, or the link
+  // does not show any valid license and therefore the developers will need to
+  // co-ordinate with Oppia Android team to fix the issue.
+  NEEDS_INTERVENTION = 4;
 }
 
 // Enum that determines the origin of licenses extracted for a dependency.
 enum OriginOfLicenses {
-  // Represents that the origin is unspecified.
+  // Represents that the origin is unknown.
   UNKNOWN = 0;
 
-  // Represents that all the licenses for the dependency were extracted from POM.
+  // Represents that all the licenses for the dependency were extracted from POM
+  // without any human effort.
   ENTIRELY_FROM_POM = 1;
 
-  // Represents that some of the licenses for the dependency were extracted from POM
-  // and some of them were updated manually.
+  // Represents that some of the license links for the dependency were extracted from
+  // POM file and some of them were updated manually.
   PARTIALLY_FROM_POM = 2;
 
   // Represents that all the licenses for the dependency were updated manually.

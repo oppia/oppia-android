@@ -12,9 +12,7 @@ kt_jvm_library(
         "maveninstall/MavenListDependencyTree.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        "//third_party:moshi",
-    ],
+    deps = ["//third_party:moshi"],
 )
 
 kt_jvm_library(

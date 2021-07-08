@@ -4,7 +4,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
-import org.oppia.android.scripts.proto.AlternativeLinkType
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
@@ -79,21 +78,24 @@ fun main(args: Array<String>) {
 
   val licensesToBeFixed = getAllBrokenLicenses(finalDependenciesList)
   if (licensesToBeFixed.isNotEmpty()) {
-    println("Please provide all the details of the following licenses manually:")
+    println("\nPlease complete all the details for the following licenses manually:")
     licensesToBeFixed.forEach {
       println("\nlicense_name: ${it.licenseName}")
       println("primary_link: ${it.primaryLink}")
       println("primary_link_type: ${it.primaryLinkType}")
       println("alternative_link: ${it.alternativeLink}")
-      println("alternative_link_type: ${it.alternativeLinkType}")
-      println("alternative_license_name: ${it.alternativeLicenseName}\n")
     }
     throw Exception("Licenses details are not completed.")
   }
 
   val dependenciesWithoutAnyLinks = getDependenciesWithNoAndInvalidLinks(finalDependenciesList)
   if (dependenciesWithoutAnyLinks.isNotEmpty()) {
-    println("Please provide the license links for the following dependencies manually:")
+    println(
+      """
+      Please remove all the invalid links (if any) for the below mentioned dependencies
+      and provide the valid license links manually:
+      """.trimIndent()
+    )
     dependenciesWithoutAnyLinks.forEach {
       println(it)
     }
@@ -159,7 +161,7 @@ private fun getDependenciesWithNoAndInvalidLinks(
       dependenciesWithoutLicenses.add(it)
     } else {
       it.licenseList.forEach { license ->
-        if (license.primaryLinkType == PrimaryLinkType.INVALID_LINK) {
+        if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
           dependenciesWithoutLicenses.add(it)
         }
       }
@@ -184,12 +186,7 @@ private fun getAllBrokenLicenses(
           license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY ||
             license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
           ) &&
-        (
-          license.alternativeLink.isEmpty() ||
-            license.alternativeLinkType == AlternativeLinkType.UNRECOGNIZED ||
-            license.alternativeLinkType == AlternativeLinkType.ALTERNATIVE_LINK_TYPE_UNSPECIFIED ||
-            license.alternativeLicenseName.isEmpty()
-          )
+        license.alternativeLink.isEmpty()
       ) {
         licenseSet.add(license)
       }
@@ -211,15 +208,11 @@ private fun updateMavenDependenciesList(
       val updatedLicense = finalLicensesSet.find { it.primaryLink == license.primaryLink }
       if (updatedLicense != null) {
         updateLicenseList.add(updatedLicense)
-        if (updatedLicense.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
-          updatedLicense.primaryLinkType == PrimaryLinkType.INVALID_LINK
-        ) {
+        if (updatedLicense.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
           numberOfLicensesToBeProvidedManually++
         }
       } else {
-        if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
-          license.primaryLinkType == PrimaryLinkType.INVALID_LINK
-        ) {
+        if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
           numberOfLicensesToBeProvidedManually++
         }
         updateLicenseList.add(license)
@@ -429,7 +422,7 @@ private fun writeTextProto(
   mavenDependencyList: MavenDependencyList
 ) {
   val file = File(pathToTextProto)
-  val list = mavenDependencyList.toString()
+  val list = mavenDependencyList
 
   file.printWriter().use { out ->
     out.println(list)
