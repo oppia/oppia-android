@@ -123,7 +123,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
     if (getMarkChaptersCompletedViewModel().getItemList()
-        .count { it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted() } == 0
+      .count { it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted() } == 0
     ) {
       this.binding.isAllChecked = true
     }
