@@ -71,7 +71,7 @@ class BazelClient(
             "--noshow_progress",
             "--universe_scope=//...",
             "--order_output=no",
-            "siblings(rbuildfiles($file))"
+            "siblings($file)"
           )
         println("@@@@@ Sibling files for $file: $siblingFiles1")
       }
