@@ -103,11 +103,11 @@ class SplashActivityPresenter @Inject constructor(
   private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
     return Transformations.map(
       platformParameterController.getParameterDatabase().toLiveData(),
-      ::processParameterLoadingStatus
+      ::processPlatformParameters
     )
   }
 
-  private fun processParameterLoadingStatus(loadingStatus: AsyncResult<Unit>): Boolean {
+  private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
     if (loadingStatus.isFailure()) {
       oppiaLogger.e(
         "SplashActivity",

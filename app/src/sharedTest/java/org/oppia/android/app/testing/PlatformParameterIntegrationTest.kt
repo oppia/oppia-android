@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.os.IBinder
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -134,7 +133,7 @@ class PlatformParameterIntegrationTest {
     }
   }
 
-  /** Returns a [TypeSafeMatcher] which checks for any [Toast] message in the screen. */
+  // Returns a [TypeSafeMatcher] which checks for any [Toast] message in the screen.
   private fun getToastMatcher(): TypeSafeMatcher<Root?> {
     return object : TypeSafeMatcher<Root?>() {
       override fun describeTo(description: Description?) {

@@ -40,11 +40,11 @@ class SplashTestActivityPresenter @Inject constructor(
   private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
     return Transformations.map(
       platformParameterController.getParameterDatabase().toLiveData(),
-      ::processPlatformParameterLoadingStatus
+      ::processPlatformParameters
     )
   }
 
-  private fun processPlatformParameterLoadingStatus(loadingStatus: AsyncResult<Unit>): Boolean {
+  private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
     return loadingStatus.isSuccess()
   }
 
