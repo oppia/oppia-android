@@ -75,7 +75,7 @@ private fun computeExpectedTestFileName(prodFile: File): String {
  */
 private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: String) {
   if (matchedFiles.isNotEmpty()) {
-    matchedFiles.forEach { file ->
+    matchedFiles.sorted().forEach { file ->
       println("File $file does not have a corresponding test file.")
     }
     println("If this is correct, please update $testFileExemptiontextProto.textproto")

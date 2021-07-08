@@ -96,6 +96,31 @@ class TestFileCheckTest {
   }
 
   @Test
+  fun testTestFileCheck_missTestFilesForMultipleProdFiles_logsShouldBeLexicographicallySorted() {
+    tempFolder.newFile("testfiles/ProdFile1.kt")
+    tempFolder.newFile("testfiles/ProdFile1Test.kt")
+    tempFolder.newFile("testfiles/ProdFile3.kt")
+    tempFolder.newFile("testfiles/ProdFile2.kt")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureNote = "Note that, in general, all new files should have tests. If you choose to " +
+      "add an exemption, please specifically call this out in your PR description."
+    val failureMessage =
+      """
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test file.
+      If this is correct, please update scripts/assets/test_file_exemptions.textproto
+      $failureNote
+      """.trimIndent()
+
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
   fun testTestFileCheck_exemptedFile_testFileIsNotRequired() {
     tempFolder.newFolder(
       "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "activity"
