@@ -30,6 +30,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
@@ -70,8 +71,9 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class, PracticeTabModule::class, ExplorationStorageModule::class,
-    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
+    NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
+    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
+    DeveloperOptionsModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {
