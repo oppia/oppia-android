@@ -774,7 +774,7 @@ class MarkChaptersCompletedActivityTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_selectMultipleChapters_clickMarkCompleted_reopenActivity_completedChaptersAreChecked() { // ktlint-disable max-line-length
+  fun testMarkChapsCompleted_selectChapters_clickCompleted_reopen_completedChapsAreChecked() {
     launch<MarkChaptersCompletedActivity>(
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
@@ -805,7 +805,7 @@ class MarkChaptersCompletedActivityTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_configChange_selectMultipleChapters_clickMarkCompleted_reopenActivity_completedChaptersAreChecked() { // ktlint-disable max-line-length
+  fun testMarkChapsCompleted_land_selectChapters_clickCompleted_reopen_completedChapsAreChecked() {
     launch<MarkChaptersCompletedActivity>(
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {

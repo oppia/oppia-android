@@ -480,7 +480,7 @@ class MarkStoriesCompletedActivityTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedActivity_selectMultipleStories_clickMarkCompleted_reopenActivity_completedStoriesAreChecked() { // ktlint-disable max-line-length
+  fun testMarkStoriesCompleted_selectStories_clickCompleted_reopen_completedStoriesAreChecked() {
     launch<MarkStoriesCompletedActivity>(
       createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
@@ -507,7 +507,7 @@ class MarkStoriesCompletedActivityTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedActivity_configChange_selectMultipleStories_clickMarkCompleted_reopenActivity_completedStoriesAreChecked() { // ktlint-disable max-line-length
+  fun testMarkStoriesCompleted_land_selectStories_clickCompleted_reopen_compStoriesAreChecked() {
     launch<MarkStoriesCompletedActivity>(
       createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
