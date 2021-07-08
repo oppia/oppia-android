@@ -35,10 +35,10 @@ message License {
   string primary_link = 2;
 
   // Alternate link that would be provided manually if the primary link can't be directly
-  // extracted, or is invalid.
+  // extracted.
   string alternative_link = 3;
 
-  // Represents whether the type of the primary_link .
+  // Represents the type of the primary_link.
   PrimaryLinkType primary_link_type = 4;
 }
 
