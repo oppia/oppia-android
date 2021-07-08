@@ -2,7 +2,6 @@ package org.oppia.android.scripts.common
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -294,7 +293,6 @@ class BazelClientTest {
   }
 
   @Test
-  @Ignore("Fails in GitHub Actions") // TODO(#2691): Re-enable this test once it can pass in CI.
   fun testRetrieveTransitiveTestTargets_forWorkspace_returnsAllTests() {
     val bazelClient = BazelClient(tempFolder.root)
     testBazelWorkspace.initEmptyWorkspace()
