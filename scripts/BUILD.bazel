@@ -53,6 +53,7 @@ REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
 
 kt_jvm_library(
     name = "regex_check_assets",
+    testonly = True,
     data = REGEX_PATTERN_CHECK_ASSETS,
     visibility = [":oppia_script_test_visibility"],
 )
