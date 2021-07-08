@@ -19,8 +19,6 @@ fun main(args: Array<String>) {
   val pathToVersionsXml = args[1]
   val pathToDependenciesXml = args[0]
   val pathToLicensesXml = args[0]
-  println(pathToNamesXml)
-  println(pathToVersionsXml)
   // Generate Maven Dependencies Names List by reading textproto.
   // Generate Maven Dependencies Versions List by reading textproto.
   // Generate Licenses List by reading textproto.
