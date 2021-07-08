@@ -17,9 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp">
+      android:layout_height="match_parent">
 
       <TextView
         android:id="@+id/end_session_header_text_view"
@@ -159,10 +157,10 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
@@ -176,7 +174,7 @@
       <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/congratulations_text_confetti_view"
         android:layout_width="match_parent"
-        android:layout_height="124dp"/>
+        android:layout_height="124dp" />
     </FrameLayout>
   </FrameLayout>
 </layout>

@@ -77,7 +77,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   }
 
   /**
-   * Returns a list of [StorySummaryViewModel] mapped to corresponding 'story IDs' whose progress
+   * Returns a list of [StorySummaryViewModel]s mapped to corresponding story IDs whose progress
    * can be modified.
    */
   fun getStorySummaryMap(): Map<String, StorySummaryViewModel> = itemList.toMap()

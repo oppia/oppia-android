@@ -90,10 +90,10 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     this.profileId = profileId
   }
 
-  /** Returns a list of [MarkChaptersCompletedItemViewModel]. */
+  /** Returns a list of [MarkChaptersCompletedItemViewModel]s. */
   fun getItemList(): List<MarkChaptersCompletedItemViewModel> = itemList.toList()
 
-  /** Returns a list of [ChapterSummaryViewModel] mapped to corresponding 'exploration ID'. */
+  /** Returns a list of [ChapterSummaryViewModel]s mapped to corresponding exploration IDs. */
   fun getChapterMap(): Map<String, Pair<String, String>> =
     itemList.filterIsInstance<ChapterSummaryViewModel>()
       .associateBy({ it.chapterSummary.explorationId }, { Pair(it.storyId, it.topicId) })
