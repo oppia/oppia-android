@@ -53,7 +53,7 @@ private val escapeCharactersMap =
  *      resources corrsponding to each third-party dependency.
  * - name_of_value_resource_file_5: resource XML file name to store the license names strings
  *      resources corrsponding to each third-party dependency.
- * - path_to_pb_file: relative path to textproto file that stores the list of depdendencies
+ * - path_to_pb_file: relative path to textproto file that stores the list of dependencies
  *      and their license links.
  * Example:
  *   bazel run //scripts:generate_license_texts -- $(pwd)/app/src/main/res/values
