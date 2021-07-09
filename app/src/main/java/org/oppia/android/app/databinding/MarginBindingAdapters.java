@@ -1,22 +1,35 @@
 package org.oppia.android.app.databinding;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set margin values. */
 public final class MarginBindingAdapters {
+
+  @SuppressLint("WrongConstant")
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL;
+  }
 
   /** Used to set a margin-start for views. */
   @BindingAdapter("app:layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+      float marginEnd = params.getMarginEnd();
+      if(isRtlLayout(view)){
+        float temp = marginStart;
+        marginStart = marginEnd;
+         marginEnd = temp;
+      }
       params.setMargins(
           (int) marginStart,
           params.topMargin,
-          params.getMarginEnd(),
+          (int) marginEnd,
           params.bottomMargin
       );
       view.requestLayout();
@@ -28,8 +41,14 @@ public final class MarginBindingAdapters {
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+      float marginStart = params.getMarginStart();
+      if(isRtlLayout(view)){
+        float temp = marginEnd;
+        marginEnd = marginStart;
+        marginStart = temp;
+      }
       params.setMargins(
-          params.getMarginStart(),
+          (int) marginStart,
           params.topMargin,
           (int) marginEnd,
           params.bottomMargin
