@@ -561,23 +561,14 @@ class ExplorationProgressController @Inject constructor(
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(
-              explorationProgress.stateDeck.getCurrentEphemeralState(
-                explorationProgress.checkpointState
-              )
-            )
+            AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
-        ExplorationProgress.PlayStage.VIEWING_STATE -> {
-          AsyncResult.success(
-            explorationProgress.stateDeck.getCurrentEphemeralState(
-              explorationProgress.checkpointState
-            )
-          )
-        }
+        ExplorationProgress.PlayStage.VIEWING_STATE ->
+          AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
