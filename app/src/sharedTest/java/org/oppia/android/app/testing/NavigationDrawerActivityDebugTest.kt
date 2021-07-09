@@ -74,12 +74,15 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -110,6 +113,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class NavigationDrawerActivityDebugTest {
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -152,7 +158,9 @@ class NavigationDrawerActivityDebugTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -161,7 +169,9 @@ class NavigationDrawerActivityDebugTest {
 
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
-    launch(NavigationDrawerTestActivity::class.java).use {
+    launch<NavigationDrawerTestActivity>(
+      createNavigationDrawerActivityIntent(internalProfileId)
+    ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_activity_drawer_layout)).check(matches(isOpen()))
@@ -392,6 +402,7 @@ class NavigationDrawerActivityDebugTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -405,7 +416,8 @@ class NavigationDrawerActivityDebugTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
