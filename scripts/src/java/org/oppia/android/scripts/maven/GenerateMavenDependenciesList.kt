@@ -369,14 +369,14 @@ private fun getLicenseLinksFromPom(
               url.append(pomText[cursor2])
               ++cursor2
             }
-
+            val httpUrl = replaceHttpWithHttps(url)
             licenseNamesFromPom.add(urlName.toString())
-            licenseLinksFromPom.add(replaceHttpWithHttps(url))
+            licenseLinksFromPom.add(httpUrl)
             licenseList.add(
               License
                 .newBuilder()
                 .setLicenseName(urlName.toString())
-                .setPrimaryLink(url.toString())
+                .setPrimaryLink(httpUrl)
                 .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
                 .build()
             )
@@ -404,7 +404,7 @@ private fun replaceHttpWithHttps(
 ): String {
   var url = urlBuilder.toString()
   if (url.substring(0, 5) != "https") {
-    url = "https${url.substring(5, url.length)}"
+    url = "https${url.substring(4, url.length)}"
   }
   return url
 }
