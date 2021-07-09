@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <import type="org.oppia.android.app.model.EventLog" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.vieweventlogs.EventLogItemViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:id="@+id/event_log_time_and_priority_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toTopOf="@+id/view_event_logs_context_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <TextView
+        android:id="@+id/view_event_logs_time_text_view"
+        style="@style/Subtitle2"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:paddingStart="16dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="6dp"
+        android:text="@{viewModel.processDateAndTime()}"
+        android:textColor="@color/oppiaSecondaryText" />
+
+      <TextView
+        android:id="@+id/view_event_logs_priority_text_view"
+        style="@style/Subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_rect_large_border_radius"
+        android:paddingStart="20dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="6dp"
+        android:text="@{viewModel.formatPriorityString()}"
+        android:textColor="@color/white"
+        android:visibility="@{viewModel.eventLog.priority != EventLog.Priority.PRIORITY_UNSPECIFIED ? View.VISIBLE : View.GONE }" />
+    </LinearLayout>
+
+    <TextView
+      android:id="@+id/view_event_logs_context_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:paddingStart="16dp"
+      android:paddingTop="6dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="6dp"
+      android:text="@{viewModel.formatContextString()}"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      android:visibility="@{viewModel.eventLog.context.activityContextCase != EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toTopOf="@id/view_event_logs_action_name_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/event_log_time_and_priority_layout" />
+
+    <TextView
+      android:id="@+id/view_event_logs_action_name_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:paddingStart="16dp"
+      android:paddingTop="6dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@{viewModel.formatActionNameString()}"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_event_logs_context_text_view" />
+
+    <View
+      android:id="@+id/view_divider"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/mid_grey_30"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_event_logs_action_name_text_view" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

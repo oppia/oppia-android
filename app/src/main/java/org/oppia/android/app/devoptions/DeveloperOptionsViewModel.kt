@@ -15,7 +15,6 @@ import javax.inject.Inject
  */
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
-
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
@@ -23,6 +22,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
     activity as RouteToMarkStoriesCompletedListener
   private val routeToMarkTopicsCompletedListener =
     activity as RouteToMarkTopicsCompletedListener
+  private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -39,7 +39,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
         routeToMarkStoriesCompletedListener,
         routeToMarkTopicsCompletedListener
       ),
-      DeveloperOptionsViewLogsViewModel(),
+      DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
       DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
     )
   }

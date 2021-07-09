@@ -39,3 +39,10 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
+
+kt_jvm_library(
+    name = "repository_file",
+    testonly = True,
+    srcs = ["RepositoryFile.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
