@@ -61,7 +61,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweven
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsViewModel.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/drawer/ExitProfileDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/drawer/ExitProfileDialogInterface.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerFooterViewModel.kt"
