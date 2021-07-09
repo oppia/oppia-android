@@ -7,6 +7,7 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -121,5 +122,6 @@ interface ActivityComponent {
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
+  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

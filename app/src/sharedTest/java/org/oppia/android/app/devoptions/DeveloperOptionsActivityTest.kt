@@ -21,6 +21,9 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -50,6 +53,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -94,6 +98,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO(#3418): Separate DeveloperOptionsActivityTest into activity and fragment test files.
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -123,6 +128,7 @@ class DeveloperOptionsActivityTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -130,6 +136,7 @@ class DeveloperOptionsActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -243,7 +250,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -257,7 +264,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_configChange_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -272,15 +279,39 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsIsDisplayed() {
+  fun testDeveloperOptionsFragment_clickEventLogs_opensViewEventLogsActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      onView(withId(R.id.event_logs_text_view)).perform(click())
+      intended(hasComponent(ViewEventLogsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_configChange_clickEventLogs_opensViewEventLogsActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      onView(withId(R.id.event_logs_text_view)).perform(click())
+      intended(hasComponent(ViewEventLogsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.developer_options_mark_chapters_completed)))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
   }
 
