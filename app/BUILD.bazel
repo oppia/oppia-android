@@ -62,6 +62,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
+    "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
@@ -173,6 +174,8 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsOverrideAppBehaviorsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsViewLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/vieweventlogs/EventLogItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerFooterViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",
@@ -580,6 +583,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
     ],
 )
 
