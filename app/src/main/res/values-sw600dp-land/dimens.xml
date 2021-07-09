@@ -261,4 +261,13 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">88dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">176dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">176dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">176dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">16dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">176dp</dimen>
+
 </resources>
