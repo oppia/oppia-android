@@ -21,6 +21,17 @@ private const val MAVEN_DEPENDENCY_LIST_INCOMPLETE = "maven_dependencies.textpro
 private const val MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK =
   "maven_dependencies.textproto still needs some manual work."
 
+// List of chars to be escaped to parse XML properly.
+// Reference Link: https://www.liquid-technologies.com/XML/EscapingData.aspx
+private val escapeCharactersMap =
+  hashMapOf<Char, String>(
+    '<' to "&lt;",
+    '>' to "&gt;",
+    '\"' to "&quot;",
+    '\'' to "&apos;",
+    '&' to "&amp;",
+  )
+
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
  * on which Oppia Android depends.
@@ -379,7 +390,23 @@ fun retrieveAllLicensesSet(
 }
 
 fun scrapeLicenseText(url: String): String {
-  return URL(url).openStream().bufferedReader().readText()
+  val text = URL(url).openStream().bufferedReader().readText()
+  return addEscapeCharactersToLicenseText(text)
+}
+
+fun addEscapeCharactersToLicenseText(licenseText: String): String {
+  val licenseTextBuilder = StringBuilder()
+  for (c in licenseText) {
+    when (c) {
+      '<' -> licenseTextBuilder.append(escapeCharactersMap[c])
+      '>' -> licenseTextBuilder.append(escapeCharactersMap[c])
+      '\'' -> licenseTextBuilder.append(escapeCharactersMap[c])
+      '\"' -> licenseTextBuilder.append(escapeCharactersMap[c])
+      '&' -> licenseTextBuilder.append(escapeCharactersMap[c])
+      else -> licenseTextBuilder.append(c)
+    }
+  }
+  return licenseTextBuilder.toString()
 }
 
 private fun getTransformer(): Transformer {
