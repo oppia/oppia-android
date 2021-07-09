@@ -44,16 +44,13 @@ class PlatformParameterModuleTest {
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
-  @Inject
-  @TestStringParam
+  @field:[Inject TestStringParam]
   lateinit var stringPlatformParameterProvider: Provider<PlatformParameterValue<String>>
 
-  @Inject
-  @TestIntegerParam
+  @field:[Inject TestIntegerParam]
   lateinit var integerPlatformParameterProvider: Provider<PlatformParameterValue<Int>>
 
-  @Inject
-  @TestBooleanParam
+  @field:[Inject TestBooleanParam]
   lateinit var booleanPlatformParameterProvider: Provider<PlatformParameterValue<Boolean>>
 
   private val platformParameterMapWithValues by lazy {
