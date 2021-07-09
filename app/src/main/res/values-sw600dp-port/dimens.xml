@@ -280,4 +280,13 @@
   <dimen name="auto_update_topic_constraint_layout_padding_start">16dp</dimen>
   <dimen name="auto_update_topic_constraint_layout_padding_end">16dp</dimen>
   <dimen name="auto_update_topic_switch_margin_end">0dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">128dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">128dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">128dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">16dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">128dp</dimen>
+
 </resources>
