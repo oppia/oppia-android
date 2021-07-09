@@ -113,3 +113,8 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:xml_syntax_check -- $(pwd)
+
+      - name: Testfile Presence Check
+        if: always()
+        run: |
+          bazel run //scripts:test_file_check -- $(pwd)
