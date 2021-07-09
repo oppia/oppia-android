@@ -59,7 +59,7 @@ class ImageTagHandler(
       val spannableBuilder = SpannableStringBuilder(contentDescription)
       spannableBuilder.setSpan(
         contentDescription,
-        /* start= */0,
+        /* start= */ 0,
         /* end= */ contentDescription.length,
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
