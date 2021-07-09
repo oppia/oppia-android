@@ -42,6 +42,7 @@ fun main(args: Array<String>) {
   val pathToNamesXml = args[0]
   val pathToVersionsXml = args[1]
   val pathToLicensesXml = args[2]
+  val pathToLicenseTextArrayXml = args[3]
 
   val mavenDependencyList = retrieveMavenDependencyList()
   val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
@@ -51,12 +52,17 @@ fun main(args: Array<String>) {
     pathToVersionsXml,
     retrieveArtifactsVersionsList(mavenDependencyList)
   )
-  writeDependenciesLicensesXml(
+  val licenseMap = writeDependenciesLicensesXml(
     pathToLicensesXml,
     copyrightLicenseSet,
     mavenDependencyList
   )
-  // Generate Licenses List by reading textproto.
+
+  writeDependenciesLicenseTextsArray(
+    pathToLicenseTextArrayXml,
+    licenseMap,
+    mavenDependencyList
+  )
 }
 
 private fun retrieveArtifactsNamesList(mavenDependencyList: List<MavenDependency>): List<String> {
@@ -202,7 +208,7 @@ private fun writeDependenciesLicensesXml(
   return licenseMap
 }
 
-private fun writeDependenciesLicenseTextArray(
+private fun writeDependenciesLicenseTextsArray(
   path: String,
   licenseLinksToIndexMap: HashMap<String, String>,
   mavenDependenciesList: List<MavenDependency>
@@ -213,20 +219,26 @@ private fun writeDependenciesLicenseTextArray(
   val doc: Document = docBuilder.newDocument()
   val rootResourcesElement: Element = doc.createElement("resources")
 
-  // Write all dependencies versions as string resources.
-//  for (index in mavenDependenciesList.indices) {
-//    val dependency = mavenDependenciesList[index]
-//    val stringArrayElement = doc.createElement("string-array")
-//    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_$index")
-//    dependency.licenseList.forEach {
-//      val licenseLink = dependency.licenseList[j].primarylicenseLink
-//      val indexOfLicenseText = licenseLinksToIndexMap[licenseLink]
-//      val stringItemElement = doc.createElement("item")
-//      stringItemElement.appendChild("@string/license$indexOfLicenseText")
-//      stringArrayElement.appendChild(stringItemElement)
-//    }
-//    rootResourcesElement.appendChild(stringArrayElement)
-//  }
+//   Write all dependencies versions as string resources.
+  println(licenseLinksToIndexMap)
+  for (index in mavenDependenciesList.indices) {
+    val dependency = mavenDependenciesList[index]
+    val stringArrayElement = doc.createElement("string-array")
+    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_$index")
+    dependency.licenseList.forEach { license ->
+      val licenseLink = if (license.primaryLinkType == PrimaryLinkType.SCRAPE_DIRECTLY ||
+        license.primaryLinkType == PrimaryLinkType.SHOW_LINK_ONLY) {
+        license.primaryLink
+      } else {
+        license.alternativeLink
+      }
+      val indexOfLicenseText = licenseLinksToIndexMap[licenseLink]
+      val stringItemElement = doc.createElement("item")
+      stringItemElement.appendChild(doc.createTextNode("@string/$indexOfLicenseText"))
+      stringArrayElement.appendChild(stringItemElement)
+    }
+    rootResourcesElement.appendChild(stringArrayElement)
+  }
 
   // Write an array of dependencies versions.
   val arrayElement = doc.createElement("array")
