@@ -417,4 +417,22 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
+
+  <!-- Download Permission: Text View -->
+  <dimen name="download_permission_text_view_padding_start">16dp</dimen>
+  <dimen name="download_permission_text_view_padding_end">16dp</dimen>
+
+  <!-- Topic Update On Wifi: Constraint Layout -->
+  <dimen name="topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+
+  <!-- Topic Update On Wifi: Switch -->
+  <dimen name="topic_update_on_wifi_switch_margin_end">4dp</dimen>
+
+  <!-- Auto Update Topic: Constraint Layout -->
+  <dimen name="auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+
+  <!-- Auto Update Topic: Switch -->
+  <dimen name="auto_update_topic_switch_margin_end">4dp</dimen>
 </resources>
