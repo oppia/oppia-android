@@ -41,16 +41,7 @@ class ExplorationCheckpointController @Inject constructor(
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
 
   /**
-   * These Statuses correspond to the exception and the checkpoint database states above
-   * such that if the deferred result contains
-   *
-   * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED, the
-   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] will be
-   * passed to a successful AsyncResult.
-   *
-   * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
-   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT] will be
-   * passed to a successful AsyncResult.
+   * These Statuses correspond to the exception above such that if the deferred result contains
    *
    * CHECKPOINT_NOT_FOUND, the [ExplorationCheckpointNotFoundException] will be passed to a failed
    * AsyncResult.
@@ -68,8 +59,8 @@ class ExplorationCheckpointController @Inject constructor(
   /**
    * Records an exploration checkpoint for the specified profile.
    *
-   * @return a [Deferred] that upon completion indicates the current state of the checkpoint
-   *     database. If the size of the checkpoint database is less than the allocated limit of
+   * @return a [Deferred] that upon completion indicates the current [CheckpointState]. If the size
+   *     of the checkpoint database is less than the allocated limit of
    *     [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
    *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
