@@ -265,7 +265,9 @@ private fun writeDependenciesLicenseTextsArray(
   arrayElement.setAttribute("name", "third_party_dependency_license_texts_array")
   for (index in mavenDependenciesList.indices) {
     val itemElement = doc.createElement("item")
-    itemElement.appendChild(doc.createTextNode("@array/third_party_dependency_license_texts_$index"))
+    itemElement.appendChild(
+      doc.createTextNode("@array/third_party_dependency_license_texts_$index")
+    )
     arrayElement.appendChild(itemElement)
   }
 
@@ -324,7 +326,9 @@ private fun writeDependenciesLicenseNamesArray(
   arrayElement.setAttribute("name", "third_party_dependency_license_names_array")
   for (index in mavenDependenciesList.indices) {
     val itemElement = doc.createElement("item")
-    itemElement.appendChild(doc.createTextNode("@array/third_party_dependency_licenses_names_$index"))
+    itemElement.appendChild(
+      doc.createTextNode("@array/third_party_dependency_licenses_names_$index")
+    )
     arrayElement.appendChild(itemElement)
   }
 
