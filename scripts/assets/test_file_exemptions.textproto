@@ -51,6 +51,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/Develope
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsStarterModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsModifyLessonProgressViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsOverrideAppBehaviorsViewModel.kt"
