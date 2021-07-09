@@ -17,9 +17,8 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
-private const val MAVEN_DEPENDENCY_LIST_INCOMPLETE = "maven_dependencies.textproto is incomplete."
-private const val MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK =
-  "maven_dependencies.textproto still needs some manual work."
+private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
+  "maven_dependencies.textproto is not up-to-date"
 
 // List of chars to be escaped to parse XML properly.
 // Reference Link: https://www.liquid-technologies.com/XML/EscapingData.aspx
@@ -40,28 +39,38 @@ private val escapeCharactersMap =
  *   bazel run //scripts:generate_license_texts -- <path_to_directory_values>
  *   <name_of_value_resource_file_1> <name_of_value_resource_file_2>
  *   <name_of_value_resource_file_2> <name_of_value_resource_file_4>
- *   <name_of_value_resource_file_2>
+ *   <name_of_value_resource_file_2> <path_to_pb_file>
  *
  * Arguments:
  * - path_to_directory_values: directory path to the values folder of the Oppia Android repository.
- * - name_of_value_resource_file_1: Resource XML file name to store the names of the third-party
+ * - name_of_value_resource_file_1: resource XML file name to store the names of the third-party
  *      dependencies.
- * - name_of_value_resource_file_2: Resource XML file name to store the versions of the third-party
+ * - name_of_value_resource_file_2: resource XML file name to store the versions of the third-party
  *      dependencies.
- * - name_of_value_resource_file_3: Resource XML file name to store the license texts of the
+ * - name_of_value_resource_file_3: resource XML file name to store the license texts of the
  *      third-party dependencies.
- * - name_of_value_resource_file_4: Resource XML file name to store the license texts strings
+ * - name_of_value_resource_file_4: resource XML file name to store the license texts strings
  *      resources corrsponding to each third-party dependency.
- * - name_of_value_resource_file_5: Resource XML file name to store the license names strings
+ * - name_of_value_resource_file_5: resource XML file name to store the license names strings
  *      resources corrsponding to each third-party dependency.
+ * - path_to_pb_file: relative path to textproto file that stores the list of depdendencies
+ *      and their license links.
  * Example:
  *   bazel run //scripts:generate_license_texts -- $(pwd)/app/src/main/res/values
  *   third_party_dependency_names.xml third_party_dependency_versions.xml
  *   third_party_dependency_license_texts.xml third_party_dependency_license_texts_array.xml
- *   third_party_dependency_license_names_array.xml
+ *   third_party_dependency_license_names_array.xml scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  if (args.size < 6) {
+  if (args.size < 7) {
+    println(
+      """
+      Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
+      <name_of_value_resource_file_1> <name_of_value_resource_file_2> 
+      <name_of_value_resource_file_2> <name_of_value_resource_file_4>
+      <name_of_value_resource_file_2> <path_to_pb_file>  
+      """.trimIndent()
+    )
     throw Exception("Too less arguments passed.")
   }
   val pathToValuesDirectory = args[0]
@@ -70,8 +79,12 @@ fun main(args: Array<String>) {
   val pathToLicensesTextsXml = "$pathToValuesDirectory/${args[3]}"
   val pathToLicenseTextArrayXml = "$pathToValuesDirectory/${args[4]}"
   val pathToLicenseNamesArrayXml = "$pathToValuesDirectory/${args[5]}"
+  val pathToPbFile = args[6]
 
-  val mavenDependencyList = retrieveMavenDependencyList()
+  val mavenDependencyList = retrieveMavenDependencyList(pathToPbFile)
+  if (mavenDependencyList.isEmpty()) {
+    throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+  }
   val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
 
   writeDependenciesNamesXml(pathToNamesXml, retrieveArtifactsNamesList(mavenDependencyList))
@@ -96,6 +109,8 @@ fun main(args: Array<String>) {
     copyrightLicenseSet,
     mavenDependencyList
   )
+
+  println("Script execution completed.")
 }
 
 private fun retrieveArtifactsNamesList(mavenDependencyList: List<MavenDependency>): List<String> {
@@ -117,9 +132,9 @@ private fun retrieveArtifactsVersionsList(
 }
 
 /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-private fun retrieveMavenDependencyList(): List<MavenDependency> {
+private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
   return getProto(
-    "maven_dependencies.pb",
+    pathToPbFile,
     MavenDependencyList.getDefaultInstance()
   ).mavenDependencyList.toList()
 }
@@ -127,20 +142,19 @@ private fun retrieveMavenDependencyList(): List<MavenDependency> {
 /**
  * Helper function to parse the textproto file to a proto class.
  *
- * @param textProtoFileName name of the textproto file to be parsed
+ * @param pathToPbFile path to the pb file to be parsed
  * @param proto instance of the proto class
  * @return proto class from the parsed textproto file
  */
 private fun getProto(
-  textProtoFileName: String,
+  pathToPbFile: String,
   proto: MavenDependencyList
 ): MavenDependencyList {
-  val protoBinaryFile = File("scripts/assets/$textProtoFileName")
+  val protoBinaryFile = File(pathToPbFile)
   val builder = proto.newBuilderForType()
-  val protoObject = FileInputStream(protoBinaryFile).use {
+  return FileInputStream(protoBinaryFile).use {
     builder.mergeFrom(it)
   }.build() as MavenDependencyList
-  return protoObject
 }
 
 fun writeDependenciesNamesXml(
@@ -351,7 +365,7 @@ fun retrieveAllLicensesSet(
   mavenDependencyList.forEach { dependency ->
     val licenseList = dependency.licenseList
     if (licenseList.isEmpty()) {
-      throw Exception(MAVEN_DEPENDENCY_LIST_INCOMPLETE)
+      throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
     licenseList.forEach { license ->
       val licenseText: String
@@ -369,7 +383,7 @@ fun retrieveAllLicensesSet(
           licenseText = license.primaryLink
           licenseLink = license.primaryLink
         }
-        else -> throw Exception(MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK)
+        else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
       }
       copyrightLicensesSet.add(
         CopyrightLicense

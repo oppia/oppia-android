@@ -11,6 +11,7 @@ kt_jvm_test(
     deps = [
         "//scripts:maven_assets_lib",
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
+        "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
@@ -22,6 +23,7 @@ kt_jvm_test(
     deps = [
         "//scripts:maven_assets_lib",
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_license_texts_lib",
+        "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
