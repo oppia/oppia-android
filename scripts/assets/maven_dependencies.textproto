@@ -411,7 +411,7 @@ maven_dependency {
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     primary_link_type: SCRAPE_DIRECTLY
   }
-  origin_of_license: ENTIRELY_FROM_POM
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.google.auto.value:auto-value-annotations:1.6.5"
