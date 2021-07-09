@@ -1,5 +1,6 @@
 package org.oppia.android.domain.exploration
 
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State

@@ -57,8 +57,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val progressLock = ReentrantLock()
-  @Inject
-  internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
+  @Inject internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
