@@ -369,13 +369,14 @@ private fun getLicenseLinksFromPom(
               url.append(pomText[cursor2])
               ++cursor2
             }
+            val httpUrl = replaceHttpWithHttps(url)
             licenseNamesFromPom.add(urlName.toString())
-            licenseLinksFromPom.add(url.toString())
+            licenseLinksFromPom.add(httpUrl)
             licenseList.add(
               License
                 .newBuilder()
                 .setLicenseName(urlName.toString())
-                .setPrimaryLink(url.toString())
+                .setPrimaryLink(httpUrl)
                 .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
                 .build()
             )
@@ -396,6 +397,16 @@ private fun getLicenseLinksFromPom(
     mavenDependencyList.add(mavenDependency.build())
   }
   return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
+}
+
+private fun replaceHttpWithHttps(
+  urlBuilder: StringBuilder
+): String {
+  var url = urlBuilder.toString()
+  if (url.substring(0, 5) != "https") {
+    url = "https${url.substring(4, url.length)}"
+  }
+  return url
 }
 
 private fun writeTextProto(
