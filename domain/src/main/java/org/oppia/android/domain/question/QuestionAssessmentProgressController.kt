@@ -385,8 +385,6 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
-    // CheckpointState is set to UNSAVED because currently checkpoints are only saved in an
-    // exploration.
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
     val currentQuestionIndex = progress.getCurrentQuestionIndex()
     val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
