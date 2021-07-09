@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.maven
 
 import org.oppia.android.scripts.proto.CopyrightLicense
-import org.oppia.android.scripts.proto.LicenseDetails
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.PrimaryLinkType
@@ -42,13 +41,20 @@ private const val MAVEN_DEPENDENCY_LIST_NEED_MANUAL_WORK =
 fun main(args: Array<String>) {
   val pathToNamesXml = args[0]
   val pathToVersionsXml = args[1]
+  val pathToLicensesXml = args[2]
 
   val mavenDependencyList = retrieveMavenDependencyList()
+  val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
 
   writeDependenciesNamesXml(pathToNamesXml, retrieveArtifactsNamesList(mavenDependencyList))
   writeDependenciesVersionsXml(
     pathToVersionsXml,
     retrieveArtifactsVersionsList(mavenDependencyList)
+  )
+  writeDependenciesLicensesXml(
+    pathToLicensesXml,
+    copyrightLicenseSet,
+    mavenDependencyList
   )
   // Generate Licenses List by reading textproto.
 }
@@ -169,7 +175,7 @@ private fun writeDependenciesLicensesXml(
   path: String,
   copyrightLicenseList: Set<CopyrightLicense>,
   mavenDependenciesList: List<MavenDependency>
-) : HashMap<String, String> {
+): HashMap<String, String> {
   val file = File(path)
 
   val licenseMap = hashMapOf<String, String>()
@@ -186,6 +192,7 @@ private fun writeDependenciesLicensesXml(
     stringElement.appendChild(doc.createTextNode(licenseText))
     rootResourcesElement.appendChild(stringElement)
     licenseMap[licenseLink] = "license_$index"
+    println(licenseLink)
   }
 
   doc.appendChild(rootResourcesElement)
@@ -207,19 +214,19 @@ private fun writeDependenciesLicenseTextArray(
   val rootResourcesElement: Element = doc.createElement("resources")
 
   // Write all dependencies versions as string resources.
-  for (index in mavenDependenciesList.indices) {
-    val dependency = mavenDependenciesList[index]
-    val stringArrayElement = doc.createElement("string-array")
-    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_$index")
-    dependency.licenseList.forEach {
-      val licenseLink = if (li)dependency.licenseList[j].primarylicenseLink
-      val indexOfLicenseText = licenseLinksToIndexMap[licenseLink]
-      val stringItemElement = doc.createElement("item")
-      stringItemElement.appendChild("@string/license$indexOfLicenseText")
-      stringArrayElement.appendChild(stringItemElement)
-    }
-    rootResourcesElement.appendChild(stringArrayElement)
-  }
+//  for (index in mavenDependenciesList.indices) {
+//    val dependency = mavenDependenciesList[index]
+//    val stringArrayElement = doc.createElement("string-array")
+//    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_$index")
+//    dependency.licenseList.forEach {
+//      val licenseLink = dependency.licenseList[j].primarylicenseLink
+//      val indexOfLicenseText = licenseLinksToIndexMap[licenseLink]
+//      val stringItemElement = doc.createElement("item")
+//      stringItemElement.appendChild("@string/license$indexOfLicenseText")
+//      stringArrayElement.appendChild(stringItemElement)
+//    }
+//    rootResourcesElement.appendChild(stringArrayElement)
+//  }
 
   // Write an array of dependencies versions.
   val arrayElement = doc.createElement("array")
@@ -241,12 +248,11 @@ private fun writeDependenciesLicenseNamesArray(
   licenseLinksToIndexMap: HashMap<String, String>,
   mavenDependenciesList: List<MavenDependency>
 ) {
-
 }
 
 fun retrieveAllLicensesSet(
   mavenDependencyList: List<MavenDependency>
-) : Set<CopyrightLicense> {
+): Set<CopyrightLicense> {
   val copyrightLicensesSet = mutableSetOf<CopyrightLicense>()
   mavenDependencyList.forEach { dependency ->
     val licenseList = dependency.licenseList
