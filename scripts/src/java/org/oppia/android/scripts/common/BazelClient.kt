@@ -118,6 +118,17 @@ class BazelClient(
     return correctedTargets
   }
 
+  fun retrieveThirdPartyMavenDependenciesList(): List<String> {
+    return executeBazelCommand(
+      "query",
+      "\'deps(deps(//:oppia)",
+      "intersect",
+      "//third_party/...)",
+      "intersect",
+      "@maven//...\'"
+    )
+  }
+
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
