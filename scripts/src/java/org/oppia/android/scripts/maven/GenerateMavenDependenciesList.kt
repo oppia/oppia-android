@@ -59,7 +59,10 @@ fun main(args: Array<String>) {
   }.toSet()
 
   val licenseSetFromTextproto = dependenciesListFromTextproto.flatMap { dependency ->
-    dependency.licenseList
+    dependency.licenseList.filter { license ->
+      license.primaryLinkType != PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED &&
+        license.primaryLinkType != PrimaryLinkType.UNRECOGNIZED
+    }
   }.toSet()
 
   val finalLicensesSet = updateLicensesSet(
