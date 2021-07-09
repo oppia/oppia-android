@@ -25,7 +25,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
-import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
@@ -2079,100 +2078,6 @@ class ExplorationProgressControllerTest {
       profileId,
       TEST_EXPLORATION_ID_2,
       isSolutionRevealed = true
-    )
-  }
-
-  @Test
-  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsCorrect() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val currentStateLiveData =
-      explorationProgressController.getCurrentState().toLiveData()
-    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
-    testCoroutineDispatchers.runCurrent()
-
-    // The new observer should observe the completed second state since it's the current pending
-    // state.
-    verify(
-      mockCurrentStateLiveDataObserver2,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-
-    assertThat(currentState.checkpointState).isEqualTo(CheckpointState.UNSAVED)
-  }
-
-  @Test
-  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsCorrect() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val currentStateLiveData =
-      explorationProgressController.getCurrentState().toLiveData()
-    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
-    testCoroutineDispatchers.runCurrent()
-
-    // The new observer should observe the completed second state since it's the current pending
-    // state.
-    verify(
-      mockCurrentStateLiveDataObserver2,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-
-    assertThat(currentState.checkpointState).isEqualTo(
-      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
-    )
-  }
-
-  @Test
-  fun testCheckpointing_saveCheckpoint_databaseFull_checkCheckpointStateIsCorrect() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    playThroughPrototypeState1AndMoveToNextState()
-    playThroughPrototypeState2AndMoveToNextState()
-
-    val currentStateLiveData =
-      explorationProgressController.getCurrentState().toLiveData()
-    currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
-    testCoroutineDispatchers.runCurrent()
-
-    // The new observer should observe the completed second state since it's the current pending
-    // state.
-    verify(
-      mockCurrentStateLiveDataObserver2,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-
-    assertThat(currentState.checkpointState).isEqualTo(
-      CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 
