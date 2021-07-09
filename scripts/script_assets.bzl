@@ -39,6 +39,30 @@ def generate_regex_assets_list_from_text_protos(
         proto_package = "proto",
     )
 
+def generate_test_file_assets_list_from_text_protos(
+        name,
+        test_file_exemptions_name):
+    """
+    Converts multiple lists of text proto assets to binary.
+
+    Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
+        test_file_exemptions_name: list of str. The list of test file exemptions file names.
+
+    Returns:
+        list of str. The list of new proto binary asset files that were generated.
+    """
+    return generate_proto_binary_assets(
+        name = name,
+        names = test_file_exemptions_name,
+        proto_dep_name = "test_file_exemptions",
+        proto_type_name = "TestFileExemptions",
+        name_prefix = name,
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    )
+
 def generate_maven_assets_list_from_text_protos(
         name,
         maven_dependency_filenames):
