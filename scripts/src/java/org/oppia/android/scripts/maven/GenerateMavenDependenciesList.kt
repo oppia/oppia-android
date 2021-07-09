@@ -369,8 +369,9 @@ private fun getLicenseLinksFromPom(
               url.append(pomText[cursor2])
               ++cursor2
             }
+
             licenseNamesFromPom.add(urlName.toString())
-            licenseLinksFromPom.add(url.toString())
+            licenseLinksFromPom.add(replaceHttpWithHttps(url))
             licenseList.add(
               License
                 .newBuilder()
@@ -396,6 +397,16 @@ private fun getLicenseLinksFromPom(
     mavenDependencyList.add(mavenDependency.build())
   }
   return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
+}
+
+private fun replaceHttpWithHttps(
+  urlBuilder: StringBuilder
+): String {
+  var url = urlBuilder.toString()
+  if (url.substring(0, 5) != "https") {
+    url = "https${url.substring(5, url.length)}"
+  }
+  return url
 }
 
 private fun writeTextProto(
