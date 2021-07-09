@@ -40,12 +40,6 @@ class GenerateLicenseTextsTest {
   }
 
   @Test
-  fun dummy_test() {
-    val num = 4
-    assertThat(num).isEqualTo(4)
-  }
-
-  @Test
   fun testScript_noArguments_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) { main(arrayOf()) }
 
@@ -102,11 +96,19 @@ class GenerateLicenseTextsTest {
       .build()
   }
 
-  private fun generateProto() {
-//    val lic = License.newBuilder().setLicenseName("liccense")
-//      .setPrimaryLink("https://www.apache.org/licenses/LICENSE-2.0.txt")
-//      .setPrimaryLinkType(PrimaryLinkType.SCRAPE_DIRECTLY)
-//      .build()
+  private fun getLicense(
+    licenseName: String,
+    primaryLink: String = "",
+    primaryLinkType: PrimaryLinkType = PrimaryLinkType.PRIMARY_LINK_UNSPECIFIED,
+    alternativeLink: String = ""
+  ) {
+    return License
+      .newBuilder()
+      .setLicenseName(licenseName)
+      .setPrimaryLink(primaryLink)
+      .setPrimaryLinkType(primaryLinkType)
+      .setAlternativeLink(alternativeLink)
+      .build()
   }
 
   /** Runs the generate_. */
