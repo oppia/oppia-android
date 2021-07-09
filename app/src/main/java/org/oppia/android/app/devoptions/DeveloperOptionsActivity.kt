@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Activity for Developer Options. */
-class DeveloperOptionsActivity : InjectableAppCompatActivity() {
+class DeveloperOptionsActivity :
+  InjectableAppCompatActivity(),
+  ForceCrashButtonClickListener,
+  RouteToViewEventLogsListener {
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
@@ -18,6 +22,10 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     developerOptionsActivityPresenter.handleOnCreate()
     title = getString(R.string.developer_options_activity_title)
+  }
+
+  override fun routeToViewEventLogs() {
+    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
   }
 
   companion object {
@@ -31,5 +39,9 @@ class DeveloperOptionsActivity : InjectableAppCompatActivity() {
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
+  }
+
+  override fun forceCrash() {
+    developerOptionsActivityPresenter.forceCrash()
   }
 }

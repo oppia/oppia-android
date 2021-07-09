@@ -21,7 +21,7 @@ import kotlin.system.exitProcess
  *     Generally, this is 'origin/develop'.
  *
  * Example:
- *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_tests.log
+ *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_tests.log origin/develop
  */
 fun main(args: Array<String>) {
   if (args.size < 3) {
