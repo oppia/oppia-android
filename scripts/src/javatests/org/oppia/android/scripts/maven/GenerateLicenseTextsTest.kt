@@ -11,9 +11,8 @@ import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.PrimaryLinkType
 import org.oppia.android.testing.assertThrows
-import java.io.BufferedReader
-import java.io.File
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 
 /** Tests for [GenerateLicenseTexts]. */
