@@ -17,12 +17,13 @@ import java.io.PrintStream
 
 /** Tests for [GenerateLicenseTexts]. */
 class GenerateLicenseTextsTest {
-  private val TOO_LESS_ARGS_FAILURE = "Too less Arguments"
+  private val TOO_LESS_ARGS_FAILURE = "Too less arguments passed"
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"
   private val SCRIPT_PASSED_INDICATOR = "Script execution completed."
   private val VALID_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
   private val INVALID_LINK = "https://fabric.io/terms"
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
@@ -46,8 +47,27 @@ class GenerateLicenseTextsTest {
   fun testScript_noArguments_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) { main(arrayOf()) }
 
-    assertThat(exception).hasMessageThat().contains("Too less arguments passed.")
-    assertThat(outContent.toString().trim()).contains("Usage:")
+    assertThat(exception).hasMessageThat().contains(TOO_LESS_ARGS_FAILURE)
+    assertThat(outContent.toString()).contains("Usage:")
+  }
+
+  @Test
+  fun testScript_sixArguments_printsUsageStringAndThrowsException() {
+    val exception = assertThrows(Exception::class) {
+      main(
+        arrayOf(
+          "${tempFolder.root}/values",
+          "test_third_party_dependency_names.xml",
+          "test_third_party_dependenct_versions.xml",
+          "test_third_party_dependency_license_texts.xml",
+          "test_third_party_dependency_license_texts_array.xml",
+          "test_third_party_dependency_license_names_array.xml"
+        )
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(TOO_LESS_ARGS_FAILURE)
+    assertThat(outContent.toString()).contains("Usage:")
   }
 
   @Test
@@ -182,6 +202,7 @@ class GenerateLicenseTextsTest {
       """
       <?xml version="1.0" encoding="UTF-8"?>
       """.trimIndent()
+
     assertThat(text).contains(xmlHeader)
   }
 
