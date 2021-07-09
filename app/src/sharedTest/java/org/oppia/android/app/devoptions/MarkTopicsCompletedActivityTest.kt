@@ -446,54 +446,6 @@ class MarkTopicsCompletedActivityTest {
   }
 
   @Test
-  fun testMarkTopicsCompleted_selectTopics_clickCompleted_reopen_completedTopicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    }
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompleted_land_selectTopics_clickCompleted_reopen_completedTopicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    }
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
   fun testMarkTopicsCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
     markAllLessonsCompleted()
     launch<MarkTopicsCompletedActivity>(
