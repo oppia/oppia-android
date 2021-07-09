@@ -8,6 +8,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
@@ -17,7 +18,8 @@ class DeveloperOptionsActivity :
   ForceCrashButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
-  RouteToMarkTopicsCompletedListener {
+  RouteToMarkTopicsCompletedListener,
+  RouteToViewEventLogsListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -51,6 +53,10 @@ class DeveloperOptionsActivity :
       MarkTopicsCompletedActivity
         .createMarkTopicsCompletedIntent(this, internalProfileId)
     )
+  }
+
+  override fun routeToViewEventLogs() {
+    startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
   }
 
   companion object {

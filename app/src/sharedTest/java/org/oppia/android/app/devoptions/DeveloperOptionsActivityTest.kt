@@ -56,6 +56,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -77,6 +78,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
@@ -331,7 +333,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -345,7 +347,7 @@ class DeveloperOptionsActivityTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_clickForceCrash_assertException() {
+  fun testDeveloperOptionsFragment_configChange_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsActivity>(
       createDeveloperOptionsActivityIntent(internalProfileId)
     ).use {
@@ -356,6 +358,31 @@ class DeveloperOptionsActivityTest {
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickEventLogs_opensViewEventLogsActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      onView(withId(R.id.event_logs_text_view)).perform(click())
+      intended(hasComponent(ViewEventLogsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_configChange_clickEventLogs_opensViewEventLogsActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      onView(withId(R.id.event_logs_text_view)).perform(click())
+      intended(hasComponent(ViewEventLogsActivity::class.java.name))
     }
   }
 
@@ -584,6 +611,7 @@ class DeveloperOptionsActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

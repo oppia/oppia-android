@@ -200,7 +200,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     ) {
       bindingAdapter.notifyItemRangeChanged(
         chapterIndex,
-        /*itemCount = */nextStoryIndex - chapterIndex
+        /*itemCount = */ nextStoryIndex - chapterIndex
       )
     }
   }
