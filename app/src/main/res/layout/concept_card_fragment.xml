@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:paddingBottom="108dp"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:scrollbars="none">
 
         <LinearLayout
