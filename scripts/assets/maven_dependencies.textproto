@@ -4,6 +4,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -13,6 +14,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -22,6 +24,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -31,6 +34,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -40,6 +44,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -49,6 +54,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -58,6 +64,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -67,6 +74,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -76,6 +84,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -85,6 +94,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -94,6 +104,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -103,6 +114,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -112,6 +124,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -121,6 +134,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -130,6 +144,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -139,6 +154,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -148,6 +164,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -157,6 +174,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -166,6 +184,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -175,6 +194,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -184,6 +204,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -193,6 +214,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -202,6 +224,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -211,6 +234,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -220,6 +244,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -229,6 +254,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -238,6 +264,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -247,6 +274,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -256,6 +284,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -264,8 +293,13 @@ maven_dependency {
   artifact_version: "2.9.8"
   license {
     license_name: "Crashlytics Terms of Service"
-    primary_link: "http://try.crashlytics.com/terms/terms-of-service.pdf"
-    primary_link_type: NEEDS_INTERVENTION
+    primary_link: "https://firebase.google.com/terms/crashlytics"
+    primary_link_type: SHOW_LINK_ONLY
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: MANUAL
 }
@@ -275,11 +309,13 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     primary_link: "http://www.opensource.org/licenses/bsd-license"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: PARTIALLY_FROM_POM
 }
@@ -289,11 +325,13 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     primary_link: "http://www.opensource.org/licenses/bsd-license"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: PARTIALLY_FROM_POM
 }
@@ -303,11 +341,13 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     primary_link: "http://www.opensource.org/licenses/bsd-license"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: PARTIALLY_FROM_POM
 }
@@ -317,11 +357,13 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     primary_link: "http://www.opensource.org/licenses/bsd-license"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: PARTIALLY_FROM_POM
 }
@@ -331,11 +373,13 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     primary_link: "http://www.opensource.org/licenses/bsd-license"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: PARTIALLY_FROM_POM
 }
@@ -345,6 +389,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -354,16 +399,29 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
   artifact_name: "com.google.auto.service:auto-service-annotations:1.0-rc7"
   artifact_version: "1.0-rc7"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
   artifact_name: "com.google.auto.value:auto-value-annotations:1.6.5"
   artifact_version: "1.6.5"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.google.code.findbugs:jsr305:3.0.2"
@@ -371,6 +429,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -380,6 +439,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -389,6 +449,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -408,20 +469,39 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
   artifact_name: "com.google.guava:failureaccess:1.0.1"
   artifact_version: "1.0.1"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.google.guava:guava:28.1-android"
   artifact_version: "28.1-android"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"
   artifact_version: "9999.0-empty-to-avoid-conflict-with-guava"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.google.j2objc:j2objc-annotations:1.3"
@@ -429,12 +509,19 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
   artifact_name: "com.google.protobuf:protobuf-lite:3.0.0"
   artifact_version: "3.0.0"
+  license {
+    license_name: "Simplified BSD License"
+    primary_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
@@ -442,6 +529,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -451,6 +539,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -460,6 +549,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -469,6 +559,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -478,12 +569,19 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
 maven_dependency {
   artifact_name: "com.squareup.retrofit2:converter-moshi:2.5.0"
   artifact_version: "2.5.0"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "com.squareup.retrofit2:retrofit:2.9.0"
@@ -491,6 +589,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -500,6 +599,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -509,6 +609,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -516,9 +617,14 @@ maven_dependency {
   artifact_name: "io.fabric.sdk.android:fabric:1.4.7"
   artifact_version: "1.4.7"
   license {
-    license_name: "Fabric Software and Services Agreement"
-    primary_link: "https://fabric.io/terms"
-    primary_link_type: NEEDS_INTERVENTION
+    license_name: "Terms of Service for Firebase Services"
+    primary_link: "https://firebase.google.com/terms"
+    primary_link_type: SHOW_LINK_ONLY
+  }
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    primary_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: MANUAL
 }
@@ -528,6 +634,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -537,6 +644,7 @@ maven_dependency {
   license {
     license_name: "CDDL + GPLv2 with classpath exception"
     primary_link: "https://github.com/javaee/javax.annotation/blob/master/LICENSE"
+    alternative_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/javax.annotation%3Ajavax.annotation-api%3A1.3.2-license.txt"
     primary_link_type: SCRAPE_FROM_LOCAL_COPY
   }
   origin_of_license: MANUAL
@@ -547,6 +655,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -556,6 +665,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -589,6 +699,12 @@ maven_dependency {
 maven_dependency {
   artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.18"
   artifact_version: "1.18"
+  license {
+    license_name: "The MIT License"
+    primary_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
+    primary_link_type: SCRAPE_DIRECTLY
+  }
+  origin_of_license: MANUAL
 }
 maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.10"
@@ -596,6 +712,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -605,6 +722,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -614,6 +732,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -623,6 +742,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -632,6 +752,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -641,6 +762,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -650,6 +772,7 @@ maven_dependency {
   license {
     license_name: "Apache 2.0"
     primary_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }
@@ -659,6 +782,7 @@ maven_dependency {
   license {
     license_name: "The Apache Software License, Version 2.0"
     primary_link: "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    primary_link_type: SCRAPE_DIRECTLY
   }
   origin_of_license: ENTIRELY_FROM_POM
 }

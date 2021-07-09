@@ -54,21 +54,17 @@ fun main(args: Array<String>) {
   val dependenciesListFromPom =
     getLicenseLinksFromPom(finalMavenInstallList).mavenDependencyList
 
-  val licenseSetFromPom = dependenciesListFromPom.flatMap { dependency ->
-    dependency.licenseList
-  }.toSet()
+  val updatedDependneciesList = addChangesFromTextProto(
+    dependenciesListFromPom,
+    dependenciesListFromTextproto
+  )
 
-  val licenseSetFromTextproto = dependenciesListFromTextproto.flatMap { dependency ->
-    dependency.licenseList
-  }.toSet()
-
-  val finalLicensesSet = updateLicensesSet(
-    licenseSetFromTextproto,
-    licenseSetFromPom
+  val finalLicensesSet = retrieveUpdatedLicensesSet(
+    updatedDependneciesList
   )
 
   val finalDependenciesList = updateMavenDependenciesList(
-    dependenciesListFromPom,
+    updatedDependneciesList,
     finalLicensesSet
   )
   writeTextProto(
@@ -106,24 +102,45 @@ fun main(args: Array<String>) {
       """.trimIndent()
     )
   }
-
-  println("maven_dependencies.textproto updated successfully.")
+  println("\nScript executed succesfully: maven_dependencies.textproto updated successfully.")
 }
 
-private fun updateLicensesSet(
-  licenseSetFromTextproto: Set<License>,
-  licenseSetFromPom: Set<License>
-): Set<License> {
-  val finalLicensesSet = mutableSetOf<License>()
-  licenseSetFromPom.forEach { license ->
-    val updatedLicense = licenseSetFromTextproto.find { it.primaryLink == license.primaryLink }
-    if (updatedLicense != null) {
-      finalLicensesSet.add(updatedLicense)
+private fun addChangesFromTextProto(
+  dependencyListFromPom: List<MavenDependency>,
+  dependencyListFromProto: List<MavenDependency>
+): List<MavenDependency> {
+  val updatedDepdenciesList = mutableListOf<MavenDependency>()
+  dependencyListFromPom.forEach { dependency ->
+    val updatedDependency =
+      dependencyListFromProto.find { it.artifactName == dependency.artifactName }
+    if (updatedDependency != null) {
+      updatedDepdenciesList.add(updatedDependency)
     } else {
-      finalLicensesSet.add(license)
+      updatedDepdenciesList.add(dependency)
     }
   }
-  return finalLicensesSet
+  return updatedDepdenciesList.toList()
+}
+
+private fun retrieveUpdatedLicensesSet(
+  mavenDependenciesList: List<MavenDependency>
+): Set<License> {
+  val licenseSet = mutableSetOf<License>()
+  mavenDependenciesList.forEach { dependency ->
+    dependency.licenseList.forEach { license ->
+      val foundLicense: License? = licenseSet.find { it.primaryLink == license.primaryLink }
+      if (foundLicense == null) {
+        licenseSet.add(license)
+      } else if (
+        license.primaryLinkType != PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED &&
+        license.primaryLinkType != PrimaryLinkType.UNRECOGNIZED
+      ) {
+        licenseSet.remove(foundLicense)
+        licenseSet.add(license)
+      }
+    }
+  }
+  return licenseSet
 }
 
 private fun getDependenciesThatNeedIntervention(
@@ -161,6 +178,7 @@ private fun updateMavenDependenciesList(
   latestDependenciesList.forEach { mavenDependency ->
     val updateLicenseList = mutableListOf<License>()
     var numberOfLicensesThatRequireHumanEffort = 0
+    val origin = mavenDependency.originOfLicense
     mavenDependency.licenseList.forEach { license ->
       val updatedLicense = finalLicensesSet.find { it.primaryLink == license.primaryLink }
       if (updatedLicense != null) {
@@ -183,15 +201,17 @@ private fun updateMavenDependenciesList(
       .setArtifactName(mavenDependency.artifactName)
       .setArtifactVersion(mavenDependency.artifactVersion)
       .addAllLicense(updateLicenseList)
-      .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
-
-    if (updateLicenseList.isNotEmpty()) {
-      if (numberOfLicensesThatRequireHumanEffort == updateLicenseList.size) {
-        dependency.originOfLicense = OriginOfLicenses.MANUAL
-      } else if (numberOfLicensesThatRequireHumanEffort == 0) {
-        dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
-      } else if (numberOfLicensesThatRequireHumanEffort != updateLicenseList.size) {
-        dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
+    if (origin != OriginOfLicenses.UNKNOWN) {
+      dependency.setOriginOfLicense(origin)
+    } else {
+      if (updateLicenseList.isNotEmpty()) {
+        if (numberOfLicensesThatRequireHumanEffort == updateLicenseList.size) {
+          dependency.originOfLicense = OriginOfLicenses.MANUAL
+        } else if (numberOfLicensesThatRequireHumanEffort == 0) {
+          dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
+        } else if (numberOfLicensesThatRequireHumanEffort != updateLicenseList.size) {
+          dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
+        }
       }
     }
     finalUpdatedList.add(dependency.build())
@@ -407,25 +427,6 @@ private class BazelClient(private val rootDirectory: File) {
     return result.output
   }
 
-  fun executeBazelRePinCommand(
-    vararg arguments: String,
-    allowPartialFailures: Boolean = false
-  ): List<String> {
-    val result =
-      executeCommand(rootDirectory, command = "REPIN=1", *arguments, includeErrorOutput = false)
-    // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
-    // 3 is expected for queries since it indicates that some of the arguments don't correspond to
-    // valid targets. Note that this COULD result in legitimate issues being ignored, but it's
-    // unlikely.
-    val expectedExitCodes = if (allowPartialFailures) listOf(0, 3) else listOf(0)
-    check(result.exitCode in expectedExitCodes) {
-      "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +
-        "\nStandard output:\n${result.output.joinToString("\n")}" +
-        "\nError output:\n${result.errorOutput.joinToString("\n")}"
-    }
-    return result.output
-  }
-
   /**
    * Executes the specified [command] in the specified working directory [workingDir] with the
    * provided arguments being passed as arguments to the command.
@@ -449,7 +450,6 @@ private class BazelClient(private val rootDirectory: File) {
     val assembledCommand = listOf(command) + arguments.toList()
     println(assembledCommand)
     val command = assembledCommand.joinToString(" ")
-    println(command)
     val process = ProcessBuilder()
       .command("bash", "-c", command)
       .directory(workingDir)

@@ -108,3 +108,13 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:regex_pattern_validation_check -- $(pwd)
+
+      - name: XML Syntax Validation Check
+        if: always()
+        run: |
+          bazel run //scripts:xml_syntax_check -- $(pwd)
+
+      - name: Testfile Presence Check
+        if: always()
+        run: |
+          bazel run //scripts:test_file_check -- $(pwd)
