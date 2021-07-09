@@ -62,13 +62,10 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
-<<<<<<< HEAD
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkChaptersCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkStoriesCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
-=======
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
->>>>>>> develop
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
