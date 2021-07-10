@@ -113,7 +113,7 @@ public final class StateAssemblerMarginBindingAdapters {
       float marginEnd,
       float marginBottom
   ) {
-    if(isRtlLayout(view)){
+    if (isRtlLayout(view)) {
       float temp = marginStart;
       marginStart = marginEnd;
       marginEnd = temp;

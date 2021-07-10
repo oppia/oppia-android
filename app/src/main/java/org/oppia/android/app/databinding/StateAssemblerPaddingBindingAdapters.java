@@ -111,7 +111,7 @@ public final class StateAssemblerPaddingBindingAdapters {
       float paddingEnd,
       float paddingBottom
   ) {
-    if(isRtlLayout(view)){
+    if (isRtlLayout(view)) {
       float temp = paddingStart;
       paddingStart = paddingEnd;
       paddingEnd = temp;

@@ -3,11 +3,14 @@ package org.oppia.android.app.databinding;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
-/** Holds all custom binding adapters that set margin values. */
+/**
+ * Holds all custom binding adapters that set margin values.
+ */
 public final class MarginBindingAdapters {
 
   @SuppressLint("WrongConstant")
@@ -15,16 +18,18 @@ public final class MarginBindingAdapters {
     return view.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 
-  /** Used to set a margin-start for views. */
+  /**
+   * Used to set a margin-start for views.
+   */
   @BindingAdapter("app:layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginEnd = params.getMarginEnd();
-      if(isRtlLayout(view)){
+      if (isRtlLayout(view)) {
         float temp = marginStart;
         marginStart = marginEnd;
-         marginEnd = temp;
+        marginEnd = temp;
       }
       params.setMargins(
           (int) marginStart,
@@ -36,13 +41,15 @@ public final class MarginBindingAdapters {
     }
   }
 
-  /** Used to set a margin-end for views. */
+  /**
+   * Used to set a margin-end for views.
+   */
   @BindingAdapter("app:layoutMarginEnd")
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginStart = params.getMarginStart();
-      if(isRtlLayout(view)){
+      if (isRtlLayout(view)) {
         float temp = marginEnd;
         marginEnd = marginStart;
         marginStart = temp;
@@ -57,7 +64,9 @@ public final class MarginBindingAdapters {
     }
   }
 
-  /** Used to set a margin-top for views. */
+  /**
+   * Used to set a margin-top for views.
+   */
   @BindingAdapter("app:layoutMarginTop")
   public static void setLayoutMarginTop(@NonNull View view, float marginTop) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
@@ -72,7 +81,9 @@ public final class MarginBindingAdapters {
     }
   }
 
-  /** Used to set a margin-bottom for views. */
+  /**
+   * Used to set a margin-bottom for views.
+   */
   @BindingAdapter("app:layoutMarginBottom")
   public static void setLayoutMarginBottom(@NonNull View view, float marginBottom) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
@@ -87,7 +98,9 @@ public final class MarginBindingAdapters {
     }
   }
 
-  /** Used to set a margin for views. */
+  /**
+   * Used to set a margin for views.
+   */
   @BindingAdapter("app:layoutMargin")
   public static void setLayoutMargin(@NonNull View view, float margin) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
