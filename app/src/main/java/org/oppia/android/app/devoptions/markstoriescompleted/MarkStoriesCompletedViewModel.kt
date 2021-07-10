@@ -1,0 +1,80 @@
+package org.oppia.android.app.devoptions.markstoriescompleted
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.devoptions.ModifyLessonProgressController
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
+
+/**
+ * [ViewModel] for [MarkStoriesCompletedFragment]. It populates the recyclerview with a list of
+ * [StorySummaryViewModel] which in turn display the story.
+ */
+@FragmentScope
+class MarkStoriesCompletedViewModel @Inject constructor(
+  private val oppiaLogger: OppiaLogger,
+  private val modifyLessonProgressController: ModifyLessonProgressController
+) : ObservableViewModel() {
+
+  private lateinit var profileId: ProfileId
+
+  private val itemList = mutableListOf<StorySummaryViewModel>()
+
+  /**
+   * List of [StorySummaryViewModel] used to populate recyclerview of [MarkStoriesCompletedFragment]
+   * to display stories.
+   */
+  val storySummaryLiveData: LiveData<List<StorySummaryViewModel>> by lazy {
+    Transformations.map(storyMapLiveData, ::processStoryMap)
+  }
+
+  private val storyMapLiveData: LiveData<Map<String, List<StorySummary>>> by lazy { getStoryMap() }
+
+  private val storyMapResultLiveData:
+    LiveData<AsyncResult<Map<String, List<StorySummary>>>> by lazy {
+      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
+    }
+
+  private fun getStoryMap(): LiveData<Map<String, List<StorySummary>>> {
+    return Transformations.map(storyMapResultLiveData, ::processStoryMapResult)
+  }
+
+  private fun processStoryMapResult(
+    storyMap: AsyncResult<Map<String, List<StorySummary>>>
+  ): Map<String, List<StorySummary>> {
+    if (storyMap.isFailure()) {
+      oppiaLogger.e(
+        "MarkStoriesCompletedFragment",
+        "Failed to retrieve storyList",
+        storyMap.getErrorOrNull()!!
+      )
+    }
+    return storyMap.getOrDefault(mapOf())
+  }
+
+  private fun processStoryMap(
+    storyMap: Map<String, List<StorySummary>>
+  ): List<StorySummaryViewModel> {
+    itemList.clear()
+    storyMap.forEach {
+      it.value.forEach { storySummary ->
+        val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+        itemList.add(StorySummaryViewModel(storySummary, isCompleted, topicId = it.key))
+      }
+    }
+    return itemList
+  }
+
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
+  }
+
+  /** Returns a list of [StorySummaryViewModel]s whose progress can be modified. */
+  fun getStorySummaryList(): List<StorySummaryViewModel> = itemList.toList()
+}
