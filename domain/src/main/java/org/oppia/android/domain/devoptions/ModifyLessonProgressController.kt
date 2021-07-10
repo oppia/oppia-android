@@ -33,7 +33,7 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Fetches a list of topics given a profile ID.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs fetched.
+   * @param profileId: the ID corresponding to the profile for which progress needs fetched.
    * @return a [DataProvider] for [List] of [Topic] combined with [TopicProgress].
    */
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<Topic>> {
@@ -58,7 +58,7 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Fetches a list of stories mapped to their corresponding topic ids given a profile ID.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs fetched.
+   * @param profileId: the ID corresponding to the profile for which progress needs fetched.
    * @return a [DataProvider] for [Map] of topic id mapped to list of [StorySummary] combined
    * with [StoryProgress].
    */
@@ -78,7 +78,7 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Checks if a topic is completed or not.
    *
-   * @param topicWithProgress the topic for which progress needs to be fetched.
+   * @param topicWithProgress: the topic for which progress needs to be fetched.
    * @return a [Boolean] indicating whether the topic is completed or not.
    */
   fun checkIfTopicIsCompleted(topicWithProgress: Topic): Boolean {
@@ -93,7 +93,7 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Checks if a story is completed or not.
    *
-   * @param storyWithProgress the story for which progress needs to be fetched.
+   * @param storyWithProgress: the story for which progress needs to be fetched.
    * @return a [Boolean] indicating whether the story is completed or not.
    */
   fun checkIfStoryIsCompleted(storyWithProgress: StorySummary): Boolean {
@@ -104,10 +104,10 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Marks multiple topics completed given a profile ID and list of topic IDs.
+   * Modifies lesson progress by marking multiple topics as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified.
-   * @param topicIdList the list of topic IDs for which progress needs modified.
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param topicIdList: the list of topic IDs for which progress needs modified.
    */
   fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
@@ -127,10 +127,10 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Marks multiple stories completed given a profile ID and list of topic and story Ids.
+   * Modifies lesson progress by marking multiple stories as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified.
-   * @param storyMap the list of topic IDs mapped to corresponding story IDs for which progress
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param storyMap: the list of topic IDs mapped to corresponding story IDs for which progress
    * needs modified.
    */
   fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
@@ -149,11 +149,10 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Marks multiple chapters completed given a profile ID and list of topic IDs, story IDs and
-   * exploration IDs.
+   * Modifies lesson progress by marking multiple chapters as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified.
-   * @param chapterMap the list of [Pair] of topic IDs and story IDs mapped to corresponding
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param chapterMap: the list of [Pair] of topic IDs and story IDs mapped to corresponding
    * exploration IDs for which progress needs modified.
    */
   fun markMultipleChaptersCompleted(
