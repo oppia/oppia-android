@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@drawable/ic_check_box_disabled"
+  <item android:color="@color/oppiaPrimaryText"
+    android:alpha="0.38"
     android:state_checked="false"
     android:state_enabled="false"/>
-  <item android:drawable="@drawable/ic_check_box_unchecked"
+  <item android:color="@color/oppiaPrimaryText"
+    android:state_enabled="true"
     android:state_checked="false"/>
-  <item android:drawable="@drawable/ic_check_box_checked"
+  <item android:color="@color/oppiaPrimaryText"
     android:state_checked="true"/>
 </selector>
