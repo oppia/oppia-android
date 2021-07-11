@@ -1,14 +1,13 @@
 package org.oppia.android.scripts.label
 
-import org.oppia.android.scripts.common.ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.ScriptExemptions
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.io.File
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import javax.xml.parsers.DocumentBuilderFactory
+import org.oppia.android.scripts.proto.AccessibilityLabelExemptions
+import java.io.FileInputStream
 
 /**
  * Script for ensuring that all the Activities in the codebase are defined with accessibility
@@ -28,6 +27,12 @@ import javax.xml.parsers.DocumentBuilderFactory
 fun main(vararg args: String) {
   val repoPath = args[0] + "/"
 
+  val accessibilityLabelExemptiontextProto = "scripts/assets/accessibility_label_exemptions"
+
+  val accessibilityLabelExemptionList = loadAccessibilityLabelExemptionsProto(
+    accessibilityLabelExemptiontextProto
+  ).getExemptedActivityList()
+
   val manifesFilePath = args[1]
 
   val fullPathToManifestFile = repoPath + manifesFilePath
@@ -42,15 +47,15 @@ fun main(vararg args: String) {
   val completeActivityList = convertNodeListToListOfNode(doc.getElementsByTagName("activity"))
 
   val activityListWithoutLabel = completeActivityList.filter { node ->
-    checkIfActivityHasMissingLabel(node)
+    checkIfActivityHasMissingLabel(node, accessibilityLabelExemptionList)
   }
 
-  logFailures(activityListWithoutLabel)
+  logFailures(activityListWithoutLabel, repoPath)
 
   if (activityListWithoutLabel.isNotEmpty()) {
-    throw Exception(ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("ACCESSIBILITY LABEL CHECK FAILED")
   } else {
-    println(ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("ACCESSIBILITY LABEL CHECK PASSED")
   }
 }
 
@@ -60,11 +65,16 @@ fun main(vararg args: String) {
  * @param activityNode instance of Node
  * @return label is present or not
  */
-private fun checkIfActivityHasMissingLabel(activityNode: Node): Boolean {
+private fun checkIfActivityHasMissingLabel(
+  activityNode: Node,
+  accessibilityLabelExemptionList: List<String>
+): Boolean {
   val attributesList = activityNode.getAttributes()
   val activityPath = attributesList.getNamedItem("android:name").getNodeValue()
-  return activityPath !in ScriptExemptions.ACCESSIBILITY_LABEL_CHECK_EXEMPTIONS_LIST &&
-    attributesList.getNamedItem("android:label") == null
+  if (activityPath.removePrefix(".").replace(".", "/") in accessibilityLabelExemptionList) {
+    return false
+  }
+  return attributesList.getNamedItem("android:label") == null
 }
 
 /**
@@ -85,16 +95,48 @@ private fun convertNodeListToListOfNode(nodeList: NodeList): List<Node> {
  *
  * @param matchedNodes a list of nodes having missing label
  */
-private fun logFailures(matchedNodes: List<Node>) {
+private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
+  val pathPrefix = "${repoPath}app/src/main/java/org/oppia/android"
   if (matchedNodes.isNotEmpty()) {
     println("Accessiblity labels missing for Activities:")
-    matchedNodes.forEach { node ->
+    matchedNodes.sortedBy {
+      it.getAttributes()
+        .getNamedItem("android:name")
+        .getNodeValue()
+    }.forEach { node ->
       println(
-        node.getAttributes()
-          .getNamedItem("android:name")
-          .getNodeValue()
+        "- $pathPrefix" +
+          "${
+            node.getAttributes()
+              .getNamedItem("android:name")
+              .getNodeValue()
+              .replace(".", "/")
+          }"
       )
     }
     println()
   }
+
+}
+
+/**
+ * Loads the test file exemptions list to proto.
+ *
+ * @param accessibilityLabelExemptiontextProto the location of the accessibility label exemption
+ *     textproto file.
+ * @return proto class from the parsed textproto file
+ */
+private fun loadAccessibilityLabelExemptionsProto(accessibilityLabelExemptiontextProto: String):
+  AccessibilityLabelExemptions {
+  val protoBinaryFile = File("$accessibilityLabelExemptiontextProto.pb")
+  val builder = AccessibilityLabelExemptions.getDefaultInstance().newBuilderForType()
+
+  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+  // and this method is bounded by the generic type T.
+  @Suppress("UNCHECKED_CAST")
+  val protoObj: AccessibilityLabelExemptions =
+    FileInputStream(protoBinaryFile).use {
+      builder.mergeFrom(it)
+    }.build() as AccessibilityLabelExemptions
+  return protoObj
 }

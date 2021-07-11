@@ -12,7 +12,6 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/common:result_constants",
-        "//scripts/src/java/org/oppia/android/scripts/common:script_exemptions",
+        "//scripts/src/java/org/oppia/android/scripts/proto:accessibility_label_exemptions_java_proto_lite",
     ],
 )

@@ -19,3 +19,19 @@ message TestFileExemptions {
   // at the correct lexicographical position in the textproto file.
   repeated string exempted_file_path = 1;
 }
+
+// Exemptions for the accessibility label check. Exemptions indicate Activities for which we should
+// not check for the presence of an accessibility label.
+message AccessibilityLabelExemptions {
+  // List of all the Activities which should be exempted for the accessibility label check.
+  // For exempting any Activity, provide its path w.r.t app in
+  // 'script/assets/accessibility_label_exemptions.textproto'
+  // Also, note that the exemptions in the textproto file are maintained in lexicographical order.
+  // While adding any new Activity, please add it only at the correct lexicographical position,
+  // so that the list remains sorted.
+  //
+  // For example if we want to add the 'RecentlyPlayedActivity' to the exemption list, add:
+  // 'exempted_activity: "app/home/recentlyplayed/RecentlyPlayedActivity"'
+  // at the correct lexicographical position in the textproto file.
+  repeated string exempted_activity = 1;
+}
