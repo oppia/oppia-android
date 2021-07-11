@@ -50,9 +50,10 @@ fun main(args: Array<String>) {
   val bazelQueryDependenciesList = runBazelQueryCommand(pathToRoot)
   val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDependenciesList)
 
-  val dependenciesListFromTextproto = retrieveMavenDependencyList()
   val dependenciesListFromPom =
     getLicenseLinksFromPom(finalMavenInstallList).mavenDependencyList
+
+  val dependenciesListFromTextproto = retrieveMavenDependencyList()
 
   val updatedDependneciesList = addChangesFromTextProto(
     dependenciesListFromPom,

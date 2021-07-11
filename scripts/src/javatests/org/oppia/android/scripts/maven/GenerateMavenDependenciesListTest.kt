@@ -41,4 +41,10 @@ class GenerateMavenDependenciesListTest {
     val num = 4
     assertThat(num).isEqualTo(4)
   }
+
+  private class DependencyListsProviderInterceptor(
+
+  ): DependencyListsProvider {
+
+  }
 }
