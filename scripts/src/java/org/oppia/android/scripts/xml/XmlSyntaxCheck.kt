@@ -1,8 +1,6 @@
 package org.oppia.android.scripts.xml
 
 import org.oppia.android.scripts.common.RepositoryFile
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR
-import org.oppia.android.scripts.common.XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR
 import org.xml.sax.SAXParseException
 import java.io.File
 import javax.xml.parsers.DocumentBuilder
@@ -22,7 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
-  val repoPath = args[0] + "/"
+  val repoPath = "${args[0]}/"
 
   // A list of all XML files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -30,22 +28,16 @@ fun main(vararg args: String) {
     expectedExtension = ".xml"
   )
 
-  val allErrorsList = mutableListOf<Pair<SAXParseException, File>>()
-
   // Builder factory which provides the builder to parse the XMl.
   val builderFactory = DocumentBuilderFactory.newInstance()
 
-  searchFiles.forEach { file ->
+  val allErrorsList = searchFiles.flatMap { file ->
     val docBuilder = builderFactory.newDocumentBuilder()
     val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
     docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
     parseXml(docBuilder, file)
     val fileErrorList = xmlSyntaxErrorHandler.retrieveErrorList()
-    if (fileErrorList.isNotEmpty()) {
-      fileErrorList.forEach { error ->
-        allErrorsList.add(Pair(error, file))
-      }
-    }
+    fileErrorList.map { error -> Pair(error, file) }
   }
 
   // Check if the repo has any syntactically incorrect XML.
@@ -54,9 +46,9 @@ fun main(vararg args: String) {
   logXmlSyntaxFailures(allErrorsList)
 
   if (hasXmlSyntaxFailure) {
-    throw Exception(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    throw Exception("XML SYNTAX CHECK FAILED")
   } else {
-    println(XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR)
+    println("XML SYNTAX CHECK PASSED")
   }
 }
 
@@ -70,6 +62,10 @@ private fun parseXml(docBuilder: DocumentBuilder, file: File) {
   try {
     docBuilder.parse(file)
   } catch (e: SAXParseException) {
+    // For any syntax error in the XML file, if the custom error handler does not throws any
+    // exception then the default error handler throws a [SaxParseException]. In order to prevent
+    // the script check from getting terminated in between, we need to catch and ignore the
+    // exception.
   }
 }
 

@@ -142,11 +142,15 @@
   <dimen name="interaction_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_end">112dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_start">144dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_end">112dp</dimen>
 
   <!-- Interaction Item: Question View -->
   <dimen name="interaction_item_question_view_margin_start">128dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">128dp</dimen>
+  <dimen name="interaction_item_question_view_padding_start">128dp</dimen>
+   <dimen name="interaction_item_question_view_padding_end">128dp</dimen>
 
   <!-- DragAndDrop Interaction Item -->
   <dimen name="drag_drop_interaction_item_padding_start">24dp</dimen>
@@ -211,6 +215,8 @@
   <!-- General Button: Exploration View -->
   <dimen name="general_button_item_exploration_view_margin_start">108dp</dimen>
   <dimen name="general_button_item_exploration_view_margin_end">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_start">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_end">108dp</dimen>
 
   <!-- General Button: Question Split View -->
   <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
@@ -219,6 +225,24 @@
   <!-- General Button: Question View -->
   <dimen name="general_button_item_question_view_margin_start">124dp</dimen>
   <dimen name="general_button_item_question_view_margin_end">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_start">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_end">124dp</dimen>
+
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">128dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">128dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">24dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">132dp</dimen>
+
+  <!-- Audio Player: Non Split View -->
+  <dimen name="audio_player_non_split_view_margin_start">128dp</dimen>
+  <dimen name="audio_player_non_split_view_margin_end">128dp</dimen>
+
+  <!-- Audio Player: Split View -->
+  <dimen name="audio_player_split_view_margin_start">32dp</dimen>
+  <dimen name="audio_player_split_view_margin_end">32dp</dimen>
 
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">64dp</dimen>

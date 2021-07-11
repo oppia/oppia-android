@@ -228,4 +228,3 @@ WORKSPACE @BenHenning
 
 # Static analysis check configuration files ownership.
 /scripts/assets/ @BenHenning
-/scripts/src/java/org/oppia/android/scripts/common/ScriptExemptions.kt @BenHenning
