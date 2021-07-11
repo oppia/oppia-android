@@ -103,5 +103,7 @@ kt_jvm_binary(
     name = "accessibility_label_check",
     testonly = True,
     main_class = "org.oppia.android.scripts.label.AccessibilityLabelCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/label:accessibility_label_check_lib"],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/label:accessibility_label_check_lib"
+    ],
 )

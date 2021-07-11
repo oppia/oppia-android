@@ -448,8 +448,12 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
-  <!-- DeveloperOptionsFragment -->
+  <!-- DeveloperOptionsActivity -->
   <string name="developer_options_activity_title">Developer Options</string>
+  <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>
+  <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
+  <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
+  <string name="view_event_logs_activity_title">View Event Logs</string>
   <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
   <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
   <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
@@ -460,4 +464,6 @@
   <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
   <string name="developer_options_force_network_type">Force network type</string>
   <string name="developer_options_force_crash">Force crash</string>
+  <string name="all">All</string>
+  <string name="mark_completed_uppercase">MARK COMPLETED</string>
 </resources>
