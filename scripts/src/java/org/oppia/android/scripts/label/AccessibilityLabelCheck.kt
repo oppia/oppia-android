@@ -1,13 +1,13 @@
 package org.oppia.android.scripts.label
 
+import org.oppia.android.scripts.proto.AccessibilityLabelExemptions
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.io.File
+import java.io.FileInputStream
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import javax.xml.parsers.DocumentBuilderFactory
-import org.oppia.android.scripts.proto.AccessibilityLabelExemptions
-import java.io.FileInputStream
 
 /**
  * Script for ensuring that all the Activities in the codebase are defined with accessibility
@@ -107,16 +107,15 @@ private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
       println(
         "- $pathPrefix" +
           "${
-            node.getAttributes()
-              .getNamedItem("android:name")
-              .getNodeValue()
-              .replace(".", "/")
+          node.getAttributes()
+            .getNamedItem("android:name")
+            .getNodeValue()
+            .replace(".", "/")
           }"
       )
     }
     println()
   }
-
 }
 
 /**
@@ -128,15 +127,15 @@ private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
  */
 private fun loadAccessibilityLabelExemptionsProto(accessibilityLabelExemptiontextProto: String):
   AccessibilityLabelExemptions {
-  val protoBinaryFile = File("$accessibilityLabelExemptiontextProto.pb")
-  val builder = AccessibilityLabelExemptions.getDefaultInstance().newBuilderForType()
+    val protoBinaryFile = File("$accessibilityLabelExemptiontextProto.pb")
+    val builder = AccessibilityLabelExemptions.getDefaultInstance().newBuilderForType()
 
-  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
-  // and this method is bounded by the generic type T.
-  @Suppress("UNCHECKED_CAST")
-  val protoObj: AccessibilityLabelExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as AccessibilityLabelExemptions
-  return protoObj
-}
+    // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+    // and this method is bounded by the generic type T.
+    @Suppress("UNCHECKED_CAST")
+    val protoObj: AccessibilityLabelExemptions =
+      FileInputStream(protoBinaryFile).use {
+        builder.mergeFrom(it)
+      }.build() as AccessibilityLabelExemptions
+    return protoObj
+  }
