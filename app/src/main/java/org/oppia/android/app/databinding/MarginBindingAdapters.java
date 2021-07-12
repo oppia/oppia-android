@@ -12,45 +12,48 @@ public final class MarginBindingAdapters {
     return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 
-  /** Used to set a margin-start for views. */
+  /** Sets the start margin for a view, accounting for RTL scenarios. */
   @BindingAdapter("app:layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginEnd = params.getMarginEnd();
-      if (isRtlLayout(view)) {
-        float temp = marginStart;
-        marginStart = marginEnd;
-        marginEnd = temp;
-      }
-      params.setMargins(
-          (int) marginStart,
-          params.topMargin,
-          (int) marginEnd,
-          params.bottomMargin
-      );
+      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
       view.requestLayout();
     }
   }
 
-  /** Used to set a margin-end for views. */
+  /** Sets the end margin for a view, accounting for RTL scenarios. */
   @BindingAdapter("app:layoutMarginEnd")
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginStart = params.getMarginStart();
-      if (isRtlLayout(view)) {
-        float temp = marginEnd;
-        marginEnd = marginStart;
-        marginStart = temp;
-      }
+      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
+      view.requestLayout();
+    }
+  }
+
+  private static void setLayoutDirectionalMargins(
+      @NonNull View view,
+      int marginEnd,
+      MarginLayoutParams params,
+      int marginStart
+  ) {
+    if (isRtlLayout(view)) {
       params.setMargins(
-          (int) marginStart,
+          marginEnd,
           params.topMargin,
-          (int) marginEnd,
+          marginStart,
           params.bottomMargin
       );
-      view.requestLayout();
+    } else {
+      params.setMargins(
+          marginStart,
+          params.topMargin,
+          marginEnd,
+          params.bottomMargin
+      );
     }
   }
 

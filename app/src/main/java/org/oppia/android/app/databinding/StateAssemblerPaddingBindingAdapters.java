@@ -108,18 +108,22 @@ public final class StateAssemblerPaddingBindingAdapters {
       float paddingEnd,
       float paddingBottom
   ) {
-    if (isRtlLayout(view)) {
-      float temp = paddingStart;
-      paddingStart = paddingEnd;
-      paddingEnd = temp;
-    }
     if (isApplicable) {
-      view.setPadding(
-          (int) paddingStart,
-          (int) paddingTop,
-          (int) paddingEnd,
-          (int) paddingBottom
-      );
+      if (isRtlLayout(view)) {
+        view.setPadding(
+            (int) paddingEnd,
+            (int) paddingTop,
+            (int) paddingStart,
+            (int) paddingBottom
+        );
+      }else {
+        view.setPadding(
+            (int) paddingStart,
+            (int) paddingTop,
+            (int) paddingEnd,
+            (int) paddingBottom
+        );
+      }
       view.requestLayout();
     }
   }
