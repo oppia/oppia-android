@@ -304,7 +304,7 @@ class ExplorationCheckpointControllerTest {
   }
 
   /**
-   * updates the saved checkpoint for the test exploration specified by the [index] supplied.
+   * Updates the saved checkpoint for the test exploration specified by the [index] supplied.
    *
    * For this function to work as intended, it has to be made sure that a checkpoint for the test
    * exploration specified by the index already exists in the checkpoint database of that profile.
