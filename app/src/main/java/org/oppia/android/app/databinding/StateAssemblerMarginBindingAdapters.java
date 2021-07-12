@@ -1,9 +1,7 @@
 package org.oppia.android.app.databinding;
 
-import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -12,11 +10,10 @@ import androidx.databinding.BindingAdapter;
  */
 public final class StateAssemblerMarginBindingAdapters {
 
-
-  @SuppressLint("WrongConstant")
-  private static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL;
+  public static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
+
   /** Used to set a margin for exploration split-view. */
   @BindingAdapter(
       value = {
