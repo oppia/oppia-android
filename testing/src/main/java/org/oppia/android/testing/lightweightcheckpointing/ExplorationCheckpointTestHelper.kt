@@ -1,6 +1,5 @@
 package org.oppia.android.testing.lightweightcheckpointing
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
@@ -53,7 +52,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    *  Saves a fake checkpoint for explorationId [FAKE_EXPLORATION_ID_1] for the specified profileId.
    *  The size of the checkpoint saved here is 67 bytes.
    */
-  @SuppressLint("RestrictedApi")
   fun saveFakeExplorationCheckpoint(internalProfileId: Int) {
     val checkpoint = createFakeExplorationCheckpoint(FAKE_EXPLORATION_TITLE_1, timestamp = 0L)
     val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
@@ -68,7 +66,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Saves two fake checkpoints, one for [FAKE_EXPLORATION_ID_1] and the other for
    * [FAKE_EXPLORATION_ID_2]. Together both the exploration take up 137 bytes of storage space.
    */
-  @SuppressLint("RestrictedApi")
   fun saveTwoFakeExplorationCheckpoint(internalProfileId: Int) {
     var checkpoint = createFakeExplorationCheckpoint(FAKE_EXPLORATION_TITLE_1, timestamp = 0L)
     var saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
