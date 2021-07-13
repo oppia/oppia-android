@@ -46,6 +46,7 @@ import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -663,6 +664,7 @@ class AddProfileActivityTest {
   }
 
   @Test
+  @Ignore("Flaky test") // TODO(#3363): Test passes on Pixel3a sometimes and fails on Pixel3.
   fun testAddProfileActivity_configChange_inputShortPin_create_pinLengthError() {
     launch(AddProfileActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -733,6 +735,7 @@ class AddProfileActivityTest {
   }
 
   @Test
+  @Ignore("Flaky test") // TODO(#3363): Test passes on Pixel3a sometimes and fails on Pixel3.
   fun testAddProfileActivity_configChange_inputShortPin_create_inputPin_errorIsCleared() {
     launch(AddProfileActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -1494,6 +1497,7 @@ class AddProfileActivityTest {
   }
 
   @Test
+  @Ignore("Flaky test") // TODO(#3363): Test passes on Pixel3a sometimes and fails on Pixel3.
   fun testAddProfileActivity_inputPin_configChange_downloadAccessSwitchIsOn() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
