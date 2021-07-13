@@ -13,9 +13,9 @@ import org.oppia.android.scripts.proto.PrimaryLinkType
 import java.io.File
 import java.io.FileInputStream
 
+/** Class to  */
 class MavenDependenciesListWriter() {
   companion object {
-
     val MAVEN_PREFIX = "@maven//:"
     val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 
