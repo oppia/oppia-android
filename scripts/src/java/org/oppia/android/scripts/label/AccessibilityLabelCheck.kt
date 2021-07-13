@@ -72,7 +72,8 @@ private fun checkIfActivityHasMissingLabel(
 ): Boolean {
   val attributesList = activityNode.getAttributes()
   val activityPath = attributesList.getNamedItem("android:name").getNodeValue()
-  if (activityPath
+  if (
+    activityPath
     .removePrefix(".")
     .replace(".", "/") in accessibilityLabelExemptionList
   ) {
