@@ -14,6 +14,7 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_mockito_mockito-core",
     ],
 )
 
@@ -26,5 +27,6 @@ kt_jvm_test(
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+        "//third_party:org_mockito_mockito-core",
     ],
 )

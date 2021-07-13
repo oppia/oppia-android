@@ -18,12 +18,6 @@ import java.io.PrintStream
 /** Tests for [MavenDependenciesListWriter]. */
 class MavenDependenciesListWriterTest {
 
-//  val PLAIN_TEXT_SCRAPABLE_LICENSE_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-//  val PLAIN_TEXT_NON_SCRAPABLE_LICENSE_LINK = "https://opensource.org/licenses/MIT"
-//  val NON_PLAIN_TEXT_LICENSE_LINK = "https://developer.android.com/studio/terms.html"
-//  val INVALID_LICENSE_LINK = "https://www.fabric.io.terms"
-//  val NO_LICENSE_LINK_AVAILABLE_IDENTIFIER = "NO_LICENSE_LINKS_AVAILABLE"
-
   private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "License details are not completed."
   private val COMPLETE_LICENSE_DETAILS_MESSAGE = "Please complete all the details" +
     "for the following licenses:"
@@ -230,39 +224,13 @@ class MavenDependenciesListWriterTest {
     ),
     args: Array<String>
   ) {
-    val pathToRoot = args[0]
-    val pathToMavenInstall = "$pathToRoot/${args[1]}"
-    val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
-    val pathToMavenDependenciesProtoBinary = args[3]
 
-    val dependencyListsProvider = DependencyListsProvider(
-      UtilityProviderInterceptor(
-        dependencyLicenseTypes
-      )
-    )
-
-    val bazelQueryDepsList = dependencyListsProvider.provideBazelQueryDependencyList(pathToRoot)
-    val mavenInstallDepsList =
-      dependencyListsProvider.getDependencyListFromMavenInstall(
-        pathToMavenInstall,
-        bazelQueryDepsList
-      )
-
-    val dependenciesListFromPom = dependencyListsProvider
-      .provideDependencyListFromPom(mavenInstallDepsList)
-
-    MavenDependenciesListWriter.pathToMavenDependenciesTextProto = pathToMavenDependenciesTextProto
-    MavenDependenciesListWriter.pathToMavenDependenciesProtoBinary =
-      pathToMavenDependenciesProtoBinary
-    MavenDependenciesListWriter.dependenciesListFromPom =
-      dependenciesListFromPom.mavenDependencyList
+    MavenDependenciesListWriter.networkAndBazelUtils = NetworkAndBazelUtilsInterceptor()
 
     MavenDependenciesListWriter.main(arrayOf())
   }
 
-  private class UtilityProviderInterceptor(
-    val dependencyNamesList: List<DependencyName>
-  ) : UtilityProvider {
+  private class NetworkAndBazelUtilsInterceptor() : NetworkAndBazelUtils {
     override fun scrapeText(link: String): String {
       val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/" +
         "databinding-adapters/3.4.2/databinding-adapters-3.4.2.pom"
@@ -330,8 +298,7 @@ class MavenDependenciesListWriterTest {
     }
 
     override fun retrieveThirdPartyMavenDependenciesList(
-      rootPath: String,
-      vararg args: String
+      rootPath: String
     ): List<String> {
       val mavenPrefix = "@maven//:"
       val bazelQueryDepsNames = mutableListOf<String>()
