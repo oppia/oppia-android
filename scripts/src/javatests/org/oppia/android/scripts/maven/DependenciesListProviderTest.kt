@@ -9,8 +9,8 @@ import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-/** Tests for [GenerateMavenDependenciesList]. */
-class GenerateMavenDependenciesListTest {
+/** Tests for [DependenciesListProvider]. */
+class DependenciesListProviderTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
@@ -42,9 +42,4 @@ class GenerateMavenDependenciesListTest {
     assertThat(num).isEqualTo(4)
   }
 
-  private class DependencyListsProviderInterceptor(
-
-  ): DependencyListsProvider {
-
-  }
 }

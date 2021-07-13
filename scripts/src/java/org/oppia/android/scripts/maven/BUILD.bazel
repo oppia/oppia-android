@@ -16,23 +16,13 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "generate_maven_dependencies_list_lib",
-    srcs = ["GenerateMavenDependenciesList.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        ":maven_dependencies_lib",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
-    ],
-)
-
-kt_jvm_library(
     name = "dependency_lists_provider",
     srcs = [
         "DependencyListsProvider.kt",
-        "DependencyListsProviderImpl.kt",
+        "UtilityProvider.kt",
+        "UtilityProviderImpl.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":maven_dependencies_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
@@ -43,7 +33,7 @@ kt_jvm_library(
 kt_jvm_library(
     name = "maven_dependencies_list_writer",
     srcs = ["MavenDependenciesListWriter.kt"],
-    visibility = ["//visibility:public"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":dependency_lists_provider",
         ":maven_dependencies_lib",
@@ -51,9 +41,9 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "new_generated_maven_deps_list_lib",
-    srcs = ["NewGenerateMavenDependenciesList.kt"],
-    visibility = ["//visibility:public"],
+    name = "generate_maven_dependencies_list_lib",
+    srcs = ["GenerateMavenDependenciesList.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":maven_dependencies_list_writer",
     ],

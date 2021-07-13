@@ -13,29 +13,19 @@ import java.io.File
 import java.io.FileInputStream
 import java.net.URL
 
-class MavenDependenciesListWriter(
-  val pathToRoot: String,
-  val pathToMavenInstall: String
-) {
+class MavenDependenciesListWriter() {
   companion object {
 
     lateinit var pathToMavenDependenciesTextProto: String
+    lateinit var pathToMavenDependenciesProtoBinary: String
     lateinit var dependenciesListFromPom: List<MavenDependency>
-
-    fun setCPathToMavenDependenciesTextProto(path: String) {
-      this.pathToMavenDependenciesTextProto = path
-    }
-
-    fun setCDependenciesListFromPom(list: List<MavenDependency>) {
-      this.dependenciesListFromPom = list
-    }
 
     @JvmStatic
     fun main(args: Array<String>) {
 
-//      val finalMavenInstallList = readMavenInstall(pathToMavenInstall, bazelQueryDependenciesList)
-
-      val dependenciesListFromTextproto = retrieveMavenDependencyList()
+      val dependenciesListFromTextproto = retrieveMavenDependencyList(
+        pathToMavenDependenciesProtoBinary
+      )
 
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
@@ -203,9 +193,9 @@ class MavenDependenciesListWriter(
     }
 
     /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-    private fun retrieveMavenDependencyList(): List<MavenDependency> {
+    private fun retrieveMavenDependencyList(pathToProtoBinary: String): List<MavenDependency> {
       return getProto(
-        "maven_dependencies.pb",
+        pathToProtoBinary,
         MavenDependencyList.getDefaultInstance()
       ).mavenDependencyList.toList()
     }
@@ -218,10 +208,10 @@ class MavenDependenciesListWriter(
      * @return proto class from the parsed textproto file
      */
     private fun getProto(
-      textProtoFileName: String,
+      pathToTextProto: String,
       proto: MavenDependencyList
     ): MavenDependencyList {
-      val protoBinaryFile = File("scripts/assets/$textProtoFileName")
+      val protoBinaryFile = File(pathToTextProto)
       val builder = proto.newBuilderForType()
       val protoObject = FileInputStream(protoBinaryFile).use {
         builder.mergeFrom(it)
