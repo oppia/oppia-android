@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
@@ -12,6 +13,7 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
+    multiDexEnabled true
     javaCompileOptions {
       annotationProcessorOptions {
         includeCompileClasspath true
@@ -29,6 +31,9 @@ android {
   }
 
   testOptions {
+    execution 'ANDROID_TEST_ORCHESTRATOR'
+    animationsDisabled true
+
     unitTests {
       includeAndroidResources = true
       all {
@@ -54,6 +59,9 @@ android {
     release {
       minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+    debug {
+      testCoverageEnabled true
     }
   }
 }
@@ -91,6 +99,8 @@ dependencies {
       'org.robolectric:robolectric:4.4',
       project(":testing"),
   )
+  androidTestUtil 'androidx.test:orchestrator:1.1.0'
+
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
   )

@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: "$project.rootDir/jacoco.gradle"
 
 android {
   compileSdkVersion 29
@@ -12,6 +13,7 @@ android {
     targetSdkVersion 29
     versionCode 1
     versionName "1.0"
+    multiDexEnabled true
   }
 
   compileOptions {
@@ -23,7 +25,16 @@ android {
     jvmTarget = JavaVersion.VERSION_1_8
   }
 
+  buildTypes {
+    debug {
+      testCoverageEnabled true
+    }
+  }
+
   testOptions {
+    execution 'ANDROID_TEST_ORCHESTRATOR'
+    animationsDisabled true
+
     unitTests {
       includeAndroidResources = true
       all {
@@ -80,6 +91,8 @@ dependencies {
       'org.mockito:mockito-core:2.19.0',
       project(":domain"),
   )
+  androidTestUtil 'androidx.test:orchestrator:1.1.0'
+
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
   )
@@ -94,6 +107,7 @@ dependencies {
   // controlled more directly than in Gradle.
   implementation project(':model')
 }
+
 // The GeneratedMessageLite implementations of protobufs are depending on protobuf-java
 // instead of protobuf-lite after Android Studio 3.5,
 // The below command stops that from happening: https://github.com/google/tink/issues/282
