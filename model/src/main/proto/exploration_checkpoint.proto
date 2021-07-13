@@ -89,5 +89,5 @@ enum CheckpointState {
   CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT = 2;
 
   // Progress made in the exploration is not saved.
-  UNSAVED = 3;
+  CHECKPOINT_UNSAVED = 3;
 }

@@ -41,12 +41,12 @@ class ExplorationCheckpointController @Inject constructor(
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
 
   /**
-   * These Statuses correspond to the exception above such that if the deferred result contains
+   * These Statuses correspond to the result of the deferred such that if the deferred contains
    *
    * CHECKPOINT_NOT_FOUND, the [ExplorationCheckpointNotFoundException] will be passed to a failed
    * AsyncResult.
    *
-   * SUCCESS corresponds to successful AsyncResult with value as null.
+   * SUCCESS corresponds to a successful AsyncResult.
    */
   enum class ExplorationCheckpointActionStatus {
     CHECKPOINT_NOT_FOUND,
@@ -59,8 +59,8 @@ class ExplorationCheckpointController @Inject constructor(
   /**
    * Records an exploration checkpoint for the specified profile.
    *
-   * @return a [Deferred] that upon completion indicates the current [CheckpointState]. If the size
-   *     of the checkpoint database is less than the allocated limit of
+   * @return a [Deferred] that upon completion indicates the current [CheckpointState].
+   *     If the size of the checkpoint database is less than the allocated limit of
    *     [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
    *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
