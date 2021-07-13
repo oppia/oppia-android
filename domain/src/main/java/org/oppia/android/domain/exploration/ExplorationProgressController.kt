@@ -128,7 +128,7 @@ class ExplorationProgressController @Inject constructor(
         throw CheckpointDatabaseOverflowException(
           "Checkpoint database has exceeded the allocated size limit."
         )
-      } else if (currentCheckpointState == CheckpointState.UNSAVED) {
+      } else if (currentCheckpointState == CheckpointState.CHECKPOINT_UNSAVED) {
         throw ProgressNotSavedException("Current exploration contains unsaved progress.")
       }
     }
