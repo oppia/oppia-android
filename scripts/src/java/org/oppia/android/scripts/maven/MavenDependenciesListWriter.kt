@@ -15,7 +15,7 @@ import java.io.FileInputStream
 class MavenDependenciesListWriter() {
   companion object {
 
-    val MAVEN_PREFIX_LENGTH = "@maven//:".length
+    val MAVEN_PREFIX = "@maven//:"
     val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 
     val LICENSES_TAG = "<licenses>"
@@ -24,7 +24,7 @@ class MavenDependenciesListWriter() {
     val NAME_TAG = "<name>"
     val URL_TAG = "<url>"
 
-    lateinit var utilityProvider: UtilityProvider
+    lateinit var networkAndBazelUtils: NetworkAndBazelUtils
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -41,7 +41,7 @@ class MavenDependenciesListWriter() {
       )
 
       val dependenciesListFromPom =
-        provideDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
+        retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
       val dependenciesListFromTextproto = retrieveMavenDependencyList(
         pathToMavenDependenciesProtoBinary
@@ -52,9 +52,7 @@ class MavenDependenciesListWriter() {
         dependenciesListFromTextproto
       )
 
-      val finalLicensesSet = retrieveUpdatedLicensesSet(
-        updatedDependneciesList
-      )
+      val finalLicensesSet = retrieveUpdatedLicensesSet(updatedDependneciesList)
 
       val finalDependenciesList = updateMavenDependenciesList(
         updatedDependneciesList,
@@ -102,17 +100,11 @@ class MavenDependenciesListWriter() {
       dependencyListFromPom: List<MavenDependency>,
       dependencyListFromProto: List<MavenDependency>
     ): List<MavenDependency> {
-      val updatedDepdenciesList = mutableListOf<MavenDependency>()
-      dependencyListFromPom.forEach { dependency ->
-        val updatedDependency =
-          dependencyListFromProto.find { it.artifactName == dependency.artifactName }
-        if (updatedDependency != null) {
-          updatedDepdenciesList.add(updatedDependency)
-        } else {
-          updatedDepdenciesList.add(dependency)
-        }
+      return dependencyListFromPom.map { dependency ->
+        dependencyListFromProto.find {
+          it.artifactName == dependency.artifactName
+        } ?: dependency
       }
-      return updatedDepdenciesList.toList()
     }
 
     private fun retrieveUpdatedLicensesSet(
@@ -125,7 +117,7 @@ class MavenDependenciesListWriter() {
           if (foundLicense == null) {
             licenseSet.add(license)
           } else if (
-            license.primaryLinkType != PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED &&
+            license.primaryLinkType != PrimaryLinkType.UNSPECIFIED &&
             license.primaryLinkType != PrimaryLinkType.UNRECOGNIZED
           ) {
             licenseSet.remove(foundLicense)
@@ -152,7 +144,7 @@ class MavenDependenciesListWriter() {
     ): Set<License> {
       return mavenDependenciesList.flatMap { dependency ->
         dependency.licenseList.filter { license ->
-          license.primaryLinkType == PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED ||
+          license.primaryLinkType == PrimaryLinkType.UNSPECIFIED ||
             license.primaryLinkType == PrimaryLinkType.UNRECOGNIZED ||
             (
               license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY &&
@@ -165,7 +157,7 @@ class MavenDependenciesListWriter() {
     private fun updateMavenDependenciesList(
       latestDependenciesList: List<MavenDependency>,
       finalLicensesSet: Set<License>
-    ): MutableList<MavenDependency> {
+    ): List<MavenDependency> {
       val finalUpdatedList = mutableListOf<MavenDependency>()
 
       latestDependenciesList.forEach { mavenDependency ->
@@ -217,7 +209,7 @@ class MavenDependenciesListWriter() {
       return getProto(
         pathToProtoBinary,
         MavenDependencyList.getDefaultInstance()
-      ).mavenDependencyList.toList()
+      ).mavenDependencyList
     }
 
     /**
@@ -239,28 +231,16 @@ class MavenDependenciesListWriter() {
       return protoObject
     }
 
-    private fun parseArtifactName(artifactName: String): String {
+    private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
       var colonIndex = artifactName.length - 1
       while (artifactName.isNotEmpty() && artifactName[colonIndex] != ':') {
         colonIndex--
       }
-      val artifactNameWithoutVersion = artifactName.substring(0, colonIndex)
-      val parsedArtifactNameBuilder = StringBuilder()
-      for (index in artifactNameWithoutVersion.indices) {
-        if (artifactNameWithoutVersion[index] == '.' || artifactNameWithoutVersion[index] == ':' ||
-          artifactNameWithoutVersion[index] == '-'
-        ) {
-          parsedArtifactNameBuilder.append(
-            '_'
-          )
-        } else {
-          parsedArtifactNameBuilder.append(artifactNameWithoutVersion[index])
-        }
-      }
-      return parsedArtifactNameBuilder.toString()
+      return artifactName.substring(0, colonIndex).replace('.', '_').replace(':', '_')
+        .replace('-', '_')
     }
 
-    private fun readMavenInstall(
+    private fun genearateDependenciesListFromMavenInstall(
       pathToMavenInstall: String,
       bazelQueryDepsNames: List<String>
     ): List<MavenListDependency> {
@@ -274,7 +254,7 @@ class MavenDependenciesListWriter() {
       val finalDependenciesList = mutableListOf<MavenListDependency>()
       mavenInstallDependencyList?.forEach { dep ->
         val artifactName = dep.coord
-        val parsedArtifactName = parseArtifactName(artifactName)
+        val parsedArtifactName = omitVersionAndReplaceColonsHyphensPeriods(artifactName)
         if (bazelQueryDepsNames.contains(parsedArtifactName)) {
           finalDependenciesList.add(dep)
         }
@@ -291,13 +271,13 @@ class MavenDependenciesListWriter() {
       }
     }
 
-    private fun provideDependencyListFromPom(
+    private fun retrieveDependencyListFromPom(
       finalDependenciesList: List<MavenListDependency>
     ): MavenDependencyList {
       val mavenDependencyList = arrayListOf<MavenDependency>()
       finalDependenciesList.forEach {
-        val url = it.url
-        val pomFileUrl = "${url?.substring(0, url.length - 3)}pom"
+        // Remove .jar or .aar or any other extension from the specified url.
+        val pomFileUrl = "${it?.url?.dropLast(3)}pom"
         val artifactName = it.coord
         val artifactVersion = StringBuilder()
         var lastIndex = artifactName.length - 1
@@ -306,7 +286,7 @@ class MavenDependenciesListWriter() {
           lastIndex--
         }
         artifactVersion.reverse()
-        val pomFile = utilityProvider.scrapeText(pomFileUrl)
+        val pomFile = networkAndBazelUtils.scrapeText(pomFileUrl)
         val mavenDependency = MavenDependency
           .newBuilder()
           .setArtifactName(it.coord)
@@ -322,37 +302,27 @@ class MavenDependenciesListWriter() {
     private fun retrieveThirdPartyMavenDependenciesList(
       rootPath: String
     ): List<String> {
-      val bazelQueryDepsNames = mutableListOf<String>()
-      val output = utilityProvider.retrieveThirdPartyMavenDependenciesList(
-        rootPath
-      )
-      output.forEach { dep ->
-        bazelQueryDepsNames.add(dep.substring(MAVEN_PREFIX_LENGTH, dep.length))
+      // The dependency list should be sorted so that we can use binarySearch to search the
+      // dependency name.
+      return networkAndBazelUtils.retrieveThirdPartyMavenDependenciesList(rootPath).map { dep ->
+        if (dep.startsWith(MAVEN_PREFIX)) dep.substring(MAVEN_PREFIX.length, dep.length) else dep
       }
-      bazelQueryDepsNames.sort()
-      return bazelQueryDepsNames.toList()
     }
 
     private fun getDependencyListFromMavenInstall(
       pathToMavenInstall: String,
       bazelQueryDepsNames: List<String>
     ): List<MavenListDependency> {
-      val mavenInstallJson = File(pathToMavenInstall)
       val mavenInstallJsonText =
-        mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
+        File(pathToMavenInstall).inputStream().bufferedReader().use { it.readText() }
       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
       val adapter = moshi.adapter(MavenListDependencyTree::class.java)
       val dependencyTree = adapter.fromJson(mavenInstallJsonText)
-      val mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
-      val finalDependenciesList = mutableListOf<MavenListDependency>()
-      mavenInstallDependencyList?.forEach { dep ->
-        val artifactName = dep.coord
-        val parsedArtifactName = parseArtifactName(artifactName)
-        if (bazelQueryDepsNames.contains(parsedArtifactName)) {
-          finalDependenciesList.add(dep)
-        }
-      }
-      return finalDependenciesList
+      return dependencyTree?.mavenListDependencies?.dependencyList?.filter { dep ->
+        bazelQueryDepsNames.contains(
+          omitVersionAndReplaceColonsHyphensPeriods(dep.coord)
+        )
+      } ?: listOf<MavenListDependency>()
     }
 
     private fun replaceHttpWithHttps(
@@ -416,7 +386,7 @@ class MavenDependenciesListWriter() {
                   .newBuilder()
                   .setLicenseName(licenseNameBuilder.toString())
                   .setPrimaryLink(httpUrl)
-                  .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
+                  .setPrimaryLinkType(PrimaryLinkType.UNSPECIFIED)
                   .build()
               )
             } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {

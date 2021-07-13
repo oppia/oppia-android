@@ -14,13 +14,17 @@ message MavenDependencyList {
 // Stores all the information about a third-party maven dependency.
 message MavenDependency {
   // Name of the third-party dependency.
-  string artifact_name = 2;
+  string artifact_name = 1;
 
   // Version of the third-party dependency.
-  string artifact_version = 3;
+  string artifact_version = 2;
 
-  // List of licenses corresponding to a third-party dependency.
-  repeated License license = 4;
+  // List of licenses corresponding to a third-party dependency. This would be the final list
+  // verified by the developers.
+  repeated License license = 3;
+
+  // Represents the original license list extracted from the POM fle of the dependency.
+  repeated License original_license = 4;
 
   // Represents the origin of the source of the license links.
   OriginOfLicenses origin_of_license = 5;
@@ -42,11 +46,16 @@ message License {
   PrimaryLinkType primary_link_type = 4;
 }
 
-// Enum that determines if the primary license link is that is extracted from the POM file of the
+message LicenseFromPom {
+  string license_name = 1;
+  string license_link = 2;
+}
+
+// Enum that determines if the primary license link that is extracted from the POM file of the
 // dependency falls in either of the category -
 // 1. The link contains plain license text and can be directly scraped.
 // 2. The link contains plain license text but can't be scraped directly and hence an
-//    an alternate link should be provided that can be scraped directly.
+//    alternate link should be provided that can be scraped directly.
 // 3. The link does not contain plain license text and therefore can't be scraped. Only
 //    the link should be shown in this case.
 // 4. The link is invalid or it does not point to a valid license and therefore needs
@@ -54,7 +63,7 @@ message License {
 //    for assistance.
 enum PrimaryLinkType {
   // Represents the default case when the link type is unknown.
-  PRIMARY_LINK_TYPE_UNSPECIFIED = 0;
+  UNSPECIFIED = 0;
 
   // Represents that the license text is plain text and can be scraped directly from
   // the automatically extracted link by the script.

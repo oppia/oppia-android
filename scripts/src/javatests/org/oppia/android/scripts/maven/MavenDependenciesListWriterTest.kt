@@ -162,7 +162,7 @@ class MavenDependenciesListWriterTest {
   private fun getLicense(
     licenseName: String,
     primaryLink: String = "",
-    primaryLinkType: PrimaryLinkType = PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED,
+    primaryLinkType: PrimaryLinkType = PrimaryLinkType.UNSPECIFIED,
     alternativeLink: String = ""
   ): License {
     return License
