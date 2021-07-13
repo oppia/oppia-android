@@ -56,8 +56,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private var isCheckpointingEnabled: Boolean = false
 
-  private var oldestExplorationId: String? = null
-  private var oldestExplorationTitle: String? = null
+  private lateinit var oldestExplorationId: String
+  private lateinit var oldestExplorationTitle: String
 
   enum class ParentActivityForExploration(val value: Int) {
     BACKFLOW_SCREEN_LESSONS(0),
@@ -220,13 +220,13 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   fun deleteOldestSavedProgressAndStopExploration() {
-    // If the value of oldestExplorationId is null, it means that there was an error while
+    // If oldestExplorationId is not initialized, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
     // without deleting the any checkpoints.
-    if (oldestExplorationId != null) {
+    oldestExplorationId.let {
       explorationDataController.deleteExplorationProgressById(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        oldestExplorationId!!
+        oldestExplorationId
       )
     }
     stopExploration()
@@ -357,10 +357,10 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
 
-    // if the value of oldestExplorationId is null, it means that there was an error while
-    // retrieving the oldest saved checkpoint details. In that the exploration is exited without
-    // deleting the any checkpoints.
-    if (oldestExplorationId == null || oldestExplorationTitle == null) {
+    // If any one of oldestExplorationId or oldestExplorationTitle is not initialized, it means that
+    // there was an error while retrieving the oldest saved checkpoint details. In that the
+    // exploration is exited without deleting the any checkpoints.
+    if (this::oldestExplorationId.isInitialized && this::oldestExplorationTitle.isInitialized) {
       stopExploration()
       return
     }
