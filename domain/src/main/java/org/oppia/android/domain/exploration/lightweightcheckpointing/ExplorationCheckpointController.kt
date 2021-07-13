@@ -111,7 +111,27 @@ class ExplorationCheckpointController @Inject constructor(
     }
   }
 
-  /** returns the saved checkpoint for a specified explorationId and profileId. */
+  /**
+   * Returns a [DataProvider] for the [Deferred] returned from [recordExplorationCheckpointAsync].
+   */
+  fun recordExplorationCheckpoint(
+    profileId: ProfileId,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): DataProvider<Any?> {
+    val deferred = recordExplorationCheckpointAsync(
+      profileId,
+      explorationId,
+      explorationCheckpoint
+    )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
+    }
+  }
+
+  /** Returns the saved checkpoint for a specified explorationId and profileId. */
   fun retrieveExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -136,6 +156,8 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
+   * Retrieves details about the oldest saved exploration checkpoint.
+   *
    * @return [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
    *      and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
@@ -169,7 +191,7 @@ class ExplorationCheckpointController @Inject constructor(
       }
   }
 
-  /** deletes the saved checkpoint for a specified explorationId and profileId. */
+  /** Deletes the saved checkpoint for a specified explorationId and profileId. */
   fun deleteSavedExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -255,22 +277,4 @@ class ExplorationCheckpointController @Inject constructor(
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getExplorationCheckpointDatabaseSizeLimit(): Int = explorationCheckpointDatabaseSizeLimit
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  fun recordExplorationCheckpoint(
-    profileId: ProfileId,
-    explorationId: String,
-    explorationCheckpoint: ExplorationCheckpoint
-  ): DataProvider<Any?> {
-    val deferred = recordExplorationCheckpointAsync(
-      profileId,
-      explorationId,
-      explorationCheckpoint
-    )
-    return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
-    }
-  }
 }

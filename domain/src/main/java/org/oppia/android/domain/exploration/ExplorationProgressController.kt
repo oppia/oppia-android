@@ -59,6 +59,7 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+  // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition.
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
