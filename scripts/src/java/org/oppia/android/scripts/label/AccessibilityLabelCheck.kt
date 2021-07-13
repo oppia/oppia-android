@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  *   bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
  */
 fun main(vararg args: String) {
-  val repoPath = args[0] + "/"
+  val repoPath = "${args[0]}/"
 
   val accessibilityLabelExemptiontextProto = "scripts/assets/accessibility_label_exemptions"
 
@@ -63,7 +63,8 @@ fun main(vararg args: String) {
  * Checks whether an activity element has a missing label.
  *
  * @param activityNode instance of Node
- * @return label is present or not
+ * @param accessibilityLabelExemptionList list of all the exemptions of the label check
+ * @return whether the label is present or not
  */
 private fun checkIfActivityHasMissingLabel(
   activityNode: Node,
@@ -71,7 +72,10 @@ private fun checkIfActivityHasMissingLabel(
 ): Boolean {
   val attributesList = activityNode.getAttributes()
   val activityPath = attributesList.getNamedItem("android:name").getNodeValue()
-  if (activityPath.removePrefix(".").replace(".", "/") in accessibilityLabelExemptionList) {
+  if (activityPath
+    .removePrefix(".")
+    .replace(".", "/") in accessibilityLabelExemptionList
+  ) {
     return false
   }
   return attributesList.getNamedItem("android:label") == null
@@ -94,6 +98,7 @@ private fun convertNodeListToListOfNode(nodeList: NodeList): List<Node> {
  * Logs the failures for accessibility label check.
  *
  * @param matchedNodes a list of nodes having missing label
+ * @param repoPath path of the repo to be analyzed
  */
 private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
   val pathPrefix = "${repoPath}app/src/main/java/org/oppia/android"
