@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
@@ -56,22 +55,6 @@ class IntentFactoryShimImpl @Inject constructor() : IntentFactoryShim {
     val intent = Intent(context, TopicActivity::class.java)
     intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
     intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-    return intent
-  }
-
-  /**
-   * Creates a [RecentlyPlayedActivity] intent for [PromotedStoryListViewModel] and passes
-   * necessary string data.
-   * */
-  override fun createRecentlyPlayedActivityIntent(
-    context: Context,
-    internalProfileId: Int
-  ): Intent {
-    val intent = Intent(context, RecentlyPlayedActivity::class.java)
-    intent.putExtra(
-      RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      internalProfileId
-    )
     return intent
   }
 }
