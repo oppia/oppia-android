@@ -1021,24 +1021,6 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_forHintsAndSolution_incorrectInput_hintBulbContainerIsNotVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-      selectMultipleChoiceOption(
-        optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
-      )
-      clickContinueNavigationButton()
-
-      // Entering incorrect answer once.
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-
-      onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
   fun testStateFragment_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -1101,7 +1083,7 @@ class StateFragmentTest {
       typeFractionText("1/2")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.dot_hint)).check(
+      onView(withId(R.id.hint_bulb)).check(
         matches(
           withContentDescription(R.string.show_hints_and_solution)
         )
