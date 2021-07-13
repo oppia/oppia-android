@@ -121,11 +121,7 @@ class BazelClient(
   fun retrieveThirdPartyMavenDependenciesList(): List<String> {
     return executeBazelCommand(
       "query",
-      "\'deps(deps(//:oppia)",
-      "intersect",
-      "//third_party/...)",
-      "intersect",
-      "@maven//...\'"
+      "deps(deps(//:oppia) intersect //third_party/...) intersect @maven//..."
     )
   }
 
