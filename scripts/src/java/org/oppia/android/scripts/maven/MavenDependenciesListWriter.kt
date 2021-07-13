@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.maven
 
+import com.google.protobuf.TextFormat
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
@@ -28,7 +29,9 @@ class MavenDependenciesListWriter() {
 
     @JvmStatic
     fun main(args: Array<String>) {
-
+      if (args.size < 3) {
+        throw Exception("Too few Arguments passed")
+      }
       val pathToRoot = args[0]
       val pathToMavenInstall = "$pathToRoot/${args[1]}"
       val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
@@ -181,13 +184,13 @@ class MavenDependenciesListWriter() {
             updateLicenseList.add(license)
           }
         }
-        val dependency = MavenDependency
-          .newBuilder()
-          .setArtifactName(mavenDependency.artifactName)
-          .setArtifactVersion(mavenDependency.artifactVersion)
-          .addAllLicense(updateLicenseList)
+        val dependency = MavenDependency.newBuilder().apply {
+          this.artifactName = mavenDependency.artifactName
+          this.artifactVersion = mavenDependency.artifactVersion
+          this.addAllLicense(updateLicenseList)
+        }
         if (origin != OriginOfLicenses.UNKNOWN) {
-          dependency.setOriginOfLicense(origin)
+          dependency.originOfLicense = origin
         } else {
           if (updateLicenseList.isNotEmpty()) {
             if (numberOfLicensesThatRequireHumanEffort == updateLicenseList.size) {
@@ -251,23 +254,17 @@ class MavenDependenciesListWriter() {
       val adapter = moshi.adapter(MavenListDependencyTree::class.java)
       val dependencyTree = adapter.fromJson(mavenInstallJsonText)
       val mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
-      val finalDependenciesList = mutableListOf<MavenListDependency>()
-      mavenInstallDependencyList?.forEach { dep ->
-        val artifactName = dep.coord
-        val parsedArtifactName = omitVersionAndReplaceColonsHyphensPeriods(artifactName)
-        if (bazelQueryDepsNames.contains(parsedArtifactName)) {
-          finalDependenciesList.add(dep)
-        }
-      }
-      return finalDependenciesList
+      return mavenInstallDependencyList?.filter { dep ->
+        bazelQueryDepsNames.contains(omitVersionAndReplaceColonsHyphensPeriods(dep.coord))
+      } ?: listOf<MavenListDependency>()
     }
 
     private fun writeTextProto(
       pathToTextProto: String,
       mavenDependencyList: MavenDependencyList
     ) {
-      File(pathToTextProto).printWriter().use { out ->
-        out.println(mavenDependencyList)
+      File(pathToTextProto).outputStream().bufferedWriter().use { writer ->
+        TextFormat.printer().print(mavenDependencyList, writer)
       }
     }
 
@@ -277,7 +274,7 @@ class MavenDependenciesListWriter() {
       val mavenDependencyList = arrayListOf<MavenDependency>()
       finalDependenciesList.forEach {
         // Remove .jar or .aar or any other extension from the specified url.
-        val pomFileUrl = "${it?.url?.dropLast(3)}pom"
+        val pomFileUrl = "${it.url?.dropLast(3)}pom"
         val artifactName = it.coord
         val artifactVersion = StringBuilder()
         var lastIndex = artifactName.length - 1
@@ -287,13 +284,12 @@ class MavenDependenciesListWriter() {
         }
         artifactVersion.reverse()
         val pomFile = networkAndBazelUtils.scrapeText(pomFileUrl)
-        val mavenDependency = MavenDependency
-          .newBuilder()
-          .setArtifactName(it.coord)
-          .setArtifactVersion(artifactVersion.toString())
-          .addAllLicense(extractLicenseLinksFromPom(pomFile))
-          .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
-
+        val mavenDependency = MavenDependency.newBuilder().apply {
+          this.artifactName = it.coord
+          this.artifactVersion = artifactVersion.toString()
+          this.addAllLicense(extractLicenseLinksFromPom(pomFile))
+          this.originOfLicense = OriginOfLicenses.UNKNOWN
+        }
         mavenDependencyList.add(mavenDependency.build())
       }
       return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
@@ -382,12 +378,11 @@ class MavenDependenciesListWriter() {
               }
               val httpUrl = replaceHttpWithHttps(licenseUrlBuilder)
               licenseList.add(
-                License
-                  .newBuilder()
-                  .setLicenseName(licenseNameBuilder.toString())
-                  .setPrimaryLink(httpUrl)
-                  .setPrimaryLinkType(PrimaryLinkType.UNSPECIFIED)
-                  .build()
+                License.newBuilder().apply {
+                  this.licenseName = licenseNameBuilder.toString()
+                  this.primaryLink = httpUrl
+                  this.primaryLinkType = PrimaryLinkType.UNSPECIFIED
+                }.build()
               )
             } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
               break
