@@ -6,6 +6,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "maven_dependencies_lib",
+    testonly = True,
     srcs = [
         "maveninstall/MavenListDependencies.kt",
         "maveninstall/MavenListDependency.kt",
@@ -16,13 +17,40 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "generate_maven_dependencies_list_lib",
-    srcs = ["GenerateMavenDependenciesList.kt"],
+    name = "utility_provider",
+    testonly = True,
+    srcs = [
+        "NetworkAndBazelUtils.kt",
+        "NetworkAndBazelUtilsImpl.kt",
+    ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":maven_dependencies_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
+    ],
+)
+
+kt_jvm_library(
+    name = "maven_dependencies_list_writer",
+    testonly = True,
+    srcs = ["MavenDependenciesListWriter.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":maven_dependencies_lib",
+        ":utility_provider",
+        "//third_party:com_google_protobuf_protobuf-java",
+    ],
+)
+
+kt_jvm_library(
+    name = "generate_maven_dependencies_list_lib",
+    testonly = True,
+    srcs = ["GenerateMavenDependenciesList.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":maven_dependencies_list_writer",
     ],
 )
 

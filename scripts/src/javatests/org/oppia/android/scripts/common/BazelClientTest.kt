@@ -319,6 +319,10 @@ class BazelClientTest {
     assertThat(testTargets).containsExactly("//:FirstTest", "//:SecondTest")
   }
 
+  @Test
+  fun testRetrieveThirdPartyMavenDepsList_forTestBinary_returnsDependenciesList() {
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
