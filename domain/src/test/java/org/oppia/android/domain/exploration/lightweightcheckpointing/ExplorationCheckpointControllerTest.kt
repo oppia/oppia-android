@@ -33,7 +33,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -45,9 +44,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
-  "record_exploration_checkpoint_provider_id"
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -86,9 +82,6 @@ class ExplorationCheckpointControllerTest {
 
   @Inject
   lateinit var explorationCheckpointController: ExplorationCheckpointController
-
-  @Inject
-  lateinit var dataProviders: DataProviders
 
   @Mock
   lateinit var mockResultObserver: Observer<AsyncResult<Any?>>
@@ -290,18 +283,12 @@ class ExplorationCheckpointControllerTest {
   private fun saveCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> {
-    val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
+  ): DataProvider<Any?> =
+    explorationCheckpointController.recordExplorationCheckpoint(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
       explorationCheckpoint = createCheckpoint(index)
     )
-    return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
-    }
-  }
 
   /**
    * Updates the saved checkpoint for the test exploration specified by the [index] supplied.
@@ -314,18 +301,11 @@ class ExplorationCheckpointControllerTest {
   private fun saveUpdatedCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> {
-    val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
-      profileId = profileId,
-      explorationId = createExplorationIdForIndex(index),
-      explorationCheckpoint = createUpdatedCheckpoint(index)
-    )
-    return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
-    }
-  }
+  ): DataProvider<Any?> = explorationCheckpointController.recordExplorationCheckpoint(
+    profileId = profileId,
+    explorationId = createExplorationIdForIndex(index),
+    explorationCheckpoint = createUpdatedCheckpoint(index)
+  )
 
   private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {

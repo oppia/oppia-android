@@ -21,6 +21,8 @@ private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "retrieve_exploration_checkpoint_provider_id"
 private const val RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID =
   "retrieve_oldest_checkpoint_details_provider_id"
+private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
+  "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
 
@@ -253,4 +255,22 @@ class ExplorationCheckpointController @Inject constructor(
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getExplorationCheckpointDatabaseSizeLimit(): Int = explorationCheckpointDatabaseSizeLimit
+
+  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+  fun recordExplorationCheckpoint(
+    profileId: ProfileId,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): DataProvider<Any?> {
+    val deferred = recordExplorationCheckpointAsync(
+      profileId,
+      explorationId,
+      explorationCheckpoint
+    )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
+    }
+  }
 }
