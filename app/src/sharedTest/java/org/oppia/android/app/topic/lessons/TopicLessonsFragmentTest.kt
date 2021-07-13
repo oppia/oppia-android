@@ -190,10 +190,6 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
-    storyProgressTestHelper.markCompletedRatiosStory0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")

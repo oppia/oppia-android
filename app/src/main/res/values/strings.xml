@@ -99,7 +99,6 @@
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
-  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
   <string name="show_chapter_list">Show chapter list</string>
   <string name="hide_chapter_list">Hide chapter list</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
