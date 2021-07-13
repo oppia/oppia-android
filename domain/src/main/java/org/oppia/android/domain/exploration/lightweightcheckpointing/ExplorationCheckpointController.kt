@@ -41,12 +41,12 @@ class ExplorationCheckpointController @Inject constructor(
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
 
   /**
-   * These Statuses correspond to the exception above such that if the deferred result contains
+   * These Statuses correspond to the result of the deferred such that if the deferred contains
    *
    * CHECKPOINT_NOT_FOUND, the [ExplorationCheckpointNotFoundException] will be passed to a failed
    * AsyncResult.
    *
-   * SUCCESS corresponds to successful AsyncResult with value as null.
+   * SUCCESS corresponds to a successful AsyncResult.
    */
   enum class ExplorationCheckpointActionStatus {
     CHECKPOINT_NOT_FOUND,
@@ -59,8 +59,8 @@ class ExplorationCheckpointController @Inject constructor(
   /**
    * Records an exploration checkpoint for the specified profile.
    *
-   * @return a [Deferred] that upon completion indicates the current [CheckpointState]. If the size
-   *     of the checkpoint database is less than the allocated limit of
+   * @return a [Deferred] that upon completion indicates the current [CheckpointState].
+   *     If the size of the checkpoint database is less than the allocated limit of
    *     [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
    *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
@@ -111,7 +111,27 @@ class ExplorationCheckpointController @Inject constructor(
     }
   }
 
-  /** returns the saved checkpoint for a specified explorationId and profileId. */
+  /**
+   * Returns a [DataProvider] for the [Deferred] returned from [recordExplorationCheckpointAsync].
+   */
+  fun recordExplorationCheckpoint(
+    profileId: ProfileId,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): DataProvider<Any?> {
+    val deferred = recordExplorationCheckpointAsync(
+      profileId,
+      explorationId,
+      explorationCheckpoint
+    )
+    return dataProviders.createInMemoryDataProviderAsync(
+      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
+    }
+  }
+
+  /** Returns the saved checkpoint for a specified explorationId and profileId. */
   fun retrieveExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -136,6 +156,8 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
+   * Retrieves details about the oldest saved exploration checkpoint.
+   *
    * @return [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
    *      and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
@@ -169,7 +191,7 @@ class ExplorationCheckpointController @Inject constructor(
       }
   }
 
-  /** deletes the saved checkpoint for a specified explorationId and profileId. */
+  /** Deletes the saved checkpoint for a specified explorationId and profileId. */
   fun deleteSavedExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -255,22 +277,4 @@ class ExplorationCheckpointController @Inject constructor(
 
   @VisibleForTesting(otherwise = VisibleForTesting.NONE)
   fun getExplorationCheckpointDatabaseSizeLimit(): Int = explorationCheckpointDatabaseSizeLimit
-
-  @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-  fun recordExplorationCheckpoint(
-    profileId: ProfileId,
-    explorationId: String,
-    explorationCheckpoint: ExplorationCheckpoint
-  ): DataProvider<Any?> {
-    val deferred = recordExplorationCheckpointAsync(
-      profileId,
-      explorationId,
-      explorationCheckpoint
-    )
-    return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
-    ) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
-    }
-  }
 }

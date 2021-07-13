@@ -23,7 +23,7 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var isLightweightCheckpointingEnabled: Boolean = false
-  internal var checkpointState = CheckpointState.UNSAVED
+  internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {

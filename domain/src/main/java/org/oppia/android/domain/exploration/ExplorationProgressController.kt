@@ -59,6 +59,7 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+  // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition.
 
   /** Indicates that the checkpoint database has exceeded the allocated limit.. */
   class CheckpointDatabaseOverflowException(msg: String) : Exception(msg)
@@ -459,8 +460,9 @@ class ExplorationProgressController @Inject constructor(
         deferred.getCompleted()
       } else {
         oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
-        // CheckpointState is marked as UNSAVED because the deferred did not complete successfully.
-        CheckpointState.UNSAVED
+        // CheckpointState is marked as CHECKPOINT_UNSAVED because the deferred did not
+        // complete successfully.
+        CheckpointState.CHECKPOINT_UNSAVED
       }
       processSaveCheckpointResult(
         profileId,
@@ -503,8 +505,8 @@ class ExplorationProgressController @Inject constructor(
         // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
         // either changed from UNSAVED to SAVED or vice versa.
         if (
-          explorationProgress.checkpointState != CheckpointState.UNSAVED &&
-          newCheckpointState == CheckpointState.UNSAVED
+          explorationProgress.checkpointState != CheckpointState.CHECKPOINT_UNSAVED &&
+          newCheckpointState == CheckpointState.CHECKPOINT_UNSAVED
         ) {
           markExplorationAsInProgressNotSaved(
             profileId,
@@ -514,8 +516,8 @@ class ExplorationProgressController @Inject constructor(
             lastPlayedTimestamp
           )
         } else if (
-          explorationProgress.checkpointState == CheckpointState.UNSAVED &&
-          newCheckpointState != CheckpointState.UNSAVED
+          explorationProgress.checkpointState == CheckpointState.CHECKPOINT_UNSAVED &&
+          newCheckpointState != CheckpointState.CHECKPOINT_UNSAVED
         ) {
           markExplorationAsInProgressSaved(
             profileId,

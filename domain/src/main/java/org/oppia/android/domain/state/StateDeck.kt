@@ -28,7 +28,7 @@ internal class StateDeck internal constructor(
   private val hintList: MutableList<Hint> = ArrayList()
   private lateinit var solution: Solution
   private var stateIndex: Int = 0
-  private var revealedHintIndex: Int = -1
+  private var revealedHintIndex: Int = -1 // The value -1 indicates that has not been revealed yet.
   private var solutionIsRevealed: Boolean = false
 
   /** Resets this deck to a new, specified initial [State]. */
@@ -38,7 +38,9 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     stateIndex = 0
-    revealedHintIndex = -1 // the value -1 indicates that no hint has been revealed yet.
+    // Initialize the variable revealedHintIndex to -1 to indicate that no hint has been
+    // revealed yet.
+    revealedHintIndex = -1
     solutionIsRevealed = false
   }
 
@@ -114,6 +116,8 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     pendingTopState = state
+    // Re-initialize the variable revealedHintIndex to -1 to indicate that no hint has been
+    // revealed on the new pendingTopState.
     revealedHintIndex = -1
     solutionIsRevealed = false
   }
@@ -133,6 +137,7 @@ internal class StateDeck internal constructor(
       .build()
     pendingTopState = newState
     hintList.clear()
+    // Increment the value of revealHintIndex by 1 every-time a new hint is revealed.
     revealedHintIndex++
     return ephemeralState
   }
