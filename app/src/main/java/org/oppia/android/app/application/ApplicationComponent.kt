@@ -37,8 +37,8 @@ import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -50,6 +50,10 @@ import javax.inject.Singleton
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
  * this component.
+ *
+ * At the time of building the app in prod mode -
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
+ * Add: [LogReportingModule]
  */
 @Singleton
 @Component(
@@ -63,7 +67,7 @@ import javax.inject.Singleton
     InteractionsModule::class, GcsResourceModule::class,
     GlideImageLoaderModule::class, ImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
-    QuestionModule::class, LogReportingModule::class,
+    QuestionModule::class, DebugLogReportingModule::class,
     AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class,
     ViewBindingShimModule::class, PrimeTopicAssetsControllerModule::class,

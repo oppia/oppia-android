@@ -458,6 +458,7 @@
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
   <!-- DeveloperOptionsFragment -->
   <string name="developer_options_activity_title">Developer Options</string>
+  <string name="view_event_logs_activity_title">View Event Logs</string>
   <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
   <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
   <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>

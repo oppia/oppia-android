@@ -92,3 +92,29 @@ jobs:
       - name: Bazel lint check
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/buildifier_lint_check.sh $HOME
+
+  script_checks:
+    name: Script Checks
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Regex Patterns Validation Check
+        if: always()
+        run: |
+          bazel run //scripts:regex_pattern_validation_check -- $(pwd)
+
+      - name: XML Syntax Validation Check
+        if: always()
+        run: |
+          bazel run //scripts:xml_syntax_check -- $(pwd)
+
+      - name: Testfile Presence Check
+        if: always()
+        run: |
+          bazel run //scripts:test_file_check -- $(pwd)

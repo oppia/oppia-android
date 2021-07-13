@@ -225,3 +225,6 @@ WORKSPACE @BenHenning
 *.bazel @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
+
+# Static analysis check configuration files ownership.
+/scripts/assets/ @BenHenning
