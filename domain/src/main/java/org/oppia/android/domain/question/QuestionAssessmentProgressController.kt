@@ -3,7 +3,6 @@ package org.oppia.android.domain.question
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnsweredQuestionOutcome
-import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Question
@@ -386,9 +385,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
-    // CheckpointState is set to UNSAVED because currently checkpoints are only saved in an
-    // exploration.
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState(CheckpointState.UNSAVED)
+    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
     val currentQuestionIndex = progress.getCurrentQuestionIndex()
     val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
       .setEphemeralState(ephemeralState)

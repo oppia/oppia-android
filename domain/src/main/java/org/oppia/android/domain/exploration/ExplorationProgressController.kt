@@ -458,7 +458,7 @@ class ExplorationProgressController @Inject constructor(
       checkpointState = if (it == null) {
         deferred.getCompleted()
       } else {
-        oppiaLogger.e("CHECKPOINTING", "Failed to save checkpoint in exploration", it)
+        oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
         // CheckpointState is marked as UNSAVED because the deferred did not complete successfully.
         CheckpointState.UNSAVED
       }
@@ -590,23 +590,14 @@ class ExplorationProgressController @Inject constructor(
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(
-              explorationProgress.stateDeck.getCurrentEphemeralState(
-                explorationProgress.checkpointState
-              )
-            )
+            AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
-        ExplorationProgress.PlayStage.VIEWING_STATE -> {
-          AsyncResult.success(
-            explorationProgress.stateDeck.getCurrentEphemeralState(
-              explorationProgress.checkpointState
-            )
-          )
-        }
+        ExplorationProgress.PlayStage.VIEWING_STATE ->
+          AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
