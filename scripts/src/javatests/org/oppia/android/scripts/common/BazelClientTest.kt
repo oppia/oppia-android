@@ -321,7 +321,6 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveThirdPartyMavenDepsList_forTestBinary_returnsDependenciesList() {
-
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {

@@ -41,5 +41,4 @@ class DependenciesListProviderTest {
     val num = 4
     assertThat(num).isEqualTo(4)
   }
-
 }

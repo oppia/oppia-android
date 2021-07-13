@@ -1,8 +1,8 @@
 package org.oppia.android.scripts.maven
 
+import org.oppia.android.scripts.common.BazelClient
 import java.io.File
 import java.net.URL
-import org.oppia.android.scripts.common.BazelClient
 
 class UtilityProviderImpl() : UtilityProvider {
 

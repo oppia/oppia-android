@@ -6,4 +6,3 @@ fun main(args: Array<String>) {
 
   MavenDependenciesListWriter.main(args)
 }
-

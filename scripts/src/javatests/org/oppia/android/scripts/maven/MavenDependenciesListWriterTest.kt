@@ -351,6 +351,5 @@ class MavenDependenciesListWriterTest {
       }
       return bazelQueryDepsNames.toList()
     }
-
   }
 }

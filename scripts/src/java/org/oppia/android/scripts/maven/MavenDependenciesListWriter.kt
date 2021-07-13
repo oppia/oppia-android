@@ -11,7 +11,6 @@ import org.oppia.android.scripts.proto.OriginOfLicenses
 import org.oppia.android.scripts.proto.PrimaryLinkType
 import java.io.File
 import java.io.FileInputStream
-import java.net.URL
 
 class MavenDependenciesListWriter() {
   companion object {
@@ -37,9 +36,9 @@ class MavenDependenciesListWriter() {
 
       val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
       val mavenInstallDepsList = getDependencyListFromMavenInstall(
-          pathToMavenInstall,
-          bazelQueryDepsList
-        )
+        pathToMavenInstall,
+        bazelQueryDepsList
+      )
 
       val dependenciesListFromPom =
         provideDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
@@ -82,18 +81,18 @@ class MavenDependenciesListWriter() {
       if (dependenciesWithoutAnyLinks.isNotEmpty()) {
         println(
           """
-      Please remove all the invalid links (if any) for the below mentioned dependencies
-      and provide the valid license links manually:
-      """.trimIndent()
+          Please remove all the invalid links (if any) for the below mentioned dependencies
+          and provide the valid license links manually:
+          """.trimIndent()
         )
         dependenciesWithoutAnyLinks.forEach { dependency ->
           println(dependency)
         }
         throw Exception(
           """
-      There does not exist any license links (or the extracted license links are invalid) 
-      for some dependencies.
-      """.trimIndent()
+          There does not exist any license links (or the extracted license links are invalid) 
+          for some dependencies.
+          """.trimIndent()
         )
       }
       println("\nScript executed succesfully: maven_dependencies.textproto updated successfully.")
@@ -321,7 +320,7 @@ class MavenDependenciesListWriter() {
     }
 
     private fun retrieveThirdPartyMavenDependenciesList(
-      rootPath:String
+      rootPath: String
     ): List<String> {
       val bazelQueryDepsNames = mutableListOf<String>()
       val output = utilityProvider.retrieveThirdPartyMavenDependenciesList(
@@ -339,7 +338,8 @@ class MavenDependenciesListWriter() {
       bazelQueryDepsNames: List<String>
     ): List<MavenListDependency> {
       val mavenInstallJson = File(pathToMavenInstall)
-      val mavenInstallJsonText = mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
+      val mavenInstallJsonText =
+        mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
       val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
       val adapter = moshi.adapter(MavenListDependencyTree::class.java)
       val dependencyTree = adapter.fromJson(mavenInstallJsonText)
@@ -430,4 +430,3 @@ class MavenDependenciesListWriter() {
     }
   }
 }
-
