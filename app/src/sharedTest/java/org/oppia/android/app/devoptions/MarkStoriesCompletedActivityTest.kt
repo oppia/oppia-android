@@ -4,24 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,12 +22,9 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -63,10 +47,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.story.StoryProgressTestHelper
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -81,7 +62,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO(#3421): Separate MarkStoriesCompletedActivityTest into activity and fragment test files.
 /** Tests for [MarkStoriesCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -92,16 +72,6 @@ import javax.inject.Singleton
 class MarkStoriesCompletedActivityTest {
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
   lateinit var context: Context
@@ -118,15 +88,7 @@ class MarkStoriesCompletedActivityTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    testCoroutineDispatchers.registerIdlingResource()
-  }
-
-  @After
-  fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -143,417 +105,9 @@ class MarkStoriesCompletedActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.mark_stories_completed_activity_title))
   }
 
-  @Test
-  fun testMarkStoriesCompletedActivity_storiesAreShown() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "First Story"
-      )
-      scrollToPosition(position = 1)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Other Interesting Story"
-      )
-      scrollToPosition(position = 2)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Matthew Goes to the Bakery"
-      )
-      scrollToPosition(position = 3)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Ratios: Part 1"
-      )
-      scrollToPosition(position = 4)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 4,
-        stringToMatch = "Ratios: Part 2"
-      )
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_configChange_storiesAreShown() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "First Story"
-      )
-      scrollToPosition(position = 1)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Other Interesting Story"
-      )
-      scrollToPosition(position = 2)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Matthew Goes to the Bakery"
-      )
-      scrollToPosition(position = 3)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Ratios: Part 1"
-      )
-      scrollToPosition(position = 4)
-      verifyStoryNameOnStorySummaryListItemAtPosition(
-        itemPosition = 4,
-        stringToMatch = "Ratios: Part 2"
-      )
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAll_isChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAll_configChange_isChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAll_selectsAllStories() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAll_configChange_selectsAllStories() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectStories_storiesAreChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectStories_configChange_storiesAreChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAllStories_allCheckBoxIsChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAllStories_configChange__allCheckBoxIsChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAllStories_unselectOneStory_allCheckBoxIsNotChecked() {
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_selectAllStories_unselectOneStory_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      performItemCheckOnStorySummaryListItem(itemPosition = 4)
-      scrollToPosition(position = 2)
-      performItemCheckOnStorySummaryListItem(itemPosition = 2)
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_ratiosFirstStoryIsCompleted_isCheckedAndDisabled() {
-    markRatiosFirstStoryCompleted()
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(isChecked())).check(matches(not(isEnabled())))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_ratiosFirstStoryIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
-    markRatiosFirstStoryCompleted()
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_stories_completed_recycler_view,
-          position = 3,
-          targetViewId = R.id.mark_stories_completed_story_check_box
-        )
-      ).check(matches(isChecked())).check(matches(not(isEnabled())))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
-    markAllLessonsCompleted()
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
-    markAllLessonsCompleted()
-    launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
   private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
       context, internalProfileId
-    )
-  }
-
-  private fun verifyStoryNameOnStorySummaryListItemAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_stories_completed_story_check_box
-      )
-    ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyItemCheckedOnStorySummaryListItem(itemPosition: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_stories_completed_story_check_box
-      )
-    ).check(matches(isChecked()))
-  }
-
-  private fun performItemCheckOnStorySummaryListItem(itemPosition: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_stories_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_stories_completed_story_check_box
-      )
-    ).perform(click())
-  }
-
-  private fun markRatiosFirstStoryCompleted() {
-    storyProgressTestHelper.markCompletedRatiosStory0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-  }
-
-  private fun markAllLessonsCompleted() {
-    storyProgressTestHelper.markAllTopicsAsCompleted(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_stories_completed_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(position)
     )
   }
 
