@@ -128,6 +128,12 @@ git_repository(
     remote = "https://github.com/oppia/androidsvg",
 )
 
+git_repository(
+    name = "kotlitex",
+    commit = "3e8a0804041121ece4b57099ac3de386d78e0996",
+    remote = "https://github.com/anandwana001/kotlitex",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
