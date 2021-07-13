@@ -329,7 +329,7 @@ class MavenDependenciesListWriterTest {
       }
     }
 
-    override fun runBazelQueryCommand(
+    override fun retrieveThirdPartyMavenDependenciesList(
       rootPath: String,
       vararg args: String
     ): List<String> {

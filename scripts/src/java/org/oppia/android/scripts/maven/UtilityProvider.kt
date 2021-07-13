@@ -7,5 +7,5 @@ import org.oppia.android.scripts.proto.MavenDependencyList
 interface UtilityProvider {
   fun scrapeText(link: String): String
 
-  fun runBazelQueryCommand(rootPath:String, vararg args: String): List<String>
+  fun retrieveThirdPartyMavenDependenciesList(rootPath:String): List<String>
 }

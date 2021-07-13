@@ -82,6 +82,17 @@ class BazelClient(
     } else listOf()
   }
 
+  /**
+   * Returns the list of direct and indiret Maven third-party dependencies on which Oppia Android
+   * depends.
+   */
+  fun retrieveThirdPartyMavenDependenciesList(): List<String> {
+    return executeBazelCommand(
+      "query",
+      "deps(deps(//:oppia) intersect //third_party/...) intersect @maven//..."
+    )
+  }
+
   private fun retrieveFilteredSiblings(
     filterRuleType: String,
     buildFileTarget: String

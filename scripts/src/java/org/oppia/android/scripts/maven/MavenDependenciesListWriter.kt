@@ -16,12 +16,33 @@ import java.net.URL
 class MavenDependenciesListWriter() {
   companion object {
 
-    lateinit var pathToMavenDependenciesTextProto: String
-    lateinit var pathToMavenDependenciesProtoBinary: String
-    lateinit var dependenciesListFromPom: List<MavenDependency>
+    val MAVEN_PREFIX_LENGTH = "@maven//:".length
+    val WAIT_PROCESS_TIMEOUT_MS = 60_000L
+
+    val LICENSES_TAG = "<licenses>"
+    val LICENSES_CLOSE_TAG = "</licenses>"
+    val LICENSE_TAG = "<license>"
+    val NAME_TAG = "<name>"
+    val URL_TAG = "<url>"
+
+    lateinit var utilityProvider: UtilityProvider
 
     @JvmStatic
     fun main(args: Array<String>) {
+
+      val pathToRoot = args[0]
+      val pathToMavenInstall = "$pathToRoot/${args[1]}"
+      val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
+      val pathToMavenDependenciesProtoBinary = args[3]
+
+      val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
+      val mavenInstallDepsList = getDependencyListFromMavenInstall(
+          pathToMavenInstall,
+          bazelQueryDepsList
+        )
+
+      val dependenciesListFromPom =
+        provideDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
       val dependenciesListFromTextproto = retrieveMavenDependencyList(
         pathToMavenDependenciesProtoBinary
@@ -269,6 +290,143 @@ class MavenDependenciesListWriter() {
       File(pathToTextProto).printWriter().use { out ->
         out.println(mavenDependencyList)
       }
+    }
+
+    private fun provideDependencyListFromPom(
+      finalDependenciesList: List<MavenListDependency>
+    ): MavenDependencyList {
+      val mavenDependencyList = arrayListOf<MavenDependency>()
+      finalDependenciesList.forEach {
+        val url = it.url
+        val pomFileUrl = "${url?.substring(0, url.length - 3)}pom"
+        val artifactName = it.coord
+        val artifactVersion = StringBuilder()
+        var lastIndex = artifactName.length - 1
+        while (lastIndex >= 0 && artifactName[lastIndex] != ':') {
+          artifactVersion.append(artifactName[lastIndex])
+          lastIndex--
+        }
+        artifactVersion.reverse()
+        val pomFile = utilityProvider.scrapeText(pomFileUrl)
+        val mavenDependency = MavenDependency
+          .newBuilder()
+          .setArtifactName(it.coord)
+          .setArtifactVersion(artifactVersion.toString())
+          .addAllLicense(extractLicenseLinksFromPom(pomFile))
+          .setOriginOfLicense(OriginOfLicenses.UNKNOWN)
+
+        mavenDependencyList.add(mavenDependency.build())
+      }
+      return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
+    }
+
+    private fun retrieveThirdPartyMavenDependenciesList(
+      rootPath:String
+    ): List<String> {
+      val bazelQueryDepsNames = mutableListOf<String>()
+      val output = utilityProvider.retrieveThirdPartyMavenDependenciesList(
+        rootPath
+      )
+      output.forEach { dep ->
+        bazelQueryDepsNames.add(dep.substring(MAVEN_PREFIX_LENGTH, dep.length))
+      }
+      bazelQueryDepsNames.sort()
+      return bazelQueryDepsNames.toList()
+    }
+
+    private fun getDependencyListFromMavenInstall(
+      pathToMavenInstall: String,
+      bazelQueryDepsNames: List<String>
+    ): List<MavenListDependency> {
+      val mavenInstallJson = File(pathToMavenInstall)
+      val mavenInstallJsonText = mavenInstallJson.inputStream().bufferedReader().use { it.readText() }
+      val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+      val adapter = moshi.adapter(MavenListDependencyTree::class.java)
+      val dependencyTree = adapter.fromJson(mavenInstallJsonText)
+      val mavenInstallDependencyList = dependencyTree?.mavenListDependencies?.dependencyList
+      val finalDependenciesList = mutableListOf<MavenListDependency>()
+      mavenInstallDependencyList?.forEach { dep ->
+        val artifactName = dep.coord
+        val parsedArtifactName = parseArtifactName(artifactName)
+        if (bazelQueryDepsNames.contains(parsedArtifactName)) {
+          finalDependenciesList.add(dep)
+        }
+      }
+      return finalDependenciesList
+    }
+
+    private fun replaceHttpWithHttps(
+      urlBuilder: StringBuilder
+    ): String {
+      var url = urlBuilder.toString()
+      if (url.substring(0, 5) != "https") {
+        url = "https${url.substring(4, url.length)}"
+      }
+      return url
+    }
+
+    private fun extractLicenseLinksFromPom(
+      pomText: String
+    ): List<License> {
+      val licenseList = arrayListOf<License>()
+      var cursor = -1
+      if (pomText.length > 11) {
+        for (index in 0..(pomText.length - 11)) {
+          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
+            cursor = index + 9
+            break
+          }
+        }
+        if (cursor != -1) {
+          var cursor2 = cursor
+          while (cursor2 < (pomText.length - 12)) {
+            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
+              cursor2 += 9
+              while (cursor2 < pomText.length - 6 &&
+                pomText.substring(
+                  cursor2,
+                  cursor2 + 6
+                ) != NAME_TAG
+              ) {
+                ++cursor2
+              }
+              cursor2 += 6
+              val licenseUrlBuilder = StringBuilder()
+              val licenseNameBuilder = StringBuilder()
+              while (pomText[cursor2] != '<') {
+                licenseNameBuilder.append(pomText[cursor2])
+                ++cursor2
+              }
+              while (cursor2 < pomText.length - 4 &&
+                pomText.substring(
+                  cursor2,
+                  cursor2 + 5
+                ) != URL_TAG
+              ) {
+                ++cursor2
+              }
+              cursor2 += 5
+              while (pomText[cursor2] != '<') {
+                licenseUrlBuilder.append(pomText[cursor2])
+                ++cursor2
+              }
+              val httpUrl = replaceHttpWithHttps(licenseUrlBuilder)
+              licenseList.add(
+                License
+                  .newBuilder()
+                  .setLicenseName(licenseNameBuilder.toString())
+                  .setPrimaryLink(httpUrl)
+                  .setPrimaryLinkType(PrimaryLinkType.PRIMARY_LINK_TYPE_UNSPECIFIED)
+                  .build()
+              )
+            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
+              break
+            }
+            ++cursor2
+          }
+        }
+      }
+      return licenseList
     }
   }
 }
