@@ -4,7 +4,7 @@ import org.oppia.android.scripts.common.BazelClient
 import java.io.File
 import java.net.URL
 
-/** Default Implementation of [NetworkAndBazelUtils]. */
+/** Default implementation of [NetworkAndBazelUtils]. */
 class NetworkAndBazelUtilsImpl() : NetworkAndBazelUtils {
 
   override fun scrapeText(link: String): String {

@@ -12,6 +12,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockClassroomService
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -45,6 +47,18 @@ class ClassroomServiceTest {
 
     assertThat(classroomResponse.isSuccessful).isTrue()
     assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
+  }
+
+  @Test
+  fun testMockitoUnitTest() {
+    val mockLicenseFetcher = Mockito.mock(LicenseFetcher::class.java)
+    `when`(mockLicenseFetcher.fetchText("https//www.google.com")).thenReturn("abhay")
+
+    assertThat(mockLicenseFetcher.fetchText("https//www.google.com")).contains("abhay")
+  }
+
+  interface LicenseFetcher {
+    fun fetchText(link: String): String
   }
 
   private fun setUpTestApplicationComponent() {
