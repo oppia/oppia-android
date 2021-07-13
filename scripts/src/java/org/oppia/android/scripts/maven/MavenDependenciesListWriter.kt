@@ -13,7 +13,8 @@ import org.oppia.android.scripts.proto.PrimaryLinkType
 import java.io.File
 import java.io.FileInputStream
 
-/** Class that wraps the main function of the script so that it can be called via
+/**
+ * Class that wraps the main function of the script so that it can be called via
  * [GenerateMavenDependenciesListWriter.kt].
  */
 class MavenDependenciesListWriter() {
@@ -292,7 +293,7 @@ class MavenDependenciesListWriter() {
     ): MavenDependencyList {
       val mavenDependencyList = arrayListOf<MavenDependency>()
       finalDependenciesList.forEach {
-        // Remove .jar or .aar or any other extension from the specified url.
+        // Remove ".jar" or ".aar" or any other extension from the specified url.
         val pomFileUrl = "${it.url?.dropLast(3)}pom"
         val artifactName = it.coord
         val artifactVersion = StringBuilder()
