@@ -8,33 +8,52 @@ import androidx.databinding.BindingAdapter;
 /** Holds all custom binding adapters that set margin values. */
 public final class MarginBindingAdapters {
 
-  /** Used to set a margin-start for views. */
+  public static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+  }
+
+  /** Sets the start margin for a view, accounting for RTL scenarios. */
   @BindingAdapter("app:layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(
-          (int) marginStart,
-          params.topMargin,
-          params.getMarginEnd(),
-          params.bottomMargin
-      );
+      float marginEnd = params.getMarginEnd();
+      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
       view.requestLayout();
     }
   }
 
-  /** Used to set a margin-end for views. */
+  /** Sets the end margin for a view, accounting for RTL scenarios. */
   @BindingAdapter("app:layoutMarginEnd")
   public static void setLayoutMarginEnd(@NonNull View view, float marginEnd) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+      float marginStart = params.getMarginStart();
+      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
+      view.requestLayout();
+    }
+  }
+
+  private static void setLayoutDirectionalMargins(
+      @NonNull View view,
+      int marginEnd,
+      MarginLayoutParams params,
+      int marginStart
+  ) {
+    if (isRtlLayout(view)) {
       params.setMargins(
-          params.getMarginStart(),
+          marginEnd,
           params.topMargin,
-          (int) marginEnd,
+          marginStart,
           params.bottomMargin
       );
-      view.requestLayout();
+    } else {
+      params.setMargins(
+          marginStart,
+          params.topMargin,
+          marginEnd,
+          params.bottomMargin
+      );
     }
   }
 
