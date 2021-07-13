@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
+import java.text.Bidi
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
@@ -56,9 +57,17 @@ class HtmlParser private constructor(
     if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
-    if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+    val bidi = Bidi(htmlContent, Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT)
+    if(bidi.isRightToLeft) {
+      if ("<li>" in htmlContent) {
+        htmlContent = htmlContent.replace("<li>", "<p>\t\t  ⬤ \t\t")
+          .replace("</li>", "</p>")
+      }
+    }else {
+      if ("<li>" in htmlContent) {
+        htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+          .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+      }
     }
 
     // https://stackoverflow.com/a/8662457
