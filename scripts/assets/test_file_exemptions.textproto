@@ -81,7 +81,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/EventLogItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsActivityPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/drawer/ExitProfileDialogFragment.kt"
