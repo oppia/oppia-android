@@ -107,7 +107,7 @@ class ExplorationActivityLocalTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -134,7 +134,7 @@ class ExplorationActivityLocalTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -145,7 +145,7 @@ class ExplorationActivityLocalTest {
           topicId,
           storyId,
           explorationId,
-          isCheckpointingEnabled
+          shouldSavePartialProgress
         )
       }
     }

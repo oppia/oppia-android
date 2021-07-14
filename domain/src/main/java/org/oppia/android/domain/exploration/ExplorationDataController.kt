@@ -41,15 +41,22 @@ class ExplorationDataController @Inject constructor(
    * This must be called only if no active exploration is being played. The previous exploration must have first been
    * stopped using [stopPlayingExploration] otherwise an exception will be thrown.
    *
-   * @return a one-time [LiveData] to observe whether initiating the play request succeeded. The exploration may still
-   *     fail to load, but this provides early-failure detection.
+   * @param internalProfileId the ID corresponding to the profile for which exploration has to be
+   *     played
+   * @param topicId the ID corresponding to the topic for which exploration has to be played
+   * @param storyId the ID corresponding to the story for which exploration has to be played
+   * @param explorationId the ID of the exploration which has to be played
+   * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
+   *     for the current exploration
+   * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
+   *     The exploration may still ail to load, but this provides early-failure detection.
    */
   fun startPlayingExploration(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ): LiveData<AsyncResult<Any?>> {
     return try {
       explorationProgressController.beginExplorationAsync(
@@ -57,7 +64,7 @@ class ExplorationDataController @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        isCheckpointingEnabled
+        shouldSavePartialProgress
       )
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {

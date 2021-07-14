@@ -22,7 +22,7 @@ internal class ExplorationProgress {
   internal lateinit var currentExplorationId: String
   internal lateinit var currentExploration: Exploration
 
-  internal var isLightweightCheckpointingEnabled: Boolean = false
+  internal var shouldSavePartialProgress: Boolean = false
   internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
 
   internal var playStage = PlayStage.NOT_PLAYING

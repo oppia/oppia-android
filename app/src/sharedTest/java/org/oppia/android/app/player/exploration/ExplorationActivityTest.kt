@@ -224,7 +224,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
@@ -248,7 +248,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -274,7 +274,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -300,7 +300,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -327,7 +327,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -354,7 +354,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
@@ -378,7 +378,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_help))).perform(click())
@@ -403,7 +403,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
@@ -433,7 +433,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
@@ -455,7 +455,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
@@ -479,7 +479,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
@@ -505,7 +505,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -533,7 +533,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -562,7 +562,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -602,7 +602,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -647,7 +647,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -689,7 +689,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -775,7 +775,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -889,7 +889,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -915,7 +915,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
       testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
@@ -942,7 +942,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
     pressBack()

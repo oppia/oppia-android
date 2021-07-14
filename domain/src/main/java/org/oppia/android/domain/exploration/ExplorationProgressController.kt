@@ -88,7 +88,7 @@ class ExplorationProgressController @Inject constructor(
         currentTopicId = topicId
         currentStoryId = storyId
         currentExplorationId = explorationId
-        isLightweightCheckpointingEnabled = isCheckpointingEnabled
+        shouldSavePartialProgress = isCheckpointingEnabled
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
@@ -404,10 +404,9 @@ class ExplorationProgressController @Inject constructor(
    *  IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
    */
   private fun saveExplorationCheckpoint() {
-    // Do not save checkpoints if checkpointing is not enabled. This is expected to happen when
-    // the current exploration has been already completed previously.
-    if (!explorationProgress.isLightweightCheckpointingEnabled) return
-    lateinit var checkpointState: CheckpointState
+    // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
+    // when the current exploration has been already completed previously.
+    if (!explorationProgress.shouldSavePartialProgress) return
     val profileId: ProfileId = explorationProgress.currentProfileId
     val topicId: String = explorationProgress.currentTopicId
     val storyId: String = explorationProgress.currentStoryId
@@ -427,7 +426,7 @@ class ExplorationProgressController @Inject constructor(
     )
 
     deferred.invokeOnCompletion {
-      checkpointState = if (it == null) {
+      val checkpointState = if (it == null) {
         deferred.getCompleted()
       } else {
         oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
@@ -447,20 +446,20 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * This function process the result obtained upon complete execution of the function
+   * Processes the result obtained upon complete execution of the function
    * [saveExplorationCheckpoint].
    *
    * Marks the exploration as in_progress_saved or in_progress_not_saved if it is not already marked
    * correctly. This function also updates the checkpoint state of the exploration to the
    * specified new checkpoint state.
    *
-   * @param profileId is the profile id currently playing the exploration.
-   * @param topicId is the id of the topic which contains the story with the current exploration.
-   * @param storyId is the id of the story which contains the current exploration.
+   * @param profileId is the profile id currently playing the exploration
+   * @param topicId is the id of the topic which contains the story with the current exploration
+   * @param storyId is the id of the story which contains the current exploration
    * @param lastPlayedTimestamp timestamp of the time when the checkpoints state for the exploration
-   *     was last updated.
+   *     was last updated
    * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
-   *     unsuccessfully.
+   *     unsuccessfully
    */
   private fun processSaveCheckpointResult(
     profileId: ProfileId,

@@ -196,26 +196,24 @@ internal class StateDeck internal constructor(
     explorationTitle: String,
     timestamp: Long
   ): ExplorationCheckpoint {
-    val explorationCheckpointBuilder = ExplorationCheckpoint.newBuilder()
-
-    previousStates.forEach { state ->
-      explorationCheckpointBuilder.addCompletedStatesInCheckpoint(
-        CompletedStateInCheckpoint.newBuilder()
-          .setCompletedState(state.completedState)
-          .setStateName(state.state.name)
+    return ExplorationCheckpoint.newBuilder().apply {
+      addAllCompletedStatesInCheckpoint(
+        previousStates.map { state ->
+          CompletedStateInCheckpoint.newBuilder().apply {
+            completedState = state.completedState
+            stateName = state.state.name
+          }.build()
+        }
       )
-    }
-
-    return explorationCheckpointBuilder
-      .setPendingStateName(pendingTopState.name)
-      .setHintIndex(revealedHintIndex)
-      .setSolutionIsRevealed(solutionIsRevealed)
-      .addAllPendingUserAnswers(currentDialogInteractions)
-      .setStateIndex(stateIndex)
-      .setExplorationVersion(explorationVersion)
-      .setExplorationTitle(explorationTitle)
-      .setTimestampOfFirstCheckpoint(timestamp)
-      .build()
+      pendingStateName = pendingTopState.name
+      hintIndex = revealedHintIndex
+      this.solutionIsRevealed = solutionIsRevealed
+      addAllPendingUserAnswers(currentDialogInteractions)
+      this.stateIndex = stateIndex
+      this.explorationVersion = explorationVersion
+      this.explorationTitle = explorationTitle
+      timestampOfFirstCheckpoint = timestamp
+    }.build()
   }
 
   private fun getCurrentPendingState(): EphemeralState {
