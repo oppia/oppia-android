@@ -561,7 +561,6 @@ exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandRe
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/DisableAccessibilityChecks.kt"
-exempted_file_path: "testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing/ExplorationCheckpointTestHelper.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
