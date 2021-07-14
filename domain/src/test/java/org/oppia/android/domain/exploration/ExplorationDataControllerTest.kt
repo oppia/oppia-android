@@ -291,7 +291,7 @@ class ExplorationDataControllerTest {
       internalProfileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0, TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -314,7 +314,7 @@ class ExplorationDataControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -336,7 +336,7 @@ class ExplorationDataControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 

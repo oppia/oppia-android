@@ -178,7 +178,7 @@ class ExplorationActivityTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -189,7 +189,7 @@ class ExplorationActivityTest {
           topicId,
           storyId,
           explorationId,
-          isCheckpointingEnabled
+          shouldSavePartialProgress
         )
       }
     }
@@ -209,7 +209,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     )
     val title = explorationActivityTestRule.activity.title
@@ -227,7 +227,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -252,7 +252,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -279,7 +279,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -306,7 +306,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -334,7 +334,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -362,7 +362,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -387,7 +387,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -413,7 +413,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -444,7 +444,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -467,7 +467,7 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -492,7 +492,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -519,7 +519,7 @@ class ExplorationActivityTest {
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -548,7 +548,7 @@ class ExplorationActivityTest {
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -578,7 +578,7 @@ class ExplorationActivityTest {
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -619,7 +619,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -665,7 +665,7 @@ class ExplorationActivityTest {
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -708,7 +708,7 @@ class ExplorationActivityTest {
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -754,7 +754,7 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -763,7 +763,7 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       waitForTheView(withText("What is a Ratio?"))
@@ -796,7 +796,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -857,14 +857,14 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       waitForTheView(withText("What is a Ratio?"))
@@ -897,7 +897,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       onView(withId(R.id.exploration_fragment_placeholder)).check(matches(isDisplayed()))
@@ -913,7 +913,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -942,7 +942,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -972,7 +972,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1001,7 +1001,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1009,7 +1009,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1029,7 +1029,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1037,7 +1037,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1062,7 +1062,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1070,7 +1070,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1093,7 +1093,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1101,7 +1101,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1123,7 +1123,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1131,7 +1131,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1154,7 +1154,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1162,7 +1162,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1184,7 +1184,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1192,7 +1192,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1214,7 +1214,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1222,7 +1222,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1251,7 +1251,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     )
     explorationDataController.startPlayingExploration(
@@ -1259,7 +1259,7 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1287,7 +1287,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1295,7 +1295,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1316,7 +1316,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1324,7 +1324,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1346,7 +1346,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1354,7 +1354,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1379,7 +1379,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1387,7 +1387,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1413,7 +1413,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1421,7 +1421,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1446,7 +1446,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1454,7 +1454,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1491,7 +1491,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1499,7 +1499,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1537,7 +1537,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
     ).use {
       explorationDataController.startPlayingExploration(
@@ -1545,7 +1545,7 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        isCheckpointingEnabled = true
+        shouldSavePartialProgress = true
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1575,7 +1575,7 @@ class ExplorationActivityTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -1584,7 +1584,7 @@ class ExplorationActivityTest {
       storyId,
       explorationId,
       /* backflowScreen= */ null,
-      isCheckpointingEnabled
+      shouldSavePartialProgress
     )
   }
 
