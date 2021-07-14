@@ -1,6 +1,6 @@
 ## Overview & Disclaimer
 
-This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) if you do.
+This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you [file an issue](https://github.com/oppia/oppia-android/issues/new/choose) if you do or contact us at [gitter](https://gitter.im/oppia/oppia-android)
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
 
