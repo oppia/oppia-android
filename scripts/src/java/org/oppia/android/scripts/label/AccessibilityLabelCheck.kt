@@ -50,7 +50,7 @@ fun main(vararg args: String) {
     checkIfActivityHasMissingLabel(node, accessibilityLabelExemptionList)
   }
 
-  logFailures(activityListWithoutLabel, repoPath)
+  logFailures(activityListWithoutLabel, repoPath, accessibilityLabelExemptiontextProto)
 
   if (activityListWithoutLabel.isNotEmpty()) {
     throw Exception("ACCESSIBILITY LABEL CHECK FAILED")
@@ -101,7 +101,11 @@ private fun convertNodeListToListOfNode(nodeList: NodeList): List<Node> {
  * @param matchedNodes a list of nodes having missing label
  * @param repoPath path of the repo to be analyzed
  */
-private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
+private fun logFailures(
+  matchedNodes: List<Node>,
+  repoPath: String,
+  accessibilityLabelExemptiontextProto: String
+) {
   val pathPrefix = "${repoPath}app/src/main/java/org/oppia/android"
   if (matchedNodes.isNotEmpty()) {
     println("Accessiblity labels missing for Activities:")
@@ -120,6 +124,11 @@ private fun logFailures(matchedNodes: List<Node>, repoPath: String) {
           }"
       )
     }
+    println("If this is correct, please update $accessibilityLabelExemptiontextProto.textproto")
+    println(
+      "Note that, in general, all Activities should have labels. If you choose to add an" +
+        " exemption, please specifically call this out in your PR description."
+    )
     println()
   }
 }

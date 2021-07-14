@@ -139,10 +139,14 @@ class AccessibilityLabelCheckTest {
     )
     val temp2ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
       "/android/app/administratorcontrols/appversion/Temp2Activity"
+    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
+      "to add an exemption, please specifically call this out in your PR description."
     val failureMessage =
       """
       Accessiblity labels missing for Activities:
       - $temp2ActivityPath
+      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
+      $failureNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -202,11 +206,15 @@ class AccessibilityLabelCheckTest {
       "/android/app/administratorcontrols/Temp1Activity"
     val temp2ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
       "/android/app/administratorcontrols/appversion/Temp2Activity"
+    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
+      "to add an exemption, please specifically call this out in your PR description."
     val failureMessage =
       """
       Accessiblity labels missing for Activities:
       - $temp1ActivityPath
       - $temp2ActivityPath
+      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
+      $failureNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -271,12 +279,16 @@ class AccessibilityLabelCheckTest {
       "/android/app/administratorcontrols/appversion/Temp2Activity"
     val temp3ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
       "/android/app/administratorcontrols/appversion/Temp3Activity"
+    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
+      "to add an exemption, please specifically call this out in your PR description."
     val failureMessage =
       """
       Accessiblity labels missing for Activities:
       - $temp1ActivityPath
       - $temp2ActivityPath
       - $temp3ActivityPath
+      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
+      $failureNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
