@@ -1,0 +1,13 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "kdoc_check_lib",
+    testonly = True,
+    srcs = ["KDocCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/proto:kdoc_exemptions_java_proto_lite",
+        "//third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
+    ],
+)
