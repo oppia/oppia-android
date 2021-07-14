@@ -94,6 +94,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito:mockito-core": "2.19.0",
+    "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.robolectric:annotations": "4.4",
     "org.robolectric:robolectric": "4.4",
 }

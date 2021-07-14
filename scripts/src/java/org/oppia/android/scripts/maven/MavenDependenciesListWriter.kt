@@ -54,6 +54,9 @@ class MavenDependenciesListWriter() {
       val pathToMavenInstall = "$pathToRoot/${args[1]}"
       val pathToMavenDependenciesTextProto =
         "$pathToRoot/scripts/assets/maven_dependencies.textproto"
+//      val pathToProtoBinary = "$pathToRoot/scripts/assets/maven_dependencies.pb"
+
+//      println(pathToRoot)
 
       val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
       val mavenInstallDepsList = getDependencyListFromMavenInstall(
@@ -243,6 +246,7 @@ class MavenDependenciesListWriter() {
       proto: MavenDependencyList
     ): MavenDependencyList {
       val protoBinaryFile = File("scripts/assets/$pbFileName")
+//      println(protoBinaryFile.absolutePath)
       val builder = proto.newBuilderForType()
       val protoObject = FileInputStream(protoBinaryFile).use {
         builder.mergeFrom(it)

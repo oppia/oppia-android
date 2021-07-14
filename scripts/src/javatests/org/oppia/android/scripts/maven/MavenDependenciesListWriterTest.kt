@@ -6,14 +6,27 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.PrimaryLinkType
-import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+
+private const val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/" +
+  "databinding-adapters/3.4.2/databinding-adapters-3.4.2.pom"
+private const val PROTO_LITE_POM = "https://repo1.maven.org/maven2/com/google/protobuf/" +
+  "protobuf-lite/3.0.0/protobuf-lite-3.0.0.pom"
+private const val IO_FABRIC_POM = "https://maven.google.com/io/fabric/sdk/android/" +
+  "fabric/1.4.7/fabric-1.4.7.pom"
+private const val GLIDE_ANNOTATIONS_POM = "https://repo1.maven.org/maven2/com/github/" +
+  "bumptech/glide/annotations/4.11.0/annotations-4.11.0.pom"
+private const val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/" +
+  "firebase-analytics/17.5.0/firebase-analytics-17.5.0.pom"
 
 /** Tests for [MavenDependenciesListWriter]. */
 class MavenDependenciesListWriterTest {
@@ -25,13 +38,15 @@ class MavenDependenciesListWriterTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
+  private val mockNetworkAndBazelUtils by lazy { initializeMockNetworkAndBazelUtils() }
+
   @Rule
   @JvmField
   var tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
-    tempFolder.newFolder("assets")
+    tempFolder.newFolder("scripts", "assets")
     System.setOut(PrintStream(outContent))
   }
 
@@ -55,41 +70,48 @@ class MavenDependenciesListWriterTest {
       DependencyName.FIREBASE_ANALYTICS
     )
     val mavenDependencyList = getMavenDependencyList(dependencies)
-    val mavenInstallJson = tempFolder.newFile("assets/test_maven_install.json")
+    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
-    val pbFile = tempFolder.newFile("assets/test_maven_dependencies.pb")
-    val textProtoFile = tempFolder.newFile("assets/test_maven_dependencies.textproto")
+    val pbFile = File("scripts/assets/maven_dependencies.pb")
+    pbFile.getParentFile().mkdirs()
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     mavenDependencyList.writeTo(pbFile.outputStream())
+
+    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
+
+    MavenDependenciesListWriter.main(
+      arrayOf(
+        "${tempFolder.root}",
+        "scripts/assets/maven_install.json"
+      )
+    )
+
+    pbFile.delete()
 
     val exception = assertThrows(Exception::class) {
       runScript(
         dependencies,
         arrayOf(
           "${tempFolder.root}",
-          "assets/test_maven_install.json",
-          "assets/test_maven_dependencies.pb"
+          "scipts/assets/test_maven_install.json"
         )
       )
     }
 
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
-
-    runScript(
-      dependencies,
-      arrayOf(
-        "${tempFolder.root}",
-        "assets/test_maven_install.json",
-        "assets/test_maven_dependencies.textproto",
-        "${tempFolder.root}/assets/test_maven_dependencies.pb"
-      )
-    )
-    assertThat(outContent.toString().trim()).contains("Script executed successfully")
   }
 
   @Test
   fun dummy_test() {
     val num = 4
     assertThat(num).isEqualTo(4)
+  }
+
+  @Test
+  fun testMockitoUnitTest() {
+//    val mockNetwork = mock<NetworkAndBazelUtils>()
+//    whenever(mockNetwork.scrapeText(eq("https//www.google.com"))).doReturn("abhay")
+    assertThat(mockNetworkAndBazelUtils.scrapeText("https//www.google.com")).contains("abhay")
   }
 
   private fun getMavenDependency(
@@ -217,33 +239,18 @@ class MavenDependenciesListWriterTest {
     IO_FABRIC;
   }
 
-  private fun runScript(
-    dependencyLicenseTypes: List<DependencyName> = listOf(
-      DependencyName.DATA_BINDING,
-      DependencyName.FIREBASE_ANALYTICS
-    ),
-    args: Array<String>
-  ) {
-
-    MavenDependenciesListWriter.networkAndBazelUtils = NetworkAndBazelUtilsInterceptor()
-
-    MavenDependenciesListWriter.main(arrayOf())
-  }
-
-  private class NetworkAndBazelUtilsInterceptor() : NetworkAndBazelUtils {
-    override fun scrapeText(link: String): String {
-      val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/" +
-        "databinding-adapters/3.4.2/databinding-adapters-3.4.2.pom"
-      val PROTO_LITE_POM = "https://repo1.maven.org/maven2/com/google/protobuf/" +
-        "protobuf-lite/3.0.0/protobuf-lite-3.0.0.pom"
-      val IO_FABRIC_POM = "https://maven.google.com/io/fabric/sdk/android/" +
-        "fabric/1.4.7/fabric-1.4.7.pom"
-      val GLIDE_ANNOTATIONS_POM = "https://repo1.maven.org/maven2/com/github/" +
-        "bumptech/glide/annotations/4.11.0/annotations-4.11.0.pom"
-      val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/" +
-        "firebase-analytics/17.5.0/firebase-analytics-17.5.0.pom"
-      return when (link) {
-        DATA_BINDING_POM ->
+  private fun initializeMockNetworkAndBazelUtils(): NetworkAndBazelUtils {
+    val bazelList = listOf<String>(
+      "@maven//:androidx_databinding_databinding_adapters",
+      "@maven//:com_github_bumptech_glide_annotations",
+      "@maven//:com_google_firebase_firebase_analytics",
+      "@maven//:com_google_protobuf_protobuf_lite",
+      "@maven//:io_fabric_sdk_android_fabric"
+    )
+    return mock<NetworkAndBazelUtils> {
+      on { scrapeText(eq("https//www.google.com")) } doReturn "abhay"
+      on { scrapeText(eq(DATA_BINDING_POM)) }
+        .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <licenses>
@@ -254,8 +261,9 @@ class MavenDependenciesListWriterTest {
             </license>
           </licenses>
           """.trimIndent()
-
-        GLIDE_ANNOTATIONS_POM ->
+        )
+      on { scrapeText(eq(GLIDE_ANNOTATIONS_POM)) }
+        .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <licenses>
@@ -266,8 +274,9 @@ class MavenDependenciesListWriterTest {
             </license>
           </licenses>
           """.trimIndent()
-
-        FIREBASE_ANALYTICS_POM ->
+        )
+      on { scrapeText(eq(FIREBASE_ANALYTICS_POM)) }
+        .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <licenses>
@@ -278,8 +287,9 @@ class MavenDependenciesListWriterTest {
             </license>
           </licenses>
           """.trimIndent()
-
-        IO_FABRIC_POM ->
+        )
+      on { scrapeText(eq(IO_FABRIC_POM)) }
+        .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <licenses>
@@ -290,33 +300,15 @@ class MavenDependenciesListWriterTest {
             </license>
           </licenses>
           """.trimIndent()
-        else ->
+        )
+      on { scrapeText(eq(PROTO_LITE_POM)) }
+        .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           """.trimIndent()
-      }
-    }
-
-    override fun retrieveThirdPartyMavenDependenciesList(
-      rootPath: String
-    ): List<String> {
-      val mavenPrefix = "@maven//:"
-      val bazelQueryDepsNames = mutableListOf<String>()
-      dependencyNamesList.forEach { dependencyName ->
-        when (dependencyName) {
-          DependencyName.DATA_BINDING ->
-            bazelQueryDepsNames.add(mavenPrefix + "androidx_databinding_databinding_adapters")
-          DependencyName.GLIDE_ANNOTATIONS ->
-            bazelQueryDepsNames.add(mavenPrefix + "com_github_bumptech_glide_annotations")
-          DependencyName.FIREBASE_ANALYTICS ->
-            bazelQueryDepsNames.add(mavenPrefix + "com_google_firebase_firebase_analytics")
-          DependencyName.PROTO_LITE ->
-            bazelQueryDepsNames.add(mavenPrefix + "com_google_protobuf_protobuf_lite")
-          else ->
-            bazelQueryDepsNames.add(mavenPrefix + "io_fabric_sdk_android_fabric")
-        }
-      }
-      return bazelQueryDepsNames.toList()
+        )
+      on { retrieveThirdPartyMavenDependenciesList("test_oppia") }
+        .doReturn(bazelList)
     }
   }
 }
