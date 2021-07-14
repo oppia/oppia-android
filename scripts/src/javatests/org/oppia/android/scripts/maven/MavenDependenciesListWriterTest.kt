@@ -102,16 +102,9 @@ class MavenDependenciesListWriterTest {
   }
 
   @Test
-  fun dummy_test() {
-    val num = 4
-    assertThat(num).isEqualTo(4)
-  }
-
-  @Test
   fun testMockitoUnitTest() {
-//    val mockNetwork = mock<NetworkAndBazelUtils>()
-//    whenever(mockNetwork.scrapeText(eq("https//www.google.com"))).doReturn("abhay")
-    assertThat(mockNetworkAndBazelUtils.scrapeText("https//www.google.com")).contains("abhay")
+    assertThat(mockNetworkAndBazelUtils.scrapeText("https://www.google.com"))
+      .contains("passed")
   }
 
   private fun getMavenDependency(
@@ -248,7 +241,7 @@ class MavenDependenciesListWriterTest {
       "@maven//:io_fabric_sdk_android_fabric"
     )
     return mock<NetworkAndBazelUtils> {
-      on { scrapeText(eq("https//www.google.com")) } doReturn "abhay"
+      on { scrapeText(eq("https//www.google.com")) } doReturn "passed"
       on { scrapeText(eq(DATA_BINDING_POM)) }
         .doReturn(
           """
