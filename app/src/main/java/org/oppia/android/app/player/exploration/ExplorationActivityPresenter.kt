@@ -32,8 +32,11 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
-const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
+private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
+private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
+private const val TAG_PROGRESS_DATABASE_FULL_DIALOG = "PROGRESS_DATABASE_FULL_DIALOG"
+private const val TAG_EXPLORATION_FRAGMENT = "TAG_EXPLORATION_FRAGMENT"
+private const val TAG_EXPLORATION_MANAGER_FRAGMENT = "TAG_EXPLORATION_MANAGER_FRAGMENT"
 const val TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER = "HINTS_AND_SOLUTION_EXPLORATION_MANAGER"
 
 /** The Presenter for [ExplorationActivity]. */
@@ -56,8 +59,8 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private var isCheckpointingEnabled: Boolean = false
 
-  private lateinit var oldestExplorationId: String
-  private lateinit var oldestExplorationTitle: String
+  private lateinit var oldestCheckpointExplorationId: String
+  private lateinit var oldestCheckpointExplorationTitle: String
 
   enum class ParentActivityForExploration(val value: Int) {
     BACKFLOW_SCREEN_LESSONS(0),
@@ -211,6 +214,7 @@ class ExplorationActivityPresenter @Inject constructor(
     ) as HintsAndSolutionExplorationManagerFragment?
   }
 
+  /** Deletes the saved progress for the current exploration and then stops the exploration. */
   fun deleteCurrentProgressAndStopExploration() {
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
@@ -219,14 +223,15 @@ class ExplorationActivityPresenter @Inject constructor(
     stopExploration()
   }
 
+  /** Deletes the oldest saved checkpoint and then stops the exploration. */
   fun deleteOldestSavedProgressAndStopExploration() {
     // If oldestExplorationId is not initialized, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
     // without deleting the any checkpoints.
-    oldestExplorationId.let {
+    oldestCheckpointExplorationId.let {
       explorationDataController.deleteExplorationProgressById(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        oldestExplorationId
+        oldestCheckpointExplorationId
       )
     }
     stopExploration()
@@ -264,6 +269,12 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
+  /**
+   * Shows the appropriate dialog box when back button is pressed. This function shows
+   * [UnsavedExplorationDialogFragment] if checkpointing is not enabled otherwise it either shows
+   * [StopExplorationDialogFragment] or [ProgressDatabaseFullDialogFragment] depending upon the
+   * state of the saved checkpoint for the current exploration.
+   */
   fun backButtonPressed() {
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
@@ -360,13 +371,16 @@ class ExplorationActivityPresenter @Inject constructor(
     // If any one of oldestExplorationId or oldestExplorationTitle is not initialized, it means that
     // there was an error while retrieving the oldest saved checkpoint details. In that the
     // exploration is exited without deleting the any checkpoints.
-    if (!::oldestExplorationId.isInitialized || !::oldestExplorationTitle.isInitialized) {
+    if (
+      !::oldestCheckpointExplorationId.isInitialized ||
+      !::oldestCheckpointExplorationTitle.isInitialized
+    ) {
       stopExploration()
       return
     }
 
     val dialogFragment =
-      ProgressDatabaseFullDialogFragment.newInstance(oldestExplorationTitle!!)
+      ProgressDatabaseFullDialogFragment.newInstance(oldestCheckpointExplorationTitle)
     dialogFragment.showNow(
       activity.supportFragmentManager,
       TAG_PROGRESS_DATABASE_FULL_DIALOG
@@ -418,11 +432,11 @@ class ExplorationActivityPresenter @Inject constructor(
       activity,
       Observer {
         if (it.isSuccess()) {
-          oldestExplorationId = it.getOrThrow().explorationId
-          oldestExplorationTitle = it.getOrThrow().explorationTitle
+          oldestCheckpointExplorationId = it.getOrThrow().explorationId
+          oldestCheckpointExplorationTitle = it.getOrThrow().explorationTitle
         } else if (it.isFailure()) {
           oppiaLogger.e(
-            "Exploration Activity",
+            "ExplorationActivity",
             "Failed to retrieve oldest saved checkpoint details.",
             it.getErrorOrNull()
           )

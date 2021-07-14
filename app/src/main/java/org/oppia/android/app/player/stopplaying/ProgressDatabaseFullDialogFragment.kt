@@ -8,7 +8,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 
-const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
+private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
   "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
 
 /**

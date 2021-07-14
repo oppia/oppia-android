@@ -62,7 +62,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
               TOPIC_ID,
               STORY_ID,
               EXPLORATION_ID,
-              /* backflowScreen= */null,
+              /* backflowScreen= */ null,
               isCheckpointingEnabled = false
             )
           }
