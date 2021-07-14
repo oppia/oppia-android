@@ -213,7 +213,7 @@ class UrlImageParser private constructor(
           drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
         )
       }
-      
+
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
