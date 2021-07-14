@@ -204,6 +204,10 @@
   <dimen name="general_button_item_question_view_padding_start">60dp</dimen>
   <dimen name="general_button_item_question_view_padding_end">60dp</dimen>
 
+  <!-- Question Player ProgressBar -->
+  <dimen name="question_player_progress_bar_margin_start">64dp</dimen>
+  <dimen name="question_player_progress_bar_margin_end">64dp</dimen>
+
   <!-- Congratulations TextView -->
   <dimen name="congratulations_text_view_margin_start">28dp</dimen>
   <dimen name="congratulations_text_view_margin_end">28dp</dimen>
