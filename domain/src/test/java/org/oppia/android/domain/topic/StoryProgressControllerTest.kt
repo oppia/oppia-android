@@ -24,7 +24,6 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -79,10 +78,10 @@ class StoryProgressControllerTest {
   lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Mock
-  lateinit var mockRetrieveStoryProgressObserver: Observer<AsyncResult<StoryProgress>>
+  lateinit var mockRetrieveChapterPlayStateObserver: Observer<AsyncResult<ChapterPlayState>>
 
   @Captor
-  lateinit var retrieveStoryProgressController: ArgumentCaptor<AsyncResult<StoryProgress>>
+  lateinit var retrieveChapterPlayStateCaptor: ArgumentCaptor<AsyncResult<ChapterPlayState>>
 
   private lateinit var profileId: ProfileId
 
@@ -265,31 +264,25 @@ class StoryProgressControllerTest {
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
-    storyProgressController.retrieveStoryProgressDataProvider(
+    storyProgressController.retrieveChapterPlayStateByExplorationId(
       profileId,
       topicId,
-      storyId
-    ).toLiveData().observeForever(mockRetrieveStoryProgressObserver)
+      storyId,
+      explorationId
+    ).toLiveData().observeForever(mockRetrieveChapterPlayStateObserver)
 
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockRetrieveStoryProgressObserver, atLeastOnce())
-      .onChanged(retrieveStoryProgressController.capture())
+    verify(mockRetrieveChapterPlayStateObserver, atLeastOnce())
+      .onChanged(retrieveChapterPlayStateCaptor.capture())
 
-    assertThat(retrieveStoryProgressController.value.isSuccess()).isTrue()
-    assertThat(retrieveStoryProgressController.value.getOrThrow().chapterProgressMap[explorationId])
-      .isNotNull()
-    assertThat(
-      retrieveStoryProgressController.value.getOrThrow()
-        .chapterProgressMap[explorationId]!!.chapterPlayState
-    ).isEqualTo(chapterPlayState)
+    assertThat(retrieveChapterPlayStateCaptor.value.isSuccess()).isTrue()
+    assertThat(retrieveChapterPlayStateCaptor.value.getOrThrow()).isEqualTo(chapterPlayState)
   }
 
   private fun verifyRecordProgressSucceeded() {
-    verify(
-      mockRecordProgressObserver,
-      atLeastOnce()
-    ).onChanged(recordProgressResultCaptor.capture())
+    verify(mockRecordProgressObserver, atLeastOnce())
+      .onChanged(recordProgressResultCaptor.capture())
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
     reset(mockRecordProgressObserver)
   }
