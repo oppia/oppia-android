@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.text.Layout
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -19,6 +20,7 @@ import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.parser.image.UrlImageParser.AutoAdjustingImageTarget.TargetConfiguration
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
@@ -121,11 +123,17 @@ class UrlImageParser private constructor(
         htmlContentTextView.width { viewWidth ->
           proxyDrawable.initialize(drawable, computeBounds(drawable, viewWidth))
           htmlContentTextView.text = htmlContentTextView.text
+          if(isRtlLayout(htmlContentTextView)){
+            htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+          }
           htmlContentTextView.invalidate()
         }
       }
     }
 
+    open fun isRtlLayout(view: View): Boolean {
+      return view.layoutDirection == View.LAYOUT_DIRECTION_RTL
+    }
     /** Returns the drawable corresponding to the specified loaded resource. */
     protected abstract fun retrieveDrawable(resource: T): D
 
@@ -205,7 +213,7 @@ class UrlImageParser private constructor(
           drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
         )
       }
-
+      
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
