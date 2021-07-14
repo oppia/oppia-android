@@ -206,7 +206,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

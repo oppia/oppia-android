@@ -65,7 +65,7 @@ class ExplorationCheckpointController @Inject constructor(
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
    *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] is returned upon successful
-   *     completion of deferred
+   *     completion of deferred.
    */
   internal fun recordExplorationCheckpointAsync(
     profileId: ProfileId,

@@ -44,7 +44,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
       TOPIC_ID,
       STORY_ID,
       EXPLORATION_ID,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->

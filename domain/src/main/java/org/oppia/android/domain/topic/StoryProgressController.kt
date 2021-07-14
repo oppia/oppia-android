@@ -131,13 +131,13 @@ class StoryProgressController @Inject constructor(
    * topic. Returns a [DataProvider] that provides exactly one [AsyncResult] to indicate whether
    * this operation has succeeded. This method will never return a pending result.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
-   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
-   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored
+   * @param storyId the ID corresponding to the story for which progress needs to be stored
    * @param explorationId the chapter id which will marked as [ChapterPlayState.IN_PROGRESS_SAVED]
-   *        if it has not been [ChapterPlayState.COMPLETED] already.
-   * @param lastPlayedTimestamp the timestamp at the exploration was finished.
-   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
+   *        if it has not been [ChapterPlayState.COMPLETED] already
+   * @param lastPlayedTimestamp the timestamp at the exploration was finished
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordChapterAsInProgressSaved(
     profileId: ProfileId,
@@ -212,13 +212,13 @@ class StoryProgressController @Inject constructor(
    * topic. Returns a [DataProvider] that provides exactly one [AsyncResult] to indicate whether
    * this operation has succeeded. This method will never return a pending result.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
-   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
-   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored
+   * @param storyId the ID corresponding to the story for which progress needs to be stored
    * @param explorationId the chapter id which will marked as [ChapterPlayState.IN_PROGRESS_NOT_SAVED]
-   *        if ithas not been [ChapterPlayState.COMPLETED] already.
+   *        if it has not been [ChapterPlayState.COMPLETED] already
    * @param lastPlayedTimestamp the timestamp at the exploration was finished.
-   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordChapterAsInProgressNotSaved(
     profileId: ProfileId,

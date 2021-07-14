@@ -196,7 +196,7 @@ class ExplorationProgressControllerTest {
         INVALID_TOPIC_ID,
         INVALID_STORY_ID,
         INVALID_EXPLORATION_ID,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
@@ -239,7 +239,7 @@ class ExplorationProgressControllerTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
@@ -367,7 +367,7 @@ class ExplorationProgressControllerTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        isCheckpointingEnabled = false
+        shouldSavePartialProgress = false
       )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
@@ -443,7 +443,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val result =
@@ -681,7 +681,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -813,7 +813,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val moveToStateResult =

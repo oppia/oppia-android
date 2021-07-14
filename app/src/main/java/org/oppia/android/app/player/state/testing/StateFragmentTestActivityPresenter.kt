@@ -98,7 +98,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
       .observe(
         activity,

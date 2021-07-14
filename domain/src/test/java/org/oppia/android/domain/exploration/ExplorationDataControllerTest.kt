@@ -264,15 +264,16 @@ class ExplorationDataControllerTest {
     explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0, TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
     )
     explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     testCoroutineDispatchers.runCurrent()
 
