@@ -13,6 +13,7 @@ import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.PrimaryLinkType
+import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -88,9 +89,9 @@ class MavenDependenciesListWriterTest {
 
     pbFile.delete()
 
+    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
     val exception = assertThrows(Exception::class) {
-      runScript(
-        dependencies,
+      MavenDependenciesListWriter.main(
         arrayOf(
           "${tempFolder.root}",
           "scipts/assets/test_maven_install.json"
@@ -241,7 +242,7 @@ class MavenDependenciesListWriterTest {
       "@maven//:io_fabric_sdk_android_fabric"
     )
     return mock<NetworkAndBazelUtils> {
-      on { scrapeText(eq("https//www.google.com")) } doReturn "passed"
+      on { scrapeText(eq("https://www.google.com")) } doReturn "passed"
       on { scrapeText(eq(DATA_BINDING_POM)) }
         .doReturn(
           """
