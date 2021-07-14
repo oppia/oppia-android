@@ -360,7 +360,7 @@ class ExplorationActivityPresenter @Inject constructor(
     // If any one of oldestExplorationId or oldestExplorationTitle is not initialized, it means that
     // there was an error while retrieving the oldest saved checkpoint details. In that the
     // exploration is exited without deleting the any checkpoints.
-    if (this::oldestExplorationId.isInitialized && this::oldestExplorationTitle.isInitialized) {
+    if (!::oldestExplorationId.isInitialized || !::oldestExplorationTitle.isInitialized) {
       stopExploration()
       return
     }
