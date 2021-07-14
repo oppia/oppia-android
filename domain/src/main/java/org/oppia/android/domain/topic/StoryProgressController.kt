@@ -39,6 +39,8 @@ private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
+private const val RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID =
+  "retrieve_chapter_play_state_data_provider_id"
 private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID = "record_completed_chapter_provider_id"
 private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
   "record_recently_played_chapter_provider_id"
@@ -367,6 +369,24 @@ class StoryProgressController @Inject constructor(
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
+  }
+
+  /** Returns the [ChapterPlayState] [DataProvider] for a particular explorationId and profile. */
+  fun retrieveChapterPlayStateByExplorationId(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterPlayState> {
+    return retrieveStoryProgressDataProvider(profileId, topicId, storyId)
+      .transformAsync(RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID) {
+        val chapterProgress = it.chapterProgressMap[explorationId]
+        if (chapterProgress != null) {
+          AsyncResult.success(chapterProgress.chapterPlayState)
+        } else {
+          AsyncResult.success(ChapterPlayState.NOT_STARTED)
+        }
+      }
   }
 
   /** Returns list of [TopicProgress] [DataProvider] for a particular profile. */
