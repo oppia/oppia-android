@@ -19,14 +19,14 @@ import java.io.FileInputStream
  */
 class MavenDependenciesListWriter() {
   companion object {
-    val MAVEN_PREFIX = "@maven//:"
-    val WAIT_PROCESS_TIMEOUT_MS = 60_000L
+    private val MAVEN_PREFIX = "@maven//:"
+    private val WAIT_PROCESS_TIMEOUT_MS = 60_000L
 
-    val LICENSES_TAG = "<licenses>"
-    val LICENSES_CLOSE_TAG = "</licenses>"
-    val LICENSE_TAG = "<license>"
-    val NAME_TAG = "<name>"
-    val URL_TAG = "<url>"
+    private val LICENSES_TAG = "<licenses>"
+    private val LICENSES_CLOSE_TAG = "</licenses>"
+    private val LICENSE_TAG = "<license>"
+    private val NAME_TAG = "<name>"
+    private val URL_TAG = "<url>"
 
     lateinit var networkAndBazelUtils: NetworkAndBazelUtils
 
@@ -41,21 +41,19 @@ class MavenDependenciesListWriter() {
      * Arguments:
      * - path_to_directory_root: directory path to the root of the Oppia Android repository.
      * - path_to_maven_install_json: relative path to the maven_install.json file.
-     * - path_to_maven_dependencies_textproto: realtive path to the maven_dependencies.textproto
-     *   that stores the list of maven dependencies compiled through the script.
      * Example:
      *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
-     *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
+     *   third_party/maven_install.json
      */
     @JvmStatic
     fun main(args: Array<String>) {
-      if (args.size < 3) {
+      if (args.size < 2) {
         throw Exception("Too few Arguments passed")
       }
       val pathToRoot = args[0]
       val pathToMavenInstall = "$pathToRoot/${args[1]}"
-      val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
-      val pathToMavenDependenciesProtoBinary = args[3]
+      val pathToMavenDependenciesTextProto =
+        "$pathToRoot/scripts/assets/maven_dependencies.textproto"
 
       val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
       val mavenInstallDepsList = getDependencyListFromMavenInstall(
@@ -66,9 +64,7 @@ class MavenDependenciesListWriter() {
       val dependenciesListFromPom =
         retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-      val dependenciesListFromTextproto = retrieveMavenDependencyList(
-        pathToMavenDependenciesProtoBinary
-      )
+      val dependenciesListFromTextproto = retrieveMavenDependencyList()
 
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
@@ -228,9 +224,9 @@ class MavenDependenciesListWriter() {
     }
 
     /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-    private fun retrieveMavenDependencyList(pathToProtoBinary: String): List<MavenDependency> {
+    private fun retrieveMavenDependencyList(): List<MavenDependency> {
       return getProto(
-        pathToProtoBinary,
+        "maven_dependencies.pb",
         MavenDependencyList.getDefaultInstance()
       ).mavenDependencyList
     }
@@ -238,15 +234,15 @@ class MavenDependenciesListWriter() {
     /**
      * Helper function to parse the textproto file to a proto class.
      *
-     * @param textProtoFileName name of the textproto file to be parsed
+     * @param pbFileName name of the textproto file to be parsed
      * @param proto instance of the proto class
      * @return proto class from the parsed textproto file
      */
     private fun getProto(
-      pathToTextProto: String,
+      pbFileName: String,
       proto: MavenDependencyList
     ): MavenDependencyList {
-      val protoBinaryFile = File(pathToTextProto)
+      val protoBinaryFile = File("scripts/assets/$pbFileName")
       val builder = proto.newBuilderForType()
       val protoObject = FileInputStream(protoBinaryFile).use {
         builder.mergeFrom(it)
@@ -345,8 +341,8 @@ class MavenDependenciesListWriter() {
       urlBuilder: StringBuilder
     ): String {
       var url = urlBuilder.toString()
-      if (url.substring(0, 5) != "https") {
-        url = "https${url.substring(4, url.length)}"
+      if (!url.startsWith("https")) {
+        url = url.replace("http", "https")
       }
       return url
     }

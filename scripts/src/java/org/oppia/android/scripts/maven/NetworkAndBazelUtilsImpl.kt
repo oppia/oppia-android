@@ -12,6 +12,6 @@ class NetworkAndBazelUtilsImpl() : NetworkAndBazelUtils {
   }
 
   override fun retrieveThirdPartyMavenDependenciesList(rootPath: String): List<String> {
-    return BazelClient(File(rootPath).absoluteFile).retrieveThirdPartyMavenDependenciesList()
+    return BazelClient(File(rootPath).absoluteFile).retrieveThirdPartyMavenDependenciesList("oppia")
   }
 }

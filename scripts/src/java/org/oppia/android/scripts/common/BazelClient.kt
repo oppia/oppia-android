@@ -83,13 +83,13 @@ class BazelClient(
   }
 
   /**
-   * Returns the list of direct and indiret Maven third-party dependencies on which Oppia Android
-   * depends.
+   * Returns the list of direct and indiret Maven third-party dependencies on which the specified
+   * binary depends.
    */
-  fun retrieveThirdPartyMavenDependenciesList(): List<String> {
+  fun retrieveThirdPartyMavenDependenciesList(binaryName: String): List<String> {
     return executeBazelCommand(
       "query",
-      "deps(deps(//:oppia) intersect //third_party/...) intersect @maven//..."
+      "deps(deps(//:$binaryName) intersect //third_party/...) intersect @maven//..."
     )
   }
 
