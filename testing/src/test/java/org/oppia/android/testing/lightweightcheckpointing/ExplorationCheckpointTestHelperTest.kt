@@ -45,7 +45,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ExplorationCheckpointTestHelperTest]. */
+/** Tests for [ExplorationCheckpointTestHelper]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationCheckpointTestHelperTest.TestApplication::class)
