@@ -131,9 +131,10 @@ class UrlImageParser private constructor(
       }
     }
 
-    open fun isRtlLayout(view: View): Boolean {
+    private fun isRtlLayout(view: View): Boolean {
       return view.layoutDirection == View.LAYOUT_DIRECTION_RTL
     }
+
     /** Returns the drawable corresponding to the specified loaded resource. */
     protected abstract fun retrieveDrawable(resource: T): D
 
