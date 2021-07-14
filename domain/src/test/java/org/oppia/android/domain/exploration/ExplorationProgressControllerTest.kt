@@ -218,7 +218,7 @@ class ExplorationProgressControllerTest {
       INVALID_TOPIC_ID,
       INVALID_STORY_ID,
       INVALID_EXPLORATION_ID,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     verify(
@@ -260,7 +260,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     // The second-to-latest result stays pending since the exploration was loading (the actual
@@ -281,7 +281,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val currentStateLiveData =
@@ -307,7 +307,7 @@ class ExplorationProgressControllerTest {
       INVALID_TOPIC_ID,
       INVALID_STORY_ID,
       INVALID_EXPLORATION_ID,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     endExploration()
 
@@ -317,7 +317,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
@@ -357,7 +357,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     // Try playing another exploration without finishing the previous one.
@@ -390,7 +390,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     endExploration()
 
@@ -400,7 +400,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     // The latest result should correspond to the valid ID, and the progress controller should
@@ -470,7 +470,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -495,7 +495,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -522,7 +522,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -547,7 +547,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -576,7 +576,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -606,7 +606,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
 
@@ -635,7 +635,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeMultipleChoiceState()
     submitMultipleChoiceAnswer(0)
@@ -702,7 +702,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -725,7 +725,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitPrototypeState1Answer()
 
@@ -747,7 +747,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitPrototypeState1Answer()
 
@@ -771,7 +771,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitPrototypeState1Answer()
     moveToNextState()
@@ -836,7 +836,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     val moveToStateResult =
@@ -860,7 +860,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitPrototypeState1Answer()
 
@@ -885,7 +885,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -910,7 +910,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -937,7 +937,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
@@ -964,7 +964,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeTextInputState()
 
@@ -991,7 +991,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeTextInputState()
 
@@ -1019,7 +1019,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
 
@@ -1051,7 +1051,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -1096,7 +1096,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -1134,7 +1134,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
 
@@ -1169,7 +1169,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeTextInputState()
 
@@ -1200,7 +1200,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeTextInputState()
 
@@ -1233,7 +1233,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeTextInputState()
 
@@ -1267,7 +1267,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1295,7 +1295,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
     submitPrototypeState2Answer() // Submit the answer but do not proceed to the next state.
@@ -1322,7 +1322,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1357,7 +1357,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     // The initial state should not have a next state.
@@ -1379,7 +1379,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     submitPrototypeState1Answer()
@@ -1404,7 +1404,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     playThroughPrototypeState1AndMoveToNextState()
@@ -1428,7 +1428,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1453,7 +1453,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1477,7 +1477,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeNumericInputState()
 
@@ -1503,7 +1503,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     navigateToPrototypeNumericInputState()
 
@@ -1531,7 +1531,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     // The first state of the exploration is the Continue interaction.
 
@@ -1559,7 +1559,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
 
     playThroughPrototypeExploration()
@@ -1584,7 +1584,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1618,7 +1618,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeExploration()
 
@@ -1645,7 +1645,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_5,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
     moveToNextState()
@@ -1673,7 +1673,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_5,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
@@ -1699,7 +1699,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeExploration()
     endExploration()
@@ -1709,7 +1709,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_5,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
 
@@ -1745,7 +1745,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
@@ -1786,7 +1786,7 @@ class ExplorationProgressControllerTest {
       INVALID_TOPIC_ID,
       INVALID_STORY_ID,
       INVALID_EXPLORATION_ID,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     val exception = fakeExceptionLogger.getMostRecentException()
 
@@ -1802,7 +1802,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1823,7 +1823,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     verifyCheckpointHasCorrectPendingStateName(
       profileId,
@@ -1861,7 +1861,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1887,7 +1887,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1910,7 +1910,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1956,7 +1956,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -1979,7 +1979,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -2000,7 +2000,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -2023,7 +2023,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -2058,7 +2058,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      isCheckpointingEnabled = true
+      shouldSavePartialProgress = true
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -2078,6 +2078,25 @@ class ExplorationProgressControllerTest {
       profileId,
       TEST_EXPLORATION_ID_2,
       isSolutionRevealed = true
+    )
+  }
+
+  @Test
+  fun testCheckpointing_onStateWithContinueInteraction_pressContinue_correctCheckpointIsSaved() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    // Verify that checkpoint is saved when the exploration moves to the new pendingTopState.
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Fractions"
     )
   }
 
@@ -2102,7 +2121,7 @@ class ExplorationProgressControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ) {
     verifyOperationSucceeds(
       explorationDataController.startPlayingExploration(
@@ -2110,7 +2129,7 @@ class ExplorationProgressControllerTest {
         topicId,
         storyId,
         explorationId,
-        isCheckpointingEnabled
+        shouldSavePartialProgress
       )
     )
   }
