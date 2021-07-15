@@ -8,8 +8,6 @@ import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
-import org.oppia.android.scripts.proto.OriginOfLicenses
-import org.oppia.android.scripts.proto.PrimaryLinkType
 import java.io.File
 import java.io.FileInputStream
 
@@ -54,9 +52,6 @@ class MavenDependenciesListWriter() {
       val pathToMavenInstall = "$pathToRoot/${args[1]}"
       val pathToMavenDependenciesTextProto =
         "$pathToRoot/scripts/assets/maven_dependencies.textproto"
-//      val pathToProtoBinary = "$pathToRoot/scripts/assets/maven_dependencies.pb"
-
-//      println(pathToRoot)
 
       val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
       val mavenInstallDepsList = getDependencyListFromMavenInstall(
@@ -68,6 +63,8 @@ class MavenDependenciesListWriter() {
         retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
       val dependenciesListFromTextproto = retrieveMavenDependencyList()
+
+      verifyAllLicensesHaveNonEmptyOriginalLinks(dependenciesListFromTextproto)
 
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
@@ -90,9 +87,9 @@ class MavenDependenciesListWriter() {
         println("\nPlease complete all the details for the following licenses manually:")
         licensesToBeFixed.forEach {
           println("\nlicense_name: ${it.licenseName}")
-          println("primary_link: ${it.primaryLink}")
-          println("primary_link_type: ${it.primaryLinkType}")
-          println("alternative_link: ${it.alternativeLink}")
+          println("original_link: ${it.originalLink}")
+          println("verified_link_case: ${it.verifiedLinkCase}")
+          println("is_original_link_invalid: ${it.isOriginalLinkInvalid}")
         }
         throw Exception("Licenses details are not completed.")
       }
@@ -118,6 +115,23 @@ class MavenDependenciesListWriter() {
       println("\nScript executed succesfully: maven_dependencies.textproto updated successfully.")
     }
 
+    private fun verifyAllLicensesHaveNonEmptyOriginalLinks(
+      dependenciesList: List<MavenDependency>
+    ) {
+      val brokenDependencies = dependenciesList.filter { dependency ->
+        dependency.licenseList.filter { license ->
+          license.originalLink == ""
+        }.isNotEmpty()
+      }.toList()
+      if (brokenDependencies.isNotEmpty()) {
+        println("Please specify the field `original_link` for the below dependencies:\n")
+        brokenDependencies.forEach {
+          println(it)
+        }
+        throw Exception("Licenses details are not completed.")
+      }
+    }
+
     private fun addChangesFromTextProto(
       dependencyListFromPom: List<MavenDependency>,
       dependencyListFromProto: List<MavenDependency>
@@ -135,12 +149,11 @@ class MavenDependenciesListWriter() {
       val licenseSet = mutableSetOf<License>()
       mavenDependenciesList.forEach { dependency ->
         dependency.licenseList.forEach { license ->
-          val foundLicense: License? = licenseSet.find { it.primaryLink == license.primaryLink }
+          val foundLicense: License? = licenseSet.find { it.originalLink == license.originalLink }
           if (foundLicense == null) {
             licenseSet.add(license)
           } else if (
-            license.primaryLinkType != PrimaryLinkType.UNSPECIFIED &&
-            license.primaryLinkType != PrimaryLinkType.UNRECOGNIZED
+            !license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
           ) {
             licenseSet.remove(foundLicense)
             licenseSet.add(license)
@@ -156,7 +169,8 @@ class MavenDependenciesListWriter() {
       return mavenDependenciesList.filter { dependency ->
         dependency.licenseList.isEmpty() ||
           dependency.licenseList.filter { license ->
-            license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION
+            license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
+              license.isOriginalLinkInvalid == true
           }.isNotEmpty()
       }.toSet()
     }
@@ -166,12 +180,8 @@ class MavenDependenciesListWriter() {
     ): Set<License> {
       return mavenDependenciesList.flatMap { dependency ->
         dependency.licenseList.filter { license ->
-          license.primaryLinkType == PrimaryLinkType.UNSPECIFIED ||
-            license.primaryLinkType == PrimaryLinkType.UNRECOGNIZED ||
-            (
-              license.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY &&
-                license.alternativeLink.isEmpty()
-              )
+          license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
+            license.isOriginalLinkInvalid == false
         }
       }.toSet()
     }
@@ -181,25 +191,13 @@ class MavenDependenciesListWriter() {
       finalLicensesSet: Set<License>
     ): List<MavenDependency> {
       val finalUpdatedList = mutableListOf<MavenDependency>()
-
       latestDependenciesList.forEach { mavenDependency ->
         val updateLicenseList = mutableListOf<License>()
-        var numberOfLicensesThatRequireHumanEffort = 0
-        val origin = mavenDependency.originOfLicense
         mavenDependency.licenseList.forEach { license ->
-          val updatedLicense = finalLicensesSet.find { it.primaryLink == license.primaryLink }
+          val updatedLicense = finalLicensesSet.find { it.originalLink == license.originalLink }
           if (updatedLicense != null) {
             updateLicenseList.add(updatedLicense)
-            if (
-              updatedLicense.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION ||
-              updatedLicense.primaryLinkType == PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY
-            ) {
-              numberOfLicensesThatRequireHumanEffort++
-            }
           } else {
-            if (license.primaryLinkType == PrimaryLinkType.NEEDS_INTERVENTION) {
-              numberOfLicensesThatRequireHumanEffort++
-            }
             updateLicenseList.add(license)
           }
         }
@@ -207,21 +205,8 @@ class MavenDependenciesListWriter() {
           this.artifactName = mavenDependency.artifactName
           this.artifactVersion = mavenDependency.artifactVersion
           this.addAllLicense(updateLicenseList)
-        }
-        if (origin != OriginOfLicenses.UNKNOWN) {
-          dependency.originOfLicense = origin
-        } else {
-          if (updateLicenseList.isNotEmpty()) {
-            if (numberOfLicensesThatRequireHumanEffort == updateLicenseList.size) {
-              dependency.originOfLicense = OriginOfLicenses.MANUAL
-            } else if (numberOfLicensesThatRequireHumanEffort == 0) {
-              dependency.originOfLicense = OriginOfLicenses.ENTIRELY_FROM_POM
-            } else if (numberOfLicensesThatRequireHumanEffort != updateLicenseList.size) {
-              dependency.originOfLicense = OriginOfLicenses.PARTIALLY_FROM_POM
-            }
-          }
-        }
-        finalUpdatedList.add(dependency.build())
+        }.build()
+        finalUpdatedList.add(dependency)
       }
       return finalUpdatedList
     }
@@ -251,10 +236,10 @@ class MavenDependenciesListWriter() {
     }
 
     private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
-      val numberOfColons = artifactName.filter { it == ':' }.count()
-      if (numberOfColons != 2) {
-        throw Exception("Couldn't parse the version for the artifact \'$artifactName\'")
-      }
+//      val numberOfColons = artifactName.filter { it == ':' }.count()
+//      if (numberOfColons != 2) {
+//        throw Exception("Couldn't parse the version for the artifact \'$artifactName\'")
+//      }
       val lastColonIndex = artifactName.lastIndexOf(':')
       return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
         .replace('-', '_')
@@ -288,7 +273,7 @@ class MavenDependenciesListWriter() {
     private fun retrieveDependencyListFromPom(
       finalDependenciesList: List<MavenListDependency>
     ): MavenDependencyList {
-      val mavenDependencyList = arrayListOf<MavenDependency>()
+      val mavenDependencyList = mutableListOf<MavenDependency>()
       finalDependenciesList.forEach {
         // Remove ".jar" or ".aar" or any other extension from the specified url.
         val pomFileUrl = "${it.url?.dropLast(3)}pom"
@@ -305,7 +290,6 @@ class MavenDependenciesListWriter() {
           this.artifactName = it.coord
           this.artifactVersion = artifactVersion.toString()
           this.addAllLicense(extractLicenseLinksFromPom(pomFile))
-          this.originOfLicense = OriginOfLicenses.UNKNOWN
         }
         mavenDependencyList.add(mavenDependency.build())
       }
@@ -315,8 +299,6 @@ class MavenDependenciesListWriter() {
     private fun retrieveThirdPartyMavenDependenciesList(
       rootPath: String
     ): List<String> {
-      // The dependency list should be sorted so that we can use binarySearch to search the
-      // dependency name.
       return networkAndBazelUtils.retrieveThirdPartyMavenDependenciesList(rootPath).map { dep ->
         if (dep.startsWith(MAVEN_PREFIX)) dep.substring(MAVEN_PREFIX.length, dep.length) else dep
       }
@@ -397,8 +379,7 @@ class MavenDependenciesListWriter() {
               licenseList.add(
                 License.newBuilder().apply {
                   this.licenseName = licenseNameBuilder.toString()
-                  this.primaryLink = httpUrl
-                  this.primaryLinkType = PrimaryLinkType.UNSPECIFIED
+                  this.originalLink = httpUrl
                 }.build()
               )
             } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
