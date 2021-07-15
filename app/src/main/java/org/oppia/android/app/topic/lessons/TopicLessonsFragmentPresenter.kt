@@ -30,6 +30,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
 ) {
+  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
+  //  implemented.
+
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 

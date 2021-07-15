@@ -17,6 +17,7 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
@@ -90,6 +91,8 @@ class StateFragmentPresenter @Inject constructor(
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
   }
+
+  private var explorationCheckpointState: CheckpointState = CheckpointState.CHECKPOINT_UNSAVED
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -318,6 +321,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
@@ -524,6 +528,9 @@ class StateFragmentPresenter @Inject constructor(
       viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
+
+  /** Returns the checkpoint state for the current exploration. */
+  fun getExplorationCheckpointState() = explorationCheckpointState
 
   private fun markExplorationAsRecentlyPlayed() {
     storyProgressController.recordRecentlyPlayedChapter(
