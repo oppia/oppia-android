@@ -84,7 +84,7 @@ internal class ExplorationProgress {
    * checkpoints.
    *
    * @param newCheckpointState is the latest checkpoint state that is returned upon
-   *        completion of the save operation for checkpoints either successfully or unsuccessfully.
+   *     completion of the save operation for checkpoints either successfully or unsuccessfully.
    */
   internal fun updateCheckpointState(newCheckpointState: CheckpointState) {
     checkpointState = newCheckpointState

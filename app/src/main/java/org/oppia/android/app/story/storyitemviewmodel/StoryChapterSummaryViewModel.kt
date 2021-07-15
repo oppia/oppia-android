@@ -24,6 +24,9 @@ class StoryChapterSummaryViewModel(
   val chapterSummary: ChapterSummary,
   val entityType: String
 ) : StoryItemViewModel() {
+  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
+  //  implemented.
+
   val explorationId: String = chapterSummary.explorationId
   val name: String = chapterSummary.name
   val summary: String = chapterSummary.summary

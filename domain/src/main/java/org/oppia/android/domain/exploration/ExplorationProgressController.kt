@@ -59,7 +59,10 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
-  // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition.
+  // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
+  //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
+  //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
+  //  make decisions based on a value of the checkpointState which might not be up-to date.
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
@@ -182,7 +185,7 @@ class ExplorationProgressController @Inject constructor(
         } finally {
           // If the answer was submitted on behalf of the Continue interaction, don't save
           // checkpoint because it will be saved when the learner moves to the next state.
-          if (answerOutcome.state.interaction.id != "Continue") {
+          if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
             saveExplorationCheckpoint()
           }
 
@@ -381,7 +384,7 @@ class ExplorationProgressController @Inject constructor(
         }
         explorationProgress.stateDeck.navigateToNextState()
 
-        // Only mark checkpoint if current state is pending state. This ensures that checkpoint
+        // Only mark checkpoint if current state is pending state. This ensures that checkpoints
         // will not be marked on any of the completed states.
         if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
           saveExplorationCheckpoint()
@@ -396,12 +399,12 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   *  Checks if checkpointing is enabled, if checkpointing is enabled this function creates a
-   *  checkpoint with the latest progress and saves it using [ExplorationCheckpointController].
+   * Checks if checkpointing is enabled, if checkpointing is enabled this function creates a
+   * checkpoint with the latest progress and saves it using [ExplorationCheckpointController].
    *
-   *  This function also waits for the save operation to complete, upon completion this function
-   *  uses the function [processSaveCheckpointResult] to mark the exploration as
-   *  IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
+   * This function also waits for the save operation to complete, upon completion this function
+   * uses the function [processSaveCheckpointResult] to mark the exploration as
+   * IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
    */
   private fun saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
@@ -498,6 +501,8 @@ class ExplorationProgressController @Inject constructor(
           )
         }
         explorationProgress.updateCheckpointState(newCheckpointState)
+        // Notify the current state dataProvider that the checkpoint state has changed.
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
     }
   }
@@ -562,14 +567,24 @@ class ExplorationProgressController @Inject constructor(
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+            AsyncResult.success(
+              explorationProgress.stateDeck.getCurrentEphemeralState()
+                .toBuilder()
+                .setCheckpointState(explorationProgress.checkpointState)
+                .build()
+            )
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+          AsyncResult.success(
+            explorationProgress.stateDeck.getCurrentEphemeralState()
+              .toBuilder()
+              .setCheckpointState(explorationProgress.checkpointState)
+              .build()
+          )
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
@@ -588,6 +603,10 @@ class ExplorationProgressController @Inject constructor(
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()
   }
+
+  /** Checks if the answer was to a state was submitted on behalf of continue interaction. */
+  private fun doesInteractionAutoContinue(interactionId: String): Boolean =
+    interactionId == "Continue"
 
   private fun markExplorationAsInProgressSaved(
     profileId: ProfileId,

@@ -232,6 +232,9 @@ message EphemeralState {
     // This value is always true in the case where the state type is terminal. This type may change in the future to a
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
+
+    // The current state of checkpoint of an exploration.
+    CheckpointState checkpoint_state = 7;
   }
 }
 
@@ -330,4 +333,22 @@ message HelpIndex {
     // importance and is always 'true'.
     bool everything_revealed = 3;
   }
+}
+
+// Different states in which exploration checkpoint can exist.
+enum CheckpointState {
+
+  // The state of checkpoint is unknown.
+  CHECKPOINT_STATE_UNSPECIFIED = 0;
+
+  // Progress made in the exploration is saved and the size of the checkpoint database has
+  // not exceeded the allocated limit.
+  CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT = 1;
+
+  // Progress made in the exploration is saved and the size of the checkpoint database has
+  // exceeded the allocated limit.
+  CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT = 2;
+
+  // Progress made in the exploration is not saved.
+  CHECKPOINT_UNSAVED = 3;
 }
