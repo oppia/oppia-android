@@ -3,6 +3,7 @@ package org.oppia.android.scripts.maven
 import com.google.protobuf.TextFormat
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependency
 import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
 import org.oppia.android.scripts.proto.License
@@ -12,13 +13,10 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.xml.sax.InputSource
-import org.xml.sax.SAXException
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.parsers.ParserConfigurationException
 
 /**
  * This class is just a wrapper for the main function so that it can be called via
@@ -35,7 +33,7 @@ class MavenDependenciesListWriter() {
     private val NAME_TAG = "<name>"
     private val URL_TAG = "<url>"
 
-    lateinit var networkAndBazelUtils: NetworkAndBazelUtils
+    lateinit var licenseFetcher: LicenseFetcher
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -100,7 +98,7 @@ class MavenDependenciesListWriter() {
         }
         throw Exception(
           """
-          There does not exist any license links (or the extracted license links are invalid) 
+          There does not exist any license links (or the extracted license links are invalid)
           for some dependencies.
           """.trimIndent()
         )
@@ -253,7 +251,7 @@ class MavenDependenciesListWriter() {
           lastIndex--
         }
         artifactVersion.reverse()
-        val pomFile = networkAndBazelUtils.scrapeText(pomFileUrl)
+        val pomFile = licenseFetcher.scrapeText(pomFileUrl)
         val mavenDependency = MavenDependency.newBuilder().apply {
           this.artifactName = it.coord
           this.artifactVersion = artifactVersion.toString()
@@ -267,9 +265,11 @@ class MavenDependenciesListWriter() {
     private fun retrieveThirdPartyMavenDependenciesList(
       rootPath: String
     ): List<String> {
-      return networkAndBazelUtils.retrieveThirdPartyMavenDependenciesList(rootPath).map { dep ->
-        if (dep.startsWith(MAVEN_PREFIX)) dep.substring(MAVEN_PREFIX.length, dep.length) else dep
-      }
+      return BazelClient(File(rootPath).absoluteFile)
+        .retrieveThirdPartyMavenDepsListForBinary("oppia")
+        .map { dep ->
+          if (dep.startsWith(MAVEN_PREFIX)) dep.substring(MAVEN_PREFIX.length, dep.length) else dep
+        }
     }
 
     private fun getDependencyListFromMavenInstall(

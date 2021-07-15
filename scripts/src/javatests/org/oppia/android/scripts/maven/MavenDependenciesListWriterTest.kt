@@ -12,6 +12,7 @@ import org.mockito.kotlin.mock
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
+import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -38,7 +39,8 @@ class MavenDependenciesListWriterTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 
-  private val mockNetworkAndBazelUtils by lazy { initializeMockNetworkAndBazelUtils() }
+  private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
+  private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Rule
   @JvmField
@@ -47,6 +49,8 @@ class MavenDependenciesListWriterTest {
   @Before
   fun setUp() {
     tempFolder.newFolder("scripts", "assets")
+    tempFolder.newFolder("third_party")
+    testBazelWorkspace = TestBazelWorkspace(tempFolder)
     System.setOut(PrintStream(outContent))
   }
 
@@ -65,18 +69,48 @@ class MavenDependenciesListWriterTest {
 
   @Test
   fun testLicenseNeedManualWork_scriptFailsWithException() {
-    val dependencies = listOf<DependencyName>(
-      DependencyName.DATA_BINDING,
-      DependencyName.FIREBASE_ANALYTICS
-    )
-    val mavenDependencyList = getMavenDependencyList(dependencies)
-    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
-    writeMavenInstallJson(mavenInstallJson)
+//    val dependencies = listOf<DependencyName>(
+//      DependencyName.DATA_BINDING,
+//      DependencyName.FIREBASE_ANALYTICS
+//    )
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+//    val mavenDependencyList = getMavenDependencyList(dependencies)
+//    mavenDependencyList.writeTo(pbFile.outputStream())
 
-    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
+    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
+    testBazelWorkspace.ensureWorkspaceIsConfiguredForRulesJvmExternal(
+      listOf(
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "com.google.firebase:firebase-analytics:17.5.0"
+      )
+    )
+    createAndroidBinary(
+      listOf(
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:com_google_firebase_firebase-analytics"
+      )
+    )
+    writeThirdPartyBuildFile(
+      listOf(
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "com.google.firebase:firebase-analytics:17.5.0"
+      )
+    )
+
+    writeMavenInstallJson(mavenInstallJson)
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+
+    MavenDependenciesListWriter.licenseFetcher = mockLicenseFetcher
+
+//    MavenDependenciesListWriter.main(
+//      arrayOf(
+//        "${tempFolder.root}",
+//        "scripts/assets/maven_install.json",
+//        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+//      )
+//    )
+//
+//    assertThat(outContent.toString()).contains("jvdssdd")
 
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListWriter.main(
@@ -87,8 +121,6 @@ class MavenDependenciesListWriterTest {
         )
       )
     }
-
-
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
 //
@@ -114,23 +146,73 @@ class MavenDependenciesListWriterTest {
 //      )
 //    )
 //    assertThat(outContent.toString()).contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
-////    val exception = assertThrows(Exception::class) {
-////      MavenDependenciesListWriter.main(
-////        arrayOf(
-////          "${tempFolder.root}",
-////          "scripts/assets/maven_install.json",
-////          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-////        )
-////      )
-////    }
-////
-////    assertThat(exception).hasMessageThat().contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
+//    val exception = assertThrows(Exception::class) {
+//      MavenDependenciesListWriter.main(
+//        arrayOf(
+//          "${tempFolder.root}",
+//          "scripts/assets/maven_install.json",
+//          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+//        )
+//      )
+//    }
+//
+//    assertThat(exception).hasMessageThat().contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
 //  }
 
   @Test
   fun testMockitoUnitTest() {
-    assertThat(mockNetworkAndBazelUtils.scrapeText("https://www.google.com"))
+    assertThat(mockLicenseFetcher.scrapeText("https://www.google.com"))
       .contains("passed")
+  }
+
+  private fun writeThirdPartyBuildFile(exportsList: List<String>) {
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    thirdPartyBuild.appendText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      """.trimIndent() + "\n"
+    )
+    for (export in exportsList) {
+      createAndroidLibrary(thirdPartyBuild, export)
+    }
+  }
+
+  private fun createAndroidLibrary(thirdPartyBuild: File, artifactName: String) {
+    thirdPartyBuild.appendText(
+      """
+      android_library(
+          name = "${omitVersionAndReplaceColonsHyphensPeriods(artifactName)}",
+          visibility = ["//visibility:public"],
+          exports = [artifact("$artifactName")],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
+    val lastColonIndex = artifactName.lastIndexOf(':')
+    return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
+  }
+
+  fun createAndroidBinary(
+    dependenciesList: List<String>
+  ) {
+    tempFolder.newFile("test_manifest.xml")
+    val build = tempFolder.newFile("BUILD.bazel")
+    build.appendText("depsList = [\n")
+    for (dep in dependenciesList) {
+      build.appendText("\"$dep\",")
+    }
+    build.appendText("]\n")
+    build.appendText(
+      """
+      android_binary(
+          name = "oppia",
+          manifest = "test_manifest.xml",
+          deps = depsList
+      )
+      """.trimIndent() + "\n"
+    )
   }
 
   private fun getMavenDependency(
@@ -254,15 +336,8 @@ class MavenDependenciesListWriterTest {
     IO_FABRIC;
   }
 
-  private fun initializeMockNetworkAndBazelUtils(): NetworkAndBazelUtils {
-    val bazelList = listOf<String>(
-      "@maven//:androidx_databinding_databinding_adapters",
-      "@maven//:com_github_bumptech_glide_annotations",
-      "@maven//:com_google_firebase_firebase_analytics",
-//      "@maven//:com_google_protobuf_protobuf_lite",
-//      "@maven//:io_fabric_sdk_android_fabric"
-    )
-    return mock<NetworkAndBazelUtils> {
+  private fun initializeLicenseFetcher(): LicenseFetcher {
+    return mock<LicenseFetcher> {
       on { scrapeText(eq("https://www.google.com")) } doReturn "passed"
       on { scrapeText(eq(DATA_BINDING_POM)) }
         .doReturn(
@@ -301,7 +376,6 @@ class MavenDependenciesListWriterTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          
           """.trimIndent()
         )
       on { scrapeText(eq(IO_FABRIC_POM)) }
@@ -315,7 +389,6 @@ class MavenDependenciesListWriterTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          
           """.trimIndent()
         )
       on { scrapeText(eq(PROTO_LITE_POM)) }
@@ -324,8 +397,6 @@ class MavenDependenciesListWriterTest {
           <?xml version="1.0" encoding="UTF-8"?>
           """.trimIndent()
         )
-      on { retrieveThirdPartyMavenDependenciesList("${tempFolder.root}") }
-        .doReturn(bazelList)
     }
   }
 }
