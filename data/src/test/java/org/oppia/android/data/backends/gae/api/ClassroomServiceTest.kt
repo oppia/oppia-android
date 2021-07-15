@@ -12,9 +12,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockClassroomService
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -33,10 +30,6 @@ class ClassroomServiceTest {
   @Inject
   lateinit var mockRetrofit: MockRetrofit
 
-  private val mockLicenseFetcher by lazy {
-    initializeMockLicenseFetcher()
-  }
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -52,21 +45,6 @@ class ClassroomServiceTest {
 
     assertThat(classroomResponse.isSuccessful).isTrue()
     assertThat(classroomResponse.body()!!.topicSummaryDicts?.get(0)?.name).isEqualTo("Math")
-  }
-
-  @Test
-  fun testMockitoUnitTest() {
-    assertThat(mockLicenseFetcher.fetchText("https//:www.google.com")).contains("passed")
-  }
-
-  private fun initializeMockLicenseFetcher(): LicenseFetcher {
-    return mock {
-      on { fetchText(eq("https//:www.google.com")) } doReturn "passed"
-    }
-  }
-
-  interface LicenseFetcher {
-    fun fetchText(link: String): String
   }
 
   private fun setUpTestApplicationComponent() {
