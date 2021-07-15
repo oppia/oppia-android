@@ -32,7 +32,7 @@ private const val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/
 /** Tests for [MavenDependenciesListWriter]. */
 class MavenDependenciesListWriterTest {
 
-  private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "License details are not completed."
+  private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed."
   private val COMPLETE_LICENSE_DETAILS_MESSAGE = "Please complete all the details" +
     "for the following licenses:"
 
@@ -65,7 +65,7 @@ class MavenDependenciesListWriterTest {
   // 7. Dependencies contain invalid links, script fails.
 
   @Test
-  fun testLicenseNeedManualWork_scriptFailsWithExceptionAndCallOut() {
+  fun testLicenseNeedManualWork_scriptFailsWithException() {
     val dependencies = listOf<DependencyName>(
       DependencyName.DATA_BINDING,
       DependencyName.FIREBASE_ANALYTICS
@@ -73,33 +73,63 @@ class MavenDependenciesListWriterTest {
     val mavenDependencyList = getMavenDependencyList(dependencies)
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
+    val dir = File("scripts/assets")
+    if (!dir.exists()) {
+      dir.mkdirs()
+    }
     val pbFile = File("scripts/assets/maven_dependencies.pb")
-    pbFile.getParentFile().mkdirs()
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
 
-    MavenDependenciesListWriter.main(
-      arrayOf(
-        "${tempFolder.root}",
-        "scripts/assets/maven_install.json"
-      )
-    )
-
-    pbFile.delete()
-
-    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListWriter.main(
         arrayOf(
           "${tempFolder.root}",
-          "scipts/assets/test_maven_install.json"
+          "scripts/assets/maven_install.json",
+          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
         )
       )
     }
 
+    pbFile.delete()
+
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
+  }
+
+  @Test
+  fun testDependenciesNeedManualWork_scriptFailsWithException() {
+    val dependencies = listOf<DependencyName>(
+      DependencyName.PROTO_LITE
+    )
+    val mavenDependencyList = getMavenDependencyList(dependencies)
+    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
+    writeMavenInstallJson(mavenInstallJson)
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    mavenDependencyList.writeTo(pbFile.outputStream())
+
+    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
+    MavenDependenciesListWriter.main(
+      arrayOf(
+        "${tempFolder.root}",
+        "scripts/assets/maven_install.json",
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+      )
+    )
+    assertThat(outContent.toString()).contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
+//    val exception = assertThrows(Exception::class) {
+//      MavenDependenciesListWriter.main(
+//        arrayOf(
+//          "${tempFolder.root}",
+//          "scripts/assets/maven_install.json",
+//          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+//        )
+//      )
+//    }
+//
+//    assertThat(exception).hasMessageThat().contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
   }
 
   @Test
@@ -301,7 +331,7 @@ class MavenDependenciesListWriterTest {
           <?xml version="1.0" encoding="UTF-8"?>
           """.trimIndent()
         )
-      on { retrieveThirdPartyMavenDependenciesList("test_oppia") }
+      on { retrieveThirdPartyMavenDependenciesList("${tempFolder.root}") }
         .doReturn(bazelList)
     }
   }

@@ -83,7 +83,7 @@ class BazelClient(
   }
 
   /**
-   * Returns the list of direct and indiret Maven third-party dependencies on which the specified
+   * Returns the list of direct and indirect maven third-party dependencies on which the specified
    * binary depends.
    */
   fun retrieveThirdPartyMavenDependenciesList(binaryName: String): List<String> {

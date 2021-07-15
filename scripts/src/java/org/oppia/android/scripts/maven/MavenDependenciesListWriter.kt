@@ -245,21 +245,18 @@ class MavenDependenciesListWriter() {
       pbFileName: String,
       proto: MavenDependencyList
     ): MavenDependencyList {
-      val protoBinaryFile = File("scripts/assets/$pbFileName")
-//      println(protoBinaryFile.absolutePath)
-      val builder = proto.newBuilderForType()
-      val protoObject = FileInputStream(protoBinaryFile).use {
-        builder.mergeFrom(it)
+      return FileInputStream(File("scripts/assets/$pbFileName")).use {
+        proto.newBuilderForType().mergeFrom(it)
       }.build() as MavenDependencyList
-      return protoObject
     }
 
     private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
-      var colonIndex = artifactName.length - 1
-      while (artifactName.isNotEmpty() && artifactName[colonIndex] != ':') {
-        colonIndex--
+      val numberOfColons = artifactName.filter { it == ':' }.count()
+      if (numberOfColons != 2) {
+        throw Exception("Couldn't parse the version for the artifact \'$artifactName\'")
       }
-      return artifactName.substring(0, colonIndex).replace('.', '_').replace(':', '_')
+      val lastColonIndex = artifactName.lastIndexOf(':')
+      return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
         .replace('-', '_')
     }
 
