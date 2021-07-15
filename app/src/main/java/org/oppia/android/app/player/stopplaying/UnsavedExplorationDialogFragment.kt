@@ -9,12 +9,13 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 
 /**
- * DialogFragment that gives option to learner to stop exploration in between.
+ * DialogFragment that visible to the user when they exit a partially complete exploration with
+ * unsaved progress.
  */
 class UnsavedExplorationDialogFragment : DialogFragment() {
   companion object {
     /**
-     * This function is responsible for displaying content in DialogFragment.
+     * Responsible for displaying content in DialogFragment.
      *
      * @return [UnsavedExplorationDialogFragment]: DialogFragment
      */

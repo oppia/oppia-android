@@ -114,7 +114,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.backflowScreen = backflowScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
 
-    // Retrieve oldest save checkpoint details.
+    // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()
 
     if (getExplorationManagerFragment() == null) {
@@ -225,7 +225,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Deletes the oldest saved checkpoint and then stops the exploration. */
   fun deleteOldestSavedProgressAndStopExploration() {
-    // If oldestExplorationId is not initialized, it means that there was an error while
+    // If oldestCheckpointExplorationId is not initialized, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
     // without deleting the any checkpoints.
     oldestCheckpointExplorationId.let {
@@ -270,7 +270,7 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /**
-   * Shows the appropriate dialog box when back button is pressed. This function shows
+   * Shows an appropriate dialog box when back button is pressed. This function shows
    * [UnsavedExplorationDialogFragment] if checkpointing is not enabled otherwise it either shows
    * [StopExplorationDialogFragment] or [ProgressDatabaseFullDialogFragment] depending upon the
    * state of the saved checkpoint for the current exploration.
@@ -367,10 +367,9 @@ class ExplorationActivityPresenter @Inject constructor(
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-
-    // If any one of oldestExplorationId or oldestExplorationTitle is not initialized, it means that
-    // there was an error while retrieving the oldest saved checkpoint details. In that the
-    // exploration is exited without deleting the any checkpoints.
+    // If any one of oldestCheckpointExplorationId or oldestCheckpointExplorationTitle is not
+    // initialized, it means that there was an error while retrieving the oldest saved checkpoint
+    // details. In that case the exploration will be exited without deleting the any checkpoints.
     if (
       !::oldestCheckpointExplorationId.isInitialized ||
       !::oldestCheckpointExplorationTitle.isInitialized
@@ -411,19 +410,19 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /**
-   * This function listens to the result of [ExplorationDataController.getExplorationById].
+   * Listens to the result of [ExplorationDataController.getOldestExplorationDetailsDataProvider].
    *
-   * If the result is success it updates the value of the variables oldestExplorationId and
-   * oldestExplorationTitle. If the result fails, it does not change the values of the variables
-   * oldestExplorationId and oldestExplorationTitle and they remain equal null.
+   * If the result is success it updates the value of the variables oldestCheckpointExplorationId
+   * and oldestCheckpointExplorationTitle. If the result fails, it does not initializes the
+   * variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle with any value.
    *
    * Since this function is kicked off before any other save operation, therefore it is expected
    * to complete before any following save operation completes.
    *
    * If operations fails or this function does not get enough time to complete, user is not blocked
    * instead the flow of the application proceeds as if the checkpoints were not found. In that case,
-   * the values of the variables oldestExplorationId and oldestExplorationTitle is not changed and
-   * they remain equal to null.
+   * the variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle are not
+   * initialized and they remain uninitialized.
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
@@ -463,10 +462,12 @@ class ExplorationActivityPresenter @Inject constructor(
       showUnsavedExplorationDialogFragment()
     } else {
       when (checkpointState) {
-        CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
+        CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
           showStopExplorationDialogFragment()
-        CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
+        }
+        CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
           showProgressDatabaseFullDialogFragment()
+        }
         else -> showUnsavedExplorationDialogFragment()
       }
     }

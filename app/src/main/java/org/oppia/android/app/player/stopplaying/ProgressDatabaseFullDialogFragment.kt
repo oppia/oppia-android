@@ -12,8 +12,9 @@ private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
   "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
 
 /**
- * DialogFragment that is visible to the learner when they try to exit a partially complete
- * exploration if the checkpoint database has exceeded the allocated limit.
+ * DialogFragment that is visible to the learner when they exit a partially complete
+ * exploration if the exploration has saved progress and the checkpoint database has exceeded the
+ * allocated limit.
  *
  * This dialog fragment gives the user the option to either overwrite the oldest saved progress with
  * the current progress, leave the exploration without saving the current progress, or go back to
@@ -22,7 +23,7 @@ private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
 class ProgressDatabaseFullDialogFragment : DialogFragment() {
   companion object {
     /**
-     * This function is responsible for displaying content in DialogFragment.
+     * Responsible for displaying content in DialogFragment.
      *
      * @return [ProgressDatabaseFullDialogFragment]: DialogFragment
      */

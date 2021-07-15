@@ -93,11 +93,11 @@ class ExplorationDataController @Inject constructor(
   }
 
   /**
-   * Function to fetch the details of the oldest saved exploration for a specified profileId.
+   * Fetches the details of the oldest saved exploration for a specified profileId.
    *
    * @param profileId the ID corresponding to the profile for which the oldest checkpoint details
-   *     has to be retrieved.
-   * @return a [DataProvider] that indicates the success or failure of the retrieve operation.
+   *     has to be retrieved
+   * @return a [DataProvider] that indicates the success or failure of the retrieve operation
    */
   fun getOldestExplorationDetailsDataProvider(profileId: ProfileId) =
     explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(profileId)
@@ -107,8 +107,8 @@ class ExplorationDataController @Inject constructor(
    * exploration id and profile id.
    *
    * @param profileId the ID corresponding to the profile for which the oldest checkpoint details
-   *     has to be retrieved.
-   * @param explorationId the ID of the exploration whose checkpoint has to be deleted.
+   *     has to be retrieved
+   * @param explorationId the ID of the exploration whose checkpoint has to be deleted
    */
   fun deleteExplorationProgressById(profileId: ProfileId, explorationId: String) {
     explorationCheckpointController.deleteSavedExplorationCheckpoint(
