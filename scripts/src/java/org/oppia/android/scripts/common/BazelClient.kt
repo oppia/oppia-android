@@ -88,6 +88,7 @@ class BazelClient(
    */
   fun retrieveThirdPartyMavenDependenciesList(binaryName: String): List<String> {
     return executeBazelCommand(
+      "--max_idle_secs=60",
       "query",
       "deps(deps(//:$binaryName) intersect //third_party/...) intersect @maven//..."
     )
