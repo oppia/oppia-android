@@ -13,7 +13,7 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
@@ -25,7 +25,7 @@ private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIAL
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
   InjectableAppCompatActivity(),
-  StopStatePlayingSessionListener,
+  StopStatePlayingSessionWithSavedProgressListener,
   RestartPlayingSessionListener,
   StateKeyboardButtonListener,
   HintsAndSolutionListener,
@@ -46,10 +46,8 @@ class QuestionPlayerActivity :
   }
 
   override fun onBackPressed() {
-    showStopExplorationDialogFragment()
+    showUnsavedExplorationDialogFragment()
   }
-
-  override fun stopSession() = questionPlayerActivityPresenter.stopTrainingSession()
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
 
@@ -57,7 +55,7 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.onKeyboardAction(actionCode)
   }
 
-  private fun showStopExplorationDialogFragment() {
+  private fun showUnsavedExplorationDialogFragment() {
     val previousFragment =
       supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)
     if (previousFragment != null) {
@@ -125,4 +123,11 @@ class QuestionPlayerActivity :
   override fun dismissConceptCard() {
     questionPlayerActivityPresenter.dismissConceptCard()
   }
+
+  override fun deleteCurrentProgressAndStopSession() {
+    questionPlayerActivityPresenter.stopTrainingSession()
+  }
+
+  // This function is not needed because the no progress is saved in a training session.
+  override fun deleteOldestProgressAndStopSession() {}
 }
