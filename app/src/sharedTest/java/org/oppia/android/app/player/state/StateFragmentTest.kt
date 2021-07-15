@@ -1021,6 +1021,77 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_dotHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.dot_hint)).check(
+        matches(
+          withContentDescription(R.string.new_hint_available)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.hint_bulb)).check(
+        matches(
+          withContentDescription(R.string.show_hints_and_solution)
+        )
+      )
+    }
+  }
+
+  @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()

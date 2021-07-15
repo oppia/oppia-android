@@ -99,7 +99,8 @@
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
-  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="show_chapter_list">Show chapter list</string>
+  <string name="hide_chapter_list">Hide chapter list</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
@@ -134,6 +135,7 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
+  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -377,6 +379,9 @@
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
   <!-- HintsAndSolutionDialogFragment -->
+  <string name="new_hint_available">New hint available</string>
+  <string name="show_hints_and_solution">Show hints and solution</string>
+  <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
