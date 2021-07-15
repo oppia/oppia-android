@@ -38,6 +38,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.navigation:navigation-ui-ktx": "2.0.0",
     "androidx.recyclerview:recyclerview": "1.0.0",
     "androidx.room:room-runtime": "2.2.5",
+    "androidx.test.uiautomator:uiautomator": "2.2.0",
     "androidx.viewpager2:viewpager2": "1.0.0",
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",

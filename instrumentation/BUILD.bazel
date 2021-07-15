@@ -1,0 +1,49 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+android_library(
+    name="instrumentation_deps",
+    testonly = True,
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:androidx_test_runner",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:androidx_test_uiautomator_uiautomator",
+    ],
+)
+
+kt_android_library(
+    name="profile_test",
+    testonly = True,
+    srcs = [
+        "src/javatest/org/oppia/android/instrumentation/ProfileTest.kt",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":instrumentation_deps",
+    ],
+)
+
+android_binary(
+    name = "ProfileTest",
+    testonly = True,
+    custom_package = "org.oppia.android",
+    visibility = ["//visibility:public"],
+    instruments = "//:oppia",
+    manifest="AndroidManifest.xml",
+    deps = [":profile_test"]
+)
+API_LEVELS = [
+    "19_x86",
+    "21_x86",
+    "22_x86",
+    "23_x86",
+    "28_x86",
+]
+
+android_instrumentation_test(
+    name = "OppiaTest",
+    target_device = "@android_test_support//tools/android/emulated_devices/pixel_3_xl:android_28_x86_qemu2",
+    test_app = ":ProfileTest",
+)
