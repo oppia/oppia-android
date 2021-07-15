@@ -12,7 +12,7 @@ import java.io.File
 import java.io.FileInputStream
 
 /**
- * Class that wraps the main function of the script so that it can be called via
+ * This class is just a wrapper for the main function so that it can be called via
  * [GenerateMavenDependenciesListWriter.kt].
  */
 class MavenDependenciesListWriter() {
@@ -28,21 +28,6 @@ class MavenDependenciesListWriter() {
 
     lateinit var networkAndBazelUtils: NetworkAndBazelUtils
 
-    /**
-     * Script to compile the list of the third-party Maven dependencies (direct and indirect both)
-     * on which Oppia Android depends.
-     *
-     * Usage:
-     *   bazel run //scripts:generate_maven_dependencies_list  -- <path_to_directory_root>
-     *   <path_to_maven_install_json> <path_to_maven_dependencies_textproto>
-     *
-     * Arguments:
-     * - path_to_directory_root: directory path to the root of the Oppia Android repository.
-     * - path_to_maven_install_json: relative path to the maven_install.json file.
-     * Example:
-     *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
-     *   third_party/maven_install.json
-     */
     @JvmStatic
     fun main(args: Array<String>) {
       if (args.size < 2) {
