@@ -20,8 +20,8 @@ kt_jvm_library(
     name = "utility_provider",
     testonly = True,
     srcs = [
-        "NetworkAndBazelUtils.kt",
-        "NetworkAndBazelUtilsImpl.kt",
+        "LicenseFetcher.kt",
+        "LicenseFetcherImpl.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

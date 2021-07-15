@@ -13,7 +13,9 @@ import java.io.File
  * [initEmptyWorkspace] must be called first.
  */
 class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
-  private val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
+
+  /** The WORKSPACE file which will hold rules_jvm_external libraries. */
+  val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
 
   /**
    * The root BUILD.bazel file which will, by default, hold generated libraries & tests (for those
@@ -209,8 +211,13 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     return listOf()
   }
 
-  fun ensureWorkspaceIsConfiguredForRulesJvmExternal() {
+  fun ensureWorkspaceIsConfiguredForRulesJvmExternal(depsList: List<String>) {
     if (!isConfiguredForRulesJvmExternal) {
+      workspaceFile.appendText("artifactsList = [")
+      for (dep in depsList) {
+        workspaceFile.appendText("\"$dep\",\n")
+      }
+      workspaceFile.appendText("]\n")
       workspaceFile.appendText(
         """
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -228,16 +235,15 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         load("@rules_jvm_external//:defs.bzl", "maven_install")
         
         maven_install(
-            artifacts = [
-                "com.android.support:support-annotations:28.0.0",
-            ],
+            artifacts = artifactsList,
             repositories = [
                 "https://maven.google.com",
                 "https://repo1.maven.org/maven2",
             ],
-        )  
-        """.trimIndent()
+        ) 
+        """.trimIndent() + "\n"
       )
+
       isConfiguredForRulesJvmExternal = true
     }
   }

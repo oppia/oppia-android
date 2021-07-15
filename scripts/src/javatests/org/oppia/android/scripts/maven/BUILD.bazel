@@ -10,6 +10,7 @@ kt_jvm_test(
     srcs = ["MavenDependenciesListWriterTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",

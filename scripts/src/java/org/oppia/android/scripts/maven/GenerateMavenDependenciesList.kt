@@ -17,7 +17,7 @@ package org.oppia.android.scripts.maven
  */
 fun main(args: Array<String>) {
 
-  MavenDependenciesListWriter.networkAndBazelUtils = NetworkAndBazelUtilsImpl()
+  MavenDependenciesListWriter.licenseFetcher = LicenseFetcherImpl()
 
   MavenDependenciesListWriter.main(args)
 }
