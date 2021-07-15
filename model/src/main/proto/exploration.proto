@@ -232,10 +232,10 @@ message EphemeralState {
     // This value is always true in the case where the state type is terminal. This type may change in the future to a
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
-
-    // The current state of checkpoint of an exploration.
-    CheckpointState checkpoint_state = 7;
   }
+
+  // The current state of checkpoint of an exploration.
+  CheckpointState checkpoint_state = 7;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
