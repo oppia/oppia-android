@@ -69,7 +69,6 @@ class ExplorationProgressController @Inject constructor(
       CURRENT_STATE_DATA_PROVIDER_ID,
       this::retrieveCurrentStateAsync
     )
-
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
 
@@ -501,7 +500,7 @@ class ExplorationProgressController @Inject constructor(
           )
         }
         explorationProgress.updateCheckpointState(newCheckpointState)
-        // Notify the current state dataProvider that the checkpoint state has changed.
+        // Notify observers that the checkpoint state has changed.
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
     }
@@ -604,7 +603,7 @@ class ExplorationProgressController @Inject constructor(
     saveExplorationCheckpoint()
   }
 
-  /** Checks if the answer was to a state was submitted on behalf of continue interaction. */
+  /** Checks if the answer was submitted to the state on behalf of continue interaction. */
   private fun doesInteractionAutoContinue(interactionId: String): Boolean =
     interactionId == "Continue"
 
