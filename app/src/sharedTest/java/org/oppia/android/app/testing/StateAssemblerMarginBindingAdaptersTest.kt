@@ -4,11 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.Spannable
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.DimenRes
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
@@ -27,8 +24,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -37,8 +32,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
 import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationSplitViewMargin
 import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationViewMargin
 import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setQuestionSplitViewMargin
@@ -74,7 +67,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -84,7 +76,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 /** Tests for [StateAssemblerMarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -94,9 +85,6 @@ import kotlin.reflect.KClass
   qualifiers = "port-xxhdpi"
 )
 class StateAssemblerMarginBindingAdaptersTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var context: Context

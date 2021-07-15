@@ -22,8 +22,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -85,9 +83,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class StateAssemblerPaddingBindingAdaptersTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var context: Context

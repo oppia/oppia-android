@@ -4,11 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.Spannable
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.DimenRes
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
@@ -70,7 +67,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -80,16 +76,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 /** Tests for [MarginBindableAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MarginBindableAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class MarginBindableAdaptersTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var context: Context
