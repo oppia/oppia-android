@@ -64,14 +64,12 @@ class MavenDependenciesListWriter() {
 
       val dependenciesListFromTextproto = retrieveMavenDependencyList()
 
-      verifyAllLicensesHaveNonEmptyOriginalLinks(dependenciesListFromTextproto)
-
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
         dependenciesListFromTextproto
       )
 
-      val finalLicensesSet = retrieveUpdatedLicensesSet(updatedDependneciesList)
+      val finalLicensesSet = retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
 
       val finalDependenciesList = updateMavenDependenciesList(
         updatedDependneciesList,
@@ -115,23 +113,6 @@ class MavenDependenciesListWriter() {
       println("\nScript executed succesfully: maven_dependencies.textproto updated successfully.")
     }
 
-    private fun verifyAllLicensesHaveNonEmptyOriginalLinks(
-      dependenciesList: List<MavenDependency>
-    ) {
-      val brokenDependencies = dependenciesList.filter { dependency ->
-        dependency.licenseList.filter { license ->
-          license.originalLink == ""
-        }.isNotEmpty()
-      }.toList()
-      if (brokenDependencies.isNotEmpty()) {
-        println("Please specify the field `original_link` for the below dependencies:\n")
-        brokenDependencies.forEach {
-          println(it)
-        }
-        throw Exception("Licenses details are not completed.")
-      }
-    }
-
     private fun addChangesFromTextProto(
       dependencyListFromPom: List<MavenDependency>,
       dependencyListFromProto: List<MavenDependency>
@@ -143,24 +124,14 @@ class MavenDependenciesListWriter() {
       }
     }
 
-    private fun retrieveUpdatedLicensesSet(
+    private fun retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList: List<MavenDependency>
     ): Set<License> {
-      val licenseSet = mutableSetOf<License>()
-      mavenDependenciesList.forEach { dependency ->
-        dependency.licenseList.forEach { license ->
-          val foundLicense: License? = licenseSet.find { it.originalLink == license.originalLink }
-          if (foundLicense == null) {
-            licenseSet.add(license)
-          } else if (
-            !license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
-          ) {
-            licenseSet.remove(foundLicense)
-            licenseSet.add(license)
-          }
+      return mavenDependenciesList.flatMap { dependency ->
+        dependency.licenseList.filter { license ->
+          !license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
         }
-      }
-      return licenseSet
+      }.toSet()
     }
 
     private fun getDependenciesThatNeedIntervention(
@@ -188,13 +159,15 @@ class MavenDependenciesListWriter() {
 
     private fun updateMavenDependenciesList(
       latestDependenciesList: List<MavenDependency>,
-      finalLicensesSet: Set<License>
+      manuallyUpdatedLicenses: Set<License>
     ): List<MavenDependency> {
       val finalUpdatedList = mutableListOf<MavenDependency>()
       latestDependenciesList.forEach { mavenDependency ->
         val updateLicenseList = mutableListOf<License>()
         mavenDependency.licenseList.forEach { license ->
-          val updatedLicense = finalLicensesSet.find { it.originalLink == license.originalLink }
+          val updatedLicense = manuallyUpdatedLicenses.find {
+            it.originalLink == license.originalLink && it.licenseName == license.licenseName
+          }
           if (updatedLicense != null) {
             updateLicenseList.add(updatedLicense)
           } else {

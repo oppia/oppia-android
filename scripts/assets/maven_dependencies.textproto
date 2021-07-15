@@ -322,10 +322,11 @@ maven_dependency {
   artifact_version: "2.9.8"
   license {
     license_name: "Crashlytics Terms of Service"
-    original_link: "https://firebase.google.com/terms/crashlytics"
+    original_link: "https://try.crashlytics.com/terms/terms-of-service.pdf"
     direct_link_only {
       url: "https://firebase.google.com/terms/crashlytics"
     }
+    is_original_link_invalid: true
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -452,7 +453,6 @@ maven_dependency {
   artifact_version: "1.0-rc7"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -463,7 +463,6 @@ maven_dependency {
   artifact_version: "1.6.5"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -484,7 +483,7 @@ maven_dependency {
   artifact_name: "com.google.dagger:dagger:2.28.1"
   artifact_version: "2.28.1"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "Apache 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -495,7 +494,7 @@ maven_dependency {
   artifact_name: "com.google.errorprone:error_prone_annotations:2.3.2"
   artifact_version: "2.3.2"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "Apache 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -529,7 +528,6 @@ maven_dependency {
   artifact_version: "1.0.1"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -540,7 +538,6 @@ maven_dependency {
   artifact_version: "28.1-android"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -551,7 +548,6 @@ maven_dependency {
   artifact_version: "9999.0-empty-to-avoid-conflict-with-guava"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -573,7 +569,6 @@ maven_dependency {
   artifact_version: "3.0.0"
   license {
     license_name: "Simplified BSD License"
-    original_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     local_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
@@ -639,7 +634,6 @@ maven_dependency {
   artifact_version: "2.5.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
@@ -683,10 +677,11 @@ maven_dependency {
   artifact_version: "1.4.7"
   license {
     license_name: "Terms of Service for Firebase Services"
-    original_link: "https://firebase.google.com/terms"
+    original_link: "https://fabric.io/terms"
     direct_link_only {
       url: "https://firebase.google.com/terms"
     }
+    is_original_link_invalid: true
   }
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -733,7 +728,7 @@ maven_dependency {
   artifact_name: "net.ltgt.gradle.incap:incap:0.3"
   artifact_version: "0.3"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -773,10 +768,9 @@ maven_dependency {
   artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.18"
   artifact_version: "1.18"
   license {
-    license_name: "The MIT License"
-    original_link: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
-    local_copy_link {
-      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
+    license_name: "The Apache Software License, Version 2.0"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     }
   }
 }
@@ -784,7 +778,7 @@ maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.10"
   artifact_version: "1.4.10"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -795,7 +789,7 @@ maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32"
   artifact_version: "1.4.32"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -806,7 +800,7 @@ maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
   artifact_version: "1.4.10"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -817,7 +811,7 @@ maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
   artifact_version: "1.4.10"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -828,7 +822,7 @@ maven_dependency {
   artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
   artifact_version: "1.4.32"
   license {
-    license_name: "The Apache Software License, Version 2.0"
+    license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
     scrapable_link {
       url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
