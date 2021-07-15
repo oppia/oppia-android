@@ -320,6 +320,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
