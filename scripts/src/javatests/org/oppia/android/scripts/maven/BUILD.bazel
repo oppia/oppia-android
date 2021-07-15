@@ -9,7 +9,6 @@ kt_jvm_test(
     name = "MavenDependenciesListWriterTest",
     srcs = ["MavenDependenciesListWriterTest.kt"],
     deps = [
-        "//scripts:maven_assets_lib",
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",

@@ -10,6 +10,12 @@ import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import java.io.File
 import java.io.FileInputStream
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.xml.sax.SAXException
+import java.io.IOException
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.ParserConfigurationException
 
 /**
  * This class is just a wrapper for the main function so that it can be called via
@@ -47,7 +53,7 @@ class MavenDependenciesListWriter() {
       val dependenciesListFromPom =
         retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-      val dependenciesListFromTextproto = retrieveMavenDependencyList()
+      val dependenciesListFromTextproto = retrieveMavenDependencyList(pathToRoot)
 
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
@@ -170,9 +176,9 @@ class MavenDependenciesListWriter() {
     }
 
     /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-    private fun retrieveMavenDependencyList(): List<MavenDependency> {
+    private fun retrieveMavenDependencyList(pathToRoot: String): List<MavenDependency> {
       return getProto(
-        "maven_dependencies.pb",
+        pathToRoot,
         MavenDependencyList.getDefaultInstance()
       ).mavenDependencyList
     }
@@ -180,15 +186,15 @@ class MavenDependenciesListWriter() {
     /**
      * Helper function to parse the textproto file to a proto class.
      *
-     * @param pbFileName name of the textproto file to be parsed
+     * @param pathToRoot name of the textproto file to be parsed
      * @param proto instance of the proto class
      * @return proto class from the parsed textproto file
      */
     private fun getProto(
-      pbFileName: String,
+      pathToRoot: String,
       proto: MavenDependencyList
     ): MavenDependencyList {
-      return FileInputStream(File("scripts/assets/$pbFileName")).use {
+      return FileInputStream(File("$pathToRoot/scripts/assets/maven_dependnecies.pb")).use {
         proto.newBuilderForType().mergeFrom(it)
       }.build() as MavenDependencyList
     }
@@ -291,6 +297,15 @@ class MavenDependenciesListWriter() {
     private fun extractLicenseLinksFromPom(
       pomText: String
     ): List<License> {
+
+//      val istream = assets.open("empdetail.xml")
+//      val builderFactory = DocumentBuilderFactory.newInstance()
+//      val docBuilder = builderFactory.newDocumentBuilder()
+//      val doc = docBuilder.parse(pomText)
+//
+//      val nameTag = doc.getElementsByTagName("licenses")
+//
+//      println(nameTag)
       val licenseList = arrayListOf<License>()
       var cursor = -1
       if (pomText.length > 11) {

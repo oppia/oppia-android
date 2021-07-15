@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
  * The default amount of time that should be waited before considering a process as 'hung', in
  * milliseconds.
  */
-const val WAIT_PROCESS_TIMEOUT_MS = 60_000L
+const val WAIT_PROCESS_TIMEOUT_MS = 6_000_000L
 
 /** Default implementation of [CommandExecutor]. */
 class CommandExecutorImpl(

@@ -322,6 +322,7 @@ class BazelClientTest {
   @Test
   fun testRetrieveThirdPartyMavenDepsList_forTestBinary_returnsDependenciesList() {
     testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.ensureWorkspaceIsConfiguredForRulesJvmExternal()
     tempFolder.newFile("test_manifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
@@ -329,31 +330,25 @@ class BazelClientTest {
       dependencyName = "//third_party:androidx_databinding_databinding-adapters"
     )
     tempFolder.newFolder("third_party")
-    tempFolder.newFolder("@maven")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
-    val mavenBuild = tempFolder.newFile("@maven/BUILD.bazel")
     thirdPartyBuild.writeText(
       """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
       android_library(
           name = "androidx_databinding_databinding-adapters",
-          deps = [
-              "@maven//:androidx_databinding_databinding_adapters",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("androidx_databinding_databinding-adapters:3.4.2")
           ],
       )
       """.trimIndent() + "\n"
     )
-    mavenBuild.writeText(
-      """
-      android_library(
-          name = "androidx_databinding_databinding_adapters",
-      )
-      """.trimIndent() + "\n"
-    )
+
     val bazelClient = BazelClient(tempFolder.root)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDependenciesList("test_oppia")
-    assertThat(thirdPartyDependenciesList)
-      .contains("//@maven:androidx_databinding_databinding_adapters")
+    assertThat("@maven//:androidx_databinding_databinding_adapters")
+      .isIn(thirdPartyDependenciesList)
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {

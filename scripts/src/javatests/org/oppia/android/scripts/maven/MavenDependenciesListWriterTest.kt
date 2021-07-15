@@ -12,7 +12,6 @@ import org.mockito.kotlin.mock
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
-import org.oppia.android.scripts.proto.PrimaryLinkType
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -71,13 +70,10 @@ class MavenDependenciesListWriterTest {
       DependencyName.FIREBASE_ANALYTICS
     )
     val mavenDependencyList = getMavenDependencyList(dependencies)
+    val file = tempFolder.newFolder("scripts", "assets")
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
-    val dir = File("scripts/assets")
-    if (!dir.exists()) {
-      dir.mkdirs()
-    }
-    val pbFile = File("scripts/assets/maven_dependencies.pb")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     mavenDependencyList.writeTo(pbFile.outputStream())
 
@@ -93,7 +89,6 @@ class MavenDependenciesListWriterTest {
       )
     }
 
-    pbFile.delete()
 
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
@@ -104,6 +99,7 @@ class MavenDependenciesListWriterTest {
       DependencyName.PROTO_LITE
     )
     val mavenDependencyList = getMavenDependencyList(dependencies)
+
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
@@ -201,16 +197,12 @@ class MavenDependenciesListWriterTest {
 
   private fun getLicense(
     licenseName: String,
-    primaryLink: String = "",
-    primaryLinkType: PrimaryLinkType = PrimaryLinkType.UNSPECIFIED,
-    alternativeLink: String = ""
+    originalLink: String = "",
   ): License {
     return License
       .newBuilder()
       .setLicenseName(licenseName)
-      .setPrimaryLink(primaryLink)
-      .setPrimaryLinkType(primaryLinkType)
-      .setAlternativeLink(alternativeLink)
+      .setOriginalLink(originalLink)
       .build()
   }
 
