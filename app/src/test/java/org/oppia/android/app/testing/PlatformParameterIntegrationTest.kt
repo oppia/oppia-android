@@ -67,10 +67,7 @@ import javax.inject.Singleton
 /** Tests to verify the working of Platform Parameter Architecture. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = PlatformParameterIntegrationTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
+@Config(application = PlatformParameterIntegrationTest.TestApplication::class)
 class PlatformParameterIntegrationTest {
 
   @Inject
