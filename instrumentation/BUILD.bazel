@@ -34,16 +34,8 @@ android_binary(
     manifest="AndroidManifest.xml",
     deps = [":profile_test"]
 )
-API_LEVELS = [
-    "19_x86",
-    "21_x86",
-    "22_x86",
-    "23_x86",
-    "28_x86",
-]
-
 android_instrumentation_test(
     name = "OppiaTest",
-    target_device = "@android_test_support//tools/android/emulated_devices/pixel_3_xl:android_28_x86_qemu2",
+    target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
     test_app = ":ProfileTest",
 )
