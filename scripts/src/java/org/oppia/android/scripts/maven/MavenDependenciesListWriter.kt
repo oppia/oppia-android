@@ -8,11 +8,14 @@ import org.oppia.android.scripts.maven.maveninstall.MavenListDependencyTree
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
-import java.io.File
-import java.io.FileInputStream
+import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import org.xml.sax.InputSource
 import org.xml.sax.SAXException
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
@@ -284,85 +287,116 @@ class MavenDependenciesListWriter() {
       } ?: listOf<MavenListDependency>()
     }
 
-    private fun replaceHttpWithHttps(
-      urlBuilder: StringBuilder
-    ): String {
-      var url = urlBuilder.toString()
-      if (!url.startsWith("https")) {
-        url = url.replace("http", "https")
+    private fun getNodeValue(tag: String, element: Element): String {
+      val nodeList = element.getElementsByTagName(tag)
+      val node = nodeList.item(0)
+      if (node != null) {
+        if (node.hasChildNodes()) {
+          val child = node.getFirstChild()
+          while (child != null) {
+            if (child.getNodeType() === Node.TEXT_NODE) {
+              return child.getNodeValue()
+            }
+          }
+        }
       }
-      return url
+      return ""
+    }
+
+    private fun replaceHttpWithHttps(
+      url: String
+    ): String {
+      var httpsUrl = url
+      if (!url.startsWith("https")) {
+        httpsUrl = url.replace("http", "https")
+      }
+      return httpsUrl
     }
 
     private fun extractLicenseLinksFromPom(
       pomText: String
     ): List<License> {
+      val licenseList = mutableListOf<License>()
+      val builderFactory = DocumentBuilderFactory.newInstance()
+      val docBuilder = builderFactory.newDocumentBuilder()
+      val doc: Document = docBuilder.parse(
+        InputSource(ByteArrayInputStream(pomText.toByteArray(Charsets.UTF_8)))
+      )
 
-//      val istream = assets.open("empdetail.xml")
-//      val builderFactory = DocumentBuilderFactory.newInstance()
-//      val docBuilder = builderFactory.newDocumentBuilder()
-//      val doc = docBuilder.parse(pomText)
-//
-//      val nameTag = doc.getElementsByTagName("licenses")
-//
-//      println(nameTag)
-      val licenseList = arrayListOf<License>()
-      var cursor = -1
-      if (pomText.length > 11) {
-        for (index in 0..(pomText.length - 11)) {
-          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
-            cursor = index + 9
-            break
-          }
-        }
-        if (cursor != -1) {
-          var cursor2 = cursor
-          while (cursor2 < (pomText.length - 12)) {
-            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
-              cursor2 += 9
-              while (cursor2 < pomText.length - 6 &&
-                pomText.substring(
-                  cursor2,
-                  cursor2 + 6
-                ) != NAME_TAG
-              ) {
-                ++cursor2
-              }
-              cursor2 += 6
-              val licenseUrlBuilder = StringBuilder()
-              val licenseNameBuilder = StringBuilder()
-              while (pomText[cursor2] != '<') {
-                licenseNameBuilder.append(pomText[cursor2])
-                ++cursor2
-              }
-              while (cursor2 < pomText.length - 4 &&
-                pomText.substring(
-                  cursor2,
-                  cursor2 + 5
-                ) != URL_TAG
-              ) {
-                ++cursor2
-              }
-              cursor2 += 5
-              while (pomText[cursor2] != '<') {
-                licenseUrlBuilder.append(pomText[cursor2])
-                ++cursor2
-              }
-              val httpUrl = replaceHttpWithHttps(licenseUrlBuilder)
-              licenseList.add(
-                License.newBuilder().apply {
-                  this.licenseName = licenseNameBuilder.toString()
-                  this.originalLink = httpUrl
-                }.build()
-              )
-            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
-              break
-            }
-            ++cursor2
+      val licenses = doc.getElementsByTagName("license")
+      if (licenses.length > 0) {
+        for (i in 0 until licenses.getLength()) {
+          if (licenses.item(0).getNodeType().equals(Node.ELEMENT_NODE)) {
+            val element = licenses.item(i) as Element
+            val licenseName = getNodeValue("name", element)
+            val licenseLink = replaceHttpWithHttps(getNodeValue("url", element))
+            licenseList.add(
+              License.newBuilder().apply {
+                this.licenseName = licenseName
+                this.originalLink = licenseLink
+              }.build()
+            )
           }
         }
       }
-      return licenseList
+      return licenseList.toList()
+
+//      var cursor = -1
+//      if (pomText.length > 11) {
+//        for (index in 0..(pomText.length - 11)) {
+//          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
+//            cursor = index + 9
+//            break
+//          }
+//        }
+//        if (cursor != -1) {
+//          var cursor2 = cursor
+//          while (cursor2 < (pomText.length - 12)) {
+//            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
+//              cursor2 += 9
+//              while (cursor2 < pomText.length - 6 &&
+//                pomText.substring(
+//                  cursor2,
+//                  cursor2 + 6
+//                ) != NAME_TAG
+//              ) {
+//                ++cursor2
+//              }
+//              cursor2 += 6
+//              val licenseUrlBuilder = StringBuilder()
+//              val licenseNameBuilder = StringBuilder()
+//              while (pomText[cursor2] != '<') {
+//                licenseNameBuilder.append(pomText[cursor2])
+//                ++cursor2
+//              }
+//              while (cursor2 < pomText.length - 4 &&
+//                pomText.substring(
+//                  cursor2,
+//                  cursor2 + 5
+//                ) != URL_TAG
+//              ) {
+//                ++cursor2
+//              }
+//              cursor2 += 5
+//              while (pomText[cursor2] != '<') {
+//                licenseUrlBuilder.append(pomText[cursor2])
+//                ++cursor2
+//              }
+//              val httpUrl = replaceHttpWithHttps(licenseUrlBuilder)
+//              licenseList.add(
+//                License.newBuilder().apply {
+//                  this.licenseName = licenseNameBuilder.toString()
+//                  this.originalLink = httpUrl
+//                }.build()
+//              )
+//            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
+//              break
+//            }
+//            ++cursor2
+//          }
+//        }
+//      }
+//      return licenseList
     }
   }
 }

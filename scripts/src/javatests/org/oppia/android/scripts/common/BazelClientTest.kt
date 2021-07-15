@@ -327,7 +327,7 @@ class BazelClientTest {
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "test_manifest.xml",
-      dependencyName = "//third_party:androidx_databinding_databinding-adapters"
+      dependencyName = "//third_party:com_android_support_support-annotations"
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
@@ -335,10 +335,10 @@ class BazelClientTest {
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
       android_library(
-          name = "androidx_databinding_databinding-adapters",
+          name = "com_android_support_support-annotations",
           visibility = ["//visibility:public"],
           exports = [
-              artifact("androidx_databinding_databinding-adapters:3.4.2")
+              artifact("com.android.support:support-annotations:28.0.0")
           ],
       )
       """.trimIndent() + "\n"
@@ -347,7 +347,7 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDependenciesList("test_oppia")
-    assertThat("@maven//:androidx_databinding_databinding_adapters")
+    assertThat("@maven//:com_android_support_support_annotations")
       .isIn(thirdPartyDependenciesList)
   }
 

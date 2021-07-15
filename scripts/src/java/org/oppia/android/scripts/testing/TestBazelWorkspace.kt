@@ -229,7 +229,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         
         maven_install(
             artifacts = [
-                "androidx.databinding:databinding-adapters:3.4.2",
+                "com.android.support:support-annotations:28.0.0",
             ],
             repositories = [
                 "https://maven.google.com",
