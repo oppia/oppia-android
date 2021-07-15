@@ -69,11 +69,11 @@ class MavenDependenciesListWriter() {
         dependenciesListFromTextproto
       )
 
-      val finalLicensesSet = retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
+      val manuallyUpdatedLicenses = retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
 
       val finalDependenciesList = updateMavenDependenciesList(
         updatedDependneciesList,
-        finalLicensesSet
+        manuallyUpdatedLicenses
       )
       writeTextProto(
         pathToMavenDependenciesTextProto,
