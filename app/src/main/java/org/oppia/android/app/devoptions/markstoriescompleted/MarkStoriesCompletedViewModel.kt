@@ -24,7 +24,7 @@ class MarkStoriesCompletedViewModel @Inject constructor(
 
   private lateinit var profileId: ProfileId
 
-  private val itemList = mutableListOf<StorySummaryViewModel>()
+  private val itemList = mutableMapOf<String, StorySummaryViewModel>()
 
   /**
    * List of [StorySummaryViewModel] used to populate recyclerview of [MarkStoriesCompletedFragment]
@@ -65,16 +65,20 @@ class MarkStoriesCompletedViewModel @Inject constructor(
     storyMap.forEach {
       it.value.forEach { storySummary ->
         val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
-        itemList.add(StorySummaryViewModel(storySummary, isCompleted, topicId = it.key))
+        itemList[storySummary.storyId] =
+          StorySummaryViewModel(storySummary, isCompleted, topicId = it.key)
       }
     }
-    return itemList
+    return itemList.values.toList()
   }
 
   fun setProfileId(profileId: ProfileId) {
     this.profileId = profileId
   }
 
-  /** Returns a list of [StorySummaryViewModel]s whose progress can be modified. */
-  fun getStorySummaryList(): List<StorySummaryViewModel> = itemList.toList()
+  /**
+   * Returns a list of [StorySummaryViewModel]s mapped to corresponding story IDs whose progress
+   * can be modified.
+   */
+  fun getStorySummaryMap(): Map<String, StorySummaryViewModel> = itemList.toMap()
 }
