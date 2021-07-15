@@ -25,6 +25,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
@@ -88,7 +89,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.CheckpointState
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
