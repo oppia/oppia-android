@@ -64,12 +64,6 @@ class ExplorationProgressController @Inject constructor(
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
   //  make decisions based on a value of the checkpointState which might not be up-to date.
 
-  /** Indicates that the checkpoint database has exceeded the allocated limit.. */
-  class CheckpointDatabaseOverflowException(msg: String) : Exception(msg)
-
-  /** Indicates that the current exploration is not completely saved. */
-  class ProgressNotSavedException(msg: String) : Exception(msg)
-
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
       CURRENT_STATE_DATA_PROVIDER_ID,
@@ -111,29 +105,6 @@ class ExplorationProgressController @Inject constructor(
         "Cannot finish playing an exploration that hasn't yet been started"
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
-    }
-  }
-
-  /**
-   * Checks if progress made in the exploration is saved and the checkpoint database has not
-   * exceeded limit.
-   *
-   * If progress is not saved, this function throws [ProgressNotSavedException].
-   * If checkpoint database has exceeded the allocated size limit this function throws
-   * [CheckpointDatabaseOverflowException]
-   */
-  internal fun isCurrentCheckpointStateIsSavedDatabaseNotExceededLimit() {
-    explorationProgressLock.withLock {
-      // throw an appropriate exception if either the checkpoint database has exceeded the allocated
-      // size limit or the current exploration contains unsaved progress.
-      val currentCheckpointState = explorationProgress.checkpointState
-      if (currentCheckpointState == CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT) {
-        throw CheckpointDatabaseOverflowException(
-          "Checkpoint database has exceeded the allocated size limit."
-        )
-      } else if (currentCheckpointState == CheckpointState.CHECKPOINT_UNSAVED) {
-        throw ProgressNotSavedException("Current exploration contains unsaved progress.")
-      }
     }
   }
 

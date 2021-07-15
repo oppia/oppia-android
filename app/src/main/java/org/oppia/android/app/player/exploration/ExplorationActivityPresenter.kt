@@ -14,6 +14,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
@@ -26,7 +27,6 @@ import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -282,9 +282,9 @@ class ExplorationActivityPresenter @Inject constructor(
       showUnsavedExplorationDialogFragment()
       return
     }
-    // If checkpointing is enabled, get the current checkpoint state to figure out the if
-    // so far checkpointing has been successful in the exploration.
-    subscribeToCheckpointState(explorationDataController.checkHasCheckpointingBeenSuccessful())
+    // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
+    // fragment.
+    showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
   fun dismissConceptCard() {
@@ -446,38 +446,29 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /**
-   * This function listens to the result of the function
-   * [ExplorationDataController.checkHasCheckpointingBeenSuccessful]
+   * Checks the checkpointState for the current exploration and shows an appropriate dialog
+   * fragment.
    *
-   * Once the result is available this functions  shows an appropriate dialog box.
-   *
-   * If a success result returned by the function
-   * [ExplorationDataController.checkHasCheckpointingBeenSuccessful], this functions displays the
-   * [StopExplorationDialogFragment].
-   *
-   * If case of a failure result, if the exception is
-   * [ExplorationProgressController.ProgressNotSavedException],
-   * [UnsavedExplorationDialogFragment] is displayed.
-   * If the exception is [ExplorationProgressController.CheckpointDatabaseOverflowException],
-   * [ProgressDatabaseFullDialogFragment] is displayed.
+   * If the checkpointState is equal to CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT,
+   * [StopExplorationDialogFragment] will be displayed to the user. If the checkpointState is equal
+   * to CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT, [ProgressDatabaseFullDialogFragment] will be
+   * displayed to the user. Otherwise, the dialog fragment [UnsavedExplorationDialogFragment] will
+   * be displayed to the user.
    */
-  private fun subscribeToCheckpointState(checkpointStateLiveData: LiveData<AsyncResult<Any?>>) {
-    checkpointStateLiveData.observe(
-      activity,
-      Observer {
-        if (it.isSuccess()) {
+  private fun showDialogFragmentBasedOnCurrentCheckpointState() {
+    val checkpointState = getExplorationFragment()?.getExplorationCheckpointState()
+
+    // Show UnsavedExplorationDialogFragment if checkpoint state could not be retrieved.
+    if (checkpointState == null) {
+      showUnsavedExplorationDialogFragment()
+    } else {
+      when (checkpointState) {
+        CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT ->
           showStopExplorationDialogFragment()
-        } else if (it.isFailure()) {
-          when (it.getErrorOrNull()) {
-            is ExplorationProgressController.ProgressNotSavedException -> {
-              showUnsavedExplorationDialogFragment()
-            }
-            is ExplorationProgressController.CheckpointDatabaseOverflowException -> {
-              showProgressDatabaseFullDialogFragment()
-            }
-          }
-        }
+        CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT ->
+          showProgressDatabaseFullDialogFragment()
+        else -> showUnsavedExplorationDialogFragment()
       }
-    )
+    }
   }
 }

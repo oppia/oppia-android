@@ -40,6 +40,7 @@
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
+  <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
   <string name="progress_database_full_dialog_leave_without_saving_progress_button">Leave without saving progress</string>
   <string name="progress_database_full_dialog_back_to_lesson_button">Back to lesson</string>

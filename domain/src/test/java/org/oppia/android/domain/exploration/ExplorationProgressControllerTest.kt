@@ -88,6 +88,7 @@ import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.CheckpointState
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2112,18 +2113,12 @@ class ExplorationProgressControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val currentCheckpointStateLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    currentCheckpointStateLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    // The LiveData should have a failure with the exception ProgressNotSavedException
-    // if the checkpointState is CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT.
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.ProgressNotSavedException::class.java
-    )
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_UNSAVED)
   }
 
   @Test
@@ -2138,15 +2133,12 @@ class ExplorationProgressControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val currentCheckpointStateLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    currentCheckpointStateLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    // The LiveData should have a success result if the checkpointState
-    // is CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT.
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT)
   }
 
   @Test
@@ -2164,18 +2156,14 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
-    val currentCheckpointStateLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    currentCheckpointStateLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    // The LiveData should have a failure with the exception CheckpointDatabaseOverflowException
-    // if the checkpointState is CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT.
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      ExplorationProgressController.CheckpointDatabaseOverflowException::class.java
-    )
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT)
   }
 
   private fun setUpTestApplicationComponent() {

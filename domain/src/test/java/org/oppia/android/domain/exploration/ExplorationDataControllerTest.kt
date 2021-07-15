@@ -101,12 +101,6 @@ class ExplorationDataControllerTest {
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
   @Mock
-  lateinit var mockResultObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var resultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
 
   @Captor
@@ -282,85 +276,6 @@ class ExplorationDataControllerTest {
     assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
     assertThat(exception).hasMessageThat()
       .contains("Expected to finish previous exploration before starting a new one.")
-  }
-
-  @Test
-  fun testCheckHasCheckpointingBeenSuccessful_progressNotSaved_failsWithException() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0, TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val hasCheckpointingBeenSuccessfulLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    hasCheckpointingBeenSuccessfulLiveData.observeForever(mockResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockResultObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    assertThat(resultCaptor.value.isFailure()).isTrue()
-    assertThat(resultCaptor.value.getErrorOrNull())
-      .isInstanceOf(ExplorationProgressController.ProgressNotSavedException::class.java)
-  }
-
-  @Test
-  fun testCheckHasCheckpointingBeenSuccessful_progressSavedDatabaseNotExceededLimit_isSuccess() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val hasCheckpointingBeenSuccessfulLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    hasCheckpointingBeenSuccessfulLiveData.observeForever(mockResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockResultObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    assertThat(resultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  fun testCheckHasCheckpointingBeenSuccessful_progSavedDatabaseExceededLimit_failsWithException() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    val hasCheckpointingBeenSuccessfulLiveData =
-      explorationDataController.checkHasCheckpointingBeenSuccessful()
-    hasCheckpointingBeenSuccessfulLiveData.observeForever(mockResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockResultObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    assertThat(resultCaptor.value.isFailure()).isTrue()
-    assertThat(resultCaptor.value.getErrorOrNull())
-      .isInstanceOf(ExplorationProgressController.CheckpointDatabaseOverflowException::class.java)
-  }
-
-  /**
-   * Creates a blank subscription to the current state to ensure that requests to load the
-   * exploration complete, otherwise post-load operations may fail. An observer is required since
-   * the current mediator live data implementation will only lazily load data based on whether
-   * there's an active subscription.
-   */
-  private fun subscribeToCurrentStateToAllowExplorationToLoad() {
-    explorationProgressController.getCurrentState()
-      .toLiveData()
-      .observeForever(mockCurrentStateLiveDataObserver)
   }
 
   // TODO(#89): Move this to a common test application component.

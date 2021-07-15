@@ -49,7 +49,7 @@ class ProgressDatabaseFullDialogFragment : DialogFragment() {
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
-        createMaximumStorageCapacityReachedDialogDescription(oldestSavedExplorationTitle!!)
+        getString(R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle)
       )
       .setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
@@ -69,11 +69,5 @@ class ProgressDatabaseFullDialogFragment : DialogFragment() {
         dismiss()
       }
       .create()
-  }
-
-  private fun createMaximumStorageCapacityReachedDialogDescription(
-    oldestSavedExplorationTitle: String
-  ): String {
-    return "Saved progress for the lesson \"$oldestSavedExplorationTitle\" will be deleted."
   }
 }

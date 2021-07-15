@@ -19,7 +19,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -42,9 +41,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -66,7 +63,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -1625,29 +1621,6 @@ class ExplorationActivityTest {
         "addException", dataSource.javaClass, IOException::class.java
       )
     addException.invoke(/* obj= */ null, dataSource, exception)
-  }
-
-  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
-    onView(withId(R.id.state_recycler_view)).perform(
-      RecyclerViewActions.scrollToHolder(StateViewHolderTypeMatcher(viewType))
-    )
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  /**
-   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
-   * StateFragment's RecyclerView.
-   */
-  private class StateViewHolderTypeMatcher(
-    private val viewType: StateItemViewModel.ViewType
-  ) : BaseMatcher<RecyclerView.ViewHolder>() {
-    override fun describeTo(description: Description?) {
-      description?.appendText("item view type of $viewType")
-    }
-
-    override fun matches(item: Any?): Boolean {
-      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
-    }
   }
 
   private fun isOnRobolectric(): Boolean {

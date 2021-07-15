@@ -93,23 +93,6 @@ class ExplorationDataController @Inject constructor(
   }
 
   /**
-   * Checks the checkpoint state to make sure that checkpointing has been successful up-to that
-   * point in the exploration.
-   *
-   * @return a one-time [LiveData] with success result if checkpointing has been successful
-   *         otherwise a failure result with an appropriate exception is returned.
-   */
-  fun checkHasCheckpointingBeenSuccessful(): LiveData<AsyncResult<Any?>> {
-    return try {
-      explorationProgressController.isCurrentCheckpointStateIsSavedDatabaseNotExceededLimit()
-      MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
-    }
-  }
-
-  /**
    * Function to fetch the details of the oldest saved exploration for a specified profileId.
    *
    * @param profileId the ID corresponding to the profile for which the oldest checkpoint details
