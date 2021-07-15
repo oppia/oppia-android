@@ -70,7 +70,6 @@ class MavenDependenciesListWriterTest {
       DependencyName.FIREBASE_ANALYTICS
     )
     val mavenDependencyList = getMavenDependencyList(dependencies)
-    val file = tempFolder.newFolder("scripts", "assets")
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
@@ -92,41 +91,41 @@ class MavenDependenciesListWriterTest {
 
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
-
-  @Test
-  fun testDependenciesNeedManualWork_scriptFailsWithException() {
-    val dependencies = listOf<DependencyName>(
-      DependencyName.PROTO_LITE
-    )
-    val mavenDependencyList = getMavenDependencyList(dependencies)
-
-    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
-    writeMavenInstallJson(mavenInstallJson)
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
-    MavenDependenciesListWriter.main(
-      arrayOf(
-        "${tempFolder.root}",
-        "scripts/assets/maven_install.json",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
-    )
-    assertThat(outContent.toString()).contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
-//    val exception = assertThrows(Exception::class) {
-//      MavenDependenciesListWriter.main(
-//        arrayOf(
-//          "${tempFolder.root}",
-//          "scripts/assets/maven_install.json",
-//          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-//        )
-//      )
-//    }
 //
-//    assertThat(exception).hasMessageThat().contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
-  }
+//  @Test
+//  fun testDependenciesNeedManualWork_scriptFailsWithException() {
+//    val dependencies = listOf<DependencyName>(
+//      DependencyName.PROTO_LITE
+//    )
+//    val mavenDependencyList = getMavenDependencyList(dependencies)
+//
+//    val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
+//    writeMavenInstallJson(mavenInstallJson)
+//    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+//    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+//    mavenDependencyList.writeTo(pbFile.outputStream())
+//
+//    MavenDependenciesListWriter.networkAndBazelUtils = mockNetworkAndBazelUtils
+//    MavenDependenciesListWriter.main(
+//      arrayOf(
+//        "${tempFolder.root}",
+//        "scripts/assets/maven_install.json",
+//        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+//      )
+//    )
+//    assertThat(outContent.toString()).contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
+////    val exception = assertThrows(Exception::class) {
+////      MavenDependenciesListWriter.main(
+////        arrayOf(
+////          "${tempFolder.root}",
+////          "scripts/assets/maven_install.json",
+////          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+////        )
+////      )
+////    }
+////
+////    assertThat(exception).hasMessageThat().contains(COMPLETE_LICENSE_DETAILS_MESSAGE)
+//  }
 
   @Test
   fun testMockitoUnitTest() {
@@ -260,8 +259,8 @@ class MavenDependenciesListWriterTest {
       "@maven//:androidx_databinding_databinding_adapters",
       "@maven//:com_github_bumptech_glide_annotations",
       "@maven//:com_google_firebase_firebase_analytics",
-      "@maven//:com_google_protobuf_protobuf_lite",
-      "@maven//:io_fabric_sdk_android_fabric"
+//      "@maven//:com_google_protobuf_protobuf_lite",
+//      "@maven//:io_fabric_sdk_android_fabric"
     )
     return mock<NetworkAndBazelUtils> {
       on { scrapeText(eq("https://www.google.com")) } doReturn "passed"
@@ -302,6 +301,7 @@ class MavenDependenciesListWriterTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
+          
           """.trimIndent()
         )
       on { scrapeText(eq(IO_FABRIC_POM)) }
@@ -315,6 +315,7 @@ class MavenDependenciesListWriterTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
+          
           """.trimIndent()
         )
       on { scrapeText(eq(PROTO_LITE_POM)) }

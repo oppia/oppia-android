@@ -39,13 +39,14 @@ class MavenDependenciesListWriter() {
 
     @JvmStatic
     fun main(args: Array<String>) {
-      if (args.size < 2) {
+      if (args.size < 3) {
         throw Exception("Too few Arguments passed")
       }
       val pathToRoot = args[0]
       val pathToMavenInstall = "$pathToRoot/${args[1]}"
       val pathToMavenDependenciesTextProto =
         "$pathToRoot/scripts/assets/maven_dependencies.textproto"
+      val pathToProtoBinary = args[2]
 
       val bazelQueryDepsList = retrieveThirdPartyMavenDependenciesList(pathToRoot)
       val mavenInstallDepsList = getDependencyListFromMavenInstall(
@@ -56,7 +57,7 @@ class MavenDependenciesListWriter() {
       val dependenciesListFromPom =
         retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-      val dependenciesListFromTextproto = retrieveMavenDependencyList(pathToRoot)
+      val dependenciesListFromTextproto = retrieveMavenDependencyList(pathToProtoBinary)
 
       val updatedDependneciesList = addChangesFromTextProto(
         dependenciesListFromPom,
@@ -179,9 +180,9 @@ class MavenDependenciesListWriter() {
     }
 
     /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-    private fun retrieveMavenDependencyList(pathToRoot: String): List<MavenDependency> {
+    private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
       return getProto(
-        pathToRoot,
+        pathToPbFile,
         MavenDependencyList.getDefaultInstance()
       ).mavenDependencyList
     }
@@ -189,15 +190,15 @@ class MavenDependenciesListWriter() {
     /**
      * Helper function to parse the textproto file to a proto class.
      *
-     * @param pathToRoot name of the textproto file to be parsed
+     * @param pathToPbFile path to the pb file to be parsed
      * @param proto instance of the proto class
      * @return proto class from the parsed textproto file
      */
     private fun getProto(
-      pathToRoot: String,
+      pathToPbFile: String,
       proto: MavenDependencyList
     ): MavenDependencyList {
-      return FileInputStream(File("$pathToRoot/scripts/assets/maven_dependnecies.pb")).use {
+      return FileInputStream(File(pathToPbFile)).use {
         proto.newBuilderForType().mergeFrom(it)
       }.build() as MavenDependencyList
     }
@@ -340,63 +341,6 @@ class MavenDependenciesListWriter() {
         }
       }
       return licenseList.toList()
-
-//      var cursor = -1
-//      if (pomText.length > 11) {
-//        for (index in 0..(pomText.length - 11)) {
-//          if (pomText.substring(index, index + 10) == LICENSES_TAG) {
-//            cursor = index + 9
-//            break
-//          }
-//        }
-//        if (cursor != -1) {
-//          var cursor2 = cursor
-//          while (cursor2 < (pomText.length - 12)) {
-//            if (pomText.substring(cursor2, cursor2 + 9) == LICENSE_TAG) {
-//              cursor2 += 9
-//              while (cursor2 < pomText.length - 6 &&
-//                pomText.substring(
-//                  cursor2,
-//                  cursor2 + 6
-//                ) != NAME_TAG
-//              ) {
-//                ++cursor2
-//              }
-//              cursor2 += 6
-//              val licenseUrlBuilder = StringBuilder()
-//              val licenseNameBuilder = StringBuilder()
-//              while (pomText[cursor2] != '<') {
-//                licenseNameBuilder.append(pomText[cursor2])
-//                ++cursor2
-//              }
-//              while (cursor2 < pomText.length - 4 &&
-//                pomText.substring(
-//                  cursor2,
-//                  cursor2 + 5
-//                ) != URL_TAG
-//              ) {
-//                ++cursor2
-//              }
-//              cursor2 += 5
-//              while (pomText[cursor2] != '<') {
-//                licenseUrlBuilder.append(pomText[cursor2])
-//                ++cursor2
-//              }
-//              val httpUrl = replaceHttpWithHttps(licenseUrlBuilder)
-//              licenseList.add(
-//                License.newBuilder().apply {
-//                  this.licenseName = licenseNameBuilder.toString()
-//                  this.originalLink = httpUrl
-//                }.build()
-//              )
-//            } else if (pomText.substring(cursor2, cursor2 + 12) == LICENSES_CLOSE_TAG) {
-//              break
-//            }
-//            ++cursor2
-//          }
-//        }
-//      }
-//      return licenseList
     }
   }
 }
