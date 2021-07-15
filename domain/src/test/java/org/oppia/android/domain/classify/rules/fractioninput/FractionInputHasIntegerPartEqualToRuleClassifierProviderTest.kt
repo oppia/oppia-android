@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,8 +15,6 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [FractionInputHasIntegerPartEqualToRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -105,23 +105,23 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
       value = "test"
     )
   private val WHOLE_NUMBER_VALUE_TEST_0 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 0
     )
   private val WHOLE_NUMBER_VALUE_TEST_1 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 1
     )
   private val WHOLE_NUMBER_VALUE_TEST_2 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 2
     )
   private val WHOLE_NUMBER_VALUE_TEST_3 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 3
     )
   private val WHOLE_NUMBER_VALUE_TEST_123 =
-    InteractionObjectTestBuilder.createNonNegativeInt(
+    InteractionObjectTestBuilder.createUnsingnedInteger(
       value = 123
     )
 

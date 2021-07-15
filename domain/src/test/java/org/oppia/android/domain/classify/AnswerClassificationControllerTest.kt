@@ -9,6 +9,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +25,6 @@ import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createReal
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
@@ -41,8 +42,6 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -70,8 +69,8 @@ class AnswerClassificationControllerTest {
     private val TEST_ITEM_SELECTION_SET_1 =
       createSetOfTranslatableHtmlContentIds("content_id_0", "content_id_2", "content_id_3")
 
-    private val TEST_MULTIPLE_CHOICE_OPTION_0 = createNonNegativeInt(value = 0)
-    private val TEST_MULTIPLE_CHOICE_OPTION_1 = createNonNegativeInt(value = 1)
+    private val TEST_MULTIPLE_CHOICE_OPTION_0 = createUnsingnedInteger(value = 0)
+    private val TEST_MULTIPLE_CHOICE_OPTION_1 = createUnsingnedInteger(value = 1)
 
     private val TEST_NUMBER_WITH_UNITS_0 = InteractionObject.newBuilder()
       .setNumberWithUnits(
