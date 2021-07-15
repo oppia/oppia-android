@@ -9,6 +9,7 @@
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
@@ -70,12 +71,12 @@
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter %s: %s is completed.</string>
+  <string name="chapter_completed">Chapter is completed</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_content_description">Enter a number.</string>
+  <string name="numeric_input_hint">Enter a number.</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
@@ -98,7 +99,8 @@
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
-  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="show_chapter_list">Show chapter list</string>
+  <string name="hide_chapter_list">Hide chapter list</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
@@ -133,6 +135,7 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
+  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -376,6 +379,9 @@
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
   <!-- HintsAndSolutionDialogFragment -->
+  <string name="new_hint_available">New hint available</string>
+  <string name="show_hints_and_solution">Show hints and solution</string>
+  <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
@@ -391,10 +397,12 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
-  <string name="link_to_item_below">Link to item below</string>
-  <string name="unlink_items">Unlink Items</string>
-  <string name="move_item_down">Move Item Down</string>
-  <string name="move_item_up">Move Item Up</string>
+  <string name="link_to_item_below">Link to item %d</string>
+  <string name="unlink_items">Unlink items at %d</string>
+  <string name="move_item_down_content_description">Move item down to %d</string>
+  <string name="move_item_up_content_description">Move item up to %d</string>
+  <string name="up_button_disabled">Up</string>
+  <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
@@ -441,4 +449,26 @@
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
   <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="correct_submitted_answer">Correct submitted answer</string>
+  <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
+  <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
+  <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
+  <!-- DeveloperOptionsActivity -->
+  <string name="developer_options_activity_title">Developer Options</string>
+  <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>
+  <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
+  <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
+  <string name="view_event_logs_activity_title">View Event Logs</string>
+  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label">View Logs</string>
+  <string name="developer_options_event_logs">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
+  <string name="developer_options_force_network_type">Force network type</string>
+  <string name="developer_options_force_crash">Force crash</string>
+  <string name="all">All</string>
+  <string name="mark_completed_uppercase">MARK COMPLETED</string>
 </resources>
