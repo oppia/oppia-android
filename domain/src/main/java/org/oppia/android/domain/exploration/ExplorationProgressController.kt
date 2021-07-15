@@ -79,7 +79,7 @@ class ExplorationProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -91,7 +91,7 @@ class ExplorationProgressController @Inject constructor(
         currentTopicId = topicId
         currentStoryId = storyId
         currentExplorationId = explorationId
-        shouldSavePartialProgress = isCheckpointingEnabled
+        this.shouldSavePartialProgress = shouldSavePartialProgress
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)

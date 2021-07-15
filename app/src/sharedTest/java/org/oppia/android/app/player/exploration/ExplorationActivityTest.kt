@@ -169,7 +169,7 @@ class ExplorationActivityTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    isCheckpointingEnabled: Boolean
+    shouldSavePartialProgress: Boolean
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -180,7 +180,7 @@ class ExplorationActivityTest {
           topicId,
           storyId,
           explorationId,
-          isCheckpointingEnabled
+          shouldSavePartialProgress
         )
       }
     }
@@ -727,7 +727,7 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -828,7 +828,7 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      isCheckpointingEnabled = false
+      shouldSavePartialProgress = false
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
