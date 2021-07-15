@@ -10,10 +10,6 @@ import androidx.databinding.BindingAdapter;
  */
 public final class StateAssemblerMarginBindingAdapters {
 
-  public static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-  }
-
   /** Used to set a margin for exploration split-view. */
   @BindingAdapter(
       value = {
@@ -129,5 +125,9 @@ public final class StateAssemblerMarginBindingAdapters {
       }
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

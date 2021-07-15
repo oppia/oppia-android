@@ -9,9 +9,6 @@ import androidx.databinding.BindingAdapter;
  */
 public final class StateAssemblerPaddingBindingAdapters {
 
-  public static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-  }
   /** Used to set a padding for exploration split-view. */
   @BindingAdapter(
       value = {
@@ -126,5 +123,9 @@ public final class StateAssemblerPaddingBindingAdapters {
       }
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

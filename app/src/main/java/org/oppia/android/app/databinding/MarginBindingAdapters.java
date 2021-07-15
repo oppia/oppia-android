@@ -8,17 +8,17 @@ import androidx.databinding.BindingAdapter;
 /** Holds all custom binding adapters that set margin values. */
 public final class MarginBindingAdapters {
 
-  public static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-  }
-
   /** Sets the start margin for a view, accounting for RTL scenarios. */
   @BindingAdapter("app:layoutMarginStart")
   public static void setLayoutMarginStart(@NonNull View view, float marginStart) {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginEnd = params.getMarginEnd();
-      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
+      if (isRtlLayout(view)) {
+        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+      }else {
+        setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
+      }
       view.requestLayout();
     }
   }
@@ -29,33 +29,29 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginStart = params.getMarginStart();
-      setLayoutDirectionalMargins(view, (int) marginEnd, params, (int) marginStart);
+      if (isRtlLayout(view)) {
+        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+      }else {
+        setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
+      }
       view.requestLayout();
     }
   }
 
   private static void setLayoutDirectionalMargins(
       @NonNull View view,
-      int marginEnd,
-      MarginLayoutParams params,
-      int marginStart
+      int marginStart,
+      int marginEnd
   ) {
-    if (isRtlLayout(view)) {
-      params.setMargins(
-          marginEnd,
-          params.topMargin,
-          marginStart,
-          params.bottomMargin
-      );
-    } else {
-      params.setMargins(
-          marginStart,
-          params.topMargin,
-          marginEnd,
-          params.bottomMargin
-      );
-    }
+    MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+    params.setMargins(
+        marginStart,
+        params.topMargin,
+        marginEnd,
+        params.bottomMargin
+    );
   }
+
 
   /** Used to set a margin-top for views. */
   @BindingAdapter("app:layoutMarginTop")
@@ -100,5 +96,9 @@ public final class MarginBindingAdapters {
       );
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }
