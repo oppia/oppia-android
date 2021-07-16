@@ -739,7 +739,7 @@ maven_dependency {
   artifact_name: "nl.dionsegijn:konfetti:1.2.5"
   artifact_version: "1.2.5"
   license {
-    license_name: "Konfetti License"
+    license_name: "ISC License"
     original_link: "https://github.com/DanielMartinus/Konfetti/blob/main/LICENSE"
     extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/nl.dionsegijn%3Akonfetti%3A1.2.5-license.txt"
