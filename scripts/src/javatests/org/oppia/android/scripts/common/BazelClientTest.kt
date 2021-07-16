@@ -349,7 +349,7 @@ class BazelClientTest {
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = "com.android.support:support-annotations:28.0.0"
+      dependencyName = ":com_android_support_support-annotations"
     )
     createAndroidLibraryAtRootBuild("io.fabric.sdk.android:fabric:1.4.7")
     val bazelClient = BazelClient(tempFolder.root)
