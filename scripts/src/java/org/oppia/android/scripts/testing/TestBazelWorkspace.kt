@@ -14,7 +14,7 @@ import java.io.File
  */
 class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
-  /** The WORKSPACE file which will hold rules_jvm_external libraries. */
+  /** The [File] corresponding to the Bazel WORKSPACE file. */
   val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
 
   /**
@@ -181,36 +181,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     )
   }
 
-  private fun ensureWorkspaceIsConfiguredForKotlin(): List<File> {
-    if (!isConfiguredForKotlin) {
-      // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
-      val rulesKotlinReleaseUrl =
-        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.5.0-alpha-2" +
-          "/rules_kotlin_release.tgz"
-      val rulesKotlinArchiveName = "io_bazel_rules_kotlin"
-      val rulesKotlinBazelPrefix = "@$rulesKotlinArchiveName//kotlin"
-
-      workspaceFile.appendText(
-        """
-        load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-        http_archive(
-            name = "$rulesKotlinArchiveName",
-            sha256 = "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
-            urls = ["$rulesKotlinReleaseUrl"],
-        )
-        load("$rulesKotlinBazelPrefix:dependencies.bzl", "kt_download_local_dev_dependencies")
-        load("$rulesKotlinBazelPrefix:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
-        kt_download_local_dev_dependencies()
-        kotlin_repositories()
-        kt_register_toolchains()
-        """.trimIndent() + "\n"
-      )
-      isConfiguredForKotlin = true
-      return listOf(workspaceFile)
-    }
-    return listOf()
-  }
-
+  /** Appends rules_jvm_external configuration to the WORKSPACE file if not done already. */
   fun ensureWorkspaceIsConfiguredForRulesJvmExternal(depsList: List<String>) {
     if (!isConfiguredForRulesJvmExternal) {
       workspaceFile.appendText("artifactsList = [")
@@ -246,6 +217,36 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
 
       isConfiguredForRulesJvmExternal = true
     }
+  }
+
+  private fun ensureWorkspaceIsConfiguredForKotlin(): List<File> {
+    if (!isConfiguredForKotlin) {
+      // Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
+      val rulesKotlinReleaseUrl =
+        "https://github.com/bazelbuild/rules_kotlin/releases/download/v1.5.0-alpha-2" +
+          "/rules_kotlin_release.tgz"
+      val rulesKotlinArchiveName = "io_bazel_rules_kotlin"
+      val rulesKotlinBazelPrefix = "@$rulesKotlinArchiveName//kotlin"
+
+      workspaceFile.appendText(
+        """
+        load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+        http_archive(
+            name = "$rulesKotlinArchiveName",
+            sha256 = "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
+            urls = ["$rulesKotlinReleaseUrl"],
+        )
+        load("$rulesKotlinBazelPrefix:dependencies.bzl", "kt_download_local_dev_dependencies")
+        load("$rulesKotlinBazelPrefix:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+        kt_download_local_dev_dependencies()
+        kotlin_repositories()
+        kt_register_toolchains()
+        """.trimIndent() + "\n"
+      )
+      isConfiguredForKotlin = true
+      return listOf(workspaceFile)
+    }
+    return listOf()
   }
 
   private fun prepareBuildFileForTests(buildFile: File) {

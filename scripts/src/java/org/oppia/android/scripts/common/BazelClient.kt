@@ -86,10 +86,10 @@ class BazelClient(
    * Returns the list of direct and indirect maven third-party dependencies on which the specified
    * binary depends.
    */
-  fun retrieveThirdPartyMavenDepsListForBinary(binaryName: String): List<String> {
+  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
     return executeBazelCommand(
       "query",
-      "deps(deps(//:$binaryName) intersect //third_party/...) intersect @maven//..."
+      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//..."
     )
   }
 

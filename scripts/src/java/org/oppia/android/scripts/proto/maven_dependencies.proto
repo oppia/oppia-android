@@ -40,18 +40,19 @@ message License {
     ScrapableLink scrapable_link = 3;
 
     // Indicates that the original link extracted from the POM contains plain license text but
-    // can't be scraped directly and hence an alternate link should be provided that can be
-    // scraped directly. The link provided in this case would point to the corresponding license
-    // stored in Oppia-android-licenses repository.
-    // Link to the Oppia-android-licenses repo: https://github.com/oppia/oppia-android-licenses
-    LocalCopyLink local_copy_link = 4;
+    // can't be scraped directly and hence an alternate link should be provided that can be scraped
+    // directly. The link provided in this case would point to the corresponding license stored
+    // in Oppia-android-licenses repository: https://github.com/oppia/oppia-android-licenses
+    ExtractedCopyLink extracted_copy_link = 4;
 
     // Indicates that the link does not contain plain license text and therefore can't be scraped.
     // Only the link should be shown in this case.
     DirectLinkOnly direct_link_only = 5;
   }
 
-  // Represents whether the original_link extracted from the POM is valid or not.
+  // Represents whether the original_link extracted from the POM points to a valid
+  // license or not. The original_link extracted from the POM can be an invalid link
+  // or the link may be a valid link but does not contain any license.
   bool is_original_link_invalid = 6;
 }
 
@@ -62,7 +63,7 @@ message ScrapableLink {
 }
 
 // Stores the URL of a license that should be scraped from the local copy.
-message LocalCopyLink {
+message ExtractedCopyLink {
   // URL of the license that is stored in the local copy.
   string url = 1;
 }

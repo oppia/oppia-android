@@ -325,10 +325,10 @@ class BazelClientTest {
     testBazelWorkspace.ensureWorkspaceIsConfiguredForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
     )
-    tempFolder.newFile("test_manifest.xml")
+    tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
-      manifestName = "test_manifest.xml",
+      manifestName = "AndroidManifest.xml",
       dependencyName = "//third_party:com_android_support_support-annotations"
     )
     tempFolder.newFolder("third_party")
@@ -348,7 +348,7 @@ class BazelClientTest {
 
     val bazelClient = BazelClient(tempFolder.root)
     val thirdPartyDependenciesList =
-      bazelClient.retrieveThirdPartyMavenDepsListForBinary("test_oppia")
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
     assertThat("@maven//:com_android_support_support_annotations")
       .isIn(thirdPartyDependenciesList)
   }
@@ -374,7 +374,7 @@ class BazelClientTest {
     manifestName: String,
     dependencyName: String
   ) {
-    tempFolder.newFile("BUILD.bazel").writeText(
+    testBazelWorkspace.rootBuildFile.writeText(
       """
       android_binary(
           name = "$binaryName",

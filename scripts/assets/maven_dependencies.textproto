@@ -342,7 +342,7 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     original_link: "https://www.opensource.org/licenses/bsd-license"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -360,7 +360,7 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     original_link: "https://www.opensource.org/licenses/bsd-license"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -378,7 +378,7 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     original_link: "https://www.opensource.org/licenses/bsd-license"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -396,7 +396,7 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     original_link: "https://www.opensource.org/licenses/bsd-license"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -414,7 +414,7 @@ maven_dependency {
   license {
     license_name: "Simplified BSD License"
     original_link: "https://www.opensource.org/licenses/bsd-license"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -569,7 +569,7 @@ maven_dependency {
   artifact_version: "3.0.0"
   license {
     license_name: "Simplified BSD License"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
     }
   }
@@ -708,7 +708,7 @@ maven_dependency {
   license {
     license_name: "CDDL + GPLv2 with classpath exception"
     original_link: "https://github.com/javaee/javax.annotation/blob/master/LICENSE"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/javax.annotation%3Ajavax.annotation-api%3A1.3.2-license.txt"
     }
   }
@@ -741,7 +741,7 @@ maven_dependency {
   license {
     license_name: "Konfetti License"
     original_link: "https://github.com/DanielMartinus/Konfetti/blob/main/LICENSE"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/nl.dionsegijn%3Akonfetti%3A1.2.5-license.txt"
     }
   }
@@ -759,7 +759,7 @@ maven_dependency {
   license {
     license_name: "The MIT License"
     original_link: "https://opensource.org/licenses/MIT"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
     }
   }
@@ -868,7 +868,7 @@ maven_dependency {
   license {
     license_name: "BSD-3-Clause"
     original_link: "https://asm.ow2.io/license.html"
-    local_copy_link {
+    extracted_copy_link {
       url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/org.ow2.asm%3Aasm%3A7.2-license.txt"
     }
   }
