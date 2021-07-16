@@ -90,6 +90,9 @@ class GenerateMavenDependenciesList(
     )
 
     val licensesToBeFixed = getAllBrokenLicenses(finalDependenciesList)
+
+    // TODO(#3486): Update GenerateMavenDependenciesList.kt to call out first coordinate name
+    // that should be updated to update all occurrences of the license.
     if (licensesToBeFixed.isNotEmpty()) {
       println("\nPlease verify the license link(s) for the following license(s) manually:")
       licensesToBeFixed.forEach {
@@ -175,8 +178,8 @@ class GenerateMavenDependenciesList(
     }
   }
 
-  // TODO(#3486): Update GenerateMavenDependenciesList.kt to call out first co-ordinate name
-  // that should be updated to update all occurences of the license.
+  // TODO(#3486): Update GenerateMavenDependenciesList.kt to call out first coordinate name
+  // that should be updated to update all occurrences of the license.
   private fun getAllBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>
   ): Set<License> {
@@ -214,11 +217,11 @@ class GenerateMavenDependenciesList(
   }
 
   /**
-   * Helper function to parse the textproto file to a proto class.
+   * Helper function to parse the textProto file to a proto class.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @param proto instance of the proto class
-   * @return proto class from the parsed textproto file
+   * @return proto class from the parsed textProto file
    */
   private fun getProto(
     pathToPbFile: String,

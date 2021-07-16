@@ -62,7 +62,7 @@ class GenerateMavenDependenciesListTest {
   private val originalOut: PrintStream = System.out
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
-  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
+  private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Rule
@@ -84,7 +84,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testEmptyPbFile_scriptFailsWithException_writesTextproto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
@@ -105,13 +105,13 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
       artifactVersion = DATA_BINDING_VERSION,
@@ -123,7 +123,7 @@ class GenerateMavenDependenciesListTest {
       licenseName = "The Apache License, Version 2.0"
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency2,
       artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
       artifactVersion = FIREBASE_ANALYTICS_VERSION,
@@ -188,7 +188,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testDependencyHasNonScrapableLink_scriptFailsWithException_writesTextproto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
@@ -209,13 +209,13 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency,
       artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
       artifactVersion = FIREBASE_ANALYTICS_VERSION,
@@ -230,7 +230,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testDependencyHasLocalCopyLinkAndScrapableLink_scriptFails_andWritesTextproto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val coordsList = listOf(DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
@@ -251,13 +251,13 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency,
       artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
       artifactVersion = GLIDE_ANNOTATIONS_VERSION,
@@ -279,7 +279,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testDependencyHasInvalidLicense_scriptFailsWithException_writesTextProto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val license1 = License.newBuilder().apply {
@@ -318,13 +318,13 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency,
       artifactName = DEP_WITH_INVALID_LINKS,
       artifactVersion = IO_FABRIC_VERSION,
@@ -339,7 +339,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testDependencyHasNoLicense_scriptFails_writesProto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val coordsList = listOf(DEP_WITH_NO_LICENSE)
@@ -360,23 +360,23 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency,
       artifactName = DEP_WITH_NO_LICENSE,
       artifactVersion = PROTO_LITE_VERSION,
     )
-    assertThat(dependency.licenseList).isEqualTo(listOf<License>())
+    assertThat(dependency.licenseList).isEmpty()
   }
 
   @Test
   fun testDependenciesHaveMultipleLicense_completeLicenseDetails_scriptPasses_writesTextProto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
@@ -425,13 +425,13 @@ class GenerateMavenDependenciesListTest {
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
       artifactVersion = DATA_BINDING_VERSION,
@@ -444,7 +444,7 @@ class GenerateMavenDependenciesListTest {
       verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency2,
       artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
       artifactVersion = GLIDE_ANNOTATIONS_VERSION,
@@ -467,7 +467,7 @@ class GenerateMavenDependenciesListTest {
 
   @Test
   fun testDependenciesHaveCompleteLicenseDetails_scriptPasses_writesTextProto() {
-    val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val license1 = License.newBuilder().apply {
@@ -517,13 +517,13 @@ class GenerateMavenDependenciesListTest {
 
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = getProto(
-      textprotoFile,
+    val outputMavenDependencyList = parseProto(
+      textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
       artifactVersion = FIREBASE_ANALYTICS_VERSION,
@@ -536,7 +536,7 @@ class GenerateMavenDependenciesListTest {
       verifiedLink = "https://developer.android.com/studio/terms.html"
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
-    assertDependency(
+    assertIsDependency(
       dependency = dependency2,
       artifactName = DEP_WITH_NO_LICENSE,
       artifactVersion = PROTO_LITE_VERSION,
@@ -556,11 +556,13 @@ class GenerateMavenDependenciesListTest {
     licenseName: String,
     verifiedLink: String,
   ) {
-    val scrapableLink = ScrapableLink.newBuilder().setUrl(verifiedLink).build()
     assertThat(license.licenseName).isEqualTo(licenseName)
-    assertThat(license.scrapableLink).isEqualTo(scrapableLink)
+    assertThat(license.verifiedLinkCase).isEqualTo(
+      License.VerifiedLinkCase.SCRAPABLE_LINK
+    )
+    assertThat(license.scrapableLink.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
+    assertThat(license.isOriginalLinkInvalid).isFalse()
   }
 
   private fun verifyLicenseHasExtractedCopyVerifiedLink(
@@ -569,9 +571,11 @@ class GenerateMavenDependenciesListTest {
     licenseName: String,
     verifiedLink: String,
   ) {
-    val extractedCopyLink = ExtractedCopyLink.newBuilder().setUrl(verifiedLink).build()
     assertThat(license.licenseName).isEqualTo(licenseName)
-    assertThat(license.extractedCopyLink).isEqualTo(extractedCopyLink)
+    assertThat(license.verifiedLinkCase).isEqualTo(
+      License.VerifiedLinkCase.EXTRACTED_COPY_LINK
+    )
+    assertThat(license.extractedCopyLink.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
     assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
   }
@@ -582,9 +586,11 @@ class GenerateMavenDependenciesListTest {
     licenseName: String,
     verifiedLink: String,
   ) {
-    val directLinkOnly = DirectLinkOnly.newBuilder().setUrl(verifiedLink).build()
     assertThat(license.licenseName).isEqualTo(licenseName)
-    assertThat(license.directLinkOnly).isEqualTo(directLinkOnly)
+    assertThat(license.verifiedLinkCase).isEqualTo(
+      License.VerifiedLinkCase.DIRECT_LINK_ONLY
+    )
+    assertThat(license.directLinkOnly.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
     assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
   }
@@ -611,7 +617,7 @@ class GenerateMavenDependenciesListTest {
     assertThat(license.isOriginalLinkInvalid).isEqualTo(true)
   }
 
-  private fun assertDependency(
+  private fun assertIsDependency(
     dependency: MavenDependency,
     artifactName: String,
     artifactVersion: String,
@@ -620,12 +626,12 @@ class GenerateMavenDependenciesListTest {
     assertThat(dependency.artifactVersion).isEqualTo(artifactVersion)
   }
 
-  private fun getProto(
-    textprotoFile: File,
+  private fun parseProto(
+    textProtoFile: File,
     proto: MavenDependencyList
   ): MavenDependencyList {
     val builder = proto.newBuilderForType()
-    TextFormat.merge(textprotoFile.readText(), builder)
+    TextFormat.merge(textProtoFile.readText(), builder)
     return builder.build()
   }
 
@@ -690,6 +696,7 @@ class GenerateMavenDependenciesListTest {
     )
   }
 
+  /** Helper function to write a fake maven_install.json file. */
   private fun writeMavenInstallJson(file: File) {
     file.writeText(
       """
@@ -723,10 +730,11 @@ class GenerateMavenDependenciesListTest {
     )
   }
 
-  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
   }
 
+  /** Returns a mock for the [LicenseFetcher]. */
   private fun initializeLicenseFetcher(): LicenseFetcher {
     return mock<LicenseFetcher> {
       on { scrapeText(eq(DATA_BINDING_POM)) }
