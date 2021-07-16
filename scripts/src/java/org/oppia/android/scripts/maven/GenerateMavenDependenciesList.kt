@@ -71,11 +71,11 @@ class GenerateMavenDependenciesList(
     val dependenciesListFromPom =
       retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-    val dependenciesListFromtextProto = retrieveMavenDependencyList(pathToProtoBinary)
+    val dependenciesListFromTextProto = retrieveMavenDependencyList(pathToProtoBinary)
 
     val updatedDependneciesList = addChangesFromTextProto(
       dependenciesListFromPom,
-      dependenciesListFromtextProto
+      dependenciesListFromTextProto
     )
 
     val manuallyUpdatedLicenses = retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)

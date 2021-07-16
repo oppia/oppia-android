@@ -105,7 +105,7 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -209,7 +209,7 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -251,7 +251,7 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -318,7 +318,7 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -360,7 +360,7 @@ class GenerateMavenDependenciesListTest {
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -425,7 +425,7 @@ class GenerateMavenDependenciesListTest {
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -517,7 +517,7 @@ class GenerateMavenDependenciesListTest {
 
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseProto(
+    val outputMavenDependencyList = parseTextProto(
       textProtoFile,
       MavenDependencyList.getDefaultInstance()
     )
@@ -626,7 +626,7 @@ class GenerateMavenDependenciesListTest {
     assertThat(dependency.artifactVersion).isEqualTo(artifactVersion)
   }
 
-  private fun parseProto(
+  private fun parseTextProto(
     textProtoFile: File,
     proto: MavenDependencyList
   ): MavenDependencyList {
