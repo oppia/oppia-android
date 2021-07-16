@@ -43,6 +43,10 @@ import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_3
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_STORY_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -90,6 +94,8 @@ class ExplorationDataControllerTest {
 
   @Captor
   lateinit var explorationResultCaptor: ArgumentCaptor<AsyncResult<Exploration>>
+
+  val internalProfileId: Int = -1
 
   @Before
   fun setUp() {
@@ -238,8 +244,20 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStartPlayingExploration_withoutStoppingSession_fails() {
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_4)
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      shouldSavePartialProgress = false
+    )
     testCoroutineDispatchers.runCurrent()
 
     val exception = fakeExceptionLogger.getMostRecentException()

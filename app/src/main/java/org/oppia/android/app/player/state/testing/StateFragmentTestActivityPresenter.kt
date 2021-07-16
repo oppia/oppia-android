@@ -78,7 +78,13 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
     explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(explorationId)
+    explorationDataController.startPlayingExploration(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = false
+    )
       .observe(
         activity,
         Observer<AsyncResult<Any?>> { result ->

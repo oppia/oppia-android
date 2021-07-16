@@ -30,11 +30,13 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Solution
@@ -51,10 +53,16 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_STORY_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -62,6 +70,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -77,13 +86,15 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
-import java.lang.AssertionError
 import javax.inject.Inject
 import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
+private const val INVALID_TOPIC_ID = "invalid_topic_id"
+private const val INVALID_STORY_ID = "invalid_story_id"
+private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
 
 /** Tests for [ExplorationProgressController]. */
 @Suppress("SameParameterValue") // To avoid ignorable warnings for test helper methods.
@@ -116,6 +127,12 @@ class ExplorationProgressControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var explorationCheckpointController: ExplorationCheckpointController
+
   @Mock
   lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
@@ -143,6 +160,14 @@ class ExplorationProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
 
+  @Mock
+  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
+
+  @Captor
+  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
+
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -166,7 +191,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultLiveData =
-      explorationDataController.startPlayingExploration("invalid_exp_id")
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        INVALID_TOPIC_ID,
+        INVALID_STORY_ID,
+        INVALID_EXPLORATION_ID,
+        shouldSavePartialProgress = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -182,7 +213,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
+      shouldSavePartialProgress = false
+    )
 
     verify(
       mockCurrentStateLiveDataObserver,
@@ -197,7 +234,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_valid_returnsSuccess() {
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -212,7 +255,13 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     // The second-to-latest result stays pending since the exploration was loading (the actual
     // result is the fully loaded exploration). This is only true if the observer begins before
@@ -227,7 +276,13 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
@@ -247,11 +302,23 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_playInvalidExploration_thenPlayValidExp_returnsInitialPendingState() {
     // Start with playing an invalid exploration.
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
+      shouldSavePartialProgress = false
+    )
     endExploration()
 
     // Then a valid one.
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
@@ -285,11 +352,23 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_withoutFinishingPrevious_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     // Try playing another exploration without finishing the previous one.
     val resultLiveData =
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -306,11 +385,23 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
     // Start with playing a valid exploration, then stop.
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     endExploration()
 
     // Then another valid one.
-    playExploration(TEST_EXPLORATION_ID_4)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      shouldSavePartialProgress = false
+    )
 
     // The latest result should correspond to the valid ID, and the progress controller should
     // gracefully recover.
@@ -347,7 +438,13 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_whileLoading_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val result =
       explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -368,7 +465,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -387,7 +490,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -408,7 +517,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -427,7 +542,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_providesDefFeedbackAndSameStateTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     val result =
@@ -450,7 +571,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(2)
@@ -474,7 +601,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
 
     submitMultipleChoiceAnswer(0)
@@ -497,7 +630,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterSubmittingWrongThenRightAnswer_updatesToStateWithBothAnswers() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeMultipleChoiceState()
     submitMultipleChoiceAnswer(0)
 
@@ -537,7 +676,13 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -552,7 +697,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val moveToStateResult = explorationProgressController.moveToNextState()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
@@ -569,7 +720,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     submitPrototypeState1Answer()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -585,7 +742,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     submitPrototypeState1Answer()
 
     moveToNextState()
@@ -603,7 +766,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_afterMovingFromCompletedState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     submitPrototypeState1Answer()
     moveToNextState()
 
@@ -639,7 +808,13 @@ class ExplorationProgressControllerTest {
   fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
     // Start playing an exploration, but don't wait for it to complete.
     subscribeToCurrentStateToAllowExplorationToLoad()
-    explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+    explorationDataController.startPlayingExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -656,7 +831,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onPendingInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     val moveToStateResult =
       explorationProgressController.moveToPreviousState()
@@ -674,7 +855,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_onCompletedInitialState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     submitPrototypeState1Answer()
 
     val moveToStateResult =
@@ -693,7 +880,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_forStateWithCompletedPreviousState_succeeds() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     val moveToStateResult =
@@ -712,7 +905,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -733,7 +932,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
@@ -754,7 +959,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -775,7 +986,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -797,7 +1014,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forFractionInput_wrongAnswer_returnsDefaultOutcome_hasHint() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeFractionInputState()
 
     submitWrongAnswerForPrototypeState2()
@@ -823,7 +1046,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
 
@@ -862,7 +1091,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
 
@@ -894,7 +1129,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_afterAllHintsAreExhausted_showSolution() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeFractionInputState()
 
     submitWrongAnswerForPrototypeState2()
@@ -923,7 +1164,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_secondState_submitRightAnswer_pendingStateBecomesCompleted() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -948,7 +1195,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_withSpaces_updatesStateWithVerbatimAnswer() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -975,7 +1228,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_eighthState_submitWrongAnswer_updatePendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeTextInputState()
 
     val result =
@@ -1003,7 +1262,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1025,7 +1290,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     submitPrototypeState2Answer() // Submit the answer but do not proceed to the next state.
 
@@ -1046,7 +1317,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testGetCurrentState_afterMoveToPrev_onThirdState_newObserver_receivesCompletedSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
@@ -1057,8 +1334,8 @@ class ExplorationProgressControllerTest {
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver2)
     testCoroutineDispatchers.runCurrent()
 
-    // The new observer should observe the completed second state since it's the current pending
-    // state.
+    // The new observer should observe the completed second state
+    // since it's the current pending state.
     verify(
       mockCurrentStateLiveDataObserver2,
       atLeastOnce()
@@ -1075,7 +1352,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     // The initial state should not have a next state.
     verify(
@@ -1091,7 +1374,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     submitPrototypeState1Answer()
 
@@ -1110,7 +1399,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1128,7 +1423,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1147,7 +1448,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
 
     moveToPreviousState()
@@ -1165,7 +1472,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
@@ -1185,7 +1498,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(
@@ -1207,7 +1526,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_forContinue_returnsOutcomeWithTransition() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     // The first state of the exploration is the Continue interaction.
 
     val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
@@ -1229,7 +1554,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
 
     playThroughPrototypeExploration()
 
@@ -1248,7 +1579,13 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
 
@@ -1276,7 +1613,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_onFinalState_failsWithError() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeExploration()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
@@ -1297,7 +1640,13 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      shouldSavePartialProgress = false
+    )
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
     moveToNextState()
 
@@ -1319,7 +1668,13 @@ class ExplorationProgressControllerTest {
 
     // Click on Jupiter before Saturn to take a slightly different (valid) path through the
     // exploration. (Note that this does not include actual branching).
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      shouldSavePartialProgress = false
+    )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
     submitImageRegionAnswer(clickX = 0.5f, clickY = 0.5f, clickedRegion = "Saturn")
     moveToNextState()
@@ -1339,11 +1694,23 @@ class ExplorationProgressControllerTest {
     val currentStateLiveData =
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeExploration()
     endExploration()
 
-    playExploration(TEST_EXPLORATION_ID_5)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      shouldSavePartialProgress = false
+    )
     submitImageRegionAnswer(clickX = 0.2f, clickY = 0.5f, clickedRegion = "Jupiter")
 
     // Verify that we're on the second-to-last state of the second exploration.
@@ -1373,7 +1740,13 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() {
     subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(TEST_EXPLORATION_ID_2)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
@@ -1408,11 +1781,323 @@ class ExplorationProgressControllerTest {
       explorationProgressController.getCurrentState().toLiveData()
     currentStateLiveData.observeForever(mockCurrentStateLiveDataObserver)
 
-    playExploration("invalid_exp_id")
+    playExploration(
+      profileId.internalId,
+      INVALID_TOPIC_ID,
+      INVALID_STORY_ID,
+      INVALID_EXPLORATION_ID,
+      shouldSavePartialProgress = false
+    )
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("invalid_exp_id")
+    assertThat(exception).hasMessageThat().contains(INVALID_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testCheckpointing_loadExploration_checkCheckpointIsSaved() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    val retrieveCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        TEST_EXPLORATION_ID_2
+      ).toLiveData()
+
+    verifyOperationSucceeds(retrieveCheckpointLiveData)
+  }
+
+  @Test
+  fun testCheckpointing_playThroughMultipleStates_verifyCheckpointHasCorrectPendingStateName() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Continue"
+    )
+
+    playThroughPrototypeState1AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Fractions",
+    )
+
+    playThroughPrototypeState2AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "MultipleChoice",
+    )
+
+    playThroughPrototypeState3AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advToFourthState_backToPrevState_verifyCheckpointHasCorrectPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+    moveToPreviousState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+  }
+
+  @Test
+  fun testCheckpointing_backTwoStates_nextState_verifyCheckpointHasCorrectPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    moveToPreviousState()
+    moveToPreviousState()
+    moveToNextState()
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "ItemSelectionMinOne",
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advanceToThirdState_submitMultipleAns_checkCheckpointIsSavedAfterEachAns() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 1
+    )
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 2
+    )
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // count should be equal to zero because on submission of the correct answer, the
+    // pendingTopState changes.
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 0
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_submitAns_prevState_checkCheckpointIsSavedAfterEachAns() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    moveToPreviousState()
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_moveToPrevState_checkCheckpointHasStateIndexOfThirdState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    moveToPreviousState()
+
+    verifyCheckpointHasCorrectStateIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      stateIndex = 2
+    )
+  }
+
+  @Test
+  fun testCheckpointing_advToThirdState_prevStates_nextState_checkCheckpointHasCorrectStateIndex() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    moveToPreviousState()
+    moveToPreviousState()
+    moveToNextState()
+
+    verifyCheckpointHasCorrectStateIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      stateIndex = 2
+    )
+  }
+
+  @Test
+  fun testCheckpointing_revealHint_checkHintIsSavedInCheckpoint() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
+
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      state = currentState.state,
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectHintIndex(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      indexOfRevealedHint = 0
+    )
+  }
+
+  @Test
+  fun testCheckpointing_revealSolution_checkCheckpointIsSaved() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
+
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+
+    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    result.observeForever(mockAsyncSolutionObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      isSolutionRevealed = true
+    )
+  }
+
+  @Test
+  fun testCheckpointing_onStateWithContinueInteraction_pressContinue_correctCheckpointIsSaved() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    // Verify that checkpoint is saved when the exploration moves to the new pendingTopState.
+    verifyCheckpointHasCorrectPendingStateName(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      pendingStateName = "Fractions"
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -1431,8 +2116,22 @@ class ExplorationProgressControllerTest {
       .observeForever(mockCurrentStateLiveDataObserver)
   }
 
-  private fun playExploration(explorationId: String) {
-    verifyOperationSucceeds(explorationDataController.startPlayingExploration(explorationId))
+  private fun playExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
+  ) {
+    verifyOperationSucceeds(
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress
+      )
+    )
   }
 
   private fun submitContinueButtonAnswer() {
@@ -1779,6 +2478,121 @@ class ExplorationProgressControllerTest {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
+  private fun verifyCheckpointHasCorrectPendingStateName(
+    profileId: ProfileId,
+    explorationId: String,
+    pendingStateName: String
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(pendingStateName)
+  }
+
+  private fun verifyCheckpointHasCorrectCountOfAnswers(
+    profileId: ProfileId,
+    explorationId: String,
+    countOfAnswers: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingUserAnswersCount)
+      .isEqualTo(countOfAnswers)
+  }
+
+  private fun verifyCheckpointHasCorrectStateIndex(
+    profileId: ProfileId,
+    explorationId: String,
+    stateIndex: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().stateIndex)
+      .isEqualTo(stateIndex)
+  }
+
+  private fun verifyCheckpointHasCorrectHintIndex(
+    profileId: ProfileId,
+    explorationId: String,
+    indexOfRevealedHint: Int
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
+      .isEqualTo(indexOfRevealedHint)
+  }
+
+  private fun verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
+    profileId: ProfileId,
+    explorationId: String,
+    isSolutionRevealed: Boolean
+  ) {
+    testCoroutineDispatchers.runCurrent()
+    reset(mockExplorationCheckpointObserver)
+    val explorationCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        explorationId
+      ).toLiveData()
+    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().solutionIsRevealed)
+      .isEqualTo(isSolutionRevealed)
+  }
+
   /**
    * Verifies that the specified live data provides at least one successful operation. This will
    * change test-wide mock state, and synchronizes background execution.
@@ -1794,6 +2608,22 @@ class ExplorationProgressControllerTest {
         throw AssertionError("Operation failed", getErrorOrNull())
       }
       assertThat(isSuccess()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
+  }
+
+  /**
+   * Verifies that the specified live data provides a failure result. This will change test-wide
+   * mock state, and synchronizes background execution.
+   */
+  private fun <T : Any?> verifyOperationFails(liveData: LiveData<AsyncResult<T>>) {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      assertThat(isFailure()).isTrue()
     }
     reset(mockAsyncResultLiveDataObserver)
   }
@@ -1833,6 +2663,23 @@ class ExplorationProgressControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size of checkpoint for the the first state in [TEST_EXPLORATION_ID_2] is equal to
+     * 150 Bytes, therefore the database will exceeded the allocated limit when the second
+     * checkpoint is stored for [TEST_EXPLORATION_ID_2]
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -1842,7 +2689,8 @@ class ExplorationProgressControllerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

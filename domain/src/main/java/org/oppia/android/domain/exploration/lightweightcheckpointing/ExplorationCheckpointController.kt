@@ -2,6 +2,7 @@ package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.Deferred
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
@@ -40,25 +41,14 @@ class ExplorationCheckpointController @Inject constructor(
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
 
   /**
-   * These Statuses correspond to the exception and the checkpoint database states above
-   * such that if the deferred result contains
-   *
-   * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED, the
-   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] will be
-   * passed to a successful AsyncResult.
-   *
-   * CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
-   * [ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT] will be
-   * passed to a successful AsyncResult.
+   * These Statuses correspond to the result of the deferred such that if the deferred contains
    *
    * CHECKPOINT_NOT_FOUND, the [ExplorationCheckpointNotFoundException] will be passed to a failed
    * AsyncResult.
    *
-   * SUCCESS corresponds to successful AsyncResult with value as null.
+   * SUCCESS corresponds to a successful AsyncResult.
    */
   enum class ExplorationCheckpointActionStatus {
-    CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_NOT_EXCEEDED,
-    CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED,
     CHECKPOINT_NOT_FOUND,
     SUCCESS
   }
@@ -69,69 +59,79 @@ class ExplorationCheckpointController @Inject constructor(
   /**
    * Records an exploration checkpoint for the specified profile.
    *
-   * @return a [DataProvider] that indicates the success/failure of the save operation.
-   *
-   * Success result is returned if the checkpoint is saved successfully. The success result
-   * returned has the value
-   * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_EXCEEDED]
-   * if the database has exceeded the size limit of [explorationCheckpointDatabaseSizeLimit],
-   * otherwise the success result is returned with the value
-   * [ExplorationCheckpointDatabaseState.CHECKPOINT_DATABASE_SIZE_LIMIT_NOT_EXCEEDED].
+   * @return a [Deferred] that upon completion indicates the current [CheckpointState].
+   *     If the size of the checkpoint database is less than the allocated limit of
+   *     [ExplorationStorageDatabaseSize] then the deferred upon completion gives the result
+   *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT]. If the size of the
+   *     checkpoint database exceeded [ExplorationStorageDatabaseSize] then
+   *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] is returned upon successful
+   *     completion of deferred.
+   */
+  internal fun recordExplorationCheckpointAsync(
+    profileId: ProfileId,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): Deferred<CheckpointState> {
+    return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val explorationCheckpointDatabaseBuilder = it.toBuilder()
+
+      val checkpoint = explorationCheckpointDatabaseBuilder
+        .explorationCheckpointMap[explorationId]
+
+      // Add checkpoint to the map if it was not saved previously.
+      if (checkpoint == null) {
+        explorationCheckpointDatabaseBuilder
+          .putExplorationCheckpoint(explorationId, explorationCheckpoint)
+      } else {
+        // Update the timestamp to the time when the checkpoint was saved for the first time and
+        // then replace the existing checkpoint in the map with the updated checkpoint.
+        explorationCheckpointDatabaseBuilder.putExplorationCheckpoint(
+          explorationId,
+          explorationCheckpoint.toBuilder()
+            .setTimestampOfFirstCheckpoint(checkpoint.timestampOfFirstCheckpoint)
+            .build()
+        )
+      }
+
+      val explorationCheckpointDatabase = explorationCheckpointDatabaseBuilder.build()
+
+      if (explorationCheckpointDatabase.serializedSize <= explorationCheckpointDatabaseSizeLimit) {
+        Pair(
+          explorationCheckpointDatabase,
+          CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+        )
+      } else {
+        Pair(
+          explorationCheckpointDatabase,
+          CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
+        )
+      }
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] for the [Deferred] returned from [recordExplorationCheckpointAsync].
    */
   fun recordExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
-    val deferred =
-      retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
-        updateInMemoryCache = true
-      ) {
-        val explorationCheckpointDatabaseBuilder = it.toBuilder()
-
-        val checkpoint = explorationCheckpointDatabaseBuilder
-          .explorationCheckpointMap[explorationId]
-
-        // add checkpoint to the map if it was not saved previously.
-        if (checkpoint == null) {
-          explorationCheckpointDatabaseBuilder
-            .putExplorationCheckpoint(explorationId, explorationCheckpoint)
-        } else {
-          // update the timestamp to the time when the checkpoint was saved for the first time and
-          // then replace the existing checkpoint in the map with the updated checkpoint.
-          explorationCheckpointDatabaseBuilder.putExplorationCheckpoint(
-            explorationId,
-            explorationCheckpoint.toBuilder()
-              .setTimestampOfFirstCheckpoint(checkpoint.timestampOfFirstCheckpoint)
-              .build()
-          )
-        }
-
-        val explorationCheckpointDatabase = explorationCheckpointDatabaseBuilder.build()
-
-        if (explorationCheckpointDatabase.serializedSize <= explorationCheckpointDatabaseSizeLimit)
-          Pair(
-            explorationCheckpointDatabase,
-            ExplorationCheckpointActionStatus.CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_NOT_EXCEEDED
-          )
-        else
-          Pair(
-            explorationCheckpointDatabase,
-            ExplorationCheckpointActionStatus.CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED
-          )
-      }
+    val deferred = recordExplorationCheckpointAsync(
+      profileId,
+      explorationId,
+      explorationCheckpoint
+    )
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync getDeferredResult(
-        deferred = deferred,
-        profileId = profileId,
-        explorationId = null
-      )
+      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
     }
   }
 
-  /** returns the saved checkpoint for a specified explorationId and profileId. */
+  /** Returns the saved checkpoint for a specified explorationId and profileId. */
   fun retrieveExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -156,8 +156,10 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
+   * Retrieves details about the oldest saved exploration checkpoint.
+   *
    * @return [ExplorationCheckpointDetails]  which contains the explorationId, explorationTitle
-   * and explorationVersion of the oldest saved checkpoint for the specified profile.
+   *      and explorationVersion of the oldest saved checkpoint for the specified profile.
    */
   fun retrieveOldestSavedExplorationCheckpointDetails(
     profileId: ProfileId
@@ -167,7 +169,7 @@ class ExplorationCheckpointController @Inject constructor(
         RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID
       ) { explorationCheckpointDatabase ->
 
-        // find the oldest checkpoint by timestamp or null if no checkpoints is saved.
+        // Find the oldest checkpoint by timestamp or null if no checkpoints is saved.
         val oldestCheckpoint = explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
           it.value.timestampOfFirstCheckpoint
         }
@@ -189,7 +191,7 @@ class ExplorationCheckpointController @Inject constructor(
       }
   }
 
-  /** deletes the saved checkpoint for a specified explorationId and profileId. */
+  /** Deletes the saved checkpoint for a specified explorationId and profileId. */
   fun deleteSavedExplorationCheckpoint(
     profileId: ProfileId,
     explorationId: String
@@ -198,11 +200,12 @@ class ExplorationCheckpointController @Inject constructor(
       updateInMemoryCache = true
     ) { explorationCheckpointDatabase ->
 
-      if (!explorationCheckpointDatabase.explorationCheckpointMap.containsKey(explorationId))
+      if (!explorationCheckpointDatabase.explorationCheckpointMap.containsKey(explorationId)) {
         return@storeDataWithCustomChannelAsync Pair(
           explorationCheckpointDatabase,
           ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND
         )
+      }
 
       val explorationCheckpointDatabaseBuilder = explorationCheckpointDatabase.toBuilder()
 
@@ -231,12 +234,6 @@ class ExplorationCheckpointController @Inject constructor(
     profileId: ProfileId?,
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      ExplorationCheckpointActionStatus.CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_NOT_EXCEEDED ->
-        AsyncResult.success(ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT)
-
-      ExplorationCheckpointActionStatus.CHECKPOINT_SAVED_DATABASE_SIZE_LIMIT_EXCEEDED ->
-        AsyncResult.success(ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT)
-
       ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND ->
         AsyncResult.failed(
           ExplorationCheckpointNotFoundException(

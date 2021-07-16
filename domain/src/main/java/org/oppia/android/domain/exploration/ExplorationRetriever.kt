@@ -43,6 +43,7 @@ class ExplorationRetriever @Inject constructor(
       .setInitStateName(innerExplorationObject.getString("init_state_name"))
       .setObjective(innerExplorationObject.getString("objective"))
       .putAllStates(createStatesFromJsonObject(innerExplorationObject.getJSONObject("states")))
+      .setVersion(explorationObject.getInt("version"))
       .build()
   }
 
