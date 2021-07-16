@@ -13,8 +13,8 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
-import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIAL
 /** Activity for QuestionPlayer in train mode. */
 class QuestionPlayerActivity :
   InjectableAppCompatActivity(),
-  StopStatePlayingSessionWithSavedProgressListener,
+  StopStatePlayingSessionListener,
   RestartPlayingSessionListener,
   StateKeyboardButtonListener,
   HintsAndSolutionListener,
@@ -46,7 +46,7 @@ class QuestionPlayerActivity :
   }
 
   override fun onBackPressed() {
-    showUnsavedExplorationDialogFragment()
+    showStopExplorationDialogFragment()
   }
 
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
@@ -55,13 +55,13 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.onKeyboardAction(actionCode)
   }
 
-  private fun showUnsavedExplorationDialogFragment() {
+  private fun showStopExplorationDialogFragment() {
     val previousFragment =
       supportFragmentManager.findFragmentByTag(TAG_STOP_TRAINING_SESSION_DIALOG)
     if (previousFragment != null) {
       supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
-    val dialogFragment = UnsavedExplorationDialogFragment.newInstance()
+    val dialogFragment = StopExplorationDialogFragment.newInstance()
     dialogFragment.showNow(supportFragmentManager, TAG_STOP_TRAINING_SESSION_DIALOG)
   }
 
@@ -124,13 +124,7 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.dismissConceptCard()
   }
 
-  override fun deleteCurrentProgressAndStopSession() {
-    // No progress is saved in training sessions.
+  override fun stopSession() {
     questionPlayerActivityPresenter.stopTrainingSession()
-  }
-
-  override fun deleteOldestProgressAndStopSession() {
-    // This function is not needed because there is no progress that is being saved in training
-    // sessions.
   }
 }

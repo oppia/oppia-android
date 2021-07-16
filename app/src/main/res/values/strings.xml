@@ -36,7 +36,7 @@
   <string name="unsaved_exploration_dialog_leave_button">Leave</string>
   <string name="unsaved_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
-  <string name="stop_exploration_dialog_description">Your progress has been saved.</string>
+  <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>

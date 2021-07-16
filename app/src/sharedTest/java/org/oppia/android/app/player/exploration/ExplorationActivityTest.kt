@@ -1083,69 +1083,10 @@ class ExplorationActivityTest {
     )
   }
 
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
-  fun testExplorationActivity_progressSaved_onBackPressed_showsStopExplorationDialog() {
-    setUpAudioForFractionLesson()
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
-      )
-    ).use {
-      explorationDataController.startPlayingExploration(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
-      )
-      testCoroutineDispatchers.runCurrent()
-
-      pressBack()
-      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.stop_exploration_dialog_description)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-    explorationDataController.stopPlayingExploration()
-  }
-
-  @Test
-  fun testExplorationActivity_progressSaved_onToolbarClosePressed_showsStopExplorationDialog() {
-    setUpAudioForFractionLesson()
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
-      )
-    ).use {
-      explorationDataController.startPlayingExploration(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
-      )
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-      onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withText(R.string.stop_exploration_dialog_description)).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-    explorationDataController.stopPlayingExploration()
-  }
-
-  // TODO(#89): Check this test case too. It works in pair with below test cases.
-  @Test
-  fun testExpActivity_showStopExpDialog_cancel_dismissesDialog() {
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExpActivity_progressSaved_onBackPressed_closesExpActivity() {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1161,21 +1102,18 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = true
     )
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click())
-    assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
-    explorationDataController.stopPlayingExploration()
+    assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExpActivity_showStopExpDialog_leave_closesExpActivity() {
+  fun testExpActivity_progressSaved_onToolbarClosePressed_closesExpActivity() {
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1195,15 +1133,16 @@ class ExplorationActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    pressBack()
-    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click())
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+      .check(matches(isDisplayed()))
+
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
-  fun testExpActivity_showStopExpDialog_leave_checkNoProgressDeleted() {
+  fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
 
     explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
     setUpAudioForFractionLesson()
@@ -1226,45 +1165,6 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
-      .perform(click())
-
-    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
-      FAKE_EXPLORATION_ID_1
-    )
-    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
-      FRACTIONS_EXPLORATION_ID_0
-    )
-  }
-
-  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
-  @Test
-  fun testExpActivity_showStopExpDialog_cancel_checkNoProgressDeleted() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
-    setUpAudioForFractionLesson()
-    explorationActivityTestRule.launchActivity(
-      createExplorationActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
-      )
-    )
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    pressBack()
-    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
-      .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
       internalProfileId,

@@ -20,7 +20,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
-import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -270,10 +269,11 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /**
-   * Shows an appropriate dialog box when back button is pressed. This function shows
-   * [UnsavedExplorationDialogFragment] if checkpointing is not enabled otherwise it either shows
-   * [StopExplorationDialogFragment] or [ProgressDatabaseFullDialogFragment] depending upon the
-   * state of the saved checkpoint for the current exploration.
+   * Shows an appropriate dialog box or exits the exploration directly without showing any dialog
+   * box when back button is pressed. This function shows [UnsavedExplorationDialogFragment] if
+   * checkpointing is not enabled otherwise it either exits the exploration or shows
+   * [ProgressDatabaseFullDialogFragment] depending upon the state of the saved checkpoint for the
+   * current exploration.
    */
   fun backButtonPressed() {
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
@@ -386,16 +386,6 @@ class ExplorationActivityPresenter @Inject constructor(
     )
   }
 
-  private fun showStopExplorationDialogFragment() {
-    val previousFragment =
-      activity.supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
-    if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = StopExplorationDialogFragment.newInstance()
-    dialogFragment.showNow(activity.supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
-  }
-
   private fun showUnsavedExplorationDialogFragment() {
     val previousFragment =
       activity.supportFragmentManager.findFragmentByTag(TAG_UNSAVED_EXPLORATION_DIALOG)
@@ -449,7 +439,7 @@ class ExplorationActivityPresenter @Inject constructor(
    * fragment.
    *
    * If the checkpointState is equal to CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT,
-   * [StopExplorationDialogFragment] will be displayed to the user. If the checkpointState is equal
+   * exploration will be stopped without showing any dialogFragment. If the checkpointState is equal
    * to CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT, [ProgressDatabaseFullDialogFragment] will be
    * displayed to the user. Otherwise, the dialog fragment [UnsavedExplorationDialogFragment] will
    * be displayed to the user.
@@ -463,7 +453,7 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
-          showStopExplorationDialogFragment()
+          stopExploration()
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
           showProgressDatabaseFullDialogFragment()
