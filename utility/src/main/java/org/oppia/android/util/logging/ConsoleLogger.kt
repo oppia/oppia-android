@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.android.util.threading.BlockingDispatcher
+import java.io.BufferedReader
 import java.io.File
 import java.util.Calendar
 import javax.inject.Inject
@@ -71,6 +72,11 @@ class ConsoleLogger @Inject constructor(
   /** Logs a error message with the specified tag, message and exception.*/
   fun e(tag: String, msg: String, tr: Throwable?) {
     writeError(LogLevel.ERROR, tag, msg, tr)
+  }
+
+  /* Gets a [BufferedReader] for the logcat file. */
+  fun getLogReader(): BufferedReader {
+    return logDirectory.bufferedReader()
   }
 
   private fun isLogEnable(logLevel: LogLevel): Boolean {

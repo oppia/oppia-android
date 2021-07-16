@@ -6,8 +6,7 @@ load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def domain_test(name, filtered_tests, deps):
-    """
-    Creates individual tests for test files in the domain module.
+    """Creates individual tests for test files in the domain module.
 
     Args:
         name: str. The relative path to the Kotlin test file.
@@ -18,7 +17,9 @@ def domain_test(name, filtered_tests, deps):
     oppia_android_module_level_test(
         name = name,
         filtered_tests = filtered_tests,
-        deps = deps,
+        deps = deps + ["//data:data_test_assets"],
         custom_package = "org.oppia.android.domain",
         test_manifest = "src/test/AndroidManifest.xml",
+        assets = native.glob(["src/main/assets/**"]),
+        assets_dir = "src/main/assets/",
     )

@@ -6,6 +6,16 @@ This library provides data to the rest of the application.
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//data:data_test.bzl", "data_test")
 
+android_library(
+    name = "data_test_assets",
+    testonly = True,
+    assets = glob(["src/test/assets/**"]),
+    assets_dir = "src/test/assets/",
+    custom_package = "org.oppia.android.data",
+    manifest = "src/test/AndroidManifest.xml",
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",

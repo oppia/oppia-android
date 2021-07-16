@@ -98,6 +98,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Test
   fun testNetworkInterceptor_withIncorrectHeaders_setsCorrectHeaders() {
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
     val request = Request.Builder()
       .url(mockWebServer.url("/"))
       .addHeader("api_key", "wrong_api_key")
@@ -110,7 +111,6 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(request.header("app_version_name")).isEqualTo("wrong_version_name")
     assertThat(request.header("app_version_code")).isEqualTo("wrong_version_code")
 
-    mockWebServer.enqueue(MockResponse().setBody("{}"))
     client.newCall(request).execute()
     val interceptedRequest = mockWebServer.takeRequest(
       timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,

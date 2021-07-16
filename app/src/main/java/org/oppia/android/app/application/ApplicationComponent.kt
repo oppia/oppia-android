@@ -24,6 +24,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.feedbackreporting.FeedbackReportingModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -77,7 +78,7 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    DeveloperOptionsModule::class, FeedbackReportingModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {
