@@ -72,6 +72,9 @@ kt_android_library(
     custom_package = "org.oppia.android.domain",
     manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
+    freeCompilerArgs = [
+        "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+    ],
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
