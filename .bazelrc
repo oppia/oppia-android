@@ -3,7 +3,8 @@ build --android_databinding_use_v3_4_args \
     --experimental_android_databinding_v2 \
     --java_header_compilation=false \
     --noincremental_dexing \
-    --define=android_standalone_dexing_tool=d8_compat_dx
+    --define=android_standalone_dexing_tool=d8_compat_dx \
+    --javacopt="-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
 
 # Show all test output by default (for better debugging).
 test --test_output=all
