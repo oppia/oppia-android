@@ -52,7 +52,7 @@ class GenerateMavenDependenciesListTest {
   private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
     "License links are invalid or not available for some dependencies"
   private val SCRIPT_PASSED_MESSAGE =
-    "\nScript executed succesfully: maven_dependencies.textproto updated successfully."
+    "Script executed succesfully: maven_dependencies.textproto updated successfully."
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
@@ -210,7 +210,7 @@ class GenerateMavenDependenciesListTest {
         "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
       )
     )
-    assertThat(outContent.toString()).isEqualTo(SCRIPT_PASSED_MESSAGE)
+    assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
   }
 
   @Test
