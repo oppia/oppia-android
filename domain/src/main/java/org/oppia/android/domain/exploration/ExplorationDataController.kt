@@ -49,7 +49,7 @@ class ExplorationDataController @Inject constructor(
    * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
    *     for the current exploration
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
-   *     The exploration may still ail to load, but this provides early failure detection.
+   *     The exploration may still fail to load, but this provides early-failure detection.
    */
   fun startPlayingExploration(
     internalProfileId: Int,

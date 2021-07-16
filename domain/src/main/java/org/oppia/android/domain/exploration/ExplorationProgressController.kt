@@ -603,7 +603,10 @@ class ExplorationProgressController @Inject constructor(
     saveExplorationCheckpoint()
   }
 
-  /** Checks if the answer was submitted to the state on behalf of continue interaction. */
+  /**
+   * Returns whether the specified interaction automatically continues the user to the next state
+   * upon completion.
+   */
   private fun doesInteractionAutoContinue(interactionId: String): Boolean =
     interactionId == "Continue"
 
