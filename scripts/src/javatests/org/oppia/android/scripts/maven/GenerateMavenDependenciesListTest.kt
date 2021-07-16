@@ -312,7 +312,7 @@ class GenerateMavenDependenciesListTest {
   @Test
   fun testDependencyHasNoLicense_scriptFails_writesProto() {
     val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
     val coordsList = listOf(DEP_WITH_NO_LICENSE)
     setupBazelEnvironment(coordsList)
@@ -467,62 +467,6 @@ class GenerateMavenDependenciesListTest {
       """.trimIndent()
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
-  }
-
-  @Test
-  fun testDependencyHasScrapableLicense_scriptPassesAndWriteTextProto() {
-    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder()
-        .setUrl("https://www.apache.org/licenses/LICENSE-2.0.txt").build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addAllLicense(listOf(license1))
-          }.build()
-        )
-      )
-    }.build()
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE)
-    setupBazelEnvironment(coordsList)
-
-    GenerateMavenDependenciesList(
-      mockLicenseFetcher,
-      commandExecutor
-    ).main(
-      arrayOf(
-        "${tempFolder.root}",
-        "scripts/assets/maven_install.json",
-        "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
-    )
-    val textprotoContent = textProtoFile.readAsJoinedString()
-    assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
-    assertThat(textprotoContent).matches(
-      """
-      maven_dependency {
-        artifact_name: "androidx.databinding:databinding-adapters:3.4.2"
-        artifact_version: "3.4.2"
-        license {
-          license_name: "The Apache License, Version 2.0"
-          original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-          scrapable_link {
-            url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-          }
-        }
-      }
-      """.trimIndent()
-    )
   }
 
   private fun setupBazelEnvironment(coordsList: List<String>) {
