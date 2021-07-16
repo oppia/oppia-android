@@ -178,6 +178,12 @@ NOTICE @BenHenning
 # Global scripts code ownership.
 /scripts/ @BenHenning
 
+# Shell file ownership.
+/scripts/**/*.sh @anandwana001 @BenHenning
+
+# Static analysis check configuration files ownership.
+/scripts/assets/ @BenHenning
+
 #####################################################################################
 #                                      model                                        #
 #####################################################################################
@@ -199,5 +205,3 @@ WORKSPACE @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
 
-# Static analysis check configuration files ownership.
-/scripts/assets/ @BenHenning
