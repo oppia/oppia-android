@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 
@@ -25,7 +26,7 @@ class ProfileTest {
 
   private val OPPIA_PACKAGE = "org.oppia.android"
 
-  private val LAUNCH_TIMEOUT = 5000
+  private val LAUNCH_TIMEOUT = 1000 * 5
 
   private val STRING_TO_BE_TYPED = "UiAutomator"
 
@@ -55,15 +56,16 @@ class ProfileTest {
     mDevice.wait(Until.hasObject(By.pkg(OPPIA_PACKAGE).depth(0)), LAUNCH_TIMEOUT.toLong())
   }
 
-  @Test
-  fun checkPreconditions() {
-    assertNotNull(mDevice)
-  }
+  // @Test
+  // fun checkPreconditions() {
+  //   assertNotNull(mDevice)
+  // }
   
   @Test
   fun exitOnBoarding() {
     mDevice.findObject(By.res("org.oppia.android:id/skip_text_view"))
           .click()
+    mDevice.wait(Until.hasObject(By.res("org.oppia.android:id/get_started_button")), 1000L)
     mDevice.findObject(By.res("org.oppia.android:id/get_started_button"))
           .click()
   }
@@ -104,3 +106,41 @@ class ProfileTest {
     return resolveInfo!!.activityInfo.packageName
   }
 }
+
+/*
+
+android_device(
+  name = "android_27_x86_qemu2",
+  visibility = ["//visibility:public"],
+  tags = ["requires-kvm"],
+  generator_name = "generic_phone",
+  generator_function = "make_device",
+  generator_location = "tools/android/emulated_devices/generic_phone/BUILD.bazel:43:12",
+  vertical_resolution = 2160,
+  horizontal_resolution = 1080,
+  ram = 2048,
+  screen_density = 240,
+  cache = 32,
+  vm_heap = 256,
+  system_image = "@android_test_support//tools/android/emulated_devices/generic_phone:android_27_x86_qemu2_images",
+  default_properties = "@android_test_support//tools/android/emulated_devices/generic_phone:_android_27_x86_qemu2_props",
+)
+
+android_device(
+  name = "android_23_x86",
+  visibility = ["//visibility:public"],
+  tags = ["requires-kvm"],
+  generator_name = "generic_phone",
+  generator_function = "make_device",
+  generator_location = "tools/android/emulated_devices/generic_phone/BUILD.bazel:43:12",
+  vertical_resolution = 800,
+  horizontal_resolution = 480,
+  ram = 2048,
+  screen_density = 240,
+  cache = 32,
+  vm_heap = 256,
+  system_image = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_images",
+  default_properties = "@android_test_support//tools/android/emulated_devices/generic_phone:_android_23_x86_props",
+)
+
+* */
