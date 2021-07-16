@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.maven
 
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.TextFormat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -102,27 +103,41 @@ class GenerateMavenDependenciesListTest {
       )
     }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
-    val textprotoContent = textprotoFile.readAsJoinedString()
-    assertThat(textprotoContent).contains(
-      """
-      maven_dependency {
-        artifact_name: "androidx.databinding:databinding-adapters:3.4.2"
-        artifact_version: "3.4.2"
-        license {
-          license_name: "The Apache License, Version 2.0"
-          original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-        }
-      }
-      maven_dependency {
-        artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
-        artifact_version: "17.5.0"
-        license {
-          license_name: "Android Software Development Kit License"
-          original_link: "https://developer.android.com/studio/terms.html"
-        }
-      }
-      """.trimIndent()
+
+    val mavenDependencyList = listOf(
+      MavenDependency.newBuilder().apply {
+        this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+        this.artifactVersion = DATA_BINDING_VERSION
+        this.addAllLicense(
+          listOf(
+            License.newBuilder().apply {
+              this.licenseName = "The Apache License, Version 2.0"
+              this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }.build()
+          )
+        )
+      }.build(),
+      MavenDependency.newBuilder().apply {
+        this.artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE
+        this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+        this.addAllLicense(
+          listOf(
+            License.newBuilder().apply {
+              this.licenseName = "Android Software Development Kit License"
+              this.originalLink = "https://developer.android.com/studio/terms.html"
+            }.build()
+          )
+        )
+      }.build()
     )
+    val expectedMavenDependencyList = MavenDependencyList.newBuilder().apply {
+      this.addAllMavenDependency(mavenDependencyList)
+    }.build()
+    val outputMavenDependencyList = getProto(
+      textprotoFile,
+      MavenDependencyList.getDefaultInstance()
+    )
+    assertThat(outputMavenDependencyList).isEqualTo(expectedMavenDependencyList)
   }
 
   @Test
@@ -467,6 +482,15 @@ class GenerateMavenDependenciesListTest {
       """.trimIndent()
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
+  }
+
+  private fun getProto(
+    textprotoFile: File,
+    proto: MavenDependencyList
+  ): MavenDependencyList {
+    val builder = proto.newBuilderForType()
+    TextFormat.merge(textprotoFile.readText(), builder)
+    return builder.build()
   }
 
   private fun setupBazelEnvironment(coordsList: List<String>) {
