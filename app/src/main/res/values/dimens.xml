@@ -380,6 +380,14 @@
   <!-- Replay Button: Question View -->
   <dimen name="replay_button_item_question_view_margin_top">44dp</dimen>
 
+  <!-- Question Player ProgressBar -->
+  <dimen name="question_player_progress_bar_margin_start">32dp</dimen>
+  <dimen name="question_player_progress_bar_margin_end">32dp</dimen>
+
+  <dimen name="question_player_progress_bar_text_margin_bottom">12dp</dimen>
+  <dimen name="question_player_progress_bar_text_margin_end">32dp</dimen>
+  <dimen name="question_player_progress_bar_text_margin_top">8dp</dimen>
+
   <!-- Congratulations TextView -->
   <dimen name="congratulations_text_view_margin_start">28dp</dimen>
   <dimen name="congratulations_text_view_margin_end">28dp</dimen>
@@ -417,4 +425,13 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">28dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">40dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">40dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
+
 </resources>
