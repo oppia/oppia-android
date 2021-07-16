@@ -175,6 +175,8 @@ class GenerateMavenDependenciesList(
     }
   }
 
+  // TODO(#3486): Update GenerateMavenDependenciesList.kt to call out first co-ordinate name
+  // that should be updated to update all occurences of the license.
   private fun getAllBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>
   ): Set<License> {
