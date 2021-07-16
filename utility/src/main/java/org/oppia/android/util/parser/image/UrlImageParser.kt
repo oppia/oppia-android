@@ -123,16 +123,9 @@ class UrlImageParser private constructor(
         htmlContentTextView.width { viewWidth ->
           proxyDrawable.initialize(drawable, computeBounds(drawable, viewWidth))
           htmlContentTextView.text = htmlContentTextView.text
-          if(isRtlLayout(htmlContentTextView)){
-            htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
-          }
           htmlContentTextView.invalidate()
         }
       }
-    }
-
-    private fun isRtlLayout(view: View): Boolean {
-      return view.layoutDirection == View.LAYOUT_DIRECTION_RTL
     }
 
     /** Returns the drawable corresponding to the specified loaded resource. */

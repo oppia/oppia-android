@@ -66,6 +66,10 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
+    if(isRtlLayout(htmlContentTextView)){
+      htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+    }
+
     val imageGetter = urlImageParserFactory.create(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
@@ -78,6 +82,10 @@ class HtmlParser private constructor(
       htmlContentTextView.context
     )
     return ensureNonEmpty(trimSpannable(spannableBuilder))
+  }
+
+  private fun isRtlLayout(view: View): Boolean {
+    return view.layoutDirection == View.LAYOUT_DIRECTION_RTL
   }
 
   private fun computeCustomTagHandlers(
