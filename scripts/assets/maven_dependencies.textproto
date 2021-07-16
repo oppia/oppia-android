@@ -709,7 +709,7 @@ maven_dependency {
     license_name: "CDDL + GPLv2 with classpath exception"
     original_link: "https://github.com/javaee/javax.annotation/blob/master/LICENSE"
     extracted_copy_link {
-      url: "https://raw.githubusercontent.com/javaee/javax.annotation/master/LICENSE"
+      url: "https://raw.githubusercontent.com/javaee/javax.annotation/83417807ad402ee1022c0307208d4510c80c68b6/LICENSE"
     }
   }
 }
@@ -742,7 +742,7 @@ maven_dependency {
     license_name: "ISC License"
     original_link: "https://github.com/DanielMartinus/Konfetti/blob/main/LICENSE"
     extracted_copy_link {
-      url: "https://raw.githubusercontent.com/DanielMartinus/Konfetti/main/LICENSE"
+      url: "https://raw.githubusercontent.com/DanielMartinus/Konfetti/0604696970f7269fce1a5d1c3f839052f898e015/LICENSE"
     }
   }
 }
