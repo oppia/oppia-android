@@ -319,6 +319,40 @@ class BazelClientTest {
     assertThat(testTargets).containsExactly("//:FirstTest", "//:SecondTest")
   }
 
+  @Test
+  fun testRetrieveThirdPartyMavenDepsList_forTestOppiaBinary_returnsDependenciesList() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.ensureWorkspaceIsConfiguredForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("test_manifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "test_manifest.xml",
+      dependencyName = "//third_party:com_android_support_support-annotations"
+    )
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    thirdPartyBuild.writeText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      android_library(
+          name = "com_android_support_support-annotations",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("com.android.support:support-annotations:28.0.0")
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+
+    val bazelClient = BazelClient(tempFolder.root)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("test_oppia")
+    assertThat("@maven//:com_android_support_support_annotations")
+      .isIn(thirdPartyDependenciesList)
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
@@ -333,6 +367,24 @@ class BazelClientTest {
           command = listOf()
         )
       )
+  }
+
+  private fun createAndroidBinary(
+    binaryName: String,
+    manifestName: String,
+    dependencyName: String
+  ) {
+    tempFolder.newFile("BUILD.bazel").writeText(
+      """
+      android_binary(
+          name = "$binaryName",
+          manifest = "$manifestName",
+          deps = [
+               "$dependencyName"
+            ],
+      )
+      """.trimIndent() + "\n"
+    )
   }
 
   private fun generateCustomJvmTestRuleBazelFile(

@@ -13,7 +13,9 @@ import java.io.File
  * [initEmptyWorkspace] must be called first.
  */
 class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
-  private val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
+
+  /** The WORKSPACE file which will hold rules_jvm_external libraries. */
+  val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
 
   /**
    * The root BUILD.bazel file which will, by default, hold generated libraries & tests (for those
@@ -25,6 +27,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   private val libraryFileMap = mutableMapOf<String, File>()
   private val testDependencyNameMap = mutableMapOf<String, String>()
   private var isConfiguredForKotlin = false
+  private var isConfiguredForRulesJvmExternal = false
   private val filesConfiguredForTests = mutableListOf<File>()
   private val filesConfiguredForLibraries = mutableListOf<File>()
 
@@ -206,6 +209,43 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       return listOf(workspaceFile)
     }
     return listOf()
+  }
+
+  fun ensureWorkspaceIsConfiguredForRulesJvmExternal(depsList: List<String>) {
+    if (!isConfiguredForRulesJvmExternal) {
+      workspaceFile.appendText("artifactsList = [")
+      for (dep in depsList) {
+        workspaceFile.appendText("\"$dep\",\n")
+      }
+      workspaceFile.appendText("]\n")
+      workspaceFile.appendText(
+        """
+        load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+        RULES_JVM_EXTERNAL_TAG = "4.0"
+        RULES_JVM_EXTERNAL_SHA = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169"
+        
+        http_archive(
+            name = "rules_jvm_external",
+            strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
+            sha256 = RULES_JVM_EXTERNAL_SHA,
+            url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
+        )
+        
+        load("@rules_jvm_external//:defs.bzl", "maven_install")
+        
+        maven_install(
+            artifacts = artifactsList,
+            repositories = [
+                "https://maven.google.com",
+                "https://repo1.maven.org/maven2",
+            ],
+        ) 
+        """.trimIndent() + "\n"
+      )
+
+      isConfiguredForRulesJvmExternal = true
+    }
   }
 
   private fun prepareBuildFileForTests(buildFile: File) {

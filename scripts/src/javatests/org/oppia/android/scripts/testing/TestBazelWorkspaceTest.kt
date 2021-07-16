@@ -63,6 +63,20 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testWorkspaceFileProperty_retrieve_createsWorkspaceFile() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+
+    // Verify that WORKSPACE file is a top-level file that exists within the root, but is empty.
+    assertThat(workspaceFile.exists()).isTrue()
+    assertThat(workspaceFile.name).isEqualTo("WORKSPACE")
+    assertThat(workspaceFile.isRelativeTo(tempFolder.root)).isTrue()
+    assertThat(workspaceFile.toRelativeString(tempFolder.root)).isEqualTo("WORKSPACE")
+    assertThat(workspaceFile.readLines()).isEmpty()
+  }
+
+  @Test
   fun testRootBuildFileProperty_retrieve_createsBuildFile() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
