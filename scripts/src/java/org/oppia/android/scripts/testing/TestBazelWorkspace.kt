@@ -182,7 +182,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   }
 
   /** Appends rules_jvm_external configuration to the WORKSPACE file if not done already. */
-  fun ensureWorkspaceIsConfiguredForRulesJvmExternal(depsList: List<String>) {
+  fun setupWorkspaceForRulesJvmExternal(depsList: List<String>) {
     if (!isConfiguredForRulesJvmExternal) {
       workspaceFile.appendText("artifactsList = [")
       for (dep in depsList) {

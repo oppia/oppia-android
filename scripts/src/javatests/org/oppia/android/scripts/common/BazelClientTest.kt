@@ -320,9 +320,9 @@ class BazelClientTest {
   }
 
   @Test
-  fun testRetrieveThirdPartyMavenDepsList_forTestOppiaBinary_returnsDependenciesList() {
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.ensureWorkspaceIsConfiguredForRulesJvmExternal(
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
     )
     tempFolder.newFile("AndroidManifest.xml")
@@ -331,26 +331,32 @@ class BazelClientTest {
       manifestName = "AndroidManifest.xml",
       dependencyName = "//third_party:com_android_support_support-annotations"
     )
-    tempFolder.newFolder("third_party")
-    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
-    thirdPartyBuild.writeText(
-      """
-      load("@rules_jvm_external//:defs.bzl", "artifact")
-      android_library(
-          name = "com_android_support_support-annotations",
-          visibility = ["//visibility:public"],
-          exports = [
-              artifact("com.android.support:support-annotations:28.0.0")
-          ],
-      )
-      """.trimIndent() + "\n"
-    )
-
+    createAndroidLibraryAtThirdPartyBuild("com.android.support:support-annotations:28.0.0")
     val bazelClient = BazelClient(tempFolder.root)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
     assertThat("@maven//:com_android_support_support_annotations")
       .isIn(thirdPartyDependenciesList)
+  }
+
+  @Test
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("AndroidManifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "AndroidManifest.xml",
+      dependencyName = "com.android.support:support-annotations:28.0.0"
+    )
+    createAndroidLibraryAtRootBuild("io.fabric.sdk.android:fabric:1.4.7")
+    val bazelClient = BazelClient(tempFolder.root)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
+    assertThat("@maven//:com_android_support_support_annotations")
+      .isNotIn(thirdPartyDependenciesList)
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {
@@ -369,6 +375,44 @@ class BazelClientTest {
       )
   }
 
+  private fun createAndroidLibraryAtThirdPartyBuild(artifactName: String) {
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    thirdPartyBuild.writeText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      android_library(
+          name = "${omitVersionAndReplacePeriodsAndColons(artifactName)}",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("$artifactName")
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun createAndroidLibraryAtRootBuild(artifactName: String) {
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    thirdPartyBuild.writeText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      android_library(
+          name = "${omitVersionAndReplacePeriodsAndColons(artifactName)}",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("$artifactName")
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun omitVersionAndReplacePeriodsAndColons(artifactName: String): String {
+    return artifactName.substringBeforeLast(':').replace('.', '_').replace(':', '_')
+  }
+
   private fun createAndroidBinary(
     binaryName: String,
     manifestName: String,
@@ -381,7 +425,7 @@ class BazelClientTest {
           manifest = "$manifestName",
           deps = [
                "$dependencyName"
-            ],
+          ],
       )
       """.trimIndent() + "\n"
     )

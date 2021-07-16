@@ -232,7 +232,6 @@ class GenerateMavenDependenciesList(
     bazelQueryDepsNames: List<String>
   ): List<MavenListDependency> {
     val dependencyTree = retrieveDependencyTree(pathToMavenInstall)
-      ?: throw Exception("Failed to Parse $pathToMavenInstall")
     val mavenInstallDependencyList = dependencyTree.mavenListDependencies.dependencyList
     return mavenInstallDependencyList.filter { dep ->
       bazelQueryDepsNames.contains(omitVersionAndReplaceColonsHyphensPeriods(dep.coord))
@@ -306,7 +305,7 @@ class GenerateMavenDependenciesList(
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     val adapter = moshi.adapter(MavenListDependencyTree::class.java)
     return adapter.fromJson(mavenInstallJsonText)
-      ?: throw Exception("Failed to Parse $pathToMavenInstall")
+      ?: throw Exception("Failed to parse $pathToMavenInstall")
   }
 
   private fun getNodeValue(tag: String, element: Element): String {
