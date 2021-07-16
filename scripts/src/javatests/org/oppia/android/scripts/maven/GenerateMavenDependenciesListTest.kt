@@ -577,7 +577,7 @@ class GenerateMavenDependenciesListTest {
     )
     assertThat(license.extractedCopyLink.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
+    assertThat(license.isOriginalLinkInvalid).isFalse()
   }
 
   private fun verifyLicenseHasDirectLinkOnlyVerifiedLink(
@@ -592,7 +592,7 @@ class GenerateMavenDependenciesListTest {
     )
     assertThat(license.directLinkOnly.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
+    assertThat(license.isOriginalLinkInvalid).isFalse()
   }
 
   private fun verifyLicenseHasVerifiedLinkNotSet(
@@ -603,7 +603,7 @@ class GenerateMavenDependenciesListTest {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
     assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isEqualTo(false)
+    assertThat(license.isOriginalLinkInvalid).isFalse()
   }
 
   private fun verifyLicenseHasOriginalLinkInvalid(
