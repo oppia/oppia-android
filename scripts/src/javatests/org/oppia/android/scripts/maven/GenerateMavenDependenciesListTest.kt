@@ -83,7 +83,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testEmptyPbFile_scriptFailsWithException_writesTextproto() {
+  fun testEmptyPbFile_scriptFailsWithException_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -187,7 +187,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testDependencyHasNonScrapableLink_scriptFailsWithException_writesTextproto() {
+  fun testDependencyHasNonScrapableLink_scriptFailsWithException_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -229,7 +229,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testDependencyHasLocalCopyLinkAndScrapableLink_scriptFails_andWritesTextproto() {
+  fun testDependencyHasLocalCopyLinkAndScrapableLink_scriptFails_andWritesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -338,7 +338,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testDependencyHasNoLicense_scriptFails_writesProto() {
+  fun testDependencyHasNoLicense_scriptFails_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -614,7 +614,7 @@ class GenerateMavenDependenciesListTest {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
     assertThat(license.originalLink).isEqualTo(originalLink)
-    assertThat(license.isOriginalLinkInvalid).isEqualTo(true)
+    assertThat(license.isOriginalLinkInvalid).isTrue()
   }
 
   private fun assertIsDependency(

@@ -332,7 +332,7 @@ maven_dependency {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
     scrapable_link {
-      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/master/LICENSE"
+      url: "https://raw.githubusercontent.com/firebase/firebase-android-sdk/52e1cf89efd795d798ae5485b8503e04e4a936b8/LICENSE"
     }
   }
 }

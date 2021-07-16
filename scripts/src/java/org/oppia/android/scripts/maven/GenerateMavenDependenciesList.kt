@@ -71,11 +71,11 @@ class GenerateMavenDependenciesList(
     val dependenciesListFromPom =
       retrieveDependencyListFromPom(mavenInstallDepsList).mavenDependencyList
 
-    val dependenciesListFromTextproto = retrieveMavenDependencyList(pathToProtoBinary)
+    val dependenciesListFromtextProto = retrieveMavenDependencyList(pathToProtoBinary)
 
     val updatedDependneciesList = addChangesFromTextProto(
       dependenciesListFromPom,
-      dependenciesListFromTextproto
+      dependenciesListFromtextProto
     )
 
     val manuallyUpdatedLicenses = retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
@@ -217,11 +217,11 @@ class GenerateMavenDependenciesList(
   }
 
   /**
-   * Helper function to parse the textProto file to a proto class.
+   * Helper function to parse the text proto file to a proto class.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @param proto instance of the proto class
-   * @return proto class from the parsed textProto file
+   * @return proto class from the parsed text proto file
    */
   private fun getProto(
     pathToPbFile: String,
