@@ -108,13 +108,26 @@ public final class StateAssemblerMarginBindingAdapters {
   ) {
     if (isApplicable && view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(
-          (int) marginStart,
-          (int) marginTop,
-          (int) marginEnd,
-          (int) marginBottom
-      );
+      if (isRtlLayout(view)) {
+        params.setMargins(
+            (int) marginEnd,
+            (int) marginTop,
+            (int) marginStart,
+            (int) marginBottom
+        );
+      }else {
+        params.setMargins(
+            (int) marginStart,
+            (int) marginTop,
+            (int) marginEnd,
+            (int) marginBottom
+        );
+      }
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

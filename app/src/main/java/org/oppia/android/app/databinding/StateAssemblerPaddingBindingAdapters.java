@@ -106,13 +106,26 @@ public final class StateAssemblerPaddingBindingAdapters {
       float paddingBottom
   ) {
     if (isApplicable) {
-      view.setPadding(
-          (int) paddingStart,
-          (int) paddingTop,
-          (int) paddingEnd,
-          (int) paddingBottom
-      );
+      if (isRtlLayout(view)) {
+        view.setPadding(
+            (int) paddingEnd,
+            (int) paddingTop,
+            (int) paddingStart,
+            (int) paddingBottom
+        );
+      }else {
+        view.setPadding(
+            (int) paddingStart,
+            (int) paddingTop,
+            (int) paddingEnd,
+            (int) paddingBottom
+        );
+      }
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
   }
 }

@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -48,9 +49,12 @@ import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
+import org.oppia.android.app.testing.MarginBindableAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
+import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
@@ -101,6 +105,7 @@ interface ActivityComponent {
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(marginBindableAdaptersTestActivity: MarginBindableAdaptersTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
@@ -122,6 +127,8 @@ interface ActivityComponent {
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
+  fun inject(stateAssemblerPaddingBindingAdaptersTestActivity: StateAssemblerPaddingBindingAdaptersTestActivity)
+  fun inject(stateAssemblerMarginBindingAdaptersTestActivity: StateAssemblerMarginBindingAdaptersTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(topicActivity: TopicActivity)
