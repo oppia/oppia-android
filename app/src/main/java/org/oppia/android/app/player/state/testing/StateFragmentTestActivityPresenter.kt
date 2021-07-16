@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
@@ -29,6 +30,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
+
+  private var profileId: Int = 1
+  private lateinit var topicId: String
+  private lateinit var storyId: String
+  private lateinit var explorationId: String
+
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<StateFragmentTestActivityBinding>(
       activity,
@@ -39,14 +46,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = getStateFragmentTestViewModel()
     }
 
-    val profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
-    val topicId =
+    profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    topicId =
       activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
-    val storyId =
+    storyId =
       activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
-    val explorationId =
+    explorationId =
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
-        ?: TEST_EXPLORATION_ID_2
+      ?: TEST_EXPLORATION_ID_2
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId)
     }
@@ -68,6 +75,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     getStateFragment()?.revealHint(saveUserChoice, hintIndex)
 
   fun revealSolution() = getStateFragment()?.revealSolution()
+
+  fun deleteCurrentProgressAndStopExploration() {
+    explorationDataController.deleteExplorationProgressById(
+      ProfileId.newBuilder().setInternalId(profileId).build(),
+      explorationId
+    )
+    stopExploration()
+  }
 
   private fun startPlayingExploration(
     profileId: Int,

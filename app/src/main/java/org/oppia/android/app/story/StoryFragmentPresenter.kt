@@ -109,7 +109,8 @@ class StoryFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      isCheckpointingEnabled = false
     )
   }
 

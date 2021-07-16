@@ -25,6 +25,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
@@ -2098,6 +2099,71 @@ class ExplorationProgressControllerTest {
       TEST_EXPLORATION_ID_2,
       pendingStateName = "Fractions"
     )
+  }
+
+  @Test
+  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_UNSAVED)
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT)
+  }
+
+  @Test
+  fun testCheckpointing_saveCheckpoint_databaseFull_checkCheckpointStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.checkpointState)
+      .isEqualTo(CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT)
   }
 
   private fun setUpTestApplicationComponent() {

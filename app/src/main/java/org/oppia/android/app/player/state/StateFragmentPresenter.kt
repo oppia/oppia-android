@@ -32,7 +32,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -179,7 +179,8 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionListener).stopSession()
+    (activity as StopStatePlayingSessionWithSavedProgressListener)
+      .deleteCurrentProgressAndStopSession()
   }
 
   private fun showOrHideAudioByState(state: State) {

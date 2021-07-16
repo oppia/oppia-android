@@ -23,7 +23,8 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -32,7 +33,8 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
       )
     )
   }

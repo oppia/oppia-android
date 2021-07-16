@@ -42,7 +42,8 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -51,7 +52,8 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
       )
     )
   }

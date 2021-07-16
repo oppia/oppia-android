@@ -1497,7 +1497,11 @@ class StateFragmentTest {
   ): ActivityScenario<StateFragmentTestActivity> {
     return launch(
       StateFragmentTestActivity.createTestActivityIntent(
-        context, internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, explorationId
+        context,
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        explorationId
       )
     )
   }

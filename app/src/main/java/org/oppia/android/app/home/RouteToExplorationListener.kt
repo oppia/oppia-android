@@ -7,6 +7,7 @@ interface RouteToExplorationListener {
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   )
 }

@@ -559,7 +559,7 @@ class StateFragmentLocalTest {
       onView(isRoot()).check(
         matches(
           not(
-            withText("In a fraction, the pieces representing the denominator must be equal")
+            withText("In a fraction, the pieces representing the denominator must be equal")
           )
         )
       )
