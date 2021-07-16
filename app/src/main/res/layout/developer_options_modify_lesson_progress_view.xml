@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsModifyLessonProgressViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/modify_lesson_progress_text_view"
+      style="@style/Heading5"
+      android:layout_width="match_parent"
+      android:background="@color/mid_grey_30"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_modify_lesson_progress_label"
+      android:textColor="@color/colorPrimary"
+      app:layout_constraintBottom_toTopOf="@id/mark_chapters_completed_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/mark_chapters_completed_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:onClick="@{(v) -> viewModel.onMarkChaptersCompletedClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_mark_chapters_completed"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintBottom_toTopOf="@id/view_divider1"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/modify_lesson_progress_text_view" />
+
+    <View
+      android:id="@+id/view_divider1"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/mid_grey_30"
+      app:layout_constraintBottom_toTopOf="@id/mark_stories_completed_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/mark_chapters_completed_text_view" />
+
+    <TextView
+      android:id="@+id/mark_stories_completed_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:onClick="@{(v) -> viewModel.onMarkStoriesCompletedClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_mark_stories_completed"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintBottom_toTopOf="@id/mark_topics_completed_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider1" />
+
+    <View
+      android:id="@+id/view_divider2"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/mid_grey_30"
+      app:layout_constraintBottom_toTopOf="@id/mark_topics_completed_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_text_view" />
+
+    <TextView
+      android:id="@+id/mark_topics_completed_text_view"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:onClick="@{(v) -> viewModel.onMarkTopicsCompletedClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_mark_topics_completed"
+      android:textColor="@color/oppiaPrimaryTextDark"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider2" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
