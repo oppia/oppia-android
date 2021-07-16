@@ -209,7 +209,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -228,7 +228,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              isCheckpointingEnabled = true
+              isCheckpointingEnabled = false
             )
           }
         }
