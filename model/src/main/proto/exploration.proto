@@ -234,7 +234,7 @@ message EphemeralState {
     bool terminal_state = 6;
   }
 
-  // The current state of checkpoint of an exploration.
+  // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
 }
 
@@ -337,7 +337,6 @@ message HelpIndex {
 
 // Different states in which exploration checkpoint can exist.
 enum CheckpointState {
-
   // The state of checkpoint is unknown.
   CHECKPOINT_STATE_UNSPECIFIED = 0;
 
