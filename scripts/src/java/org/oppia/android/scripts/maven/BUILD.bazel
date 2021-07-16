@@ -33,23 +33,13 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "maven_dependencies_list_writer",
-    testonly = True,
-    srcs = ["MavenDependenciesListWriter.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        ":maven_dependencies_lib",
-        ":utility_provider",
-        "//third_party:com_google_protobuf_protobuf-java",
-    ],
-)
-
-kt_jvm_library(
     name = "generate_maven_dependencies_list_lib",
     testonly = True,
     srcs = ["GenerateMavenDependenciesList.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":maven_dependencies_list_writer",
+        ":maven_dependencies_lib",
+        ":utility_provider",
+        "//third_party:com_google_protobuf_protobuf-java",
     ],
 )

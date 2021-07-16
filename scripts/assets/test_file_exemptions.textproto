@@ -530,7 +530,6 @@ exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/maveninsta
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/maveninstall/MavenListDependencies.kt"
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/maveninstall/MavenListDependencyTree.kt"
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/LicenseFetcher.kt"
-exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/DisableAccessibilityChecks.kt"
