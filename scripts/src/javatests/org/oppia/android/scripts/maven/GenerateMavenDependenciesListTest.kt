@@ -488,11 +488,11 @@ class GenerateMavenDependenciesListTest {
       """.trimIndent() + "\n"
     )
     for (export in exportsList) {
-      createAndroidLibrary(thirdPartyBuild, export)
+      createThirdPartyAndroidLibrary(thirdPartyBuild, export)
     }
   }
 
-  private fun createAndroidLibrary(thirdPartyBuild: File, artifactName: String) {
+  private fun createThirdPartyAndroidLibrary(thirdPartyBuild: File, artifactName: String) {
     thirdPartyBuild.appendText(
       """
       android_library(
