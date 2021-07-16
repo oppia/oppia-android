@@ -77,6 +77,103 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withTwoDeps_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf(
+        "com.android.support:support-annotations:28.0.0",
+        "io.fabric.sdk.android:fabric:1.4.7"
+      )
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).contains("io.fabric.sdk.android:fabric:1.4.7")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withMultipleDeps_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf(
+        "com.android.support:support-annotations:28.0.0",
+        "io.fabric.sdk.android:fabric:1.4.7",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "com.google.protobuf:protobuf-lite:3.0.0"
+      )
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).contains("io.fabric.sdk.android:fabric:1.4.7")
+    assertThat(workspaceContent).contains("androidx.databinding:databinding-adapters:3.4.2")
+    assertThat(workspaceContent).contains("com.google.protobuf:protobuf-lite:3.0.0")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_multipleCalls_containsOnlyFirstTimeContent() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf("io.fabric.sdk.android:fabric:1.4.7")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).doesNotContain("io.fabric.sdk.android:fabric:1.4.7")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_addsMavenInstall() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains(
+      """
+      maven_install(
+          artifacts = artifactsList,
+          repositories = [
+              "https://maven.google.com",
+              "https://repo1.maven.org/maven2",
+          ],
+      )
+      """.trimIndent()
+    )
+  }
+
+  @Test
   fun testRootBuildFileProperty_retrieve_createsBuildFile() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
