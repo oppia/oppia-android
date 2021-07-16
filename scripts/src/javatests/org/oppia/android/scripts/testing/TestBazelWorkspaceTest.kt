@@ -80,7 +80,7 @@ class TestBazelWorkspaceTest {
   fun testSetupWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
     )
 
@@ -94,7 +94,7 @@ class TestBazelWorkspaceTest {
   fun testSetupWorkspaceForRulesJvmExternal_withTwoDeps_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf(
         "com.android.support:support-annotations:28.0.0",
         "io.fabric.sdk.android:fabric:1.4.7"
@@ -112,7 +112,7 @@ class TestBazelWorkspaceTest {
   fun testSetupWorkspaceForRulesJvmExternal_withMultipleDeps_containsCorrectList() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf(
         "com.android.support:support-annotations:28.0.0",
         "io.fabric.sdk.android:fabric:1.4.7",
@@ -134,11 +134,11 @@ class TestBazelWorkspaceTest {
   fun testSetupWorkspaceForRulesJvmExternal_multipleCalls_containsOnlyFirstTimeContent() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
     )
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("io.fabric.sdk.android:fabric:1.4.7")
     )
 
@@ -153,7 +153,7 @@ class TestBazelWorkspaceTest {
   fun testSetupWorkspaceForRulesJvmExternal_addsMavenInstall() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf("com.android.support:support-annotations:28.0.0")
     )
 

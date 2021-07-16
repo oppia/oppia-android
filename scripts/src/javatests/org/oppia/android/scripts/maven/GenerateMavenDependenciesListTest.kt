@@ -213,7 +213,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testDependencyHasLocalCopyLinkAndScrapbaleLink_scriptFails_andWritesTextproto() {
+  fun testDependencyHasLocalCopyLinkAndScrapableLink_scriptFails_andWritesTextproto() {
     val textprotoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -472,7 +472,7 @@ class GenerateMavenDependenciesListTest {
   private fun setupBazelEnvironment(coordsList: List<String>) {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
-    testBazelWorkspace.setupWorkspaceForRulesJvmExternal(coordsList)
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
     val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
       "//third_party:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
     }
