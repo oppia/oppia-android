@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -33,7 +34,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -50,6 +51,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -84,10 +86,19 @@ class ExplorationDataControllerTest {
   lateinit var explorationDataController: ExplorationDataController
 
   @Inject
+  lateinit var explorationProgressController: ExplorationProgressController
+
+  @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Mock
+  lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
 
   @Mock
   lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
@@ -304,6 +315,23 @@ class ExplorationDataControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size limit is set so that after the two fake checkpoints are saved with
+     * [ExplorationCheckpointTestHelper], the size of the exploration checkpoint database will
+     * exceed once the exploration with [TEST_EXPLORATION_ID_2] is saved after it has been loaded.
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -314,7 +342,7 @@ class ExplorationDataControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageModule::class
+      TestExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
