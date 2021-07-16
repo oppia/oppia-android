@@ -130,7 +130,7 @@ class QuestionPlayerActivity :
   }
 
   override fun deleteOldestProgressAndStopSession() {
-    // This function is not needed because their is no progress that is being saved in training
+    // This function is not needed because there is no progress that is being saved in training
     // sessions.
   }
 }
