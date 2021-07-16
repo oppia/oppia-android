@@ -1,6 +1,7 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
+
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -113,7 +114,7 @@ public final class StateAssemblerPaddingBindingAdapters {
             (int) paddingStart,
             (int) paddingBottom
         );
-      }else {
+      } else {
         view.setPadding(
             (int) paddingStart,
             (int) paddingTop,

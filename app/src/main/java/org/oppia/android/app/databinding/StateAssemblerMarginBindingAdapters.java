@@ -115,7 +115,7 @@ public final class StateAssemblerMarginBindingAdapters {
             (int) marginStart,
             (int) marginBottom
         );
-      }else {
+      } else {
         params.setMargins(
             (int) marginStart,
             (int) marginTop,
