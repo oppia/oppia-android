@@ -123,3 +123,8 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
+
+      - name: KDoc Check
+        if: always()
+        run: |
+          bazel run //scripts:kdoc_check -- $(pwd)

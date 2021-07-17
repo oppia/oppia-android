@@ -155,7 +155,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_classMissingKDoc_checkShouldFail(){
+  fun testKDoc_classMissingKDoc_checkShouldFail() {
     val testContent =
       """
       class TestClass {}  
@@ -176,7 +176,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_nestedClassMissingKDoc_checkShouldFail(){
+  fun testKDoc_nestedClassMissingKDoc_checkShouldFail() {
     val testContent =
       """
       /** Test KDoc 1. */
@@ -203,7 +203,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_classMembersMissingKDoc_checkShouldFail(){
+  fun testKDoc_classMembersMissingKDoc_checkShouldFail() {
     val testContent =
       """
       /** Test KDoc 1. */
@@ -230,7 +230,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_fieldsMissingKDoc_checkShouldFail(){
+  fun testKDoc_fieldsMissingKDoc_checkShouldFail() {
     val testContent =
       """
       val testVal = "dddd"
@@ -253,7 +253,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_functionMissingKDoc_checkShouldFail(){
+  fun testKDoc_functionMissingKDoc_checkShouldFail() {
     val testContent =
       """
       fun getErrorMessageFromStringRes(context: Context): String? {
@@ -276,7 +276,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_constructorMissingKDoc_checkShouldFail(){
+  fun testKDoc_constructorMissingKDoc_checkShouldFail() {
     val testContent =
       """
       /** Test KDoc. */
@@ -300,7 +300,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_enumMissingKDoc_checkShouldFail(){
+  fun testKDoc_enumMissingKDoc_checkShouldFail() {
     val testContent =
       """
       enum class WalkthroughPages(val value: Int) {
@@ -328,7 +328,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_interfaceMissingKDoc_checkShouldFail(){
+  fun testKDoc_interfaceMissingKDoc_checkShouldFail() {
     val testContent =
       """
       interface ChapterSelector {
@@ -356,7 +356,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_companionObjectMissingKDoc_checkShouldFail(){
+  fun testKDoc_companionObjectMissingKDoc_checkShouldFail() {
     val testContent =
       """
       /** Test KDoc. */
@@ -392,7 +392,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_annotationMissingKDoc_checkShouldFail(){
+  fun testKDoc_annotationMissingKDoc_checkShouldFail() {
     val testContent =
       """
       import javax.inject.Qualifier
@@ -416,7 +416,7 @@ class KDocCheckTest {
   }
 
   @Test
-  fun testKDoc_multipleFilesMissingKDoc_multipleFailuresShouldBeReported(){
+  fun testKDoc_multipleFilesMissingKDoc_multipleFailuresShouldBeReported() {
     val testContent1 =
       """
       import javax.inject.Qualifier
@@ -452,6 +452,27 @@ class KDocCheckTest {
       ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:4: missing KDoc
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testKDoc_exemptedFileMissingKDocs_checkShouldPass() {
+    val testContent =
+      """
+      fun getErrorMessageFromStringRes(context: Context): String? {
+        return error?.let(context::getString)
+      }
+      """.trimIndent()
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "activity"
+    )
+    val exemptedFile = tempFolder.newFile(
+      "testfiles/app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+    )
+    exemptedFile.writeText(testContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(KDOC_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   /** Retrieves the absolute path of testfiles directory. */
