@@ -1,30 +1,30 @@
 package org.oppia.android.scripts.kdoc
 
-import org.oppia.android.scripts.common.RepositoryFile
-import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
+import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
+import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.psi.PsiManager
 import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
+import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
-import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtElement
-import org.jetbrains.kotlin.psi.KtDeclaration
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtVariableDeclaration
-import org.jetbrains.kotlin.psi.KtSecondaryConstructor
-import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.psi.KtConstructorDelegationReferenceExpression
+import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtElement
+import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtObjectDeclaration
+import org.jetbrains.kotlin.psi.KtSecondaryConstructor
+import org.jetbrains.kotlin.psi.KtVariableDeclaration
 import org.jetbrains.kotlin.psi.doNotAnalyze
+import org.oppia.android.scripts.common.RepositoryFile
+import org.oppia.android.scripts.proto.KDocExemptions
 import java.io.File
 import java.io.FileInputStream
-import org.jetbrains.kotlin.lexer.KtTokens
 import java.util.Scanner
-import org.oppia.android.scripts.proto.KDocExemptions
 
 /**
  * Script for ensuring that KDocs are present on all non-private:
@@ -178,9 +178,9 @@ private fun elementIterator(
       isMissingKdoc || childMissingKdoc
     }
     return memberMissingKdoc
-  } else if (elem is KtNamedFunction
-    || elem is KtVariableDeclaration
-    || elem is KtSecondaryConstructor
+  } else if (elem is KtNamedFunction ||
+    elem is KtVariableDeclaration ||
+    elem is KtSecondaryConstructor
   ) {
     return checkIfKDocMissing(elem as KtDeclaration, file, kDocNotRequiredAnnotaionEntryList)
   }
