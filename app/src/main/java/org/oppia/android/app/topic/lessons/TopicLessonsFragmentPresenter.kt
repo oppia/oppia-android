@@ -158,8 +158,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         }
         .size
 
-    Log.d("12345", "bindTopicLessonStorySummary: $inProgressChapterCount, $completedChapterCount")
-
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
     binding.storyPercentage = storyPercentage
