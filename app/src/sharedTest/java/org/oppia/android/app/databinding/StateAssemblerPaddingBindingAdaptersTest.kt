@@ -154,7 +154,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   }
 
   @Test
-  fun testStateAssemblerPadding_QuestionViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
+  fun testStateAssemblerPadding_questionViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
       setQuestionViewPadding(
@@ -176,7 +176,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   }
 
   @Test
-  fun testStateAssemblerPadding_QuestionViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
+  fun testStateAssemblerPadding_questionViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
       setQuestionViewPadding(
@@ -199,7 +199,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   }
 
   @Test
-  fun testStateAssemblerPadding_QuestionSplitViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
+  fun testStateAssemblerPadding_questionSplitViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
       setQuestionSplitViewPadding(
@@ -294,7 +294,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_ltrEnabled__port_tablet_paddingStartAndpaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
@@ -317,7 +317,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_ltrEnabled_landscapeTablet_paddingStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
@@ -340,7 +340,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
@@ -364,7 +364,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_landscape_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
@@ -388,7 +388,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_port_tablet_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
@@ -412,7 +412,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlEnabled_landscape_tablet_paddingStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
-        setExplorationSplitViewPadding(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
         context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),

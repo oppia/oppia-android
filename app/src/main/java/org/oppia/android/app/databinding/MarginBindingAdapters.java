@@ -52,7 +52,6 @@ public final class MarginBindingAdapters {
     );
   }
 
-
   /** Used to set a margin-top for views. */
   @BindingAdapter("app:layoutMarginTop")
   public static void setLayoutMarginTop(@NonNull View view, float marginTop) {
