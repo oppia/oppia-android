@@ -119,7 +119,7 @@ dependencies {
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
-      'com.google.guava:guava:28.1-android',
+      'com.google.guava:guava:30.1-android',
       'com.github.oppia:CircularImageview:35d08ba88a',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
