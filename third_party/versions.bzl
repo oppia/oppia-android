@@ -52,7 +52,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
-    "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.protobuf:protobuf-lite": "3.0.0",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
