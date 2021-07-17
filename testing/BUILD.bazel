@@ -32,6 +32,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain",
+        "//data",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_core_core-ktx",
@@ -63,6 +64,7 @@ TEST_DEPS = [
     ":dagger",
     ":testing",
     "//domain",
+    "//data",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
