@@ -1,0 +1,18 @@
+"""
+Tests corresponding to kdoc presence check, that ensures all public members (except overrides) must
+have a corresponding KDoc.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "KDocCheckTest",
+    srcs = ["KDocCheckTest.kt"],
+    deps = [
+        "//scripts:kdoc_check_assets",
+        "//scripts/src/java/org/oppia/android/scripts/kdoc:kdoc_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

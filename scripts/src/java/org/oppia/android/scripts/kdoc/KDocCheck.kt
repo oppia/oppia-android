@@ -32,6 +32,19 @@ fun main(vararg args: String) {
 
   val kdocExemptiontextProto = "scripts/assets/kdoc_exemptions"
 
+  val kDocNotRequiredAnnotaionEntryList = listOf<String>(
+    "Rule",
+    "Mock",
+    "Test",
+    "Before",
+    "Captor",
+    "BeforeClass",
+    "After",
+    "AfterClass",
+    "Inject",
+    "Provides"
+  )
+
   // A list of all the files to be exempted for this check.
   val kdocExemptionList = loadKdocExemptionsProto(kdocExemptiontextProto).getExemptedFilePathList()
 
@@ -42,9 +55,16 @@ fun main(vararg args: String) {
     exemptionsList = kdocExemptionList
   )
 
-  val matchedFiles = searchFiles.filter { file -> hasKdocFailure(file) }
+  // A list of all the files missing KDoc(s).
+  val matchedFiles = searchFiles.filter { file ->
+    hasKdocFailure(file, kDocNotRequiredAnnotaionEntryList)
+  }
 
-  println("testing kdoc")
+  if (matchedFiles.isNotEmpty()) {
+    throw Exception("KDOC CHECK FAILED")
+  } else {
+    println("KDOC CHECK PASSED")
+  }
 }
 
 private val project by lazy {
@@ -63,25 +83,43 @@ private fun createKtFile(codeString: String, fileName: String) =
       LightVirtualFile(fileName, KotlinFileType.INSTANCE, codeString)
     ) as KtFile
 
-private fun hasKdocFailure(file: File): Boolean {
+private fun hasKdocFailure(file: File, kDocNotRequiredAnnotaionEntryList: List<String>): Boolean {
   val ktFile = createKtFile(file.asString(), file.name)
   return ktFile.children.fold(initial = false) { isFailing, elem ->
-    val childFailingKdoc = if (elem is KtElement) nester(elem, file) else false
+    val childFailingKdoc = if (elem is KtElement) nester(
+      elem,
+      file,
+      kDocNotRequiredAnnotaionEntryList
+    ) else false
     isFailing || childFailingKdoc
   }
 }
 
-private fun nester(elem: KtElement, file: File): Boolean {
+private fun File.asString(): String {
+  val fileContents = StringBuilder(this.length().toInt())
+  Scanner(this).use { scanner ->
+    while (scanner.hasNextLine()) {
+      fileContents.append(scanner.nextLine() + System.lineSeparator())
+    }
+    return fileContents.toString()
+  }
+}
+
+private fun nester(
+  elem: KtElement,
+  file: File,
+  kDocNotRequiredAnnotaionEntryList: List<String>
+): Boolean {
   if (elem is KtClass) {
-    val classKdocMissing = checkIfKDocMissing(elem, file)
+    val classKdocMissing = checkIfKDocMissing(elem, file, kDocNotRequiredAnnotaionEntryList)
     val memberMissingKdoc = elem.declarations.fold(initial = false) { isMissingKdoc, childElem ->
-      val childMissingKdoc = nester(childElem, file)
+      val childMissingKdoc = nester(childElem, file, kDocNotRequiredAnnotaionEntryList)
       isMissingKdoc || childMissingKdoc
     }
     return classKdocMissing || memberMissingKdoc
   } else if (elem is KtObjectDeclaration && elem.isCompanion()) {
     val memberMissingKdoc = elem.declarations.fold(initial = false) { isMissingKdoc, childElem ->
-      val childMissingKdoc = nester(childElem, file)
+      val childMissingKdoc = nester(childElem, file, kDocNotRequiredAnnotaionEntryList)
       isMissingKdoc || childMissingKdoc
     }
     return memberMissingKdoc
@@ -89,28 +127,39 @@ private fun nester(elem: KtElement, file: File): Boolean {
     || elem is KtVariableDeclaration
     || elem is KtSecondaryConstructor
   ) {
-    return checkIfKDocMissing(elem as KtDeclaration, file)
+    return checkIfKDocMissing(elem as KtDeclaration, file, kDocNotRequiredAnnotaionEntryList)
   }
   return false
 }
 
-private fun checkIfKDocMissing(elem: KtDeclaration, file: File): Boolean {
-  if (
-    !elem.hasModifier(KtTokens.PRIVATE_KEYWORD)
-    && !elem.hasModifier(KtTokens.OVERRIDE_KEYWORD)
-  ) {
-    elem.getModifierList()?.getAnnotationEntries()?.forEach { it ->
-      if (it.getShortName().toString() == "Test") {
-        return false
-      }
-    }
-    if (elem.docComment == null) {
-      println("$file:${getLineNumberForElement(elem, false)}")
-      return true
-    }
+private fun checkIfKDocMissing(
+  elem: KtDeclaration,
+  file: File, annotaionEntryList:
+  List<String>
+): Boolean {
+  if (!isKdocRequired(elem, annotaionEntryList)) {
     return false
   }
+  if (elem.docComment == null) {
+    println("$file:${getLineNumberForElement(elem, false)}: missing KDoc")
+    return true
+  }
   return false
+}
+
+private fun isKdocRequired(elem: KtDeclaration, annotaionEntryList: List<String>): Boolean {
+  if (elem.hasModifier(KtTokens.PRIVATE_KEYWORD)) {
+    return false
+  }
+  if (elem.hasModifier(KtTokens.OVERRIDE_KEYWORD)) {
+    return false
+  }
+  elem.getModifierList()?.getAnnotationEntries()?.forEach { it ->
+    if (it.getShortName().toString() in annotaionEntryList) {
+      return false
+    }
+  }
+  return true
 }
 
 private fun getLineNumberForElement(statement: KtElement, markEndOffset: Boolean): Int? {
@@ -127,16 +176,6 @@ private fun getLineNumberForElement(statement: KtElement, markEndOffset: Boolean
   return document?.getLineNumber(
     if (markEndOffset) statement.textRange.endOffset else statement.textOffset
   )?.plus(1)
-}
-
-private fun File.asString(): String {
-  val fileContents = StringBuilder(this.length().toInt())
-  Scanner(this).use { scanner ->
-    while (scanner.hasNextLine()) {
-      fileContents.append(scanner.nextLine() + System.lineSeparator())
-    }
-    return fileContents.toString()
-  }
 }
 
 private fun loadKdocExemptionsProto(kdocExemptiontextProto: String): KDocExemptions {
