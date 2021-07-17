@@ -365,10 +365,26 @@ class TopicListController @Inject constructor(
     } != null
   }
 
-  private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
-    getSortedChapterProgressListByPlayState(
-      storyProgress, playState = ChapterPlayState.STARTED_NOT_COMPLETED
-    )
+  private fun getStartedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> {
+    val startedNotCompletedChapterList =
+      getSortedChapterProgressListByPlayState(
+        storyProgress, playState = ChapterPlayState.STARTED_NOT_COMPLETED
+      )
+    val inProgressSavedChapterList =
+      getSortedChapterProgressListByPlayState(
+        storyProgress, playState = ChapterPlayState.IN_PROGRESS_SAVED
+      )
+    val inProgressNotSavedChapterList =
+      getSortedChapterProgressListByPlayState(
+        storyProgress, playState = ChapterPlayState.IN_PROGRESS_NOT_SAVED
+      )
+    return (
+      startedNotCompletedChapterList +
+        inProgressSavedChapterList +
+        inProgressNotSavedChapterList
+      )
+      .sortedByDescending { chapterProgress -> chapterProgress.lastPlayedTimestamp }
+  }
 
   private fun getCompletedChapterProgressList(storyProgress: StoryProgress): List<ChapterProgress> =
     getSortedChapterProgressListByPlayState(

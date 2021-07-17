@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.lessons
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,12 +150,23 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           it == ChapterPlayState.COMPLETED
         }
         .size
+    val inProgressChapterCount =
+      chapterSummaries.map(ChapterSummary::getChapterPlayState)
+        .filter {
+          Log.d("12345", "bindTopicLessonStorySummary: chapter is marked $it")
+          it == ChapterPlayState.IN_PROGRESS_SAVED || it == ChapterPlayState.IN_PROGRESS_NOT_SAVED
+        }
+        .size
+
+    Log.d("12345", "bindTopicLessonStorySummary: $inProgressChapterCount, $completedChapterCount")
+
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
     binding.storyPercentage = storyPercentage
     binding.storyProgressView.setStoryChapterDetails(
       storySummaryViewModel.storySummary.chapterCount,
-      completedChapterCount
+      completedChapterCount,
+      inProgressChapterCount
     )
     binding.topicPlayStoryDashedLineView.setLayerType(
       View.LAYER_TYPE_SOFTWARE,

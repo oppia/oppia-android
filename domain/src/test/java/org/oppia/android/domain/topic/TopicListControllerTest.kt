@@ -361,7 +361,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -491,7 +491,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
