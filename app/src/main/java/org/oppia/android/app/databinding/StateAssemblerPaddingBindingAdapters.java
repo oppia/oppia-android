@@ -1,7 +1,6 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
-
 import androidx.databinding.BindingAdapter;
 
 /**
