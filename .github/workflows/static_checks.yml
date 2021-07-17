@@ -119,7 +119,7 @@ jobs:
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
 
-      - name: Accessibility label check
+      - name: Accessibility label Check
         if: always()
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
