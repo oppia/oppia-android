@@ -6,7 +6,6 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
-import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -127,8 +126,14 @@ interface ActivityComponent {
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
-  fun inject(stateAssemblerPaddingBindingAdaptersTestActivity: StateAssemblerPaddingBindingAdaptersTestActivity)
-  fun inject(stateAssemblerMarginBindingAdaptersTestActivity: StateAssemblerMarginBindingAdaptersTestActivity)
+  fun inject(
+    stateAssemblerPaddingBindingAdaptersTestActivity:
+    StateAssemblerPaddingBindingAdaptersTestActivity
+  )
+  fun inject(
+    stateAssemblerMarginBindingAdaptersTestActivity:
+    StateAssemblerMarginBindingAdaptersTestActivity
+  )
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(topicActivity: TopicActivity)
