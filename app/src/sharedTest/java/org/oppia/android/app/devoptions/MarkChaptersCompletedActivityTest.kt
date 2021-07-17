@@ -752,6 +752,46 @@ class MarkChaptersCompletedActivityTest {
     }
   }
 
+  @Test
+  fun testMarkChaptersCompletedActivity_clickMarkCompleted_activityFinishes() {
+    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
+    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.mark_chapters_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkChaptersCompletedActivity>(
+      createMarkChaptersCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
   private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
       context, internalProfileId
@@ -794,6 +834,13 @@ class MarkChaptersCompletedActivityTest {
 
   private fun markFractionsFirstChapterCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
+  private fun markAllLessonsCompleted() {
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId,
       timestampOlderThanOneWeek = false
     )

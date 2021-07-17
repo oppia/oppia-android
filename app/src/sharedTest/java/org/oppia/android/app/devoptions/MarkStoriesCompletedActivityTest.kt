@@ -458,6 +458,46 @@ class MarkStoriesCompletedActivityTest {
     }
   }
 
+  @Test
+  fun testMarkStoriesCompletedActivity_clickMarkCompleted_activityFinishes() {
+    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
+    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    onView(withId(R.id.mark_stories_completed_mark_completed_text_view)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
+    markAllLessonsCompleted()
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(isChecked()))
+    }
+  }
+
   private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
       context, internalProfileId
@@ -499,6 +539,13 @@ class MarkStoriesCompletedActivityTest {
 
   private fun markRatiosFirstStoryCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+  }
+
+  private fun markAllLessonsCompleted() {
+    storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId,
       timestampOlderThanOneWeek = false
     )

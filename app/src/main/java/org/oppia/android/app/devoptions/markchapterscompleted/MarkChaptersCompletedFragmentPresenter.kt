@@ -14,6 +14,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkChaptersCompletedChapterSummaryViewBinding
 import org.oppia.android.databinding.MarkChaptersCompletedFragmentBinding
 import org.oppia.android.databinding.MarkChaptersCompletedStorySummaryViewBinding
+import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import javax.inject.Inject
 
 /** The presenter for [MarkChaptersCompletedFragment]. */
@@ -21,12 +22,14 @@ import javax.inject.Inject
 class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<MarkChaptersCompletedViewModel>
+  private val viewModelProvider: ViewModelProvider<MarkChaptersCompletedViewModel>,
+  private val modifyLessonProgressController: ModifyLessonProgressController
 ) : ChapterSelector {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<MarkChaptersCompletedItemViewModel>
   lateinit var selectedExplorationIdList: ArrayList<String>
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -51,9 +54,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 
     this.selectedExplorationIdList = selectedExplorationIdList
 
-    getMarkChaptersCompletedViewModel().setProfileId(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    getMarkChaptersCompletedViewModel().setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -77,6 +79,15 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
           }
         }
       }
+    }
+
+    binding.markChaptersCompletedMarkCompletedTextView.setOnClickListener {
+      modifyLessonProgressController.markMultipleChaptersCompleted(
+        profileId = profileId,
+        chapterMap = getMarkChaptersCompletedViewModel().getChapterMap()
+          .filterKeys { selectedExplorationIdList.contains(it) }
+      )
+      activity.finish()
     }
 
     return binding.root
@@ -111,6 +122,12 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     model: ChapterSummaryViewModel
   ) {
     binding.viewModel = model
+    val notCompletedChapterCount = getMarkChaptersCompletedViewModel().getItemList().count {
+      it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
+    }
+    if (notCompletedChapterCount == 0) {
+      this.binding.isAllChecked = true
+    }
     if (model.checkIfChapterIsCompleted()) {
       binding.isChapterChecked = true
       binding.isChapterCheckboxEnabled = false

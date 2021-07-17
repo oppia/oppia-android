@@ -12,6 +12,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkTopicsCompletedFragmentBinding
 import org.oppia.android.databinding.MarkTopicsCompletedTopicViewBinding
+import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import javax.inject.Inject
 
 /** The presenter for [MarkTopicsCompletedFragment]. */
@@ -19,12 +20,14 @@ import javax.inject.Inject
 class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<MarkTopicsCompletedViewModel>
+  private val viewModelProvider: ViewModelProvider<MarkTopicsCompletedViewModel>,
+  private val modifyLessonProgressController: ModifyLessonProgressController
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<TopicViewModel>
   lateinit var selectedTopicIdList: ArrayList<String>
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -49,9 +52,8 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     this.selectedTopicIdList = selectedTopicIdList
 
-    getMarkTopicsCompletedViewModel().setProfileId(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    )
+    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    getMarkTopicsCompletedViewModel().setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -75,6 +77,14 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       bindingAdapter.notifyDataSetChanged()
     }
 
+    binding.markTopicsCompletedMarkCompletedTextView.setOnClickListener {
+      modifyLessonProgressController.markMultipleTopicsCompleted(
+        profileId,
+        selectedTopicIdList
+      )
+      activity.finish()
+    }
+
     return binding.root
   }
 
@@ -93,6 +103,9 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     model: TopicViewModel
   ) {
     binding.viewModel = model
+    if (getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted } == 0) {
+      this.binding.isAllChecked = true
+    }
     if (model.isCompleted) {
       binding.isTopicChecked = true
       binding.markTopicsCompletedTopicCheckBox.isEnabled = false
