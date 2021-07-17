@@ -121,7 +121,7 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.github.oppia:CircularImageview:35d08ba88a',
-      'de.hdodenhof:circleimageview:3.0.1',
+      'de.hdodenhof:circleimageview:3.1.0',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
