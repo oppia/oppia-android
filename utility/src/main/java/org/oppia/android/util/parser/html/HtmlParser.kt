@@ -66,7 +66,7 @@ class HtmlParser private constructor(
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    if(isRtlLayout(htmlContentTextView)){
+    if (isRtlLayout(htmlContentTextView)) {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
     }
 
