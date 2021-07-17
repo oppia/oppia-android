@@ -13,6 +13,7 @@ import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [BazelClient].
@@ -32,8 +33,11 @@ class BazelClientTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-  @Mock lateinit var mockCommandExecutor: CommandExecutor
+
+  @Mock
+  lateinit var mockCommandExecutor: CommandExecutor
 
   @Before
   fun setUp() {
@@ -319,6 +323,62 @@ class BazelClientTest {
     assertThat(testTargets).containsExactly("//:FirstTest", "//:SecondTest")
   }
 
+  @Test
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("AndroidManifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "AndroidManifest.xml",
+      dependencyName = "//third_party:com_android_support_support-annotations"
+    )
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    createAndroidLibrary(
+      artifactName = "com.android.support:support-annotations:28.0.0",
+      buildFile = thirdPartyBuild
+    )
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
+
+    assertThat(thirdPartyDependenciesList)
+      .contains("@maven//:com_android_support_support_annotations")
+  }
+
+  @Test
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("AndroidManifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "AndroidManifest.xml",
+      dependencyName = ":com_android_support_support-annotations"
+    )
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    createAndroidLibrary(
+      artifactName = "io.fabric.sdk.android:fabric:1.4.7",
+      buildFile = thirdPartyBuild
+    )
+    createAndroidLibrary(
+      artifactName = "com.android.support:support-annotations:28.0.0",
+      buildFile = testBazelWorkspace.rootBuildFile
+    )
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
+
+    assertThat(thirdPartyDependenciesList)
+      .doesNotContain("@maven//:com_android_support_support_annotations")
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
@@ -333,6 +393,43 @@ class BazelClientTest {
           command = listOf()
         )
       )
+  }
+
+  private fun createAndroidLibrary(artifactName: String, buildFile: File) {
+    buildFile.appendText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      android_library(
+          name = "${omitVersionAndReplacePeriodsAndColons(artifactName)}",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("$artifactName")
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun omitVersionAndReplacePeriodsAndColons(artifactName: String): String {
+    return artifactName.substringBeforeLast(':').replace('.', '_').replace(':', '_')
+  }
+
+  private fun createAndroidBinary(
+    binaryName: String,
+    manifestName: String,
+    dependencyName: String
+  ) {
+    testBazelWorkspace.rootBuildFile.writeText(
+      """
+      android_binary(
+          name = "$binaryName",
+          manifest = "$manifestName",
+          deps = [
+               "$dependencyName"
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
   }
 
   private fun generateCustomJvmTestRuleBazelFile(
@@ -364,6 +461,10 @@ class BazelClientTest {
       """.trimIndent()
     )
     return secondNewFile
+  }
+
+  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
   }
 
   private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {

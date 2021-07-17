@@ -113,6 +113,8 @@ class CustomHtmlContentHandler private constructor(
         customTagHandlers.getValue(tag).handleClosingTag(output)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        customTagHandlers.getValue(tag)
+          .handleContentDescription(attributes, openTagIndex, output.length, output)
       }
     }
   }
@@ -163,6 +165,21 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      */
     fun handleClosingTag(output: Editable) {}
+
+    /**
+     * Called when a custom tag is encountered. This is always called after the closing tag.
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which spans can be added
+     */
+    fun handleContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {}
   }
 
   /**
