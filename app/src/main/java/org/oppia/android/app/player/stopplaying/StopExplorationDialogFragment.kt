@@ -9,12 +9,14 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 
 /**
- * DialogFragment that gives option to learner to stop exploration in between.
+ * DialogFragment that is visible to the user when they exit a partially complete exploration
+ * if the exploration has saved progress and the checkpoint database has not exceeded the allocated
+ * limit.
  */
 class StopExplorationDialogFragment : DialogFragment() {
   companion object {
     /**
-     * This function is responsible for displaying content in DialogFragment.
+     * Responsible for displaying content in DialogFragment.
      *
      * @return [StopExplorationDialogFragment]: DialogFragment
      */

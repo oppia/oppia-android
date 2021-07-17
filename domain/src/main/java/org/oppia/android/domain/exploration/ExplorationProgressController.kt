@@ -3,24 +3,32 @@ package org.oppia.android.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
  * exploration. Note that this controller only supports one active exploration at a time.
@@ -36,7 +44,11 @@ class ExplorationProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val storyProgressController: StoryProgressController,
+  private val oppiaClock: OppiaClock,
+  private val oppiaLogger: OppiaLogger
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#182): Add support for refresher explorations.
@@ -47,6 +59,10 @@ class ExplorationProgressController @Inject constructor(
   //  to avoid cases in tests where the exploration load operation needs to be fully finished before
   //  performing a post-load operation. The current state of the controller is leaking this
   //  implementation detail to tests.
+  // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
+  //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
+  //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
+  //  make decisions based on a value of the checkpointState which might not be up-to date.
 
   private val currentStateDataProvider =
     dataProviders.createInMemoryDataProviderAsync(
@@ -57,13 +73,25 @@ class ExplorationProgressController @Inject constructor(
   private val explorationProgressLock = ReentrantLock()
 
   /** Resets this controller to begin playing the specified [Exploration]. */
-  internal fun beginExplorationAsync(explorationId: String) {
+  internal fun beginExplorationAsync(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
+  ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Expected to finish previous exploration before starting a new one."
       }
 
-      explorationProgress.currentExplorationId = explorationId
+      explorationProgress.apply {
+        currentProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        currentTopicId = topicId
+        currentStoryId = storyId
+        currentExplorationId = explorationId
+        this.shouldSavePartialProgress = shouldSavePartialProgress
+      }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
     }
@@ -154,6 +182,12 @@ class ExplorationProgressController @Inject constructor(
             )
           }
         } finally {
+          // If the answer was submitted on behalf of the Continue interaction, don't save
+          // checkpoint because it will be saved when the learner moves to the next state.
+          if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+            saveExplorationCheckpoint()
+          }
+
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always submitting answer' situation. This can specifically happen if answer
           // classification throws an exception.
@@ -205,6 +239,8 @@ class ExplorationProgressController @Inject constructor(
           )
           explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
         } finally {
+          // Mark a checkpoint in the exploration everytime a new hint is revealed.
+          saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
           // exception.
@@ -249,6 +285,8 @@ class ExplorationProgressController @Inject constructor(
           solution = explorationProgress.stateGraph.computeSolutionForResult(state)
           explorationProgress.stateDeck.pushStateForSolution(state)
         } finally {
+          // Mark a checkpoint in the exploration if the solution is revealed.
+          saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
           // throws an exception.
@@ -321,6 +359,7 @@ class ExplorationProgressController @Inject constructor(
    *     listen to this result for failures, and instead rely on [getCurrentState] for observing a
    *     successful transition to another state.
    */
+
   fun moveToNextState(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
@@ -343,12 +382,127 @@ class ExplorationProgressController @Inject constructor(
           "Cannot navigate to a next state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToNextState()
+
+        // Only mark checkpoint if current state is pending state. This ensures that checkpoints
+        // will not be marked on any of the completed states.
+        if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
+          saveExplorationCheckpoint()
+        }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
+    }
+  }
+
+  /**
+   * Checks if checkpointing is enabled, if checkpointing is enabled this function creates a
+   * checkpoint with the latest progress and saves it using [ExplorationCheckpointController].
+   *
+   * This function also waits for the save operation to complete, upon completion this function
+   * uses the function [processSaveCheckpointResult] to mark the exploration as
+   * IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
+   */
+  private fun saveExplorationCheckpoint() {
+    // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
+    // when the current exploration has been already completed previously.
+    if (!explorationProgress.shouldSavePartialProgress) return
+    val profileId: ProfileId = explorationProgress.currentProfileId
+    val topicId: String = explorationProgress.currentTopicId
+    val storyId: String = explorationProgress.currentStoryId
+    val explorationId: String = explorationProgress.currentExplorationId
+
+    val checkpoint: ExplorationCheckpoint =
+      explorationProgress.stateDeck.createExplorationCheckpoint(
+        explorationProgress.currentExploration.version,
+        explorationProgress.currentExploration.title,
+        oppiaClock.getCurrentTimeMs()
+      )
+
+    val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
+      profileId,
+      explorationId,
+      checkpoint
+    )
+
+    deferred.invokeOnCompletion {
+      val checkpointState = if (it == null) {
+        deferred.getCompleted()
+      } else {
+        oppiaLogger.e("Lightweight checkpointing", "Failed to save checkpoint in exploration", it)
+        // CheckpointState is marked as CHECKPOINT_UNSAVED because the deferred did not
+        // complete successfully.
+        CheckpointState.CHECKPOINT_UNSAVED
+      }
+      processSaveCheckpointResult(
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
+        oppiaClock.getCurrentTimeMs(),
+        checkpointState
+      )
+    }
+  }
+
+  /**
+   * Processes the result obtained upon complete execution of the function
+   * [saveExplorationCheckpoint].
+   *
+   * Marks the exploration as in_progress_saved or in_progress_not_saved if it is not already marked
+   * correctly. This function also updates the checkpoint state of the exploration to the
+   * specified new checkpoint state.
+   *
+   * @param profileId is the profile id currently playing the exploration
+   * @param topicId is the id of the topic which contains the story with the current exploration
+   * @param storyId is the id of the story which contains the current exploration
+   * @param lastPlayedTimestamp timestamp of the time when the checkpoints state for the exploration
+   *     was last updated
+   * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
+   *     unsuccessfully
+   */
+  private fun processSaveCheckpointResult(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    lastPlayedTimestamp: Long,
+    newCheckpointState: CheckpointState
+  ) {
+    explorationProgressLock.withLock {
+      // Only processes the result of the last save operation if the checkpointState has changed.
+      if (explorationProgress.checkpointState != newCheckpointState) {
+        // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
+        // either changed from UNSAVED to SAVED or vice versa.
+        if (
+          explorationProgress.checkpointState != CheckpointState.CHECKPOINT_UNSAVED &&
+          newCheckpointState == CheckpointState.CHECKPOINT_UNSAVED
+        ) {
+          markExplorationAsInProgressNotSaved(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            lastPlayedTimestamp
+          )
+        } else if (
+          explorationProgress.checkpointState == CheckpointState.CHECKPOINT_UNSAVED &&
+          newCheckpointState != CheckpointState.CHECKPOINT_UNSAVED
+        ) {
+          markExplorationAsInProgressSaved(
+            profileId,
+            topicId,
+            storyId,
+            explorationId,
+            lastPlayedTimestamp
+          )
+        }
+        explorationProgress.updateCheckpointState(newCheckpointState)
+        // Notify observers that the checkpoint state has changed.
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+      }
     }
   }
 
@@ -412,14 +566,24 @@ class ExplorationProgressController @Inject constructor(
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+            AsyncResult.success(
+              explorationProgress.stateDeck.getCurrentEphemeralState()
+                .toBuilder()
+                .setCheckpointState(explorationProgress.checkpointState)
+                .build()
+            )
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
             AsyncResult.failed<EphemeralState>(e)
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(explorationProgress.stateDeck.getCurrentEphemeralState())
+          AsyncResult.success(
+            explorationProgress.stateDeck.getCurrentEphemeralState()
+              .toBuilder()
+              .setCheckpointState(explorationProgress.checkpointState)
+              .build()
+          )
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
@@ -434,5 +598,47 @@ class ExplorationProgressController @Inject constructor(
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
     progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
+
+    // Mark a checkpoint in the exploration once the exploration has loaded.
+    saveExplorationCheckpoint()
+  }
+
+  /**
+   * Returns whether the specified interaction automatically continues the user to the next state
+   * upon completion.
+   */
+  private fun doesInteractionAutoContinue(interactionId: String): Boolean =
+    interactionId == "Continue"
+
+  private fun markExplorationAsInProgressSaved(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    lastPlayedTimestamp: Long
+  ) {
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      lastPlayedTimestamp
+    )
+  }
+
+  private fun markExplorationAsInProgressNotSaved(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    lastPlayedTimestamp: Long
+  ) {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      lastPlayedTimestamp
+    )
   }
 }

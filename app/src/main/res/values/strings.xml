@@ -31,10 +31,19 @@
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
+  <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
+  <string name="unsaved_exploration_dialog_leave_button">Leave</string>
+  <string name="unsaved_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
+  <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
+  <string name="progress_database_full_dialog_continue_button">Continue</string>
+  <string name="progress_database_full_dialog_leave_without_saving_progress_button">Leave without saving progress</string>
+  <string name="progress_database_full_dialog_back_to_lesson_button">Back to lesson</string>
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
@@ -99,7 +108,8 @@
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
   <string name="status_in_progress">In Progress</string>
   <string name="status_completed">Completed</string>
-  <string name="show_hide_chapter_list">Show/Hide chapter list of %s</string>
+  <string name="show_chapter_list">Show chapter list</string>
+  <string name="hide_chapter_list">Hide chapter list</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>
@@ -134,6 +144,7 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
+  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
       1 Chapter
@@ -377,6 +388,9 @@
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
   <!-- HintsAndSolutionDialogFragment -->
+  <string name="new_hint_available">New hint available</string>
+  <string name="show_hints_and_solution">Show hints and solution</string>
+  <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Reveal Hint</string>
@@ -448,8 +462,11 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
-  <!-- DeveloperOptionsFragment -->
+  <!-- DeveloperOptionsActivity -->
   <string name="developer_options_activity_title">Developer Options</string>
+  <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>
+  <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
+  <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
   <string name="view_event_logs_activity_title">View Event Logs</string>
   <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
   <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
@@ -461,4 +478,6 @@
   <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
   <string name="developer_options_force_network_type">Force network type</string>
   <string name="developer_options_force_crash">Force crash</string>
+  <string name="all">All</string>
+  <string name="mark_completed_uppercase">MARK COMPLETED</string>
 </resources>

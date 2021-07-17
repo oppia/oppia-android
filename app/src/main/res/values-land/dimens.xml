@@ -204,6 +204,10 @@
   <dimen name="general_button_item_question_view_padding_start">60dp</dimen>
   <dimen name="general_button_item_question_view_padding_end">60dp</dimen>
 
+  <!-- Question Player ProgressBar -->
+  <dimen name="question_player_progress_bar_margin_start">64dp</dimen>
+  <dimen name="question_player_progress_bar_margin_end">64dp</dimen>
+
   <!-- Congratulations TextView -->
   <dimen name="congratulations_text_view_margin_start">28dp</dimen>
   <dimen name="congratulations_text_view_margin_end">28dp</dimen>
@@ -240,4 +244,13 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">108dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">52dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">52dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">64dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">24dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">64dp</dimen>
+
 </resources>

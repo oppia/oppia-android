@@ -22,83 +22,55 @@ message MavenDependency {
   // List of licenses corresponding to a third-party dependency. This would be the final list
   // verified by the developers.
   repeated License license = 3;
-
-  // Represents the original license list extracted from the POM fle of the dependency.
-  repeated License original_license = 4;
-
-  // Represents the origin of the source of the license links.
-  OriginOfLicenses origin_of_license = 5;
 }
 
 // Stores all the details corresponding to a copyright license.
 message License {
-  // Name of the license.
+  // Represents the name of the license.
   string license_name = 1;
 
-  // Primary link of the license extracted from the POM file of the dependency.
-  string primary_link = 2;
+  // Represents the initial link extracted originally from the POM file of the dependency.
+  string original_link = 2;
 
-  // Alternate link that would be provided manually if the primary link can't be directly
-  // extracted.
-  string alternative_link = 3;
+  // Represents the manually verified link of the license that would finally be scraped or
+  // shown directly in the UI.
+  oneof verified_link {
+    // Indicates that the original link extracted from the POM contains plain license text
+    // and hence can be directly scraped.
+    ScrapableLink scrapable_link = 3;
 
-  // Represents the type of the primary_link.
-  PrimaryLinkType primary_link_type = 4;
+    // Indicates that the original link extracted from the POM contains plain license text but
+    // can't be scraped directly and hence an alternate link should be provided that can be scraped
+    // directly. The link provided in this case would point to the corresponding license stored
+    // in Oppia Android licenses repository: https://github.com/oppia/oppia-android-licenses
+    ExtractedCopyLink extracted_copy_link = 4;
+
+    // Indicates that the link does not contain plain license text and therefore can't be scraped.
+    // Only the link should be shown in this case.
+    DirectLinkOnly direct_link_only = 5;
+  }
+
+  // Represents whether the original_link extracted from the POM points to a valid
+  // license or not. The original_link extracted from the POM can be an invalid link
+  // or the link may be a valid link but does not contain any license.
+  bool is_original_link_invalid = 6;
 }
 
-message LicenseFromPom {
-  string license_name = 1;
-  string license_link = 2;
+// Stores the URL of a license that can be scraped directly.
+message ScrapableLink {
+  // URL of the directly scrapable license text.
+  string url = 1;
 }
 
-// Enum that determines if the primary license link that is extracted from the POM file of the
-// dependency falls in either of the category -
-// 1. The link contains plain license text and can be directly scraped.
-// 2. The link contains plain license text but can't be scraped directly and hence an
-//    alternate link should be provided that can be scraped directly.
-// 3. The link does not contain plain license text and therefore can't be scraped. Only
-//    the link should be shown in this case.
-// 4. The link is invalid or it does not point to a valid license and therefore needs
-//    further intervention. Developers must coordinate with Oppia Android team immediately
-//    for assistance.
-enum PrimaryLinkType {
-  // Represents the default case when the link type is unknown.
-  UNSPECIFIED = 0;
-
-  // Represents that the license text is plain text and can be scraped directly from
-  // the automatically extracted link by the script.
-  SCRAPE_DIRECTLY = 1;
-
-  // Represents that the license text is plain text but can not be extracted directly from the
-  // extracted link by the script and hence an alternative_link should be provided to scrape
-  // the text. The alternative_link in this case would point to some license stored in
-  // Oppia-android-licenses repository.
-  // Link to the Oppia-android-licenses repository: https://github.com/oppia/oppia-android-licenses
-  SCRAPE_FROM_LOCAL_COPY = 2;
-
-  // Represents that the license text is not plain text and therefore can not be scraped.
-  // Only the license link should be shown in this case.
-  SHOW_LINK_ONLY = 3;
-
-  // Represents that the extracted link is either empty, or invalid, or the link
-  // does not show any valid license and therefore the developers will need to
-  // co-ordinate with Oppia Android team to fix the issue.
-  NEEDS_INTERVENTION = 4;
+// Stores the URL of a license that should be scraped from the extracted copy.
+message ExtractedCopyLink {
+  // URL of the license that is stored in the extracted copy.
+  string url = 1;
 }
 
-// Enum that determines the origin of licenses extracted for a dependency.
-enum OriginOfLicenses {
-  // Represents that the origin is unknown.
-  UNKNOWN = 0;
-
-  // Represents that all the licenses for the dependency were extracted from POM
-  // without any human effort.
-  ENTIRELY_FROM_POM = 1;
-
-  // Represents that some of the license links for the dependency were extracted from
-  // POM file and some of them were updated manually.
-  PARTIALLY_FROM_POM = 2;
-
-  // Represents that all the licenses for the dependency were updated manually.
-  MANUAL = 3;
+// Stores the URL of a license that can't be easily scraped and only the link should be shown
+// in the UI.
+message DirectLinkOnly {
+  // URL to be shown directly in the UI.
+  string url = 1;
 }
