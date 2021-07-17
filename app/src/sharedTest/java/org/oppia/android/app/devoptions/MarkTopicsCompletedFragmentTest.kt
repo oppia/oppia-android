@@ -34,7 +34,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -107,7 +107,7 @@ class MarkTopicsCompletedFragmentTest {
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
-    MarkTopicsCompletedActivity::class.java,
+    MarkTopicsCompletedTestActivity::class.java,
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
@@ -134,8 +134,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_topicsAreShown() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -163,8 +163,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_configChange_topicsAreShown() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -193,8 +193,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAll_isChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
@@ -204,8 +204,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAll_configChange_isChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
@@ -216,8 +216,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAll_selectsAllTopics() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
@@ -234,8 +234,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAll_configChange_selectsAllTopics() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
@@ -253,8 +253,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectTopics_topicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -278,8 +278,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectTopics_configChange_topicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -304,8 +304,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAllTopics_allCheckBoxIsChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -322,8 +322,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAllTopics_configChange_allCheckBoxIsChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -341,8 +341,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAllTopics_unselectOneTopic_allCheckBoxIsNotChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -361,8 +361,8 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_selectAllTopics_unselectOneTopic_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -383,8 +383,8 @@ class MarkTopicsCompletedFragmentTest {
   @Test
   fun testMarkTopicsCompletedFragment_fractionsTopicIsCompleted_isCheckedAndDisabled() {
     markFractionsTopicCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -401,8 +401,8 @@ class MarkTopicsCompletedFragmentTest {
   @Test
   fun testMarkTopicsCompletedFragment_fractionsTopicIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
     markFractionsTopicCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -419,7 +419,7 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -427,7 +427,7 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_configChange_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
+    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
     testCoroutineDispatchers.runCurrent()
     onView(isRoot()).perform(orientationLandscape())
     onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
@@ -437,8 +437,8 @@ class MarkTopicsCompletedFragmentTest {
   @Test
   fun testMarkTopicsCompletedFragment_allLessonsAreCompleted_allCheckboxIsChecked() {
     markAllLessonsCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
@@ -448,8 +448,8 @@ class MarkTopicsCompletedFragmentTest {
   @Test
   fun testMarkTopicsCompletedFragment_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
     markAllLessonsCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -457,8 +457,8 @@ class MarkTopicsCompletedFragmentTest {
     }
   }
 
-  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
+  private fun createMarkTopicsCompletedTestActivityIntent(internalProfileId: Int): Intent {
+    return MarkTopicsCompletedTestActivity.createMarkTopicsCompletedTestIntent(
       context, internalProfileId
     )
   }

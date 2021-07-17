@@ -4,7 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -25,6 +31,7 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -103,6 +110,29 @@ class MarkTopicsCompletedActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.mark_topics_completed_activity_title))
+  }
+
+  @Test
+  fun testMarkTopicsCompletedActivity_markTopicsCompletedFragmentIsDisplayed() {
+    launch<MarkTopicsCompletedActivity>(
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    ).use {
+      onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  fun testMarkTopicsCompletedActivity_configChange_markTopicsCompletedFragmentIsDisplayed() {
+    launch<MarkTopicsCompletedActivity>(
+      createMarkTopicsCompletedActivityIntent(internalProfileId)
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
+        matches(isDisplayed())
+      )
+    }
   }
 
   private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
