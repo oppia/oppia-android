@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ThirdPartyDependencyItemBinding
 import org.oppia.android.databinding.ThirdPartyDependencyListFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [ThirdPartyDependencyListFragment]. */
 @FragmentScope

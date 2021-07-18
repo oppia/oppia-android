@@ -3,8 +3,8 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
 class LicenseListActivity : InjectableAppCompatActivity() {
@@ -28,5 +28,4 @@ class LicenseListActivity : InjectableAppCompatActivity() {
       return Intent(context, LicenseListActivity::class.java)
     }
   }
-
 }

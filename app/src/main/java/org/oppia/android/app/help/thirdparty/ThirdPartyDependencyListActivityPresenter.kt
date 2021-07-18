@@ -3,10 +3,10 @@ package org.oppia.android.app.help.thirdparty
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.ThirdPartyDependencyListActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [ThirdPartyDependencyListActivity]. */
 @ActivityScope
@@ -47,6 +47,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
   private fun getThirdPartyDependencyListFragment(): ThirdPartyDependencyListFragment? {
     return activity
       .supportFragmentManager
-      .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder) as ThirdPartyDependencyListFragment?
+      .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder) as
+      ThirdPartyDependencyListFragment?
   }
 }

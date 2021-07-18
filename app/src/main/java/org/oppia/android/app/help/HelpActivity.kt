@@ -3,15 +3,17 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import javax.inject.Inject
 
 /** The help page activity for FAQs and feedback. */
-class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener,
+class HelpActivity :
+  InjectableAppCompatActivity(),
+  RouteToFAQListListener,
   RouteToThirdPartyDependencyListListener {
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter

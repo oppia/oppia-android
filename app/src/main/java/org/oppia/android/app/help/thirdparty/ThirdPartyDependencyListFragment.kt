@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
-import org.oppia.android.app.help.faq.FAQListFragmentPresenter
 
 /** Fragment that contains FAQ list in the app. */
 class ThirdPartyDependencyListFragment : InjectableFragment() {

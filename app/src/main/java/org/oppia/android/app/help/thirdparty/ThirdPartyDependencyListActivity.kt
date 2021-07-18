@@ -3,11 +3,12 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
-class ThirdPartyDependencyListActivity : InjectableAppCompatActivity(),
+class ThirdPartyDependencyListActivity :
+  InjectableAppCompatActivity(),
   RouteToLicenseListListener {
 
   @Inject
@@ -27,12 +28,13 @@ class ThirdPartyDependencyListActivity : InjectableAppCompatActivity(),
   }
 
   override fun onRouteToLicenseList(name: String, version: String) {
-    startActivity(LicenseListActivity
-      .createLicenseListActivityIntent(
-        this,
-        name,
-        version
-      )
+    startActivity(
+      LicenseListActivity
+        .createLicenseListActivityIntent(
+          context = this,
+          name = name,
+          version = version
+        )
     )
   }
 }

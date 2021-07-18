@@ -5,8 +5,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import javax.inject.Inject
 import org.oppia.android.databinding.LicenseListActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [LicenseListActivity]. */
 @ActivityScope
@@ -17,8 +17,10 @@ class LicenseListActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     val binding =
-      DataBindingUtil.setContentView<LicenseListActivityBinding>(activity,
-        R.layout.license_list_activity)
+      DataBindingUtil.setContentView<LicenseListActivityBinding>(
+        activity,
+        R.layout.license_list_activity
+      )
     binding.apply {
       lifecycleOwner = activity
     }
