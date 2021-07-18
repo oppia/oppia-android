@@ -5,6 +5,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load(
     "//scripts:script_assets.bzl",
+    "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
     "generate_test_file_assets_list_from_text_protos",
 )
@@ -34,18 +35,14 @@ package_group(
     includes = [
         ":oppia_script_test_visibility",
     ],
-    packages = [
-        "//scripts/src/java/...",
-    ],
+    packages = ["//scripts/src/java/..."],
 )
 
 kt_jvm_binary(
     name = "compute_affected_tests",
     testonly = True,
     main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
-    runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
-    ],
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib"],
 )
 
 # TODO(#3428): Refactor textproto assets to subpackage level.
@@ -53,6 +50,11 @@ REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
     name = "regex_asset_files",
     file_content_validation_file_names = ["file_content_validation_checks"],
     filepath_pattern_validation_file_names = ["filename_pattern_validation_checks"],
+)
+
+MAVEN_ASSETS = generate_maven_assets_list_from_text_protos(
+    name = "maven_assets",
+    maven_dependency_filenames = ["maven_dependencies"],
 )
 
 kt_jvm_library(
@@ -97,4 +99,19 @@ kt_jvm_binary(
     data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.testfile.TestFileCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/testfile:test_file_check_lib"],
+)
+
+kt_jvm_library(
+    name = "maven_assets_lib",
+    testonly = True,
+    data = MAVEN_ASSETS,
+    visibility = [":oppia_script_test_visibility"],
+)
+
+kt_jvm_binary(
+    name = "generate_maven_dependencies_list",
+    testonly = True,
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.scripts.maven.GenerateMavenDependenciesListKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib"],
 )
