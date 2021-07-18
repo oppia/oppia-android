@@ -98,6 +98,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Ignore
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -173,6 +174,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
+  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
   fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -254,6 +256,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
+  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
   fun testRecentlyPlayedTestActivity_fractionsPlayed_storiesForYouToolbarTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -584,6 +587,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
+  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
   fun testRecentlyPlayedTestActivity_configChange_toolbarTitleIsDisplayed() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
