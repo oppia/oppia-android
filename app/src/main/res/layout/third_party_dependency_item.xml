@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.help.thirdparty.ThirdPartyDependencyItemViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <TextView
+        android:id="@+id/third_party_dependency_name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/faq_content_margin_start"
+        android:layout_marginEnd="@dimen/faq_content_margin_end"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@{viewModel.name}"
+        android:textAlignment="viewStart"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp" />
+
+      <TextView
+        android:id="@+id/third_party_dependency_version_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/faq_content_margin_start"
+        android:layout_marginEnd="@dimen/faq_content_margin_end"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@{viewModel.version}"
+        android:textAlignment="viewStart"
+        android:textColor="@color/oppiaPrimaryText"
+        android:textSize="14sp" />
+
+      <View
+        android:id="@+id/third_party_dependency_divider_view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/oppiaFAQDivider" />
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

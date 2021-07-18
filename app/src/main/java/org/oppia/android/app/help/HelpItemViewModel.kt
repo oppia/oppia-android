@@ -10,9 +10,16 @@ class HelpItemViewModel(
   val title: String
 ) : ObservableViewModel() {
   fun onClick(title: String) {
-    if (title == activity.getString(R.string.frequently_asked_questions_FAQ)) {
-      val routeToFAQListener = activity as RouteToFAQListListener
-      routeToFAQListener.onRouteToFAQList()
+    when (title) {
+      activity.getString(R.string.frequently_asked_questions_FAQ) -> {
+        val routeToFAQListener = activity as RouteToFAQListListener
+        routeToFAQListener.onRouteToFAQList()
+      }
+      activity.getString(R.string.third_party_dependencies) -> {
+        val routeToThirdPartyDependencyListListener = activity
+          as RouteToThirdPartyDependencyListListener
+        routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
+      }
     }
   }
 }

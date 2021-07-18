@@ -57,6 +57,7 @@ import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent(
@@ -116,6 +117,7 @@ interface FragmentComponent {
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
+  fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)

@@ -60,6 +60,8 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
@@ -124,6 +126,8 @@ interface ActivityComponent {
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
+  fun inject(licenseListActivity: LicenseListActivity)
+  fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
