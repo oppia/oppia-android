@@ -481,6 +481,6 @@
   <string name="all">All</string>
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
   <!-- ThirdPartyDependencyListActivity -->
-  <string name="third_party_dependency_list_activity_title">Third Party Dependencies</string>>
-  <string name="third_party_dependencies">Third-party Dependencies</string>
+  <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
+  <string name="third_party_dependencies">Third Party Dependencies</string>
 </resources>

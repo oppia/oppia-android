@@ -25,12 +25,13 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-//    thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
-//    activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
-
-//    activity.supportActionBar!!.title = activity.getString(R.string.third_party_dependency_list_activity_title)
-//    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-//    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
+    activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
+    activity.supportActionBar!!.title = activity.getString(
+      R.string.third_party_dependency_list_activity_title
+    )
+    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     binding.thirdPartyDependencyListActivityToolbar.setNavigationOnClickListener {
       (activity as ThirdPartyDependencyListActivity).finish()

@@ -52,10 +52,9 @@
       android:label="@string/help_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".app.help.thirdparty.ThirdPartyDependencyListActivity">
+      android:name=".app.help.thirdparty.ThirdPartyDependencyListActivity"
       android:label="@string/third_party_dependency_list_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar"
-    </activity>
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
