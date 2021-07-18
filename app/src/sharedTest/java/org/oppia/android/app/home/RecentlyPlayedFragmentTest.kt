@@ -98,7 +98,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
 
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -174,13 +173,50 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
-  fun testRecentlyPlayedTestActivity_defaultRecentlyPlayedToolbarTitleIsDisplayed() {
+  fun testRecentlyPlayedTestAct_chapsPlayedEarlierThanAWeek_toolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          instanceOf(TextView::class.java),
+          withParent(withId(R.id.recently_played_toolbar))
+        )
+      ).check(
+        matches(withText(R.string.recently_played_activity))
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestAct_chapsPlayedLaterThanAWeek_toolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           instanceOf(TextView::class.java),
@@ -256,7 +292,6 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
   fun testRecentlyPlayedTestActivity_fractionsPlayed_storiesForYouToolbarTitleIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -587,13 +622,48 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @Ignore("Title changes based on chapters played. Test incorrectly passes on robolectric")
-  fun testRecentlyPlayedTestActivity_configChange_toolbarTitleIsDisplayed() {
+  fun testRecentlyPlayedTestAct_chapsPlayedEarlierThanAWeek_configChange_toolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
         internalProfileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
+      ).check(
+        matches(withText(R.string.recently_played_activity))
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestAct_chapsPlayedLaterThanAWeek_configChange_toolbarTitleIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
