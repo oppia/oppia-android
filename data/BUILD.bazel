@@ -17,7 +17,7 @@ TEST_DEPS = [
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/platform_parameter:test_constants",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//third_party:androidx_test_ext_junit",
