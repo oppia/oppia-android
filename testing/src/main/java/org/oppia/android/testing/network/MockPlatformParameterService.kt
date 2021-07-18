@@ -1,23 +1,22 @@
-package org.oppia.android.testing.platformparameter
+package org.oppia.android.testing.network
 
-import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.model.GaePlatformParameter
 import org.oppia.android.data.backends.gae.model.GaePlatformParameters
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_VALUE
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.mock.MockRetrofit
-import retrofit2.mock.NetworkBehavior
-import javax.inject.Inject
-import javax.inject.Singleton
+import retrofit2.mock.BehaviorDelegate
 
-@Singleton
-class MockPlatformParameterService @Inject constructor(
-  @OppiaRetrofit private val retrofit: Retrofit
+/** Mock [PlatformParameterService] to check that the service is properly requested. */
+class MockPlatformParameterService(
+  private val delegate: BehaviorDelegate<PlatformParameterService>
 ) : PlatformParameterService {
-
   override fun getPlatformParametersByVersion(version: String): Call<GaePlatformParameters> {
-    val delegate = getMockRetrofit().create(PlatformParameterService::class.java)
     val parameters = createMockGaePlatformParameters()
     return delegate.returningResponse(parameters).getPlatformParametersByVersion(version)
   }
@@ -31,15 +30,5 @@ class MockPlatformParameterService @Inject constructor(
         GaePlatformParameter(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_VALUE)
       )
     )
-  }
-
-  // Creates a MockRetrofit instance
-  private fun getMockRetrofit(): MockRetrofit {
-    val behavior = NetworkBehavior.create()
-    behavior.setFailurePercent(0)
-
-    return MockRetrofit.Builder(retrofit).apply {
-      networkBehavior(behavior)
-    }.build()
   }
 }

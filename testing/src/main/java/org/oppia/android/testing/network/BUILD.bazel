@@ -14,6 +14,7 @@ kt_android_library(
         "MockConceptCardService.kt",
         "MockExplorationService.kt",
         "MockFeedbackReportingService.kt",
+        "MockPlatformParameterService.kt",
         "MockQuestionPlayerService.kt",
         "MockStoryService.kt",
         "MockSubtopicService.kt",

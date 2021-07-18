@@ -1,4 +1,4 @@
-package org.oppia.android.testing.platformparameter
+package org.oppia.android.data.backends.gae.api
 
 import android.app.Application
 import android.content.Context
@@ -15,21 +15,32 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.model.GaePlatformParameter
 import org.oppia.android.data.backends.gae.model.GaePlatformParameters
-import org.robolectric.annotation.Config
+import org.oppia.android.testing.network.MockPlatformParameterService
+import org.oppia.android.testing.network.RetrofitTestModule
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_VALUE
 import org.robolectric.annotation.LooperMode
+import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
-/** Tests for [MockPlatformParameterService]. */
+/**
+ * Tests for [PlatformParameterService] retrofit instance using
+ * [org.oppia.android.testing.network.MockPlatformParameterService].
+ */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
-class MockPlatformParameterServiceTest {
+class PlatformParameterServiceTest {
 
-  @Inject
-  lateinit var mockPlatformParameterService: MockPlatformParameterService
+  @field:[Inject MockPlatformParameterService]
+  lateinit var mockPlatformParameterService: PlatformParameterService
 
-  private val expectedNetworkResponseBody by lazy {
+  private val expectedNetworkResponse by lazy {
     arrayListOf<GaePlatformParameter>(
       GaePlatformParameter(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_VALUE),
       GaePlatformParameter(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_VALUE),
@@ -43,7 +54,7 @@ class MockPlatformParameterServiceTest {
   }
 
   @Test
-  fun mockServiceTest_getPlatformParameter_verifyTheResponse() {
+  fun testPlatformParameterService_getPlatformParameterUsingMockService_verifyTheResponse() {
     val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
     assertThat(response.isSuccessful).isTrue()
 
@@ -56,18 +67,22 @@ class MockPlatformParameterServiceTest {
   // expected network response body
   private fun verifyResponseBody(responseBody: GaePlatformParameters) {
     val gaePlatformParameterList = responseBody.platformParameters!!
-    assertThat(gaePlatformParameterList.size).isEqualTo(expectedNetworkResponseBody.size)
-    for (parameter in expectedNetworkResponseBody) {
-      assertThat(gaePlatformParameterList).contains(parameter)
+    assertThat(gaePlatformParameterList.size).isEqualTo(expectedNetworkResponse.size)
+    for (platformParameter in expectedNetworkResponse) {
+      assertThat(gaePlatformParameterList).contains(platformParameter)
     }
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockPlatformParameterServiceTest_TestApplicationComponent.builder()
+    DaggerPlatformParameterServiceTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
+
+  // Annotation for MockPlatformParameterService
+  @Qualifier
+  annotation class MockPlatformParameterService
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -77,11 +92,23 @@ class MockPlatformParameterServiceTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @Provides
+    @Singleton
+    @MockPlatformParameterService
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+      val delegate = mockRetrofit.create(PlatformParameterService::class.java)
+      return MockPlatformParameterService(delegate)
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, NetworkModule::class])
+  @Component(
+    modules = [
+      TestModule::class, NetworkModule::class, RetrofitTestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -90,6 +117,6 @@ class MockPlatformParameterServiceTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(mockPlatformParameterServiceTest: MockPlatformParameterServiceTest)
+    fun inject(platformParameterServiceTest: PlatformParameterServiceTest)
   }
 }
