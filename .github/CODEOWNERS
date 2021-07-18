@@ -6,7 +6,7 @@
 #   ownership with a delegate, file an issue, and add a todo above the owner
 #   line like so:
 #
-#     TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
+#     "TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD."
 #
 #   (See oppia/#10250 for an example.) Please make sure to restore ownership after
 #   the above date passes.

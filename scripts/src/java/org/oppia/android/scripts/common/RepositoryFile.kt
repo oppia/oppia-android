@@ -51,7 +51,7 @@ class RepositoryFile() {
      * @return whether the specified path should be analyzed per allow rules
      */
     private fun checkIfProhibitedFile(pathString: String): Boolean {
-      return alwaysExcludeDirectoryList.any { pathString.startsWith(it) }
+      return alwaysExcludeDirectoryList.any { pathString.startsWith("$it/") }
     }
 
     /**

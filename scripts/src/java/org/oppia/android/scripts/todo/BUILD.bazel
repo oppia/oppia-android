@@ -1,0 +1,25 @@
+"""
+Libraries corresponding to todo-related checks to ensure all TODOs are correctly formatted
+and corresponds to an open issue on Github
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "todo_collector",
+    testonly = True,
+    srcs = ["TodoCollector.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = ["//scripts/src/java/org/oppia/android/scripts/common:repository_file"],
+)
+
+kt_jvm_library(
+    name = "todo_check_lib",
+    testonly = True,
+    srcs = ["TodoCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":todo_collector",
+        "//scripts/src/java/org/oppia/android/scripts/todo/data:data_lib",
+    ],
+)

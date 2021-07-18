@@ -128,3 +128,11 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:kdoc_check -- $(pwd)
+
+      - name: Todo Check
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --limit 2000 --repo oppia/oppia-android --json number > $(pwd)/open_issues.json
+          bazel run //scripts:todo_check -- $(pwd)

@@ -161,3 +161,12 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/kdoc:kdoc_check_lib",
     ],
 )
+
+kt_jvm_binary(
+    name = "todo_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.todo.TodoCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_check_lib",
+    ],
+)
