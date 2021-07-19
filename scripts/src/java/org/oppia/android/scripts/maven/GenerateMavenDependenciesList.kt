@@ -133,8 +133,9 @@ class GenerateMavenDependenciesList(
           }
         }
         
-        Please verify the license link(s) for the following license(s) manually, note that only
-        first dependency that contains the license needs to be updated:
+        Please verify the license link(s) for the following license(s) manually in 
+        maven_dependencies.textproto, note that only first dependency that contains the license 
+        needs to be updated and also re-run the script to update the license details at all places:
         """.trimIndent()
       )
       licensesToBeFixed.forEach {
@@ -154,8 +155,8 @@ class GenerateMavenDependenciesList(
     if (dependenciesWithoutAnyLinks.isNotEmpty()) {
       println(
         """
-        Please remove all the invalid links (if any) for the below mentioned dependencies
-        and provide the valid license links manually.
+        Please remove all the invalid links (if any) from maven_dependencies.textproto for the 
+        below mentioned dependencies and provide the valid license links manually.
         e.g - 
         
         maven_dependency {
