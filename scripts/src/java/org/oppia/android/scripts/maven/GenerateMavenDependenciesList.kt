@@ -144,7 +144,7 @@ class GenerateMavenDependenciesList(
         println("verified_link_case: ${it.verifiedLinkCase}")
         println("is_original_link_invalid: ${it.isOriginalLinkInvalid}")
         println(
-          "First dependency that should be updated with the licese: " +
+          "First dependency that should be updated with the license: " +
             "${licenseToDependencyMap[it]}\n"
         )
       }
