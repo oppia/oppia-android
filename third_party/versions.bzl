@@ -11,6 +11,14 @@ Note that each of the dependencies will have all ':'s & '.'s replaced with under
 the dependency "android.arch.core:core-testing": "1.1.1" will be referencable with the following:
 //third_party:android_arch_core_core-testing (no version is included so that versions can be easily
 updated here).
+
+Note that after making any change in 'MAVEN_PRODUCTION_DEPENDENCY_VERSIONS' or
+'MAVEN_TEST_DEPENDENCY_VERSIONS' dicts (e.g - Updating version of some dependencies, adding/deleting
+any dependencies) you'll need to run the command: REPIN=1 bazel run @unpinned_maven//:pin to update
+maven_install.json. Also, if 'MAVEN_PRODUCTION_DEPENDENCY_VERSIONS' is updated, you also need to run
+the GenerateMavenDependenciesList.kt script to update maven_dependencies.textproto. To learn about
+it in detail, please refer to:
+https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 """
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.

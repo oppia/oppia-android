@@ -34,12 +34,15 @@ class GenerateMavenDependenciesListTest {
     "com.github.bumptech.glide:annotations:4.11.0"
   private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
   private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
+  private val DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME =
+    "com.squareup.moshi:moshi:1.11.0"
 
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"
   private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
   private val FIREBASE_ANALYTICS_VERSION = "17.5.0"
   private val IO_FABRIC_VERSION = "1.4.7"
+  private val MOSHI_VERSION = "1.11.0"
 
   private val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/databinding-" +
     "adapters/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION.pom"
@@ -51,6 +54,8 @@ class GenerateMavenDependenciesListTest {
     "/annotations/$GLIDE_ANNOTATIONS_VERSION/annotations-$GLIDE_ANNOTATIONS_VERSION.pom"
   private val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/firebase-" +
     "analytics/$FIREBASE_ANALYTICS_VERSION/firebase-analytics-$FIREBASE_ANALYTICS_VERSION.pom"
+  private val MOSHI_POM = "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/" +
+    "$MOSHI_VERSION/moshi-$MOSHI_VERSION.pom"
 
   private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
   private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
@@ -273,7 +278,7 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasVerifiedLinkNotSet(
       license = license2ForDependency,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
-      licenseName = "The Apache Software License, Version 2.0"
+      licenseName = "The Apache License, Version 2.0"
     )
   }
 
@@ -550,6 +555,122 @@ class GenerateMavenDependenciesListTest {
     )
   }
 
+  @Test
+  fun testLicenseUpdateAtOnePlace_updatesAllLicensesWithSameNameAndLinks_doesNotUpdateLicensesWithSameLinkOnly() { // ktlint-disable max-line-length
+    val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+
+    val updatedLicense = License.newBuilder().apply {
+      this.licenseName = "The Apache License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.scrapableLink = ScrapableLink.newBuilder()
+        .setUrl("https://www.apache.org/licenses/LICENSE-2.0.txt").build()
+    }.build()
+    val outdatedLicense = License.newBuilder().apply {
+      this.licenseName = "The Apache License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }.build()
+    val outdatedLicenseWithSameLink = License.newBuilder().apply {
+      this.licenseName = "The Apache Software License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }.build()
+    val updatedLicenseForGlide = License.newBuilder().apply {
+      this.licenseName = "Simplified BSD License"
+      this.extractedCopyLink = ExtractedCopyLink.newBuilder()
+        .setUrl("https://local-copy/bsd-license").build()
+    }.build()
+
+    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
+      this.addAllMavenDependency(
+        listOf(
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactVersion = DATA_BINDING_VERSION
+            this.addAllLicense(listOf(updatedLicense))
+          }.build(),
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+            this.addAllLicense(listOf(outdatedLicense, updatedLicenseForGlide))
+          }.build(),
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+            this.artifactVersion = MOSHI_VERSION
+            this.addAllLicense(listOf(outdatedLicenseWithSameLink))
+          }.build()
+        )
+      )
+    }.build()
+    mavenDependencyList.writeTo(pbFile.outputStream())
+
+    val coordsList = listOf(
+      DEP_WITH_SCRAPABLE_LICENSE,
+      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+    )
+    setupBazelEnvironment(coordsList)
+
+    val exception = assertThrows(Exception::class) {
+      GenerateMavenDependenciesList(
+        mockLicenseFetcher,
+        commandExecutor
+      ).main(
+        arrayOf(
+          "${tempFolder.root}",
+          "scripts/assets/maven_install.json",
+          "scripts/assets/maven_dependencies.textproto",
+          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        )
+      )
+    }
+    assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
+
+    val outputMavenDependencyList = parseTextProto(
+      textProtoFile,
+      MavenDependencyList.getDefaultInstance()
+    )
+
+    val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
+    assertIsDependency(
+      dependency = dependency1,
+      artifactName = DEP_WITH_SCRAPABLE_LICENSE,
+      artifactVersion = DATA_BINDING_VERSION
+    )
+    val licenseForDependency1 = dependency1.licenseList[0]
+    verifyLicenseHasScrapableVerifiedLink(
+      license = licenseForDependency1,
+      originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      licenseName = "The Apache License, Version 2.0",
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    )
+    val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
+    assertIsDependency(
+      dependency = dependency2,
+      artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+      artifactVersion = GLIDE_ANNOTATIONS_VERSION,
+    )
+    val licenseForDependency2 = dependency2.licenseList[0]
+    verifyLicenseHasScrapableVerifiedLink(
+      license = licenseForDependency2,
+      originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      licenseName = "The Apache License, Version 2.0",
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    )
+    val dependency3 = outputMavenDependencyList.mavenDependencyList[2]
+    assertIsDependency(
+      dependency = dependency3,
+      artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      artifactVersion = MOSHI_VERSION,
+    )
+    val licenseForDependency3 = dependency3.licenseList[0]
+    verifyLicenseHasVerifiedLinkNotSet(
+      license = licenseForDependency3,
+      originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      licenseName = "The Apache Software License, Version 2.0",
+    )
+    assertThat(licenseForDependency3.licenseName).isNotEqualTo("The Apache License, Version 2.0")
+  }
+
   private fun verifyLicenseHasScrapableVerifiedLink(
     license: License,
     originalLink: String,
@@ -720,6 +841,10 @@ class GenerateMavenDependenciesListTest {
                "url": "${PROTO_LITE_POM.dropLast(3)}jar"
             },
             {
+              "coord": "com.squareup.moshi:moshi:1.11.0",
+               "url": "${MOSHI_POM.dropLast(3)}jar"
+            },
+            {
               "coord": "io.fabric.sdk.android:fabric:1.4.7",
               "url": "${IO_FABRIC_POM.dropLast(3)}aar"
             }
@@ -761,7 +886,7 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
             <license>
-              <name>The Apache Software License, Version 2.0</name>
+              <name>The Apache License, Version 2.0</name>
               <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
               <distribution>repo</distribution>
             </license>
@@ -776,6 +901,19 @@ class GenerateMavenDependenciesListTest {
             <license>
               <name>Android Software Development Kit License</name>
               <url>https://developer.android.com/studio/terms.html</url>
+              <distribution>repo</distribution>
+            </license>
+          </licenses>
+          """.trimIndent()
+        )
+      on { scrapeText(eq(MOSHI_POM)) }
+        .doReturn(
+          """
+          <?xml version="1.0" encoding="UTF-8"?>
+          <licenses>
+            <license>
+              <name>The Apache Software License, Version 2.0</name>
+              <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
               <distribution>repo</distribution>
             </license>
           </licenses>
