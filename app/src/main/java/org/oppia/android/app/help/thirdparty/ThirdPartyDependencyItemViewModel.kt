@@ -14,6 +14,7 @@ class ThirdPartyDependencyItemViewModel(
   /** Used to control visibility of divider. */
   val showDivider = ObservableField(true)
 
+  /** Starts [LicenseListActivity] upon clicking on an item of the third-party dependency list. */
   fun clickOnThirdPartyDependencyItem() {
     val routeToFAQSingleListener = activity as RouteToLicenseListListener
     routeToFAQSingleListener.onRouteToLicenseList(name, version)

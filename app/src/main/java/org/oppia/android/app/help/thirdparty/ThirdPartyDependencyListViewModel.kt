@@ -11,6 +11,7 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private val arrayList = ArrayList<ThirdPartyDependencyItemViewModel>()
 
+  /** Stores the list of third-party dependencies. */
   val thirdPartyDependencyItemList: List<ThirdPartyDependencyItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
@@ -28,7 +29,7 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
       if (index == thirdPartyDependencyNames.lastIndex) {
         thirdPartyDependencyItemViewModel.showDivider.set(false)
       } else {
-        thirdPartyDependencyItemViewModel.showDivider.set(false)
+        thirdPartyDependencyItemViewModel.showDivider.set(true)
       }
       arrayList.add(thirdPartyDependencyItemViewModel)
     }

@@ -31,11 +31,11 @@
         android:layout_marginEnd="@dimen/faq_content_margin_end"
         android:fontFamily="sans-serif-medium"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="8dp"
         android:text="@{viewModel.name}"
         android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
@@ -44,12 +44,12 @@
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
         android:fontFamily="sans-serif-medium"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.version}"
         android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="14sp" />
+        android:textSize="12sp" />
 
       <View
         android:id="@+id/third_party_dependency_divider_view"

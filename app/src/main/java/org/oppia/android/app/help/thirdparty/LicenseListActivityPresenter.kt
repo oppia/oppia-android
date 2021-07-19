@@ -15,6 +15,7 @@ class LicenseListActivityPresenter @Inject constructor(
 ) {
   private lateinit var licenseListActivityToolbar: Toolbar
 
+  /** Handles onCreate() method of the [LicenseListActivity]. */
   fun handleOnCreate() {
     val binding =
       DataBindingUtil.setContentView<LicenseListActivityBinding>(

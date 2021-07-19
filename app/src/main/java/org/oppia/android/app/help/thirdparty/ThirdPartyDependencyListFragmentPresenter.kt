@@ -22,6 +22,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ThirdPartyDependencyListFragmentBinding
 
+  /** Handles onCreateView() method of the [ThirdPartyDependencyListFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getThirdPartyDependencyListViewModel()
 

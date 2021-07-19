@@ -22,6 +22,7 @@ class ThirdPartyDependencyListActivity :
   }
 
   companion object {
+    /** Returns [Intent] for starting [ThirdPartyDependencyListActivity]. */
     fun createThirdPartyDependencyListActivityIntent(context: Context): Intent {
       return Intent(context, ThirdPartyDependencyListActivity::class.java)
     }

@@ -6,12 +6,11 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The FAQ page activity for placement of different FAQs. */
+/** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAppCompatActivity() {
 
   @Inject
-  lateinit var licenseListActivityPresenter:
-    LicenseListActivityPresenter
+  lateinit var licenseListActivityPresenter: LicenseListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -20,6 +19,7 @@ class LicenseListActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
       context: Context,
       name: String,

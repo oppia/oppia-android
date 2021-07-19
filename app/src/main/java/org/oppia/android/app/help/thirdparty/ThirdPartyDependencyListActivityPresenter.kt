@@ -15,6 +15,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
 ) {
   private lateinit var thirdPartyDependencyListActivityToolbar: Toolbar
 
+  /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
   fun handleOnCreate() {
     val binding =
       DataBindingUtil.setContentView<ThirdPartyDependencyListActivityBinding>(
