@@ -17,10 +17,20 @@ cd ~/opensource/oppia-android
 ```
 The above command ensures that the terminal points to the root directory `oppia-android` repository. Note that if you have configured a different path to the `oppia-android` repository then you should modify the above command accordingly ( `cd ~/<path to your oppia-android repo>` ).
 
-Then run the bazel run command to execute the Kotlin script - 
+#### Running `GenerateMavenDependenciesList.kt` script
+After the terminal points to the Oppia-android repository, run the bazel run command to execute the Kotlin script - 
 ```
 bazel run //scripts:generate_maven_dependencies_list -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
 ```
+
+## Handling Exception: `Too few arguments passed`
+If after running the script the exception message says: **Too few arguments passed**, then please ensure that you copied the command correctly from [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies/_edit#running-generatemavendependencieslistkt-script).
+The scripts exccepts 4 parameters to be passed to run successfully:
+1. **_path_to_directory_root_**: directory path to the root of the Oppia Android repository, e.g - `home/<username>/opensource/oppia-android`
+2. **_path_to_maven_install_json_**: relative path to the maven_install.json file, e.g - `third_party/maven_install.json`
+3. **_path_to_maven_dependencies_textproto_**: relative path to the maven_dependencies.textproto, e.g - `scripts/assets/maven_dependencies.textproto`
+4. **_path_to_maven_dependencies_pb_**: relative path to the maven_dependencies.pb file, e.g - `scripts/assets/maven_dependencies.pb`
+
 
 ## Handling Exception: `Licenses details are not completed`
 The script can take about a minute to execute, and if the script fails with the exception: `Licenses details are not completed`, you will need to do some manual work in `maven_dependencies.textproto`.
