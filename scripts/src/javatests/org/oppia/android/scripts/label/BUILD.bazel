@@ -1,5 +1,5 @@
 """
-Tests corresponding to Accessibility label check that ensures all the activities in the codebase
+Tests corresponding to accessibility label check that ensures all the activities in the codebase
 are defined with labels.
 """
 
