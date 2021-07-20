@@ -29,8 +29,6 @@
   <dimen name="profile_chooser_add_view_margin_bottom_profile_not_added">28dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_bottom_profile_not_added">28dp</dimen>
 
-  <dimen name="state_fragment_split_view_with_audio_bar_visible_padding_top">96dp</dimen>
-
   <dimen name="profile_chooser_add_view_parent_margin_start_profile_not_added">298dp</dimen>
   <dimen name="profile_chooser_add_view_parent_margin_end_profile_not_added">298dp</dimen>
   <dimen name="profile_chooser_profile_view_parent_margin_start_profile_not_added">298dp</dimen>
@@ -188,7 +186,7 @@
   <dimen name="story_chapter_card_not_playable_state_elevation">2dp</dimen>
   <dimen name="profile_chooser_padding_bottom_profile_already_added">224dp</dimen>
 
-  <dimen name="state_fragment_non_split_view_with_audio_bar_visible_padding_top">72dp</dimen>
+  <dimen name="state_fragment_with_audio_bar_visible_padding_top">72dp</dimen>
   <dimen name="profile_chooser_margin_start_profile_already_added">72dp</dimen>
   <dimen name="profile_chooser_margin_end_profile_already_added">72dp</dimen>
 
@@ -382,6 +380,30 @@
   <!-- Replay Button: Question View -->
   <dimen name="replay_button_item_question_view_margin_top">44dp</dimen>
 
+  <!-- Question Player ProgressBar -->
+  <dimen name="question_player_progress_bar_margin_start">32dp</dimen>
+  <dimen name="question_player_progress_bar_margin_end">32dp</dimen>
+
+  <dimen name="question_player_progress_bar_text_margin_bottom">12dp</dimen>
+  <dimen name="question_player_progress_bar_text_margin_end">32dp</dimen>
+  <dimen name="question_player_progress_bar_text_margin_top">8dp</dimen>
+
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">28dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">16dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">124dp</dimen>
+
+  <!-- Audio Player: Non Split View -->
+  <dimen name="audio_player_non_split_view_margin_start">28dp</dimen>
+  <dimen name="audio_player_non_split_view_margin_end">28dp</dimen>
+
+  <!-- Audio Player: Split View -->
+  <dimen name="audio_player_split_view_margin_start">32dp</dimen>
+  <dimen name="audio_player_split_view_margin_end">32dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">24dp</dimen>
   <dimen name="faq_single_padding_top">22dp</dimen>
@@ -403,4 +425,13 @@
 
   <!-- Profile Edit -->
   <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">28dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">40dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">40dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
+
 </resources>

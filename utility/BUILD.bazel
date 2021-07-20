@@ -4,6 +4,7 @@ This library contains utilities that all other modules, minus model, depend on.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
 
 android_library(
@@ -12,6 +13,62 @@ android_library(
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
     visibility = ["//visibility:public"],
+)
+
+MIGRATED_PROD_FILES = glob([
+     "src/main/java/org/oppia/android/util/accessibility/*.kt",
+     "src/main/java/org/oppia/android/util/caching/*.kt",
+     "src/main/java/org/oppia/android/util/data/*.kt",
+     "src/main/java/org/oppia/android/util/datetime/*.kt",
+     "src/main/java/org/oppia/android/util/extensions/*.kt",
+     "src/main/java/org/oppia/android/util/gcsresource/*.kt",
+     "src/main/java/org/oppia/android/util/html/*.kt",
+     "src/main/java/org/oppia/android/util/image/*.kt",
+     "src/main/java/org/oppia/android/util/logging/*.kt",
+     "src/main/java/org/oppia/android/util/networking/*.kt",
+     "src/main/java/org/oppia/android/util/profile/*.kt",
+     "src/main/java/org/oppia/android/util/statusbar/*.kt",
+     "src/main/java/org/oppia/android/util/system/*.kt",
+     "src/main/java/org/oppia/android/util/threading/*.kt",
+ ])
+
+# Library for general-purpose utilities.
+kt_android_library(
+    name = "utility",
+    srcs = glob(
+        ["src/main/java/org/oppia/android/util/**/*.kt"],
+        exclude = MIGRATED_PROD_FILES,
+    ),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":dagger",
+        ":resources",
+        "//app:crashlytics",
+        "//app:crashlytics_deps",
+        "//model:event_logger_java_proto_lite",
+        "//model:platform_parameter_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_room_room-runtime",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:com_google_guava_guava",
+        "//third_party:glide_compiler",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/threading:concurrent_collections",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
+    ],
 )
 
 # keep sorted

@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -67,11 +68,14 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
@@ -169,6 +173,37 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 1, stringToMatch = "100%")
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_completeStoryProgress_contentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100%")
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadFractionsTopic_storyChapterTextsContentDescriptionIsCorrect() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyStoryAndChapterCountContentDescriptionAtPosition(
+        itemPosition = 1,
+        stringToMatch = "2 Chapters in Matthew Goes to the Bakery"
+      )
     }
   }
 
@@ -419,11 +454,34 @@ class TopicLessonsFragmentTest {
     ).check(matches(hasDescendant(withText(containsString(stringToMatch)))))
   }
 
+  private fun verifyProgressContentDescriptionAtPosition(itemPosition: Int, stringToMatch: String) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.story_progress_container
+      )
+    ).check(matches(withContentDescription(stringToMatch)))
+  }
+
+  private fun verifyStoryAndChapterCountContentDescriptionAtPosition(
+    itemPosition: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.story_summary_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.story_name_chapter_count_container
+      )
+    ).check(matches(withContentDescription(stringToMatch)))
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      RobolectricModule::class, PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -437,7 +495,8 @@ class TopicLessonsFragmentTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

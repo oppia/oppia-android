@@ -55,16 +55,55 @@ class BazelClient(
     val buildFileList = buildFiles.joinToString(",")
     // Note that this check is needed since rbuildfiles() doesn't like taking an empty list.
     return if (buildFileList.isNotEmpty()) {
+      val referencingBuildFiles =
+        executeBazelCommand(
+          "query",
+          "--noshow_progress",
+          "--universe_scope=//...",
+          "--order_output=no",
+          "rbuildfiles($buildFileList)"
+        )
+      // Compute only test & library siblings for each individual build file. While this is both
+      // much slower than a fully combined query & can potentially miss targets, it runs
+      // substantially faster per query and helps to avoid potential hanging in CI.
+      val relevantSiblings = referencingBuildFiles.flatMap { buildFileTarget ->
+        retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
+          retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
+      }.toSet()
       return correctPotentiallyBrokenTargetNames(
         executeBazelCommand(
           "query",
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "filter('^[^@]', kind(test, allrdeps(siblings(rbuildfiles($buildFileList)))))",
+          "filter('^[^@]', kind(test, allrdeps(set(${relevantSiblings.joinToString(" ")}))))",
         )
       )
     } else listOf()
+  }
+
+  /**
+   * Returns the list of direct and indirect maven third-party dependencies on which the specified
+   * binary depends.
+   */
+  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
+    return executeBazelCommand(
+      "query",
+      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//..."
+    )
+  }
+
+  private fun retrieveFilteredSiblings(
+    filterRuleType: String,
+    buildFileTarget: String
+  ): List<String> {
+    return executeBazelCommand(
+      "query",
+      "--noshow_progress",
+      "--universe_scope=//...",
+      "--order_output=no",
+      "kind($filterRuleType, siblings($buildFileTarget))"
+    )
   }
 
   private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {

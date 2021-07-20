@@ -1,0 +1,18 @@
+"""
+Tests corresponding to regex pattern based validation checks which ensures that no prohibited
+file path/name and content are used in the codebase.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "RegexPatternValidationCheckTest",
+    srcs = ["RegexPatternValidationCheckTest.kt"],
+    deps = [
+        "//scripts:regex_check_assets",
+        "//scripts/src/java/org/oppia/android/scripts/regex:regex_pattern_validation_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

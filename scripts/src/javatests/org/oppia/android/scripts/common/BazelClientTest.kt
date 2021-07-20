@@ -2,7 +2,6 @@ package org.oppia.android.scripts.common
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -13,6 +12,8 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [BazelClient].
@@ -20,8 +21,9 @@ import org.oppia.android.testing.mockito.anyOrNull
  * Note that this test executes real commands on the local filesystem & requires Bazel in the local
  * environment.
  */
+// Same parameter value: helpers reduce test context, even if they are used by 1 test.
 // Function name: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
   @Rule
   @JvmField
@@ -31,8 +33,11 @@ class BazelClientTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-  @Mock lateinit var mockCommandExecutor: CommandExecutor
+
+  @Mock
+  lateinit var mockCommandExecutor: CommandExecutor
 
   @Before
   fun setUp() {
@@ -263,7 +268,35 @@ class BazelClientTest {
   }
 
   @Test
-  @Ignore("Fails in GitHub Actions") // TODO(#2691): Re-enable this test once it can pass in CI.
+  fun testRetrieveTransitiveTestTargets_forBzlFile_returnsRelatedTests() {
+    val bazelClient = BazelClient(tempFolder.root)
+    testBazelWorkspace.initEmptyWorkspace()
+    // Generate tests.
+    testBazelWorkspace.createTest("FirstTest")
+    testBazelWorkspace.createTest("SecondTest", subpackage = "two")
+    testBazelWorkspace.createTest("ThirdTest", subpackage = "three")
+    testBazelWorkspace.createTest("FourthTest")
+    // Generate Bazel file that will be added into the build graph.
+    val bzlFile =
+      generateCustomJvmTestRuleBazelFile(
+        "custom_jvm_test_rule_base.bzl",
+        "custom_jvm_test_rule.bzl"
+      )
+    // Update build files to depend on the new Bazel file.
+    val packageTwoDirectory = File(tempFolder.root, "two")
+    updateBuildFileToUseCustomJvmTestRule(bzlFile, File(tempFolder.root, "BUILD.bazel"))
+    updateBuildFileToUseCustomJvmTestRule(bzlFile, File(packageTwoDirectory, "BUILD.bazel"))
+
+    val testTargets =
+      bazelClient.retrieveTransitiveTestTargets(
+        listOf("custom_jvm_test_rule_base.bzl", "custom_jvm_test_rule.bzl")
+      )
+
+    // All tests corresponding to build files that use the affected .bzl file should be returned.
+    assertThat(testTargets).containsExactly("//:FirstTest", "//two:SecondTest", "//:FourthTest")
+  }
+
+  @Test
   fun testRetrieveTransitiveTestTargets_forWorkspace_returnsAllTests() {
     val bazelClient = BazelClient(tempFolder.root)
     testBazelWorkspace.initEmptyWorkspace()
@@ -274,7 +307,7 @@ class BazelClientTest {
 
     val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("WORKSPACE"))
 
-    // No test targets for no related build files.
+    // All test targets should be returned for WORKSPACE since it affects all files.
     assertThat(testTargets).containsExactly(
       "//:FirstTest", "//two:SecondTest", "//three:ThirdTest", "//:FourthTest"
     )
@@ -288,6 +321,62 @@ class BazelClientTest {
     val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("WORKSPACE"))
 
     assertThat(testTargets).containsExactly("//:FirstTest", "//:SecondTest")
+  }
+
+  @Test
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("AndroidManifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "AndroidManifest.xml",
+      dependencyName = "//third_party:com_android_support_support-annotations"
+    )
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    createAndroidLibrary(
+      artifactName = "com.android.support:support-annotations:28.0.0",
+      buildFile = thirdPartyBuild
+    )
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
+
+    assertThat(thirdPartyDependenciesList)
+      .contains("@maven//:com_android_support_support_annotations")
+  }
+
+  @Test
+  fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotreturnArtifact() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+    tempFolder.newFile("AndroidManifest.xml")
+    createAndroidBinary(
+      binaryName = "test_oppia",
+      manifestName = "AndroidManifest.xml",
+      dependencyName = ":com_android_support_support-annotations"
+    )
+    tempFolder.newFolder("third_party")
+    val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
+    createAndroidLibrary(
+      artifactName = "io.fabric.sdk.android:fabric:1.4.7",
+      buildFile = thirdPartyBuild
+    )
+    createAndroidLibrary(
+      artifactName = "com.android.support:support-annotations:28.0.0",
+      buildFile = testBazelWorkspace.rootBuildFile
+    )
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val thirdPartyDependenciesList =
+      bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
+
+    assertThat(thirdPartyDependenciesList)
+      .doesNotContain("@maven//:com_android_support_support_annotations")
   }
 
   private fun fakeCommandExecutorWithResult(singleLine: String) {
@@ -304,5 +393,96 @@ class BazelClientTest {
           command = listOf()
         )
       )
+  }
+
+  private fun createAndroidLibrary(artifactName: String, buildFile: File) {
+    buildFile.appendText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      android_library(
+          name = "${omitVersionAndReplacePeriodsAndColons(artifactName)}",
+          visibility = ["//visibility:public"],
+          exports = [
+              artifact("$artifactName")
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun omitVersionAndReplacePeriodsAndColons(artifactName: String): String {
+    return artifactName.substringBeforeLast(':').replace('.', '_').replace(':', '_')
+  }
+
+  private fun createAndroidBinary(
+    binaryName: String,
+    manifestName: String,
+    dependencyName: String
+  ) {
+    testBazelWorkspace.rootBuildFile.writeText(
+      """
+      android_binary(
+          name = "$binaryName",
+          manifest = "$manifestName",
+          deps = [
+               "$dependencyName"
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+  }
+
+  private fun generateCustomJvmTestRuleBazelFile(
+    firstFilename: String,
+    secondFilename: String
+  ): File {
+    val firstNewFile = File(tempFolder.root, firstFilename)
+    val secondNewFile = File(tempFolder.root, secondFilename)
+    firstNewFile.appendText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+      def custom_jvm_test_base(name, srcs, deps):
+          kt_jvm_test(
+              name = name,
+              srcs = srcs,
+              deps = deps
+          )
+      """.trimIndent()
+    )
+    secondNewFile.appendText(
+      """
+      load("//:$firstFilename", "custom_jvm_test_base")
+      def custom_jvm_test(name, srcs, deps):
+          custom_jvm_test_base(
+              name = name,
+              srcs = srcs,
+              deps = deps
+          )
+      """.trimIndent()
+    )
+    return secondNewFile
+  }
+
+  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
+    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  }
+
+  private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {
+    buildFile.prependText(
+      "load(\"//:${bazelFile.name}\", \"custom_jvm_test\")\n"
+    )
+    buildFile.replaceLines("kt_jvm_test(", "custom_jvm_test(")
+  }
+
+  private fun File.prependText(line: String) {
+    writeLines(listOf(line) + readLines())
+  }
+
+  private fun File.replaceLines(find: String, replace: String) {
+    writeLines(readLines().map { it.replace(find, replace) })
+  }
+
+  private fun File.writeLines(lines: List<String>) {
+    writeText(lines.joinToString(separator = "\n"))
   }
 }
