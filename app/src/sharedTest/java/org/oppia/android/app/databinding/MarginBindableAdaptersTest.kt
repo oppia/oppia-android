@@ -153,7 +153,7 @@ class MarginBindableAdaptersTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testMarginBindableAdapters_ltrEnabled__port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrEnabled_port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_textview)
       setLayoutMarginStart(
