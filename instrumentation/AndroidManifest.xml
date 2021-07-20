@@ -1,9 +1,12 @@
+<?xmxl version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-  package="org.oppia.android.app.test">
-  <uses-sdk android:minSdkVersion="19"
+  package="org.oppia.android.app.instrumentation">
+  <uses-sdk
+    android:minSdkVersion="19"
     android:targetSdkVersion="28" />
-        <instrumentation android:targetPackage="org.oppia.android"
-                     android:name="androidx.test.runner.AndroidJUnitRunner"/>
-       <application tools:replace="label" android:label="OppiaTest" />
+  <instrumentation
+    android:targetPackage="org.oppia.android"
+    android:name="androidx.test.runner.AndroidJUnitRunner" />
+  <application
+    android:label="OppiaTest" />
 </manifest>

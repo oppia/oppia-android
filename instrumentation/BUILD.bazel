@@ -1,67 +1,19 @@
+"""
+This library contains all android_binary targets to each test suite in instrumentation module.
+Note that:
+ - All the android_binaries are named similar to the respective class name of the test suite.
+"""
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-android_library(
-    name="instrumentation_deps",
-    testonly = True,
-    visibility = ["//visibility:public"],
-    exports = [
-        "//third_party:androidx_test_runner",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:androidx_test_uiautomator_uiautomator",
-    ],
-)
-
-kt_android_library(
-    name="profile_test",
-    testonly = True,
-    srcs = [
-        "src/javatest/org/oppia/android/instrumentation/ProfileTest.kt",
-    ],
-    visibility = ["//visibility:public"],
-    deps = [
-        ":instrumentation_deps",
-    ],
-)
-
-android_device(
-  name = "android_26_x86",
-  visibility = ["//visibility:public"],
-  tags = ["requires-kvm"],
-  generator_name = "generic_phone",
-  generator_function = "make_device",
-  generator_location = "tools/android/emulated_devices/generic_phone/BUILD.bazel:43:12",
-  vertical_resolution = 2160,
-  horizontal_resolution = 1080,
-  ram = 2048,
-  screen_density = 240,
-  cache = 32,
-  vm_heap = 256,
-  system_image = "@android_test_support//tools/android/emulated_devices/generic_phone:android_26_x86_images",
-  default_properties = "@android_test_support//tools/android/emulated_devices/generic_phone:_android_26_x86_props",
-)
-
-
 android_binary(
-    name = "ProfileTest",
+    name = "BaseTest",
     testonly = True,
     custom_package = "org.oppia.android",
     visibility = ["//visibility:public"],
     instruments = "//:oppia",
     manifest="AndroidManifest.xml",
-    deps = [":profile_test"]
-)
-
-android_instrumentation_test(
-    name = "OppiaTest",
-    target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_26_x86_qemu2",
-    test_app = ":ProfileTest",
-)
-
-
-android_instrumentation_test(
-    name = "Instrument",
-    target_device = "@android_test_support//tools/android/emulated_devices/low_mem_phone:android_23_x86_qemu2",
-    test_app = ":ProfileTest",
+    deps = [
+        "//instrumentation/src/javatest/org/oppia/android/instrumentation:base_test_lib"
+    ],
 )
