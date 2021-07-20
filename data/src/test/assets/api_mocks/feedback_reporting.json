@@ -1,5 +1,5 @@
 {
-  "platform": "android",
+  "platform_type": "android",
   "android_report_info_schema_version": 1,
   "app_context": {
     "entry_point": {
