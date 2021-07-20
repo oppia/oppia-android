@@ -125,15 +125,15 @@ interface ActivityComponent {
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
-  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
-  fun inject(
-    stateAssemblerPaddingBindingAdaptersTestActivity:
-    StateAssemblerPaddingBindingAdaptersTestActivity
-  )
   fun inject(
     stateAssemblerMarginBindingAdaptersTestActivity:
     StateAssemblerMarginBindingAdaptersTestActivity
   )
+  fun inject(
+    stateAssemblerPaddingBindingAdaptersTestActivity:
+    StateAssemblerPaddingBindingAdaptersTestActivity
+  )
+  fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(topicActivity: TopicActivity)

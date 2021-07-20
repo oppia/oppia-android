@@ -166,6 +166,7 @@
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
+    <activity android:name=".app.testing.MarginBindableAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -218,7 +219,6 @@
       android:name=".app.devoptions.vieweventlogs.ViewEventLogsActivity"
       android:label="@string/view_event_logs_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.testing.MarginBindableAdaptersTestActivity" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

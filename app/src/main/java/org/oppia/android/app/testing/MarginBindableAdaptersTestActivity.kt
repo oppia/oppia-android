@@ -4,7 +4,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
-/** This is a dummy activity to test MarginBindableAdapters. */
+/** Test activity for MarginBindableAdapters. */
 class MarginBindableAdaptersTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
