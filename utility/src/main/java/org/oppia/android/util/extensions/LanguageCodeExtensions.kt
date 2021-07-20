@@ -3,6 +3,9 @@ package org.oppia.android.util.extensions
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 
+// Extension functions for language codes that convert between the different types of language codes
+// and their String representations.
+
 enum class LanguageCode {
   UNKNOWN_LANGUAGE_CODE,
   NO_SPECIFIED_LANGUAGE,
