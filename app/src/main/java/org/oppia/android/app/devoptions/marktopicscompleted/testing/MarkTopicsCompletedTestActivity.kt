@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 
-/** The activity for testing [MarkTopicsCompletedFragment] */
+/** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
 
   private var internalProfileId = -1
@@ -37,6 +37,7 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
     const val MARK_TOPICS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_KEY =
       "MarkTopicsCompletedTestActivity.internal_profile_id"
 
+    /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
     fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java)
       intent.putExtra(MARK_TOPICS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
