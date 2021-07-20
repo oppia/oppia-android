@@ -113,15 +113,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_explorationViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -135,15 +128,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_explorationViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -158,15 +144,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_questionViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setQuestionViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setQuestionViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -180,15 +159,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_questionViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setQuestionViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setQuestionViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -203,15 +175,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_QuestionSplitViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setQuestionSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setQuestionSplitViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -225,15 +190,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_questionSplitViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setQuestionSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setQuestionSplitViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -249,15 +207,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -272,15 +223,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -295,15 +239,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_ltrEnabled__port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -318,15 +255,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_ltrEnabled_landscapeTablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -341,15 +271,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -365,15 +288,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -389,15 +305,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -413,15 +322,8 @@ class StateAssemblerMarginBindingAdaptersTest {
   @Test
   fun testMarginBindingAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setExplorationViewMargins(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -433,6 +335,39 @@ class StateAssemblerMarginBindingAdaptersTest {
     )
   }
 
+  private fun setQuestionViewMargins(textView: TextView) {
+    setQuestionViewMargin(
+      textView,
+      /* isApplicable= */ true,
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
+    )
+  }
+
+  private fun setQuestionSplitViewMargins(textView: TextView) {
+    setQuestionSplitViewMargin(
+      textView,
+      /* isApplicable= */ true,
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
+    )
+  }
+
+  private fun setExplorationViewMargins(textView: TextView) {
+    setExplorationSplitViewMargin(
+      textView,
+      /* isApplicable= */ true,
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end),
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
+    )
+  }
+  
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
     crossinline action: (A) -> V
   ): V {

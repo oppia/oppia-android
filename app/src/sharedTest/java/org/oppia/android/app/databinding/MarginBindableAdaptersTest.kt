@@ -109,15 +109,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -132,15 +125,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -155,15 +141,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_ltrEnabled_port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -178,15 +157,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_ltrEnabled_landscapeTablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
@@ -201,15 +173,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -225,15 +190,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -249,15 +207,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -273,15 +224,8 @@ class MarginBindableAdaptersTest {
   @Test
   fun testMarginBindableAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_textview)
-      setLayoutMarginStart(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-      )
-      setLayoutMarginEnd(
-        textView,
-        context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-      )
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -289,6 +233,17 @@ class MarginBindableAdaptersTest {
       context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
     )
     assertThat(textView.marginStart.toFloat()).isEqualTo(
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+    )
+  }
+
+  private fun setLayoutMarginStartAndMarginEnd(textView: TextView) {
+    setLayoutMarginStart(
+      textView,
+      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+    )
+    setLayoutMarginEnd(
+      textView,
       context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
     )
   }
