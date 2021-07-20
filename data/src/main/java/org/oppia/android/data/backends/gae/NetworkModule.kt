@@ -73,8 +73,9 @@ class NetworkModule {
 
   /**
    * Provides the [PlatformParameterService] implementation.
+   *
    * @param retrofit the Retrofit object used to instantiate the service
-   * @return the [PlatformParameterService] implementation.
+   * @return the [PlatformParameterService] implementation
    */
   @Provides
   @Singleton

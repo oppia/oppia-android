@@ -14,15 +14,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.model.GaePlatformParameter
-import org.oppia.android.data.backends.gae.model.GaePlatformParameters
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.robolectric.annotation.LooperMode
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
@@ -40,12 +39,16 @@ class PlatformParameterServiceTest {
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService
 
-  private val expectedNetworkResponse by lazy {
-    arrayListOf<GaePlatformParameter>(
-      GaePlatformParameter(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_VALUE),
-      GaePlatformParameter(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_VALUE),
-      GaePlatformParameter(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_VALUE)
-    )
+  private val expectedTestStringParam by lazy {
+    GaePlatformParameter(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE)
+  }
+
+  private val expectedTestIntegerParam by lazy {
+    GaePlatformParameter(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE)
+  }
+
+  private val expectedTestBooleanParam by lazy {
+    GaePlatformParameter(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   @Before
@@ -60,17 +63,27 @@ class PlatformParameterServiceTest {
 
     val responseBody = response.body()
     assertThat(responseBody).isNotNull()
-    verifyResponseBody(responseBody!!)
   }
 
-  // Checks for the individual platform parameters in the response body and compares them with the
-  // expected network response body
-  private fun verifyResponseBody(responseBody: GaePlatformParameters) {
-    val gaePlatformParameterList = responseBody.platformParameters!!
-    assertThat(gaePlatformParameterList.size).isEqualTo(expectedNetworkResponse.size)
-    for (platformParameter in expectedNetworkResponse) {
-      assertThat(gaePlatformParameterList).contains(platformParameter)
-    }
+  @Test
+  fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForStringParam() {
+    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val responseBody = response.body()
+    assertThat(responseBody!!.platformParameters).contains(expectedTestStringParam)
+  }
+
+  @Test
+  fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForIntegerParam() {
+    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val responseBody = response.body()
+    assertThat(responseBody!!.platformParameters).contains(expectedTestIntegerParam)
+  }
+
+  @Test
+  fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForBooleanParam() {
+    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val responseBody = response.body()
+    assertThat(responseBody!!.platformParameters).contains(expectedTestBooleanParam)
   }
 
   private fun setUpTestApplicationComponent() {
