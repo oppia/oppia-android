@@ -116,10 +116,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -132,10 +132,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -147,10 +147,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -163,10 +163,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -178,10 +178,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -194,10 +194,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -210,10 +210,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -226,10 +226,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -242,10 +242,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -258,10 +258,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -275,10 +275,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -292,10 +292,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -309,10 +309,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
 
@@ -326,32 +326,47 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+      getExplorationPaddingStart()
     )
     assertThat(textView.paddingStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+      getExplorationPaddingEnd()
     )
   }
-
+  
   private fun setExplorationPadding(textView: TextView) {
     setExplorationViewPadding(
       textView,
       /* isApplicable= */ true,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
+      getExplorationPaddingStart(),
+      getExplorationPaddingTop(),
+      getExplorationPaddingEnd(),getExplorationPaddingBottom()
     )
+  }
+
+  private fun getExplorationPaddingEnd(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
+  }
+
+  private fun getExplorationPaddingStart(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
+  }
+  
+  private fun getExplorationPaddingTop(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
+  }
+  
+  private fun getExplorationPaddingBottom(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_bottom)
   }
 
   private fun setExplorationSplitPadding(textView: TextView) {
     setExplorationSplitViewPadding(
       textView,
       /* isApplicable= */ true,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
+      getExplorationPaddingStart(),
+      getExplorationPaddingTop(),
+      getExplorationPaddingEnd(),
+      getExplorationPaddingBottom()
     )
   }
 
@@ -359,10 +374,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
     setQuestionViewPadding(
       textView,
       /* isApplicable= */ true,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
+      getExplorationPaddingStart(),
+      getExplorationPaddingTop(),
+      getExplorationPaddingEnd(),
+      getExplorationPaddingBottom()
     )
   }
 
@@ -370,10 +385,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
     setQuestionSplitViewPadding(
       textView,
       /* isApplicable= */ true,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end),
-      context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
+      getExplorationPaddingStart(),
+      getExplorationPaddingTop(),
+      getExplorationPaddingEnd(),
+      getExplorationPaddingBottom()
     )
   }
 

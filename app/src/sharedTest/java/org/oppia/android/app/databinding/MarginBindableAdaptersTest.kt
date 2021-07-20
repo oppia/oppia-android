@@ -114,10 +114,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -130,10 +130,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -146,10 +146,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -162,10 +162,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -179,10 +179,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -196,10 +196,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -213,10 +213,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
@@ -230,22 +230,30 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     assertThat(textView.marginStart.toFloat()).isEqualTo(
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
   }
 
   private fun setLayoutMarginStartAndMarginEnd(textView: TextView) {
     setLayoutMarginStart(
       textView,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+      getContentMarginStart()
     )
     setLayoutMarginEnd(
       textView,
-      context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+      getContentMarginEnd()
     )
+  }
+
+  private fun getContentMarginEnd(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
+  }
+
+  private fun getContentMarginStart(): Float {
+    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
