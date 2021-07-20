@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.lessons
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,10 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
@@ -29,6 +34,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
+  private val explorationCheckpointController: ExplorationCheckpointController
 ) {
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
@@ -45,6 +51,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
+  private var explorationCheckpoint: ExplorationCheckpoint? = null
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -64,6 +71,20 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
+
+    explorationCheckpointController.retrieveExplorationCheckpoint(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      "umPkwp0L1M0-"
+    ).toLiveData().observe(
+      fragment,
+      Observer {
+        if(it.isSuccess())
+          explorationCheckpoint = it.getOrThrow()
+        else if(it.isFailure())
+          explorationCheckpoint = null
+      }
+    )
+
     binding = TopicLessonsFragmentBinding.inflate(
       inflater,
       container,
@@ -209,7 +230,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = true,
+      // we will pass the exploration checkpoint here, this checkpoint will be
+      // fetched in ResumeExplorationActivity ( a new activity that will be added).
+      // Exploration checkpoint will be null if there is no checkpoint to resume exploration
+      // (either exploration was not saved or the user does not resumes the exploration.)
+      explorationCheckpoint = null
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -228,7 +254,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              isCheckpointingEnabled = false
+              isCheckpointingEnabled = true
             )
           }
         }

@@ -45,6 +45,27 @@ internal class StateDeck internal constructor(
     solutionIsRevealed = false
   }
 
+  /** Resumes this deck to a particular checkpoint. */
+  internal fun resumeDeck(
+    initialState: State,
+    previousStates: List<EphemeralState>,
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int,
+    revealedHintIndex: Int,
+    solutionIsRevealed: Boolean
+  ) {
+    pendingTopState = initialState
+    this.previousStates.clear()
+    this.currentDialogInteractions.clear()
+    this.hintList.clear()
+    this.previousStates += previousStates
+    this.currentDialogInteractions += currentDialogInteractions
+    //this.hintList += hintList
+    this.stateIndex = stateIndex
+    this.revealedHintIndex = revealedHintIndex
+    this.solutionIsRevealed = solutionIsRevealed
+  }
+
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
   internal fun navigateToPreviousState() {
     check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }

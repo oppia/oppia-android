@@ -2,6 +2,7 @@ package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.state.StateDeck
@@ -24,6 +25,7 @@ internal class ExplorationProgress {
 
   internal var shouldSavePartialProgress: Boolean = false
   internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+  internal var explorationCheckpoint: ExplorationCheckpoint  = ExplorationCheckpoint.getDefaultInstance()
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {

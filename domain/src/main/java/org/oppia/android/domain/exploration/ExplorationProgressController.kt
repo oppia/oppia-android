@@ -26,6 +26,10 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.app.model.CompletedState
+import org.oppia.android.app.model.CompletedStateInCheckpoint
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
+import org.oppia.android.domain.state.StateDeck
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -78,7 +82,8 @@ class ExplorationProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint?
   ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -91,6 +96,7 @@ class ExplorationProgressController @Inject constructor(
         currentStoryId = storyId
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
+        if (explorationCheckpoint != null) this.explorationCheckpoint = explorationCheckpoint
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
@@ -593,7 +599,9 @@ class ExplorationProgressController @Inject constructor(
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
-    progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+
+    // Either resume or reset the StateDeck depending upon the exploration checkpoint.
+    loadStateDeck(progress, exploration)
 
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
@@ -640,5 +648,38 @@ class ExplorationProgressController @Inject constructor(
       explorationId,
       lastPlayedTimestamp
     )
+  }
+
+  private fun loadStateDeck(progress: ExplorationProgress, exploration: Exploration) {
+    if (progress.explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance()) {
+      progress.stateDeck.resumeDeck(
+        progress.stateGraph.getState(progress.explorationCheckpoint.pendingStateName),
+        getPreviousStatesFromCheckpoint(progress, progress.explorationCheckpoint.stateIndex),
+        progress.explorationCheckpoint.pendingUserAnswersList,
+        progress.explorationCheckpoint.stateIndex,
+        progress.explorationCheckpoint.hintIndex,
+        progress.explorationCheckpoint.solutionIsRevealed
+      )
+    } else {
+      progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+    }
+  }
+
+  private fun getPreviousStatesFromCheckpoint(
+    progress: ExplorationProgress,
+    stateIndex: Int
+  ): List<EphemeralState> {
+    val previousStates: MutableList<EphemeralState> = ArrayList()
+    progress.explorationCheckpoint.completedStatesInCheckpointList.forEachIndexed { index, state ->
+      previousStates.add(
+        EphemeralState.newBuilder()
+          .setState(progress.stateGraph.getState(state.stateName))
+          .setHasPreviousState(index != 0)
+          .setCompletedState(state.completedState)
+          .setHasNextState(stateIndex < index)
+          .build()
+      )
+    }
+    return previousStates
   }
 }
