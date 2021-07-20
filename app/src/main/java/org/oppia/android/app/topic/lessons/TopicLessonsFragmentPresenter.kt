@@ -1,6 +1,5 @@
 package org.oppia.android.app.topic.lessons
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +21,6 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
@@ -33,8 +28,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val explorationDataController: ExplorationDataController,
-  private val explorationCheckpointController: ExplorationCheckpointController
+  private val explorationDataController: ExplorationDataController
 ) {
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
@@ -51,7 +45,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
-  private var explorationCheckpoint: ExplorationCheckpoint? = null
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -71,19 +64,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
-
-    explorationCheckpointController.retrieveExplorationCheckpoint(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      "umPkwp0L1M0-"
-    ).toLiveData().observe(
-      fragment,
-      Observer {
-        if(it.isSuccess())
-          explorationCheckpoint = it.getOrThrow()
-        else if(it.isFailure())
-          explorationCheckpoint = null
-      }
-    )
 
     binding = TopicLessonsFragmentBinding.inflate(
       inflater,

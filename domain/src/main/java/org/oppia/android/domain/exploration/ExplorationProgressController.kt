@@ -26,10 +26,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.app.model.CompletedState
-import org.oppia.android.app.model.CompletedStateInCheckpoint
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointState
-import org.oppia.android.domain.state.StateDeck
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -656,9 +652,6 @@ class ExplorationProgressController @Inject constructor(
         progress.stateGraph.getState(progress.explorationCheckpoint.pendingStateName),
         getPreviousStatesFromCheckpoint(progress, progress.explorationCheckpoint.stateIndex),
         progress.explorationCheckpoint.pendingUserAnswersList,
-        progress.explorationCheckpoint.stateIndex,
-        progress.explorationCheckpoint.hintIndex,
-        progress.explorationCheckpoint.solutionIsRevealed
       )
     } else {
       progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))

@@ -49,10 +49,7 @@ internal class StateDeck internal constructor(
   internal fun resumeDeck(
     initialState: State,
     previousStates: List<EphemeralState>,
-    currentDialogInteractions: List<AnswerAndResponse>,
-    stateIndex: Int,
-    revealedHintIndex: Int,
-    solutionIsRevealed: Boolean
+    currentDialogInteractions: List<AnswerAndResponse>
   ) {
     pendingTopState = initialState
     this.previousStates.clear()
@@ -60,10 +57,6 @@ internal class StateDeck internal constructor(
     this.hintList.clear()
     this.previousStates += previousStates
     this.currentDialogInteractions += currentDialogInteractions
-    //this.hintList += hintList
-    this.stateIndex = stateIndex
-    this.revealedHintIndex = revealedHintIndex
-    this.solutionIsRevealed = solutionIsRevealed
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */

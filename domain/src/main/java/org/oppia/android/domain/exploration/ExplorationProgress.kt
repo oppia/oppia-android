@@ -25,7 +25,8 @@ internal class ExplorationProgress {
 
   internal var shouldSavePartialProgress: Boolean = false
   internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
-  internal var explorationCheckpoint: ExplorationCheckpoint  = ExplorationCheckpoint.getDefaultInstance()
+  internal var explorationCheckpoint: ExplorationCheckpoint =
+    ExplorationCheckpoint.getDefaultInstance()
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {

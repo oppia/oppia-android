@@ -3,6 +3,7 @@ package org.oppia.android.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -61,7 +62,8 @@ class ExplorationDataController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint?
   ): LiveData<AsyncResult<Any?>> {
     return try {
       explorationProgressController.beginExplorationAsync(
@@ -69,7 +71,8 @@ class ExplorationDataController @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress
+        shouldSavePartialProgress,
+        explorationCheckpoint
       )
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
