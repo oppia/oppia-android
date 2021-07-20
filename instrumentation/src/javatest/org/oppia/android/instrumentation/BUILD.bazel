@@ -10,20 +10,20 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # Common deps for each test suite.
 android_library(
-    name="instrumentation_deps",
+    name = "instrumentation_deps",
     testonly = True,
     visibility = ["//visibility:public"],
     exports = [
-        "//third_party:androidx_test_runner",
         "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:androidx_test_uiautomator_uiautomator",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:androidx_test_uiautomator_uiautomator",
     ],
 )
 
 kt_android_library(
-    name="base_test_lib",
+    name = "base_test_lib",
     testonly = True,
     srcs = [
         "BaseTest.kt",

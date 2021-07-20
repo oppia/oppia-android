@@ -4,16 +4,14 @@ Note that:
  - All the android_binaries are named similar to the respective class name of the test suite.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-
 android_binary(
     name = "BaseTest",
     testonly = True,
     custom_package = "org.oppia.android",
-    visibility = ["//visibility:public"],
     instruments = "//:oppia",
-    manifest="AndroidManifest.xml",
+    manifest = "AndroidManifest.xml",
+    visibility = ["//visibility:public"],
     deps = [
-        "//instrumentation/src/javatest/org/oppia/android/instrumentation:base_test_lib"
+        "//instrumentation/src/javatest/org/oppia/android/instrumentation:base_test_lib",
     ],
 )
