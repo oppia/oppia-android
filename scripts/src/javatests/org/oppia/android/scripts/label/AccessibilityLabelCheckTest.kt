@@ -16,10 +16,14 @@ class AccessibilityLabelCheckTest {
   private val originalOut: PrintStream = System.out
   private val ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK PASSED"
   private val ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK FAILED"
+  private val failureNotePartOne = "If this is correct, please update " +
+    "scripts/assets/accessibility_label_exemptions.textproto"
+  private val failureNotePartTwo = "Note that, in general, all Activities should have labels. " +
+    "If you choose to add an exemption, please specifically call this out in your PR description."
 
   @Rule
   @JvmField
-  public var tempFolder = TemporaryFolder()
+  var tempFolder = TemporaryFolder()
 
   @Before
   fun setUp() {
@@ -33,52 +37,27 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_labelPresent_activitiesAreDefinedWithAccessibilityLabel() {
-    val manifestContent =
+  fun testAccessibilityLabel_labelPresent_checkShouldPass() {
+    val testContent =
       """
-      <?xml version="1.0" encoding="utf-8"?>
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="org.oppia.android">
-
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <application
-          android:name=".app.application.OppiaApplication"
-          android:allowBackup="true"
-          android:icon="@mipmap/ic_launcher"
-          android:label="@string/app_name"
-          android:roundIcon="@mipmap/ic_launcher_round"
-          android:supportsRtl="true"
-          android:theme="@style/OppiaTheme">
-          <meta-data
-            android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-          <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="automatic_app_expiration_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="expiration_date"
-            android:value="2020-09-01" />
-
+          package="org.oppia.android.splash">
           <activity
-            android:name=".app.administratorcontrols.Temp1Activity"
-            android:label="@string/administrator_controls_title"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
           <activity
-            android:name=".app.administratorcontrols.appversion.Temp2Activity"
-            android:label="@string/app_version_activity_title"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
-        </application>
+              android:name=".SecondSplashActivity"
+              android:label="@string/administrator_controls_title2" />
       </manifest>
       """.trimIndent()
-    val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
-    manifestFile.writeText(manifestContent)
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val tempFileRelativePath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
+    manifestFile.writeText(testContent)
 
-    runScript("AndroidManifest.xml")
+    main(retrieveTestFilesDirectoryPath(), tempFileRelativePath)
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
@@ -86,255 +65,228 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_labelNotPresent_activityIsNotDefinedWithAccessibilityLabel() {
-    val manifestContent =
+  fun testAccessibilityLabel_labelNotPresent_checkShouldFail() {
+    val testContent =
       """
-      <?xml version="1.0" encoding="utf-8"?>
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="org.oppia.android">
-
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <application
-          android:name=".app.application.OppiaApplication"
-          android:allowBackup="true"
-          android:icon="@mipmap/ic_launcher"
-          android:label="@string/app_name"
-          android:roundIcon="@mipmap/ic_launcher_round"
-          android:supportsRtl="true"
-          android:theme="@style/OppiaTheme">
-          <meta-data
-            android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-          <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="automatic_app_expiration_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="expiration_date"
-            android:value="2020-09-01" />
-
+          package="org.oppia.android.splash">
           <activity
-            android:name=".app.administratorcontrols.Temp1Activity"
-            android:label="@string/administrator_controls_title"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
           <activity
-            android:name=".app.administratorcontrols.appversion.Temp2Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
-        </application>
+              android:name=".SecondSplashActivity" />
       </manifest>
       """.trimIndent()
-    val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
-    manifestFile.writeText(manifestContent)
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val tempFileRelativePath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
+    manifestFile.writeText(testContent)
 
     val exception = assertThrows(Exception::class) {
-      runScript("AndroidManifest.xml")
+      main(retrieveTestFilesDirectoryPath(), tempFileRelativePath)
     }
 
     assertThat(exception).hasMessageThat().contains(
       ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR
     )
-    val temp2ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/appversion/Temp2Activity"
-    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
-      "to add an exemption, please specifically call this out in your PR description."
+    val activityRelativePath = "app/src/main/java/org/oppia/android/splash/SecondSplashActivity"
     val failureMessage =
       """
-      Accessiblity labels missing for Activities:
-      - $temp2ActivityPath
-      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
-      $failureNote
+      Accessibility label missing for Activities:
+      - ${retrieveTestFilesDirectoryPath()}/$activityRelativePath
+      
+      $failureNotePartOne
+      $failureNotePartTwo
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
-  fun testAccessibilityLabel_labelsNotPresent_activitiesAreNotDefinedWithAccessibilityLabel() {
-    val manifestContent =
+  fun testAccessibilityLabel_passMultipleManifests_allLabelsAreDefined_checkShouldPass() {
+    val testContent1 =
       """
-      <?xml version="1.0" encoding="utf-8"?>
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="org.oppia.android">
-
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <application
-          android:name=".app.application.OppiaApplication"
-          android:allowBackup="true"
-          android:icon="@mipmap/ic_launcher"
-          android:label="@string/app_name"
-          android:roundIcon="@mipmap/ic_launcher_round"
-          android:supportsRtl="true"
-          android:theme="@style/OppiaTheme">
-          <meta-data
-            android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-          <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="automatic_app_expiration_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="expiration_date"
-            android:value="2020-09-01" />
-
+          package="org.oppia.android">
           <activity
-            android:name=".app.administratorcontrols.Temp1Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
+              android:name=".app.TempActivity"
+              android:label="@string/administrator_controls_title1" />
           <activity
-            android:name=".app.administratorcontrols.appversion.Temp2Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
-        </application>
+              android:name=".app.SecondTempActivity"
+              android:label="@string/administrator_controls_title2" />
       </manifest>
       """.trimIndent()
-    val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
-    manifestFile.writeText(manifestContent)
+    val testContent2 =
+      """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android.splash">
+          <activity
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
+          <activity
+              android:name=".SecondSplashActivity"
+              android:label="@string/administrator_controls_title2" />
+      </manifest>
+      """.trimIndent()
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app"
+    )
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
+    val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
+    appManifestFile.writeText(testContent1)
+    splashManifestFile.writeText(testContent2)
+
+    main(retrieveTestFilesDirectoryPath(), appManifestPath, splashManifestPath)
+
+    assertThat(outContent.toString().trim()).isEqualTo(
+      ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
+    )
+  }
+
+  @Test
+  fun testAccessibilityLabel_passMultipleManifests_labelsNotDefined_allFailuresShouldBeLogged() {
+    val testContent1 =
+      """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android">
+          <activity
+              android:name=".app.TempActivity" />
+          <activity
+              android:name=".app.SecondTempActivity"
+              android:label="@string/administrator_controls_title2" />
+      </manifest>
+      """.trimIndent()
+    val testContent2 =
+      """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android.splash">
+          <activity
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
+          <activity
+              android:name=".SecondSplashActivity" />
+      </manifest>
+      """.trimIndent()
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app"
+    )
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
+    val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
+    appManifestFile.writeText(testContent1)
+    splashManifestFile.writeText(testContent2)
 
     val exception = assertThrows(Exception::class) {
-      runScript("AndroidManifest.xml")
+      main(retrieveTestFilesDirectoryPath(), appManifestPath, splashManifestPath)
     }
 
     assertThat(exception).hasMessageThat().contains(
       ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR
     )
-    val temp1ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/Temp1Activity"
-    val temp2ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/appversion/Temp2Activity"
-    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
-      "to add an exemption, please specifically call this out in your PR description."
+    val appActivityPath = "app/src/main/java/org/oppia/android/app/TempActivity"
+    val splashActivityPath = "app/src/main/java/org/oppia/android/splash/SecondSplashActivity"
     val failureMessage =
       """
-      Accessiblity labels missing for Activities:
-      - $temp1ActivityPath
-      - $temp2ActivityPath
-      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
-      $failureNote
+      Accessibility label missing for Activities:
+      - ${retrieveTestFilesDirectoryPath()}/$appActivityPath
+      - ${retrieveTestFilesDirectoryPath()}/$splashActivityPath
+      
+      $failureNotePartOne
+      $failureNotePartTwo
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
-  fun testAccessibilityLabel_labelsNotPresent_logsShouldBeLexicographicallySorted() {
-    val manifestContent =
+  fun testAccessibilityLabel_multipleFailures_logsShouldBeLexicographicallySorted() {
+    val testContent1 =
       """
-      <?xml version="1.0" encoding="utf-8"?>
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="org.oppia.android">
-
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <application
-          android:name=".app.application.OppiaApplication"
-          android:allowBackup="true"
-          android:icon="@mipmap/ic_launcher"
-          android:label="@string/app_name"
-          android:roundIcon="@mipmap/ic_launcher_round"
-          android:supportsRtl="true"
-          android:theme="@style/OppiaTheme">
-          <meta-data
-            android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-          <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="automatic_app_expiration_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="expiration_date"
-            android:value="2020-09-01" />
-
+          package="org.oppia.android">
           <activity
-            android:name=".app.administratorcontrols.Temp1Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
+              android:name=".app.FourthTempActivity" />
           <activity
-            android:name=".app.administratorcontrols.appversion.Temp3Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
+              android:name=".app.ThirdTempActivity" />
           <activity
-            android:name=".app.administratorcontrols.appversion.Temp2Activity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
-        </application>
+              android:name=".app.FirstTempActivity" />
+          <activity
+              android:name=".app.SecondTempActivity"
+              android:label="@string/administrator_controls_title2" />
       </manifest>
       """.trimIndent()
-    val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
-    manifestFile.writeText(manifestContent)
+    val testContent2 =
+      """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android.splash">
+          <activity
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
+          <activity
+              android:name=".SecondSplashActivity" />
+      </manifest>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
+    val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
+    appManifestFile.writeText(testContent1)
+    splashManifestFile.writeText(testContent2)
 
     val exception = assertThrows(Exception::class) {
-      runScript("AndroidManifest.xml")
+      main(retrieveTestFilesDirectoryPath(), appManifestPath, splashManifestPath)
     }
 
     assertThat(exception).hasMessageThat().contains(
       ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR
     )
-    val temp1ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/Temp1Activity"
-    val temp2ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/appversion/Temp2Activity"
-    val temp3ActivityPath = "${retrieveTestFilesDirectoryPath()}/app/src/main/java/org/oppia" +
-      "/android/app/administratorcontrols/appversion/Temp3Activity"
-    val failureNote = "Note that, in general, all Activities should have labels. If you choose " +
-      "to add an exemption, please specifically call this out in your PR description."
+    val firstAppActivityPath = "app/src/main/java/org/oppia/android/app/FirstTempActivity"
+    val thirdAppActivityPath = "app/src/main/java/org/oppia/android/app/ThirdTempActivity"
+    val fourthAppActivityPath = "app/src/main/java/org/oppia/android/app/FourthTempActivity"
+    val splashActivityPath = "app/src/main/java/org/oppia/android/splash/SecondSplashActivity"
     val failureMessage =
       """
-      Accessiblity labels missing for Activities:
-      - $temp1ActivityPath
-      - $temp2ActivityPath
-      - $temp3ActivityPath
-      If this is correct, please update scripts/assets/accessibility_label_exemptions.textproto
-      $failureNote
+      Accessibility label missing for Activities:
+      - ${retrieveTestFilesDirectoryPath()}/$firstAppActivityPath
+      - ${retrieveTestFilesDirectoryPath()}/$fourthAppActivityPath
+      - ${retrieveTestFilesDirectoryPath()}/$thirdAppActivityPath
+      - ${retrieveTestFilesDirectoryPath()}/$splashActivityPath
+      
+      $failureNotePartOne
+      $failureNotePartTwo
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
-  fun testAccessibilityLabel_exemptedActivityWithoutLabel_labelNotRequired() {
-    val manifestContent =
+  fun testAccessibilityLabel_AccessibilitylabelNotDefinedForExemptedActivity_checkShouldPass() {
+    val testContent =
       """
-      <?xml version="1.0" encoding="utf-8"?>
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="org.oppia.android">
-
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <application
-          android:name=".app.application.OppiaApplication"
-          android:allowBackup="true"
-          android:icon="@mipmap/ic_launcher"
-          android:label="@string/app_name"
-          android:roundIcon="@mipmap/ic_launcher_round"
-          android:supportsRtl="true"
-          android:theme="@style/OppiaTheme">
-          <meta-data
-            android:name="firebase_analytics_collection_deactivated"
-            android:value="true" />
-          <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="automatic_app_expiration_enabled"
-            android:value="false" />
-          <meta-data
-            android:name="expiration_date"
-            android:value="2020-09-01" />
-
+          package="org.oppia.android">
           <activity
-            android:name=".app.testing.AudioFragmentTestActivity"
-            android:theme="@style/OppiaThemeWithoutActionBar" />
-        </application>
+              android:name=".app.home.HomeActivity" />
       </manifest>
       """.trimIndent()
-    val manifestFile = tempFolder.newFile("testfiles/AndroidManifest.xml")
-    manifestFile.writeText(manifestContent)
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val tempFileRelativePath = "app/src/main/AndroidManifest.xml"
+    val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
+    manifestFile.writeText(testContent)
 
-    runScript("AndroidManifest.xml")
+    main(retrieveTestFilesDirectoryPath(), tempFileRelativePath)
 
     assertThat(outContent.toString().trim()).isEqualTo(
       ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR
@@ -344,10 +296,5 @@ class AccessibilityLabelCheckTest {
   /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {
     return "${tempFolder.root}/testfiles"
-  }
-
-  /** Runs the accessibility_label_check. */
-  private fun runScript(manifestFile: String) {
-    main(tempFolder.getRoot().toString() + "/testfiles", manifestFile)
   }
 }

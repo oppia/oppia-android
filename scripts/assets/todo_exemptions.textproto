@@ -1,0 +1,121 @@
+todo_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/proto/todo_exemptions.proto"
+  line_number: 8
+  line_number: 10
+  line_number: 14
+  line_number: 19
+}
+todo_exemption {
+  exempted_file_path: ".github/CODEOWNERS"
+  line_number: 6
+  line_number: 9
+}
+todo_exemption {
+  exempted_file_path: ".github/workflows/static_checks.yml"
+  line_number: 132
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/data/Issue.kt"
+  line_number: 1
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCheck.kt"
+  line_number: 1
+  line_number: 7
+  line_number: 44
+  line_number: 45
+  line_number: 50
+  line_number: 51
+  line_number: 68
+  line_number: 70
+  line_number: 73
+  line_number: 74
+  line_number: 75
+  line_number: 80
+  line_number: 82
+  line_number: 83
+  line_number: 84
+  line_number: 91
+  line_number: 93
+  line_number: 95
+  line_number: 103
+  line_number: 105
+}
+todo_exemption {
+  exempted_file_path: "scripts/script_assets.bzl"
+  line_number: 148
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/BUILD.bazel"
+  line_number: 2
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/BUILD.bazel"
+  line_number: 2
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
+  line_number: 1
+  line_number: 41
+  line_number: 45
+  line_number: 47
+  line_number: 63
+  line_number: 66
+  line_number: 67
+  line_number: 76
+  line_number: 78
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoCheckTest.kt"
+  line_number: 1
+  line_number: 58
+  line_number: 59
+  line_number: 65
+  line_number: 68
+  line_number: 90
+  line_number: 91
+  line_number: 92
+  line_number: 103
+  line_number: 104
+  line_number: 105
+  line_number: 121
+  line_number: 122
+  line_number: 134
+  line_number: 135
+  line_number: 136
+  line_number: 153
+  line_number: 154
+  line_number: 160
+  line_number: 162
+  line_number: 175
+  line_number: 176
+  line_number: 178
+  line_number: 179
+  line_number: 197
+  line_number: 198
+  line_number: 204
+  line_number: 206
+  line_number: 212
+  line_number: 225
+  line_number: 226
+  line_number: 227
+  line_number: 229
+  line_number: 230
+}
+todo_exemption {
+  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoCollectorTest.kt"
+  line_number: 1
+  line_number: 48
+  line_number: 51
+  line_number: 65
+  line_number: 66
+  line_number: 67
+  line_number: 71
+  line_number: 75
+  line_number: 76
+  line_number: 99
+  line_number: 101
+  line_number: 105
+  line_number: 110
+  line_number: 111
+}

@@ -152,9 +152,9 @@ def generate_todo_assets_list_from_text_protos(
     """
     return generate_proto_binary_assets(
         name = name,
-        names = kdoc_exemptions_name,
-        proto_dep_name = "kdoc_exemptions",
-        proto_type_name = "KDocExemptions",
+        names = todo_exemptions_name,
+        proto_dep_name = "todo_exemptions",
+        proto_type_name = "TodoExemptions",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",

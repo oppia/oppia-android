@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Exemptions for the TODO check.
+message TodoExemptions {
+  // List of all the TODO exemptions.
+  repeated TodoExemption todo_exemption = 1;
+}
+
+// A Todo exemption indicates a todo which is not real. For example when a TODO keyword is used for
+// documentation purpose.
+message TodoExemption {
+  // The path of the file relative to the root repository to be exempted for the check.
+  string exempted_file_path = 1;
+  // The line number of the exempted todo.
+  repeated int32 line_number = 2;
+}

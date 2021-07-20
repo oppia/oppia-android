@@ -37,27 +37,43 @@ class TodoCollectorTest {
   }
 
   @Test
+  fun testTodoCollector_onlyExemptedTodos_noTodoShouldBeCollected() {
+    val testContent =
+      """
+      test line 1
+      test line 2
+      test line 3
+      test line 4
+      test line 5
+      todo
+      test line 7
+      test line 8
+      TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
+      test line 10
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", ".github")
+    val tempFile = tempFolder.newFile("testfiles/.github/CODEOWNERS")
+    tempFile.writeText(testContent)
+    val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    assertThat(collectedTodos).isEmpty()
+  }
+
+  @Test
   fun testTodoCollector_poorlyFormattedTodosAcrossMultipleFiles_allShouldBeCollected() {
-    val testTodo1 = "// TODO (#121): test todo."
-    val testTodo2 = "# TODO(    110)"
-    val testTodo3 = "<!--TODO(# 101)-->"
-    val testTodo4 = "// TODO (#178): test todo."
-    val testTodo5 = "# TODO(    210)"
-    val testTodo6 = "<!--TODO(# 105)-->"
     val testContent1 =
       """
-      $testTodo1
-      $testTodo2
-      $testTodo3
+      // TODO (#121): test todo.
+      # TODO(    110)
+      <!--TODO(# 101)-->
       """.trimIndent()
     val testContent2 =
       """
-      $testTodo6
+      <!--TODO(# 105)-->
       """.trimIndent()
     val testContent3 =
       """
-      $testTodo4
-      $testTodo5
+      // TODO (#178): test todo.
+      # TODO(    210)
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
@@ -78,26 +94,21 @@ class TodoCollectorTest {
 
   @Test
   fun testTodoCollector_multipleTodosAcrossFiles_allShouldBeCollectedExceptTodosInsideQuotes() {
-    val testTodo1 = "// TODO (#121): test todo."
-    val testTodo2 = "<!--TODO(#101)-->"
-    val testTodo3 = "<!--TODO(#105)-->"
-    val testTodo4 = "// TODO (#178): test todo."
-    val testTodo5 = "# TODO(    210)"
     val testContent1 =
       """
-      $testTodo1
+      // TODO (#121): test todo.
       "This is a test TODO which is inside quotes"
-      $testTodo2
+      <!--TODO(#101)-->
       """.trimIndent()
     val testContent2 =
       """
-      $testTodo3
+      <!--TODO(#105)-->
       val testTodoRegexString = "TODO"
       """.trimIndent()
     val testContent3 =
       """
-      $testTodo4
-      $testTodo5
+      // TODO (#178): test todo.
+      # TODO(    210)
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.yaml")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.bazel")
@@ -117,6 +128,6 @@ class TodoCollectorTest {
 
   /** Retrieves the absolute path of testfiles directory. */
   private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
+    return "${tempFolder.root}/testfiles/"
   }
 }
