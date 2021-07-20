@@ -6,16 +6,11 @@ import android.content.pm.PackageManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import androidx.test.ext.junit.runners.AndroidJUnit4
 
 /** Tests to load Oppia using UI Automator. */
 class BaseTest {
@@ -47,11 +42,11 @@ class BaseTest {
     device.wait(Until.hasObject(By.pkg(OPPIA_PACKAGE).depth(0)), LAUNCH_TIMEOUT.toLong())
   }
 
-   @Test
-   fun baseTest_uiDevice_isNotNull() {
-     assertNotNull(device)
-   }
-  
+  @Test
+  fun baseTest_uiDevice_isNotNull() {
+    assertNotNull(device)
+  }
+
   @Test
   fun baseTest_openProfileDashboard_titleExists() {
     val skip_button = device.findObject(By.res("$OPPIA_PACKAGE:id/skip_text_view"))
