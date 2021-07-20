@@ -86,3 +86,15 @@ java_lite_proto_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":kdoc_exemptions_proto"],
 )
+
+proto_library(
+    name = "todo_exemptions_proto",
+    srcs = ["script_exemptions.proto"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)
+
+java_lite_proto_library(
+    name = "todo_exemptions_java_proto_lite",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":todo_exemptions_proto"],
+)

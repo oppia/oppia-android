@@ -51,3 +51,12 @@ message KDocExemptions {
   // at the correct lexicographical position in the textproto file.
   repeated string exempted_file_path = 1;
 }
+
+message TodoExemptions {
+  repeated TodoExemption todo_exemption = 1;
+}
+
+message TodoExemption {
+  string exempted_file_path = 1;
+  repeated int32 line_number = 2;
+}
