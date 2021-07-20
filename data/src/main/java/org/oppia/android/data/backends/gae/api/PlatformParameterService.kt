@@ -8,7 +8,7 @@ import retrofit2.http.Query
 /** Service that provides access to the Oppia platform parameter endpoint. */
 interface PlatformParameterService {
 
-// TODO("Change the url to point to the correct endpoint when the backend is ready")
+// TODO(#3506): Change the url to point to the correct endpoint when the backend is ready
   @GET("platform_features_evaluation_handler")
   fun getPlatformParametersByVersion(
     @Query("app_version") version: String,
