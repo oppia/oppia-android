@@ -38,19 +38,19 @@ public final class MarginBindingAdapters {
     }
   }
 
-    private static void setLayoutDirectionalMargins(
+  private static void setLayoutDirectionalMargins(
         @NonNull View view,
         int marginStart,
         int marginEnd
     ) {
-      MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(
-          marginStart,
-          params.topMargin,
-          marginEnd,
-          params.bottomMargin
-      );
-    }
+    MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+    params.setMargins(
+        marginStart,
+        params.topMargin,
+        marginEnd,
+        params.bottomMargin
+    );
+  }
 
   /** Used to set a margin-top for views. */
   @BindingAdapter("app:layoutMarginTop")
