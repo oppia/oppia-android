@@ -20,7 +20,6 @@ class OngoingStoryViewModel(
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
   }
 
-
   private val outerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.recently_played_margin_max)
   }
