@@ -50,6 +50,12 @@ bazel test //app/...
 bazel test //...
 ```
 
+## Known issues
+
+#### java.lang.ClassNotFoundException: com.android.tools.r8.compatdx.CompatDx
+
+If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 29.0.2). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
+
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
 A workspace is a directory where we add targetted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory. 
