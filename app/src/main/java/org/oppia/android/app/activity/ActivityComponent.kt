@@ -129,10 +129,12 @@ interface ActivityComponent {
     stateAssemblerMarginBindingAdaptersTestActivity:
     StateAssemblerMarginBindingAdaptersTestActivity
   )
+
   fun inject(
     stateAssemblerPaddingBindingAdaptersTestActivity:
     StateAssemblerPaddingBindingAdaptersTestActivity
   )
+
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
