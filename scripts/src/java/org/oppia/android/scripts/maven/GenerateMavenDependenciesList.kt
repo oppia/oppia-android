@@ -135,7 +135,7 @@ class GenerateMavenDependenciesList(
         
         Please verify the license link(s) for the following license(s) manually in 
         maven_dependencies.textproto. Note that only first dependency that contains the license 
-        needs to be updated and also re-run the script to update the license details at all places
+        needs to be updated and also re-run the script to update the license details at all places.
         """.trimIndent()
       )
       licensesToBeFixed.forEach {
