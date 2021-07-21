@@ -272,6 +272,89 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_changeDeviceToLtr_textViewDirectionIsSetToLtr() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textView = activityRule.scenario.runWithActivity {
+      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR)
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+      return@runWithActivity textView
+    }
+    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
+  }
+
+  @Test
+  fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textView = activityRule.scenario.runWithActivity {
+      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL)
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+      return@runWithActivity textView
+    }
+    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+  }
+
+  @Test
+  fun testHtmlContent_changeDeviceToRtlAndThenToLtr_textViewDirectionIsSetToRtlThenLtr() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textViewLtr = activityRule.scenario.runWithActivity {
+      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL)
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+      return@runWithActivity textView
+    }
+    assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+
+    val textView = activityRule.scenario.runWithActivity {
+      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR)
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+      return@runWithActivity textView
+    }
+    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
+  }
+
+  @Test
   fun testHtmlContent_imageWithText_noAdditionalSpacesAdded() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
