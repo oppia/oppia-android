@@ -384,8 +384,7 @@ class GenerateLicenseTexts(
 
   private fun fetchLicenseText(url: String): String {
     val licenseText = licenseFetcher.scrapeText(url)
-    return licenseText
-//    return addEscapeCharactersToLicenseText(licenseText)
+    return addEscapeCharactersToLicenseText(licenseText)
   }
 
   private fun addEscapeCharactersToLicenseText(licenseText: String): String {

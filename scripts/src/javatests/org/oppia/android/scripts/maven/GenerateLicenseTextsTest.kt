@@ -270,7 +270,7 @@ class GenerateLicenseTextsTest {
       expectedList = listOf(
         """
         <![CDATA[Apache License
-        "License" shall mean the terms and conditions for use, reproduction,
+        &quot;License&quot; shall mean the terms and conditions for use, reproduction,
         and distribution as defined by Sections 1 through 9 of this document.]]>
         """.trimIndent(),
         "<![CDATA[$DIRECT_LINK_ONLY]]>",
@@ -394,13 +394,6 @@ class GenerateLicenseTextsTest {
       assertThat(item).isEqualTo("$prefix$expectedIndex")
     }
   }
-
-//  private fun verifyArray(itemList: List<String>, expectedSize: Int, prefix: String) {
-//    assertThat(itemList.size).isEqualTo(expectedSize)
-//    itemList.forEachIndexed { index, item ->
-//      assertThat(item).isEqualTo("$prefix$index")
-//    }
-//  }
 
   private fun verifyList(itemList: List<String>, expectedSize: Int, expectedList: List<String>) {
     assertThat(itemList.size).isEqualTo(expectedSize)
@@ -540,7 +533,7 @@ class GenerateLicenseTextsTest {
       on { scrapeText(eq(EXTRACTED_COPY_LINK)) }
         .doReturn(
           """
-          Copyright &lt;YEAR&gt; &lt;COPYRIGHT HOLDER&gt;
+          Copyright <YEAR> <COPYRIGHT HOLDER>
 
           Redistribution and use in source and binary forms, with or without modification, are 
           permitted provided that the following conditions are met:
