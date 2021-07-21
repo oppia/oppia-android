@@ -36,12 +36,10 @@ class GenerateLicenseTextsTest {
   private val EXTRACTED_COPY_LINK = "https://raw.githubusercontent.com/oppia/oppia-android-" +
     "licenses/develop/simplified-bsd-license.txt"
 
-  private val VALID_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-  private val INVALID_LINK = "https://fabric.io/terms"
+  private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
 
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
-  private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
 
   @Rule
   @JvmField
