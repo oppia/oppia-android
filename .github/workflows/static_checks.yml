@@ -118,3 +118,8 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
+
+      - name: Maven Dependencies Check
+          if: always()
+          run: |
+            bazel run //scripts:generate_maven_dependencies_list -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
