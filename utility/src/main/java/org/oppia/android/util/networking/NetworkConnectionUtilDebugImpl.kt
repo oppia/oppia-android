@@ -26,9 +26,18 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
    * Sets the current connection status of the device.
    *
    * @param connectionStatus: refers to the [ConnectionStatus] which needs to be set.
+   *
+   * @return a [Boolean] indicating whether the forcing of connection was successful or not.
    */
-  fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus) {
+  fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
+    if (networkConnectionUtilProdImpl.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
+      (connectionStatus == ConnectionStatus.CELLULAR || connectionStatus == ConnectionStatus.LOCAL)
+    ) {
+      forcedConnectionStatus = null
+      return false
+    }
     forcedConnectionStatus = connectionStatus
+    return true
   }
 
   /** Returns the 'forcedConnectionStatus' indicating whether the connection status was forced or not. */
