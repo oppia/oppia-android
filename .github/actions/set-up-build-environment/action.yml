@@ -1,32 +1,37 @@
+# Contains common operations to set up a hermetic Android + Bazel build environment for Oppia
+# Android CI workflows. Action prerequisites:
+# - JDK 9 must be installed & set as the default version via JAVA_HOME
+# - Bazel must be installed, in the path, and be version 4.0.0
+
 name: Build environment setup
 description: Sets up the Android & Bazel build environments for Oppia Android
 runs:
   using: composite
   steps:
-    - name: Set up JDK 9
-      uses: actions/setup-java@v1
-      with:
-        java-version: 9
-
     - name: Check Java version & path
       run: |
         which java
         java -version
         echo "Java home: $JAVA_HOME"
         $JAVA_HOME/bin/java -version
+        # Verify that the correct version of Java is installed.
+        java -version 2>&1 | grep -q 1.9 || echo "Expected Java 9 to be installed" && exit 1
+      shell: bash
 
-    - name: Set up Bazel
-      uses: abhinavsingh/setup-bazel@v3
-      with:
-        version: 4.0.0
+    - name: Verify Bazel version
+      run: |
+        bazel --version | grep -q 4.0.0 || echo "Expected Bazel 4.0.0 to be installed" && exit 1
+      shell: bash
 
     - name: Configure Bazel to use JDK 9 for building
       run: |
         echo "build --java_language_version=9" >> $HOME/.bazelrc
+      shell: bash
 
     - name: Configure Bazel to use specific sandbox tmpfs
       run: |
         echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
+      shell: bash
         echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
 
     - name: Set up Oppia Bazel Android Tools
@@ -36,3 +41,4 @@ runs:
         git clone https://github.com/oppia/oppia-bazel-tools
         echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
         echo build --android_databinding_use_androidx >> $HOME/.bazelrc
+      shell: bash
