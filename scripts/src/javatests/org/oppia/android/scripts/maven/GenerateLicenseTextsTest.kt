@@ -402,19 +402,20 @@ class GenerateLicenseTextsTest {
     }
   }
 
+  /** Returns a [MavenDependency]. */
   private fun getMavenDependency(
     artifactName: String,
     artifactVersion: String = "1.0.0",
     licenseList: List<License> = listOf<License>()
   ): MavenDependency {
-    return MavenDependency
-      .newBuilder()
-      .setArtifactName(artifactName)
-      .setArtifactVersion(artifactVersion)
-      .addAllLicense(licenseList)
-      .build()
+    return MavenDependency.newBuilder().apply {
+      this.artifactName = artifactName
+      this.artifactVersion = artifactVersion
+      this.addAllLicense(licenseList)
+    }.build()
   }
 
+  /** Returns a [MavenDependencyList]. */
   private fun getMavenDependencyList(
     dependenciesList: List<MavenDependency> = listOf<MavenDependency>()
   ): MavenDependencyList {
@@ -424,6 +425,7 @@ class GenerateLicenseTextsTest {
       .build()
   }
 
+  /** Returns a [License] that has verifiedLink not set. */
   private fun getLicenseWithVerifiedLinkNotSet(
     licenseName: String,
     originalLink: String,
@@ -434,6 +436,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
+  /** Returns a [License] that has [ScrapableLink]. */
   private fun getLicenseWithScrapableLink(
     licenseName: String,
     originalLink: String,
@@ -446,6 +449,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
+  /** Returns a [License] that has [ExtractedCopyLink]. */
   private fun getLicenseWithExtractedCopyLink(
     licenseName: String,
     originalLink: String,
@@ -458,6 +462,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
+  /** Returns a [License] that has [DirectOnlyLink]. */
   private fun getLicenseWithDirectLinkOnlyLink(
     licenseName: String,
     originalLink: String,
