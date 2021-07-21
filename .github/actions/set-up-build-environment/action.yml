@@ -15,7 +15,7 @@ runs:
         echo "Java home: $JAVA_HOME"
         $JAVA_HOME/bin/java -version
         # Verify that the correct version of Java is installed.
-        java -version 2>&1 | grep -q 1.9 || echo "Expected Java 9 to be installed" && exit 1
+        java -version 2>&1 | grep -q -E "1.9|9.0" || echo "Expected Java 9 to be installed" && exit 1
       shell: bash
 
     - name: Verify Bazel version
