@@ -3,13 +3,13 @@ All the third-party Maven dependencies used in Oppia-Android along with their ve
 ## Updating `maven_install.json`
 
 1. Ensure that after making changes in the list of dependencies, the final list is always lexicographically sorted.
-2. After updating dependency, run the following command.
+2. After updating the dependencies, run the following command.
 ```
 REPIN=1 bazel run @unpinned_maven//:pin
 ```
 
 ## Updating `maven_dependencies.textproto`
-If the update is performed in the `MAVEN_PRODUCTION_DEPENDENCY_VERSIONS` dictionary of the `versions.bzl` file, you will also need to run the [GenerateMavenDependenciesList.kt](https://github.com/oppia/oppia-android/blob/develop/scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt) script in order to update the [maven_dependencies.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/maven_dependencies.textproto) file. This text proto file contains the license links for all the maven third-party dependencies on which Oppia Android depends. Please make sure that before running the script, you have successfully updated [maven_install.json](https://github.com/oppia/oppia-android/blob/develop/third_party/maven_install.json) by following the above-mentioned [guide](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#updating-maven_installjson).
+If the update is performed in the `MAVEN_PRODUCTION_DEPENDENCY_VERSIONS` dictionary of the `versions.bzl` file, you will also need to run the [GenerateMavenDependenciesList.kt](https://github.com/oppia/oppia-android/blob/develop/scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt) script to update the [maven_dependencies.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/maven_dependencies.textproto) file. This text proto file contains the license links for all the maven third-party dependencies on which Oppia Android depends. Please make sure that before running the script, you have successfully updated [maven_install.json](https://github.com/oppia/oppia-android/blob/develop/third_party/maven_install.json) by following the above-mentioned [guide](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#updating-maven_installjson).
 To run this script, run the following commands.
 
 ```
@@ -50,7 +50,7 @@ The first dependency that should be updated with the license: com.google.firebas
 ```
 
 Go to `maven_dependencies.textproto` and find the dependency that is mentioned as `The first dependency that should be updated with the license` in the output. For example, in the above case, look for `com.google.firebase:firebase-analytics:17.5.0` in maven_dependencies.textproto and open the `original_link` of its license in your browser and check if the link points to any valid license or not. If the link does not point to a valid license, set the 'is_original_link_invalid' field of the license to 'true'.
-For example, if the original_link https://www.xyz.com is invalid, then set `is_original_link_invalid` to true.
+For example, if the original_link https://www.example.com is invalid, then set `is_original_link_invalid` to true.
 
 ```
 maven_dependency {
@@ -69,7 +69,7 @@ maven_dependency {
 If the link does point to a valid license then choose the most appropriate category for the link:
 1. scrapable_link: If the license text is plain text and the URL mentioned can be scraped directly from the original_link of the license. 
                    e.g - https://www.apache.org/licenses/LICENSE-2.0.txt
-2. extracted_copy_link: If the license text is plain text but it can not be scraped directly from the original_link of the license.
+2. extracted_copy_link: If the license text is plain text but can not be scraped directly from the original_link of the license.
                         e.g - https://www.opensource.org/licenses/bsd-license
 3. direct_link_only: If the license text is not plain text, it's best to display only the link of the license.
                      e.g - https://developer.android.com/studio/terms.html
@@ -90,7 +90,7 @@ Also, if the license falls in the `extracted_copy_link` category, then go to [Op
 2. Now click on the raw button positioned in the left of the edit and delete button.
 3. Copy the URL from the browser and mention it at the appropriate place.
 
-If the license does not exist in the Oppia-android-licenses repository, then coordinate with the Oppia Android team and raise a PR to add a new license text file. Then repeat the above steps to update maven_dependencies.textproto.
+If the license does not exist in the Oppia-android-licenses repository, then coordinate with the Oppia Android team to fix it. Then repeat the above steps to update maven_dependencies.textproto.
 
 
 
@@ -120,7 +120,7 @@ maven_dependency {
 }
 ```
 
-To fix the error, consider the above example. For the first maven_dependency: "io.fabric.sdk.android:fabric:1.4.7", the original_link is invalid, and hence we need to find a valid link for this dependency. Please coordinate with the Oppia Android team and find a valid link for this dependency, once you have a valid link for this license then categorize it as mentioned [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#categorizing-the-license-link).
+To fix the error, consider the above example. For the first maven_dependency: "io.fabric.sdk.android:fabric:1.4.7", the original_link is invalid, and hence we need to find a valid link for this dependency. Please coordinate with the Oppia Android team and find a valid link for this dependency. Once you have a valid link for this license then categorize it as mentioned [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#categorizing-the-license-link).
 
 For the second maven_dependency: "com.google.guava:failureaccess:1.0.1", you need to find a license by coordinating with the Oppia Android team and then specify it under the artifact_version field of the dependency. e.g - 
 
