@@ -1,15 +1,15 @@
 package org.oppia.android.scripts.maven
 
-import org.oppia.android.scripts.proto.CopyrightLicense
+import com.google.common.html.HtmlEscapers
+import org.oppia.android.scripts.maven.data.CopyrightLicense
+import org.oppia.android.scripts.maven.data.Dependency
+import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
-import org.oppia.android.scripts.proto.PrimaryLinkType
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
 import java.io.FileInputStream
-import java.net.URL
-import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.Transformer
@@ -20,404 +20,383 @@ import javax.xml.transform.stream.StreamResult
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
 
-// List of chars to be escaped to parse XML properly.
-// Reference Link: https://www.liquid-technologies.com/XML/EscapingData.aspx
-private val escapeCharactersMap =
-  hashMapOf<Char, String>(
-    '<' to "&lt;",
-    '>' to "&gt;",
-    '\"' to "&quot;",
-    '\'' to "&apos;",
-    '&' to "&amp;",
-  )
-
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
  * on which Oppia Android depends.
  *
  * Usage:
  *   bazel run //scripts:generate_license_texts -- <path_to_directory_values>
- *   <name_of_value_resource_file_1> <name_of_value_resource_file_2>
- *   <name_of_value_resource_file_2> <name_of_value_resource_file_4>
- *   <name_of_value_resource_file_2> <path_to_pb_file>
+ *     <path_to_maven_dependenices.pb>
  *
  * Arguments:
  * - path_to_directory_values: directory path to the values folder of the Oppia Android repository.
- * - name_of_value_resource_file_1: resource XML file name to store the names of the third-party
- *      dependencies.
- * - name_of_value_resource_file_2: resource XML file name to store the versions of the third-party
- *      dependencies.
- * - name_of_value_resource_file_3: resource XML file name to store the license texts of the
- *      third-party dependencies.
- * - name_of_value_resource_file_4: resource XML file name to store the license texts strings
- *      resources corrsponding to each third-party dependency.
- * - name_of_value_resource_file_5: resource XML file name to store the license names strings
- *      resources corrsponding to each third-party dependency.
- * - path_to_pb_file: relative path to textproto file that stores the list of dependencies
- *      and their license links.
+ * - path_to_maven_dependenices.pb: relative path to the maven_dependencies.pb
+
  * Example:
  *   bazel run //scripts:generate_license_texts -- $(pwd)/app/src/main/res/values
- *   third_party_dependency_names.xml third_party_dependency_versions.xml
- *   third_party_dependency_license_texts.xml third_party_dependency_license_texts_array.xml
- *   third_party_dependency_license_names_array.xml scripts/assets/maven_dependencies.pb
+ *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  if (args.size < 7) {
-    println(
-      """
-      Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
-      <name_of_value_resource_file_1> <name_of_value_resource_file_2> 
-      <name_of_value_resource_file_2> <name_of_value_resource_file_4>
-      <name_of_value_resource_file_2> <path_to_pb_file>  
-      """.trimIndent()
-    )
-    throw Exception("Too less arguments passed.")
-  }
-  val pathToValuesDirectory = args[0]
-  val pathToNamesXml = "$pathToValuesDirectory/${args[1]}"
-  val pathToVersionsXml = "$pathToValuesDirectory/${args[2]}"
-  val pathToLicensesTextsXml = "$pathToValuesDirectory/${args[3]}"
-  val pathToLicenseTextArrayXml = "$pathToValuesDirectory/${args[4]}"
-  val pathToLicenseNamesArrayXml = "$pathToValuesDirectory/${args[5]}"
-  val pathToPbFile = args[6]
-
-  val mavenDependencyList = retrieveMavenDependencyList(pathToPbFile)
-  if (mavenDependencyList.isEmpty()) {
-    throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
-  }
-  val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
-
-  writeDependenciesNamesXml(pathToNamesXml, retrieveArtifactsNamesList(mavenDependencyList))
-
-  writeDependenciesVersionsXml(
-    pathToVersionsXml,
-    retrieveArtifactsVersionsList(mavenDependencyList)
-  )
-  val licenseLinkToIndexNameMap = writeDependenciesLicensesXml(
-    pathToLicensesTextsXml,
-    copyrightLicenseSet
-  )
-
-  writeDependenciesLicenseTextsArray(
-    pathToLicenseTextArrayXml,
-    licenseLinkToIndexNameMap,
-    mavenDependencyList
-  )
-
-  writeDependenciesLicenseNamesArray(
-    pathToLicenseNamesArrayXml,
-    copyrightLicenseSet,
-    mavenDependencyList
-  )
-
-  println("Script execution completed.")
+  GenerateLicenseTexts(LicenseFetcherImpl()).main(args)
 }
 
-private fun retrieveArtifactsNamesList(mavenDependencyList: List<MavenDependency>): List<String> {
-  val artifactNamesList = mutableListOf<String>()
-  mavenDependencyList.forEach { dependency ->
-    artifactNamesList.add(dependency.artifactName)
-  }
-  return artifactNamesList.toList()
-}
-
-private fun retrieveArtifactsVersionsList(
-  mavenDependencyList: List<MavenDependency>
-): List<String> {
-  val artifactVersionsList = mutableListOf<String>()
-  mavenDependencyList.forEach { dependency ->
-    artifactVersionsList.add(dependency.artifactVersion)
-  }
-  return artifactVersionsList.toList()
-}
-
-/** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
-private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
-  return getProto(
-    pathToPbFile,
-    MavenDependencyList.getDefaultInstance()
-  ).mavenDependencyList.toList()
-}
-
-/**
- * Helper function to parse the textproto file to a proto class.
- *
- * @param pathToPbFile path to the pb file to be parsed
- * @param proto instance of the proto class
- * @return proto class from the parsed textproto file
- */
-private fun getProto(
-  pathToPbFile: String,
-  proto: MavenDependencyList
-): MavenDependencyList {
-  val protoBinaryFile = File(pathToPbFile)
-  val builder = proto.newBuilderForType()
-  return FileInputStream(protoBinaryFile).use {
-    builder.mergeFrom(it)
-  }.build() as MavenDependencyList
-}
-
-fun writeDependenciesNamesXml(
-  pathToResourceXml: String,
-  dependencyNamesList: List<String>
+class GenerateLicenseTexts(
+  private val licenseFetcher: LicenseFetcher
 ) {
-  val file = File(pathToResourceXml)
-  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-  val doc: Document = docBuilder.newDocument()
-  val rootResourcesElement: Element = doc.createElement("resources")
-
-  // Add all dependencies names as string resources.
-  for (index in dependencyNamesList.indices) {
-    val name = dependencyNamesList[index]
-    val stringElement = doc.createElement("string")
-    stringElement.setAttribute("name", "third_party_dependency_name_$index")
-    stringElement.appendChild(doc.createTextNode(name))
-    rootResourcesElement.appendChild(stringElement)
-  }
-
-  // Add an array of dependencies names string resources.
-  val stringArrayElement = doc.createElement("string-array")
-  stringArrayElement.setAttribute("name", "third_party_dependencies_names_array")
-  for (index in dependencyNamesList.indices) {
-    val itemElement = doc.createElement("item")
-    itemElement.appendChild(doc.createTextNode("@string/third_party_dependency_name_$index"))
-    stringArrayElement.appendChild(itemElement)
-  }
-  rootResourcesElement.appendChild(stringArrayElement)
-  doc.appendChild(rootResourcesElement)
-
-  doc.xmlStandalone = true
-  getTransformer().transform(DOMSource(doc), StreamResult(file))
-}
-
-fun writeDependenciesVersionsXml(
-  pathToResourceXml: String,
-  dependencyVersionsList: List<String>
-) {
-  val file = File(pathToResourceXml)
-  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-  val doc: Document = docBuilder.newDocument()
-  val rootResourcesElement: Element = doc.createElement("resources")
-
-  // Add all dependencies versions as string resources.
-  for (index in dependencyVersionsList.indices) {
-    val version = dependencyVersionsList[index]
-    val stringElement = doc.createElement("string")
-    stringElement.setAttribute("name", "third_party_dependency_version_$index")
-    stringElement.appendChild(doc.createTextNode(version))
-    rootResourcesElement.appendChild(stringElement)
-  }
-
-  // Add an array of dependencies versions string resources.
-  val stringArrayElement = doc.createElement("string-array")
-  stringArrayElement.setAttribute("name", "third_party_dependencies_versions_array")
-  for (index in dependencyVersionsList.indices) {
-    val itemElement = doc.createElement("item")
-    itemElement.appendChild(doc.createTextNode("@string/third_party_dependency_version_$index"))
-    stringArrayElement.appendChild(itemElement)
-  }
-
-  rootResourcesElement.appendChild(stringArrayElement)
-  doc.appendChild(rootResourcesElement)
-  doc.xmlStandalone = true
-  getTransformer().transform(DOMSource(doc), StreamResult(file))
-}
-
-private fun writeDependenciesLicensesXml(
-  pathToResourceXml: String,
-  copyrightLicenseSet: Set<CopyrightLicense>
-): HashMap<String, String> {
-  val file = File(pathToResourceXml)
-  val licenseMap = hashMapOf<String, String>()
-  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-  val doc: Document = docBuilder.newDocument()
-  val rootResourcesElement: Element = doc.createElement("resources")
-
-  // Add all license texts.
-  for (index in copyrightLicenseSet.indices) {
-    val licenseLink = copyrightLicenseSet.elementAt(index).licenseLink
-    val licenseText = "<![CDATA[${copyrightLicenseSet.elementAt(index).licenseText}]]>"
-    val stringElement = doc.createElement("string")
-    stringElement.setAttribute("name", "license_$index")
-    stringElement.appendChild(doc.createTextNode(licenseText))
-    rootResourcesElement.appendChild(stringElement)
-    licenseMap[licenseLink] = "license_$index"
-  }
-
-  doc.appendChild(rootResourcesElement)
-  doc.xmlStandalone = true
-  getTransformer().transform(DOMSource(doc), StreamResult(file))
-  return licenseMap
-}
-
-private fun writeDependenciesLicenseTextsArray(
-  pathToResourceXml: String,
-  licenseLinkToIndexNameMap: HashMap<String, String>,
-  mavenDependenciesList: List<MavenDependency>
-) {
-  val file = File(pathToResourceXml)
-  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-  val doc: Document = docBuilder.newDocument()
-  val rootResourcesElement: Element = doc.createElement("resources")
-
-  // Add all string-arrays of license texts for each dependency.
-  for (index in mavenDependenciesList.indices) {
-    val dependency = mavenDependenciesList[index]
-    val stringArrayElement = doc.createElement("string-array")
-    stringArrayElement.setAttribute("name", "third_party_dependency_license_texts_$index")
-    dependency.licenseList.forEach { license ->
-      val licenseLink = if (license.primaryLinkType == PrimaryLinkType.SCRAPE_DIRECTLY ||
-        license.primaryLinkType == PrimaryLinkType.SHOW_LINK_ONLY
-      ) {
-        license.primaryLink
-      } else {
-        license.alternativeLink
-      }
-      val indexOfLicenseText = licenseLinkToIndexNameMap[licenseLink]
-      val stringItemElement = doc.createElement("item")
-      stringItemElement.appendChild(doc.createTextNode("@string/$indexOfLicenseText"))
-      stringArrayElement.appendChild(stringItemElement)
+  fun main(args: Array<String>) {
+    if (args.size < 2) {
+      println(
+        """
+        Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
+        <path_to_pb_file>  
+        """.trimIndent()
+      )
+      throw Exception("Too few arguments passed.")
     }
-    rootResourcesElement.appendChild(stringArrayElement)
-  }
+    val pathToValuesDirectory = args[0]
+    val pathToThirdPartyDependenciesXml = "$pathToValuesDirectory/third_party_dependencies.xml"
+    val pathToPbFile = args[1]
 
-  // Add an array that contains string-arrays of license texts for each dependnecy.
-  val arrayElement = doc.createElement("array")
-  arrayElement.setAttribute("name", "third_party_dependency_license_texts_array")
-  for (index in mavenDependenciesList.indices) {
-    val itemElement = doc.createElement("item")
-    itemElement.appendChild(
-      doc.createTextNode("@array/third_party_dependency_license_texts_$index")
-    )
-    arrayElement.appendChild(itemElement)
-  }
-
-  rootResourcesElement.appendChild(arrayElement)
-  doc.appendChild(rootResourcesElement)
-  doc.xmlStandalone = true
-  getTransformer().transform(DOMSource(doc), StreamResult(file))
-}
-
-private fun writeDependenciesLicenseNamesArray(
-  pathToResourceXml: String,
-  copyrightLicenseList: Set<CopyrightLicense>,
-  mavenDependenciesList: List<MavenDependency>
-) {
-  val file = File(pathToResourceXml)
-  val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-  val doc: Document = docBuilder.newDocument()
-  val rootResourcesElement: Element = doc.createElement("resources")
-  val licenseMap = hashMapOf<String, String>()
-
-  // Add all license names.
-  for (index in copyrightLicenseList.indices) {
-    val licenseLink = copyrightLicenseList.elementAt(index).licenseLink
-    val licenseName = copyrightLicenseList.elementAt(index).licenseName
-    val stringElement = doc.createElement("string")
-    stringElement.setAttribute("name", "license_name_$index")
-    stringElement.appendChild(doc.createTextNode(licenseName))
-    rootResourcesElement.appendChild(stringElement)
-    licenseMap[licenseLink] = "license_name_$index"
-  }
-
-  // Add all string-arrays of license names for each dependency.
-  for (index in mavenDependenciesList.indices) {
-    val dependency = mavenDependenciesList[index]
-    val stringArrayElement = doc.createElement("string-array")
-    stringArrayElement.setAttribute("name", "third_party_dependency_licenses_names_$index")
-    dependency.licenseList.forEach { license ->
-      val licenseLink = if (license.primaryLinkType == PrimaryLinkType.SCRAPE_DIRECTLY ||
-        license.primaryLinkType == PrimaryLinkType.SHOW_LINK_ONLY
-      ) {
-        license.primaryLink
-      } else {
-        license.alternativeLink
-      }
-      val indexOfLicenseName = licenseMap[licenseLink]
-      val stringItemElement = doc.createElement("item")
-      stringItemElement.appendChild(doc.createTextNode("@string/$indexOfLicenseName"))
-      stringArrayElement.appendChild(stringItemElement)
-    }
-    rootResourcesElement.appendChild(stringArrayElement)
-  }
-
-  // Add an array that contains string-arrays of license names for each dependnecy.
-  val arrayElement = doc.createElement("array")
-  arrayElement.setAttribute("name", "third_party_dependency_license_names_array")
-  for (index in mavenDependenciesList.indices) {
-    val itemElement = doc.createElement("item")
-    itemElement.appendChild(
-      doc.createTextNode("@array/third_party_dependency_licenses_names_$index")
-    )
-    arrayElement.appendChild(itemElement)
-  }
-
-  rootResourcesElement.appendChild(arrayElement)
-  doc.appendChild(rootResourcesElement)
-  doc.xmlStandalone = true
-  getTransformer().transform(DOMSource(doc), StreamResult(file))
-}
-
-fun retrieveAllLicensesSet(
-  mavenDependencyList: List<MavenDependency>
-): Set<CopyrightLicense> {
-  val copyrightLicensesSet = mutableSetOf<CopyrightLicense>()
-  mavenDependencyList.forEach { dependency ->
-    val licenseList = dependency.licenseList
-    if (licenseList.isEmpty()) {
+    val mavenDependencyList = retrieveMavenDependencyList(pathToPbFile)
+    if (mavenDependencyList.isEmpty()) {
       throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
-    licenseList.forEach { license ->
-      val licenseText: String
-      val licenseLink: String
-      when (license.primaryLinkType) {
-        PrimaryLinkType.SCRAPE_DIRECTLY -> {
-          licenseText = scrapeLicenseText(license.primaryLink)
-          licenseLink = license.primaryLink
-        }
-        PrimaryLinkType.SCRAPE_FROM_LOCAL_COPY -> {
-          licenseText = scrapeLicenseText(license.alternativeLink)
-          licenseLink = license.alternativeLink
-        }
-        PrimaryLinkType.SHOW_LINK_ONLY -> {
-          licenseText = license.primaryLink
-          licenseLink = license.primaryLink
-        }
-        else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+    val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
+    val dependencyList =
+      retrieveDependencyList(mavenDependencyList)
+
+    val dependencyNamesList = retrieveArtifactsNamesList(dependencyList)
+    val dependencyVersionsList = retrieveArtifactsVersionsList(dependencyList)
+
+    writeThirdPartyDependneciesXml(
+      pathToThirdPartyDependenciesXml,
+      dependencyNamesList,
+      dependencyVersionsList,
+      copyrightLicenseSet,
+      dependencyList
+    )
+
+    println("\nScript execution completed successfully.")
+  }
+
+  /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
+  private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
+    return parseTextProto(
+      pathToPbFile,
+      MavenDependencyList.getDefaultInstance()
+    ).mavenDependencyList
+  }
+
+  /**
+   * Helper function to parse the textproto file to a proto class.
+   *
+   * @param pathToPbFile path to the pb file to be parsed
+   * @param proto instance of the proto class
+   * @return proto class from the parsed textproto file
+   */
+  private fun parseTextProto(
+    pathToPbFile: String,
+    proto: MavenDependencyList
+  ): MavenDependencyList {
+    val protoBinaryFile = File(pathToPbFile)
+    val builder = proto.newBuilderForType()
+    return FileInputStream(protoBinaryFile).use {
+      builder.mergeFrom(it)
+    }.build() as MavenDependencyList
+  }
+
+  private fun retrieveAllLicensesSet(
+    mavenDependencyList: List<MavenDependency>
+  ): Set<CopyrightLicense> {
+    val copyrightLicensesSet = mutableSetOf<CopyrightLicense>()
+    mavenDependencyList.forEach { dependency ->
+      val licenseList = dependency.licenseList
+      if (licenseList.isEmpty()) {
+        throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
       }
-      copyrightLicensesSet.add(
-        CopyrightLicense
-          .newBuilder()
-          .setLicenseName(license.licenseName)
-          .setLicenseText(licenseText)
-          .setLicenseLink(licenseLink)
-          .build()
+      licenseList.forEach { license ->
+        val licenseText: String
+        val licenseLink: String
+        when (license.verifiedLinkCase) {
+          License.VerifiedLinkCase.SCRAPABLE_LINK -> {
+            licenseText = fetchLicenseText(license.scrapableLink.url)
+            licenseLink = license.scrapableLink.url
+          }
+          License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
+            licenseText = fetchLicenseText(license.extractedCopyLink.url)
+            licenseLink = license.extractedCopyLink.url
+          }
+          License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
+            licenseText = license.directLinkOnly.url
+            licenseLink = license.directLinkOnly.url
+          }
+          else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+        }
+        copyrightLicensesSet.add(
+          CopyrightLicense(
+            license.licenseName,
+            licenseLink,
+            licenseText,
+          )
+        )
+      }
+    }
+    return copyrightLicensesSet
+  }
+
+  private fun retrieveDependencyList(
+    mavenDependencyList: List<MavenDependency>
+  ): List<Dependency> {
+    val dependencyList = mutableListOf<Dependency>()
+    mavenDependencyList.forEach { mavenDependency ->
+      val licenseList = mavenDependency.licenseList
+      if (licenseList.isEmpty()) {
+        throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+      }
+      val copyrightLicenseList = mutableListOf<CopyrightLicense>()
+      licenseList.forEach { license ->
+        val licenseText: String
+        val licenseLink: String
+        when (license.verifiedLinkCase) {
+          License.VerifiedLinkCase.SCRAPABLE_LINK -> {
+            licenseText = fetchLicenseText(license.scrapableLink.url)
+            licenseLink = license.scrapableLink.url
+          }
+          License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
+            licenseText = fetchLicenseText(license.extractedCopyLink.url)
+            licenseLink = license.extractedCopyLink.url
+          }
+          License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
+            licenseText = license.directLinkOnly.url
+            licenseLink = license.directLinkOnly.url
+          }
+          else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+        }
+        copyrightLicenseList.add(
+          CopyrightLicense(
+            license.licenseName,
+            licenseLink,
+            licenseText
+          )
+        )
+      }
+      dependencyList.add(
+        Dependency(
+          mavenDependency.artifactName,
+          mavenDependency.artifactVersion,
+          copyrightLicenseList
+        )
       )
     }
+    return dependencyList
   }
-  return copyrightLicensesSet
-}
 
-fun scrapeLicenseText(url: String): String {
-  val text = URL(url).openStream().bufferedReader().readText()
-  return addEscapeCharactersToLicenseText(text)
-}
+  private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {
+    return dependencyList.map { it.name }
+  }
 
-fun addEscapeCharactersToLicenseText(licenseText: String): String {
-  val licenseTextBuilder = StringBuilder()
-  for (c in licenseText) {
-    when (c) {
-      '<', '>', '\'', '\"', '&' -> licenseTextBuilder.append(escapeCharactersMap[c])
-      else -> licenseTextBuilder.append(c)
+  private fun retrieveArtifactsVersionsList(
+    dependencyList: List<Dependency>
+  ): List<String> {
+    return dependencyList.map { it.version }
+  }
+
+  private fun writeThirdPartyDependneciesXml(
+    pathToResourceXml: String,
+    dependencyNamesList: List<String>,
+    dependencyVersionsList: List<String>,
+    copyrightLicenseSet: Set<CopyrightLicense>,
+    dependencyList: List<Dependency>
+  ) {
+    val file = File(pathToResourceXml)
+    val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+    val doc = docBuilder.newDocument()
+    val rootResourcesElement = doc.createElement("resources")
+
+    // Create string resources to get dependencies names.
+    writeDependenciesNamesXml(doc, dependencyNamesList, rootResourcesElement)
+
+    // Create string resources to get dependencies versions.
+    writeDependenciesVersionsXml(doc, dependencyVersionsList, rootResourcesElement)
+
+    // Create string resources to get dependencies's license texts and names.
+    writeLicensesNamesAndTextsXml(
+      doc = doc,
+      copyrightLicenseSet = copyrightLicenseSet,
+      rootResourcesElement = rootResourcesElement,
+      dependenciesList = dependencyList
+    )
+
+    doc.appendChild(rootResourcesElement)
+    doc.xmlStandalone = true
+    getTransformer().transform(DOMSource(doc), StreamResult(file))
+  }
+
+  private fun writeDependenciesNamesXml(
+    doc: Document,
+    dependencyNamesList: List<String>,
+    rootResourcesElement: Element
+  ) {
+    // Add all dependencies names as string resources.
+    writeList(
+      itemList = dependencyNamesList,
+      namePrefix = "third_party_dependency_name_",
+      rootResourcesElement = rootResourcesElement,
+      doc = doc
+    )
+
+    // Add all dependencies names in a string-array resource.
+    val stringArrayElement = createStringArray(
+      arrayName = "third_party_dependency_names_array",
+      itemList = dependencyNamesList,
+      textNodePrefix = "@string/third_party_dependency_name_",
+      doc = doc
+    )
+    rootResourcesElement.appendChild(stringArrayElement)
+  }
+
+  private fun writeDependenciesVersionsXml(
+    doc: Document,
+    dependencyVersionsList: List<String>,
+    rootResourcesElement: Element
+  ) {
+
+    // Add all dependencies versions as string resources.
+    writeList(
+      itemList = dependencyVersionsList,
+      namePrefix = "third_party_dependency_version_",
+      rootResourcesElement = rootResourcesElement,
+      doc = doc
+    )
+
+    // Add an array of dependencies versions string resources.
+    val stringArrayElement = createStringArray(
+      arrayName = "third_party_dependency_versions_array",
+      itemList = dependencyVersionsList,
+      textNodePrefix = "@string/third_party_dependency_version_",
+      doc = doc
+    )
+    rootResourcesElement.appendChild(stringArrayElement)
+  }
+
+  private fun writeLicensesNamesAndTextsXml(
+    doc: Document,
+    copyrightLicenseSet: Set<CopyrightLicense>,
+    rootResourcesElement: Element,
+    dependenciesList: List<Dependency>
+  ) {
+    // Add all license texts to third_party_dependencies.xml.
+    copyrightLicenseSet.forEachIndexed { index, license ->
+      val licenseText = "<![CDATA[${license.licenseText}]]>"
+      val stringElement = doc.createElement("string")
+      stringElement.setAttribute("name", "license_text_$index")
+      stringElement.appendChild(doc.createTextNode(licenseText))
+      rootResourcesElement.appendChild(stringElement)
+    }
+
+    // Add all license names to third_party_dependencies.xml.
+    copyrightLicenseSet.forEachIndexed { index, license ->
+      val licenseName = license.licenseName
+      val stringElement = doc.createElement("string")
+      stringElement.setAttribute("name", "license_name_$index")
+      stringElement.appendChild(doc.createTextNode(licenseName))
+      rootResourcesElement.appendChild(stringElement)
+    }
+
+    // Add arrays of license texts and license names for each dependency.
+    writeLicenseNamesAndTextsArrays(
+      doc,
+      copyrightLicenseSet,
+      dependenciesList,
+      rootResourcesElement
+    )
+  }
+
+  private fun writeLicenseNamesAndTextsArrays(
+    doc: Document,
+    copyrightLicenseSet: Set<CopyrightLicense>,
+    dependenciesList: List<Dependency>,
+    rootResourcesElement: Element
+  ) {
+
+    dependenciesList.forEachIndexed { index, dependency ->
+      val stringArrayElement = doc.createElement("string-array")
+      stringArrayElement.setAttribute("name", "third_party_dependency_license_texts_$index")
+      dependency.licenseList.forEach { license ->
+        val indexOfLicenseText = copyrightLicenseSet.indexOf(license)
+        val stringItemElement = doc.createElement("item")
+        stringItemElement.appendChild(
+          doc.createTextNode(
+            "@string/license_text_$indexOfLicenseText"
+          )
+        )
+        stringArrayElement.appendChild(stringItemElement)
+      }
+      rootResourcesElement.appendChild(stringArrayElement)
+    }
+
+    dependenciesList.forEachIndexed { index, dependency ->
+      val stringArrayElement = doc.createElement("string-array")
+      stringArrayElement.setAttribute("name", "third_party_dependency_license_names_$index")
+      dependency.licenseList.forEach { license ->
+        val indexOfLicenseName = copyrightLicenseSet.indexOf(license)
+        val stringItemElement = doc.createElement("item")
+        stringItemElement.appendChild(
+          doc.createTextNode(
+            "@string/license_name_$indexOfLicenseName"
+          )
+        )
+        stringArrayElement.appendChild(stringItemElement)
+      }
+      rootResourcesElement.appendChild(stringArrayElement)
     }
   }
-  return licenseTextBuilder.toString()
-}
 
-private fun getTransformer(): Transformer {
-  val transformer = TransformerFactory.newInstance().newTransformer()
-  transformer.setOutputProperty(OutputKeys.INDENT, "yes")
-  transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "")
-  transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-  return transformer
+  private fun writeList(
+    itemList: List<String>,
+    namePrefix: String,
+    rootResourcesElement: Element,
+    doc: Document
+  ) {
+    itemList.forEachIndexed { index, itemName ->
+      val stringElement = doc.createElement("string")
+      stringElement.setAttribute("name", "$namePrefix$index")
+      stringElement.appendChild(doc.createTextNode(itemName))
+      rootResourcesElement.appendChild(stringElement)
+    }
+  }
+
+  private fun createStringArray(
+    arrayName: String,
+    itemList: List<String>,
+    textNodePrefix: String,
+    doc: Document
+  ): Element {
+    val stringArrayElement = doc.createElement("string-array")
+    stringArrayElement.setAttribute("name", arrayName)
+    for (index in itemList.indices) {
+      val itemElement = doc.createElement("item")
+      itemElement.appendChild(doc.createTextNode("$textNodePrefix$index"))
+      stringArrayElement.appendChild(itemElement)
+    }
+    return stringArrayElement
+  }
+
+  private fun fetchLicenseText(url: String): String {
+    val licenseText = licenseFetcher.scrapeText(url)
+    return licenseText
+//    return addEscapeCharactersToLicenseText(licenseText)
+  }
+
+  private fun addEscapeCharactersToLicenseText(licenseText: String): String {
+    return HtmlEscapers.htmlEscaper().escape(licenseText)
+  }
+
+  private fun getTransformer(): Transformer {
+    val transformer = TransformerFactory.newInstance().newTransformer()
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+    transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "")
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+    return transformer
+  }
 }
