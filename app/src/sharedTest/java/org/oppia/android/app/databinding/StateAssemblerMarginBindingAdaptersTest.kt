@@ -77,12 +77,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TOLERANCE = 1e-5f
+
 /** Tests for [StateAssemblerMarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = StateAssemblerMarginBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-560dpi"
 )
 class StateAssemblerMarginBindingAdaptersTest {
 
@@ -116,10 +118,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -132,14 +134,14 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
-  
+
   @Test
   fun testMarginBindingAdapters_questionViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
@@ -147,10 +149,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -163,10 +165,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -178,10 +180,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionSplitViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -194,10 +196,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -210,10 +212,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -226,10 +228,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -242,10 +244,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -258,10 +260,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargins(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -275,10 +277,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -292,10 +294,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -309,10 +311,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }
@@ -326,10 +328,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationMarginEnd()
     )
   }

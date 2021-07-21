@@ -76,6 +76,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TOLERANCE = 1e-5f
+
 /** Tests for [MarginBindableAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -113,10 +115,10 @@ class MarginBindableAdaptersTest {
       setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -129,10 +131,10 @@ class MarginBindableAdaptersTest {
       setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -145,10 +147,10 @@ class MarginBindableAdaptersTest {
       setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -161,10 +163,10 @@ class MarginBindableAdaptersTest {
       setLayoutMarginStartAndMarginEnd(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -178,10 +180,10 @@ class MarginBindableAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -195,10 +197,10 @@ class MarginBindableAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -212,10 +214,10 @@ class MarginBindableAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }
@@ -229,10 +231,10 @@ class MarginBindableAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.marginEnd.toFloat()).isEqualTo(
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginStart()
     )
-    assertThat(textView.marginStart.toFloat()).isEqualTo(
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       getContentMarginEnd()
     )
   }

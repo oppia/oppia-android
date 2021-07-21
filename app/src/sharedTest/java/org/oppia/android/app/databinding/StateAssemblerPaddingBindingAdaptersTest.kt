@@ -76,6 +76,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TOLERANCE = 1e-5f
+
 /** Tests for [StateAssemblerPaddingBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -115,10 +117,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -131,10 +133,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -146,10 +148,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -162,10 +164,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -177,10 +179,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionSplitPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -193,10 +195,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -209,10 +211,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -225,10 +227,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -241,10 +243,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -257,10 +259,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitPadding(textView)
       return@runWithActivity textView
     }
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -274,10 +276,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -291,10 +293,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -308,10 +310,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
@@ -325,21 +327,22 @@ class StateAssemblerPaddingBindingAdaptersTest {
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
-    assertThat(textView.paddingEnd.toFloat()).isEqualTo(
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingStart()
     )
-    assertThat(textView.paddingStart.toFloat()).isEqualTo(
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
       getExplorationPaddingEnd()
     )
   }
-  
+
   private fun setExplorationPadding(textView: TextView) {
     setExplorationViewPadding(
       textView,
       /* isApplicable= */ true,
       getExplorationPaddingStart(),
       getExplorationPaddingTop(),
-      getExplorationPaddingEnd(),getExplorationPaddingBottom()
+      getExplorationPaddingEnd(),
+      getExplorationPaddingBottom()
     )
   }
 
@@ -350,11 +353,11 @@ class StateAssemblerPaddingBindingAdaptersTest {
   private fun getExplorationPaddingStart(): Float {
     return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
   }
-  
+
   private fun getExplorationPaddingTop(): Float {
     return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
   }
-  
+
   private fun getExplorationPaddingBottom(): Float {
     return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_bottom)
   }
