@@ -1,16 +1,16 @@
-All the third-party Maven dependencies used in Oppia-Android along with their versions are mentioned in the [versions.bzl](https://github.com/oppia/oppia-android/blob/develop/third_party/versions.bzl) file that resides in the `third_party` package. To add/delete/update any dependency, please follow the below steps - 
+All the third-party Maven dependencies used in Oppia-Android along with their versions are mentioned in the [versions.bzl](https://github.com/oppia/oppia-android/blob/develop/third_party/versions.bzl) file that resides in the `third_party` package. To add/delete/update any dependency, please follow the below steps.
 
 ## Updating `maven_install.json`
 
 1. Ensure that after making changes in the list of dependencies, the final list is always lexicographically sorted.
-2. After updating dependency, run the command -  
+2. After updating dependency, run the following command.
 ```
 REPIN=1 bazel run @unpinned_maven//:pin
 ```
 
 ## Updating `maven_dependencies.textproto`
-If the update is performed in the `MAVEN_PRODUCTION_DEPENDENCY_VERSIONS` dictionary of the `versions.bzl` file, you will also need to run the [GenerateMavenDependenciesList.kt](https://github.com/oppia/oppia-android/blob/develop/scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt) script in order to update the [maven_dependencies.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/maven_dependencies.textproto) file. This text proto file contains the license links for all the maven third-party dependencies on which Oppia Android depends. Please make sure that before running the script, you have successfully updated [maven_install.json](https://github.com/oppia/oppia-android/blob/develop/third_party/maven_install.json) by following the above-mentioned [guide](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies/_edit#updating-maven_installjson).
-To run this script, run the following commands - 
+If the update is performed in the `MAVEN_PRODUCTION_DEPENDENCY_VERSIONS` dictionary of the `versions.bzl` file, you will also need to run the [GenerateMavenDependenciesList.kt](https://github.com/oppia/oppia-android/blob/develop/scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt) script in order to update the [maven_dependencies.textproto](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/maven_dependencies.textproto) file. This text proto file contains the license links for all the maven third-party dependencies on which Oppia Android depends. Please make sure that before running the script, you have successfully updated [maven_install.json](https://github.com/oppia/oppia-android/blob/develop/third_party/maven_install.json) by following the above-mentioned [guide](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#updating-maven_installjson).
+To run this script, run the following commands.
 
 ```
 cd ~/opensource/oppia-android
@@ -18,14 +18,14 @@ cd ~/opensource/oppia-android
 The above command ensures that the terminal points to the root directory `oppia-android` repository. Note that if you have configured a different path to the `oppia-android` repository then you should modify the above command accordingly ( `cd ~/<path to your oppia-android repo>` ).
 
 #### Running `GenerateMavenDependenciesList.kt` script
-After the terminal points to the Oppia-android repository, run the bazel run command to execute the Kotlin script - 
+After the terminal points to the Oppia-android repository, run the bazel run command to execute the Kotlin script. 
 ```
 bazel run //scripts:generate_maven_dependencies_list -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
 ```
 
 ## Handling Exception: `Too few arguments passed`
-If after running the script the exception message says: **Too few arguments passed**, then please ensure that you copied the command correctly from [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies/_edit#running-generatemavendependencieslistkt-script).
-The scripts exccepts 4 parameters to be passed to run successfully:
+If after running the script the exception message says: **Too few arguments passed**, then please ensure that you copied the command correctly from [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#running-generatemavendependencieslistkt-script).
+The script accepts 4 parameters to be passed to run successfully:
 1. **_path_to_directory_root_**: directory path to the root of the Oppia Android repository, e.g - `home/<username>/opensource/oppia-android`
 2. **_path_to_maven_install_json_**: relative path to the maven_install.json file, e.g - `third_party/maven_install.json`
 3. **_path_to_maven_dependencies_textproto_**: relative path to the maven_dependencies.textproto, e.g - `scripts/assets/maven_dependencies.textproto`
@@ -85,12 +85,12 @@ license {
 }
 ```
 
-Also, if the license falls in the `extracted_copy_link` category, then go to [Oppia-android-licenses](https://github.com/oppia/oppia-android-licenses) and find if there exists a copy of the license already in the repository. If there exists a copy of the license, perform the following steps to get the link for the license that can be scraped easily -
+Also, if the license falls in the `extracted_copy_link` category, then go to [Oppia-android-licenses](https://github.com/oppia/oppia-android-licenses) and find if there exists a copy of the license already in the repository. If there exists a copy of the license, perform the following steps to get the link for the license that can be scraped easily.
 1. Click on the appropriate license file. 
 2. Now click on the raw button positioned in the left of the edit and delete button.
 3. Copy the URL from the browser and mention it at the appropriate place.
 
-If the license does not exist in Oppia-android-licenses repository, then coordinate with Oppia Android team and raise a PR to add a new license text file. Then repeat the above steps to update maven_dependencies.textproto.
+If the license does not exist in the Oppia-android-licenses repository, then coordinate with the Oppia Android team and raise a PR to add a new license text file. Then repeat the above steps to update maven_dependencies.textproto.
 
 
 
@@ -99,7 +99,7 @@ After modifying `maven_dependencies.textproto` for all the called out licenses i
 
 ## Handling Exception: `License links are invalid or not available for some dependencies`
 
-If the script throws `License links are invalid or not available for some dependencies` exception, then the output would look something like this -
+If the script throws `License links are invalid or not available for some dependencies` exception, then the output would look something like this:
 
 ```
 Please remove all the invalid links (if any) from maven_dependencies.textproto for the below mentioned dependencies and provide the valid license links manually.
@@ -120,9 +120,9 @@ maven_dependency {
 }
 ```
 
-To fix the error, consider the above example. For the first maven_dependency: "io.fabric.sdk.android:fabric:1.4.7", the original_link is invalid, and hence we need to find a valid link for this dependency. Please coordinate with the Oppia Android team and find a valid link for this dependency, once you have a valid link for this license then categorize it as mentioned [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies/_edit#categorizing-the-license-link).
+To fix the error, consider the above example. For the first maven_dependency: "io.fabric.sdk.android:fabric:1.4.7", the original_link is invalid, and hence we need to find a valid link for this dependency. Please coordinate with the Oppia Android team and find a valid link for this dependency, once you have a valid link for this license then categorize it as mentioned [here](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies#categorizing-the-license-link).
 
-For the second maven_dependency: "com.google.guava:failureaccess:1.0.1", you need to find a license by coordinating with Oppia Android team and then specify it under the artifact_version field of the dependency. e.g - 
+For the second maven_dependency: "com.google.guava:failureaccess:1.0.1", you need to find a license by coordinating with the Oppia Android team and then specify it under the artifact_version field of the dependency. e.g - 
 
 ```
 maven_dependency {
