@@ -91,7 +91,7 @@ class GenerateMavenDependenciesList(
     val licensesToBeFixed = getAllBrokenLicenses(finalDependenciesList)
 
     if (licensesToBeFixed.isNotEmpty()) {
-      val licenseToDependencyMap = findFirstDependencyWithBrokenLicense(
+      val licenseToDependencyMap = findFirstDependenciesWithBrokenLicenses(
         finalDependenciesList,
         licensesToBeFixed
       )
@@ -134,8 +134,8 @@ class GenerateMavenDependenciesList(
         }
         
         Please verify the license link(s) for the following license(s) manually in 
-        maven_dependencies.textproto, note that only first dependency that contains the license 
-        needs to be updated and also re-run the script to update the license details at all places:
+        maven_dependencies.textproto. Note that only first dependency that contains the license 
+        needs to be updated and also re-run the script to update the license details at all places
         """.trimIndent()
       )
       licensesToBeFixed.forEach {
@@ -259,18 +259,15 @@ class GenerateMavenDependenciesList(
     }.toSet()
   }
 
-  private fun findFirstDependencyWithBrokenLicense(
+  private fun findFirstDependenciesWithBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>,
     brokenLicenses: Set<License>
-  ): HashMap<License, String> {
-    val licenseToDependencyMap = hashMapOf<License, String>()
-    for (license in brokenLicenses) {
-      val firstDependencyWithBrokenLicense = mavenDependenciesList.firstOrNull { dependency ->
+  ): Map<License, String> {
+    return brokenLicenses.associateTo(mutableMapOf<License, String>()) { license ->
+      license to mavenDependenciesList.first { dependency ->
         dependency.licenseList.contains(license)
-      } ?: throw Exception("No dependency found with the licese:\n$license")
-      licenseToDependencyMap[license] = firstDependencyWithBrokenLicense.artifactName
+      }.artifactName
     }
-    return licenseToDependencyMap
   }
 
   private fun getDependenciesThatNeedIntervention(
