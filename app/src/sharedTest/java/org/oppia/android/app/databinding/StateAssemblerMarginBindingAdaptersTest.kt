@@ -84,7 +84,7 @@ private const val TOLERANCE = 1e-5f
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = StateAssemblerMarginBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-560dpi"
+  qualifiers = "port-xxhdpi"
 )
 class StateAssemblerMarginBindingAdaptersTest {
 
