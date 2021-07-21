@@ -126,13 +126,13 @@ interface ActivityComponent {
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
   fun inject(
-      stateAssemblerMarginBindingAdaptersTestActivity:
-      StateAssemblerMarginBindingAdaptersTestActivity
+    stateAssemblerMarginBindingAdaptersTestActivity:
+    StateAssemblerMarginBindingAdaptersTestActivity
   )
 
   fun inject(
-      stateAssemblerPaddingBindingAdaptersTestActivity:
-      StateAssemblerPaddingBindingAdaptersTestActivity
+    stateAssemblerPaddingBindingAdaptersTestActivity:
+    StateAssemblerPaddingBindingAdaptersTestActivity
   )
 
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
