@@ -14,6 +14,7 @@ on:
 
 jobs:
   bazel_compute_affected_targets:
+    if: false
     name: Compute affected tests
     runs-on: ubuntu-18.04
     outputs:
