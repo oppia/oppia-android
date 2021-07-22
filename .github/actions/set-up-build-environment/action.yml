@@ -26,7 +26,12 @@ runs:
 
     - name: Verify Bazel version
       run: |
-        bazel --version | grep -q 4.0.0 || echo "Expected Bazel 4.0.0 to be installed" && exit 1
+        bazel --version | grep -q 4.0.0
+        HAS_CORRECT_BAZEL_VERSION=$(echo $?)
+        if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
+          echo "Expected Bazel 4.0.0 to be installed"
+          exit 1
+        fi
       shell: bash
 
     - name: Configure Bazel to use JDK 9 for building
@@ -37,8 +42,8 @@ runs:
     - name: Configure Bazel to use specific sandbox tmpfs
       run: |
         echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
-      shell: bash
         echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
+      shell: bash
 
     - name: Set up Oppia Bazel Android Tools
       run: |
