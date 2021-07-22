@@ -30,6 +30,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
 ) {
+  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
+  //  implemented.
+
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 
@@ -202,7 +205,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     backflowScreen: Int?
   ) {
     explorationDataController.startPlayingExploration(
-      explorationId
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -220,7 +227,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              backflowScreen
+              backflowScreen,
+              isCheckpointingEnabled = false
             )
           }
         }
