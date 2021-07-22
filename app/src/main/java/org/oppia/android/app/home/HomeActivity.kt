@@ -1,8 +1,11 @@
 package org.oppia.android.app.home
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import hotchemi.android.rate.AppRate
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
@@ -12,7 +15,6 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.topic.TopicActivity
-import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
@@ -38,6 +40,25 @@ class HomeActivity :
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate()
     title = getString(R.string.menu_home)
+    setUpRateApp()
+  }
+
+  private fun setUpRateApp() {
+    AppRate.with(this)
+      .setInstallDays(7) // Specifies the number of days after installation, the dialog popup shows.
+      .setLaunchTimes(2) // Specifies the number of times the app must launch by user for the dialog popup to show.
+      .setRemindInterval(3) // Specifies the number of days after "Remind Me Later" is clicked, the dialog popup will show.
+      .setShowLaterButton(true)
+      .setDebug(false) // IMPORTANT: Set true only for testing purposes. DO NOT set true for release-app.
+      .setOnClickButtonListener {
+        // Space to alter the entire functionality of the "dialog popup" for future purposes.
+      }
+      .monitor()
+
+    //To show the dialog popup only if meets ALL specified conditions.
+
+    //To show the dialog popup only if meets ALL specified conditions.
+    AppRate.showRateDialogIfMeetsConditions(this)
   }
 
   override fun onRestart() {
