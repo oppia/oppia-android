@@ -113,7 +113,7 @@ class MarkChaptersCompletedActivityTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_markStoriesCompletedFragmentIsDisplayed() {
+  fun testMarkChaptersCompletedActivity_markChaptersCompletedFragmentIsDisplayed() {
     launch<MarkChaptersCompletedActivity>(
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
@@ -124,7 +124,7 @@ class MarkChaptersCompletedActivityTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedActivity_configChange_markStoriesCompletedFragmentIsDisplayed() {
+  fun testMarkChaptersCompletedActivity_configChange_markChaptersCompletedFragmentIsDisplayed() {
     launch<MarkChaptersCompletedActivity>(
       createMarkChaptersCompletedActivityIntent(internalProfileId)
     ).use {
