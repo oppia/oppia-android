@@ -256,7 +256,7 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindingAdapters_ltrEnabled_landscapeTablet_marginStartAndEndForLtrIsCorrect() {
+  fun testMarginBindingAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationViewMargins(textView)
