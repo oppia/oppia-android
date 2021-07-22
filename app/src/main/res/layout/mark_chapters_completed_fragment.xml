@@ -14,6 +14,7 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/mark_chapters_completed_fragment_root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -114,6 +115,7 @@
         android:layout_height="match_parent"
         android:background="@color/profileEditBackground"
         android:clipToPadding="false"
+        android:contentDescription="@string/mark_chapters_completed_recycler_view"
         android:overScrollMode="never"
         android:paddingBottom="40dp"
         android:scrollbars="none"
