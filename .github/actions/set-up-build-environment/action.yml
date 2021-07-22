@@ -59,13 +59,16 @@ runs:
 
     - name: Accept SDK licenses
       run: |
+        echo "[DEBUG] accept licenses"
         yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
+        echo "[DEBUG] finish licenses"
         # For some reason, sdkmanager returns an error code when licenses are accepted.
         exit 0
       shell: bash
 
     - name: Install platform tools
       run: |
+        echo "[DEBUG] install platform tools"
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
       shell: bash
 
