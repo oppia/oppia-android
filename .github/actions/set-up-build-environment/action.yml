@@ -34,6 +34,46 @@ runs:
         fi
       shell: bash
 
+    - name: Set up new Android SDK directory
+      run: |
+        mkdir -p $HOME/android-sdk
+      shell: bash
+
+    - name: Download cmdline tools
+      run: |
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+        cp ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
+        cd $HOME/android-sdk
+        unzip commandlinetools-linux-7302050_latest.zip
+        cd cmdline-tools/
+        mkdir tools
+        mv -i * tools
+        cd ..
+        export ANDROID_HOME="$HOME/android-sdk"
+        export PATH="$ANDROID_HOME/cmdline-tools/tools/bin/:$PATH"
+        echo "Using updated Android SDK home: $ANDROID_HOME"
+      shell: bash
+
+    - name: Accept SDK licenses
+      run: |
+        yes | sdkmanager --licenses
+      shell: bash
+
+    - name: Install platform tools
+      run: |
+        sdkmanager --install "platform-tools"
+      shell: bash
+
+    - name: Install SDK 28
+      run: |
+        sdkmanager --install "platforms;android-28"
+      shell: bash
+
+    - name: Install build tools 29.0.2
+      run: |
+        sdkmanager --install "build-tools;29.0.2"
+      shell: bash
+
     - name: Configure Bazel to use JDK 9 for building
       run: |
         echo "build --java_language_version=9" >> $HOME/.bazelrc
