@@ -45,7 +45,9 @@ class PlatformParameterServiceTest {
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_verifySuccessfulResponse() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val response = mockPlatformParameterService
+      .getPlatformParametersByVersion(version = "1")
+      .execute()
     assertThat(response.isSuccessful).isTrue()
 
     val responseBody = response.body()
@@ -54,21 +56,27 @@ class PlatformParameterServiceTest {
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForStringParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val response = mockPlatformParameterService
+      .getPlatformParametersByVersion(version = "1")
+      .execute()
     val responseBody = response.body()!!
     assertThat(responseBody[TEST_STRING_PARAM_NAME]).isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForIntegerParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val response = mockPlatformParameterService
+      .getPlatformParametersByVersion(version = "1")
+      .execute()
     val responseBody = response.body()!!
     assertThat(responseBody[TEST_INTEGER_PARAM_NAME]).isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForBooleanParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
+    val response = mockPlatformParameterService
+      .getPlatformParametersByVersion(version = "1")
+      .execute()
     val responseBody = response.body()!!
     assertThat(responseBody[TEST_BOOLEAN_PARAM_NAME]).isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
