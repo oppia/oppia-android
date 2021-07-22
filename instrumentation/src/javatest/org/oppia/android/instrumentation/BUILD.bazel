@@ -12,7 +12,6 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 android_library(
     name = "instrumentation_deps",
     testonly = True,
-    visibility = ["//visibility:public"],
     exports = [
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
@@ -23,12 +22,12 @@ android_library(
 )
 
 kt_android_library(
-    name = "base_test_lib",
+    name = "exploration_player_test_lib",
     testonly = True,
     srcs = [
-        "BaseTest.kt",
+        "ExplorationPlayerTest.kt",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":instrumentation_deps",
     ],

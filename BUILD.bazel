@@ -30,6 +30,7 @@ package_group(
         "//app/...",
         "//data/...",
         "//domain/...",
+        "//instrumentation/...",
         "//testing/...",
         "//utility/...",
     ],
@@ -59,7 +60,27 @@ android_binary(
         "versionName": "0.1-alpha",
     },
     multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
-    visibility = ["//visibility:public"],
+    deps = [
+        "//app",
+    ],
+)
+
+# Used for end to end tests
+android_binary(
+    name = "oppia_test",
+    testonly = True,
+    custom_package = "org.oppia.android",
+    enable_data_binding = True,
+    manifest = "//app:src/main/AndroidManifest.xml",
+    manifest_values = {
+        "applicationId": "org.oppia.android",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "29",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
+    },
+    multidex = "native",
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//app",
     ],

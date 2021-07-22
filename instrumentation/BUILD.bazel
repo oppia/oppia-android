@@ -5,13 +5,12 @@ Note that:
 """
 
 android_binary(
-    name = "BaseTest",
+    name = "ExplorationPlayerTest",
     testonly = True,
     custom_package = "org.oppia.android",
-    instruments = "//:oppia",
-    manifest = "AndroidManifest.xml",
-    visibility = ["//visibility:public"],
+    instruments = "//:oppia_test",
+    manifest = "src/AndroidManifest.xml",
     deps = [
-        "//instrumentation/src/javatest/org/oppia/android/instrumentation:base_test_lib",
+        "//instrumentation/src/javatest/org/oppia/android/instrumentation:exploration_player_test_lib",
     ],
 )
