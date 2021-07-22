@@ -91,7 +91,6 @@ class PlatformParameterIntegrationTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    ShadowToast.reset()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
