@@ -1,8 +1,10 @@
 package org.oppia.android.app.databinding;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set margin values. */
@@ -97,7 +99,8 @@ public final class MarginBindingAdapters {
     }
   }
 
+  @SuppressLint("WrongConstant")
   private static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    return view.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }

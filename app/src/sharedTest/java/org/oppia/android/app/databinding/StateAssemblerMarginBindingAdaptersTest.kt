@@ -117,7 +117,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_explorationViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -132,7 +139,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_explorationViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -148,7 +162,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_questionViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionViewMargins(textView)
+      setQuestionViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -163,7 +184,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_questionViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionViewMargins(textView)
+      setQuestionViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -179,7 +207,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_QuestionSplitViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionSplitViewMargins(textView)
+      setQuestionSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -194,7 +229,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_questionSplitViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionSplitViewMargins(textView)
+      setQuestionSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -211,7 +253,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -227,7 +276,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -243,7 +299,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_ltrEnabled__port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -259,7 +322,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -275,7 +345,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -292,7 +369,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -309,7 +393,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -326,7 +417,14 @@ class StateAssemblerMarginBindingAdaptersTest {
   fun testMarginBindingAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargins(textView)
+      setExplorationSplitViewMargin(
+        textView,
+        /* isApplicable= */ true,
+        /* marginStart= */ convertToPx(24f),
+        /* marginTop= */ convertToPx(24f),
+        /* marginEnd= */ convertToPx(40f),
+        /* marginBottom= */ convertToPx(24f)
+      )
       textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
@@ -335,39 +433,6 @@ class StateAssemblerMarginBindingAdaptersTest {
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
       convertToPx(40f)
-    )
-  }
-
-  private fun setQuestionViewMargins(textView: TextView) {
-    setQuestionViewMargin(
-      textView,
-      /* isApplicable= */ true,
-      convertToPx(24f),
-      convertToPx(24f),
-      convertToPx(40f),
-      convertToPx(24f)
-    )
-  }
-
-  private fun setQuestionSplitViewMargins(textView: TextView) {
-    setQuestionSplitViewMargin(
-      textView,
-      /* isApplicable= */ true,
-      convertToPx(24f),
-      convertToPx(24f),
-      convertToPx(40f),
-      convertToPx(24f)
-    )
-  }
-
-  private fun setExplorationViewMargins(textView: TextView) {
-    setExplorationSplitViewMargin(
-      textView,
-      /* isApplicable= */ true,
-      convertToPx(24f),
-      convertToPx(24f),
-      convertToPx(40f),
-      convertToPx(24f)
     )
   }
 
