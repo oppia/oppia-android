@@ -28,6 +28,11 @@ jobs:
         with:
           java-version: 9
 
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
       - name: Set up build environment
         uses: ./.github/actions/set-up-build-environment
 
