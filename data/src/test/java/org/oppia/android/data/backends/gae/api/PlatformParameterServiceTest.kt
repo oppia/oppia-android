@@ -44,7 +44,7 @@ class PlatformParameterServiceTest {
   }
 
   @Test
-  fun testPlatformParameterService_getPlatformParameterUsingMockService_verifyTheResponse() {
+  fun testPlatformParameterService_getPlatformParameterUsingMockService_verifySuccessfulResponse() {
     val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
     assertThat(response.isSuccessful).isTrue()
 
