@@ -45,9 +45,9 @@ runs:
         cp ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
         cd $HOME/android-sdk
         unzip commandlinetools-linux-7302050_latest.zip
-        cd cmdline-tools/
         mkdir tools
-        mv -i * tools
+        cd cmdline-tools/
+        mv -i * ../tools && mv ../tools .
         cd ..
         export ANDROID_HOME="$HOME/android-sdk"
         export PATH="$ANDROID_HOME/cmdline-tools/tools/bin/:$PATH"
