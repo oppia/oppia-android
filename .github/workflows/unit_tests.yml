@@ -78,7 +78,7 @@ jobs:
           version: 4.0.0
 
       - name: Set up build environment
-        uses: ./.github/actions/set-up-build-environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Compute test caching bucket
         env:
