@@ -16,7 +16,7 @@ kt_android_library(
 kt_android_library(
     name = "prod_impl",
     srcs = [
-        "NetworkConnectionUtilProdImpl.kt",
+        "ProdNetworkConnectionUtil.kt",
     ],
     deps = [
         ":network_connection_util",
@@ -27,7 +27,7 @@ kt_android_library(
 kt_android_library(
     name = "debug_impl",
     srcs = [
-        "NetworkConnectionUtilDebugImpl.kt",
+        "DebugNetworkConnectionUtil.kt",
     ],
     deps = [
         ":prod_impl",

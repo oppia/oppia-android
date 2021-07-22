@@ -46,7 +46,7 @@ class ProdNetworkConnectionUtilTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionUtilProdImplTest_TestApplicationComponent.builder()
+    DaggerProdNetworkConnectionUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
