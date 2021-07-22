@@ -49,31 +49,32 @@ runs:
         cd cmdline-tools/
         mv -i * ../tools && mv ../tools .
         cd ..
-        export ANDROID_HOME="$HOME/android-sdk"
-        export PATH="$ANDROID_HOME/cmdline-tools/tools/bin/:$PATH"
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Verify updated ANDROID_HOME
+      run: |
         echo "Using updated Android SDK home: $ANDROID_HOME"
       shell: bash
 
     - name: Accept SDK licenses
       run: |
-        echo "Using updated Android SDK home [dbg]: $ANDROID_HOME"
-        echo "Path: $PATH"
-        yes | sdkmanager --licenses
+        yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
       shell: bash
 
     - name: Install platform tools
       run: |
-        sdkmanager --install "platform-tools"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
       shell: bash
 
     - name: Install SDK 28
       run: |
-        sdkmanager --install "platforms;android-28"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-28"
       shell: bash
 
     - name: Install build tools 29.0.2
       run: |
-        sdkmanager --install "build-tools;29.0.2"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;29.0.2"
       shell: bash
 
     - name: Configure Bazel to use JDK 9 for building
