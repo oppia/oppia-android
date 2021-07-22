@@ -479,8 +479,6 @@ exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/mode
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeOutcome.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeParamChange.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeParamSpec.kt"
-exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaePlatformParameter.kt"
-exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaePlatformParameterList.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeQuestion.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeQuestionPlayer.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/model/GaeRecordedVoiceovers.kt"
