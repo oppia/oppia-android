@@ -6,11 +6,9 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -20,19 +18,14 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -53,12 +46,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
-import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
-import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
-import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -83,7 +71,6 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -101,7 +88,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO(#3418): Separate DeveloperOptionsActivityTest into activity and fragment test files.
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -154,311 +140,6 @@ class DeveloperOptionsActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.developer_options_activity_title))
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_modifyLessonProgressIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 0,
-        targetView = R.id.modify_lesson_progress_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_chapters_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_chapters_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_stories_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_stories_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_topics_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_topics_completed
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_modifyLessonProgressIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 0,
-        targetView = R.id.modify_lesson_progress_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_chapters_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_chapters_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_stories_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_stories_completed
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.mark_topics_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_topics_completed
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 1,
-        targetView = R.id.view_logs_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.event_logs_text_view,
-        stringIdToMatch = R.string.developer_options_event_logs
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_viewLogsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 1,
-        targetView = R.id.view_logs_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.event_logs_text_view,
-        stringIdToMatch = R.string.developer_options_event_logs
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 2,
-        targetView = R.id.override_app_behaviors_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.show_all_hints_solution_text_view,
-        stringIdToMatch = R.string.developer_options_show_all_hints_solution
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_network_type_text_view,
-        stringIdToMatch = R.string.developer_options_force_network_type
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_crash_text_view,
-        stringIdToMatch = R.string.developer_options_force_crash
-      )
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_changeConfig_overrideAppBehaviorsIsDisplayed() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
-      verifyItemDisplayedOnDeveloperOptionsListItem(
-        itemPosition = 2,
-        targetView = R.id.override_app_behaviors_text_view
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.show_all_hints_solution_text_view,
-        stringIdToMatch = R.string.developer_options_show_all_hints_solution
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_network_type_text_view,
-        stringIdToMatch = R.string.developer_options_force_network_type
-      )
-      verifyTextOnDeveloperOptionsListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.force_crash_text_view,
-        stringIdToMatch = R.string.developer_options_force_crash
-      )
-    }
-  }
-
-  // TODO(#3397): When the logic to show all hints and solutions is implemented, write a test to
-  //  check for click operation of the 'Show all hints/solution' switch
-  @Test
-  fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.developer_options_list,
-          position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
-      ).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickForceCrash_throwsRuntimeException() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      val exception = assertThrows(RuntimeException::class) {
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_crash_text_view)).perform(click())
-      }
-      assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_clickForceCrash_throwsRuntimeException() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      val exception = assertThrows(RuntimeException::class) {
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_crash_text_view)).perform(click())
-      }
-      assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickEventLogs_opensViewEventLogsActivity() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      onView(withId(R.id.event_logs_text_view)).perform(click())
-      intended(hasComponent(ViewEventLogsActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_clickEventLogs_opensViewEventLogsActivity() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
-      onView(withId(R.id.event_logs_text_view)).perform(click())
-      intended(hasComponent(ViewEventLogsActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_chapters_completed_text_view)).perform(click())
-      intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() { // ktlint-disable max-line-length
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_chapters_completed_text_view)).perform(click())
-      intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_stories_completed_text_view)).perform(click())
-      intended(hasComponent(MarkStoriesCompletedActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() { // ktlint-disable max-line-length
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_stories_completed_text_view)).perform(click())
-      intended(hasComponent(MarkStoriesCompletedActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() {
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_topics_completed_text_view)).perform(click())
-      intended(hasComponent(MarkTopicsCompletedActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_configChange_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() { // ktlint-disable max-line-length
-    launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      onView(withId(R.id.mark_topics_completed_text_view)).perform(click())
-      intended(hasComponent(MarkTopicsCompletedActivity::class.java.name))
-    }
   }
 
   @Test
@@ -569,41 +250,6 @@ class DeveloperOptionsActivityTest {
 
   private fun findParent(view: ViewParent): ViewParent {
     return view.getParent()
-  }
-
-  private fun verifyItemDisplayedOnDeveloperOptionsListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.developer_options_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(isDisplayed()))
-  }
-
-  private fun verifyTextOnDeveloperOptionsListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    @StringRes stringIdToMatch: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.developer_options_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(matches(withText(context.getString(stringIdToMatch))))
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.developer_options_list)).perform(
-      scrollToPosition<ViewHolder>(
-        position
-      )
-    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
