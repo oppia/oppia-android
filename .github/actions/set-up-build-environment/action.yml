@@ -60,7 +60,7 @@ runs:
     - name: Accept SDK licenses
       run: |
         echo "[DEBUG] accept licenses"
-        yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
+        echo $(yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses)
         echo "[DEBUG] finish licenses"
         # For some reason, sdkmanager returns an error code when licenses are accepted.
         exit 0
