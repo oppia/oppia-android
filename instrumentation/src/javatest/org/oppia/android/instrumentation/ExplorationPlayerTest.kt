@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Test
 
 /** Tests for Explorations. */
-class ExxplorationPlayerTest {
+class ExplorationPlayerTest {
   private val OPPIA_PACKAGE = "org.oppia.android"
   private val LAUNCH_TIMEOUT = 30000L
   private val TRANSITION_TIMEOUT = 5000L
