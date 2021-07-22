@@ -56,6 +56,8 @@ runs:
 
     - name: Accept SDK licenses
       run: |
+        echo "Using updated Android SDK home [dbg]: $ANDROID_HOME"
+        echo "Path: $PATH"
         yes | sdkmanager --licenses
       shell: bash
 
