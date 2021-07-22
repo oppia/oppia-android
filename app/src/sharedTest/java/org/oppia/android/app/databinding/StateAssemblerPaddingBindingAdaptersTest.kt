@@ -190,7 +190,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   }
 
   @Test
-  fun testStateAssemblerPadding_QuestionSplitViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
+  fun testStateAssemblerPadding_questionSplitViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setQuestionSplitPadding(textView)
@@ -255,7 +255,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testStateAssemblerPadding_ltrEnabled_landscapeTablet_paddingStartAndEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrEnabled_landscape_tablet_paddingStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitPadding(textView)

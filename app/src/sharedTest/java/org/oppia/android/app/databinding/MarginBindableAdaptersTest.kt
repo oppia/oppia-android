@@ -159,7 +159,7 @@ class MarginBindableAdaptersTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindableAdapters_ltrEnabled_landscapeTablet_marginStartAndEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setLayoutMarginStartAndMarginEnd(textView)
@@ -190,6 +190,7 @@ class MarginBindableAdaptersTest {
     )
   }
 
+  @Config(qualifiers = "port")
   @Test
   fun testMarginBindableAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlFails() {
     val textView = activityRule.scenario.runWithActivity {
