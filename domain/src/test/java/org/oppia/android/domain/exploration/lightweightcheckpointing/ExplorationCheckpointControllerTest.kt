@@ -21,6 +21,7 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
@@ -115,7 +116,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
@@ -128,7 +129,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
   }
 
@@ -141,7 +142,7 @@ class ExplorationCheckpointControllerTest {
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
-      ExplorationCheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
+      CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
   }
 
@@ -290,7 +291,7 @@ class ExplorationCheckpointControllerTest {
     )
 
   /**
-   * updates the saved checkpoint for the test exploration specified by the [index] supplied.
+   * Updates the saved checkpoint for the test exploration specified by the [index] supplied.
    *
    * For this function to work as intended, it has to be made sure that a checkpoint for the test
    * exploration specified by the index already exists in the checkpoint database of that profile.
@@ -300,12 +301,11 @@ class ExplorationCheckpointControllerTest {
   private fun saveUpdatedCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> =
-    explorationCheckpointController.recordExplorationCheckpoint(
-      profileId = profileId,
-      explorationId = createExplorationIdForIndex(index),
-      explorationCheckpoint = createUpdatedCheckpoint(index)
-    )
+  ): DataProvider<Any?> = explorationCheckpointController.recordExplorationCheckpoint(
+    profileId = profileId,
+    explorationId = createExplorationIdForIndex(index),
+    explorationCheckpoint = createUpdatedCheckpoint(index)
+  )
 
   private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {

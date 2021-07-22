@@ -63,6 +63,117 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testWorkspaceFileProperty_retrieve_createsWorkspaceFile() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+
+    // Verify that WORKSPACE file is a top-level file that exists within the root, but is empty.
+    assertThat(workspaceFile.exists()).isTrue()
+    assertThat(workspaceFile.name).isEqualTo("WORKSPACE")
+    assertThat(workspaceFile.isRelativeTo(tempFolder.root)).isTrue()
+    assertThat(workspaceFile.toRelativeString(tempFolder.root)).isEqualTo("WORKSPACE")
+    assertThat(workspaceFile.readLines()).isEmpty()
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withOneDep_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withTwoDeps_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf(
+        "com.android.support:support-annotations:28.0.0",
+        "io.fabric.sdk.android:fabric:1.4.7"
+      )
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).contains("io.fabric.sdk.android:fabric:1.4.7")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_withMultipleDeps_containsCorrectList() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf(
+        "com.android.support:support-annotations:28.0.0",
+        "io.fabric.sdk.android:fabric:1.4.7",
+        "androidx.databinding:databinding-adapters:3.4.2",
+        "com.google.protobuf:protobuf-lite:3.0.0"
+      )
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).contains("io.fabric.sdk.android:fabric:1.4.7")
+    assertThat(workspaceContent).contains("androidx.databinding:databinding-adapters:3.4.2")
+    assertThat(workspaceContent).contains("com.google.protobuf:protobuf-lite:3.0.0")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_multipleCalls_containsOnlyFirstTimeContent() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("io.fabric.sdk.android:fabric:1.4.7")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains("com.android.support:support-annotations:28.0.0")
+    assertThat(workspaceContent).doesNotContain("io.fabric.sdk.android:fabric:1.4.7")
+  }
+
+  @Test
+  fun testSetupWorkspaceForRulesJvmExternal_addsMavenInstall() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.android.support:support-annotations:28.0.0")
+    )
+
+    val workspaceFile = testBazelWorkspace.workspaceFile
+    val workspaceContent = workspaceFile.readAsJoinedString()
+
+    assertThat(workspaceContent).contains(
+      """
+      maven_install(
+          artifacts = artifactsList,
+          repositories = [
+              "https://maven.google.com",
+              "https://repo1.maven.org/maven2",
+          ],
+      )
+      """.trimIndent()
+    )
+  }
+
+  @Test
   fun testRootBuildFileProperty_retrieve_createsBuildFile() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
