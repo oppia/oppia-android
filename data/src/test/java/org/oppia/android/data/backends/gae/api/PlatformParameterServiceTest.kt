@@ -13,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.data.backends.gae.model.GaePlatformParameter
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
@@ -39,18 +38,6 @@ class PlatformParameterServiceTest {
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService
 
-  private val expectedTestStringParam by lazy {
-    GaePlatformParameter(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE)
-  }
-
-  private val expectedTestIntegerParam by lazy {
-    GaePlatformParameter(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE)
-  }
-
-  private val expectedTestBooleanParam by lazy {
-    GaePlatformParameter(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)
-  }
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -68,22 +55,22 @@ class PlatformParameterServiceTest {
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForStringParam() {
     val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
-    val responseBody = response.body()
-    assertThat(responseBody!!.platformParameters).contains(expectedTestStringParam)
+    val responseBody = response.body()!!
+    assertThat(responseBody[TEST_STRING_PARAM_NAME]).isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForIntegerParam() {
     val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
-    val responseBody = response.body()
-    assertThat(responseBody!!.platformParameters).contains(expectedTestIntegerParam)
+    val responseBody = response.body()!!
+    assertThat(responseBody[TEST_INTEGER_PARAM_NAME]).isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForBooleanParam() {
     val response = mockPlatformParameterService.getPlatformParametersByVersion("1").execute()
-    val responseBody = response.body()
-    assertThat(responseBody!!.platformParameters).contains(expectedTestBooleanParam)
+    val responseBody = response.body()!!
+    assertThat(responseBody[TEST_BOOLEAN_PARAM_NAME]).isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   private fun setUpTestApplicationComponent() {

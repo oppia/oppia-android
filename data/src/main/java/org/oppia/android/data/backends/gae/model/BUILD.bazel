@@ -26,8 +26,6 @@ kt_android_library(
         "GaeOutcome.kt",
         "GaeParamChange.kt",
         "GaeParamSpec.kt",
-        "GaePlatformParameter.kt",
-        "GaePlatformParameterList.kt",
         "GaeQuestion.kt",
         "GaeQuestionPlayer.kt",
         "GaeRecordedVoiceovers.kt",

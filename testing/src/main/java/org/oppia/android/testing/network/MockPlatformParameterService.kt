@@ -1,8 +1,6 @@
 package org.oppia.android.testing.network
 
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.data.backends.gae.model.GaePlatformParameter
-import org.oppia.android.data.backends.gae.model.GaePlatformParameterList
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
@@ -19,19 +17,17 @@ class MockPlatformParameterService(
   override fun getPlatformParametersByVersion(
     version: String,
     plaformType: String
-  ): Call<GaePlatformParameterList> {
-    val parameters = createMockGaePlatformParameters()
+  ): Call<Map<String, Any>> {
+    val parameters = createMockPlatformParameterMap()
     return delegate.returningResponse(parameters).getPlatformParametersByVersion(version)
   }
 
-  // Creates a Mock Response containing GaePlatformParameter for testing
-  private fun createMockGaePlatformParameters(): GaePlatformParameterList {
-    return GaePlatformParameterList(
-      listOf(
-        GaePlatformParameter(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE),
-        GaePlatformParameter(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE),
-        GaePlatformParameter(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)
-      )
+  // Creates a Mock Response containing Map of PlatformParameters for testing
+  private fun createMockPlatformParameterMap(): Map<String, Any> {
+    return mapOf(
+      TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
+      TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
+      TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
     )
   }
 }
