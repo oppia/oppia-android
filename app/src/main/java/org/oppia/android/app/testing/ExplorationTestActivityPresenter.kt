@@ -40,7 +40,11 @@ class ExplorationTestActivityPresenter @Inject constructor(
   private fun playExplorationButton() {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
-      EXPLORATION_ID
+      INTERNAL_PROFILE_ID,
+      TOPIC_ID,
+      STORY_ID,
+      EXPLORATION_ID,
+      shouldSavePartialProgress = false
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->
@@ -57,8 +61,9 @@ class ExplorationTestActivityPresenter @Inject constructor(
               INTERNAL_PROFILE_ID,
               TOPIC_ID,
               STORY_ID,
-              EXPLORATION_ID, /* backflowScreen= */
-              null
+              EXPLORATION_ID,
+              /* backflowScreen= */ null,
+              isCheckpointingEnabled = false
             )
           }
         }
