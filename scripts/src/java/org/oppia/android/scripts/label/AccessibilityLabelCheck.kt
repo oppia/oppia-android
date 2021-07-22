@@ -141,8 +141,9 @@ private fun logFailures(
       println("- $activityPath")
     }
     println()
-    println("If this is correct, please update " +
-      "$accessibilityLabelExemptionTextProtoFilePath.textproto")
+    println(
+      "If this is correct, please update $accessibilityLabelExemptionTextProtoFilePath.textproto"
+    )
     println(
       "Note that, in general, all Activities should have labels. If you choose to add an" +
         " exemption, please specifically call this out in your PR description."
