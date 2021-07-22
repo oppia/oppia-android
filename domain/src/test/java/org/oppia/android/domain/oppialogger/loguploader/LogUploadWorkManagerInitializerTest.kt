@@ -38,9 +38,9 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.LogUploader
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
+import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.networking.NetworkConnectionUtilProdImpl
+import org.oppia.android.util.networking.ProdNetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -61,7 +61,7 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var debugNetworkConnectionUtil: DebugNetworkConnectionUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -85,8 +85,8 @@ class LogUploadWorkManagerInitializerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtilDebugImpl = NetworkConnectionUtilDebugImpl(
-      NetworkConnectionUtilProdImpl(ApplicationProvider.getApplicationContext())
+    debugNetworkConnectionUtil = DebugNetworkConnectionUtil(
+      ProdNetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     )
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext

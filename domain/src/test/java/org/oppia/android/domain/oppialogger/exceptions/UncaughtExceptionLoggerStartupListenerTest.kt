@@ -38,10 +38,10 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.networking.NetworkConnectionUtilProdImpl
+import org.oppia.android.util.networking.ProdNetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -64,7 +64,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var debugNetworkConnectionUtil: DebugNetworkConnectionUtil
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -83,15 +83,15 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtilDebugImpl = NetworkConnectionUtilDebugImpl(
-      NetworkConnectionUtilProdImpl(ApplicationProvider.getApplicationContext())
+    debugNetworkConnectionUtil = DebugNetworkConnectionUtil(
+      ProdNetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     )
     setUpTestApplicationComponent()
   }
 
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionLoggerStartupListener.uncaughtException(
       Thread.currentThread(),

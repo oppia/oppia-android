@@ -27,16 +27,16 @@ import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [NetworkConnectionUtilDebugImpl]. */
+/** Tests for [DebugNetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class NetworkConnectionUtilDebugImplTest {
+class DebugNetworkConnectionUtilTest {
 
   private val NO_CONNECTION = -1
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var debugNetworkConnectionUtil: DebugNetworkConnectionUtil
 
   @Inject
   lateinit var context: Context
@@ -47,7 +47,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionUtilDebugImplTest_TestApplicationComponent.builder()
+    DaggerDebugNetworkConnectionUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -56,7 +56,7 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeWifi_noForcedConnection_returnsWifi() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.LOCAL
     )
   }
@@ -64,8 +64,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeWifi_forceCellularConnection_returnsCellular() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -73,8 +73,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeWifi_forceNoConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.NONE)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.NONE)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -82,7 +82,7 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifi_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -90,8 +90,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifi_forceWifiConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -99,8 +99,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifi_forceCellularConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -108,7 +108,7 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeCellular_noForcedConnection_returnsCellular() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.CELLULAR
     )
   }
@@ -116,8 +116,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeCellular_forceWifiConnection_returnsWifi() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -125,8 +125,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_activeCellular_forceNoConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.NONE)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.NONE)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -134,7 +134,7 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellular_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -142,8 +142,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellular_forceWifiConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -151,8 +151,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellular_forceCellularConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -160,7 +160,7 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetwork_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(NO_CONNECTION, false)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -168,8 +168,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetwork_forceWifiConnection_returnsNone() {
     setNetworkConnectionStatus(NO_CONNECTION, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -177,8 +177,8 @@ class NetworkConnectionUtilDebugImplTest {
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetwork_forceCellularConnection_returnsNone() {
     setNetworkConnectionStatus(NO_CONNECTION, false)
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
-    assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+    assertThat(debugNetworkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
     )
   }
@@ -233,6 +233,6 @@ class NetworkConnectionUtilDebugImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkConnectionUtilDebugImplTest: NetworkConnectionUtilDebugImplTest)
+    fun inject(networkConnectionUtilDebugImplTest: DebugNetworkConnectionUtilTest)
   }
 }

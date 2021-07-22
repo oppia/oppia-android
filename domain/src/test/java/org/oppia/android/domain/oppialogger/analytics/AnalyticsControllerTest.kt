@@ -47,10 +47,10 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.networking.NetworkConnectionUtilProdImpl
+import org.oppia.android.util.networking.ProdNetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -81,7 +81,7 @@ class AnalyticsControllerTest {
   lateinit var oppiaLogger: OppiaLogger
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var debugNetworkConnectionUtil: DebugNetworkConnectionUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -100,8 +100,8 @@ class AnalyticsControllerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtilDebugImpl = NetworkConnectionUtilDebugImpl(
-      NetworkConnectionUtilProdImpl(ApplicationProvider.getApplicationContext())
+    debugNetworkConnectionUtil = DebugNetworkConnectionUtil(
+      ProdNetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     )
     setUpTestApplicationComponent()
   }
@@ -366,7 +366,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
@@ -396,7 +396,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
@@ -426,7 +426,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
     val eventLogs = analyticsController.getEventLogStore().toLiveData()
@@ -443,7 +443,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_logClickEvent_withNoNetwork_checkOrderinCache() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
@@ -494,7 +494,7 @@ class AnalyticsControllerTest {
         )
       )
     )
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
@@ -532,7 +532,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logEvents_exceedLimit_withNoNetwork_checkCorrectEventIsEvicted() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
     val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()

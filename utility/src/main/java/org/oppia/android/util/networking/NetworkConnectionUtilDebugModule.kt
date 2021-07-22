@@ -9,5 +9,5 @@ import javax.inject.Singleton
 interface NetworkConnectionUtilDebugModule {
   @Singleton
   @Binds
-  fun bindsNetworkConnectionUtil(impl: NetworkConnectionUtilDebugImpl): NetworkConnectionUtil
+  fun bindsNetworkConnectionUtil(impl: DebugNetworkConnectionUtil): NetworkConnectionUtil
 }

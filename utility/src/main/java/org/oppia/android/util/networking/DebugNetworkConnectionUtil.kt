@@ -8,8 +8,8 @@ import javax.inject.Singleton
  * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug builds.
  */
 @Singleton
-class NetworkConnectionUtilDebugImpl @Inject constructor(
-  private val networkConnectionUtilProdImpl: NetworkConnectionUtilProdImpl
+class DebugNetworkConnectionUtil @Inject constructor(
+  private val prodNetworkConnectionUtil: ProdNetworkConnectionUtil
 ) : NetworkConnectionUtil {
 
   private var forcedConnectionStatus: ConnectionStatus? = null
@@ -18,7 +18,7 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
     forcedConnectionStatus?.let {
       return it
     }
-    return networkConnectionUtilProdImpl.getCurrentConnectionStatus()
+    return prodNetworkConnectionUtil.getCurrentConnectionStatus()
   }
 
   /**
@@ -26,7 +26,7 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
    * [Boolean] indicating result.
    */
   fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
-    if (networkConnectionUtilProdImpl.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
+    if (prodNetworkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
       (connectionStatus == ConnectionStatus.CELLULAR || connectionStatus == ConnectionStatus.LOCAL)
     ) {
       forcedConnectionStatus = null

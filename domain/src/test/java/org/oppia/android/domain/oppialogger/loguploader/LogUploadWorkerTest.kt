@@ -42,10 +42,10 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.LogUploader
+import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.networking.NetworkConnectionUtilProdImpl
+import org.oppia.android.util.networking.ProdNetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -60,7 +60,7 @@ private const val TEST_TOPIC_ID = "test_topicId"
 class LogUploadWorkerTest {
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var debugNetworkConnectionUtil: DebugNetworkConnectionUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -107,8 +107,8 @@ class LogUploadWorkerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtilDebugImpl = NetworkConnectionUtilDebugImpl(
-      NetworkConnectionUtilProdImpl(ApplicationProvider.getApplicationContext())
+    debugNetworkConnectionUtil = DebugNetworkConnectionUtil(
+      ProdNetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     )
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -121,7 +121,7 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
       eventLogTopicContext.actionName,
@@ -149,7 +149,7 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    debugNetworkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())

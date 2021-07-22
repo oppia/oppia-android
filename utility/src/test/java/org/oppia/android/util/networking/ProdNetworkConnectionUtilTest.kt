@@ -26,11 +26,11 @@ import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [NetworkConnectionUtilProdImpl]. */
+/** Tests for [ProdNetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class NetworkConnectionUtilProdImplTest {
+class ProdNetworkConnectionUtilTest {
 
   private val NO_CONNECTION = -1
 
@@ -182,6 +182,6 @@ class NetworkConnectionUtilProdImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkConnectionUtilProdImplTest: NetworkConnectionUtilProdImplTest)
+    fun inject(networkConnectionUtilProdImplTest: ProdNetworkConnectionUtilTest)
   }
 }
