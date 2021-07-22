@@ -35,6 +35,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   @StoryHtmlParserEntityType private val entityType: String
 ) {
+  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
+  //  implemented.
 
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private var internalProfileId: Int = -1
@@ -218,7 +220,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private fun playExploration(topicId: String, storyId: String, explorationId: String) {
     explorationDataController.startPlayingExploration(
-      explorationId
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = false
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -236,7 +242,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              /* backflowScreen = */ null
+              /* backflowScreen = */ null,
+              isCheckpointingEnabled = false
             )
             activity.finish()
           }
