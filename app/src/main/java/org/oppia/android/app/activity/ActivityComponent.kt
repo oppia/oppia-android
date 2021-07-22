@@ -9,6 +9,7 @@ import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
@@ -100,6 +101,7 @@ interface ActivityComponent {
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
+  fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)

@@ -72,6 +72,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstor
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/StorySelector.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/StorySummaryViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/testing/MarkStoriesCompletedTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragmentPresenter.kt"
