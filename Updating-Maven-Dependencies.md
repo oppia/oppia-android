@@ -1,4 +1,4 @@
-All the third-party Maven dependencies used in Oppia-Android along with their versions are mentioned in the [versions.bzl](https://github.com/oppia/oppia-android/blob/develop/third_party/versions.bzl) file that resides in the `third_party` package. To add/delete/update any dependency, please follow the below steps.
+All the third-party Maven dependencies used in Oppia-Android along with their versions are mentioned in the [versions.bzl](https://github.com/oppia/oppia-android/blob/develop/third_party/versions.bzl) file that resides in the `third_party` package. To add/delete/update any dependency in `MAVEN_PRODUCTION_DEPENDENCY_VERSIONS` or `MAVEN_TEST_DEPENDENCY_VERSIONS` dictionaries, please follow the below steps.
 
 ## Updating `maven_install.json`
 
