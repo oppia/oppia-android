@@ -89,7 +89,6 @@
   <!-- Content Item: Exploration View -->
   <dimen name="content_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="content_item_exploration_view_margin_top">24dp</dimen>
-  <dimen name="content_item_exploration_view_margin_bottom">24dp</dimen>
   <dimen name="content_item_exploration_view_margin_end">144dp</dimen>
 
   <dimen name="content_item_exploration_view_padding_start">12dp</dimen>

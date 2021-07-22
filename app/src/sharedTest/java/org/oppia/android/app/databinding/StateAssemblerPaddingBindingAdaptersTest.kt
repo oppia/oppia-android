@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -118,10 +120,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -134,10 +136,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -149,10 +151,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -165,10 +167,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -180,10 +182,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -196,10 +198,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -212,10 +214,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -228,10 +230,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -244,10 +246,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -260,10 +262,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -277,10 +279,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -294,10 +296,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -311,10 +313,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -328,10 +330,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingStart()
+      convertToPx(12f)
     )
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationPaddingEnd()
+      convertToPx(12f)
     )
   }
 
@@ -339,37 +341,21 @@ class StateAssemblerPaddingBindingAdaptersTest {
     setExplorationViewPadding(
       textView,
       /* isApplicable= */ true,
-      getExplorationPaddingStart(),
-      getExplorationPaddingTop(),
-      getExplorationPaddingEnd(),
-      getExplorationPaddingBottom()
+      convertToPx(12f),
+      convertToPx(16f),
+      convertToPx(12f),
+      convertToPx(12f)
     )
-  }
-
-  private fun getExplorationPaddingEnd(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_end)
-  }
-
-  private fun getExplorationPaddingStart(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_start)
-  }
-
-  private fun getExplorationPaddingTop(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_top)
-  }
-
-  private fun getExplorationPaddingBottom(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_padding_bottom)
   }
 
   private fun setExplorationSplitPadding(textView: TextView) {
     setExplorationSplitViewPadding(
       textView,
       /* isApplicable= */ true,
-      getExplorationPaddingStart(),
-      getExplorationPaddingTop(),
-      getExplorationPaddingEnd(),
-      getExplorationPaddingBottom()
+      convertToPx(12f),
+      convertToPx(16f),
+      convertToPx(12f),
+      convertToPx(12f)
     )
   }
 
@@ -377,10 +363,10 @@ class StateAssemblerPaddingBindingAdaptersTest {
     setQuestionViewPadding(
       textView,
       /* isApplicable= */ true,
-      getExplorationPaddingStart(),
-      getExplorationPaddingTop(),
-      getExplorationPaddingEnd(),
-      getExplorationPaddingBottom()
+      convertToPx(12f),
+      convertToPx(16f),
+      convertToPx(12f),
+      convertToPx(12f)
     )
   }
 
@@ -388,10 +374,19 @@ class StateAssemblerPaddingBindingAdaptersTest {
     setQuestionSplitViewPadding(
       textView,
       /* isApplicable= */ true,
-      getExplorationPaddingStart(),
-      getExplorationPaddingTop(),
-      getExplorationPaddingEnd(),
-      getExplorationPaddingBottom()
+      convertToPx(12f),
+      convertToPx(16f),
+      convertToPx(12f),
+      convertToPx(12f)
+    )
+  }
+
+  private fun convertToPx(dip: Float): Float {
+    val r: Resources = context.resources
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_PX,
+      dip,
+      r.displayMetrics
     )
   }
 

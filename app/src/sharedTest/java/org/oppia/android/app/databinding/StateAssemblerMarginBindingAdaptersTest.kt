@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -119,10 +121,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -135,10 +137,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -150,10 +152,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -166,10 +168,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -181,10 +183,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -197,10 +199,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -213,10 +215,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -229,10 +231,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -245,10 +247,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -261,10 +263,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -278,10 +280,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -295,10 +297,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -312,10 +314,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -329,10 +331,10 @@ class StateAssemblerMarginBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getExplorationMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -340,10 +342,10 @@ class StateAssemblerMarginBindingAdaptersTest {
     setQuestionViewMargin(
       textView,
       /* isApplicable= */ true,
-      getExplorationMarginStart(),
-      getExplorationMarginTop(),
-      getExplorationMarginEnd(),
-      getExplorationMarginBottom()
+      convertToPx(24f),
+      convertToPx(24f),
+      convertToPx(40f),
+      convertToPx(24f)
     )
   }
 
@@ -351,10 +353,10 @@ class StateAssemblerMarginBindingAdaptersTest {
     setQuestionSplitViewMargin(
       textView,
       /* isApplicable= */ true,
-      getExplorationMarginStart(),
-      getExplorationMarginTop(),
-      getExplorationMarginEnd(),
-      getExplorationMarginBottom()
+      convertToPx(24f),
+      convertToPx(24f),
+      convertToPx(40f),
+      convertToPx(24f)
     )
   }
 
@@ -362,27 +364,20 @@ class StateAssemblerMarginBindingAdaptersTest {
     setExplorationSplitViewMargin(
       textView,
       /* isApplicable= */ true,
-      getExplorationMarginStart(),
-      getExplorationMarginTop(),
-      getExplorationMarginEnd(),
-      getExplorationMarginBottom()
+      convertToPx(24f),
+      convertToPx(24f),
+      convertToPx(40f),
+      convertToPx(24f)
     )
   }
 
-  private fun getExplorationMarginStart(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
-  }
-
-  private fun getExplorationMarginEnd(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-  }
-
-  private fun getExplorationMarginBottom(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_bottom)
-  }
-
-  private fun getExplorationMarginTop(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_top)
+  private fun convertToPx(dip: Float): Float {
+    val r: Resources = context.resources
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_PX,
+      dip,
+      r.displayMetrics
+    )
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(

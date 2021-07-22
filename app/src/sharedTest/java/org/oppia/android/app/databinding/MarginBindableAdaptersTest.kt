@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -116,10 +118,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -132,10 +134,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -148,10 +150,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -164,10 +166,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -181,10 +183,26 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
+    )
+  }
+
+  @Test
+  fun testMarginBindableAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlFails() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      setLayoutMarginStartAndMarginEnd(textView)
+      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+      return@runWithActivity textView
+    }
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
+      convertToPx(24f)
+    )
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
+      convertToPx(40f)
     )
   }
 
@@ -198,10 +216,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -215,10 +233,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
@@ -232,30 +250,25 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginStart()
+      convertToPx(24f)
     )
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      getContentMarginEnd()
+      convertToPx(40f)
     )
   }
 
   private fun setLayoutMarginStartAndMarginEnd(textView: TextView) {
-    setLayoutMarginStart(
-      textView,
-      getContentMarginStart()
-    )
-    setLayoutMarginEnd(
-      textView,
-      getContentMarginEnd()
-    )
+    setLayoutMarginStart(textView, convertToPx(24f))
+    setLayoutMarginEnd(textView, convertToPx(40f))
   }
 
-  private fun getContentMarginEnd(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_end)
-  }
-
-  private fun getContentMarginStart(): Float {
-    return context.resources.getDimension(R.dimen.content_item_exploration_view_margin_start)
+  private fun convertToPx(dip: Float): Float {
+    val r: Resources = context.resources
+    return TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_DIP,
+      dip,
+      r.displayMetrics
+    )
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
