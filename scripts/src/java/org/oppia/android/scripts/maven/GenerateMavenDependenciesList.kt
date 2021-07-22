@@ -111,15 +111,17 @@ class GenerateMavenDependenciesList(
   
         If the link does point to a valid license then choose the most appropriate category for 
         the link:
+        
         1. scrapable_link: If the license text is plain text and the URL mentioned can be scraped
-                           directly from the original_link of the license. 
-                           e.g - https://www.apache.org/licenses/LICENSE-2.0.txt
+        directly from the original_link of the license. e.g - 
+        https://www.apache.org/licenses/LICENSE-2.0.txt
+        
         2. extracted_copy_link: If the license text is plain text but it can not be scraped 
-                                directly from the original_link of the license.
-                                e.g - https://www.opensource.org/licenses/bsd-license
+        directly from the original_link of the license. e.g -
+        https://www.opensource.org/licenses/bsd-license
+        
         3. direct_link_only: If the license text is not plain text, it's best to display only the
-                             link of the license.
-                             e.g - https://developer.android.com/studio/terms.html
+        link of the license. e.g - https://developer.android.com/studio/terms.html
         
         After identifying the category of the license, modify the license to include one of the
         above mentioned 'url'. 
