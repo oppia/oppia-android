@@ -11,6 +11,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -129,5 +130,6 @@ interface ActivityComponent {
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
+  fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

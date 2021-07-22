@@ -30,7 +30,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -125,7 +125,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_displaysEventLogsList() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.view_event_logs_recycler_view))
         .check(matches(isDisplayed()))
@@ -134,7 +134,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_displaysEventLogsList() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.view_event_logs_recycler_view))
@@ -144,7 +144,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_displaysCorrectNumberOfEventLogs() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.view_event_logs_recycler_view))
         .check(hasItemCount(count = 5))
@@ -153,7 +153,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_displaysCorrectNumberOfEventLogs() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.view_event_logs_recycler_view))
@@ -163,7 +163,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_checkRecentLogsAreDisplayedFirst() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
@@ -200,7 +200,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_checkRecentLogsAreDisplayedFirst() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
@@ -238,7 +238,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_contextIsNull_contextIsNotDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyItemNotDisplayedOnEventLogItemViewAtPosition(
@@ -255,7 +255,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_contextIsNull_contextIsNotDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 3)
@@ -273,7 +273,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_contextIsNotNull_contextIsCorrectlyDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
@@ -310,7 +310,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_contextIsNotNull_contextIsCorrectlyDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
@@ -348,7 +348,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
@@ -385,7 +385,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
@@ -423,7 +423,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_priorityIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
@@ -460,7 +460,7 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_priorityIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
