@@ -54,7 +54,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_activeWifiConnection_noForcedConnection_returnsWifi() {
+  fun testGetCurrentConnectionStatus_activeWifi_noForcedConnection_returnsWifi() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
     assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.LOCAL
@@ -80,7 +80,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveWifiConnection_noForcedConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_nonActiveWifi_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
     assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
@@ -106,7 +106,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_activeCellularConnection_noForcedConnection_returnsCellular() {
+  fun testGetCurrentConnectionStatus_activeCellular_noForcedConnection_returnsCellular() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
     assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.CELLULAR
@@ -132,7 +132,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveCellularConnection_noForcedConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_nonActiveCellular_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
     assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE
@@ -158,7 +158,7 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_noActiveNetworkConnection_noForcedConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_noActiveNetwork_noForcedConnection_returnsNone() {
     setNetworkConnectionStatus(NO_CONNECTION, false)
     assertThat(networkConnectionUtilDebugImpl.getCurrentConnectionStatus()).isEqualTo(
       ConnectionStatus.NONE

@@ -4,7 +4,7 @@ import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton
 
-/** Provides prod implementation of [NetworkConnectionUtil]. */
+/** Provides production implementation of [NetworkConnectionUtil]. */
 @Module
 interface NetworkConnectionUtilProdModule {
   @Singleton

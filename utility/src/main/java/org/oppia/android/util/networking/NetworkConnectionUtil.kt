@@ -14,10 +14,6 @@ interface NetworkConnectionUtil {
     NONE
   }
 
-  /**
-   * Gets the current connection status of the device.
-   *
-   * @return a [ConnectionStatus] indicating the current connection status of the device.
-   */
+  /** Returns a [ConnectionStatus] indicating the current connection status of the device. */
   fun getCurrentConnectionStatus(): ConnectionStatus
 }

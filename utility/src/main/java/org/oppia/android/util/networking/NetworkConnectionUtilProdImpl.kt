@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Prod implementation of [NetworkConnectionUtil] which gets the current [ConnectionStatus] of the device.
+ * [NetworkConnectionUtil] which gets the current [ConnectionStatus] of the device in production builds.
  */
 @Singleton
 class NetworkConnectionUtilProdImpl @Inject constructor(

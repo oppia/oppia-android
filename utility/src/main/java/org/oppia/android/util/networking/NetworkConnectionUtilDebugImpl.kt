@@ -5,8 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Debug implementation of [NetworkConnectionUtil] which gets and sets the current
- * [ConnectionStatus] of the device.
+ * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug builds.
  */
 @Singleton
 class NetworkConnectionUtilDebugImpl @Inject constructor(
@@ -23,11 +22,8 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
   }
 
   /**
-   * Sets the current connection status of the device.
-   *
-   * @param connectionStatus: refers to the [ConnectionStatus] which needs to be set.
-   *
-   * @return a [Boolean] indicating whether the forcing of connection was successful or not.
+   * Forces 'connectionStatus' as the current connection status of the device and returns a
+   * [Boolean] indicating result.
    */
   fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
     if (networkConnectionUtilProdImpl.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
