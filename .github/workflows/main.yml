@@ -17,7 +17,6 @@ on:
 # app_tests: Non-flaky Robolectric tests for the app module
 jobs:
   robolectric_tests:
-    if: false
     name: Non-app Module Robolectric Tests
     runs-on: ${{ matrix.os }}
     strategy:
@@ -95,7 +94,6 @@ jobs:
           path: testing/build/reports
 
   app_tests:
-    if: false
     name: App Module Robolectric Tests
     runs-on: ${{ matrix.os }}
     strategy:
