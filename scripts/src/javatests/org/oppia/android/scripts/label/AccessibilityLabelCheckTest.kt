@@ -65,7 +65,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_labelNotPresent_checkShouldFail() {
+  fun testAccessibilityLabel_activityNameIsRelative_labelNotPresent_checkShouldFail() {
     val testContent =
       """
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -95,7 +95,46 @@ class AccessibilityLabelCheckTest {
     val failureMessage =
       """
       Accessibility label missing for Activities:
-      - ${retrieveTestFilesDirectoryPath()}/$activityRelativePath
+      - $activityRelativePath
+      
+      $failureNotePartOne
+      $failureNotePartTwo
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testAccessibilityLabel_activityNameIsAbsolute_labelNotPresent_checkShouldFail() {
+    val testContent =
+      """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android.splash">
+          <activity
+              android:name=".FirstSplashActivity"
+              android:label="@string/administrator_controls_title1" />
+          <activity
+              android:name="org.oppia.android.splash.SecondSplashActivity" />
+      </manifest>
+      """.trimIndent()
+    tempFolder.newFolder(
+      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
+    )
+    val tempFileRelativePath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
+    val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
+    manifestFile.writeText(testContent)
+
+    val exception = assertThrows(Exception::class) {
+      main(retrieveTestFilesDirectoryPath(), tempFileRelativePath)
+    }
+
+    assertThat(exception).hasMessageThat().contains(
+      ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR
+    )
+    val activityRelativePath = "app/src/main/java/org/oppia/android/splash/SecondSplashActivity"
+    val failureMessage =
+      """
+      Accessibility label missing for Activities:
+      - $activityRelativePath
       
       $failureNotePartOne
       $failureNotePartTwo
@@ -198,8 +237,8 @@ class AccessibilityLabelCheckTest {
     val failureMessage =
       """
       Accessibility label missing for Activities:
-      - ${retrieveTestFilesDirectoryPath()}/$appActivityPath
-      - ${retrieveTestFilesDirectoryPath()}/$splashActivityPath
+      - $appActivityPath
+      - $splashActivityPath
       
       $failureNotePartOne
       $failureNotePartTwo
@@ -260,10 +299,10 @@ class AccessibilityLabelCheckTest {
     val failureMessage =
       """
       Accessibility label missing for Activities:
-      - ${retrieveTestFilesDirectoryPath()}/$firstAppActivityPath
-      - ${retrieveTestFilesDirectoryPath()}/$fourthAppActivityPath
-      - ${retrieveTestFilesDirectoryPath()}/$thirdAppActivityPath
-      - ${retrieveTestFilesDirectoryPath()}/$splashActivityPath
+      - $firstAppActivityPath
+      - $fourthAppActivityPath
+      - $thirdAppActivityPath
+      - $splashActivityPath
       
       $failureNotePartOne
       $failureNotePartTwo
@@ -272,7 +311,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_AccessibilitylabelNotDefinedForExemptedActivity_checkShouldPass() {
+  fun testAccessibilityLabel_accessibilityLabelNotDefinedForExemptedActivity_checkShouldPass() {
     val testContent =
       """
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
