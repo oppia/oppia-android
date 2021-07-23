@@ -302,7 +302,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val textView = getTextView(htmlParser,View.LAYOUT_DIRECTION_RTL)
+    val textView = getTextView(htmlParser, View.LAYOUT_DIRECTION_RTL)
     assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
   }
 
@@ -315,9 +315,9 @@ class HtmlParserTest {
       imageCenterAlign = true
     )
 
-    getTextView(htmlParser,View.LAYOUT_DIRECTION_RTL)
+    getTextView(htmlParser, View.LAYOUT_DIRECTION_RTL)
 
-    val textViewLtr =  getTextView(htmlParser,View.LAYOUT_DIRECTION_LTR)
+    val textViewLtr = getTextView(htmlParser, View.LAYOUT_DIRECTION_LTR)
     assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
   }
 
