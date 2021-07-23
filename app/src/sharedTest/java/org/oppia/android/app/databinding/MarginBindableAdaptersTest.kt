@@ -83,6 +83,7 @@ private const val TOLERANCE = 1e-5f
 /** Tests for [MarginBindableAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = MarginBindableAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class MarginBindableAdaptersTest {
 
   @Inject
