@@ -1,5 +1,6 @@
 package org.oppia.android.app.help.thirdparty
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -16,9 +17,11 @@ class LicenseListViewModel @Inject constructor(
     getRecyclerViewItemList()
   }
 
+  @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
-    val licenseNames: Array<String> =
-      activity.resources.getStringArray(R.array.license_names_array)
+    val licenses = activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
+    val stringArrayResId = licenses.getResourceId(1, 0)
+    val licenseNames = activity.resources.getStringArray(stringArrayResId)
 
     licenseNames.forEachIndexed { index, name ->
       val licenseItemViewModel =
@@ -30,6 +33,7 @@ class LicenseListViewModel @Inject constructor(
       }
       arrayList.add(licenseItemViewModel)
     }
+    licenses.recycle()
     return arrayList
   }
 }

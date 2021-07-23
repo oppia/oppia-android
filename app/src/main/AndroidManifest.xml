@@ -5,7 +5,7 @@
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
-  <!-- TODO(#56): Reenable landscape support. -->
+
   <application
     android:name=".app.application.OppiaApplication"
     android:allowBackup="true"
@@ -14,6 +14,11 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <activity
+      android:name=".app.help.thirdparty.LicenseTextViewerActivity"
+      android:label="@string/faq_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+
     <meta-data
       android:name="firebase_analytics_collection_deactivated"
       android:value="true" />

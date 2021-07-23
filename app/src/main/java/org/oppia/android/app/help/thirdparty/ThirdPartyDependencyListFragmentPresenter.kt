@@ -31,10 +31,11 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+    val recyclerviewAdapter = createRecyclerViewAdapter()
 
     binding.thirdPartyDependencyListFragmentRecyclerView.apply {
       layoutManager = LinearLayoutManager(activity.applicationContext)
-      adapter = createRecyclerViewAdapter()
+      adapter = recyclerviewAdapter
     }
 
     binding.let {

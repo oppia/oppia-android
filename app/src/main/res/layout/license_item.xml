@@ -30,6 +30,7 @@
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
         android:fontFamily="sans-serif-medium"
+        android:onClick="@{(v) -> viewModel.clickOnLicenseItem()}"
         android:paddingTop="16dp"
         android:paddingBottom="8dp"
         android:text="@{viewModel.licenseName}"

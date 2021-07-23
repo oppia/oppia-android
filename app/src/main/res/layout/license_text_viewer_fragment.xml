@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.help.thirdparty.LicenseTextViewModel" />
+  </data>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+      android:id="@+id/license_text_textview"
+      android:layout_width="match_parent"
+      android:text="@{viewModel.licenseText}"
+      android:layout_height="wrap_content"/>
+  </ScrollView>
+</layout>

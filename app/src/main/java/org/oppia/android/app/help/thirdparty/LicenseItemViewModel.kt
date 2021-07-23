@@ -15,8 +15,8 @@ class LicenseItemViewModel(
   val showDivider = ObservableField(true)
 
   /** Starts [LicenseViewerActivity] upon clicking on an item of the license list. */
-//  fun clickOnLicenseItem() {
-//    val routeToLicenseTextListener = activity as RouteToLicenseTextListener
-//    routeToLicenseTextListener.onRouteToLicenseText()
-//  }
+  fun clickOnLicenseItem() {
+    val routeToLicenseTextListener = activity as RouteToLicenseTextListener
+    routeToLicenseTextListener.onRouteToLicenseText(licenseName)
+  }
 }

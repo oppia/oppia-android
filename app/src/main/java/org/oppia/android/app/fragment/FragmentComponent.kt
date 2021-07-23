@@ -59,6 +59,7 @@ import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent(
@@ -100,6 +101,7 @@ interface FragmentComponent {
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(licenseListFragment: LicenseListFragment)
+  fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)

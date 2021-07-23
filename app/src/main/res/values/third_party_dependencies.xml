@@ -50,6 +50,7 @@
   </string-array>
   <string-array name="third_party_dependency_license_names_1">
     <item>@string/license_name_0</item>
+    <item>@string/license_name_1</item>
   </string-array>
   <string-array name="third_party_dependency_license_names_2">
     <item>@string/license_name_0</item>
