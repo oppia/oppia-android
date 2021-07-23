@@ -7,7 +7,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseListActivityBinding
 import javax.inject.Inject
-import org.oppia.android.app.help.faq.FAQListFragment
 
 /** The presenter for [LicenseListActivity]. */
 @ActivityScope
@@ -39,15 +38,15 @@ class LicenseListActivityPresenter @Inject constructor(
 
     if (getLicenseListFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.faq_list_fragment_placeholder,
-        FAQListFragment()
+        R.id.license_list_fragment_placeholder,
+        LicenseListFragment()
       ).commitNow()
     }
   }
 
-  private fun getLicenseListFragment(): FAQListFragment? {
+  private fun getLicenseListFragment(): LicenseListFragment? {
     return activity
       .supportFragmentManager
-      .findFragmentById(R.id.license_list_fragment_placeholder) as FAQListFragment?
+      .findFragmentById(R.id.license_list_fragment_placeholder) as LicenseListFragment?
   }
 }

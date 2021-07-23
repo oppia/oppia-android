@@ -60,6 +60,9 @@
     <item>@array/third_party_dependency_license_names_2</item>
   </array>
 
+  <string name="license_name_0">The Apache Software License, Version 2.0</string>
+  <string name="license_name_1">Crashlytics Terms of Service</string>
+  <string name="license_name_2">The Apache Software License, Version 2.0</string>
   <string-array name="license_names_array">
     <item>@string/license_name_0</item>
     <item>@string/license_name_1</item>
@@ -67,9 +70,6 @@
   </string-array>
 
 
-  <string name="license_name_0">The Apache Software License, Version 2.0</string>
-  <string name="license_name_1">Crashlytics Terms of Service</string>
-  <string name="license_name_2">The Apache Software License, Version 2.0</string>
 
   <!--  <integer-array name="dependency_0_licenses_names_indices">-->
   <!--    <item>1</item>-->
