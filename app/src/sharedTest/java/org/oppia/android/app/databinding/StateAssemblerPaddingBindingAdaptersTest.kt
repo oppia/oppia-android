@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -83,10 +84,6 @@ private const val TOLERANCE = 1e-5f
 /** Tests for [StateAssemblerPaddingBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = StateAssemblerPaddingBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
 class StateAssemblerPaddingBindingAdaptersTest {
 
   @Inject
@@ -138,6 +135,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_explorationViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setExplorationViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -146,14 +144,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -183,6 +180,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_questionViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setQuestionViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -191,14 +189,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -228,6 +225,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_questionSplitViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setQuestionSplitViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -236,14 +234,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -344,6 +341,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -352,14 +350,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -368,6 +365,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_landscape_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -376,14 +374,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -392,6 +389,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlIsEnabled_port_tablet_paddingStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -400,14 +398,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 
@@ -416,6 +413,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
   fun testStateAssemblerPadding_rtlEnabled_landscape_tablet_paddingStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
@@ -424,14 +422,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
         /* paddingEnd= */ convertToPx(16f),
         /* paddingBottom= */ convertToPx(12f)
       )
-      textView.layoutDirection = View.LAYOUT_DIRECTION_RTL
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      convertToPx(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      convertToPx(16f)
     )
   }
 

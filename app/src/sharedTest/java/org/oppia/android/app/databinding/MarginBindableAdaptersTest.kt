@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.util.TypedValue
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -84,7 +83,6 @@ private const val TOLERANCE = 1e-5f
 /** Tests for [MarginBindableAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MarginBindableAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class MarginBindableAdaptersTest {
 
   @Inject
@@ -115,8 +113,8 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -132,8 +130,8 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -149,8 +147,8 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_ltrEnabled_port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -166,8 +164,8 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -183,9 +181,9 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView,ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -201,9 +199,9 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView,ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -219,9 +217,9 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView,ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -237,9 +235,9 @@ class MarginBindableAdaptersTest {
   fun testMarginBindableAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView,ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, convertToPx(24f))
-      setLayoutMarginEnd(textView, convertToPx(40f))
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      setLayoutMarginStart(textView, /* marginStart= */ convertToPx(24f))
+      setLayoutMarginEnd(textView, /* marginEnd= */ convertToPx(40f))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
