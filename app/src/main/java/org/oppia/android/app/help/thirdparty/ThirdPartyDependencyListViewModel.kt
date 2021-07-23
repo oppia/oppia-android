@@ -25,7 +25,7 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
       )
     thirdPartyDependencyNames.forEachIndexed { index, name ->
       val thirdPartyDependencyItemViewModel =
-        ThirdPartyDependencyItemViewModel(activity, name, thirdPartyDependencyVersions[index])
+        ThirdPartyDependencyItemViewModel(activity, name, thirdPartyDependencyVersions[index], index)
       if (index == thirdPartyDependencyNames.lastIndex) {
         thirdPartyDependencyItemViewModel.showDivider.set(false)
       } else {

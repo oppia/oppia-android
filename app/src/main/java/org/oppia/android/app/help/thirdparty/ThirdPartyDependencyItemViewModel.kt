@@ -8,7 +8,8 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class ThirdPartyDependencyItemViewModel(
   private val activity: AppCompatActivity,
   val name: String,
-  val version: String
+  val version: String,
+  val index: Int
 ) : ObservableViewModel() {
 
   /** Used to control visibility of divider. */
@@ -16,7 +17,7 @@ class ThirdPartyDependencyItemViewModel(
 
   /** Starts [LicenseListActivity] upon clicking on an item of the third-party dependency list. */
   fun clickOnThirdPartyDependencyItem() {
-    val routeToFAQSingleListener = activity as RouteToLicenseListListener
-    routeToFAQSingleListener.onRouteToLicenseList(name, version)
+    val routeToLicenseListListener = activity as RouteToLicenseListListener
+    routeToLicenseListListener.onRouteToLicenseList(name, version, index)
   }
 }

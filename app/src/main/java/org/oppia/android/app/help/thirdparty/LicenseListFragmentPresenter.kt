@@ -17,17 +17,17 @@ import org.oppia.android.databinding.LicenseListFragmentBinding
 @FragmentScope
 class LicenseListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<LicenseListViewModel>
+  private val fragment: Fragment
 ) {
   private lateinit var binding: LicenseListFragmentBinding
 
   /** Handles onCreateView() method of the [LicenseListFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    index: Int
   ): View? {
-    val viewModel = getLicenseListViewModel(fragment)
+    val viewModel = LicenseListViewModel(activity, index)
 
     binding = LicenseListFragmentBinding.inflate(
       inflater,
@@ -55,10 +55,5 @@ class LicenseListFragmentPresenter @Inject constructor(
         setViewModel = LicenseItemBinding::setViewModel
       )
       .build()
-  }
-
-  private fun getLicenseListViewModel(fragment: Fragment):
-    LicenseListViewModel {
-    return viewModelProvider.getForFragment(fragment, LicenseListViewModel::class.java)
   }
 }

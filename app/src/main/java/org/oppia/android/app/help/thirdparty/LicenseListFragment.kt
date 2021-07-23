@@ -13,6 +13,17 @@ class LicenseListFragment : InjectableFragment() {
   @Inject
   lateinit var licenseListFragmentPresenter: LicenseListFragmentPresenter
 
+  companion object {
+    private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX = "LicenseListFragment.DependencyIndex"
+    fun newInstance(index: Int): LicenseListFragment {
+      val fragment = LicenseListFragment()
+      val args = Bundle()
+      args.putInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX, index)
+      fragment.arguments = args
+      return fragment
+    }
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
@@ -23,6 +34,9 @@ class LicenseListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return licenseListFragmentPresenter.handleCreateView(inflater, container)
+    val args =
+      checkNotNull(arguments) { "Expected arguments to be passed to LicenseListFragment" }
+    val index = args.getInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX)
+    return licenseListFragmentPresenter.handleCreateView(inflater, container, index)
   }
 }

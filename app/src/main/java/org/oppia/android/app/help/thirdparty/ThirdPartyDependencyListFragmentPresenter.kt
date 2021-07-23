@@ -37,6 +37,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
       layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = recyclerviewAdapter
     }
+//    binding.thirdPartyDependencyListFragmentRecyclerView.setOnClickListener()
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -57,5 +58,9 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
 
   private fun getThirdPartyDependencyListViewModel(): ThirdPartyDependencyListViewModel {
     return viewModelProvider.getForFragment(fragment, ThirdPartyDependencyListViewModel::class.java)
+  }
+
+  interface ItemClickListener {
+    fun onItemClicked(position: Int, view: View)
   }
 }

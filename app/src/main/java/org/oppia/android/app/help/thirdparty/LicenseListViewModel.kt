@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 /** View model in [LicenseListFragment]. */
 class LicenseListViewModel @Inject constructor(
-  val activity: AppCompatActivity
+  val activity: AppCompatActivity,
+  val index: Int
 ) : ObservableViewModel() {
   private val arrayList = ArrayList<LicenseItemViewModel>()
 
@@ -20,7 +21,7 @@ class LicenseListViewModel @Inject constructor(
   @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
     val licenses = activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
-    val stringArrayResId = licenses.getResourceId(1, 0)
+    val stringArrayResId = licenses.getResourceId(index, 0)
     val licenseNames = activity.resources.getStringArray(stringArrayResId)
 
     licenseNames.forEachIndexed { index, name ->
