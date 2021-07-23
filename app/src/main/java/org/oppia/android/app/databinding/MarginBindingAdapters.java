@@ -15,11 +15,11 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginEnd = params.getMarginEnd();
-      if (isRtlLayout(view)) {
-        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
-      } else {
+//      if (isRtlLayout(view)) {
+//        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+//      } else {
         setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
-      }
+//      }
       view.requestLayout();
     }
   }
@@ -30,27 +30,22 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       float marginStart = params.getMarginStart();
-      if (isRtlLayout(view)) {
-        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
-      } else {
+//      if (isRtlLayout(view)) {
+//        setLayoutDirectionalMargins(view, (int) marginEnd, (int) marginStart);
+//      } else {
         setLayoutDirectionalMargins(view, (int) marginStart, (int) marginEnd);
-      }
+//      }
       view.requestLayout();
     }
   }
 
   private static void setLayoutDirectionalMargins(
-      @NonNull View view,
-      int marginStart,
-      int marginEnd
+    @NonNull View view,
+    int marginStart,
+    int marginEnd
   ) {
     MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-    params.setMargins(
-        marginStart,
-        params.topMargin,
-        marginEnd,
-        params.bottomMargin
-    );
+    params.setMargins(marginStart, params.topMargin, marginEnd, params.bottomMargin);
   }
 
   /** Used to set a margin-top for views. */
