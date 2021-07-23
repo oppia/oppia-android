@@ -302,18 +302,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val textView = activityRule.scenario.runWithActivity {
-      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL)
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
-        textView
-      )
-      return@runWithActivity textView
-    }
+    val textView = getTextView(htmlParser,View.LAYOUT_DIRECTION_RTL)
     assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
   }
 
@@ -325,22 +314,16 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val textViewLtr = activityRule.scenario.runWithActivity {
-      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL)
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
-        textView
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
 
-    val textView = activityRule.scenario.runWithActivity {
-      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR)
+    getTextView(htmlParser,View.LAYOUT_DIRECTION_RTL)
+
+    val textViewLtr =  getTextView(htmlParser,View.LAYOUT_DIRECTION_LTR)
+    assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
+  }
+
+  private fun getTextView(htmlParser: HtmlParser, layoutDirection: Int): TextView {
+    return activityRule.scenario.runWithActivity {
+      it.getWindow().getDecorView().setLayoutDirection(layoutDirection)
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
@@ -351,7 +334,6 @@ class HtmlParserTest {
       )
       return@runWithActivity textView
     }
-    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
   }
 
   @Test
