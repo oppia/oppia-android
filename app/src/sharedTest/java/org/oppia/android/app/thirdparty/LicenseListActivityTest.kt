@@ -101,7 +101,7 @@ class LicenseListActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(
       context.getString(
-        R.string.third_party_dependency_list_activity_title
+        R.string.license_list_activity_title
       )
     )
   }

@@ -3,14 +3,23 @@ package org.oppia.android.app.thirdparty
 import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -20,7 +29,11 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -59,13 +72,13 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ThirdPartyDependencyListFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(
+  application = ThirdPartyDependencyListFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ThirdPartyDependencyListFragmentTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
@@ -89,12 +102,38 @@ class ThirdPartyDependencyListFragmentTest {
     Intents.release()
   }
 
+  @Test
+  fun openThirdPartyDependencyListActivity_selectItem_opensLicenseListActivity() {
+    ActivityScenario.launch(ThirdPartyDependencyListActivity::class.java).use {
+      Espresso.onView(
+        RecyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(ViewActions.click())
+      Intents.intended(
+        Matchers.allOf(
+          IntentMatchers.hasComponent(LicenseListActivity::class.java.name)
+        )
+      )
+    }
+  }
 
-
-  private fun createThirdPartyDependencyListActivityIntent(): Intent {
-    return ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+  @Test
+  fun openThirdPartyDependencyListActivity_changeConfig_selectItem_opensLicenseListActivity() {
+    ActivityScenario.launch(ThirdPartyDependencyListActivity::class.java).use {
+      Espresso.onView(
+        RecyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(ViewActions.click())
+      Intents.intended(
+        Matchers.allOf(
+          IntentMatchers.hasComponent(LicenseListActivity::class.java.name)
+        )
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {

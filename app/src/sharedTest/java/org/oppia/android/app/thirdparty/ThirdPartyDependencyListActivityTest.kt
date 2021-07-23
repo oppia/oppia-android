@@ -74,7 +74,7 @@ class ThirdPartyDependencyListActivityTest {
 
   @get:Rule
   val activityTestRule: ActivityTestRule<ThirdPartyDependencyListActivity> = ActivityTestRule(
-   ThirdPartyDependencyListActivity::class.java,
+    ThirdPartyDependencyListActivity::class.java,
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
