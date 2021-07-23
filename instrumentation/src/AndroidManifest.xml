@@ -4,9 +4,10 @@
   <uses-sdk
     android:minSdkVersion="19"
     android:targetSdkVersion="28" />
+  <application
+    android:name=".OppiaTestApplication"
+    android:label="OppiaTest" />
   <instrumentation
     android:targetPackage="org.oppia.android"
     android:name="androidx.test.runner.AndroidJUnitRunner" />
-  <application
-    android:label="OppiaTest" />
 </manifest>

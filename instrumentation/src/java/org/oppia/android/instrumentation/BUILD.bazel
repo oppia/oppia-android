@@ -1,0 +1,20 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+
+kt_android_library(
+    name = "oppia_test_application",
+    testonly = True,
+    srcs = [
+        "OppiaTestApplication.kt",
+        "TestApplicationComponent.kt"
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//app",
+        "//domain",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
+    ],
+)
+dagger_rules()
