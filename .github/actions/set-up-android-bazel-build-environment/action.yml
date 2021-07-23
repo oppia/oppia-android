@@ -1,0 +1,103 @@
+# Contains common operations to set up a hermetic Android + Bazel build environment for Oppia
+# Android CI workflows. Action prerequisites:
+# - JDK 9 must be installed & set as the default version via JAVA_HOME
+# - Bazel must be installed, in the path, and be version 4.0.0
+
+# TODO(#1861): Revert SDK pinning for improved CI performance once Bazel is sufficiently stable that
+# we can rely on the automatic SDK provided by GitHub's CI environment.
+
+name: Build environment setup
+description: Sets up the Android & Bazel build environments for Oppia Android
+runs:
+  using: composite
+  steps:
+    - name: Check Java version & path
+      run: |
+        which java
+        java -version
+        echo "Java home: $JAVA_HOME"
+        $JAVA_HOME/bin/java -version
+
+        # Verify that the correct version of Java is installed.
+        java -version 2>&1 | grep -q -E "1.9|9.0"
+        HAS_CORRECT_JAVA_VERSION=$(echo $?)
+        if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
+          echo "Expected Java 9 to be installed"
+          exit 1
+        fi
+      shell: bash
+
+    - name: Verify Bazel version
+      run: |
+        bazel --version | grep -q 4.0.0
+        HAS_CORRECT_BAZEL_VERSION=$(echo $?)
+        if [[ "$HAS_CORRECT_JAVA_VERSION" == 1 ]] ; then
+          echo "Expected Bazel 4.0.0 to be installed"
+          exit 1
+        fi
+      shell: bash
+
+    - name: Set up new Android SDK directory
+      run: |
+        mkdir -p $HOME/android-sdk
+      shell: bash
+
+    - name: Download cmdline tools
+      run: |
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip
+        cp ./commandlinetools-linux-7302050_latest.zip $HOME/android-sdk
+        cd $HOME/android-sdk
+        unzip commandlinetools-linux-7302050_latest.zip
+        mkdir tools
+        cd cmdline-tools/
+        mv -i * ../tools && mv ../tools .
+        cd ..
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Verify updated ANDROID_HOME
+      run: |
+        echo "Using updated Android SDK home: $ANDROID_HOME"
+      shell: bash
+
+    - name: Accept SDK licenses
+      run: |
+        # For some reason, sdkmanager returns an error code when licenses are accepted. Run in a
+        # sub-shell so that the CI workflow doesn't fail.
+        echo $(yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses)
+      shell: bash
+
+    - name: Install platform tools
+      run: |
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
+      shell: bash
+
+    - name: Install SDK 28
+      run: |
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-28"
+      shell: bash
+
+    - name: Install build tools 29.0.2
+      run: |
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;29.0.2"
+      shell: bash
+
+    - name: Configure Bazel to use JDK 9 for building
+      run: |
+        echo "build --java_language_version=9" >> $HOME/.bazelrc
+      shell: bash
+
+    - name: Configure Bazel to use specific sandbox tmpfs
+      run: |
+        echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
+        echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
+      shell: bash
+
+    - name: Set up Oppia Bazel Android Tools
+      run: |
+        mkdir $HOME/opensource
+        cd $HOME/opensource
+        git clone https://github.com/oppia/oppia-bazel-tools
+        echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
+        echo build --android_databinding_use_androidx >> $HOME/.bazelrc
+      shell: bash
