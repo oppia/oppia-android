@@ -43,6 +43,7 @@ gradlew.bat @BenHenning
 *.secret @BenHenning
 
 # CI configuration.
+/.github/actions/ @BenHenning
 /.github/workflows/ @BenHenning
 
 # All tests.
