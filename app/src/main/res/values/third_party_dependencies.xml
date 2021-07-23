@@ -1,26 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- Dependencies' names. -->
-  <string name="third_party_dependency_name_0">Glide</string>
-  <string name="third_party_dependency_name_1">Konfetti</string>
-  <string name="third_party_dependency_name_2">Retrofit</string>
-
-  <!-- Array that stores dependencies' names. -->
-  <string-array name="third_party_dependency_names">
+  <string name="third_party_dependency_name_0">androidx.annotation:annotation:1.1.0</string>
+  <string name="third_party_dependency_name_1">androidx.appcompat:appcompat:1.2.0</string>
+  <string name="third_party_dependency_name_2">androidx.arch.core:core-common:2.1.0</string>
+  <string-array name="third_party_dependency_names_array">
     <item>@string/third_party_dependency_name_0</item>
     <item>@string/third_party_dependency_name_1</item>
     <item>@string/third_party_dependency_name_2</item>
   </string-array>
-
-  <!-- Dependencies' versions. -->
-  <string name="third_party_dependency_version_0">4.3.1</string>
-  <string name="third_party_dependency_version_1">1.2.2</string>
-  <string name="third_party_dependency_version_2">1.3.4</string>
-
-  <!-- Array that stores dependencies' versions. -->
-  <string-array name="third_party_dependency_versions">
+  <string name="third_party_dependency_version_0">1.1.0</string>
+  <string name="third_party_dependency_version_1">1.2.0</string>
+  <string name="third_party_dependency_version_2">2.1.0</string>
+  <string-array name="third_party_dependency_versions_array">
     <item>@string/third_party_dependency_version_0</item>
     <item>@string/third_party_dependency_version_1</item>
     <item>@string/third_party_dependency_version_2</item>
   </string-array>
+
+
+  <string name="license_text_0"><![CDATA[
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+   1. Definitions.
+]]></string>
+  <string name="license_text_1"><![CDATA[https://firebase.google.com/terms/crashlytics]]></string>
+  <string name="license_text_2"><![CDATA[
+     comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same &amp;quot;printed page&amp;quot; as the copyright notice for easier
+      identification within third-party archives.]]>;
+  </string>
+
+  <string-array name="third_party_dependency_license_texts_0">
+    <item>@string/license_text_0</item>
+  </string-array>
+  <string-array name="third_party_dependency_license_texts_1">
+    <item>@string/license_text_2</item>
+  </string-array>
+  <string-array name="third_party_dependency_license_texts_2">
+    <item>@string/license_text_0</item>
+  </string-array>
+  <array name="third_party_dependency_license_texts_array">
+    <item>@array/third_party_dependency_license_texts_0</item>
+    <item>@array/third_party_dependency_license_texts_1</item>
+    <item>@array/third_party_dependency_license_texts_2</item>
+  </array>
+
+  <string-array name="third_party_dependency_license_names_0">
+    <item>@string/license_name_0</item>
+  </string-array>
+  <string-array name="third_party_dependency_license_names_1">
+    <item>@string/license_name_0</item>
+  </string-array>
+  <string-array name="third_party_dependency_license_names_2">
+    <item>@string/license_name_0</item>
+  </string-array>
+  <array name="third_party_dependency_license_names_array">
+    <item>@array/third_party_dependency_license_names_0</item>
+    <item>@array/third_party_dependency_license_names_1</item>
+    <item>@array/third_party_dependency_license_names_2</item>
+  </array>
+
+  <string-array name="license_names_array">
+    <item>@string/license_name_0</item>
+    <item>@string/license_name_1</item>
+    <item>@string/license_name_2</item>
+  </string-array>
+
+
+  <string name="license_name_0">The Apache Software License, Version 2.0</string>
+  <string name="license_name_1">Crashlytics Terms of Service</string>
+  <string name="license_name_2">The Apache Software License, Version 2.0</string>
+
+  <!--  <integer-array name="dependency_0_licenses_names_indices">-->
+  <!--    <item>1</item>-->
+  <!--  </integer-array>-->
+  <!--  <integer-array name="dependency_1_licenses_names_indices">-->
+  <!--    <item>0</item>-->
+  <!--  </integer-array>-->
+  <!--  <integer-array name="dependency_2_license_names_indices">-->
+  <!--    <item>0</item>-->
+  <!--    <item>2</item>-->
+  <!--  </integer-array>-->
+  <!--  <array name="third_party_dependency_license_names_indices">-->
+  <!--    <item>@array/dependency_0_licenses_names_indices</item>-->
+  <!--    <item>@array/dependency_1_licenses_names_indices</item>-->
+  <!--    <item>@array/dependency_2_license_names_indices</item>-->
+  <!--  </array>-->
+
+
 </resources>

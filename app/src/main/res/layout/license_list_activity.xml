@@ -8,13 +8,13 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/third_party_dependency_licenses_app_bar_layout"
+      android:id="@+id/license_list_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/third_party_dependency_licenses_activity_toolbar"
+        android:id="@+id/license_list_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -30,7 +30,7 @@
       android:layout_height="match_parent">
 
       <FrameLayout
-        android:id="@+id/third_party_dependency_licenses_fragment_placeholder"
+        android:id="@+id/license_list_fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

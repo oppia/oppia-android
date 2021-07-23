@@ -18,10 +18,10 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
 
   private fun getRecyclerViewItemList(): ArrayList<ThirdPartyDependencyItemViewModel> {
     val thirdPartyDependencyNames: Array<String> =
-      activity.resources.getStringArray(R.array.third_party_dependency_names)
+      activity.resources.getStringArray(R.array.third_party_dependency_names_array)
     val thirdPartyDependencyVersions: Array<String> =
       activity.resources.getStringArray(
-        R.array.third_party_dependency_versions
+        R.array.third_party_dependency_versions_array
       )
     thirdPartyDependencyNames.forEachIndexed { index, name ->
       val thirdPartyDependencyItemViewModel =

@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseListActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.help.faq.FAQListFragment
 
 /** The presenter for [LicenseListActivity]. */
 @ActivityScope
@@ -26,27 +27,27 @@ class LicenseListActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    licenseListActivityToolbar = binding.thirdPartyDependencyLicensesActivityToolbar
+    licenseListActivityToolbar = binding.licenseListActivityToolbar
     activity.setSupportActionBar(licenseListActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.FAQs)
+    activity.supportActionBar!!.title = activity.getString(R.string.license_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-    binding.thirdPartyDependencyLicensesActivityToolbar.setNavigationOnClickListener {
+    binding.licenseListActivityToolbar.setNavigationOnClickListener {
       (activity as LicenseListActivity).finish()
     }
 
-//    if (getThirdPartyDependencyListFragment() == null) {
-//      activity.supportFragmentManager.beginTransaction().add(
-//        R.id.faq_list_fragment_placeholder,
-//        FAQListFragment()
-//      ).commitNow()
-//    }
+    if (getLicenseListFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.faq_list_fragment_placeholder,
+        FAQListFragment()
+      ).commitNow()
+    }
   }
 
-//  private fun getThirdPartyDependencyListFragment(): FAQListFragment? {
-//    return activity
-//      .supportFragmentManager
-//      .findFragmentById(R.id.faq_list_fragment_placeholder) as FAQListFragment?
-//  }
+  private fun getLicenseListFragment(): FAQListFragment? {
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.license_list_fragment_placeholder) as FAQListFragment?
+  }
 }
