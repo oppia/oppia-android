@@ -28,12 +28,13 @@ jobs:
         with:
           java-version: 9
 
-      - name: Check Java version & path
-        run: |
-          which java
-          java -version
-          echo "Java home: $JAVA_HOME"
-          $JAVA_HOME/bin/java -version
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -74,20 +75,6 @@ jobs:
             rm -rf $EXPANDED_BAZEL_CACHE_PATH
           fi
 
-      - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 4.0.0
-
-      - name: Configure Bazel to use JDK 9 for building
-        run: |
-          echo "build --java_language_version=9" >> $HOME/.bazelrc
-
-      - name: Configure Bazel to use specific sandbox tmpfs
-        run: |
-          echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
-          echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
-
       - name: Configure Bazel to use a local cache
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
@@ -99,14 +86,6 @@ jobs:
 
       - name: Check Bazel environment
         run: bazel info
-
-      - name: Set up Oppia Bazel Android Tools
-        run: |
-          mkdir $HOME/opensource
-          cd $HOME/opensource
-          git clone https://github.com/oppia/oppia-bazel-tools
-          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
-          echo build --android_databinding_use_androidx >> $HOME/.bazelrc
 
       # See https://git-secret.io/installation for details on installing git-secret. Note that the
       # apt-get method isn't used since it's much slower to update & upgrade apt before installation
