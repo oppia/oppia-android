@@ -224,11 +224,6 @@
   <dimen name="audio_player_split_view_margin_start">64dp</dimen>
   <dimen name="audio_player_split_view_margin_end">64dp</dimen>
 
-  <!-- FAQ Single -->
-  <dimen name="faq_single_padding_start">72dp</dimen>
-  <dimen name="faq_single_padding_top">28dp</dimen>
-  <dimen name="faq_single_padding_end">72dp</dimen>
-  <dimen name="faq_single_padding_bottom">56dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">108dp</dimen>
