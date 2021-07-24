@@ -250,7 +250,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndpaddingEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitViewPadding(
