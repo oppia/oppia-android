@@ -9,23 +9,22 @@ import org.oppia.android.scripts.proto.MavenDependency
  * maven_dependencies.textproto is up-to-date.
  *
  * Usage:
- *   bazel run //scripts:compute_affected_tests --
- *     <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference>
+ *   bazel run //scripts:verify_maven_dependencies_list_is_up_to_date -- <path_to_directory_root>
+ *   <path_to_maven_install_json> <path_to_maven_dependencies_pb>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_output_file: path to the file in which the affected test targets will be printed.
- * - base_develop_branch_reference: the reference to the local develop branch that should be use.
- *     Generally, this is 'origin/develop'.
- *
+ * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  * Example:
- *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_tests.log origin/develop
+ *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
+ *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
+ *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
   val pathToRoot = args[0]
   val pathToMavenInstall = "$pathToRoot/${args[1]}"
-  val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
-  val pathToProtoBinary = args[3]
+  val pathToProtoBinary = args[2]
   val licenseFetcher = LicenseFetcherImpl()
   val mavenDependenciesListGenerator = MavenDependenciesListGenerator(licenseFetcher)
 
