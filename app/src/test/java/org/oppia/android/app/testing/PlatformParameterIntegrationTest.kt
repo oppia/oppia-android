@@ -1,24 +1,14 @@
 package org.oppia.android.app.testing
 
 import android.app.Application
-import android.os.IBinder
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Root
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -54,10 +44,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -74,20 +61,15 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_VALUE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowToast
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests to verify the working of Platform Parameter Architecture. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = PlatformParameterIntegrationTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
+@Config(application = PlatformParameterIntegrationTest.TestApplication::class)
 class PlatformParameterIntegrationTest {
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -120,42 +102,20 @@ class PlatformParameterIntegrationTest {
   @Test
   fun testSplashTestActivity_readEmptyDatabase_checkWelcomeMsgIsInvisibleByDefault() {
     launch(SplashTestActivity::class.java).use {
-      onView(withText(SplashTestActivity.WELCOME_MSG)).check(doesNotExist())
+      testCoroutineDispatchers.runCurrent()
+      assertThat(ShadowToast.getLatestToast()).isNull()
     }
   }
 
-  @RunOn(TestPlatform.ESPRESSO)
   @Test
   fun testSplashTestActivity_updateEmptyDatabase_readDatabaseValues_checkWelcomeMsgIsVisible() {
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
     testCoroutineDispatchers.runCurrent()
 
     launch(SplashTestActivity::class.java).use {
-      onView(withText(SplashTestActivity.WELCOME_MSG))
-        .inRoot(getToastMatcher())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  // Returns a [TypeSafeMatcher] which checks for any [Toast] message in the screen.
-  private fun getToastMatcher(): TypeSafeMatcher<Root?> {
-    return object : TypeSafeMatcher<Root?>() {
-      override fun describeTo(description: Description?) {
-        description?.appendText("is toast")
-      }
-
-      override fun matchesSafely(item: Root?): Boolean {
-        val type: Int? = item?.windowLayoutParams?.get()?.type
-        if (type == WindowManager.LayoutParams.TYPE_TOAST) {
-          val windowToken: IBinder = item.decorView.windowToken
-          val appToken: IBinder = item.decorView.applicationWindowToken
-          if (windowToken === appToken) {
-            // Means this window isn't contained by any other windows.
-            return true
-          }
-        }
-        return false
-      }
+      testCoroutineDispatchers.runCurrent()
+      assertThat(ShadowToast.getLatestToast()).isNotNull()
+      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SplashTestActivity.WELCOME_MSG)
     }
   }
 
