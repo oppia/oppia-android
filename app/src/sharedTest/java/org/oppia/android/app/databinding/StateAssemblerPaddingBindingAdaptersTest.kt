@@ -43,6 +43,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.dipToPixels
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -120,18 +121,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -143,18 +144,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -165,18 +166,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -188,18 +189,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -210,18 +211,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -233,18 +234,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setQuestionSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -256,18 +257,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -279,18 +280,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -302,18 +303,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -325,18 +326,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -349,18 +350,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -373,18 +374,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -397,18 +398,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
@@ -421,27 +422,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
       setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* paddingStart= */ convertToPx(12f),
-        /* paddingTop= */ convertToPx(16f),
-        /* paddingEnd= */ convertToPx(16f),
-        /* paddingBottom= */ convertToPx(12f)
+        /* paddingStart= */ dipToPixels(12f),
+        /* paddingTop= */ dipToPixels(16f),
+        /* paddingEnd= */ dipToPixels(16f),
+        /* paddingBottom= */ dipToPixels(12f)
       )
       return@runWithActivity textView
     }
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(12f)
+      /* marginStart= */ dipToPixels(12f)
     )
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(16f)
-    )
-  }
-
-  private fun convertToPx(dip: Float): Float {
-    val resources: Resources = context.resources
-    return TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_PX,
-      dip,
-      resources.displayMetrics
+      /* marginEnd= */ dipToPixels(16f)
     )
   }
 
