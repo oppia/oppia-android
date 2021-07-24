@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.util.TypedValue
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -44,6 +42,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.dipToPixels
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -121,18 +120,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -144,18 +143,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -166,18 +165,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -189,18 +188,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -211,18 +210,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -234,18 +233,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setQuestionSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -257,18 +256,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -280,18 +279,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -303,18 +302,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -326,18 +325,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -350,18 +349,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -374,18 +373,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -398,18 +397,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -422,18 +421,18 @@ class StateAssemblerMarginBindingAdaptersTest {
       setExplorationSplitViewMargin(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f),
-        /* marginTop= */ dipToPixels(24f),
-        /* marginEnd= */ dipToPixels(40f),
-        /* marginBottom= */ dipToPixels(24f)
+        /* marginStart= */ dipToPixels(24f, context),
+        /* marginTop= */ dipToPixels(24f, context),
+        /* marginEnd= */ dipToPixels(40f, context),
+        /* marginBottom= */ dipToPixels(24f, context)
       )
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 

@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.util.TypedValue
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -115,15 +113,15 @@ class MarginBindingAdaptersTest {
   fun testMarginBindableAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -132,15 +130,15 @@ class MarginBindingAdaptersTest {
   fun testMarginBindableAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -149,15 +147,15 @@ class MarginBindingAdaptersTest {
   fun testMarginBindableAdapters_ltrEnabled_port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -166,15 +164,15 @@ class MarginBindingAdaptersTest {
   fun testMarginBindableAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -184,15 +182,15 @@ class MarginBindingAdaptersTest {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -202,15 +200,15 @@ class MarginBindingAdaptersTest {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -220,15 +218,15 @@ class MarginBindingAdaptersTest {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
@@ -238,15 +236,15 @@ class MarginBindingAdaptersTest {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f))
-      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f))
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f)
+      /* marginStart= */ dipToPixels(24f, context)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f)
+      /* marginEnd= */ dipToPixels(40f, context)
     )
   }
 
