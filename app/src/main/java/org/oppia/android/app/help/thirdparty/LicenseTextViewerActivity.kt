@@ -24,7 +24,9 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
   companion object {
     /** Returns [Intent] for [LicenseTextViewerActivity]. */
     private const val LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX = "LicenseTextViewerActivity.DepIndex"
-    private const val LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX = "LicenseTextViewerActivity.LicenseIndex"
+    private const val LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX =
+      "LicenseTextViewerActivity.LicenseIndex"
+
     fun createLicenseTextViewerActivityIntent(
       context: Context,
       dependencyIndex: Int,

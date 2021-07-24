@@ -3,8 +3,8 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import javax.inject.Inject
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextListener {
@@ -21,13 +21,9 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
 
   companion object {
     /** Returns [Intent] for [LicenseListActivity]. */
-//    const val THIRD_PARTY_DEPENDENCY_NAME = "ThirdPartyListActivity.dependencyName"
-//    const val THIRD_PARTY_DEPENDENCY_VERSION = "ThirdPartyListActivity.dependencyVersion"
     const val THIRD_PARTY_DEPENDENCY_INDEX = "ThirdPartyListActivity.dependencyIndex"
     fun createLicenseListActivityIntent(
       context: Context,
-      name: String,
-      version: String,
       index: Int
     ): Intent {
       val intent = Intent(context, LicenseListActivity::class.java)

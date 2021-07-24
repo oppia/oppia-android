@@ -15,8 +15,11 @@ class LicenseTextViewerFragment : InjectableFragment() {
   lateinit var licenseTextViewerFragmentPresenter: LicenseTextViewerFragmentPresenter
 
   companion object {
-    private const val LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX = "LicenseTextViewerFragment.DependencyIndex"
-    private const val LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX = "LicenseTextViewerFragment.LicenseIndex"
+    private const val LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX =
+      "LicenseTextViewerFragment.DependencyIndex"
+    private const val LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX =
+      "LicenseTextViewerFragment.LicenseIndex"
+
     fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
       val fragment = LicenseTextViewerFragment()
       val args = Bundle()
@@ -43,6 +46,11 @@ class LicenseTextViewerFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to LicenseTextViewerFragment" }
     val dependencyIndex = args.getInt(LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX)
     val licenseIndex = args.getInt(LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX)
-    return licenseTextViewerFragmentPresenter.handleCreateView(inflater, container, dependencyIndex, licenseIndex)
+    return licenseTextViewerFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      dependencyIndex,
+      licenseIndex
+    )
   }
 }

@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [LicenseTextViewerActivity]. */
 @ActivityScope
@@ -39,7 +39,8 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     }
 
     if (getLicenseTextViewerFragment() == null) {
-      val licenseTextViewerFragment = LicenseTextViewerFragment.newInstance(dependencyIndex, licenseIndex)
+      val licenseTextViewerFragment =
+        LicenseTextViewerFragment.newInstance(dependencyIndex, licenseIndex)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.license_text_viewer_fragment_placeholder, licenseTextViewerFragment).commitNow()
     }

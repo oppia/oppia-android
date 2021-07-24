@@ -18,6 +18,6 @@ class ThirdPartyDependencyItemViewModel(
   /** Starts [LicenseListActivity] upon clicking on an item of the third-party dependency list. */
   fun clickOnThirdPartyDependencyItem() {
     val routeToLicenseListListener = activity as RouteToLicenseListListener
-    routeToLicenseListListener.onRouteToLicenseList(name, version, index)
+    routeToLicenseListListener.onRouteToLicenseList(index)
   }
 }

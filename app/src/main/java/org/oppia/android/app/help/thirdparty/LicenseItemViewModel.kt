@@ -1,6 +1,5 @@
 package org.oppia.android.app.help.thirdparty
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -9,7 +8,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class LicenseItemViewModel(
   private val activity: AppCompatActivity,
   val licenseName: String,
-  val licenseItemIndex: Int,
+  val licenseIndex: Int,
   val dependencyIndex: Int
 ) : ObservableViewModel() {
 
@@ -19,8 +18,6 @@ class LicenseItemViewModel(
   /** Starts [LicenseTextViewerActivity] upon clicking on an item of the license list. */
   fun clickOnLicenseItem() {
     val routeToLicenseTextListener = activity as RouteToLicenseTextListener
-    Log.d("ViewModel", "Dependency Index : $dependencyIndex.")
-    Log.d("ViewModel", "LicenseItem Index : $licenseItemIndex.")
-    routeToLicenseTextListener.onRouteToLicenseText(dependencyIndex, licenseItemIndex)
+    routeToLicenseTextListener.onRouteToLicenseText(dependencyIndex, licenseIndex)
   }
 }

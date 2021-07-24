@@ -20,7 +20,8 @@ class LicenseListViewModel @Inject constructor(
 
   @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
-    val licenses = activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
+    val licenses =
+      activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
     val stringArrayResId = licenses.getResourceId(index, -1)
     val licenseNames = activity.resources.getStringArray(stringArrayResId)
 

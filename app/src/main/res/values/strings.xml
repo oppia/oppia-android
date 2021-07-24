@@ -483,5 +483,10 @@
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependencies">Third Party Dependencies</string>
+
+  <!-- LicenseListActivity-->
   <string name="license_list_activity_title">Copyright Licenses</string>
+
+  <!-- LicenseTextViewerActivity-->
+  <string name="license_text_viewer_activity_title">Copyright Licenses</string>
 </resources>

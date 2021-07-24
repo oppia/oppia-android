@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.LicenseTextViewerFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [LicenseListFragment]. */
 @FragmentScope
@@ -39,8 +39,11 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getLicenseTextViewModel(activity: AppCompatActivity, dependencyIndex: Int, licenseIndex: Int):
-    LicenseTextViewModel {
+  private fun getLicenseTextViewModel(
+    activity: AppCompatActivity,
+    dependencyIndex: Int,
+    licenseIndex: Int
+  ): LicenseTextViewModel {
     return LicenseTextViewModel(activity, dependencyIndex, licenseIndex)
   }
 }

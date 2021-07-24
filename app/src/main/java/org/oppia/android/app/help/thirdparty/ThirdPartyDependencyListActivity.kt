@@ -28,14 +28,12 @@ class ThirdPartyDependencyListActivity :
     }
   }
 
-  override fun onRouteToLicenseList(name: String, version: String, index: Int) {
+  override fun onRouteToLicenseList(dependencyIndex: Int) {
     startActivity(
       LicenseListActivity
         .createLicenseListActivityIntent(
           context = this,
-          name = name,
-          version = version,
-          index = index
+          index = dependencyIndex
         )
     )
   }
