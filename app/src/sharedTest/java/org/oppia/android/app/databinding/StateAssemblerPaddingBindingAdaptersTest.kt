@@ -342,7 +342,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndpaddingEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndPaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
