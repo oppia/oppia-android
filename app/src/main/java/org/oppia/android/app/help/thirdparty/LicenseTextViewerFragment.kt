@@ -2,6 +2,7 @@ package org.oppia.android.app.help.thirdparty
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,21 @@ class LicenseTextViewerFragment : InjectableFragment() {
   @Inject
   lateinit var licenseTextViewerFragmentPresenter: LicenseTextViewerFragmentPresenter
 
+  companion object {
+    private const val LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX = "LicenseTextViewerFragment.DependencyIndex"
+    private const val LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX = "LicenseTextViewerFragment.LicenseIndex"
+    fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
+      val fragment = LicenseTextViewerFragment()
+      val args = Bundle()
+      args.putInt(LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)
+      args.putInt(LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX, licenseIndex)
+      Log.d("TAG", "Dependency Index : $dependencyIndex.")
+      Log.d("TAG", "License Index : $licenseIndex.")
+      fragment.arguments = args
+      return fragment
+    }
+  }
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent.inject(this)
@@ -23,6 +39,10 @@ class LicenseTextViewerFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return licenseTextViewerFragmentPresenter.handleCreateView(inflater, container)
+    val args =
+      checkNotNull(arguments) { "Expected arguments to be passed to LicenseTextViewerFragment" }
+    val dependencyIndex = args.getInt(LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX)
+    val licenseIndex = args.getInt(LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX)
+    return licenseTextViewerFragmentPresenter.handleCreateView(inflater, container, dependencyIndex, licenseIndex)
   }
 }

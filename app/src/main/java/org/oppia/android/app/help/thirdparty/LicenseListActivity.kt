@@ -3,7 +3,6 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
@@ -37,9 +36,13 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
     }
   }
 
-  override fun onRouteToLicenseText(licenseText: String) {
+  override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {
     startActivity(
-      LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(this, licenseText)
+      LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+        this,
+        dependencyIndex,
+        licenseIndex
+      )
     )
   }
 }

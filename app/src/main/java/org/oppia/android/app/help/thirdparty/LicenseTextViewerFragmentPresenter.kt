@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import javax.inject.Inject
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.LicenseTextViewerFragmentBinding
 
 /** The presenter for [LicenseListFragment]. */
@@ -22,9 +20,11 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
   /** Handles onCreateView() method of the [LicenseTextViewerFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    dependencyIndex: Int,
+    licenseIndex: Int
   ): View? {
-    val viewModel = getLicenseTextViewModel(fragment)
+    val viewModel = getLicenseTextViewModel(activity, dependencyIndex, licenseIndex)
 
     binding = LicenseTextViewerFragmentBinding.inflate(
       inflater,
@@ -39,11 +39,8 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun getLicenseTextViewModel(fragment: Fragment):
+  private fun getLicenseTextViewModel(activity: AppCompatActivity, dependencyIndex: Int, licenseIndex: Int):
     LicenseTextViewModel {
-    val licenses = activity.resources.obtainTypedArray(R.array.third_party_dependency_license_texts_array)
-    val stringArrayResId = licenses.getResourceId(0, 0)
-    val licenseNames = activity.resources.getStringArray(stringArrayResId)
-    return LicenseTextViewModel(licenseNames[0])
+    return LicenseTextViewModel(activity, dependencyIndex, licenseIndex)
   }
 }

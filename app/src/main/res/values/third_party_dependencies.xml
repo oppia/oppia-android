@@ -16,8 +16,6 @@
     <item>@string/third_party_dependency_version_1</item>
     <item>@string/third_party_dependency_version_2</item>
   </string-array>
-
-
   <string name="license_text_0"><![CDATA[
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
    1. Definitions.
@@ -29,22 +27,21 @@
       same &amp;quot;printed page&amp;quot; as the copyright notice for easier
       identification within third-party archives.]]>;
   </string>
-
   <string-array name="third_party_dependency_license_texts_0">
     <item>@string/license_text_0</item>
   </string-array>
   <string-array name="third_party_dependency_license_texts_1">
-    <item>@string/license_text_2</item>
+    <item>@string/license_text_0</item>
+    <item>@string/license_text_1</item>
   </string-array>
   <string-array name="third_party_dependency_license_texts_2">
-    <item>@string/license_text_0</item>
+    <item>@string/license_text_2</item>
   </string-array>
   <array name="third_party_dependency_license_texts_array">
     <item>@array/third_party_dependency_license_texts_0</item>
     <item>@array/third_party_dependency_license_texts_1</item>
     <item>@array/third_party_dependency_license_texts_2</item>
   </array>
-
   <string-array name="third_party_dependency_license_names_0">
     <item>@string/license_name_0</item>
   </string-array>
@@ -53,14 +50,13 @@
     <item>@string/license_name_1</item>
   </string-array>
   <string-array name="third_party_dependency_license_names_2">
-    <item>@string/license_name_0</item>
+    <item>@string/license_name_2</item>
   </string-array>
   <array name="third_party_dependency_license_names_array">
     <item>@array/third_party_dependency_license_names_0</item>
     <item>@array/third_party_dependency_license_names_1</item>
     <item>@array/third_party_dependency_license_names_2</item>
   </array>
-
   <string name="license_name_0">The Apache Software License, Version 2.0</string>
   <string name="license_name_1">Crashlytics Terms of Service</string>
   <string name="license_name_2">The Apache Software License, Version 2.0</string>
@@ -69,24 +65,4 @@
     <item>@string/license_name_1</item>
     <item>@string/license_name_2</item>
   </string-array>
-
-
-
-  <!--  <integer-array name="dependency_0_licenses_names_indices">-->
-  <!--    <item>1</item>-->
-  <!--  </integer-array>-->
-  <!--  <integer-array name="dependency_1_licenses_names_indices">-->
-  <!--    <item>0</item>-->
-  <!--  </integer-array>-->
-  <!--  <integer-array name="dependency_2_license_names_indices">-->
-  <!--    <item>0</item>-->
-  <!--    <item>2</item>-->
-  <!--  </integer-array>-->
-  <!--  <array name="third_party_dependency_license_names_indices">-->
-  <!--    <item>@array/dependency_0_licenses_names_indices</item>-->
-  <!--    <item>@array/dependency_1_licenses_names_indices</item>-->
-  <!--    <item>@array/dependency_2_license_names_indices</item>-->
-  <!--  </array>-->
-
-
 </resources>

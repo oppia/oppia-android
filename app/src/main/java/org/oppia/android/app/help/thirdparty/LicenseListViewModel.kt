@@ -21,13 +21,13 @@ class LicenseListViewModel @Inject constructor(
   @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
     val licenses = activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
-    val stringArrayResId = licenses.getResourceId(index, 0)
+    val stringArrayResId = licenses.getResourceId(index, -1)
     val licenseNames = activity.resources.getStringArray(stringArrayResId)
 
-    licenseNames.forEachIndexed { index, name ->
+    licenseNames.forEachIndexed { licenseIndex, name ->
       val licenseItemViewModel =
-        LicenseItemViewModel(activity, name, index)
-      if (index == licenseNames.lastIndex) {
+        LicenseItemViewModel(activity, name, licenseIndex, index)
+      if (licenseIndex == licenseNames.lastIndex) {
         licenseItemViewModel.showDivider.set(false)
       } else {
         licenseItemViewModel.showDivider.set(true)
