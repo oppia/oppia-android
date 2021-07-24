@@ -13,6 +13,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
@@ -44,7 +45,9 @@ class ExplorationTestActivityPresenter @Inject constructor(
       TOPIC_ID,
       STORY_ID,
       EXPLORATION_ID,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      // Pass an empty checkpoint if there exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->

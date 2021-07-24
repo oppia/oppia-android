@@ -24,6 +24,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
@@ -224,7 +225,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      // Pass an empty checkpoint if the exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

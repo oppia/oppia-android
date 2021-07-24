@@ -28,6 +28,7 @@ internal class StateDeck internal constructor(
   private val hintList: MutableList<Hint> = ArrayList()
   private lateinit var solution: Solution
   private var stateIndex: Int = 0
+
   // The value -1 indicates that hint has not been revealed yet.
   private var revealedHintIndex: Int = -1
   private var solutionIsRevealed: Boolean = false
@@ -45,18 +46,24 @@ internal class StateDeck internal constructor(
     solutionIsRevealed = false
   }
 
-  /** Resumes this deck to a particular checkpoint. */
+  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
   internal fun resumeDeck(
     initialState: State,
     previousStates: List<EphemeralState>,
-    currentDialogInteractions: List<AnswerAndResponse>
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int,
+    hintIndex: Int,
+    solutionIsRevealed: Boolean
   ) {
-    pendingTopState = initialState
+    this.pendingTopState = initialState
     this.previousStates.clear()
     this.currentDialogInteractions.clear()
     this.hintList.clear()
-    this.previousStates += previousStates
-    this.currentDialogInteractions += currentDialogInteractions
+    this.previousStates.addAll(previousStates)
+    this.currentDialogInteractions.addAll(currentDialogInteractions)
+    this.stateIndex = stateIndex
+    this.revealedHintIndex = hintIndex
+    this.solutionIsRevealed = solutionIsRevealed
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */

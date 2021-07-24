@@ -54,6 +54,7 @@ class ExplorationDataController @Inject constructor(
    * @param explorationId the ID of the exploration which has to be played
    * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
    *     for the current exploration
+   * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    *     The exploration may still fail to load, but this provides early-failure detection.
    */
@@ -63,7 +64,7 @@ class ExplorationDataController @Inject constructor(
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint?
+    explorationCheckpoint: ExplorationCheckpoint
   ): LiveData<AsyncResult<Any?>> {
     return try {
       explorationProgressController.beginExplorationAsync(

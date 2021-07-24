@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
@@ -18,7 +19,6 @@ import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickL
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
-import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -103,8 +103,12 @@ class StateFragment :
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    stateFragmentPresenter.onHintAvailable(helpIndex)
+  override fun onHintAvailable(
+    helpIndex: HelpIndex,
+    indexOfLastRevealedHint: Int,
+    isSolutionRevealed: Boolean
+  ) =
+    stateFragmentPresenter.onHintAvailable(helpIndex, indexOfLastRevealedHint, isSolutionRevealed)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 

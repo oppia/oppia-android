@@ -70,6 +70,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -107,7 +108,8 @@ class ExplorationActivityLocalTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -134,7 +136,8 @@ class ExplorationActivityLocalTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -145,7 +148,8 @@ class ExplorationActivityLocalTest {
           topicId,
           storyId,
           explorationId,
-          shouldSavePartialProgress
+          shouldSavePartialProgress,
+          explorationCheckpoint
         )
       }
     }

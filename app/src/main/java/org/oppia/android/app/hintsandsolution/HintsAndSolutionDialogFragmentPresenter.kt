@@ -112,7 +112,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         bindingAdapter = createRecyclerViewAdapter()
         adapter = bindingAdapter
       }
-      if (viewModel.newAvailableHintIndex.get() != -1) {
+      if (viewModel.newAvailableHintIndex.get() != -2) {
         handleNewAvailableHint(viewModel.newAvailableHintIndex.get())
       }
       if (viewModel.allHintsExhausted.get()!!) {

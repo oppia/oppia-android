@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
@@ -17,7 +18,6 @@ import org.oppia.android.app.player.state.listener.ReplayButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
-import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -84,6 +84,11 @@ class QuestionPlayerFragment :
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
 
-  override fun onHintAvailable(helpIndex: HelpIndex) =
+  override fun onHintAvailable(
+    helpIndex: HelpIndex,
+    indexOfLastRevealedHint: Int,
+    isSolutionRevealed: Boolean
+  ) =
     questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 }
+

@@ -2,6 +2,10 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -22,10 +26,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -79,7 +79,7 @@ class ExplorationProgressController @Inject constructor(
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint?
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -92,7 +92,7 @@ class ExplorationProgressController @Inject constructor(
         currentStoryId = storyId
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
-        if (explorationCheckpoint != null) this.explorationCheckpoint = explorationCheckpoint
+        this.explorationCheckpoint = explorationCheckpoint
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
@@ -646,21 +646,103 @@ class ExplorationProgressController @Inject constructor(
     )
   }
 
+  /**
+   * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
+   * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
+   * re-initialized with the values created from the saved [ExplorationCheckpoint].
+   */
   private fun loadStateDeck(progress: ExplorationProgress, exploration: Exploration) {
-    if (progress.explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance()) {
-      progress.stateDeck.resumeDeck(
-        progress.stateGraph.getState(progress.explorationCheckpoint.pendingStateName),
-        getPreviousStatesFromCheckpoint(progress, progress.explorationCheckpoint.stateIndex),
-        progress.explorationCheckpoint.pendingUserAnswersList,
-      )
-    } else {
+    if (progress.explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
       progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+    } else {
+      progress.stateDeck.resumeDeck(
+        createPendingTopStateFromCheckpoint(progress),
+        getPreviousStatesFromCheckpoint(progress),
+        progress.explorationCheckpoint.pendingUserAnswersList,
+        progress.explorationCheckpoint.stateIndex,
+        progress.explorationCheckpoint.hintIndex,
+        progress.explorationCheckpoint.solutionIsRevealed
+      )
     }
   }
 
+  /**
+   * Creates a pending top state for the current exploration as it was when the checkpoint was
+   * created.
+   *
+   * @return the pending [State] for the current exploration
+   */
+  private fun createPendingTopStateFromCheckpoint(progress: ExplorationProgress): State {
+    val pendingTopState =
+      progress.stateGraph.getState(progress.explorationCheckpoint.pendingStateName)
+    val hintList = createHintListFromCheckpoint(
+        pendingTopState.interaction.hintList,
+        progress.explorationCheckpoint.hintIndex
+      )
+    val solution = createSolutionFromCheckpoint(
+        progress.explorationCheckpoint.solutionIsRevealed,
+        pendingTopState
+      )
+    val interactionBuilder =
+      pendingTopState.interaction.toBuilder()
+        .clearHint()
+        .addAllHint(hintList)
+        .setSolution(solution)
+        .build()
+    return pendingTopState.toBuilder().setInteraction(interactionBuilder).build()
+  }
+
+  /**
+   * Mark all hints as reveled in the pendingState that were revealed for the current state pending
+   * state before the checkpoint was saved.
+   *
+   * @param pendingStateHintList the list of hint for the current pending state
+   * @param revealedHintIndex the index of the last revealed hint in the pending state
+   */
+  private fun createHintListFromCheckpoint(
+    pendingStateHintList: List<Hint>,
+    revealedHintIndex: Int
+  ): List<Hint> {
+    val updatedHintList: MutableList<Hint> = ArrayList()
+    pendingStateHintList.forEachIndexed { index, hint ->
+      updatedHintList.add(
+        hint.toBuilder()
+          .setHintIsRevealed(index <= revealedHintIndex)
+          .build()
+      )
+    }
+    return updatedHintList
+  }
+
+  /**
+   * Set solution is reveled in the pendingState to true or false depending upon if solution was
+   * revealed for the current state pending state before the checkpoint was saved.
+   *
+   * @param isSolutionRevealed indicates if the solution was revealed in the current pending state
+   *     before the checkpoint was created
+   * @param pendingTopState the pending state created from the checkpoint
+   */
+  private fun createSolutionFromCheckpoint(
+    isSolutionRevealed: Boolean,
+    pendingTopState: State
+  ): Solution {
+    return if (isSolutionRevealed) {
+      pendingTopState.interaction.solution.toBuilder()
+        .setSolutionIsRevealed(true)
+        .build()
+    } else {
+      pendingTopState.interaction.solution
+    }
+  }
+
+  /**
+   * Creates a list of completed states from the saved [ExplorationCheckpoint].
+   *
+   * @return [List] of [EphemeralState] containing all the states that were completed before the
+   *     checkpoint was created
+   */
   private fun getPreviousStatesFromCheckpoint(
-    progress: ExplorationProgress,
-    stateIndex: Int
+    progress: ExplorationProgress
   ): List<EphemeralState> {
     val previousStates: MutableList<EphemeralState> = ArrayList()
     progress.explorationCheckpoint.completedStatesInCheckpointList.forEachIndexed { index, state ->
@@ -669,7 +751,7 @@ class ExplorationProgressController @Inject constructor(
           .setState(progress.stateGraph.getState(state.stateName))
           .setHasPreviousState(index != 0)
           .setCompletedState(state.completedState)
-          .setHasNextState(stateIndex < index)
+          .setHasNextState(index != progress.explorationCheckpoint.stateIndex)
           .build()
       )
     }

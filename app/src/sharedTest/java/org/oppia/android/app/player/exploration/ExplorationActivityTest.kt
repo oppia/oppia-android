@@ -123,6 +123,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -177,7 +178,8 @@ class ExplorationActivityTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -188,7 +190,8 @@ class ExplorationActivityTest {
           topicId,
           storyId,
           explorationId,
-          shouldSavePartialProgress
+          shouldSavePartialProgress,
+          explorationCheckpoint
         )
       }
     }
@@ -234,7 +237,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
@@ -259,7 +263,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -286,7 +291,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -313,7 +319,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -341,7 +348,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -369,7 +377,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
@@ -394,7 +403,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_help))).perform(click())
@@ -420,7 +430,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
@@ -451,7 +462,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
@@ -474,7 +486,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
@@ -499,7 +512,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
@@ -526,7 +540,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -555,7 +570,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -585,7 +601,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -626,7 +643,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -672,7 +690,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -715,7 +734,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(
         NetworkConnectionUtil.ConnectionStatus.CELLULAR
@@ -753,7 +773,8 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -803,7 +824,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -856,7 +878,8 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -920,7 +943,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -949,7 +973,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
@@ -979,7 +1004,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
     pressBack()
@@ -1008,7 +1034,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1036,7 +1063,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1069,7 +1097,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1102,7 +1131,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1129,7 +1159,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1160,7 +1191,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1194,7 +1226,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1223,7 +1256,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1253,7 +1287,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1286,7 +1321,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1320,7 +1356,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1353,7 +1390,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1398,7 +1436,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1444,7 +1483,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 

@@ -21,6 +21,7 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
@@ -211,11 +212,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       shouldSavePartialProgress = true,
-      // we will pass the exploration checkpoint here, this checkpoint will be
-      // fetched in ResumeExplorationActivity ( a new activity that will be added).
-      // Exploration checkpoint will be null if there is no checkpoint to resume exploration
-      // (either exploration was not saved or the user does not resumes the exploration.)
-      explorationCheckpoint = null
+      // Pass an empty checkpoint if the exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
