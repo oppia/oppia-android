@@ -250,7 +250,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndpaddingEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitViewPadding(
@@ -273,7 +273,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndpaddingEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitViewPadding(
@@ -296,7 +296,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testStateAssemblerPadding_ltrEnabled__port_tablet_paddingStartAndpaddingEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrEnabled__port_tablet_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitViewPadding(
@@ -342,7 +342,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndpaddingEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndPaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
