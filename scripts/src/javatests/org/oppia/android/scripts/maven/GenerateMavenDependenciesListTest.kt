@@ -11,6 +11,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.LicenseFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
