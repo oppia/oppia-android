@@ -410,7 +410,6 @@
   <dimen name="faq_single_padding_end">28dp</dimen>
   <dimen name="faq_single_padding_bottom">60dp</dimen>
 
-
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">80dp</dimen>
   <dimen name="faq_list_padding_bottom">60dp</dimen>

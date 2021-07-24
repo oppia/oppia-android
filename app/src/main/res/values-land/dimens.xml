@@ -223,8 +223,6 @@
   <!-- Audio Player: Split View -->
   <dimen name="audio_player_split_view_margin_start">64dp</dimen>
   <dimen name="audio_player_split_view_margin_end">64dp</dimen>
-
-
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">108dp</dimen>
   <dimen name="faq_content_margin_start">76dp</dimen>
