@@ -9,6 +9,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +25,8 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VAL
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.robolectric.annotation.LooperMode
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Qualifier
@@ -38,9 +43,26 @@ class PlatformParameterServiceTest {
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService
 
+  private lateinit var mockWebServer: MockWebServer
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testPlatformParameterService_setUpNetworkRequestToGetPlatformParameter_verifyTheRequest() {
+    val platformParameterService = setUpInterceptedPlatformParameterService()
+    mockWebServer.enqueue(MockResponse().setBody("{}"))
+
+    platformParameterService.getPlatformParametersByVersion("1").execute()
+    val interceptedRequest = mockWebServer.takeRequest()
+
+    val appVersion = interceptedRequest.requestUrl?.queryParameter("app_version")
+    assertThat(appVersion).isEqualTo("1")
+
+    val platformType = interceptedRequest.requestUrl?.queryParameter("platform_type")
+    assertThat(platformType).isEqualTo("Android")
   }
 
   @Test
@@ -60,7 +82,7 @@ class PlatformParameterServiceTest {
       .getPlatformParametersByVersion(version = "1")
       .execute()
     val responseBody = response.body()!!
-    assertThat(responseBody[TEST_STRING_PARAM_NAME]).isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
+    assertThat(responseBody).containsEntry(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE)
   }
 
   @Test
@@ -69,7 +91,7 @@ class PlatformParameterServiceTest {
       .getPlatformParametersByVersion(version = "1")
       .execute()
     val responseBody = response.body()!!
-    assertThat(responseBody[TEST_INTEGER_PARAM_NAME]).isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
+    assertThat(responseBody).containsEntry(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE)
   }
 
   @Test
@@ -78,7 +100,7 @@ class PlatformParameterServiceTest {
       .getPlatformParametersByVersion(version = "1")
       .execute()
     val responseBody = response.body()!!
-    assertThat(responseBody[TEST_BOOLEAN_PARAM_NAME]).isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+    assertThat(responseBody).containsEntry(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -86,6 +108,23 @@ class PlatformParameterServiceTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  private fun setUpInterceptedPlatformParameterService(): PlatformParameterService {
+    mockWebServer = MockWebServer()
+    val client = OkHttpClient.Builder().build()
+
+    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
+    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
+    // request mocking in different ways and we want to verify the full request is executed here.
+    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
+    val retrofit = Retrofit.Builder()
+      .baseUrl(mockWebServer.url("/"))
+      .addConverterFactory(MoshiConverterFactory.create())
+      .client(client)
+      .build()
+
+    return retrofit.create(PlatformParameterService::class.java)
   }
 
   // Annotation for MockPlatformParameterService

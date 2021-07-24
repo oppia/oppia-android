@@ -10,7 +10,9 @@ kt_android_library(
     name = "test_constants",
     testonly = True,
     srcs = [
-        "TestPlatformParameterConstants.kt",
+        "TestStringPlatformParameter.kt",
+        "TestIntegerPlatformParameter.kt",
+        "TestBooleanPlatformParameter.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",
