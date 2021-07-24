@@ -1,14 +1,17 @@
 package org.oppia.android.app.thirdparty
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Matchers
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +27,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -47,8 +52,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -63,57 +70,40 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 
-/** Tests for [LicenseListActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LicenseListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class LicenseListActivityTest {
+@Config(
+  application = LicenseTextViewerFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class LicenseTextViewerFragmentTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<LicenseListActivity> = ActivityTestRule(
-    LicenseListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
-  lateinit var context: Context
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
-  @Test
-  fun testLicenseListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createLicenseListActivityIntent(
-        dependencyIndex = 0
-      )
-    )
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(
-      context.getString(
-        R.string.license_list_activity_title
-      )
-    )
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
+
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      dependencyIndex
-    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -143,18 +133,18 @@ class LicenseListActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(licenseListActivityTest: LicenseListActivityTest)
+    fun inject(licenseTextViewerFragmentTest: LicenseTextViewerFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseListActivityTest_TestApplicationComponent.builder()
+      DaggerLicenseTextViewerFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(licenseListActivityTest: LicenseListActivityTest) {
-      component.inject(licenseListActivityTest)
+    fun inject(licenseTextViewerFragmentTest: LicenseTextViewerFragmentTest) {
+      component.inject(licenseTextViewerFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

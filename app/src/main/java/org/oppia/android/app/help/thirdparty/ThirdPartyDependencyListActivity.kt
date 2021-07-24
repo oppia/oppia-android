@@ -33,7 +33,7 @@ class ThirdPartyDependencyListActivity :
       LicenseListActivity
         .createLicenseListActivityIntent(
           context = this,
-          index = dependencyIndex
+          dependencyIndex = dependencyIndex
         )
     )
   }

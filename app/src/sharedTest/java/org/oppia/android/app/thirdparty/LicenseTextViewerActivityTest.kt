@@ -9,6 +9,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +26,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -61,14 +64,15 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [LicenseListActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LicenseListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class LicenseListActivityTest {
+@Config(
+  application = LicenseTextViewerActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class LicenseTextViewerActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
@@ -88,10 +92,11 @@ class LicenseListActivityTest {
   }
 
   @Test
-  fun testLicenseListActivity_hasCorrectActivityLabel() {
+  fun testLicenseTextViewerActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      createLicenseListActivityIntent(
-        dependencyIndex = 0
+      createLicenseTextViewerActivityIntent(
+        dependencyIndex = 0,
+        licenseIndex = 0
       )
     )
     val title = activityTestRule.activity.title
@@ -100,7 +105,7 @@ class LicenseListActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(
       context.getString(
-        R.string.license_list_activity_title
+        R.string.license_text_viewer_activity_title
       )
     )
   }
@@ -109,10 +114,14 @@ class LicenseListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
+  private fun createLicenseTextViewerActivityIntent(
+    dependencyIndex: Int,
+    licenseIndex: Int
+  ): Intent {
+    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      dependencyIndex
+      dependencyIndex,
+      licenseIndex
     )
   }
 
@@ -143,18 +152,18 @@ class LicenseListActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(licenseListActivityTest: LicenseListActivityTest)
+    fun inject(licenseTextViewerActivityTest: LicenseTextViewerActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseListActivityTest_TestApplicationComponent.builder()
+      DaggerLicenseTextViewerActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(licenseListActivityTest: LicenseListActivityTest) {
-      component.inject(licenseListActivityTest)
+    fun inject(licenseTextViewerActivityTest: LicenseTextViewerActivityTest) {
+      component.inject(licenseTextViewerActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

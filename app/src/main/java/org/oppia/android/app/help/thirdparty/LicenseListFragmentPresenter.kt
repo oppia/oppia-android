@@ -24,9 +24,9 @@ class LicenseListFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    index: Int
+    dependencyIndex: Int
   ): View? {
-    val viewModel = LicenseListViewModel(activity, index)
+    val viewModel = LicenseListViewModel(activity, dependencyIndex)
 
     binding = LicenseListFragmentBinding.inflate(
       inflater,

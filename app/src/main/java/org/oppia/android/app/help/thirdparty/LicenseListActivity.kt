@@ -15,8 +15,8 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val index = intent.getIntExtra(THIRD_PARTY_DEPENDENCY_INDEX, 0)
-    licenseListActivityPresenter.handleOnCreate(index)
+    val dependencyIndex = intent.getIntExtra(THIRD_PARTY_DEPENDENCY_INDEX, 0)
+    licenseListActivityPresenter.handleOnCreate(dependencyIndex)
   }
 
   companion object {
@@ -24,10 +24,10 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
     const val THIRD_PARTY_DEPENDENCY_INDEX = "ThirdPartyListActivity.dependencyIndex"
     fun createLicenseListActivityIntent(
       context: Context,
-      index: Int
+      dependencyIndex: Int
     ): Intent {
       val intent = Intent(context, LicenseListActivity::class.java)
-      intent.putExtra(THIRD_PARTY_DEPENDENCY_INDEX, index)
+      intent.putExtra(THIRD_PARTY_DEPENDENCY_INDEX, dependencyIndex)
       return intent
     }
   }

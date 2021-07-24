@@ -15,10 +15,10 @@ class LicenseListFragment : InjectableFragment() {
 
   companion object {
     private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX = "LicenseListFragment.DependencyIndex"
-    fun newInstance(index: Int): LicenseListFragment {
+    fun newInstance(dependencyIndex: Int): LicenseListFragment {
       val fragment = LicenseListFragment()
       val args = Bundle()
-      args.putInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX, index)
+      args.putInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)
       fragment.arguments = args
       return fragment
     }
@@ -36,7 +36,7 @@ class LicenseListFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to LicenseListFragment" }
-    val index = args.getInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX)
-    return licenseListFragmentPresenter.handleCreateView(inflater, container, index)
+    val dependencyIndex = args.getInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX)
+    return licenseListFragmentPresenter.handleCreateView(inflater, container, dependencyIndex)
   }
 }
