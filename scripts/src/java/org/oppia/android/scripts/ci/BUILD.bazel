@@ -16,3 +16,15 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:git_client",
     ],
 )
+
+kt_jvm_library(
+    name = "verify_maven_dependencies_list_is_up_to_date_lib",
+    testonly = True,
+    srcs = [
+        "VerifyMavenDependenciesListIsUpToDate.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:maven_dependencies_list_generator",
+    ],
+)

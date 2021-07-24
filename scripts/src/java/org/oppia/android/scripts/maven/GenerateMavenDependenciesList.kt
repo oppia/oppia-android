@@ -35,8 +35,6 @@ class GenerateMavenDependenciesList(
   private val licenseFetcher: LicenseFetcher,
   private val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
-  private val MAVEN_PREFIX = "@maven//:"
-
   /**
    * Compiles a list of third-party maven dependencies along with their license links on
    * which Oppia Android depends and write them in maven_dependencies.textproto.

@@ -115,3 +115,11 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.maven.GenerateMavenDependenciesListKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib"],
 )
+
+kt_jvm_binary(
+    name = "verify_maven_dependencies_list_is_up_to_date",
+    testonly = True,
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.scripts.ci.VerifyMavenDependenciesListIsUpToDateKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:verify_maven_dependencies_list_is_up_to_date_lib"],
+)

@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:    
+    branches:
       - develop
-      
+
 jobs:
   check_codeowners:
     name: Check CODEOWNERS & Repository files
@@ -118,3 +118,24 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
+
+  third_party_dependencies_check:
+    name: Maven Dependncies Checks
+      runs-on: ubuntu-18.04
+      steps:
+        - uses: actions/checkout@v2
+
+        - name: Set up Bazel
+          uses: abhinavsingh/setup-bazel@v3
+          with:
+            version: 4.0.0
+
+        - name: Maven Repin Check
+          if: always()
+          run: |
+            REPIN=1 bazel run @unpinned_maven//:pin
+
+        - name: maven_dependencies.textproto Check
+          if: always()
+          run: |
+
