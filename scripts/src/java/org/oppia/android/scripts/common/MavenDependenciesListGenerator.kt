@@ -92,6 +92,17 @@ class MavenDependenciesListGenerator(
     }.toSet()
   }
 
+  fun findFirstDependenciesWithBrokenLicenses(
+    mavenDependenciesList: List<MavenDependency>,
+    brokenLicenses: Set<License>
+  ): Map<License, String> {
+    return brokenLicenses.associateTo(mutableMapOf<License, String>()) { license ->
+      license to mavenDependenciesList.first { dependency ->
+        dependency.licenseList.contains(license)
+      }.artifactName
+    }
+  }
+
   fun getDependenciesThatNeedIntervention(
     mavenDependenciesList: List<MavenDependency>
   ): Set<MavenDependency> {
