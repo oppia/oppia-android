@@ -121,21 +121,22 @@ jobs:
 
   third_party_dependencies_check:
     name: Maven Dependncies Checks
-      runs-on: ubuntu-18.04
-      steps:
-        - uses: actions/checkout@v2
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
 
-        - name: Set up Bazel
-          uses: abhinavsingh/setup-bazel@v3
-          with:
-            version: 4.0.0
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
 
-        - name: Maven Repin Check
-          if: always()
-          run: |
-            REPIN=1 bazel run @unpinned_maven//:pin
+      - name: Maven Repin Check
+        if: always()
+        run: |
+          REPIN=1 bazel run @unpinned_maven//:pin
 
-        - name: maven_dependencies.textproto Check
-          if: always()
-          run: |
+      - name: maven_dependencies.textproto Check
+        if: always()
+        run: |
+          bazel run //scripts:verify_maven_dependencies_list_is_up_to_date -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
 
