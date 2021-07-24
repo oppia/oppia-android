@@ -249,7 +249,7 @@ class MarginBindableAdaptersTest {
     )
   }
 
-  private fun convertToPx(dip: Float): Float {
+  private fun dipToPixels(dip: Float): Float {
     val resources: Resources = context.resources
     return TypedValue.applyDimension(
       TypedValue.COMPLEX_UNIT_DIP,
