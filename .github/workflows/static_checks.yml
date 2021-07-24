@@ -122,7 +122,7 @@ jobs:
       - name: Accessibility label Check
         if: always()
         run: |
-          bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
+          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 
       - name: KDoc Check
         if: always()
