@@ -10,7 +10,7 @@ import androidx.test.uiautomator.UiCollection
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
+import androidx.test.uiautomator.Until.hasObject
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +33,7 @@ class ExplorationPlayerTest {
     // Wait for launcher
     val launcherPackage = getLauncherPackageName()
     assertNotNull(launcherPackage)
-    device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT)
+    device.wait(hasObject(By.pkg(launcherPackage)), LAUNCH_TIMEOUT)
 
     // Launch the blueprint app
     val context = ApplicationProvider.getApplicationContext<Context>()
@@ -43,14 +43,14 @@ class ExplorationPlayerTest {
     context.startActivity(intent)
 
     // Wait for the app to appear
-    device.wait(Until.hasObject(By.pkg(OPPIA_PACKAGE).depth(0)), LAUNCH_TIMEOUT)
+    device.wait(hasObject(By.pkg(OPPIA_PACKAGE).depth(0)), LAUNCH_TIMEOUT)
   }
 
   @Test
   fun testExploration_prototypeExploration_toolbarTitle_isDisplayedSuccessfully() {
     NavigateToPrototypeExploration()
     device.wait(
-      Until.hasObject(
+      hasObject(
         By.res("$OPPIA_PACKAGE:id/exploration_toolbar_title")
       ),
       TRANSITION_TIMEOUT
@@ -64,14 +64,14 @@ class ExplorationPlayerTest {
     skip_button?.let {
       it.click()
       device.wait(
-        Until.hasObject(By.res("$OPPIA_PACKAGE:id/get_started_button")),
+        hasObject(By.res("$OPPIA_PACKAGE:id/get_started_button")),
         TRANSITION_TIMEOUT
       )
       device.findObject(By.res("$OPPIA_PACKAGE:id/get_started_button"))
         .click()
     }
     device.wait(
-      Until.hasObject(By.res("$OPPIA_PACKAGE:id/profile_select_text")),
+      hasObject(By.res("$OPPIA_PACKAGE:id/profile_select_text")),
       TRANSITION_TIMEOUT
     )
     val profiles = UiCollection(UiSelector().className("androidx.recyclerview.widget.RecyclerView"))
