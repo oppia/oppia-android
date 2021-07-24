@@ -166,7 +166,7 @@
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
-    <activity android:name=".app.testing.MarginBindableAdaptersTestActivity" />
+    <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

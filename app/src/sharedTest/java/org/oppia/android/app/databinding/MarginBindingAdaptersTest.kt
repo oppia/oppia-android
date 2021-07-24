@@ -40,7 +40,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.MarginBindableAdaptersTestActivity
+import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -80,21 +80,21 @@ import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5f
 
-/** Tests for [MarginBindableAdapters]. */
+/** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MarginBindableAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class MarginBindableAdaptersTest {
+@Config(application = MarginBindingAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class MarginBindingAdaptersTest {
 
   @Inject
   lateinit var context: Context
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<MarginBindableAdaptersTestActivity> =
+  var activityRule: ActivityScenarioRule<MarginBindingAdaptersTestActivity> =
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        MarginBindableAdaptersTestActivity::class.java
+        MarginBindingAdaptersTestActivity::class.java
       )
     )
 
@@ -119,10 +119,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -136,10 +136,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -153,10 +153,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -170,10 +170,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -188,10 +188,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -206,10 +206,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -224,10 +224,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -242,10 +242,10 @@ class MarginBindableAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(24f)
+      /* marginStart= */ convertToPx(24f)
     )
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      convertToPx(40f)
+      /* marginEnd= */ convertToPx(40f)
     )
   }
 
@@ -301,7 +301,7 @@ class MarginBindableAdaptersTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(marginBindableAdaptersTest: MarginBindableAdaptersTest)
+    fun inject(marginBindableAdaptersTest: MarginBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -311,7 +311,7 @@ class MarginBindableAdaptersTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(htmlParserTest: MarginBindableAdaptersTest) {
+    fun inject(htmlParserTest: MarginBindingAdaptersTest) {
       component.inject(htmlParserTest)
     }
 
