@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.kdoc
+package org.oppia.android.scripts.docs
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
@@ -10,12 +10,12 @@ import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-/** Tests for [KDocCheck]. */
-class KDocCheckTest {
+/** Tests for [KDocValidityCheck]. */
+class KDocValidityCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
-  private val KDOC_CHECK_PASSED_OUTPUT_INDICATOR = "KDOC CHECK PASSED"
-  private val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC CHECK FAILED"
+  private val KDOC_CHECK_PASSED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK PASSED"
+  private val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK FAILED"
 
   @Rule
   @JvmField
@@ -480,7 +480,7 @@ class KDocCheckTest {
     return "${tempFolder.root}/testfiles"
   }
 
-  /** Runs the kdoc_check. */
+  /** Runs the kdoc_validity_check. */
   private fun runScript() {
     main(retrieveTestFilesDirectoryPath())
   }

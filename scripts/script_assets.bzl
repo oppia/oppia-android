@@ -113,24 +113,24 @@ def generate_accessibility_label_assets_list_from_text_protos(
         proto_package = "proto",
     )
 
-def generate_kdoc_assets_list_from_text_protos(
+def generate_kdoc_validity_assets_list_from_text_protos(
         name,
-        kdoc_exemptions_name):
+        kdoc_validity_exemptions_name):
     """
-    Converts multiple lists of text proto assets to binary.
+    Converts a single list of text proto assets to binary.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        kdoc_exemptions_name: list of str. The list of kdoc exemptions file names.
+        kdoc_validity_exemptions_name: list of str. The list of kdoc validity exemptions file name.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_proto_binary_assets(
         name = name,
-        names = kdoc_exemptions_name,
+        names = kdoc_validity_exemptions_name,
         proto_dep_name = "script_exemptions",
-        proto_type_name = "KDocExemptions",
+        proto_type_name = "KDocValidityExemptions",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
