@@ -273,7 +273,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndpaddingEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       setExplorationSplitViewPadding(
