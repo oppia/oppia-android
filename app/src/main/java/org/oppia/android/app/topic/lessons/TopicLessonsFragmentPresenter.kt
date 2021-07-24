@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
@@ -21,7 +22,6 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope

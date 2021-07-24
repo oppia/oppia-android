@@ -23,6 +23,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -72,7 +73,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
@@ -261,16 +261,16 @@ class ExplorationDataControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false,
-        ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
       TEST_EXPLORATION_ID_4,
-        shouldSavePartialProgress = false,
-        ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = false,
+      ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 

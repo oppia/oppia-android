@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -13,7 +14,6 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationCheckpoint
 
 private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
