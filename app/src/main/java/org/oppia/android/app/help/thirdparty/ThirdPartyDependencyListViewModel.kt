@@ -27,8 +27,8 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
       val thirdPartyDependencyItemViewModel =
         ThirdPartyDependencyItemViewModel(
           activity,
-          name,
-          thirdPartyDependencyVersions[index],
+          omitVersion(name),
+          prependV(thirdPartyDependencyVersions[index]),
           index
         )
       if (index == thirdPartyDependencyNames.lastIndex) {
@@ -39,5 +39,13 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
       arrayList.add(thirdPartyDependencyItemViewModel)
     }
     return arrayList
+  }
+
+  private fun omitVersion(artifactName: String): String {
+    return artifactName.substring(0, artifactName.lastIndexOf(':'))
+  }
+
+  private fun prependV(version: String): String {
+    return "v$version"
   }
 }

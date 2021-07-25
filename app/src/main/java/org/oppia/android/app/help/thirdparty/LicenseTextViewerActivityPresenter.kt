@@ -14,7 +14,6 @@ import javax.inject.Inject
 class LicenseTextViewerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private lateinit var licenseTextViewerActivityToolbar: Toolbar
 
   /** Handles onCreate() method of the [LicenseTextViewerActivity]. */
   fun handleOnCreate(dependencyIndex: Int, licenseIndex: Int) {
@@ -26,9 +25,8 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
     }
-    Log.d("Activity", "Dependency Index : $dependencyIndex.")
-    Log.d("Activity", "License Index : $licenseIndex.")
-    licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
+
+    val licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
     activity.setSupportActionBar(licenseTextViewerActivityToolbar)
     activity.supportActionBar!!.title = activity.getString(R.string.license_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)

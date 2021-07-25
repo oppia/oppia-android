@@ -3,7 +3,6 @@ package org.oppia.android.app.help.thirdparty
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -23,7 +22,8 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Returns [Intent] for [LicenseTextViewerActivity]. */
-    private const val LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX = "LicenseTextViewerActivity.DepIndex"
+    private const val LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX =
+      "LicenseTextViewerActivity.DependencyIndex"
     private const val LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX =
       "LicenseTextViewerActivity.LicenseIndex"
 
@@ -35,8 +35,6 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
       val intent = Intent(context, LicenseTextViewerActivity::class.java)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX, dependencyIndex)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX, licenseIndex)
-      Log.d("In Intent", "Dependency Index : $dependencyIndex.")
-      Log.d("In intent", "License Index : $licenseIndex.")
       return intent
     }
   }

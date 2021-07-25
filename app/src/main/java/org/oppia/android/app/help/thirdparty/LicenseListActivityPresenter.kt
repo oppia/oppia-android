@@ -13,7 +13,6 @@ import javax.inject.Inject
 class LicenseListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private lateinit var licenseListActivityToolbar: Toolbar
 
   /** Handles onCreate() method of the [LicenseListActivity]. */
   fun handleOnCreate(dependencyIndex: Int) {
@@ -26,7 +25,7 @@ class LicenseListActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    licenseListActivityToolbar = binding.licenseListActivityToolbar
+    val licenseListActivityToolbar = binding.licenseListActivityToolbar
     activity.setSupportActionBar(licenseListActivityToolbar)
     activity.supportActionBar!!.title = activity.getString(R.string.license_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
