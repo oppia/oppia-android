@@ -1,16 +1,10 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
-import org.oppia.android.R
 import org.oppia.android.databinding.OngoingStoryCardBinding
 import org.oppia.android.databinding.SectionTitleBinding
 
@@ -83,11 +77,6 @@ class OngoingListAdapter(
 
   override fun getItemCount(): Int {
     return itemList.size
-  }
-
-  @SuppressLint("NewApi", "WrongConstant")
-  private fun isRtlLayout(parent: MaterialCardView): Boolean {
-    return parent.layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   fun setSpanCount(spanCount: Int) {
