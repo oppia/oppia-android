@@ -94,6 +94,8 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
