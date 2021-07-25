@@ -25,18 +25,16 @@
 
       <TextView
         android:id="@+id/license_name_text_view"
+        style="@style/Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/faq_content_margin_start"
-        android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:fontFamily="sans-serif-medium"
         android:onClick="@{(v) -> viewModel.clickOnLicenseItem()}"
+        android:paddingStart="16dp"
         android:paddingTop="16dp"
-        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
         android:text="@{viewModel.licenseName}"
-        android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp" />
+        android:textAlignment="viewStart" />
 
       <View
         android:id="@+id/license_divider_view"

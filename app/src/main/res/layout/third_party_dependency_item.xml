@@ -26,30 +26,27 @@
 
       <TextView
         android:id="@+id/third_party_dependency_name_text_view"
+        style="@style/Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/faq_content_margin_start"
-        android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:fontFamily="sans-serif-medium"
+        android:paddingStart="16dp"
         android:paddingTop="16dp"
-        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
         android:text="@{viewModel.name}"
         android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/faq_content_margin_start"
-        android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:fontFamily="sans-serif-medium"
-        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.version}"
         android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryText"
         android:textSize="12sp" />
 
       <View

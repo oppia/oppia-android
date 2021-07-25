@@ -15,6 +15,7 @@
     <TextView
       android:id="@+id/license_text_textview"
       android:layout_width="match_parent"
+      android:padding="32dp"
       android:text="@{viewModel.licenseText}"
       android:layout_height="wrap_content"/>
   </ScrollView>
