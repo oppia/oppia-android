@@ -2,10 +2,10 @@ package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [LicenseTextViewerActivity]. */
 @ActivityScope
