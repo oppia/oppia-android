@@ -23,7 +23,6 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     binding.apply {
       lifecycleOwner = activity
     }
-
     val dependenciesWithLicenseNames =
       activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
     val licenseNamesArrayResId = dependenciesWithLicenseNames.getResourceId(
@@ -33,6 +32,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     val licenseNames = activity.resources.getStringArray(licenseNamesArrayResId)
     val licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
     binding.licenseTextViewerActivityToolbarTitle.text = licenseNames[licenseIndex]
+    activity.title = licenseNames[licenseIndex]
     dependenciesWithLicenseNames.recycle()
     activity.setSupportActionBar(licenseTextViewerActivityToolbar)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)

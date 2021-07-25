@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Matchers
@@ -32,6 +33,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -120,6 +122,7 @@ class ThirdPartyDependencyListFragmentTest {
   @Test
   fun openThirdPartyDependencyListActivity_changeConfig_selectItem_opensLicenseListActivity() {
     ActivityScenario.launch(ThirdPartyDependencyListActivity::class.java).use {
+      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       Espresso.onView(
         RecyclerViewMatcher.atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,

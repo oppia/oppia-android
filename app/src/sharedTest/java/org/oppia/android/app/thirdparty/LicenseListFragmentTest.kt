@@ -1,15 +1,24 @@
 package org.oppia.android.app.thirdparty
 
 import android.app.Application
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -19,9 +28,13 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -88,6 +101,48 @@ class LicenseListFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun openLicenseListActivity_selectItem_opensLicenseTextViewerActivity() {
+    launch<LicenseListActivity>(createLicenseListActivity(0)).use {
+      onView(
+        RecyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      Intents.intended(
+        Matchers.allOf(
+          IntentMatchers.hasComponent(LicenseTextViewerActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseListActivity_changeConfig_selectItem_opensLicenseTextViewerActivity() {
+    launch<LicenseListActivity>(createLicenseListActivity(0)).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(
+        RecyclerViewMatcher.atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      Intents.intended(
+        Matchers.allOf(
+          IntentMatchers.hasComponent(LicenseTextViewerActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  private fun createLicenseListActivity(dependencyIndex: Int): Intent {
+    return LicenseListActivity.createLicenseListActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      dependencyIndex
+    )
   }
 
   private fun setUpTestApplicationComponent() {

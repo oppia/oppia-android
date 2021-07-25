@@ -1,15 +1,23 @@
 package org.oppia.android.app.thirdparty
 
 import android.app.Application
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -19,6 +27,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -88,6 +97,42 @@ class LicenseTextViewerFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_0))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_changeConfig_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 0,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_0))
+      )
+    }
+  }
+
+  private fun createLicenseTextViewerActivity(dependencyIndex: Int, licenseIndex: Int): Intent {
+    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      dependencyIndex,
+      licenseIndex
+    )
   }
 
   private fun setUpTestApplicationComponent() {

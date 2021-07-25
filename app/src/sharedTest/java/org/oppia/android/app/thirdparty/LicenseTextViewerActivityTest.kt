@@ -77,8 +77,8 @@ class LicenseTextViewerActivityTest {
   val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<LicenseListActivity> = ActivityTestRule(
-    LicenseListActivity::class.java,
+  val activityTestRule: ActivityTestRule<LicenseTextViewerActivity> = ActivityTestRule(
+    LicenseTextViewerActivity::class.java,
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
@@ -105,7 +105,7 @@ class LicenseTextViewerActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(
       context.getString(
-        R.string.license_text_viewer_activity_title
+        R.string.license_name_0
       )
     )
   }
