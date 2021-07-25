@@ -16,13 +16,31 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/license_text_viewer_activity_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@color/colorPrimary"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Widget.AppCompat.ActionBar"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+          android:id="@+id/license_text_viewer_activity_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="marquee"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusable="false"
+          android:focusableInTouchMode="true"
+          android:fontFamily="sans-serif"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+      </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

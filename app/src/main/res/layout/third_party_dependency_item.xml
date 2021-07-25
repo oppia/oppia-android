@@ -19,6 +19,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@drawable/general_item_background_border"
       android:onClick="@{(v) -> viewModel.clickOnThirdPartyDependencyItem()}"
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
@@ -48,14 +49,6 @@
         android:text="@{viewModel.version}"
         android:textAlignment="viewStart"
         android:textSize="12sp" />
-
-      <View
-        android:id="@+id/third_party_dependency_divider_view"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@color/oppiaFAQDivider" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

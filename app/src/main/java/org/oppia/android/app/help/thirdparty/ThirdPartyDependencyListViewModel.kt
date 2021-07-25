@@ -31,11 +31,6 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
           prependV(thirdPartyDependencyVersions[index]),
           index
         )
-      if (index == thirdPartyDependencyNames.lastIndex) {
-        thirdPartyDependencyItemViewModel.showDivider.set(false)
-      } else {
-        thirdPartyDependencyItemViewModel.showDivider.set(true)
-      }
       arrayList.add(thirdPartyDependencyItemViewModel)
     }
     return arrayList
@@ -46,6 +41,6 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
   }
 
   private fun prependV(version: String): String {
-    return "v$version"
+    return "v $version"
   }
 }

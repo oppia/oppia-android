@@ -12,9 +12,6 @@ class LicenseItemViewModel(
   val dependencyIndex: Int
 ) : ObservableViewModel() {
 
-  /** Used to control visibility of divider. */
-  val showDivider = ObservableField(true)
-
   /** Starts [LicenseTextViewerActivity] upon clicking on an item of the license list. */
   fun clickOnLicenseItem() {
     val routeToLicenseTextListener = activity as RouteToLicenseTextListener

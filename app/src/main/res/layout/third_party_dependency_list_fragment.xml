@@ -28,7 +28,6 @@
       android:background="@color/white"
       android:clipToPadding="false"
       android:nestedScrollingEnabled="false"
-      android:paddingBottom="@dimen/faq_list_padding_bottom"
       app:list="@{viewModel.thirdPartyDependencyItemList}" />
   </androidx.core.widget.NestedScrollView>
 </layout>

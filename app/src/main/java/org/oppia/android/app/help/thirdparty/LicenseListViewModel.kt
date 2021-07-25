@@ -28,11 +28,6 @@ class LicenseListViewModel @Inject constructor(
     licenseNames.forEachIndexed { licenseIndex, name ->
       val licenseItemViewModel =
         LicenseItemViewModel(activity, name, licenseIndex, index)
-      if (licenseIndex == licenseNames.lastIndex) {
-        licenseItemViewModel.showDivider.set(false)
-      } else {
-        licenseItemViewModel.showDivider.set(true)
-      }
       arrayList.add(licenseItemViewModel)
     }
     licenses.recycle()

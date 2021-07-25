@@ -16,33 +16,19 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <LinearLayout
+    <TextView
+      android:id="@+id/license_name_text_view"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
+      android:background="@drawable/general_item_background_border"
+      android:onClick="@{() -> viewModel.clickOnLicenseItem()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@{viewModel.licenseName}"
+      android:textAlignment="viewStart"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <TextView
-        android:id="@+id/license_name_text_view"
-        style="@style/Subtitle1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="@{(v) -> viewModel.clickOnLicenseItem()}"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:text="@{viewModel.licenseName}"
-        android:textAlignment="viewStart" />
-
-      <View
-        android:id="@+id/license_divider_view"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@color/oppiaFAQDivider" />
-    </LinearLayout>
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,10 +2,10 @@ package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
-import javax.inject.Inject
 
 /** The presenter for [LicenseTextViewerActivity]. */
 @ActivityScope
@@ -24,9 +24,17 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
+    val dependenciesWithLicenseNames =
+      activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
+    val licenseNamesArrayResId = dependenciesWithLicenseNames.getResourceId(
+      dependencyIndex,
+      -1
+    )
+    val licenseNames = activity.resources.getStringArray(licenseNamesArrayResId)
     val licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
+    binding.licenseTextViewerActivityToolbarTitle.text = licenseNames[licenseIndex]
+    dependenciesWithLicenseNames.recycle()
     activity.setSupportActionBar(licenseTextViewerActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.license_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
