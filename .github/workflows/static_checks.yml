@@ -127,4 +127,4 @@ jobs:
       - name: KDoc validity Check
         if: always()
         run: |
-          bazel run //scripts:kdoc_check -- $(pwd)
+          bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb

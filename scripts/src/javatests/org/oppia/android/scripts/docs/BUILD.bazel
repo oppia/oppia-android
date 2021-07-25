@@ -8,7 +8,6 @@ kt_jvm_test(
     name = "KDocValidityCheckTest",
     srcs = ["KDocValidityCheckTest.kt"],
     deps = [
-        "//scripts:kdoc_validity_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
