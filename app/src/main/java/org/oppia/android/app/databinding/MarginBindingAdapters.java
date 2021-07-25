@@ -3,6 +3,7 @@ package org.oppia.android.app.databinding;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /** Holds all custom binding adapters that set margin values. */
@@ -39,17 +40,12 @@ public final class MarginBindingAdapters {
   }
 
   private static void setLayoutDirectionalMargins(
-      @NonNull View view,
-      int marginStart,
-      int marginEnd
+    @NonNull View view,
+    int marginStart,
+    int marginEnd
   ) {
     MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-    params.setMargins(
-        marginStart,
-        params.topMargin,
-        marginEnd,
-        params.bottomMargin
-    );
+    params.setMargins(marginStart, params.topMargin, marginEnd, params.bottomMargin);
   }
 
   /** Used to set a margin-top for views. */
@@ -98,6 +94,6 @@ public final class MarginBindingAdapters {
   }
 
   private static boolean isRtlLayout(View view) {
-    return view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }
