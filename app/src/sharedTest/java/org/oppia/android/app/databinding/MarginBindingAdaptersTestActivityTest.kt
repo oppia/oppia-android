@@ -32,15 +32,13 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationSplitViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setQuestionSplitViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setQuestionViewMargin
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
+import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.dipToPixels
 import org.oppia.android.domain.classify.InteractionsModule
@@ -81,24 +79,21 @@ import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5f
 
-/** Tests for [StateAssemblerMarginBindingAdapters]. */
+/** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = StateAssemblerMarginBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
-class StateAssemblerMarginBindingAdaptersTest {
+@Config(application = MarginBindingAdaptersTestActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class MarginBindingAdaptersTestActivityTest {
 
   @Inject
   lateinit var context: Context
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<StateAssemblerMarginBindingAdaptersTestActivity> =
+  var activityRule: ActivityScenarioRule<MarginBindingAdaptersTestActivity> =
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        StateAssemblerMarginBindingAdaptersTestActivity::class.java
+        MarginBindingAdaptersTestActivity::class.java
       )
     )
 
@@ -113,154 +108,13 @@ class StateAssemblerMarginBindingAdaptersTest {
     Intents.release()
   }
 
-  @Test
-  fun testMarginBindingAdapters_explorationViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
-  @Test
-  fun testMarginBindingAdapters_explorationViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
-  @Test
-  fun testMarginBindingAdapters_questionViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
-  @Test
-  fun testMarginBindingAdapters_questionViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
-  @Test
-  fun testMarginBindingAdapters_questionSplitViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
-  @Test
-  fun testMarginBindingAdapters_questionSplitViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ dipToPixels(24f, context)
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ dipToPixels(40f, context)
-    )
-  }
-
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindingAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -273,17 +127,11 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testMarginBindingAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -296,17 +144,11 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testMarginBindingAdapters_ltrEnabled__port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrEnabled_port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -319,17 +161,11 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindingAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -342,18 +178,12 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -366,18 +196,12 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "land")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -390,18 +214,12 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -414,18 +232,12 @@ class StateAssemblerMarginBindingAdaptersTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindingAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
-        textView,
-        /* isApplicable= */ true,
-        /* marginStart= */ dipToPixels(24f, context),
-        /* marginTop= */ dipToPixels(24f, context),
-        /* marginEnd= */ dipToPixels(40f, context),
-        /* marginBottom= */ dipToPixels(24f, context)
-      )
+      setLayoutMarginStart(textView, /* marginStart= */ dipToPixels(24f, context))
+      setLayoutMarginEnd(textView, /* marginEnd= */ dipToPixels(40f, context))
       return@runWithActivity textView
     }
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
@@ -479,18 +291,18 @@ class StateAssemblerMarginBindingAdaptersTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(StateAssemblerMarginBindingAdaptersTest: StateAssemblerMarginBindingAdaptersTest)
+    fun inject(marginBindableAdaptersTestActivityTest: MarginBindingAdaptersTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateAssemblerMarginBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerMarginBindingAdaptersTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(htmlParserTest: StateAssemblerMarginBindingAdaptersTest) {
-      component.inject(htmlParserTest)
+    fun inject(marginBindableAdaptersTestActivityTest: MarginBindingAdaptersTestActivityTest) {
+      component.inject(marginBindableAdaptersTestActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

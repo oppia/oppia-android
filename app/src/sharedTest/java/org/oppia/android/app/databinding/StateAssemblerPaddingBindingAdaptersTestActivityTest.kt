@@ -83,10 +83,10 @@ private const val TOLERANCE = 1e-5f
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = StateAssemblerPaddingBindingAdaptersTest.TestApplication::class,
+  application = StateAssemblerPaddingBindingAdaptersTestActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class StateAssemblerPaddingBindingAdaptersTest {
+class StateAssemblerPaddingBindingAdaptersTestActivityTest {
 
   @Inject
   lateinit var context: Context
@@ -477,18 +477,18 @@ class StateAssemblerPaddingBindingAdaptersTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
+    fun inject(StateAssemblerPaddingBindingAdaptersTestActivityTest: StateAssemblerPaddingBindingAdaptersTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateAssemblerPaddingBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerStateAssemblerPaddingBindingAdaptersTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(htmlParserTest: StateAssemblerPaddingBindingAdaptersTest) {
-      component.inject(htmlParserTest)
+    fun inject(stateAssemblerPaddingBindingAdaptersTestActivityTest: StateAssemblerPaddingBindingAdaptersTestActivityTest) {
+      component.inject(stateAssemblerPaddingBindingAdaptersTestActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
