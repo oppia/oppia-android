@@ -10,11 +10,12 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 
-/** The help page activity for FAQs and feedback. */
+/** The help page activity for FAQs and third-party dependencies. */
 class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
   RouteToThirdPartyDependencyListListener {
+
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 

@@ -1,7 +1,6 @@
 package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -13,7 +12,6 @@ import javax.inject.Inject
 class ThirdPartyDependencyListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-  private lateinit var thirdPartyDependencyListActivityToolbar: Toolbar
 
   /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
   fun handleOnCreate() {
@@ -26,7 +24,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
+    val thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
     activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
     activity.supportActionBar!!.title = activity.getString(
       R.string.third_party_dependency_list_activity_title
@@ -39,9 +37,10 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
     }
 
     if (getThirdPartyDependencyListFragment() == null) {
+      val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.third_party_dependency_list_fragment_placeholder,
-        ThirdPartyDependencyListFragment()
+        thirdPartyDependencyListFragment
       ).commitNow()
     }
   }

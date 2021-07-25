@@ -23,7 +23,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
   private lateinit var binding: ThirdPartyDependencyListFragmentBinding
 
   /** Handles onCreateView() method of the [ThirdPartyDependencyListFragment]. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     val viewModel = getThirdPartyDependencyListViewModel()
 
     binding = ThirdPartyDependencyListFragmentBinding.inflate(
@@ -37,7 +37,6 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
       layoutManager = LinearLayoutManager(activity.applicationContext)
       adapter = recyclerviewAdapter
     }
-//    binding.thirdPartyDependencyListFragmentRecyclerView.setOnClickListener()
 
     binding.let {
       it.lifecycleOwner = fragment
@@ -58,9 +57,5 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
 
   private fun getThirdPartyDependencyListViewModel(): ThirdPartyDependencyListViewModel {
     return viewModelProvider.getForFragment(fragment, ThirdPartyDependencyListViewModel::class.java)
-  }
-
-  interface ItemClickListener {
-    fun onItemClicked(position: Int, view: View)
   }
 }

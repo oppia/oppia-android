@@ -6,7 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The FAQ page activity for placement of different FAQs. */
+/** The activity for displaying a list of third-party dependencies used to build Oppia Android. */
 class ThirdPartyDependencyListActivity :
   InjectableAppCompatActivity(),
   RouteToLicenseListListener {

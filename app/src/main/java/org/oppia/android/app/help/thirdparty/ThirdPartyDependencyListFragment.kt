@@ -10,8 +10,15 @@ import javax.inject.Inject
 
 /** Fragment that contains third-party dependency list in the app. */
 class ThirdPartyDependencyListFragment : InjectableFragment() {
+
   @Inject
   lateinit var thirdPartyDependencyListFragmentPresenter: ThirdPartyDependencyListFragmentPresenter
+
+  companion object {
+    fun newInstance(): ThirdPartyDependencyListFragment {
+      return ThirdPartyDependencyListFragment()
+    }
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
