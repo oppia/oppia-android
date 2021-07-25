@@ -287,10 +287,9 @@ class GenerateLicenseTexts(
   ) {
     // Add all license texts to third_party_dependencies.xml.
     copyrightLicenseSet.forEachIndexed { index, license ->
-      val licenseText = "<![CDATA[${license.licenseText}]]>"
       val stringElement = doc.createElement("string")
       stringElement.setAttribute("name", "license_text_$index")
-      stringElement.appendChild(doc.createTextNode(licenseText))
+      stringElement.appendChild(doc.createCDATASection(license.licenseText))
       rootResourcesElement.appendChild(stringElement)
     }
 
