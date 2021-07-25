@@ -9,13 +9,15 @@ import org.oppia.android.scripts.proto.MavenDependency
  * maven_dependencies.textproto is up-to-date.
  *
  * Usage:
- *   bazel run //scripts:verify_maven_dependencies_list_is_up_to_date -- <path_to_directory_root>
+ *   bazel run //scripts:verify_maven_dependencies_list_is_up_to_date -- <path_to_root>
  *   <path_to_maven_install_json> <path_to_maven_dependencies_pb>
  *
- * Arguments:
- * - path_to_directory_root: directory path to the root of the Oppia Android repository.
+ *
+ * @param [args]: Array of [String] containg different paths required by the script
+ * - path_to_root: directory path to the root of the Oppia Android repository.
  * - path_to_maven_install_json: relative path to the maven_install.json file.
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
+ *
  * Example:
  *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
  *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
@@ -39,37 +41,37 @@ fun main(args: Array<String>) {
     .retrieveDependencyListFromPom(mavenInstallDepsList)
     .mavenDependencyList
 
-  val dependenciesListFromTextProto =
-    mavenDependenciesListGenerator.retrieveMavenDependencyList(pathToProtoBinary)
+  val dependenciesListFromTextProto = mavenDependenciesListGenerator
+    .retrieveMavenDependencyList(pathToProtoBinary)
 
   val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
     dependenciesListFromPom,
     dependenciesListFromTextProto
   )
 
-  val manuallyUpdatedLicenses =
-    mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
+  val manuallyUpdatedLicenses = mavenDependenciesListGenerator
+    .retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
 
   val finalDependenciesList = mavenDependenciesListGenerator.updateMavenDependenciesList(
     updatedDependneciesList,
     manuallyUpdatedLicenses
   )
 
-  val licensesToBeFixed =
-    mavenDependenciesListGenerator.getAllBrokenLicenses(finalDependenciesList)
+  val brokenLicenses = mavenDependenciesListGenerator
+    .getAllBrokenLicenses(finalDependenciesList)
 
-  if (licensesToBeFixed.isNotEmpty()) {
+  if (brokenLicenses.isNotEmpty()) {
     val licenseToDependencyMap = mavenDependenciesListGenerator
       .findFirstDependenciesWithBrokenLicenses(
         finalDependenciesList,
-        licensesToBeFixed
+        brokenLicenses
       )
     println(
       """
       Some licenses do not have their 'original_link' verified. To verify a license link, click
       on the original link of the license and check if the link points to any valid license or
-      not. If the link does not point to a valid license (e.g - https://fabric.io/terms), set 
-      the 'is_original_link_invalid' field of the license to 'true'.
+      not. If the link does not point to a valid license (e.g - https://fabric.io/terms),  
+      set the 'is_original_link_invalid' field of the license to 'true'.
        
       e.g - 
       license {
@@ -105,25 +107,27 @@ fun main(args: Array<String>) {
       }
       
       Please verify the license link(s) for the following license(s) manually in 
-      maven_dependencies.textproto. Note that only first dependency that contains the license 
+      maven_dependencies.textproto. Note that only the first dependency that contains the license 
       needs to be updated and also re-run the script to update the license details at all places.
-      """.trimIndent()
+      """.trimIndent() + "\n"
     )
-    licensesToBeFixed.forEach {
-      println("\nlicense_name: ${it.licenseName}")
-      println("original_link: ${it.originalLink}")
-      println("verified_link_case: ${it.verifiedLinkCase}")
-      println("is_original_link_invalid: ${it.isOriginalLinkInvalid}")
+    brokenLicenses.forEach {
       println(
-        "First dependency that should be updated with the license: " +
-          "${licenseToDependencyMap[it]}\n"
+        """
+        license_name: ${it.licenseName}
+        original_link: ${it.originalLink}
+        verified_link_case: ${it.verifiedLinkCase}
+        is_original_link_invalid: ${it.isOriginalLinkInvalid}
+        First dependency that should be updated with the license: ${licenseToDependencyMap[it]}
+        """.trimIndent() + "\n\n"
       )
     }
     throw Exception("Licenses details are not completed")
   }
 
-  val dependenciesWithoutAnyLinks =
-    mavenDependenciesListGenerator.getDependenciesThatNeedIntervention(finalDependenciesList)
+  val dependenciesWithoutAnyLinks = mavenDependenciesListGenerator
+    .getDependenciesThatNeedIntervention(finalDependenciesList)
+
   if (dependenciesWithoutAnyLinks.isNotEmpty()) {
     println(
       """
@@ -158,10 +162,14 @@ fun main(args: Array<String>) {
     throw Exception("License links are invalid or not available for some dependencies")
   }
 
-  val redundantDependencies =
-    findRedundantDependencies(finalDependenciesList, dependenciesListFromTextProto)
-  val missindDependencies =
-    findMissingDependencies(finalDependenciesList, dependenciesListFromTextProto)
+  val redundantDependencies = findRedundantDependencies(
+    finalDependenciesList,
+    dependenciesListFromTextProto
+  )
+  val missindDependencies = findMissingDependencies(
+    finalDependenciesList,
+    dependenciesListFromTextProto
+  )
   if (redundantDependencies.isNotEmpty()) {
     println("Please remove these redundant dependencies from maven_dependencies.textproto\n")
     redundantDependencies.forEach {

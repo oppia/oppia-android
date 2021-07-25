@@ -15,11 +15,12 @@ import java.io.File
 import java.io.FileInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
+private const val MAVEN_PREFIX = "@maven//:"
+
 class MavenDependenciesListGenerator(
   val licenseFetcher: LicenseFetcher,
   val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
-  val MAVEN_PREFIX = "@maven//:"
 
   fun retrieveThirdPartyMavenDependenciesList(
     rootPath: String
@@ -126,38 +127,14 @@ class MavenDependenciesListGenerator(
     ).mavenDependencyList
   }
 
-  /**
-   * Helper function to parse the text proto file to a proto class.
-   *
-   * @param pathToPbFile path to the pb file to be parsed
-   * @param proto instance of the proto class
-   * @return proto class from the parsed text proto file
-   */
-  private fun getProto(
-    pathToPbFile: String,
-    proto: MavenDependencyList
-  ): MavenDependencyList {
-    return FileInputStream(File(pathToPbFile)).use {
-      proto.newBuilderForType().mergeFrom(it)
-    }.build() as MavenDependencyList
-  }
-
-  fun genearateDependenciesListFromMavenInstall(
+  fun getDependencyListFromMavenInstall(
     pathToMavenInstall: String,
     bazelQueryDepsNames: List<String>
   ): List<MavenListDependency> {
     val dependencyTree = retrieveDependencyTree(pathToMavenInstall)
-    val mavenInstallDependencyList = dependencyTree.mavenListDependencies.dependencyList
-    return mavenInstallDependencyList.filter { dep ->
-      bazelQueryDepsNames.contains(omitVersionAndReplaceColonsHyphensPeriods(dep.coord))
+    return dependencyTree.mavenListDependencies.dependencyList.filter { dep ->
+      omitVersionAndReplaceColonsHyphensPeriods(dep.coord) in bazelQueryDepsNames
     }
-  }
-
-  private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
-    return artifactName.substring(0, artifactName.lastIndexOf(':'))
-      .replace('.', '_')
-      .replace(':', '_')
-      .replace('-', '_')
   }
 
   fun retrieveDependencyListFromPom(
@@ -177,6 +154,41 @@ class MavenDependenciesListGenerator(
       mavenDependency.build()
     }
     return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
+  }
+
+  fun genearateDependenciesListFromMavenInstall(
+    pathToMavenInstall: String,
+    bazelQueryDepsNames: List<String>
+  ): List<MavenListDependency> {
+    val dependencyTree = retrieveDependencyTree(pathToMavenInstall)
+    val mavenInstallDependencyList = dependencyTree.mavenListDependencies.dependencyList
+    return mavenInstallDependencyList.filter { dep ->
+      bazelQueryDepsNames.contains(omitVersionAndReplaceColonsHyphensPeriods(dep.coord))
+    }
+  }
+
+  /**
+   * Helper function to parse the text proto file to a proto class.
+   *
+   * @param pathToPbFile path to the pb file to be parsed
+   * @param proto instance of the proto class
+   *
+   * @return proto class from the parsed text proto file
+   */
+  private fun getProto(
+    pathToPbFile: String,
+    proto: MavenDependencyList
+  ): MavenDependencyList {
+    return FileInputStream(File(pathToPbFile)).use {
+      proto.newBuilderForType().mergeFrom(it)
+    }.build() as MavenDependencyList
+  }
+
+  private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
+    return artifactName.substring(0, artifactName.lastIndexOf(':'))
+      .replace('.', '_')
+      .replace(':', '_')
+      .replace('-', '_')
   }
 
   private fun extractLicenseLinksFromPom(
@@ -202,16 +214,6 @@ class MavenDependenciesListGenerator(
       }
     }
     return licenseList
-  }
-
-  fun getDependencyListFromMavenInstall(
-    pathToMavenInstall: String,
-    bazelQueryDepsNames: List<String>
-  ): List<MavenListDependency> {
-    val dependencyTree = retrieveDependencyTree(pathToMavenInstall)
-    return dependencyTree.mavenListDependencies.dependencyList.filter { dep ->
-      omitVersionAndReplaceColonsHyphensPeriods(dep.coord) in bazelQueryDepsNames
-    }
   }
 
   private fun retrieveDependencyTree(pathToMavenInstall: String): MavenListDependencyTree {
