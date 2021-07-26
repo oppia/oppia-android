@@ -229,6 +229,7 @@
   <dimen name="faq_single_padding_top">28dp</dimen>
   <dimen name="faq_single_padding_end">72dp</dimen>
   <dimen name="faq_single_padding_bottom">56dp</dimen>
+  <dimen name="faq_single_activity_scroll_padding_Bottom">108dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">108dp</dimen>

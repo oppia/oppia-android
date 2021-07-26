@@ -44,7 +44,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/oppiaGreyBackground"
         android:clipToPadding="false"
-        android:fillViewport="true"
+        android:fillViewport="false"
         android:overScrollMode="never"
         android:scrollbars="none">
 
