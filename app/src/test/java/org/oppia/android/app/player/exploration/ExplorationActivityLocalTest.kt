@@ -19,6 +19,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -38,10 +40,12 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -98,7 +102,13 @@ class ExplorationActivityLocalTest {
 
   @Test
   fun testExploration_onLaunch_logsEvent() {
-    getApplicationDependencies(TEST_EXPLORATION_ID_2)
+    getApplicationDependencies(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -119,12 +129,24 @@ class ExplorationActivityLocalTest {
     }
   }
 
-  private fun getApplicationDependencies(id: String) {
+  private fun getApplicationDependencies(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
+  ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingExploration(id)
+        explorationDataController.startPlayingExploration(
+          internalProfileId,
+          topicId,
+          storyId,
+          explorationId,
+          shouldSavePartialProgress
+        )
       }
     }
   }
@@ -141,7 +163,8 @@ class ExplorationActivityLocalTest {
       topicId,
       storyId,
       explorationId,
-      backflowScreen = null
+      backflowScreen = null,
+      isCheckpointingEnabled = false
     )
   }
 
@@ -154,6 +177,7 @@ class ExplorationActivityLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      PlatformParameterModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -165,7 +189,9 @@ class ExplorationActivityLocalTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

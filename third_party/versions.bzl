@@ -76,6 +76,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
 MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "android.arch.core:core-testing": "1.1.1",
     "androidx.arch.core:core-testing": "2.1.0",
+    "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
     "androidx.test.espresso:espresso-core": "3.2.0",
     "androidx.test.espresso:espresso-intents": "3.1.0",
@@ -84,6 +85,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
+    "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
@@ -91,6 +93,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
+    "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.4",
     "org.robolectric:robolectric": "4.4",
@@ -110,8 +113,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "0.1.1",
     },
     "rules_jvm": {
-        "sha": "e5b97a31a3e8feed91636f42e19b11c49487b85e5de2f387c999ea14d77c7f45",
-        "version": "2.9",
+        "sha": "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
+        "version": "4.1",
     },
     "rules_kotlin": {
         "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",

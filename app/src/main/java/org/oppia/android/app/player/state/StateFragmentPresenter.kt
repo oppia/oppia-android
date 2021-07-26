@@ -17,6 +17,7 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
@@ -31,7 +32,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -46,10 +47,12 @@ import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
-const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY = "STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY"
-const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY"
-const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY"
-const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY = "STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY"
+const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
+  "StateFragmentPresenter.state_fragment_profile_id"
+const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_topic_id"
+const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_story_id"
+const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
+  "StateFragmentPresenter.state_fragment_exploration_id"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
@@ -88,6 +91,8 @@ class StateFragmentPresenter @Inject constructor(
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
   }
+
+  private var explorationCheckpointState: CheckpointState = CheckpointState.CHECKPOINT_UNSAVED
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -174,7 +179,8 @@ class StateFragmentPresenter @Inject constructor(
   fun onReturnToTopicButtonClicked() {
     hideKeyboard()
     markExplorationCompleted()
-    (activity as StopStatePlayingSessionListener).stopSession()
+    (activity as StopStatePlayingSessionWithSavedProgressListener)
+      .deleteCurrentProgressAndStopSession()
   }
 
   private fun showOrHideAudioByState(state: State) {
@@ -315,6 +321,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     val ephemeralState = result.getOrThrow()
+    explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
@@ -521,6 +528,9 @@ class StateFragmentPresenter @Inject constructor(
       viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
     }
   }
+
+  /** Returns the checkpoint state for the current exploration. */
+  fun getExplorationCheckpointState() = explorationCheckpointState
 
   private fun markExplorationAsRecentlyPlayed() {
     storyProgressController.recordRecentlyPlayedChapter(

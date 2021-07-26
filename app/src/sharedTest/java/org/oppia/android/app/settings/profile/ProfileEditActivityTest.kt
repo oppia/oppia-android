@@ -15,8 +15,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -25,6 +27,7 @@ import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -36,6 +39,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -52,13 +57,16 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -87,6 +95,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileEditActivityTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context
@@ -421,11 +431,111 @@ class ProfileEditActivityTest {
     }
   }
 
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
+      onView(withId(R.id.profile_edit_allow_download_container)).perform(click())
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_switchIsNotClickable() {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsFocusable() {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isFocusable()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsDisplayed() {
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchContainerIsNotDisplayed() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -438,7 +548,9 @@ class ProfileEditActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
