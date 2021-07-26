@@ -400,7 +400,7 @@ class GenerateLicenseTextsTest {
     }
   }
 
-  /** Returns a [MavenDependency]. */
+  /** Returns an instance of MavenDependency proto message. */
   private fun getMavenDependency(
     artifactName: String,
     artifactVersion: String = "1.0.0",
@@ -413,7 +413,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
-  /** Returns a [MavenDependencyList]. */
+  /** Returns an instance of MavenDependencyList proto message. */
   private fun getMavenDependencyList(
     dependenciesList: List<MavenDependency> = listOf<MavenDependency>()
   ): MavenDependencyList {
@@ -423,7 +423,7 @@ class GenerateLicenseTextsTest {
       .build()
   }
 
-  /** Returns a [License] that has verifiedLink not set. */
+  /** Returns a License that has verifiedLink not set. */
   private fun getLicenseWithVerifiedLinkNotSet(
     licenseName: String,
     originalLink: String,
@@ -434,7 +434,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
-  /** Returns a [License] that has [ScrapableLink]. */
+  /** Returns a License with ScrapableLink. */
   private fun getLicenseWithScrapableLink(
     licenseName: String,
     originalLink: String,
@@ -447,7 +447,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
-  /** Returns a [License] that has [ExtractedCopyLink]. */
+  /** Returns a License with ExtractedCopyLink. */
   private fun getLicenseWithExtractedCopyLink(
     licenseName: String,
     originalLink: String,
@@ -460,7 +460,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
-  /** Returns a [License] that has [DirectOnlyLink]. */
+  /** Returns a License with DirectOnlyLink. */
   private fun getLicenseWithDirectLinkOnlyLink(
     licenseName: String,
     originalLink: String,
@@ -473,6 +473,13 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
+  /** Parses the XML to return a list of values enclosed between string tags.
+   *
+   * @param xmlContent XML content to be parsed
+   * @param attributePrefix the prefix of the attribute of <string> tag that needs to be parsed
+   *
+   * @return list of parsed values of <string> nodes with the given attributrPrefix
+   */
   private fun retrieveListOfStrings(
     xmlContent: String,
     attributePrefix: String

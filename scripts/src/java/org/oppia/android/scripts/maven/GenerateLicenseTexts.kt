@@ -98,6 +98,7 @@ class GenerateLicenseTexts(
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @param proto instance of the proto class
+   *
    * @return proto class from the parsed textproto file
    */
   private fun parseTextProto(
