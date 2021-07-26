@@ -22,7 +22,6 @@ import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
@@ -89,6 +88,7 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -142,7 +142,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val hasConversationView: Boolean,
   delayShowInitialHintMs: Long,
   delayShowAdditionalHintsMs: Long,
-  delayShowAdditionalHintsFromWrongAnswerMs: Long
+  delayShowAdditionalHintsFromWrongAnswerMs: Long,
+  private val explorationProgressController: ExplorationProgressController
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -167,7 +168,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fragment,
     delayShowInitialHintMs,
     delayShowAdditionalHintsMs,
-    delayShowAdditionalHintsFromWrongAnswerMs
+    delayShowAdditionalHintsFromWrongAnswerMs,
+    explorationProgressController
   )
 
   /** The most recent content ID read by the audio system. */
@@ -863,7 +865,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val delayShowInitialHintMs: Long,
     private val delayShowAdditionalHintsMs: Long,
-    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
+    private val explorationProgressController: ExplorationProgressController
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
@@ -1324,7 +1327,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasConversationView,
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
-        delayShowAdditionalHintsFromWrongAnswerMs
+        delayShowAdditionalHintsFromWrongAnswerMs,
+        explorationProgressController
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1342,7 +1346,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
       @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
       @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
-      @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long
+      @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long,
+      private val explorationProgressController: ExplorationProgressController
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1359,7 +1364,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           backgroundCoroutineDispatcher,
           delayShowInitialHintMs,
           delayShowAdditionalHintsMs,
-          additionalAnswerHintDelayMs
+          additionalAnswerHintDelayMs,
+          explorationProgressController
         )
       }
     }
@@ -1450,7 +1456,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val fragment: Fragment,
     private val delayShowInitialHintMs: Long,
     private val delayShowAdditionalHintsMs: Long,
-    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
+    private val explorationProgressController: ExplorationProgressController
   ) {
     private var trackedWrongAnswerCount = 0
     private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
@@ -1500,39 +1507,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
 
-      // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
-      // doesn't answer after some duration). Note that if there's already a timer to show a hint,
-      // it will be reset for each subsequent answer.
-      val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
-      val isFirstHint = previousHelpIndex.indexTypeCase == INDEXTYPE_NOT_SET
-      val wrongAnswerCount = pendingState.wrongAnswerList.size
-      if (wrongAnswerCount == trackedWrongAnswerCount) {
-        // If no answers have been submitted, schedule a task to automatically help after a fixed
-        // amount of time. This will automatically reset if something changes other than answers
-        // (e.g. revealing a hint), which may trigger more help to become available.
-        if (isFirstHint) {
-          // The learner needs to wait longer for the initial hint to show since they need some time
-          // to read through and consider the question.
-          scheduleShowHint(delayShowInitialHintMs, nextUnrevealedHintIndex)
-        } else {
-          scheduleShowHint(delayShowAdditionalHintsMs, nextUnrevealedHintIndex)
-        }
-      } else {
-        // See if the learner's new wrong answer justifies showing a hint.
-        if (isFirstHint) {
-          if (wrongAnswerCount > 1) {
-            // If more than one answer has been submitted and no hint has yet been shown, show a
-            // hint immediately since the learner is probably stuck.
-            showHintImmediately(nextUnrevealedHintIndex)
-          }
-        } else {
-          // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
-          scheduleShowHint(
-            delayShowAdditionalHintsFromWrongAnswerMs,
-            nextUnrevealedHintIndex
-          )
-        }
-        trackedWrongAnswerCount = wrongAnswerCount
+      // Show all hints and solution
+      state.interaction.hintList.forEach {
+        val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
+        showHintImmediately(nextUnrevealedHintIndex)
+        explorationProgressController.submitHintIsRevealed(
+          state,
+          true,
+          nextUnrevealedHintIndex.hintIndex
+        )
+      }
+      if (state.interaction.hintList.last().hintIsRevealed && state.interaction.hasSolution()) {
+        explorationProgressController.submitSolutionIsRevealed(state)
       }
     }
 
