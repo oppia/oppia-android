@@ -39,7 +39,7 @@
       app:layout_constraintTop_toBottomOf="@id/faq_single_app_bar_layout">
 
       <ScrollView
-        android:layout_width="-2px"
+        android:layout_width="@dimen/faq_single_activity_scroll_layout_width"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:background="@color/oppiaGreyBackground"
