@@ -3,6 +3,7 @@ package org.oppia.android.util.networking
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -54,7 +55,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.LOCAL
     )
@@ -62,7 +66,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifiConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -70,7 +77,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_ETHERNET,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.LOCAL
     )
@@ -78,7 +88,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveEthernetConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_ETHERNET,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -86,7 +99,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.CELLULAR
     )
@@ -94,7 +110,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellularConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -102,7 +121,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIMAX,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.CELLULAR
     )
@@ -110,7 +132,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWimaxConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIMAX,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -118,7 +143,10 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
-    setNetworkConnectionStatus(NO_CONNECTION, false)
+    setNetworkConnectionStatus(
+      status = NO_CONNECTION,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -126,17 +154,24 @@ class ProdNetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_BLUETOOTH, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_BLUETOOTH,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
   }
 
-  private fun setNetworkConnectionStatus(status: Int, isConnected: Boolean) {
+  private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
     shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
       .setActiveNetworkInfo(
         ShadowNetworkInfo.newInstance(
-          null, status, 0, /* isAvailable= */ true, isConnected
+          /* detailedState = */ null,
+          /* type = */ status,
+          /* subType = */ 0,
+          /* isAvailable = */ true,
+          /* state = */ networkState
         )
       )
   }

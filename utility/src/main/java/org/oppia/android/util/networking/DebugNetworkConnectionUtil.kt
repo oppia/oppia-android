@@ -15,14 +15,18 @@ class DebugNetworkConnectionUtil @Inject constructor(
   private var forcedConnectionStatus: ConnectionStatus? = null
 
   override fun getCurrentConnectionStatus(): ConnectionStatus {
+    val actualConnectionStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    if (actualConnectionStatus == ConnectionStatus.NONE) {
+      forcedConnectionStatus = null
+    }
     forcedConnectionStatus?.let {
       return it
     }
-    return prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    return actualConnectionStatus
   }
 
   /**
-   * Forces 'connectionStatus' as the current connection status of the device and returns a
+   * Forces [connectionStatus] as the current connection status of the device and returns a
    * [Boolean] indicating result.
    */
   fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
@@ -36,6 +40,6 @@ class DebugNetworkConnectionUtil @Inject constructor(
     return true
   }
 
-  /** Returns the 'forcedConnectionStatus' indicating whether the connection status was forced or not. */
+  /** Returns the [forcedConnectionStatus] indicating whether the connection status was forced or not. */
   fun getForcedConnectionStatus(): ConnectionStatus? = forcedConnectionStatus
 }
