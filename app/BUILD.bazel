@@ -681,6 +681,9 @@ kt_android_library(
     name = "test_deps",
     testonly = True,
     srcs = [
+        "src/sharedTest/java/org/oppia/android/app/databinding/MarginBindingAdaptersTestActivityTest.kt",
+        "src/sharedTest/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdaptersTestActivityTest.kt",
+        "src/sharedTest/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdaptersTestActivityTest.kt",
         "src/sharedTest/java/org/oppia/android/app/recyclerview/RecyclerViewMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ClickActions.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/DragViewAction.kt",
