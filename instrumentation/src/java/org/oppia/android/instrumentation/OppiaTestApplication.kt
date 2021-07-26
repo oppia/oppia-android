@@ -2,13 +2,22 @@ package org.oppia.android.instrumentation
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import com.google.firebase.FirebaseApp
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root [Application] of the Oppia app. */
-class OppiaTestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+class OppiaTestApplication :
+  MultiDexApplication(),
+  ActivityComponentFactory,
+  ApplicationInjectorProvider,
+  Configuration.Provider {
   private val component: TestApplicationComponent by lazy {
     DaggerTestApplicationComponent.builder()
       .setApplication(this)
@@ -19,5 +28,16 @@ class OppiaTestApplication : Application(), ActivityComponentFactory, Applicatio
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 
+  override fun onCreate() {
+    super.onCreate()
+    FirebaseApp.initializeApp(applicationContext)
+    WorkManager.initialize(applicationContext, workManagerConfiguration)
+    component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+  }
+
   override fun getApplicationInjector(): ApplicationInjector = component
+
+  override fun getWorkManagerConfiguration(): Configuration {
+    return component.getWorkManagerConfiguration()
+  }
 }

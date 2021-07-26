@@ -5,7 +5,6 @@ import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -15,7 +14,6 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -39,13 +37,11 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
-import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
-import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
@@ -68,8 +64,8 @@ import javax.inject.Singleton
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
     TextInputRuleModule::class, DragDropSortInputModule::class,
-    InteractionsModule::class, GcsResourceModule::class,
-    GlideImageLoaderModule::class, ImageParsingModule::class,
+    InteractionsModule::class, TestGcsResourceModule::class,
+    GlideImageLoaderModule::class, TestImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, DebugLogReportingModule::class,
     AccessibilityProdModule::class, ImageClickInputModule::class,
@@ -79,7 +75,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
+    TestNetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class
   ]
@@ -89,7 +85,7 @@ interface TestApplicationComponent : ApplicationInjector {
   interface Builder {
     @BindsInstance
     fun setApplication(application: Application): Builder
-    fun build(): ApplicationComponent
+    fun build(): TestApplicationComponent
   }
 
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
