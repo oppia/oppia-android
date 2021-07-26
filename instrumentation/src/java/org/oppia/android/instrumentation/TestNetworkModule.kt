@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Module
 class TestNetworkModule {
 
-  const val TEST_DEVELOPMENT_URL = "http://localhost:8181/"
+  private val TEST_DEVELOPMENT_URL = "http://localhost:8181/"
 
   /**
    * Provides the Retrofit object.

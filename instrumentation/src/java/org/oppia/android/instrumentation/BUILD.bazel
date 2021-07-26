@@ -5,11 +5,11 @@ kt_android_library(
     name = "oppia_test_application",
     testonly = True,
     srcs = [
-        "GcsResourceModule.kt",
-        "ImageParsingModule.kt",
-        "NetworkModule.kt",
         "OppiaTestApplication.kt",
         "TestApplicationComponent.kt",
+        "TestGcsResourceModule.kt",
+        "TestImageParsingModule.kt",
+        "TestNetworkModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
