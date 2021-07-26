@@ -119,9 +119,15 @@ class MavenDependenciesListGenerator(
     }.toSet()
   }
 
-  /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
+  /**
+   * Helper function to retrieve the list of maven dependencies from maven_dependencies.textproto.
+   *
+   * @param pathToPbFile path to the pb file to be parsed
+   *
+   * @return list of [MavenDependency]
+   */
   fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
-    return getProto(
+    return parseTextProto(
       pathToPbFile,
       MavenDependencyList.getDefaultInstance()
     ).mavenDependencyList
@@ -175,7 +181,7 @@ class MavenDependenciesListGenerator(
    *
    * @return proto class from the parsed text proto file
    */
-  private fun getProto(
+  private fun parseTextProto(
     pathToPbFile: String,
     proto: MavenDependencyList
   ): MavenDependencyList {
