@@ -2,9 +2,7 @@ package org.oppia.android.util.parser.html
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.BulletSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -87,7 +85,8 @@ class HtmlParser private constructor(
     )
 
     val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(htmlSpannable)
+      SpannableStringBuilder(htmlSpannable),
+      htmlContentTextView.context
     )
     return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
