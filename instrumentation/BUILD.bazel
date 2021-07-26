@@ -22,7 +22,7 @@ android_binary(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//app",
-        "//instrumentation/src/java/org/oppia/android/instrumentation:oppia_test_application"
+        "//instrumentation/src/java/org/oppia/android/instrumentation:oppia_test_application",
     ],
 )
 
