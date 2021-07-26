@@ -77,9 +77,9 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-28"
       shell: bash
 
-    - name: Install build tools 29.0.2
+    - name: Install build tools 31.0.0
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;29.0.2"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;31.0.0"
       shell: bash
 
     - name: Configure Bazel to use JDK 9 for building
