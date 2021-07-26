@@ -43,6 +43,7 @@ kt_android_library(
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
+        "//third_party:com.google.android.material:material:1.2.0-alpha02",
         "//third_party:com_squareup_retrofit2_converter-moshi",
         "//third_party:com_squareup_retrofit2_retrofit",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
