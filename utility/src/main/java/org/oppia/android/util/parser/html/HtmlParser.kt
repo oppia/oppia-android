@@ -2,12 +2,14 @@ package org.oppia.android.util.parser.html
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.BulletSpan
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
-import java.text.Bidi
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
@@ -50,6 +52,16 @@ class HtmlParser private constructor(
     supportsLinks: Boolean = false,
     supportsConceptCards: Boolean = false
   ): Spannable {
+
+    htmlContentTextView.post {
+      // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
+      // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
+      if (isRtlLayout(htmlContentTextView)) {
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+      }
+      htmlContentTextView.invalidate()
+    }
+
     var htmlContent = rawString
     if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
@@ -57,17 +69,9 @@ class HtmlParser private constructor(
     if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
     }
-    val bidi = Bidi(htmlContent, Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT)
-    if(bidi.isRightToLeft) {
-      if ("<li>" in htmlContent) {
-        htmlContent = htmlContent.replace("<li>", "<p>\t\t  ⬤ \t\t")
-          .replace("</li>", "</p>")
-      }
-    }else {
-      if ("<li>" in htmlContent) {
-        htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-          .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
-      }
+    if ("<li>" in htmlContent) {
+      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
     // https://stackoverflow.com/a/8662457
@@ -87,6 +91,10 @@ class HtmlParser private constructor(
       htmlContentTextView.context
     )
     return ensureNonEmpty(trimSpannable(spannableBuilder))
+  }
+
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun computeCustomTagHandlers(

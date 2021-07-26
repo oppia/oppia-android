@@ -93,7 +93,8 @@ class CustomBulletSpanTest {
     val spannableString1 = testStringWithoutBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
-      context
+      context,
+      htmlContentTextView
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
@@ -107,7 +108,8 @@ class CustomBulletSpanTest {
     val spannableString1 = testStringWithBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
-      context
+      context,
+      htmlContentTextView
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
 
@@ -122,7 +124,8 @@ class CustomBulletSpanTest {
     val spannableString1 = testStringWithMultipleBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
-      context
+      context,
+      htmlContentTextView
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(4)
@@ -138,7 +141,8 @@ class CustomBulletSpanTest {
     val spannableString1 = testStringWithCustomBulletSpan
     val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
-      context
+      context,
+      htmlContentTextView
     )
     val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
     assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
@@ -160,7 +164,11 @@ class CustomBulletSpanTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(spannableString, context)
+    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(
+      spannableString,
+      context,
+      htmlContentTextView
+    )
     val leadingMargin = customBulletSpannable.getSpans(
       0,
       spannableString.length,

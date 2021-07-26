@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.html
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Path.Direction
@@ -10,6 +11,9 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BulletSpan
 import android.text.style.LeadingMarginSpan
+import android.view.View
+import android.widget.TextView
+import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
@@ -100,13 +104,17 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       bulletSpans.forEach {
         val start = spannableStringBuilder.getSpanStart(it)
         val end = spannableStringBuilder.getSpanEnd(it)
+
         spannableStringBuilder.removeSpan(it)
         spannableStringBuilder.setSpan(
-          CustomBulletSpan(context),
-          start,
-          end,
-          Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-        )
+          BulletSpan(
+            40, Color.BLACK, 20),
+          start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//          CustomBulletSpan(context),
+//          start,
+//          end,
+//          Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+//        )
       }
       return spannableStringBuilder
     }
