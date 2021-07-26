@@ -1,7 +1,6 @@
 package org.oppia.android.testing
 
 import android.content.Context
-import android.view.View
 import androidx.annotation.StringRes
 import com.google.android.material.textfield.TextInputLayout
 import org.hamcrest.Description
@@ -12,11 +11,11 @@ import javax.inject.Inject
 class TextInputAction @Inject constructor(
   val context: Context
 ) {
-  fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
+  fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<TextInputLayout> {
+    return object : TypeSafeMatcher<TextInputLayout>() {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
+        return (textInputLayout).error == expectedErrorText
       }
 
       override fun describeTo(description: Description) {
@@ -25,10 +24,10 @@ class TextInputAction @Inject constructor(
     }
   }
 
-  fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
+  fun hasNoErrorText(): Matcher<TextInputLayout> {
+    return object : TypeSafeMatcher<TextInputLayout>() {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
+        return (textInputLayout).error.isNullOrEmpty()
       }
 
       override fun describeTo(description: Description) {
