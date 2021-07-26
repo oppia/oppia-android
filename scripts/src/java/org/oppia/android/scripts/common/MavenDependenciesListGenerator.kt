@@ -120,7 +120,7 @@ class MavenDependenciesListGenerator(
   }
 
   /**
-   * Helper function to retrieve the list of maven dependencies from maven_dependencies.textproto.
+   * Retrieve the list of maven dependencies from maven_dependencies.textproto.
    *
    * @param pathToPbFile path to the pb file to be parsed
    *
