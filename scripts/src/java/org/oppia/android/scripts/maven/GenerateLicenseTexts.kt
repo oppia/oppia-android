@@ -79,7 +79,13 @@ class GenerateLicenseTexts(
     println("\nScript execution completed successfully.")
   }
 
-  /** Retrieves the list of [MavenDependency] from maven_dependencies.textproto. */
+  /**
+   * Retrieve the list of maven dependencies from maven_dependencies.textproto.
+   *
+   * @param pathToPbFile path to the pb file to be parsed
+   *
+   * @return list of [MavenDependency]
+   */
   private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
     return parseTextProto(
       pathToPbFile,

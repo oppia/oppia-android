@@ -238,11 +238,11 @@ class GenerateLicenseTextsTest {
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_INDICATOR)
     val xmlContent = xmlFile.inputStream().bufferedReader().use { it.readText() }
-    val dependencyNamesList = retreiveListOfStrings(xmlContent, "third_party_dependency_name_")
+    val dependencyNamesList = retrieveListOfStrings(xmlContent, "third_party_dependency_name_")
     val dependencyVersionsList =
-      retreiveListOfStrings(xmlContent, "third_party_dependency_version_")
-    val licenseTextsList = retreiveListOfStrings(xmlContent, "license_text_")
-    val licenseNamesList = retreiveListOfStrings(xmlContent, "license_name_")
+      retrieveListOfStrings(xmlContent, "third_party_dependency_version_")
+    val licenseTextsList = retrieveListOfStrings(xmlContent, "license_text_")
+    val licenseNamesList = retrieveListOfStrings(xmlContent, "license_name_")
 
     verifyList(
       itemList = dependencyNamesList,
@@ -473,7 +473,7 @@ class GenerateLicenseTextsTest {
     }.build()
   }
 
-  private fun retreiveListOfStrings(
+  private fun retrieveListOfStrings(
     xmlContent: String,
     attributePrefix: String
   ): List<String> {
