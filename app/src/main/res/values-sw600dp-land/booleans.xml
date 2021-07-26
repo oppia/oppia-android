@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <bool name="faq_single_activity_scroll_fill_view_port">true</bool>
+</resources>
