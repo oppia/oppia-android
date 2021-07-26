@@ -87,8 +87,7 @@ class HtmlParser private constructor(
     )
 
     val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(htmlSpannable),
-      htmlContentTextView.context
+      SpannableStringBuilder(htmlSpannable)
     )
     return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
