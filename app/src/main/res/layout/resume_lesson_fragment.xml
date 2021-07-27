@@ -84,6 +84,7 @@
       <Button
         android:id="@+id/resume_lesson_start_over_button"
         android:layout_width="wrap_content"
+        android:layout_height="0dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:maxWidth="@dimen/continue_submit_button_width"
         android:text="@string/start_over_lesson_button"
