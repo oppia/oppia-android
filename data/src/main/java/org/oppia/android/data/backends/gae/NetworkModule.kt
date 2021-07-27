@@ -10,6 +10,8 @@ import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
+import retrofit2.mock.MockRetrofit
+import retrofit2.mock.NetworkBehavior
 
 /**
  * Module which provides all required dependencies about network
@@ -80,7 +82,13 @@ class NetworkModule {
   @Provides
   @Singleton
   fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService {
-    return retrofit.create(PlatformParameterService::class.java)
+    val behavior = NetworkBehavior.create()
+    behavior.setFailurePercent(0)
+
+    val mockRetrofit = MockRetrofit.Builder(retrofit).apply {
+      networkBehavior(behavior)
+    }.build()
+    return MockPlatformParameterService(mockRetrofit.create(PlatformParameterService::class.java))
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
