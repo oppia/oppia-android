@@ -13,6 +13,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
+/** Worker class that fetches anc cache the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -35,6 +36,7 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
+  // It's used to parse the Map of Platform Parameters to a List of Platform Parameter
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     val platformParameterList: MutableList<PlatformParameter> = mutableListOf()
     for (entry in response.entries) {
@@ -50,6 +52,7 @@ class PlatformParameterSyncUpWorker private constructor(
     return platformParameterList
   }
 
+  /** Extracts platform parameters from the remote service and store them in the cache store */
   private fun refreshPlatformParameters(): Result {
     return try {
       val response = platformParameterService.getPlatformParametersByVersion(
@@ -65,6 +68,7 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
+  /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
     private val platformParameterService: PlatformParameterService,

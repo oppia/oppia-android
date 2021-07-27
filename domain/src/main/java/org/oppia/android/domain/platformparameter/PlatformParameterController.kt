@@ -61,25 +61,6 @@ class PlatformParameterController @Inject constructor(
     }
   }
 
-/*
-  *   suspend fun updatePlatformParameterDatabase(
-    platformParameterList: List<PlatformParameter>
-  ) {
-    val deferredResult = platformParameterDatabaseStore.storeDataAsync(
-      updateInMemoryCache = false
-    ) {
-      it.toBuilder()
-        .addAllPlatformParameter(platformParameterList)
-        .build()
-    }
-    deferredResult.invokeOnCompletion {
-      it?.let {
-        oppiaLogger.e("DOMAIN", "Failed when storing platform parameter values list", it)
-      }
-    }
-    deferredResult.await()
-  }
-*/
   /**
    * Returns a [DataProvider] which can be used to confirm that PlatformParameterDatabase read
    * process has been completed.
