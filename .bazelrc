@@ -6,7 +6,8 @@ build --android_databinding_use_v3_4_args \
     --define=android_dexmerger_tool=d8_dexmerger \
     --nouse_workers_with_dexbuilder \
     --define=desugar_tool=d8 \
-    --define=android_standalone_dexing_tool=d8_compat_dx
+    --define=android_standalone_dexing_tool=d8_compat_dx \
+    --noincremental_dexing
 
 # Show all test output by default (for better debugging).
 test --test_output=all
