@@ -2,8 +2,9 @@
 build --android_databinding_use_v3_4_args \
     --experimental_android_databinding_v2 \
     --java_header_compilation=false \
-    --noincremental_dexing \
-    --define=android_standalone_dexing_tool=d8_compat_dx
+    --define=android_incremental_dexing_tool=d8_dexbuilder \
+    --define=android_dexmerger_tool=d8_dexmerger \
+    --nouse_workers_with_dexbuilder
 
 # Show all test output by default (for better debugging).
 test --test_output=all
