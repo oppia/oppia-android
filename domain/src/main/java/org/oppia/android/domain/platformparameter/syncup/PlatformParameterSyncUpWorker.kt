@@ -1,6 +1,7 @@
 package org.oppia.android.domain.platformparameter.syncup
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,6 +13,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.util.threading.BlockingDispatcher
 
 class PlatformParameterSyncUpWorker private constructor(
   context: Context,
@@ -19,7 +21,7 @@ class PlatformParameterSyncUpWorker private constructor(
   private val platformParameterController: PlatformParameterController,
   private val platformParameterService: PlatformParameterService,
   private val oppiaLogger: OppiaLogger,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  private val backgroundDispatcher: CoroutineDispatcher
 ) : CoroutineWorker(context, params) {
 
   companion object {
@@ -29,8 +31,13 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   override suspend fun doWork(): Result {
+    println("Worker - 0" + inputData.getString(WORKER_TYPE_KEY))
+//    Log.d("PlatformParameter", "Worker - 0" + inputData.getString(WORKER_TYPE_KEY))
     return when (inputData.getString(WORKER_TYPE_KEY)) {
-      PLATFORM_PARAMETER_WORKER -> withContext(backgroundDispatcher) { refreshPlatformParameters() }
+      PLATFORM_PARAMETER_WORKER -> withContext(backgroundDispatcher) {
+        println("Worker - 1")
+//        Log.d("PlatformParameter", "Worker - 1")
+        refreshPlatformParameters() }
       else -> Result.failure()
     }
   }
@@ -51,15 +58,29 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   private fun refreshPlatformParameters(): Result {
+    println("Worker - 2")
+//    Log.d("PlatformParameter", "Worker - 2")
     return try {
+      println( "Worker - 3")
+//      Log.d("PlatformParameter", "Worker - 3")
       val response = platformParameterService.getPlatformParametersByVersion(
         applicationContext.getVersionName()
       ).execute()
+      println( "Worker - 4")
+//      Log.d("PlatformParameter", "Worker - 4")
       val responseBody = checkNotNull(response.body())
+      println( "Worker - 5")
+//      Log.d("PlatformParameter", "Worker - 5")
       val platformParameterList = parseNetworkResponse(responseBody)
+      println("Worker - 6")
+//      Log.d("PlatformParameter", "Worker - 6")
       platformParameterController.updatePlatformParameterDatabase(platformParameterList)
+      println( "Worker - 10")
+//      Log.d("PlatformParameter", "Worker - 10")
       Result.success()
     } catch (e: Exception) {
+      println("Worker - 11"+ e.message)
+//      Log.d("PlatformParameter", "Worker - 11"+ e.message)
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
       Result.failure()
     }
@@ -69,7 +90,7 @@ class PlatformParameterSyncUpWorker private constructor(
     private val platformParameterController: PlatformParameterController,
     private val platformParameterService: PlatformParameterService,
     private val oppiaLogger: OppiaLogger,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+    @BlockingDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     fun create(context: Context, params: WorkerParameters): CoroutineWorker {
       return PlatformParameterSyncUpWorker(

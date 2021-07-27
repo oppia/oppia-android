@@ -3,15 +3,20 @@ package org.oppia.android.domain.platformparameter.syncup
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
+import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -42,11 +47,15 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.robolectric.Shadows
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class PlatformParameterSyncUpWorkerTest {
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
@@ -60,9 +69,14 @@ class PlatformParameterSyncUpWorkerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private val testVersionName = "1.0"
+
+  private val testVersionCode = 1
+
   @Before
   fun setup() {
     setUpTestApplicationComponent()
+    setUpApplicationForContext()
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
@@ -80,10 +94,18 @@ class PlatformParameterSyncUpWorkerTest {
       PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+    val request = OneTimeWorkRequest.Builder(PlatformParameterSyncUpWorker::class.java)
       .setInputData(inputData)
+      .setConstraints(Constraints.Builder().build())
       .build()
-
+//    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+//      .setInputData(inputData)
+//      .build()
+    workManager.enqueueUniqueWork(
+      "PlatformParameterWork",
+      ExistingWorkPolicy.REPLACE,
+      request
+    )
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -106,6 +128,22 @@ class PlatformParameterSyncUpWorkerTest {
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
+  }
+
+  private fun setUpApplicationForContext() {
+    val packageManager = Shadows.shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageInfo.versionName = testVersionName
+    packageInfo.versionCode = testVersionCode
+    packageManager.installPackage(packageInfo)
   }
 
   // TODO(#89): Move this to a common test application component.

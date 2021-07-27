@@ -1,5 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
+import android.util.Log
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -48,9 +49,13 @@ class PlatformParameterController @Inject constructor(
   fun updatePlatformParameterDatabase(
     platformParameterList: List<PlatformParameter>
   ) {
+    println( "Worker - 7")
+//    Log.d("PlatformParameter", "Worker - 7")
     platformParameterDatabaseStore.storeDataAsync(
       updateInMemoryCache = false
     ) {
+      println("Worker - 8")
+//      Log.d("PlatformParameter", "Worker - 8")
       it.toBuilder()
         .addAllPlatformParameter(platformParameterList)
         .build()
@@ -59,6 +64,8 @@ class PlatformParameterController @Inject constructor(
         oppiaLogger.e("DOMAIN", "Failed when storing platform parameter values list", it)
       }
     }
+    println("Worker - 9")
+//    Log.d("PlatformParameter", "Worker - 9")
   }
 
 /*
