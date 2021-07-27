@@ -38,6 +38,7 @@ class MarkChaptersCompletedTestActivity : InjectableAppCompatActivity() {
     const val MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_KEY =
       "MarkChaptersCompletedTestActivity.internal_profile_id"
 
+    /** Returns an [Intent] for [MarkChaptersCompletedTestActivity]. */
     fun createMarkChaptersCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
       intent.putExtra(MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
