@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
-import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "TopicLessonsFragment.current_expanded_list_index"
@@ -96,7 +97,11 @@ class TopicLessonsFragment :
     topicLessonsFragmentPresenter.storySummaryClicked(storySummary)
   }
 
-  override fun selectChapterSummary(storyId: String, explorationId: String) {
-    topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId)
+  override fun selectChapterSummary(
+    storyId: String,
+    explorationId: String,
+    chapterPlayState: ChapterPlayState
+  ) {
+    topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 }

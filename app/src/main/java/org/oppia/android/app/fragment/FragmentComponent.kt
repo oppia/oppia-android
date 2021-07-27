@@ -57,6 +57,7 @@ import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
+import org.oppia.android.app.resumelesson.ResumeLessonFragment
 
 /** Root subcomponent for all fragments. */
 @Subcomponent(
@@ -112,6 +113,7 @@ interface FragmentComponent {
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
+  fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)

@@ -3,6 +3,7 @@ package org.oppia.android.app.activity
 import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
+import javax.inject.Provider
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
@@ -33,6 +34,7 @@ import org.oppia.android.app.profile.PinPasswordActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfilePictureActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.settings.profile.ProfileEditActivity
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileRenameActivity
@@ -59,7 +61,6 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
-import javax.inject.Provider
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
@@ -118,6 +119,7 @@ interface ActivityComponent {
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
+  fun inject(resumeExplorationActivity: ResumeLessonActivity)
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)

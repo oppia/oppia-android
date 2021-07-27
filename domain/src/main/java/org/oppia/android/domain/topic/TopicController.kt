@@ -3,6 +3,8 @@ package org.oppia.android.domain.topic
 import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
@@ -36,8 +38,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import javax.inject.Inject
-import javax.inject.Singleton
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -77,6 +77,7 @@ private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
+private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
 private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
 private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
 
@@ -141,6 +142,30 @@ class TopicController @Inject constructor(
       GET_STORY_COMBINED_PROVIDER_ID,
       ::combineStorySummaryAndStoryProgress
     )
+  }
+
+  /**
+   * Fetches a chapter given a topic ID, story ID and exploration ID.
+   *
+   * @param topicId the ID corresponding to the topic which contains this story
+   * @param storyId the ID corresponding to the story which needs to be returned
+   * @param explorationId the ID corresponding to the exploration which needs to be returned
+   * @return a [DataProvider] for [ChapterSummary]
+   */
+  fun getChapter(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterSummary> {
+    return dataProviders.createInMemoryDataProviderAsync(GET_CHAPTER_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(
+        retrieveChapter(
+          topicId,
+          storyId,
+          explorationId
+        )
+      )
+    }
   }
 
   /**
@@ -370,6 +395,17 @@ class TopicController @Inject constructor(
     return if (loadLessonProtosFromAssets) {
       loadStorySummary(storyId)
     } else createStorySummaryFromJson(topicId, storyId)
+  }
+
+  internal fun retrieveChapter(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): ChapterSummary {
+    val chapterSummary: ChapterSummary? = retrieveStory(topicId, storyId).chapterList.firstOrNull {
+      it.explorationId == explorationId
+    }
+    return chapterSummary ?: ChapterSummary.getDefaultInstance()
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.

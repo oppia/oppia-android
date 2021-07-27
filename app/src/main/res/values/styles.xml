@@ -175,17 +175,16 @@
   <style name="textAllCaps">
     <item name="android:textAllCaps">true</item>
   </style>
-  <!-- TOPIC TABLAYOUT STYLE -->
-  <style name="AppTabLayout" parent="Widget.Design.TabLayout">
-    <item name="tabIndicatorColor">@color/white</item>
-    <item name="tabIndicatorHeight">4dp</item>
-    <item name="tabPaddingStart">8dp</item>
-    <item name="tabPaddingEnd">8dp</item>
-    <item name="tabBackground">?attr/selectableItemBackground</item>
-    <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
-    <item name="tabIconTint">@color/tab_icon_color_selector</item>
-    <item name="tabSelectedTextColor">@color/white</item>
-  </style>
+  <!-- TOPIC TABLAYOUT STYLE --><style name="AppTabLayout" parent="Widget.Design.TabLayout">
+  <item name="tabIndicatorColor">@color/white</item>
+  <item name="tabIndicatorHeight">4dp</item>
+  <item name="tabPaddingStart">8dp</item>
+  <item name="tabPaddingEnd">8dp</item>
+  <item name="tabBackground">?attr/selectableItemBackground</item>
+  <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
+  <item name="tabIconTint">@color/tab_icon_color_selector</item>
+  <item name="tabSelectedTextColor">@color/white</item>
+</style>
 
   <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
     <item name="android:textSize">14sp</item>
@@ -326,5 +325,12 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:textColor">@color/oppiaPrimaryText</item>
+  </style>
+  <!-- Start Over Button -->
+  <style name="StartOverButton" parent="Widget.MaterialComponents.Button.TextButton">
+    <item name="android:paddingLeft">@dimen/mtrl_btn_padding_left</item>
+    <item name="android:paddingRight">@dimen/mtrl_btn_padding_right</item>
+    <item name="strokeColor">@color/mtrl_btn_stroke_color_selector</item>
+    <item name="strokeWidth">@dimen/mtrl_btn_stroke_size</item>
   </style>
 </resources>
