@@ -387,9 +387,6 @@ VIEWS = [
 BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/databinding/DrawableBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ImageViewBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java",
 ]
 
@@ -403,7 +400,10 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/ConstraintLayoutAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/PinViewBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
+    "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java",
@@ -681,6 +681,9 @@ kt_android_library(
     name = "test_deps",
     testonly = True,
     srcs = [
+        "src/sharedTest/java/org/oppia/android/app/databinding/MarginBindingAdaptersTestActivityTest.kt",
+        "src/sharedTest/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdaptersTestActivityTest.kt",
+        "src/sharedTest/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdaptersTestActivityTest.kt",
         "src/sharedTest/java/org/oppia/android/app/recyclerview/RecyclerViewMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/ClickActions.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/DragViewAction.kt",
@@ -717,6 +720,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_annotation_annotation",
+    "//third_party:androidx_core_core-ktx",
     "//third_party:androidx_databinding_databinding-adapters",
     "//third_party:androidx_databinding_databinding-common",
     "//third_party:androidx_databinding_databinding-compiler",
