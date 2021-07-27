@@ -161,7 +161,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_modifyLessonProgressIsDisplayed() {
+  fun testDeveloperOptionsFragment_land_modifyLessonProgressIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -210,7 +210,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_viewLogsIsDisplayed() {
+  fun testDeveloperOptionsFragment_land_viewLogsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -259,7 +259,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_changeConfig_overrideAppBehaviorsIsDisplayed() {
+  fun testDeveloperOptionsFragment_land_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -323,7 +323,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_clickForceCrash_throwsRuntimeException() {
+  fun testDeveloperOptionsFragment_land_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -350,7 +350,7 @@ class DeveloperOptionsFragmentTest {
   }
 
   @Test
-  fun testDeveloperOptionsFragment_configChange_clickEventLogs_opensViewEventLogsActivity() {
+  fun testDeveloperOptionsFragment_land_clickEventLogs_opensViewEventLogsActivity() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
