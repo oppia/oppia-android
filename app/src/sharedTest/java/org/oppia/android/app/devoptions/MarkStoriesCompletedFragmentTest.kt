@@ -456,7 +456,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_configChange_clickMarkCompleted_activityFinishes() {
+  fun testMarkStoriesCompletedFragment_land_clickMarkCompleted_activityFinishes() {
     activityTestRule.launchActivity(createMarkStoriesCompletedTestActivityIntent(internalProfileId))
     testCoroutineDispatchers.runCurrent()
     onView(isRoot()).perform(orientationLandscape())
