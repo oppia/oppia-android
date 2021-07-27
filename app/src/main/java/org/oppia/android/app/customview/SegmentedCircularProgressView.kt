@@ -27,7 +27,7 @@ class SegmentedCircularProgressView : View {
   private val isRTL = TextUtilsCompat
     .getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
 
-  private var baseRect: RectF? = null
+  private lateinit var baseRect: RectF
   private lateinit var chapterFinishedArcPaint: Paint
   private lateinit var chapterInProgressArcPaint: Paint
   private lateinit var chapterNotStartedArcPaint: Paint
@@ -97,7 +97,7 @@ class SegmentedCircularProgressView : View {
     if (isRTL)
       rotationY = 180f
     super.onDraw(canvas)
-    if (baseRect == null) {
+    if (!this::baseRect.isInitialized) {
       val centerX = measuredWidth / 2
       val centerY = measuredHeight / 2
       val radius = Math.min(centerX, centerY)
@@ -121,7 +121,7 @@ class SegmentedCircularProgressView : View {
         val startAngle =
           angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
             STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterFinishedArcPaint)
+        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterFinishedArcPaint)
       }
       angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
       // Draws arc for every chapter that is in progress.
@@ -129,7 +129,7 @@ class SegmentedCircularProgressView : View {
         val startAngle =
           angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
             STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterInProgressArcPaint)
+        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterInProgressArcPaint)
       }
       angleStartPoint += chaptersInProgress * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
       // Draws arc for every chapter that is not started.
@@ -137,13 +137,13 @@ class SegmentedCircularProgressView : View {
         val startAngle =
           angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
             STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect!!, startAngle, sweepAngle, false, chapterNotStartedArcPaint)
+        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterNotStartedArcPaint)
       }
     } else if (totalChapters == 1) {
       // Draws entire circle for finished an unfinished chapter.
       if (chaptersFinished == 1) {
         canvas.drawArc(
-          baseRect!!,
+          baseRect,
           angleStartPoint,
           360f,
           false,
@@ -151,7 +151,7 @@ class SegmentedCircularProgressView : View {
         )
       } else if (chaptersInProgress == 1) {
         canvas.drawArc(
-          baseRect!!,
+          baseRect,
           angleStartPoint,
           360f,
           false,
@@ -159,7 +159,7 @@ class SegmentedCircularProgressView : View {
         )
       } else {
         canvas.drawArc(
-          baseRect!!,
+          baseRect,
           angleStartPoint,
           360f,
           false,

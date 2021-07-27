@@ -1,6 +1,5 @@
 package org.oppia.android.app.topic.lessons
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,8 +152,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     val inProgressChapterCount =
       chapterSummaries.map(ChapterSummary::getChapterPlayState)
         .filter {
-          Log.d("12345", "bindTopicLessonStorySummary: chapter is marked $it")
-          it == ChapterPlayState.IN_PROGRESS_SAVED || it == ChapterPlayState.IN_PROGRESS_NOT_SAVED
+          it == ChapterPlayState.IN_PROGRESS_SAVED
         }
         .size
 
