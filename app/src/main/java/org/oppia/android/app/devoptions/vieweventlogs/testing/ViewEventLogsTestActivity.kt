@@ -31,6 +31,7 @@ class ViewEventLogsTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns [Intent] for [ViewEventLogsTestActivity]. */
     fun createViewEventLogsTestIntent(context: Context): Intent {
       return Intent(context, ViewEventLogsTestActivity::class.java)
     }
