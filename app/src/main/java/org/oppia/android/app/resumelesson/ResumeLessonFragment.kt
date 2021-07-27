@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import javax.inject.Inject
 import org.oppia.android.app.fragment.InjectableFragment
+import javax.inject.Inject
 
-class ResumeLessonFragment:
+class ResumeLessonFragment :
   InjectableFragment() {
 
   companion object {
 
     /** Creates new instance of [ResumeLessonFragment].
-     * @param  internalProfileId is used by the ResumeLessonFragment to retrieve saved checkpoint
+     * @param internalProfileId is used by the ResumeLessonFragment to retrieve saved checkpoint
      * @param explorationId is used by the ResumeLessonFragment to retrieve saved checkpoint
      */
     fun newInstance(

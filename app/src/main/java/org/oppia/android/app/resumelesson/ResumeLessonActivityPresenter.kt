@@ -3,9 +3,9 @@ package org.oppia.android.app.resumelesson
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.databinding.ResumeLessonActivityBinding
+import javax.inject.Inject
 
 const val RESUME_LESSON_TAG = "ResumeLesson"
 

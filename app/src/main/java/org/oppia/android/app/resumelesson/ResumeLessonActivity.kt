@@ -3,15 +3,14 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.State
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import javax.inject.Inject
 
 class ResumeLessonActivity :
   InjectableAppCompatActivity(),
-  RouteToExplorationListener{
+  RouteToExplorationListener {
 
   @Inject
   lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
