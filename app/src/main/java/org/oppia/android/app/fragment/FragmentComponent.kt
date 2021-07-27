@@ -32,6 +32,7 @@ import org.oppia.android.app.player.exploration.ExplorationFragment
 import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.player.state.hintsandsolution.HintHandlerProdModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
@@ -58,11 +59,17 @@ import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 import javax.inject.Provider
 
-/** Root subcomponent for all fragments. */
+/**
+ * Root subcomponent for all fragments.
+ *
+ * At the time of building the app in prod mode -
+ * Remove: [HintHandlerDebugModule]
+ * Add: [HintHandlerProdModule]
+ */
 @Subcomponent(
   modules = [
     FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class
+    ViewBindingShimModule::class, HintHandlerProdModule::class
   ]
 )
 @FragmentScope
