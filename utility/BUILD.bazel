@@ -73,9 +73,26 @@ kt_android_library(
     ],
 )
 
+# Place your file here if:
+#  - It is not a test file
+#  - Only test files depend on it
+
+kt_android_library(
+    name = "test_deps",
+    testonly = True,
+    srcs = [
+        "src/test/java/org/oppia/android/util/utility/NetworkConnectionTestUtil.kt",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
+    ":test_deps",
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",

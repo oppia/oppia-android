@@ -21,10 +21,9 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus
-import org.robolectric.Shadows.shadowOf
+import org.oppia.android.util.utility.NetworkConnectionTestUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +40,9 @@ class DebugNetworkConnectionUtilTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
 
   @Before
   fun setUp() {
@@ -230,16 +232,7 @@ class DebugNetworkConnectionUtilTest {
   }
 
   private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
-    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(
-        ShadowNetworkInfo.newInstance(
-          /* detailedState = */ null,
-          /* type = */ status,
-          /* subType = */ 0,
-          /* isAvailable = */ true,
-          /* state = */ networkState
-        )
-      )
+    networkConnectionTestUtil.setNetworkInfo(context, status, networkState)
   }
 
   // TODO(#89): Move this to a common test application component.
