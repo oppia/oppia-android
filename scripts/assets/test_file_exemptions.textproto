@@ -669,3 +669,4 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/Back
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/BlockingDispatcher.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/ConcurrentCollections.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/DispatcherModule.kt"
+exempted_file_path: "utility/src/test/java/org/oppia/android/util/utility/NetworkConnectionTestUtil.kt"
