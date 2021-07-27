@@ -30,13 +30,17 @@ class PlatformParameterController @Inject constructor(
     // After this transformation the cached List of Platform Parameters gets converted into a simple
     // map where the keys corresponds to the name of Platform Parameter and value will correspond to
     // the PlatformParameter object itself
+    println("Worker - 12")
     platformParameterDatabaseStore.transform(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
       platformParameterDatabase ->
+      println("Worker - 13")
       val platformParameterMap = mutableMapOf<String, PlatformParameter>()
       platformParameterDatabase.platformParameterList.forEach {
         platformParameterMap[it.name] = it
       }
+      println("Worker - 14 $platformParameterMap")
       platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+      println("Worker - 16")
       return@transform
     }
   }

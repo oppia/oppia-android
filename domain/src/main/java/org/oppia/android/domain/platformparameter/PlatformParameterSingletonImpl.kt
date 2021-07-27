@@ -14,6 +14,7 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
   override fun getPlatformParameterMap() = platformParameterMap
 
   override fun setPlatformParameterMap(platformParameterMap: Map<String, PlatformParameter>) {
+    println("Worker - 15" + this.platformParameterMap.isEmpty())
     if (this.platformParameterMap.isEmpty()) this.platformParameterMap.putAll(platformParameterMap)
   }
 

@@ -2,6 +2,7 @@ package org.oppia.android.domain.platformparameter.syncup
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -47,12 +48,30 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.domain.platformparameter.DaggerPlatformParameterControllerTest_TestApplicationComponent
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerTest
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.robolectric.Shadows
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = PlatformParameterSyncUpWorkerTest.TestApplication::class)
 class PlatformParameterSyncUpWorkerTest {
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Mock
+  lateinit var mockUnitObserver: Observer<AsyncResult<Unit>>
 
   @Inject
   lateinit var context: Context
@@ -72,6 +91,13 @@ class PlatformParameterSyncUpWorkerTest {
   private val testVersionName = "1.0"
 
   private val testVersionCode = 1
+
+  private val expectedTestStringParameter by lazy {
+    PlatformParameter.newBuilder()
+      .setName(TEST_STRING_PARAM_NAME)
+      .setString(TEST_STRING_PARAM_SERVER_VALUE)
+      .build()
+  }
 
   @Before
   fun setup() {
@@ -101,33 +127,30 @@ class PlatformParameterSyncUpWorkerTest {
 //    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
 //      .setInputData(inputData)
 //      .build()
-    workManager.enqueueUniqueWork(
-      "PlatformParameterWork",
-      ExistingWorkPolicy.REPLACE,
-      request
-    )
+    workManager.enqueue(request)
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
     val workInfo = workManager.getWorkInfoById(request.id)
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
-    platformParameterController.getParameterDatabase()
+    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
     testCoroutineDispatchers.runCurrent()
 
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
     assertThat(platformParameterMap).isNotEmpty()
     assertThat(platformParameterMap).containsEntry(
       TEST_STRING_PARAM_NAME,
-      TEST_STRING_PARAM_SERVER_VALUE
+      expectedTestStringParameter
     )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+//    DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent.builder()
+//      .setApplication(ApplicationProvider.getApplicationContext())
+//      .build()
+//      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun setUpApplicationForContext() {
@@ -191,7 +214,7 @@ class PlatformParameterSyncUpWorkerTest {
       RetrofitTestModule::class, FakeOppiaClockModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -200,5 +223,23 @@ class PlatformParameterSyncUpWorkerTest {
     }
 
     fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: PlatformParameterSyncUpWorkerTest.TestApplicationComponent by lazy {
+      DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerTest) {
+      component.inject(platformParameterSyncUpWorkerTest)
+    }
+
+    public override fun attachBaseContext(base: Context?) {
+      super.attachBaseContext(base)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
