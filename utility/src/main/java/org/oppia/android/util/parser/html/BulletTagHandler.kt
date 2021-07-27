@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.html
 
-import android.graphics.Color
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
@@ -31,8 +30,10 @@ class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
         output.removeSpan(it)
       }
       if (start != output.length) {
-        output.setSpan(BulletSpan(),
-        start, output.length-1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        output.setSpan(
+          BulletSpan(),
+          start, output.length - 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+        )
       }
     }
   }
