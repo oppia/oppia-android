@@ -117,7 +117,7 @@ class MarkStoriesCompletedActivityTest {
     launch<MarkStoriesCompletedActivity>(
       createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
-      onView(withId(R.id.mark_stories_completed_fragment_root_container)).check(
+      onView(withId(R.id.mark_stories_completed_fragment_container)).check(
         matches(isDisplayed())
       )
     }
@@ -129,7 +129,7 @@ class MarkStoriesCompletedActivityTest {
       createMarkStoriesCompletedActivityIntent(internalProfileId)
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_stories_completed_fragment_root_container)).check(
+      onView(withId(R.id.mark_stories_completed_fragment_container)).check(
         matches(isDisplayed())
       )
     }

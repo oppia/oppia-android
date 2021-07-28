@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 
-/** The activity for testing [MarkStoriesCompletedFragment]. */
+/** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
 
   private var internalProfileId = -1
