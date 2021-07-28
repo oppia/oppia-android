@@ -17,7 +17,7 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 
-/** The activity for testing [DeveloperOptionsFragment]. */
+/** Activity for testing [DeveloperOptionsFragment]. */
 class DeveloperOptionsTestActivity :
   InjectableAppCompatActivity(),
   ForceCrashButtonClickListener,
