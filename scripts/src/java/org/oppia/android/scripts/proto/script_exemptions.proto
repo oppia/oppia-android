@@ -37,8 +37,8 @@ message AccessibilityLabelExemptions {
 }
 
 // Exemptions for the KDoc validity check. Exemptions indicate files for which we should
-// not check for the presence of a KDoc.
-message KDocValidityExemptions {
+// not check for the presence of KDocs.
+message KdocValidityExemptions {
   // List of all the files which should be exempted for the KDoc check.
   // For exempting any file, provide its relative path to root in
   // 'script/assets/kdoc_validity_exemptions.textproto'.

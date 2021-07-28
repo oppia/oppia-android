@@ -1,5 +1,5 @@
 """
-Libraries corresponding docs validity check, that ensures the documentations are valid.
+Libraries corresponding to documentation-related scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
@@ -7,7 +7,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 kt_jvm_library(
     name = "kdoc_validity_check_lib",
     testonly = True,
-    srcs = ["KDocValidityCheck.kt"],
+    srcs = ["KdocValidityCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",

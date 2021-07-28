@@ -130,7 +130,7 @@ def generate_kdoc_validity_assets_list_from_text_protos(
         name = name,
         names = kdoc_validity_exemptions_name,
         proto_dep_name = "script_exemptions",
-        proto_type_name = "KDocValidityExemptions",
+        proto_type_name = "KdocValidityExemptions",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",

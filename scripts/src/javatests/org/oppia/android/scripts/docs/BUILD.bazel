@@ -1,12 +1,12 @@
 """
-Tests corresponding to docs validity check, that ensures the documentations are valid.
+Tests corresponding to documentation-related scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
-    name = "KDocValidityCheckTest",
-    srcs = ["KDocValidityCheckTest.kt"],
+    name = "KdocValidityCheckTest",
+    srcs = ["KdocValidityCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
         "//testing:assertion_helpers",

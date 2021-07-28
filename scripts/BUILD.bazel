@@ -142,7 +142,7 @@ kt_jvm_binary(
     name = "kdoc_validity_check",
     testonly = True,
     data = KDOC_VALIDITY_EXEMPTION_ASSETS,
-    main_class = "org.oppia.android.scripts.docs.KDocValidityCheckKt",
+    main_class = "org.oppia.android.scripts.docs.KdocValidityCheckKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
     ],
