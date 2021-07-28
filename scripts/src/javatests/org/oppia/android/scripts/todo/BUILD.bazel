@@ -19,7 +19,6 @@ kt_jvm_test(
     name = "TodoCheckTest",
     srcs = ["TodoCheckTest.kt"],
     deps = [
-        "//scripts:todo_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_check_lib",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",

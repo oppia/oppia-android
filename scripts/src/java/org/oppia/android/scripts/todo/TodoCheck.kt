@@ -6,6 +6,10 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.todo.data.Issue
 import java.io.File
+import org.oppia.android.scripts.proto.TodoExemptions
+import org.oppia.android.scripts.proto.TodoExemption
+import java.io.FileInputStream
+import org.oppia.android.scripts.todo.data.Todo
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
@@ -29,13 +33,18 @@ fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
+  val pathToProtoBinary = args[1]
+
   // Path to the JSON file containing the list of open issues.
-  val pathToOpenIssuesJsonFile = "${args[0]}/open_issues.json"
+  val openIssuesJsonFile = File(repoPath, args[2])
 
-  // List of all the open issues on Github for this repository.
-  val openIssueList = retrieveOpenIssueList(pathToOpenIssuesJsonFile)
+  val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
 
-  val correctTodoFormatRegex = "TODO[\\(]#(\\d+)[\\)]: .+".toRegex()
+  // List of all the open issues on GitHub for this repository.
+  val openIssueList = retrieveOpenIssueList(openIssuesJsonFile)
+
+  val todoExemptionList =
+    loadTodoExemptionsProto(pathToProtoBinary).getTodoExemptionList()
 
   val allTodos = TodoCollector.collectTodos(repoPath)
 
@@ -47,31 +56,82 @@ fun main(vararg args: String) {
     checkIfOpenIssueFailure(todo.lineContent, openIssueList)
   }
 
-  openIssueFailureTodos.forEach {
-    println("${it.filePath}")
+  val redundantExemptions = retrieveRedundantExemptions(
+    todos = poorlyFormattedTodos + openIssueFailureTodos,
+    todoExemptionList = todoExemptionList,
+    repoPath = repoPath
+  )
+
+  val poorlyFormattedTodosAfterExemption = retrieveTodosAfterExemption(
+    todos = poorlyFormattedTodos,
+    todoExemptionList = todoExemptionList,
+    repoPath = repoPath
+  )
+
+  val openIssueFailureTodosAfterExemption = retrieveTodosAfterExemption(
+    todos = openIssueFailureTodos,
+    todoExemptionList = todoExemptionList,
+    repoPath = repoPath
+  )
+
+  logRedundantExemptions(redundantExemptions, todoExemptionTextProtoFilePath)
+
+  logFailures(
+    invalidTodos = poorlyFormattedTodosAfterExemption,
+    failureMessage = "TODOs not in correct format:",
+    failureNote =
+    "The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>"
+  )
+
+  logFailures(
+    invalidTodos = openIssueFailureTodosAfterExemption,
+    failureMessage = "TODOs not corresponding to an open issue:",
+    failureNote =
+    "Note that, every TODO must correspond to an open issue on GitHub"
+  )
+
+  if (
+    redundantExemptions.isNotEmpty() ||
+    poorlyFormattedTodosAfterExemption.isNotEmpty() ||
+    openIssueFailureTodosAfterExemption.isNotEmpty()
+  ) {
+    throw Exception("TODO CHECK FAILED")
+  } else {
+    println("TODO CHECK PASSED")
   }
-//  // List of all the poorly formatted TODOs.
-//  val poorlyFormattedTodos = allTodos.filter { todo ->
-//    val todoContent = retrieveTodoContent(todo)
-//    !checkTodoFormatting(todoContent, correctTodoFormatRegex)
-//  }
-//
-//  // List of all the TODOs which does not correspond to an open issue on Github.
-//  val openIssueFailureTodos = allTodos.minus(poorlyFormattedTodos).filter { todo ->
-//    val todoContent = retrieveTodoContent(todo)
-//    val match = correctTodoFormatRegex.find(todoContent)
-//    checkOpenIssueFailure(match, openIssueList)
-//  }
-//
-//  logFailures(poorlyFormattedTodos, "TODO is poorly formatted")
-//
-//  logFailures(openIssueFailureTodos, "TODO does not corresponds to an open issue")
-//
-//  if (poorlyFormattedTodos.isNotEmpty() || openIssueFailureTodos.isNotEmpty()) {
-//    throw Exception("TODO CHECK FAILED")
-//  } else {
-//    println("TODO CHECK PASSED")
-//  }
+}
+
+private fun retrieveTodosAfterExemption(
+  todos: List<Todo>,
+  todoExemptionList: List<TodoExemption>,
+  repoPath: String
+): List<Todo> {
+  return todos.filter { todo ->
+    !todoExemptionList.any { it ->
+      it.exemptedFilePath == todo.filePath.removePrefix(repoPath) &&
+        todo.lineNumber in it.getLineNumberList()
+    }
+  }
+}
+
+private fun retrieveRedundantExemptions(
+  todos: List<Todo>,
+  todoExemptionList: List<TodoExemption>,
+  repoPath: String
+): List<Pair<String, Int>> {
+  return todoExemptionList.flatMap { exemption ->
+    exemption.getLineNumberList().mapNotNull { exemptedLineNumber ->
+      if (
+        !todos.any {
+          it.filePath.removePrefix(repoPath) == exemption.exemptedFilePath &&
+            it.lineNumber == exemptedLineNumber
+        }) {
+        Pair(exemption.exemptedFilePath, exemptedLineNumber)
+      } else {
+        null
+      }
+    }
+  }
 }
 
 private fun checkIfTodoIsPoorlyFormatted(codeLine: String): Boolean {
@@ -103,16 +163,20 @@ private fun checkIfOpenIssueFailure(codeLine: String, openIssueList: List<Issue>
   return !openIssueList.any { it -> it.issueNumber == parsedIssueNumberFromTodo }
 }
 
-/**
- * Checks if a TODO does not corresponds to an open issue on Github.
- *
- * @param match result obtained after matching the TODO against the correct TODO format
- * @param openIssueList a list of all the open issues on Github for this repository
- * @return whether the TODO does not corresponds to an open issue
- */
-private fun checkOpenIssueFailure(match: MatchResult?, openIssueList: List<Issue>): Boolean {
-  val parsedIssueNumberFromTodo = match?.groupValues?.get(1)
-  return !openIssueList.any { it -> it.issueNumber == parsedIssueNumberFromTodo }
+private fun logRedundantExemptions(
+  redundantExemptions: List<Pair<String, Int>>,
+  todoExemptionTextProtoFilePath: String
+) {
+  if (redundantExemptions.isNotEmpty()) {
+    println("Redundant exemptions:")
+    redundantExemptions.sortedWith(compareBy({ it.first }, { it.second })).forEach { exemption ->
+      println("- ${exemption.first}:${exemption.second}")
+    }
+    println(
+      "Please remove them from $todoExemptionTextProtoFilePath.textproto"
+    )
+    println()
+  }
 }
 
 /**
@@ -123,15 +187,13 @@ private fun checkOpenIssueFailure(match: MatchResult?, openIssueList: List<Issue
  *     issue on Github.
  * @param failureMessage the failure message to be logged
  */
-private fun logFailures(invalidTodos: List<Todo>, failureMessage: String) {
+private fun logFailures(invalidTodos: List<Todo>, failureMessage: String, failureNote: String) {
   if (invalidTodos.isNotEmpty()) {
+    println(failureMessage)
     invalidTodos.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
-      val file = it.first
-      val lineIndex = it.second
-      // Here, we are incrementing by one because the line number is always one greater than
-      // than the line index.
-      println("$file:${lineIndex + 1}: $failureMessage")
+      println("- ${it.filePath}:${it.lineNumber}")
     }
+    println(failureNote)
     println()
   }
 }
@@ -143,8 +205,8 @@ private fun logFailures(invalidTodos: List<Todo>, failureMessage: String) {
  * @param pathToOpenIssuesJsonFile path to the JSON file containing the list of open issues
  * @return list of all open issues
  */
-private fun retrieveOpenIssueList(pathToOpenIssuesJsonFile: String): List<Issue> {
-  val openIssuesJsonText = File(pathToOpenIssuesJsonFile)
+private fun retrieveOpenIssueList(openIssuesJsonFile: File): List<Issue> {
+  val openIssuesJsonText = openIssuesJsonFile
     .inputStream()
     .bufferedReader()
     .use { it.readText() }
@@ -152,5 +214,26 @@ private fun retrieveOpenIssueList(pathToOpenIssuesJsonFile: String): List<Issue>
   val listType = Types.newParameterizedType(List::class.java, Issue::class.java)
   val adapter: JsonAdapter<List<Issue>> = moshi.adapter(listType)
   return adapter.fromJson(openIssuesJsonText)
-    ?: throw Exception("Failed to parse $pathToOpenIssuesJsonFile")
+    ?: throw Exception("Failed to parse $openIssuesJsonFile")
 }
+
+/**
+ * Loads the todo exemptions list from a text proto file.
+ *
+ * @param pathToProtoBinary the location of the exemption textproto file
+ * @return proto class from the parsed textproto file
+ */
+private fun loadTodoExemptionsProto(pathToProtoBinary: String): TodoExemptions {
+  val protoBinaryFile = File(pathToProtoBinary)
+  val builder = TodoExemptions.getDefaultInstance().newBuilderForType()
+
+  // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
+  // and this method is bounded by the generic type T.
+  @Suppress("UNCHECKED_CAST")
+  val protoObj: TodoExemptions =
+    FileInputStream(protoBinaryFile).use {
+      builder.mergeFrom(it)
+    }.build() as TodoExemptions
+  return protoObj
+}
+

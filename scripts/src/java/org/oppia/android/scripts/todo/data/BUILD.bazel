@@ -11,3 +11,10 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
 )
+
+kt_jvm_library(
+    name = "todo",
+    testonly = True,
+    srcs = ["Todo.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)

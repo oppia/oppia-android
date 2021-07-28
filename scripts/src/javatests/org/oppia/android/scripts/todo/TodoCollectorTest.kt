@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.todo.data.Todo
 
 /** Tests for [TodoCollector]. */
 class TodoCollectorTest {
@@ -24,20 +25,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_todosInsideQuotes_noTodoShouldBeCollected() {
-    val testContent =
-      """
-      val testTodoRegexString = "TODO"
-      "This is a test TODO which is inside quotes"
-      """.trimIndent()
-    val tempFile = tempFolder.newFile("testfiles/TempFile.txt")
-    tempFile.writeText(testContent)
-    val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
-    assertThat(collectedTodos).isEmpty()
-  }
-
-  @Test
-  fun testTodoCollector_onlyExemptedTodos_noTodoShouldBeCollected() {
+  fun testTodoCollector_multipleTodos_allShouldBeCollected() {
     val testContent =
       """
       test line 1
@@ -55,7 +43,21 @@ class TodoCollectorTest {
     val tempFile = tempFolder.newFile("testfiles/.github/CODEOWNERS")
     tempFile.writeText(testContent)
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
-    assertThat(collectedTodos).isEmpty()
+    assertThat(collectedTodos).hasSize(2)
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 6,
+        lineContent = "todo"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 9,
+        lineContent = "TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD."
+      )
+    )
   }
 
   @Test
@@ -68,11 +70,15 @@ class TodoCollectorTest {
       """.trimIndent()
     val testContent2 =
       """
-      <!--TODO(# 105)-->
+      <!--
+      TODO(# 105)
+      -->
       """.trimIndent()
     val testContent3 =
       """
       // TODO (#178): test todo.
+      
+      
       # TODO(    210)
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
@@ -84,33 +90,67 @@ class TodoCollectorTest {
 
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
     assertThat(collectedTodos).hasSize(6)
-    assertThat(collectedTodos).contains(Pair(tempFile1, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile1, 1))
-    assertThat(collectedTodos).contains(Pair(tempFile1, 2))
-    assertThat(collectedTodos).contains(Pair(tempFile2, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile3, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile3, 1))
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 1,
+        lineContent = "// TODO (#121): test todo."
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 2,
+        lineContent = "# TODO(    110)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 3,
+        lineContent = "<!--TODO(# 101)-->"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile2.toString(),
+        lineNumber = 2,
+        lineContent = "TODO(# 105)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 1,
+        lineContent = "// TODO (#178): test todo."
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 4,
+        lineContent = "# TODO(    210)"
+      )
+    )
   }
 
   @Test
-  fun testTodoCollector_multipleTodosAcrossFiles_allShouldBeCollectedExceptTodosInsideQuotes() {
+  fun testTodoCollector_multipleTodosAcrossFiles_allShouldBeCollected() {
     val testContent1 =
       """
-      // TODO (#121): test todo.
-      "This is a test TODO which is inside quotes"
+      # TODO (#121): test todo.
       <!--TODO(#101)-->
       """.trimIndent()
     val testContent2 =
       """
-      <!--TODO(#105)-->
-      val testTodoRegexString = "TODO"
+      # TODO(#105): Test description
       """.trimIndent()
     val testContent3 =
       """
-      // TODO (#178): test todo.
-      # TODO(    210)
+      // TODO(#178): test todo.
+      // TODO(    210)
       """.trimIndent()
-    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.yaml")
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.bazel")
     val tempFile3 = tempFolder.newFile("testfiles/TempFile3.kt")
     tempFile1.writeText(testContent1)
@@ -119,11 +159,41 @@ class TodoCollectorTest {
 
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
     assertThat(collectedTodos).hasSize(5)
-    assertThat(collectedTodos).contains(Pair(tempFile1, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile1, 2))
-    assertThat(collectedTodos).contains(Pair(tempFile2, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile3, 0))
-    assertThat(collectedTodos).contains(Pair(tempFile3, 1))
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 1,
+        lineContent = "# TODO (#121): test todo."
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 2,
+        lineContent = "<!--TODO(#101)-->"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile2.toString(),
+        lineNumber = 1,
+        lineContent = "# TODO(#105): Test description"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 1,
+        lineContent = "// TODO(#178): test todo."
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 2,
+        lineContent = "// TODO(    210)"
+      )
+    )
   }
 
   /** Retrieves the absolute path of testfiles directory. */

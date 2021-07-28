@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.todo
 
 import org.oppia.android.scripts.common.RepositoryFile
+import org.oppia.android.scripts.todo.data.Todo
 
 /** Collects code lines containing the 'todo' keyword (case-insensitive). */
 class TodoCollector {
@@ -42,7 +43,5 @@ class TodoCollector {
       }
       return null
     }
-
-    data class Todo(val filePath: String, val lineNumber: Int, val lineContent: String)
   }
 }
