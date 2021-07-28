@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -314,9 +315,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
-
     val textViewLtr = arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_LTR)
     assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
   }
@@ -561,8 +560,8 @@ class HtmlParserTest {
 
   private fun arrangeTextViewWithLayoutDirection(htmlParser: HtmlParser, layoutDirection: Int): TextView {
     return activityRule.scenario.runWithActivity {
-      it.getWindow().getDecorView().setLayoutDirection(layoutDirection)
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
