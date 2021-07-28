@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -9,7 +10,6 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.resumelesson.ResumeLessonViewModel" />
-
   </data>
 
   <ScrollView
@@ -35,14 +35,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lessonThumbnail="@{viewModel.chapterSummary.chapterThumbnail}" />
+        app:lessonThumbnail="@{viewModel.chapterSummary.chapterThumbnail}"
+        tools:src="@drawable/lesson_thumbnail_graphic_child_with_fractions_homework" />
 
       <TextView
         android:id="@+id/resume_lesson_chapter_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
@@ -50,9 +51,11 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textDirection="locale"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resume_lesson_chapter_thumbnail_image_view" />
+        app:layout_constraintTop_toBottomOf="@+id/resume_lesson_chapter_thumbnail_image_view"
+        tools:text="What is a fraction?" />
 
       <TextView
         android:id="@+id/resume_lesson_chapter_description_text_view"
@@ -69,29 +72,39 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view"
+        tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." />
 
-      <Button
-        android:id="@+id/resume_lesson_continue_button"
-        style="@style/StateButtonActive"
-        android:maxWidth="@dimen/continue_submit_button_width"
-        android:text="@string/resume_lesson_button"
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/resume_lesson_start_over_button"
-        app:layout_constraintTop_toBottomOf="@+id/resume_lesson_chapter_description_text_view" />
-
-      <Button
-        android:id="@+id/resume_lesson_start_over_button"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:maxWidth="@dimen/continue_submit_button_width"
-        android:text="@string/start_over_lesson_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resume_lesson_chapter_description_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_description_text_view">
+
+        <Button
+          android:id="@+id/resume_lesson_start_over_button"
+          style="@style/StartOverLessonButton"
+          android:text="@string/start_over_lesson_button"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
+          app:layout_constraintHorizontal_chainStyle="spread"
+          android:layout_marginEnd="2dp"
+          app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+          android:id="@+id/resume_lesson_continue_button"
+          style="@style/ContinueLessonButton"
+          android:text="@string/resume_lesson_button"
+          android:layout_marginStart="2dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toEndOf="@id/resume_lesson_start_over_button" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
