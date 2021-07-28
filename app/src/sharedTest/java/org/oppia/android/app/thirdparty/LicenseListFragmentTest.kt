@@ -138,6 +138,22 @@ class LicenseListFragmentTest {
     }
   }
 
+//  @Test
+//  fun openLicenseListActivity_dependency0_displaysCorrectListOfLicenses() {
+//    launch<LicenseListActivity>(createLicenseListActivity(0)).use {
+//      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+//      onView(
+//        RecyclerViewMatcher.atPosition(
+//          recyclerViewId = R.id.license_list_fragment_recycler_view,
+//          position = 0
+//        )
+//      ).perform(click())
+//
+//    }
+//  }
+
+
+
   private fun createLicenseListActivity(dependencyIndex: Int): Intent {
     return LicenseListActivity.createLicenseListActivityIntent(
       ApplicationProvider.getApplicationContext(),
