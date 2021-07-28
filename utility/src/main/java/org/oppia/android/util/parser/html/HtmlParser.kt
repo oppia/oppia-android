@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -91,7 +92,7 @@ class HtmlParser private constructor(
   }
 
   private fun isRtlLayout(view: View): Boolean {
-    return view.layoutDirection == View.LAYOUT_DIRECTION_RTL
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun computeCustomTagHandlers(
