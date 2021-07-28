@@ -13,9 +13,9 @@ class NetworkConnectionTestUtil {
     /**
      * Sets the [ShadowNetworkInfo] during the test.
      *
-     * @param context: the context for which the dummy network connection status needs to be set.
-     * @param status: the network type which needs to be set.
-     * @param networkState: refers to whether the [status] should be connected or disconnected.
+     * @param context: the context of the dummy network connection.
+     * @param status: the type of network.
+     * @param networkState: [status] of the network connection.
      */
     fun setNetworkInfo(context: Context, status: Int, networkState: NetworkInfo.State) {
       Shadows.shadowOf(
