@@ -7,6 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 
 /**
  * Dagger [Module] that provides specifically configured [MockRetrofit] instance to have zero
@@ -25,4 +26,10 @@ class RetrofitTestModule {
       networkBehavior(behavior)
     }.build()
   }
+    @Provides
+//    @PlatformParameterServiceTest.MockPlatformParameterService
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+      val delegate = mockRetrofit.create(PlatformParameterService::class.java)
+      return MockPlatformParameterService(delegate)
+    }
 }
