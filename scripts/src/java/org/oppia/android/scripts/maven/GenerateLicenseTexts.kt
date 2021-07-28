@@ -253,9 +253,10 @@ class GenerateLicenseTexts(
     )
 
     // Add all dependencies names in a string-array resource.
-    val stringArrayElement = createStringArray(
+    val stringArrayElement = createArray(
+      arrayTag = "string-array",
       arrayName = "third_party_dependency_names_array",
-      itemList = dependencyNamesList,
+      itemListSize = dependencyNamesList.size,
       textNodePrefix = "@string/third_party_dependency_name_",
       doc = doc
     )
@@ -277,9 +278,10 @@ class GenerateLicenseTexts(
     )
 
     // Add an array of dependencies versions string resources.
-    val stringArrayElement = createStringArray(
+    val stringArrayElement = createArray(
+      arrayTag = "string-array",
       arrayName = "third_party_dependency_versions_array",
-      itemList = dependencyVersionsList,
+      itemListSize = dependencyVersionsList.size,
       textNodePrefix = "@string/third_party_dependency_version_",
       doc = doc
     )
@@ -356,6 +358,26 @@ class GenerateLicenseTexts(
       }
       rootResourcesElement.appendChild(stringArrayElement)
     }
+
+    val arrayOfLicenseNamesArrays = createArray(
+      arrayTag = "array",
+      arrayName = "third_party_dependency_license_names_arrays",
+      itemListSize = dependenciesList.size,
+      textNodePrefix = "@array/third_party_dependency_license_names_",
+      doc = doc
+    )
+
+    rootResourcesElement.appendChild(arrayOfLicenseNamesArrays)
+
+    val arrayOfLicenseTextsArrays = createArray(
+      arrayTag = "array",
+      arrayName = "third_party_dependency_license_texts_arrays",
+      itemListSize = dependenciesList.size,
+      textNodePrefix = "@array/third_party_dependency_license_texts_",
+      doc = doc
+    )
+
+    rootResourcesElement.appendChild(arrayOfLicenseTextsArrays)
   }
 
   private fun writeList(
@@ -372,20 +394,21 @@ class GenerateLicenseTexts(
     }
   }
 
-  private fun createStringArray(
+  private fun createArray(
+    arrayTag: String,
     arrayName: String,
-    itemList: List<String>,
+    itemListSize: Int,
     textNodePrefix: String,
     doc: Document
   ): Element {
-    val stringArrayElement = doc.createElement("string-array")
-    stringArrayElement.setAttribute("name", arrayName)
-    for (index in itemList.indices) {
+    val arrayElement = doc.createElement(arrayTag)
+    arrayElement.setAttribute("name", arrayName)
+    for (index in 0 until itemListSize) {
       val itemElement = doc.createElement("item")
       itemElement.appendChild(doc.createTextNode("$textNodePrefix$index"))
-      stringArrayElement.appendChild(itemElement)
+      arrayElement.appendChild(itemElement)
     }
-    return stringArrayElement
+    return arrayElement
   }
 
   private fun fetchLicenseText(url: String): String {

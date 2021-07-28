@@ -330,10 +330,16 @@ class GenerateLicenseTextsTest {
       "third_party_dependency_license_names_2",
       "string-array"
     )
-//    val dependencyLicenseNamesArray = retrieveArray(
-//      xmlContent,
-//      "third_party_dependency_licenses_names_array"
-//    )
+    val arrayOfLicenseNamesArrays = retrieveArray(
+      xmlContent,
+      "third_party_dependency_license_names_arrays",
+      "array"
+    )
+    val arrayOfLicenseTextsArrays = retrieveArray(
+      xmlContent,
+      "third_party_dependency_license_texts_arrays",
+      "array"
+    )
     verifyArray(
       itemList = dependencyNamesArray,
       indicesList = listOf(0, 1, 2),
@@ -381,6 +387,18 @@ class GenerateLicenseTextsTest {
       indicesList = listOf(0),
       expectedSize = 1,
       prefix = "@string/license_name_"
+    )
+    verifyArray(
+      itemList = arrayOfLicenseNamesArrays,
+      indicesList = List(dependencyNamesList.size) { it },
+      expectedSize = dependencyNamesList.size,
+      prefix = "@array/third_party_dependency_license_names_"
+    )
+    verifyArray(
+      itemList = arrayOfLicenseTextsArrays,
+      indicesList = List(dependencyList.size) { it },
+      expectedSize = dependencyList.size,
+      prefix = "@array/third_party_dependency_license_texts_"
     )
   }
 
@@ -505,7 +523,7 @@ class GenerateLicenseTextsTest {
     return itemList
   }
 
-  private fun retrieveArrayList(
+  private fun retrieveArray(
     xmlContent: String,
     attributeName: String,
     arrayTag: String
