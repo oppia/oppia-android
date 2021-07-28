@@ -42,6 +42,10 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       (activity as LicenseTextViewerActivity).finish()
     }
 
+    binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
+      binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+    }
+
     if (getLicenseTextViewerFragment() == null) {
       val licenseTextViewerFragment =
         LicenseTextViewerFragment.newInstance(dependencyIndex, licenseIndex)
