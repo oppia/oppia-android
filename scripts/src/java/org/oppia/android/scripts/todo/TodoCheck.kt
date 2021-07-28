@@ -4,12 +4,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.oppia.android.scripts.todo.data.Issue
-import java.io.File
-import org.oppia.android.scripts.proto.TodoExemptions
 import org.oppia.android.scripts.proto.TodoExemption
-import java.io.FileInputStream
+import org.oppia.android.scripts.proto.TodoExemptions
+import org.oppia.android.scripts.todo.data.Issue
 import org.oppia.android.scripts.todo.data.Todo
+import java.io.File
+import java.io.FileInputStream
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
@@ -80,14 +80,14 @@ fun main(vararg args: String) {
     invalidTodos = poorlyFormattedTodosAfterExemption,
     failureMessage = "TODOs not in correct format:",
     failureNote =
-    "The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>"
+      "The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>"
   )
 
   logFailures(
     invalidTodos = openIssueFailureTodosAfterExemption,
     failureMessage = "TODOs not corresponding to an open issue:",
     failureNote =
-    "Note that, every TODO must correspond to an open issue on GitHub"
+      "Note that, every TODO must correspond to an open issue on GitHub"
   )
 
   if (
@@ -125,7 +125,8 @@ private fun retrieveRedundantExemptions(
         !todos.any {
           it.filePath.removePrefix(repoPath) == exemption.exemptedFilePath &&
             it.lineNumber == exemptedLineNumber
-        }) {
+        }
+      ) {
         Pair(exemption.exemptedFilePath, exemptedLineNumber)
       } else {
         null
@@ -236,4 +237,3 @@ private fun loadTodoExemptionsProto(pathToProtoBinary: String): TodoExemptions {
     }.build() as TodoExemptions
   return protoObj
 }
-
