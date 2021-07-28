@@ -290,46 +290,50 @@ class GenerateLicenseTextsTest {
       )
     )
 
-    val dependencyNamesArray = retrieveArrayList(
+    val dependencyNamesArray = retrieveArray(
       xmlContent,
       "third_party_dependency_names_array",
       "string-array"
     )
-    val dependencyVersionsArray = retrieveArrayList(
+    val dependencyVersionsArray = retrieveArray(
       xmlContent,
       "third_party_dependency_versions_array",
       "string-array"
     )
-    val licenseTextsArray0 = retrieveArrayList(
+    val licenseTextsArray0 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_texts_0",
       "string-array"
     )
-    val licenseTextsArray1 = retrieveArrayList(
+    val licenseTextsArray1 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_texts_1",
       "string-array"
     )
-    val licenseTextsArray2 = retrieveArrayList(
+    val licenseTextsArray2 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_texts_2",
       "string-array"
     )
-    val licenseNamesArray0 = retrieveArrayList(
+    val licenseNamesArray0 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_names_0",
       "string-array"
     )
-    val licenseNamesArray1 = retrieveArrayList(
+    val licenseNamesArray1 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_names_1",
       "string-array"
     )
-    val licenseNamesArray2 = retrieveArrayList(
+    val licenseNamesArray2 = retrieveArray(
       xmlContent,
       "third_party_dependency_license_names_2",
       "string-array"
     )
+//    val dependencyLicenseNamesArray = retrieveArray(
+//      xmlContent,
+//      "third_party_dependency_licenses_names_array"
+//    )
     verifyArray(
       itemList = dependencyNamesArray,
       indicesList = listOf(0, 1, 2),
