@@ -303,7 +303,10 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val textView = arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_RTL
+    )
     assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
   }
 
@@ -316,7 +319,10 @@ class HtmlParserTest {
       imageCenterAlign = true
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
-    val textViewLtr = arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_LTR)
+    val textViewLtr = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_LTR
+    )
     assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
   }
 
@@ -558,10 +564,13 @@ class HtmlParserTest {
     assertThat(loadedInlineImages.first()).contains("math_image1.svg")
   }
 
-  private fun arrangeTextViewWithLayoutDirection(htmlParser: HtmlParser, layoutDirection: Int): TextView {
+  private fun arrangeTextViewWithLayoutDirection(
+    htmlParser: HtmlParser,
+    layoutDirection: Int
+  ): TextView {
     return activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      ViewCompat.setLayoutDirection(textView,layoutDirection)
       htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
