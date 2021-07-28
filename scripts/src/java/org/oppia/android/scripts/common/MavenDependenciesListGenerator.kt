@@ -97,10 +97,8 @@ class MavenDependenciesListGenerator(
     mavenDependenciesList: List<MavenDependency>,
     brokenLicenses: Set<License>
   ): Map<License, String> {
-    return brokenLicenses.associateTo(mutableMapOf<License, String>()) { license ->
-      license to mavenDependenciesList.first { dependency ->
-        dependency.licenseList.contains(license)
-      }.artifactName
+    return brokenLicenses.associateWith { license ->
+      mavenDependenciesList.first { dependency -> license in dependency.licenseList }.artifactName
     }
   }
 
