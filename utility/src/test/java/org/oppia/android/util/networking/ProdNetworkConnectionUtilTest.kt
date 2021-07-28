@@ -40,9 +40,6 @@ class ProdNetworkConnectionUtilTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -166,7 +163,7 @@ class ProdNetworkConnectionUtilTest {
   }
 
   private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
-    networkConnectionTestUtil.setNetworkInfo(context, status, networkState)
+    NetworkConnectionTestUtil.setNetworkInfo(context, status, networkState)
   }
 
   // TODO(#89): Move this to a common test application component.
