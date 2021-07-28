@@ -191,7 +191,7 @@ class GenerateLicenseTextsTest {
   }
 
   @Test
-  fun testScript_validDependencyList_generatesResourceXmlFiles() {
+  fun testScript_validDependencyList_generatesResourceXmlFile() {
     val scrapableLinkLicense = getLicenseWithScrapableLink(
       licenseName = "Apache License",
       originalLink = SCRAPABLE_LINK,
@@ -267,16 +267,16 @@ class GenerateLicenseTextsTest {
       expectedSize = 3,
       expectedList = listOf(
         """
-        <![CDATA[Apache License
+                                Apache License
         &quot;License&quot; shall mean the terms and conditions for use, reproduction,
-        and distribution as defined by Sections 1 through 9 of this document.]]>
+        and distribution as defined by Sections 1 through 9 of this document.
         """.trimIndent(),
-        "<![CDATA[$DIRECT_LINK_ONLY]]>",
+        DIRECT_LINK_ONLY,
         """
-        <![CDATA[Copyright &lt;YEAR&gt; &lt;COPYRIGHT HOLDER&gt;
+        Copyright &lt;YEAR&gt; &lt;COPYRIGHT HOLDER&gt;
 
         Redistribution and use in source and binary forms, with or without modification, are 
-        permitted provided that the following conditions are met:]]>
+        permitted provided that the following conditions are met:
         """.trimIndent()
       )
     )
@@ -533,7 +533,7 @@ class GenerateLicenseTextsTest {
       on { scrapeText(eq(SCRAPABLE_LINK)) }
         .doReturn(
           """
-          Apache License
+                                  Apache License
           "License" shall mean the terms and conditions for use, reproduction,
           and distribution as defined by Sections 1 through 9 of this document.
           """.trimIndent()
