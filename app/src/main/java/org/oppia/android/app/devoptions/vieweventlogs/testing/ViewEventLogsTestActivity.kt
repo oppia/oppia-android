@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 
-/** The activity for testing [ViewEventLogsFragment]. */
+/** Activity for testing [ViewEventLogsFragment]. */
 class ViewEventLogsTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -114,7 +114,7 @@ class ViewEventLogsActivityTest {
   @Test
   fun testViewEventLogsActivity_viewEventLogsFragmentIsDisplayed() {
     launch(ViewEventLogsActivity::class.java).use {
-      onView(withId(R.id.view_event_logs_fragment_root_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
     }
   }
 
@@ -122,7 +122,7 @@ class ViewEventLogsActivityTest {
   fun testMarkTopicsCompletedActivity_configChange_viewEventLogsFragmentIsDisplayed() {
     launch(ViewEventLogsActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.view_event_logs_fragment_root_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
     }
   }
 
