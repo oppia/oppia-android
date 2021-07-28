@@ -38,6 +38,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 
   private val workRequestForSyncingUpPlatformParameters = PeriodicWorkRequest
     .Builder(PlatformParameterSyncUpWorker::class.java, 12, TimeUnit.HOURS)
+    .addTag(PlatformParameterSyncUpWorker.TAG)
     .setInputData(workerTypeForSyncingUpParameters)
     .setConstraints(platformParameterSyncUpWorkerConstraints)
     .build()
@@ -55,7 +56,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   fun getSyncUpWorkerConstraints(): Constraints = platformParameterSyncUpWorkerConstraints
 
   /** Returns the [UUID] of the work request that is enqueued to sync-up platform parameters. */
-  fun getSyncUpWorkRequest(): UUID = workRequestForSyncingUpPlatformParameters.id
+  fun getSyncUpWorkRequestId(): UUID = workRequestForSyncingUpPlatformParameters.id
 
   /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
   fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingUpParameters
