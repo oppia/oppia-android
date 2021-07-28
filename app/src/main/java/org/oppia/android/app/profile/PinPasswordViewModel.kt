@@ -23,6 +23,7 @@ class PinPasswordViewModel @Inject constructor(
   val showError = ObservableField(false)
   val showPassword = ObservableField(false)
   val correctPin = ObservableField<String>("")
+  val inputPin = ObservableField<String>("")
   val isAdmin = ObservableField<Boolean>(false)
   val name = ObservableField<String>("")
   val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)

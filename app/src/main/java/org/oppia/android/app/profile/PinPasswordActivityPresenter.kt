@@ -6,6 +6,7 @@ import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -38,11 +39,13 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
 
+  private lateinit var binding: PinPasswordActivityBinding
+
   fun handleOnCreate() {
     StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
     profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
-    val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
+    binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity
     )
@@ -111,6 +114,64 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
+
+    binding.pin0EditText!!.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(confirmPin: Editable?) {
+        setPinInViewModel()
+        if (binding.pin0EditText!!.text.toString().length == 1) {
+          binding.pin1EditText!!.requestFocus()
+        }
+      }
+
+      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
+
+    binding.pin1EditText!!.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(confirmPin: Editable?) {
+        setPinInViewModel()
+        if (binding.pin1EditText!!.text.toString().length == 1) {
+          binding.pin2EditText!!.requestFocus()
+        }
+      }
+
+      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
+
+    binding.pin2EditText!!.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(confirmPin: Editable?) {
+        setPinInViewModel()
+        if (binding.pin2EditText!!.text.toString().length == 1) {
+          binding.pin3EditText!!.requestFocus()
+        }
+      }
+
+      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
+
+    binding.pin3EditText!!.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(confirmPin: Editable?) {
+        setPinInViewModel()
+        if (binding.pin3EditText!!.text.toString().length == 1) {
+          binding.pin4EditText!!.requestFocus()
+        }
+      }
+
+      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
+
+    binding.pin4EditText!!.addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
+      override fun afterTextChanged(confirmPin: Editable?) {
+        setPinInViewModel()
+        verifyPin(pinViewModel.inputPin.get().toString())
+      }
+
+      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
+    })
 
     if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
       showAdminForgotPin()
@@ -183,6 +244,50 @@ class PinPasswordActivityPresenter @Inject constructor(
   fun dismissAlertDialog() {
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
       alertDialog.dismiss()
+    }
+  }
+
+  private fun setPinInViewModel() {
+    val currentPin = binding.pin0EditText!!.text.toString() +
+      binding.pin1EditText!!.text.toString() +
+      binding.pin2EditText!!.text.toString() +
+      binding.pin3EditText!!.text.toString() +
+      binding.pin4EditText!!.text.toString()
+
+    pinViewModel.inputPin.set(currentPin)
+  }
+
+  private fun verifyPin(inputtedPin: String) {
+    if (inputtedPin.isNotEmpty()) {
+      pinViewModel.showError.set(false)
+    }
+    if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
+      inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!
+        .isNotEmpty()
+    ) {
+      if (inputtedPin == pinViewModel.correctPin.get()) {
+        profileManagementController
+          .loginToProfile(
+            ProfileId.newBuilder().setInternalId(profileId).build()
+          ).toLiveData()
+          .observe(
+            activity,
+            Observer {
+              if (it.isSuccess()) {
+                activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
+              }
+            }
+          )
+      } else {
+        binding.inputPin.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.shake))
+        lifecycleSafeTimerFactory.createTimer(1000).observe(
+          activity,
+          Observer {
+            binding.inputPin.setText("")
+          }
+        )
+        pinViewModel.showError.set(true)
+      }
     }
   }
 
