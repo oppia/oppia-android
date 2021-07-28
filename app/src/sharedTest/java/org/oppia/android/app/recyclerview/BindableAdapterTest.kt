@@ -40,6 +40,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.player.state.hintsandsolution.HintHandlerProdModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
@@ -672,7 +673,7 @@ class BindableAdapterTest {
   @Subcomponent(
     modules = [
       FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, HintHandlerProdModule::class
     ]
   )
   interface TestFragmentComponent : FragmentComponent, BindableAdapterTestFragment.TestInjector {

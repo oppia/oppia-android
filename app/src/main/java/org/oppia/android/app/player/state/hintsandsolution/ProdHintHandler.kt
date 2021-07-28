@@ -78,15 +78,10 @@ class ProdHintHandler @Inject constructor(
   }
 
   /**
-   * Handles potentially new wrong answers that were submitted, and if so schedules a hint to be
-   * shown to the user if hints are available.
+   * Checks if the state has any previously revealed hints, and if so shows all previously revealed
+   * hints coming back to the current state.
    */
-  override fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
-    if (state.interaction.hintList.isEmpty()) {
-      // If this state has no hints to show, do nothing.
-      return
-    }
-
+  internal fun checkForHintsToBeRevealed(state: State) {
     // If hint was visible in the current state show all previous hints coming back to the current
     // state. If any hint was revealed and user move between current and completed states, then
     // show those revealed hints back by making icon visible else use the previous help index.
@@ -101,6 +96,19 @@ class ProdHintHandler @Inject constructor(
         )
       }
     }
+  }
+
+  /**
+   * Handles potentially new wrong answers that were submitted, and if so schedules a hint to be
+   * shown to the user if hints are available.
+   */
+  override fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
+    if (state.interaction.hintList.isEmpty()) {
+      // If this state has no hints to show, do nothing.
+      return
+    }
+
+    checkForHintsToBeRevealed(state)
 
     // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
     // doesn't answer after some duration). Note that if there's already a timer to show a hint,
@@ -142,7 +150,7 @@ class ProdHintHandler @Inject constructor(
    * Returns the [HelpIndex] of the next hint or solution that hasn't yet been revealed, or
    * default if there is none.
    */
-  private fun getNextHintIndexToReveal(state: State): HelpIndex {
+  internal fun getNextHintIndexToReveal(state: State): HelpIndex {
     // Return the index of the first unrevealed hint, or the length of the list if all have been
     // revealed.
     val hintList = state.interaction.hintList
@@ -182,7 +190,7 @@ class ProdHintHandler @Inject constructor(
    * Immediately indicates the specified hint is ready to be shown, cancelling any previously
    * pending hints initiated by calls to [scheduleShowHint].
    */
-  private fun showHintImmediately(helpIndexToShow: HelpIndex) {
+  internal fun showHintImmediately(helpIndexToShow: HelpIndex) {
     showHint(++hintSequenceNumber, helpIndexToShow)
   }
 
