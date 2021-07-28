@@ -31,8 +31,8 @@ fun main(vararg args: String) {
 
   val accessibilityLabelExemptionTextProtoFilePath = "scripts/assets/accessibility_label_exemptions"
 
-  val accessibilityLabelExemptionList = loadAccessibilityLabelExemptionsProto(pathToProtoBinary)
-    .getExemptedActivityList()
+  val accessibilityLabelExemptionList =
+    loadAccessibilityLabelExemptionsProto(pathToProtoBinary).getExemptedActivityList()
 
   val manifestPaths = args.drop(2)
 
