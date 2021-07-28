@@ -7,7 +7,6 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
@@ -22,8 +21,7 @@ class TopicActivity :
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToExplorationListener,
-  RouteToRevisionCardListener,
-  RouteToResumeLessonListener {
+  RouteToRevisionCardListener {
 
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -91,25 +89,6 @@ class TopicActivity :
         explorationId,
         backflowScreen,
         isCheckpointingEnabled
-      )
-    )
-  }
-
-  override fun routeToResumeLesson(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    backflowScreen: Int?
-  ) {
-    startActivity(
-      ResumeLessonActivity.createResumeLessonActivityIntent(
-        this,
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen
       )
     )
   }

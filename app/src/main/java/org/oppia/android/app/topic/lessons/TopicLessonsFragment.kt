@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
@@ -97,11 +96,7 @@ class TopicLessonsFragment :
     topicLessonsFragmentPresenter.storySummaryClicked(storySummary)
   }
 
-  override fun selectChapterSummary(
-    storyId: String,
-    explorationId: String,
-    chapterPlayState: ChapterPlayState
-  ) {
-    topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId, chapterPlayState)
+  override fun selectChapterSummary(storyId: String, explorationId: String) {
+    topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId)
   }
 }
