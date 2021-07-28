@@ -1,18 +1,17 @@
 """
-Libraries corresponding to kdoc presence check, that ensures all public members (except overrides)
-must have a corresponding KDoc.
+Libraries corresponding to documentation-related scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "kdoc_check_lib",
+    name = "kdoc_validity_check_lib",
     testonly = True,
-    srcs = ["KDocCheck.kt"],
+    srcs = ["KdocValidityCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/proto:kdoc_exemptions_java_proto_lite",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto_lite",
         "//third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
     ],
 )

@@ -34,15 +34,15 @@ java_lite_proto_library(
 )
 
 proto_library(
-    name = "test_file_exemptions_proto",
-    srcs = ["test_file_exemptions.proto"],
+    name = "script_exemptions_proto",
+    srcs = ["script_exemptions.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )
 
 java_lite_proto_library(
-    name = "test_file_exemptions_java_proto_lite",
+    name = "script_exemptions_java_proto_lite",
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":test_file_exemptions_proto"],
+    deps = [":script_exemptions_proto"],
 )
 
 proto_library(
@@ -61,40 +61,4 @@ java_lite_proto_library(
     name = "maven_dependencies_java_proto_lite",
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [":maven_dependencies_proto"],
-)
-
-proto_library(
-    name = "accessibility_label_exemptions_proto",
-    srcs = ["accessibility_label_exemptions.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-)
-
-java_lite_proto_library(
-    name = "accessibility_label_exemptions_java_proto_lite",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":accessibility_label_exemptions_proto"],
-)
-
-proto_library(
-    name = "kdoc_exemptions_proto",
-    srcs = ["kdoc_exemptions.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-)
-
-java_lite_proto_library(
-    name = "kdoc_exemptions_java_proto_lite",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":kdoc_exemptions_proto"],
-)
-
-proto_library(
-    name = "todo_exemptions_proto",
-    srcs = ["todo_exemptions.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-)
-
-java_lite_proto_library(
-    name = "todo_exemptions_java_proto_lite",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":todo_exemptions_proto"],
 )

@@ -47,7 +47,7 @@ def generate_test_file_assets_list_from_text_protos(
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        test_file_exemptions_name: list of str. The list of test file exemptions file names.
+        test_file_exemptions_name: list of str. The list of test file exemptions file name.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -55,7 +55,7 @@ def generate_test_file_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = test_file_exemptions_name,
-        proto_dep_name = "test_file_exemptions",
+        proto_dep_name = "script_exemptions",
         proto_type_name = "TestFileExemptions",
         name_prefix = name,
         asset_dir = "assets",
@@ -97,7 +97,7 @@ def generate_accessibility_label_assets_list_from_text_protos(
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
         accessibility_label_exemptions_name: list of str. The list of accessibility label exemptions
-         file names.
+         file name.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
@@ -105,7 +105,7 @@ def generate_accessibility_label_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = accessibility_label_exemptions_name,
-        proto_dep_name = "accessibility_label_exemptions",
+        proto_dep_name = "script_exemptions",
         proto_type_name = "AccessibilityLabelExemptions",
         name_prefix = name,
         asset_dir = "assets",
@@ -113,24 +113,24 @@ def generate_accessibility_label_assets_list_from_text_protos(
         proto_package = "proto",
     )
 
-def generate_kdoc_assets_list_from_text_protos(
+def generate_kdoc_validity_assets_list_from_text_protos(
         name,
-        kdoc_exemptions_name):
+        kdoc_validity_exemptions_name):
     """
-    Converts multiple lists of text proto assets to binary.
+    Converts a single list of text proto assets to binary.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        kdoc_exemptions_name: list of str. The list of kdoc exemptions file names.
+        kdoc_validity_exemptions_name: list of str. The list of kdoc validity exemptions file name.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.
     """
     return generate_proto_binary_assets(
         name = name,
-        names = kdoc_exemptions_name,
-        proto_dep_name = "kdoc_exemptions",
-        proto_type_name = "KDocExemptions",
+        names = kdoc_validity_exemptions_name,
+        proto_dep_name = "script_exemptions",
+        proto_type_name = "KdocValidityExemptions",
         name_prefix = name,
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
@@ -153,7 +153,7 @@ def generate_todo_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = todo_exemptions_name,
-        proto_dep_name = "todo_exemptions",
+        proto_dep_name = "script_exemptions",
         proto_type_name = "TodoExemptions",
         name_prefix = name,
         asset_dir = "assets",

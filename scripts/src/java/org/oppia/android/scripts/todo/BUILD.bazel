@@ -12,7 +12,7 @@ kt_jvm_library(
     visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/proto:todo_exemptions_java_proto_lite",
+        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto_lite",
     ],
 )
 

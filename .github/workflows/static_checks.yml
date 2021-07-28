@@ -122,12 +122,12 @@ jobs:
       - name: Accessibility label Check
         if: always()
         run: |
-          bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
+          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 
-      - name: KDoc Check
+      - name: KDoc validity Check
         if: always()
         run: |
-          bazel run //scripts:kdoc_check -- $(pwd)
+          bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 
       - name: Todo Check
         if: always()
