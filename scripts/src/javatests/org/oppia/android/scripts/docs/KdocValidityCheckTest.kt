@@ -773,9 +773,11 @@ class KdocValidityCheckTest {
     )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = KdocValidityExemptions.newBuilder()
-    builder.addExemptedFilePath("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
-    val exemptions = builder.build()
+    val exemptions = KdocValidityExemptions.newBuilder().apply {
+      this.addAllExemptedFilePath(
+        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     runScript()
@@ -803,9 +805,11 @@ class KdocValidityCheckTest {
     )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = KdocValidityExemptions.newBuilder()
-    builder.addExemptedFilePath("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
-    val exemptions = builder.build()
+    val exemptions = KdocValidityExemptions.newBuilder().apply {
+      this.addAllExemptedFilePath(
+        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
@@ -835,9 +839,11 @@ class KdocValidityCheckTest {
     )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = KdocValidityExemptions.newBuilder()
-    builder.addExemptedFilePath("app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt")
-    val exemptions = builder.build()
+    val exemptions = KdocValidityExemptions.newBuilder().apply {
+      this.addAllExemptedFilePath(
+        listOf("app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
