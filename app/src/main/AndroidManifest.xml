@@ -57,7 +57,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.thirdparty.LicenseTextViewerActivity"
-      android:label="@string/faq_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.thirdparty.ThirdPartyDependencyListActivity"

@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains list of licenses for a third-party in the app. */
+/** Fragment that contains list of licenses for a third-party dependency in the app. */
 class LicenseListFragment : InjectableFragment() {
   @Inject
   lateinit var licenseListFragmentPresenter: LicenseListFragmentPresenter
 
   companion object {
-    private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX = "LicenseListFragment.DependencyIndex"
+    private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX =
+      "LicenseListFragment.dependency_index"
+
+    /** Returns an instance of [LicenseListFragment]. */
     fun newInstance(dependencyIndex: Int): LicenseListFragment {
       val fragment = LicenseListFragment()
       val args = Bundle()
@@ -34,8 +37,9 @@ class LicenseListFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args =
-      checkNotNull(arguments) { "Expected arguments to be passed to LicenseListFragment" }
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to LicenseListFragment"
+    }
     val dependencyIndex = args.getInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX)
     return licenseListFragmentPresenter.handleCreateView(inflater, container, dependencyIndex)
   }

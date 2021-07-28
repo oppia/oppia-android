@@ -9,28 +9,32 @@ import javax.inject.Inject
 /** View model in [LicenseListFragment]. */
 class LicenseListViewModel @Inject constructor(
   val activity: AppCompatActivity,
-  val index: Int
+  val dependencyIndex: Int
 ) : ObservableViewModel() {
   private val arrayList = ArrayList<LicenseItemViewModel>()
 
-  /** Stores the list of third-party dependencies. */
+  /** Stores the list of licenses of the third-party dependency. */
   val licenseItemList: List<LicenseItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
 
   @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
-    val licenses =
-      activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
-    val stringArrayResId = licenses.getResourceId(index, -1)
-    val licenseNames = activity.resources.getStringArray(stringArrayResId)
+    val thirdPartyDependencyLicenseNamesArray = activity.resources.obtainTypedArray(
+      R.array.third_party_dependency_license_names_array
+    )
+    val licenseNamesArrayId = thirdPartyDependencyLicenseNamesArray.getResourceId(
+      dependencyIndex,
+      0
+    )
+    val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
 
-    licenseNames.forEachIndexed { licenseIndex, name ->
+    licenseNamesArray.forEachIndexed { licenseIndex, name ->
       val licenseItemViewModel =
-        LicenseItemViewModel(activity, name, licenseIndex, index)
+        LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex)
       arrayList.add(licenseItemViewModel)
     }
-    licenses.recycle()
+    thirdPartyDependencyLicenseNamesArray.recycle()
     return arrayList
   }
 }

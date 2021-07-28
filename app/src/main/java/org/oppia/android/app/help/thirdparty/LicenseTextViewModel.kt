@@ -11,9 +11,16 @@ class LicenseTextViewModel(
   val dependencyIndex: Int,
   licenseIndex: Int
 ) : ObservableViewModel() {
-  val licenses =
-    activity.resources.obtainTypedArray(R.array.third_party_dependency_license_texts_array)
-  val stringArrayResId = licenses.getResourceId(dependencyIndex, 0)
-  private val licenseTextsArray: Array<String> = activity.resources.getStringArray(stringArrayResId)
+  private val dependenciesWithLicenseTexts = activity.resources.obtainTypedArray(
+    R.array.third_party_dependency_license_texts_array
+  )
+  private val licenseTextsArrayId = dependenciesWithLicenseTexts.getResourceId(
+    dependencyIndex,
+    0
+  )
+  private val licenseTextsArray: Array<String> = activity.resources.getStringArray(
+    licenseTextsArrayId
+  )
+  /** Text of the license to be displayed in [LicenseTextViewerFragment]. */
   val licenseText: String = Html.fromHtml(licenseTextsArray[licenseIndex]).toString()
 }

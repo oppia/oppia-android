@@ -27,7 +27,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       activity.resources.obtainTypedArray(R.array.third_party_dependency_license_names_array)
     val licenseNamesArrayResId = dependenciesWithLicenseNames.getResourceId(
       dependencyIndex,
-      -1
+      0
     )
     val licenseNames = activity.resources.getStringArray(licenseNamesArrayResId)
     val licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
@@ -51,9 +51,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
   }
 
   private fun getLicenseTextViewerFragment(): LicenseTextViewerFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(R.id.license_text_viewer_fragment_placeholder) as
-      LicenseTextViewerFragment?
+    return activity.supportFragmentManager
+      .findFragmentById(R.id.license_text_viewer_fragment_placeholder) as LicenseTextViewerFragment?
   }
 }

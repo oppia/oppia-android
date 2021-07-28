@@ -15,6 +15,8 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   lateinit var thirdPartyDependencyListFragmentPresenter: ThirdPartyDependencyListFragmentPresenter
 
   companion object {
+
+    /** Returns an instance of [ThirdPartyDependencyListFragment]. */
     fun newInstance(): ThirdPartyDependencyListFragment {
       return ThirdPartyDependencyListFragment()
     }

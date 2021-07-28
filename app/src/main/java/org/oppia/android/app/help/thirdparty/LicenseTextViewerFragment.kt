@@ -2,7 +2,6 @@ package org.oppia.android.app.help.thirdparty
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,17 +15,16 @@ class LicenseTextViewerFragment : InjectableFragment() {
 
   companion object {
     private const val LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX =
-      "LicenseTextViewerFragment.DependencyIndex"
+      "LicenseTextViewerFragment.dependency_index"
     private const val LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX =
-      "LicenseTextViewerFragment.LicenseIndex"
+      "LicenseTextViewerFragment.license_index"
 
+    /** Returns an instance of [LicenseTextViewerFragment]. */
     fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
       val fragment = LicenseTextViewerFragment()
       val args = Bundle()
       args.putInt(LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)
       args.putInt(LICENSE_TEXT_VIEWER_FRAGMENT_LICENSE_INDEX, licenseIndex)
-      Log.d("TAG", "Dependency Index : $dependencyIndex.")
-      Log.d("TAG", "License Index : $licenseIndex.")
       fragment.arguments = args
       return fragment
     }
