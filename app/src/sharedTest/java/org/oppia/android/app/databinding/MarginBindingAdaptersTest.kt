@@ -81,8 +81,8 @@ private const val TOLERANCE = 1e-5f
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MarginBindingAdaptersTestActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class MarginBindingAdaptersTestActivityTest {
+@Config(application = MarginBindingAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class MarginBindingAdaptersTest {
 
   @Inject
   lateinit var context: Context
@@ -117,12 +117,8 @@ class MarginBindingAdaptersTestActivityTest {
       return@runWithActivity textView
     }
     System.out.println(textView.marginStart.toFloat())
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "land")
@@ -134,12 +130,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "sw600dp-port")
@@ -151,12 +143,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "sw600dp-land")
@@ -168,12 +156,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "port")
@@ -186,12 +170,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "land")
@@ -204,12 +184,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "sw600dp-port")
@@ -222,12 +198,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   @Config(qualifiers = "sw600dp-land")
@@ -240,12 +212,8 @@ class MarginBindingAdaptersTestActivityTest {
       setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
@@ -291,18 +259,18 @@ class MarginBindingAdaptersTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(marginBindableAdaptersTestActivityTest: MarginBindingAdaptersTestActivityTest)
+    fun inject(marginBindableAdaptersTest: MarginBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarginBindingAdaptersTestActivityTest_TestApplicationComponent.builder()
+      DaggerMarginBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(marginBindableAdaptersTestActivityTest: MarginBindingAdaptersTestActivityTest) {
-      component.inject(marginBindableAdaptersTestActivityTest)
+    fun inject(marginBindableAdaptersTest: MarginBindingAdaptersTest) {
+      component.inject(marginBindableAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

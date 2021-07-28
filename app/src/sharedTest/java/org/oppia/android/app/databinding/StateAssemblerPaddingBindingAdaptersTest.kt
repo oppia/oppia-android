@@ -7,8 +7,6 @@ import android.content.Intent
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.marginEnd
-import androidx.core.view.marginStart
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -32,15 +30,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationSplitViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setExplorationViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setQuestionSplitViewMargin
-import org.oppia.android.app.databinding.StateAssemblerMarginBindingAdapters.setQuestionViewMargin
+import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setExplorationSplitViewPadding
+import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setExplorationViewPadding
+import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setQuestionSplitViewPadding
+import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setQuestionViewPadding
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -80,24 +78,24 @@ import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5f
 
-/** Tests for [StateAssemblerMarginBindingAdapters]. */
+/** Tests for [StateAssemblerPaddingBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = StateAssemblerMarginBindingAdaptersTestActivityTest.TestApplication::class,
+  application = StateAssemblerPaddingBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class StateAssemblerMarginBindingAdaptersTestActivityTest {
+class StateAssemblerPaddingBindingAdaptersTest {
 
   @Inject
   lateinit var context: Context
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<StateAssemblerMarginBindingAdaptersTestActivity> =
+  var activityRule: ActivityScenarioRule<StateAssemblerPaddingBindingAdaptersTestActivity> =
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        StateAssemblerMarginBindingAdaptersTestActivity::class.java
+        StateAssemblerPaddingBindingAdaptersTestActivity::class.java
       )
     )
 
@@ -113,326 +111,270 @@ class StateAssemblerMarginBindingAdaptersTestActivityTest {
   }
 
   @Test
-  fun testMarginBindingAdapters_explorationViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
+  fun testStateAssemblerPadding_explorationViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewMargin(
+      setExplorationViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Test
-  fun testMarginBindingAdapters_explorationViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
+  fun testStateAssemblerPadding_explorationViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationViewMargin(
+      setExplorationViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Test
-  fun testMarginBindingAdapters_questionViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
+  fun testStateAssemblerPadding_questionViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionViewMargin(
+      setQuestionViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Test
-  fun testMarginBindingAdapters_questionViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
+  fun testStateAssemblerPadding_questionViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionViewMargin(
+      setQuestionViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Test
-  fun testMarginBindingAdapters_questionSplitViewMargin_ltrIsEnabled_marginsForLtrIsCorrect() {
+  fun testStateAssemblerPadding_questionSplitViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionSplitViewMargin(
+      setQuestionSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Test
-  fun testMarginBindingAdapters_questionSplitViewMargin_rtlIsEnabled_marginsForRtlIsCorrect() {
+  fun testStateAssemblerPadding_questionSplitViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionSplitViewMargin(
+      setQuestionSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindingAdapters_ltrIsEnabled_port_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "land")
   @Test
-  fun testMarginBindingAdapters_ltrIsEnabled_landscape_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testMarginBindingAdapters_ltrEnabled__port_tablet_marginStartAndMarginEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrEnabled__port_tablet_paddingStartAndPaddingEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindingAdapters_ltrEnabled_landscape_tablet_marginStartAndEndForLtrIsCorrect() {
+  fun testStateAssemblerPadding_ltrEnabled_landscape_tablet_paddingStartAndEndForLtrIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_port_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndPaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "land")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_landscape_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlIsEnabled_landscape_paddingStartAndpaddingEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testMarginBindingAdapters_rtlIsEnabled_port_tablet_marginStartAndMarginEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlIsEnabled_port_tablet_paddingStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  fun testMarginBindingAdapters_rtlEnabled_landscape_tablet_marginStartAndEndForRtlIsCorrect() {
+  fun testStateAssemblerPadding_rtlEnabled_landscape_tablet_paddingStartAndEndForRtlIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_margin_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewMargin(
+      setExplorationSplitViewPadding(
         textView,
         /* isApplicable= */ true,
-        /* marginStart= */ 24f,
-        /* marginTop= */ 24f,
-        /* marginEnd= */ 40f,
-        /* marginBottom= */ 24f
+        /* paddingStart= */ 12f,
+        /* paddingTop= */ 16f,
+        /* paddingEnd= */ 16f,
+        /* paddingBottom= */ 12f
       )
       return@runWithActivity textView
     }
-    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(
-      /* marginStart= */ 24f
-    )
-    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(
-      /* marginEnd= */ 40f
-    )
+    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
@@ -478,18 +420,18 @@ class StateAssemblerMarginBindingAdaptersTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(StateAssemblerMarginBindingAdaptersTestActivityTest: StateAssemblerMarginBindingAdaptersTestActivityTest)
+    fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateAssemblerMarginBindingAdaptersTestActivityTest_TestApplicationComponent.builder()
+      DaggerStateAssemblerPaddingBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(stateAssemblerMarginBindingAdaptersTestActivityTest: StateAssemblerMarginBindingAdaptersTestActivityTest) {
-      component.inject(stateAssemblerMarginBindingAdaptersTestActivityTest)
+    fun inject(stateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest) {
+      component.inject(stateAssemblerPaddingBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
