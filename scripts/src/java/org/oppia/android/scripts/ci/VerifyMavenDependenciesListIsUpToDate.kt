@@ -25,15 +25,15 @@ import org.oppia.android.scripts.proto.MavenDependency
  */
 fun main(args: Array<String>) {
   val pathToRoot = args[0]
-  val pathToMavenInstall = "$pathToRoot/${args[1]}"
-  val pathToProtoBinary = args[2]
+  val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
+  val pathToMavenDependenciesPb = args[2]
   val licenseFetcher = LicenseFetcherImpl()
   val mavenDependenciesListGenerator = MavenDependenciesListGenerator(licenseFetcher)
 
   val bazelQueryDepsList =
     mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(pathToRoot)
   val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
-    pathToMavenInstall,
+    pathToMavenInstallJson,
     bazelQueryDepsList
   )
 
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
     .mavenDependencyList
 
   val dependenciesListFromTextProto = mavenDependenciesListGenerator
-    .retrieveMavenDependencyList(pathToProtoBinary)
+    .retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
   val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
     dependenciesListFromPom,

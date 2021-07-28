@@ -44,16 +44,16 @@ class GenerateMavenDependenciesList(
       throw Exception("Too few Arguments passed")
     }
     val pathToRoot = args[0]
-    val pathToMavenInstall = "$pathToRoot/${args[1]}"
+    val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
-    val pathToProtoBinary = args[3]
+    val pathToMavenDependenciesPb = args[3]
 
     val mavenDependenciesListGenerator = MavenDependenciesListGenerator(licenseFetcher)
 
     val bazelQueryDepsList =
       mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(pathToRoot)
     val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
-      pathToMavenInstall,
+      pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
@@ -62,7 +62,7 @@ class GenerateMavenDependenciesList(
       .mavenDependencyList
 
     val dependenciesListFromTextProto =
-      mavenDependenciesListGenerator.retrieveMavenDependencyList(pathToProtoBinary)
+      mavenDependenciesListGenerator.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
     val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
       dependenciesListFromPom,
