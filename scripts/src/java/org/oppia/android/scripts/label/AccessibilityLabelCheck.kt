@@ -132,7 +132,7 @@ private fun NodeList.toListOfNodes(): List<Node> = (0 until getLength()).map(thi
 /**
  * Logs the failures for accessibility label check.
  *
- * @param missingAccessibilityLabelActivities list of Activities missing accessibility label
+ * @param missingAccessibilityLabelActivities list of Activities missing the accessibility label
  * @param accessibilityLabelExemptionTextProtoFilePath the location of the accessibility label
  *     exemption textproto file.
  */
