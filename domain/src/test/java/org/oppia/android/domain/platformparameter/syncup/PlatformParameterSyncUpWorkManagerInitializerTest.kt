@@ -18,13 +18,20 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
+import org.oppia.android.data.backends.gae.NetworkApiKey
+import org.oppia.android.data.backends.gae.NetworkSettings
+import org.oppia.android.data.backends.gae.OppiaRetrofit
+import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -38,6 +45,9 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -151,13 +161,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       platformParameterSingletonImpl: PlatformParameterSingletonImpl
     ): PlatformParameterSingleton = platformParameterSingletonImpl
 
-//    @Provides
-//    @PlatformParameterServiceTest.MockPlatformParameterService
-//    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
-//      val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-//      return MockPlatformParameterService(delegate)
-//    }
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -173,12 +176,45 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestNetworkModule {
+
+    @OppiaRetrofit
+    @Provides
+    @Singleton
+    fun provideRetrofitInstance(
+      jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
+      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+    ): Retrofit {
+      val client = OkHttpClient.Builder()
+        .addInterceptor(jsonPrefixNetworkInterceptor)
+        .addInterceptor(remoteAuthNetworkInterceptor)
+        .build()
+
+      return Retrofit.Builder()
+        .baseUrl(NetworkSettings.getBaseUrl())
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
+    }
+
+    @Provides
+    @NetworkApiKey
+    fun provideNetworkApiKey(): String = ""
+
+    @Provides
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+      val delegate = mockRetrofit.create(PlatformParameterService::class.java)
+      return MockPlatformParameterService(delegate)
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, NetworkModule::class,
+      TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class
     ]
   )

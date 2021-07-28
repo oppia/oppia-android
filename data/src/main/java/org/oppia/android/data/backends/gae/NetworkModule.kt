@@ -77,11 +77,11 @@ class NetworkModule {
    * @param retrofit the Retrofit object used to instantiate the service
    * @return the [PlatformParameterService] implementation
    */
-//  @Provides
-//  @Singleton
-//  fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService {
-//    return retrofit.create(PlatformParameterService::class.java)
-//  }
+  @Provides
+  @Singleton
+  fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService {
+    return retrofit.create(PlatformParameterService::class.java)
+  }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
   // replaced with a secret key in production.

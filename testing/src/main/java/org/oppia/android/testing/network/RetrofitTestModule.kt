@@ -3,7 +3,6 @@ package org.oppia.android.testing.network
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.data.backends.gae.OppiaRetrofit
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import retrofit2.Retrofit
 import retrofit2.mock.MockRetrofit
 import retrofit2.mock.NetworkBehavior
@@ -25,11 +24,5 @@ class RetrofitTestModule {
     return MockRetrofit.Builder(retrofit).apply {
       networkBehavior(behavior)
     }.build()
-  }
-  @Provides
-//    @PlatformParameterServiceTest.MockPlatformParameterService
-  fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
-    val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-    return MockPlatformParameterService(delegate)
   }
 }
