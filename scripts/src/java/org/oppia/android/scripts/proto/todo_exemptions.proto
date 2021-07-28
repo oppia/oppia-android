@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package proto;
-
-option java_package = "org.oppia.android.scripts.proto";
-option java_multiple_files = true;
-

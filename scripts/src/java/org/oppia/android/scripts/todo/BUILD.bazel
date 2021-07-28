@@ -1,6 +1,6 @@
 """
 Libraries corresponding to todo-related checks to ensure all TODOs are correctly formatted
-and corresponds to an open issue on Github
+and corresponds to an open issue on GitHub
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
@@ -10,10 +10,7 @@ kt_jvm_library(
     testonly = True,
     srcs = ["TodoCollector.kt"],
     visibility = ["//scripts:oppia_script_test_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/proto:script_exemptions_java_proto_lite",
-    ],
+    deps = ["//scripts/src/java/org/oppia/android/scripts/common:repository_file"],
 )
 
 kt_jvm_library(

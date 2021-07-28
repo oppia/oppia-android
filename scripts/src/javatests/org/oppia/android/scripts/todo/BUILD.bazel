@@ -1,6 +1,6 @@
 """
 Tests corresponding to todo-related checks to ensure all TODOs are correctly formatted
-and corresponds to an open issue on Github
+and corresponds to an open issue on GitHub
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
@@ -9,7 +9,6 @@ kt_jvm_test(
     name = "TodoCollectorTest",
     srcs = ["TodoCollectorTest.kt"],
     deps = [
-        "//scripts:todo_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_collector",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",

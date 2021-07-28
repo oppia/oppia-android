@@ -37,54 +37,70 @@ fun main(vararg args: String) {
 
   val correctTodoFormatRegex = "TODO[\\(]#(\\d+)[\\)]: .+".toRegex()
 
-  // List of all the TODOs present in the repository.
   val allTodos = TodoCollector.collectTodos(repoPath)
 
-  // List of all the poorly formatted TODOs.
   val poorlyFormattedTodos = allTodos.filter { todo ->
-    val todoContent = retrieveTodoContent(todo)
-    !checkTodoFormatting(todoContent, correctTodoFormatRegex)
+    checkIfTodoIsPoorlyFormatted(todo.lineContent)
   }
 
-  // List of all the TODOs which does not correspond to an open issue on Github.
-  val openIssueFailureTodos = allTodos.minus(poorlyFormattedTodos).filter { todo ->
-    val todoContent = retrieveTodoContent(todo)
-    val match = correctTodoFormatRegex.find(todoContent)
-    checkOpenIssueFailure(match, openIssueList)
+  val openIssueFailureTodos = (allTodos - poorlyFormattedTodos).filter { todo ->
+    checkIfOpenIssueFailure(todo.lineContent, openIssueList)
   }
 
-  logFailures(poorlyFormattedTodos, "TODO is poorly formatted")
-
-  logFailures(openIssueFailureTodos, "TODO does not corresponds to an open issue")
-
-  if (poorlyFormattedTodos.isNotEmpty() || openIssueFailureTodos.isNotEmpty()) {
-    throw Exception("TODO CHECK FAILED")
-  } else {
-    println("TODO CHECK PASSED")
+  openIssueFailureTodos.forEach {
+    println("${it.filePath}")
   }
+//  // List of all the poorly formatted TODOs.
+//  val poorlyFormattedTodos = allTodos.filter { todo ->
+//    val todoContent = retrieveTodoContent(todo)
+//    !checkTodoFormatting(todoContent, correctTodoFormatRegex)
+//  }
+//
+//  // List of all the TODOs which does not correspond to an open issue on Github.
+//  val openIssueFailureTodos = allTodos.minus(poorlyFormattedTodos).filter { todo ->
+//    val todoContent = retrieveTodoContent(todo)
+//    val match = correctTodoFormatRegex.find(todoContent)
+//    checkOpenIssueFailure(match, openIssueList)
+//  }
+//
+//  logFailures(poorlyFormattedTodos, "TODO is poorly formatted")
+//
+//  logFailures(openIssueFailureTodos, "TODO does not corresponds to an open issue")
+//
+//  if (poorlyFormattedTodos.isNotEmpty() || openIssueFailureTodos.isNotEmpty()) {
+//    throw Exception("TODO CHECK FAILED")
+//  } else {
+//    println("TODO CHECK PASSED")
+//  }
 }
 
-/**
- * Retrieves the TODO string.
- *
- * @param todo the pair of file and line index
- * @return the string retrieved
- */
-private fun retrieveTodoContent(todo: Pair<File, Int>): String {
-  val file = todo.first
-  val lineIndex = todo.second
-  return file.bufferedReader().lineSequence().elementAt(lineIndex)
+private fun checkIfTodoIsPoorlyFormatted(codeLine: String): Boolean {
+  val todoStartingRegex = Regex(
+    pattern = "(//|<!--|#|\\*)[\\s]*\\bTODO\\b",
+    option = RegexOption.IGNORE_CASE
+  )
+  val todoRegex = "\\bTODO\\b\\(".toRegex()
+  val correctTodoFormat = "\\bTODO\\b\\(#(\\d+)\\): .+".toRegex()
+  if (todoStartingRegex.containsMatchIn(codeLine)) {
+    if (!correctTodoFormat.containsMatchIn(codeLine)) {
+      return true
+    }
+    return false
+  }
+  if (todoRegex.containsMatchIn(codeLine)) {
+    return true
+  }
+  return false
 }
 
-/**
- * Checks if a TODO is poorly formatted.
- *
- * @param todoContent the TODO string
- * @param correctTodoFormatRegex regex for the correct TODO format
- * @return whether the TODO is poorly formatted
- */
-private fun checkTodoFormatting(todoContent: String, correctTodoFormatRegex: Regex): Boolean {
-  return correctTodoFormatRegex.containsMatchIn(todoContent)
+private fun checkIfOpenIssueFailure(codeLine: String, openIssueList: List<Issue>): Boolean {
+  val correctTodoFormatRegex = "\\bTODO\\b\\(#(\\d+)\\): .+".toRegex()
+  if (!correctTodoFormatRegex.containsMatchIn(codeLine)) {
+    return false
+  }
+  val match = correctTodoFormatRegex.find(codeLine)
+  val parsedIssueNumberFromTodo = match?.groupValues?.get(1)
+  return !openIssueList.any { it -> it.issueNumber == parsedIssueNumberFromTodo }
 }
 
 /**
@@ -107,9 +123,9 @@ private fun checkOpenIssueFailure(match: MatchResult?, openIssueList: List<Issue
  *     issue on Github.
  * @param failureMessage the failure message to be logged
  */
-private fun logFailures(invalidTodos: List<Pair<File, Int>>, failureMessage: String) {
+private fun logFailures(invalidTodos: List<Todo>, failureMessage: String) {
   if (invalidTodos.isNotEmpty()) {
-    invalidTodos.sortedBy { it.first }.forEach {
+    invalidTodos.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
       val file = it.first
       val lineIndex = it.second
       // Here, we are incrementing by one because the line number is always one greater than
