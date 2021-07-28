@@ -14,7 +14,7 @@ else
     jar_file_path="$github_actions_path/oppia-android-tools/ktlint"
 fi
 
-java -jar $jar_file_path --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt scripts/src/**/*.kt
+java -jar $jar_file_path -F --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt scripts/src/**/*.kt
 
 status=$?
 

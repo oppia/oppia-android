@@ -78,7 +78,7 @@
   </array>
   <string name="license_name_0">The Apache Software License, Version 2.0</string>
   <string name="license_name_1">Crashlytics Terms of Service</string>
-  <string name="license_name_2">The Apache Software License, Version 2.0</string>
+  <string name="license_name_2">The Apache License, Version 2.0</string>
   <string-array name="license_names_array">
     <item>@string/license_name_0</item>
     <item>@string/license_name_1</item>
