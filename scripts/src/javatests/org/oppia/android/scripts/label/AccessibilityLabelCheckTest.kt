@@ -74,7 +74,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_activityNameIsRelative_labelNotPresent_checkShouldFail() {
+  fun testAccessibilityLabel_activityReferenceIsRelative_labelNotPresent_checkShouldFail() {
     val testContent =
       """
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -117,7 +117,7 @@ class AccessibilityLabelCheckTest {
   }
 
   @Test
-  fun testAccessibilityLabel_activityNameIsAbsolute_labelNotPresent_checkShouldFail() {
+  fun testAccessibilityLabel_activityReferenceIsFullyQualified_labelNotPresent_checkShouldFail() {
     val testContent =
       """
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -357,9 +357,11 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = AccessibilityLabelExemptions.newBuilder()
-    builder.addExemptedActivity("app/src/main/java/org/oppia/android/app/home/HomeActivity")
-    val exemptions = builder.build()
+    val exemptions = AccessibilityLabelExemptions.newBuilder().apply {
+      this.addAllExemptedActivity(
+        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     main(
@@ -389,9 +391,11 @@ class AccessibilityLabelCheckTest {
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = AccessibilityLabelExemptions.newBuilder()
-    builder.addExemptedActivity("app/src/main/java/org/oppia/android/app/home/HomeActivity")
-    val exemptions = builder.build()
+    val exemptions = AccessibilityLabelExemptions.newBuilder().apply {
+      this.addAllExemptedActivity(
+        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
@@ -430,9 +434,11 @@ class AccessibilityLabelCheckTest {
     manifestFile.writeText(testContent)
     val activityPath = "app/src/main/java/org/oppia/android/app/home/SplashActivity"
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val builder = AccessibilityLabelExemptions.newBuilder()
-    builder.addExemptedActivity("app/src/main/java/org/oppia/android/app/home/HomeActivity")
-    val exemptions = builder.build()
+    val exemptions = AccessibilityLabelExemptions.newBuilder().apply {
+      this.addAllExemptedActivity(
+        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity")
+      )
+    }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
