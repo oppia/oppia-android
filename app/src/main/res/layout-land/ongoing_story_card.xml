@@ -8,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.recentlyplayed.OngoingStoryViewModel" />
+      type="org.oppia.android.app.home.recentlyplayed.PromotedStoryViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView

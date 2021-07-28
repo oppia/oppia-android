@@ -179,7 +179,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/AllTopicsViewModel.kt",
