@@ -185,7 +185,7 @@
     <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
     <item name="tabIconTint">@color/tab_icon_color_selector</item>
     <item name="tabSelectedTextColor">@color/white</item>
-</style>
+  </style>
 
   <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
     <item name="android:textSize">14sp</item>
