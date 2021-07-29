@@ -11,6 +11,7 @@ import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivit
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
@@ -103,6 +104,7 @@ interface ActivityComponent {
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
