@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Represents the list of all third-party maven dependencies.
+message MavenDependencyList {
+  // Stores the list of all third-party maven dependencies.
+  repeated MavenDependency maven_dependency = 1;
+}
+
+// Stores all the information about a third-party maven dependency.
+message MavenDependency {
+  // Name of the third-party dependency.
+  string artifact_name = 1;
+
+  // Version of the third-party dependency.
+  string artifact_version = 2;
+
+  // List of licenses corresponding to a third-party dependency. This would be the final list
+  // verified by the developers.
+  repeated License license = 3;
+}
+
+// Stores all the details corresponding to a copyright license.
+message License {
+  // Represents the name of the license.
+  string license_name = 1;
+
+  // Represents the initial link extracted originally from the POM file of the dependency.
+  string original_link = 2;
+
+  // Represents the manually verified link of the license that would finally be scraped or
+  // shown directly in the UI.
+  oneof verified_link {
+    // Indicates that the original link extracted from the POM contains plain license text
+    // and hence can be directly scraped.
+    ScrapableLink scrapable_link = 3;
+
+    // Indicates that the original link extracted from the POM contains plain license text but
+    // can't be scraped directly and hence an alternate link should be provided that can be scraped
+    // directly. The link provided in this case would point to the corresponding license stored
+    // in Oppia Android licenses repository: https://github.com/oppia/oppia-android-licenses
+    ExtractedCopyLink extracted_copy_link = 4;
+
+    // Indicates that the link does not contain plain license text and therefore can't be scraped.
+    // Only the link should be shown in this case.
+    DirectLinkOnly direct_link_only = 5;
+  }
+
+  // Represents whether the original_link extracted from the POM points to a valid
+  // license or not. The original_link extracted from the POM can be an invalid link
+  // or the link may be a valid link but does not contain any license.
+  bool is_original_link_invalid = 6;
+}
+
+// Stores the URL of a license that can be scraped directly.
+message ScrapableLink {
+  // URL of the directly scrapable license text.
+  string url = 1;
+}
+
+// Stores the URL of a license that should be scraped from the extracted copy.
+message ExtractedCopyLink {
+  // URL of the license that is stored in the extracted copy.
+  string url = 1;
+}
+
+// Stores the URL of a license that can't be easily scraped and only the link should be shown
+// in the UI.
+message DirectLinkOnly {
+  // URL to be shown directly in the UI.
+  string url = 1;
+}

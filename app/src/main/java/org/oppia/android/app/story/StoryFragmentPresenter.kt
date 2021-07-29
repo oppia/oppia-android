@@ -76,7 +76,7 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
-    binding.storyToolbar.setOnClickListener {
+    binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
     }
 
@@ -109,7 +109,8 @@ class StoryFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      isCheckpointingEnabled = false
     )
   }
 

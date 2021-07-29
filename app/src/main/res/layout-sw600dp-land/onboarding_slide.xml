@@ -19,7 +19,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"

@@ -34,6 +34,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -50,12 +52,23 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.question.InternalMasteryMultiplyFactor
+import org.oppia.android.domain.question.InternalScoreMultiplyFactor
+import org.oppia.android.domain.question.MaxMasteryGainPerQuestion
+import org.oppia.android.domain.question.MaxMasteryLossPerQuestion
+import org.oppia.android.domain.question.MaxScorePerQuestion
 import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
+import org.oppia.android.domain.question.ViewHintMasteryPenalty
+import org.oppia.android.domain.question.ViewHintScorePenalty
+import org.oppia.android.domain.question.WrongAnswerMasteryPenalty
+import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.testing.TestLogReportingModule
@@ -325,6 +338,42 @@ class QuestionPlayerActivityLocalTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = 1
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -332,6 +381,7 @@ class QuestionPlayerActivityLocalTest {
   @Component(
     modules = [
       QuestionPlayerActivityLocalTestModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -345,7 +395,8 @@ class QuestionPlayerActivityLocalTest {
       RatioInputModule::class, HintsAndSolutionConfigModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      MyDownloadsModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

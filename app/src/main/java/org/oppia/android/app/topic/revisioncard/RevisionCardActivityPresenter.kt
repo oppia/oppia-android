@@ -55,7 +55,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
-    binding.revisionCardToolbar.setOnClickListener {
+    binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardToolbarTitle.isSelected = true
     }
     subscribeToSubtopicTitle()

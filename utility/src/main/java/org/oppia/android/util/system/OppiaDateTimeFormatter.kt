@@ -13,6 +13,7 @@ class OppiaDateTimeFormatter @Inject constructor() {
 
   companion object {
     const val DD_MMM_YYYY = "dd MMMM yyyy"
+    const val DD_MMM_hh_mm_aa = "dd MMM hh:mm aa"
   }
 
   fun formatDateFromDateString(

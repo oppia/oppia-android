@@ -58,7 +58,10 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.customview.LessonThumbnailImageView
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -79,16 +82,20 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.mockito.capture
@@ -118,6 +125,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -166,6 +176,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -205,6 +216,26 @@ class StoryFragmentTest {
           withText(headerString)
         )
       )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_completedExp0_tickHasCorrectContentDescription() {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.story_chapter_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_completed_tick
+        )
+      ).check(matches(withContentDescription(R.string.chapter_completed)))
     }
   }
 
@@ -486,6 +517,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -627,6 +659,7 @@ class StoryFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -640,7 +673,8 @@ class StoryFragmentTest {
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      MyDownloadsModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, MyDownloadsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

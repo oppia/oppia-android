@@ -3,6 +3,8 @@
   <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_outer_margin">120dp</dimen>
+  <dimen name="home_welcome_outer_padding">120dp</dimen>
+  <dimen name="home_welcome_text_view_margin_end">8dp</dimen>
   <dimen name="home_inner_margin">60dp</dimen>
   <dimen name="recently_played_margin_max">120dp</dimen>
   <dimen name="recently_played_margin_min">60dp</dimen>
@@ -14,29 +16,14 @@
   <dimen name="state_fragment_split_view_margin_end">32dp</dimen>
   <dimen name="profile_chooser_description_margin_start_profile_not_added">32dp</dimen>
 
-  <dimen name="previous_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="continue_interaction_item_question_view_margin_end">128dp</dimen>
   <dimen name="continue_interaction_item_question_view_margin_start">128dp</dimen>
   <dimen name="continue_navigation_item_question_view_margin_end">128dp</dimen>
   <dimen name="continue_navigation_item_question_view_margin_start">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_end">128dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_start">128dp</dimen>
-  <dimen name="next_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="next_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_exploration_view_margin_start">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="return_to_topic_button_item_question_view_margin_start">128dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">128dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_start">128dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_end">128dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="submitted_answer_item_question_view_margin_end">128dp</dimen>
-  <dimen name="submitted_answer_item_question_view_margin_start">128dp</dimen>
 
   <dimen name="drag_drop_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_top">24dp</dimen>
@@ -45,6 +32,8 @@
   <dimen name="profile_chooser_add_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_top_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_start_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_profile_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_exploration_view_margin_top">24dp</dimen>
@@ -58,8 +47,6 @@
   <dimen name="profile_chooser_profile_view_margin_end_profile_already_added">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin">16dp</dimen>
 
-  <dimen name="return_to_topic_item_question_view_margin_top">12dp</dimen>
-
   <dimen name="profile_chooser_profile_view_name_margin_top_profile_already_added">8dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_start_profile_not_added">28dp</dimen>
 
@@ -70,7 +57,6 @@
 
   <dimen name="drag_drop_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_start">144dp</dimen>
-  <dimen name="submitted_answer_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_start">144dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_not_added">124dp</dimen>
 
@@ -79,24 +65,9 @@
   <dimen name="continue_navigation_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="continue_navigation_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="drag_drop_item_exploration_view_margin_end">112dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_end">112dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_start">112dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">112dp</dimen>
-  <dimen name="previous_button_item_exploration_view_margin_start">112dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_end">112dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_start">112dp</dimen>
-  <dimen name="submitted_answer_item_exploration_view_margin_end">112dp</dimen>
   <dimen name="text_input_interaction_item_conversation_view_margin_end">112dp</dimen>
   <dimen name="profile_chooser_margin_top_profile_not_added">84dp</dimen>
-  <dimen name="next_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="next_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="previous_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="previous_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="replay_button_item_question_view_margin_top">72dp</dimen>
-  <dimen name="return_to_topic_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="submit_button_item_exploration_view_margin_top">72dp</dimen>
-  <dimen name="submit_button_item_question_view_margin_top">72dp</dimen>
 
   <dimen name="drag_drop_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
@@ -125,9 +96,9 @@
   <dimen name="content_item_exploration_view_margin_end">144dp</dimen>
 
   <dimen name="content_item_exploration_view_padding_start">12dp</dimen>
-  <dimen name="content_item_exploration_view_padding_top">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_top">16dp</dimen>
   <dimen name="content_item_exploration_view_padding_end">12dp</dimen>
-  <dimen name="content_item_exploration_view_padding_bottom">12dp</dimen>
+  <dimen name="content_item_exploration_view_padding_bottom">16dp</dimen>
 
   <!-- Content Item: Question Split View -->
   <dimen name="content_item_question_split_view_margin_start">32dp</dimen>
@@ -157,9 +128,9 @@
   <dimen name="feedback_item_exploration_view_margin_end">144dp</dimen>
 
   <dimen name="feedback_item_exploration_view_padding_start">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_top">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_top">16dp</dimen>
   <dimen name="feedback_item_exploration_view_padding_end">12dp</dimen>
-  <dimen name="feedback_item_exploration_view_padding_bottom">12dp</dimen>
+  <dimen name="feedback_item_exploration_view_padding_bottom">16dp</dimen>
 
   <!-- Feedback Item: Question Split View -->
   <dimen name="feedback_item_question_split_view_margin_start">32dp</dimen>
@@ -175,15 +146,50 @@
   <dimen name="interaction_item_exploration_view_margin_start">144dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_exploration_view_margin_end">112dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_start">144dp</dimen>
+  <dimen name="interaction_item_exploration_view_padding_end">112dp</dimen>
 
   <!-- Interaction Item: Question View -->
   <dimen name="interaction_item_question_view_margin_start">128dp</dimen>
   <dimen name="interaction_item_question_view_margin_top">24dp</dimen>
   <dimen name="interaction_item_question_view_margin_end">128dp</dimen>
+  <dimen name="interaction_item_question_view_padding_start">128dp</dimen>
+   <dimen name="interaction_item_question_view_padding_end">128dp</dimen>
+
+  <!-- DragAndDrop Interaction Item -->
+  <dimen name="drag_drop_interaction_item_padding_start">24dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_top">16dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_end">24dp</dimen>
+  <dimen name="drag_drop_interaction_item_padding_bottom">16dp</dimen>
+
+  <dimen name="drag_drop_interaction_item_recycler_view_margin_top">0dp</dimen>
+
+  <dimen name="drag_drop_interaction_items_margin_top">8dp</dimen>
+  <dimen name="drag_drop_interaction_items_margin_bottom">8dp</dimen>
 
   <!-- Selection Interaction Item -->
   <dimen name="selection_interaction_item_padding_start">24dp</dimen>
   <dimen name="selection_interaction_item_padding_end">24dp</dimen>
+
+  <!-- Submitted Answer Item: Exploration Split View -->
+  <dimen name="submitted_answer_item_exploration_split_view_margin_start">40dp</dimen>
+  <dimen name="submitted_answer_item_exploration_split_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_exploration_split_view_margin_end">24dp</dimen>
+
+  <!-- Submitted Answer Item: Exploration View -->
+  <dimen name="submitted_answer_item_exploration_view_margin_start">144dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_exploration_view_margin_end">112dp</dimen>
+
+  <!-- Submitted Answer Item: Question Split View -->
+  <dimen name="submitted_answer_item_question_split_view_margin_start">32dp</dimen>
+  <dimen name="submitted_answer_item_question_split_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_question_split_view_margin_end">32dp</dimen>
+
+  <!-- Submitted Answer Item: Question View -->
+  <dimen name="submitted_answer_item_question_view_margin_start">128dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_top">24dp</dimen>
+  <dimen name="submitted_answer_item_question_view_margin_end">128dp</dimen>
 
   <!-- Previous Responses Item: Exploration Split View -->
   <dimen name="previous_responses_item_exploration_split_view_margin_start">36dp</dimen>
@@ -201,19 +207,84 @@
   <dimen name="previous_responses_item_question_view_margin_start">140dp</dimen>
   <dimen name="previous_responses_item_question_view_margin_end">140dp</dimen>
 
+  <!--
+    Note to developers: All margins for state related buttons have been reduced by 4dp because
+    the buttons in their respective styles have additional 4dp margin. This has been done so that
+    the shadows are clearly visible around the buttons.
+  -->
   <!-- General Button Item: Exploration Split View -->
-  <dimen name="general_button_item_exploration_split_view_margin_start">48dp</dimen>
-  <dimen name="general_button_item_exploration_split_view_margin_end">48dp</dimen>
+  <dimen name="general_button_item_exploration_split_view_margin_start">44dp</dimen>
+  <dimen name="general_button_item_exploration_split_view_margin_end">44dp</dimen>
 
   <!-- General Button: Exploration View -->
-  <dimen name="general_button_item_exploration_view_margin_start">112dp</dimen>
-  <dimen name="general_button_item_exploration_view_margin_end">112dp</dimen>
+  <dimen name="general_button_item_exploration_view_margin_start">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_margin_end">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_start">108dp</dimen>
+  <dimen name="general_button_item_exploration_view_padding_end">108dp</dimen>
 
   <!-- General Button: Question Split View -->
-  <dimen name="general_button_item_question_split_view_margin_start">48dp</dimen>
-  <dimen name="general_button_item_question_split_view_margin_end">48dp</dimen>
+  <dimen name="general_button_item_question_split_view_margin_start">44dp</dimen>
+  <dimen name="general_button_item_question_split_view_margin_end">44dp</dimen>
 
   <!-- General Button: Question View -->
-  <dimen name="general_button_item_question_view_margin_start">128dp</dimen>
-  <dimen name="general_button_item_question_view_margin_end">128dp</dimen>
+  <dimen name="general_button_item_question_view_margin_start">124dp</dimen>
+  <dimen name="general_button_item_question_view_margin_end">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_start">124dp</dimen>
+  <dimen name="general_button_item_question_view_padding_end">124dp</dimen>
+
+  <!-- Question Player ProgressBar -->
+  <dimen name="question_player_progress_bar_margin_start">64dp</dimen>
+  <dimen name="question_player_progress_bar_margin_end">64dp</dimen>
+
+  <!-- Congratulations TextView -->
+  <dimen name="congratulations_text_view_margin_start">128dp</dimen>
+  <dimen name="congratulations_text_view_margin_end">128dp</dimen>
+  <dimen name="congratulations_text_view_margin_bottom">24dp</dimen>
+
+  <!-- KonfettiView height -->
+  <dimen name="konfetti_view_height">132dp</dimen>
+
+  <!-- Audio Player: Non Split View -->
+  <dimen name="audio_player_non_split_view_margin_start">128dp</dimen>
+  <dimen name="audio_player_non_split_view_margin_end">128dp</dimen>
+
+  <!-- Audio Player: Split View -->
+  <dimen name="audio_player_split_view_margin_start">32dp</dimen>
+  <dimen name="audio_player_split_view_margin_end">32dp</dimen>
+
+  <!-- FAQ Single -->
+  <dimen name="faq_single_padding_start">64dp</dimen>
+  <dimen name="faq_single_padding_top">48dp</dimen>
+  <dimen name="faq_single_padding_end">64dp</dimen>
+  <dimen name="faq_single_padding_bottom">132dp</dimen>
+
+  <!-- FAQ -->
+  <dimen name="faq_list_padding_bottom">124dp</dimen>
+  <dimen name="faq_content_margin_start">68dp</dimen>
+  <dimen name="faq_content_margin_end">64dp</dimen>
+  <dimen name="faq_item_header_margin_start">64dp</dimen>
+  <dimen name="faq_item_header_margin_top">48dp</dimen>
+  <dimen name="faq_item_header_margin_end">64dp</dimen>
+  <dimen name="faq_item_header_margin_bottom">24dp</dimen>
+
+  <!-- General Bottom Padding -->
+  <dimen name="general_screen_padding_bottom">112dp</dimen>
+
+  <!-- Profile Edit -->
+  <dimen name="profile_edit_delete_margin_bottom">88dp</dimen>
+
+  <!-- Concept Card Fragment -->
+  <dimen name="concept_card_heading_text_marginStart">128dp</dimen>
+  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
+  <dimen name="concept_card_heading_text_marginEnd">128dp</dimen>
+  <dimen name="concept_card_explanation_text_marginStart">128dp</dimen>
+  <dimen name="concept_card_explanation_text_marginTop">16dp</dimen>
+  <dimen name="concept_card_explanation_text_marginEnd">128dp</dimen>
+
+  <!-- All Topics -->
+  <dimen name="all_topics_text_margin_start">120dp</dimen>
+  <dimen name="all_topics_text_margin_top">68dp</dimen>
+  <dimen name="all_topics_text_margin_end">76dp</dimen>
+  <dimen name="all_topics_text_margin_bottom">24dp</dimen>
+
 </resources>

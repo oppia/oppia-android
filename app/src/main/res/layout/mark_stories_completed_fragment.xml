@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="isAllChecked"
+      type="Boolean" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/mark_stories_completed_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mark_stories_completed_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/oppiaPrimaryDark"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/developer_options_mark_stories_completed"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/oppiaPrimaryDark">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:id="@+id/mark_stories_completed_all_check_box_container"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <TextView
+            android:id="@+id/mark_stories_completed_all_text_view"
+            style="@style/Heading5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/all"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/mark_stories_completed_all_check_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <CheckBox
+            android:id="@+id/mark_stories_completed_all_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:button="@drawable/selector_checkbox"
+            android:checked="@{isAllChecked}"
+            android:clickable="false"
+            android:focusable="false"
+            android:paddingBottom="10dp"
+            app:buttonTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_all_text_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+          android:id="@+id/mark_stories_completed_mark_completed_text_view"
+          style="@style/Heading5"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="16dp"
+          android:gravity="center_vertical"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:text="@string/mark_completed_uppercase"
+          android:textColor="@color/white"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/mark_stories_completed_app_bar_layout">
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mark_stories_completed_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/profileEditBackground"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingVertical="40dp"
+        android:scrollbars="none"
+        app:data="@{viewModel.storySummaryLiveData}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <View
+        android:id="@+id/mark_stories_completed_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -14,6 +14,8 @@
     android:fontFamily="sans-serif"
     android:gravity="center_vertical"
     android:paddingTop="8dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
     android:paddingBottom="8dp"
     android:text="@{htmlContent}"
     android:textColor="@color/oppiaPrimaryText"
