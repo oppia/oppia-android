@@ -66,6 +66,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkStoriesCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
+    "src/main/java/org/oppia/android/app/devoptions/ShowAllHintsAndSolutionChecker.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
