@@ -298,7 +298,8 @@ class GenerateLicenseTexts(
     copyrightLicenseSet.forEachIndexed { index, license ->
       val stringElement = doc.createElement("string")
       stringElement.setAttribute("name", "license_text_$index")
-      stringElement.appendChild(doc.createCDATASection(license.licenseText))
+      val licenseText = "\"${license.licenseText}\""
+      stringElement.appendChild(doc.createTextNode(licenseText))
       rootResourcesElement.appendChild(stringElement)
     }
 
@@ -412,8 +413,8 @@ class GenerateLicenseTexts(
   }
 
   private fun fetchLicenseText(url: String): String {
-    val licenseText = licenseFetcher.scrapeText(url)
-    return addEscapeCharactersToLicenseText(licenseText)
+    return licenseFetcher.scrapeText(url)
+//    return addEscapeCharactersToLicenseText(licenseText)
   }
 
   private fun addEscapeCharactersToLicenseText(licenseText: String): String {

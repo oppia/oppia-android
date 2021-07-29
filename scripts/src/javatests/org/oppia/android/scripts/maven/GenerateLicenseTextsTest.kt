@@ -267,16 +267,16 @@ class GenerateLicenseTextsTest {
       expectedSize = 3,
       expectedList = listOf(
         """
-                                Apache License
-        &quot;License&quot; shall mean the terms and conditions for use, reproduction,
-        and distribution as defined by Sections 1 through 9 of this document.
+        "                        Apache License
+        "License" shall mean the terms and conditions for use, reproduction,
+        and distribution as defined by Sections 1 through 9 of this document."
         """.trimIndent(),
-        DIRECT_LINK_ONLY,
+        "\"$DIRECT_LINK_ONLY\"",
         """
-        Copyright &lt;YEAR&gt; &lt;COPYRIGHT HOLDER&gt;
+        "Copyright <YEAR> <COPYRIGHT HOLDER>
 
         Redistribution and use in source and binary forms, with or without modification, are 
-        permitted provided that the following conditions are met:
+        permitted provided that the following conditions are met:"
         """.trimIndent()
       )
     )
