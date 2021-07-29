@@ -57,7 +57,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.android.app.mydownloads.MyDownloadsModule
-import org.oppia.android.app.mydownloads.MyDownloadsModule
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel

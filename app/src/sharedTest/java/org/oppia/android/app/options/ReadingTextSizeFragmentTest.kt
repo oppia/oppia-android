@@ -37,9 +37,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.mydownloads.MyDownloadsModule
-import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.options.READING_TEXT_SIZE
-import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
