@@ -1,6 +1,5 @@
 package org.oppia.android.app.help.thirdparty
 
-import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -22,5 +21,5 @@ class LicenseTextViewModel(
     licenseTextsArrayId
   )
   /** Text of the license to be displayed in [LicenseTextViewerFragment]. */
-  val licenseText: String = Html.fromHtml(licenseTextsArray[licenseIndex]).toString()
+  val licenseText = licenseTextsArray[licenseIndex]
 }
