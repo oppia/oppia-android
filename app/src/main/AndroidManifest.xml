@@ -173,8 +173,8 @@
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
+    <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
