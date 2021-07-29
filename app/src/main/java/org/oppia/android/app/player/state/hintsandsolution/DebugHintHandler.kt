@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.hintsandsolution
 
+import org.oppia.android.app.devoptions.ShowAllHintsAndSolutionChecker
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.ExplorationProgressController
@@ -13,7 +14,8 @@ import javax.inject.Inject
  */
 class DebugHintHandler @Inject constructor(
   private val prodHintHandler: ProdHintHandler,
-  private val explorationProgressController: ExplorationProgressController
+  private val explorationProgressController: ExplorationProgressController,
+  private val showAllHintsAndSolutionChecker: ShowAllHintsAndSolutionChecker
 ) : HintHandler {
 
   override fun reset() {
@@ -25,7 +27,8 @@ class DebugHintHandler @Inject constructor(
   }
 
   override fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
-    showAllHintsAndSolution(state)
+    if (showAllHintsAndSolutionChecker.getShowAllHintsAndSolution()) showAllHintsAndSolution(state)
+    else prodHintHandler.maybeScheduleShowHint(state, pendingState)
   }
 
   /** Shows all hints and solution. */

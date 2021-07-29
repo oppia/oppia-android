@@ -32,6 +32,7 @@ import org.oppia.android.app.player.exploration.ExplorationFragment
 import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.player.state.hintsandsolution.HintHandlerDebugModule
 import org.oppia.android.app.player.state.hintsandsolution.HintHandlerProdModule
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
@@ -69,7 +70,7 @@ import javax.inject.Provider
 @Subcomponent(
   modules = [
     FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class, HintHandlerProdModule::class
+    ViewBindingShimModule::class, HintHandlerDebugModule::class
   ]
 )
 @FragmentScope

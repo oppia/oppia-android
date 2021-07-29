@@ -14,7 +14,10 @@ import javax.inject.Inject
  * [DeveloperOptionsItemViewModel] which in turn implement corresponding functionalities.
  */
 @FragmentScope
-class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
+class DeveloperOptionsViewModel @Inject constructor(
+  activity: AppCompatActivity,
+  private val showAllHintsAndSolutionChecker: ShowAllHintsAndSolutionChecker
+) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
@@ -40,7 +43,10 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
         routeToMarkTopicsCompletedListener
       ),
       DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
-      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
+      DeveloperOptionsOverrideAppBehaviorsViewModel(
+        forceCrashButtonClickListener,
+        showAllHintsAndSolutionChecker
+      )
     )
   }
 }
