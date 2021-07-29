@@ -480,5 +480,4 @@
   <string name="developer_options_force_crash">Force crash</string>
   <string name="all">All</string>
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
-  <string name="mark_stories_completed_recycler_view">Mark Stories Completed Recycler View</string>
 </resources>

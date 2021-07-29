@@ -115,7 +115,6 @@
         android:layout_height="match_parent"
         android:background="@color/profileEditBackground"
         android:clipToPadding="false"
-        android:contentDescription="@string/mark_stories_completed_recycler_view"
         android:overScrollMode="never"
         android:paddingVertical="40dp"
         android:scrollbars="none"
