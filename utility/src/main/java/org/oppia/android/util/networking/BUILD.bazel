@@ -2,6 +2,7 @@
 Package for networking utilities
 """
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -10,8 +11,51 @@ kt_android_library(
         "NetworkConnectionUtil.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "prod_impl",
+    srcs = [
+        "ProdNetworkConnectionUtil.kt",
+    ],
     deps = [
-        "//third_party:androidx_annotation_annotation",
+        ":network_connection_util",
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+kt_android_library(
+    name = "debug_impl",
+    srcs = [
+        "DebugNetworkConnectionUtil.kt",
+    ],
+    deps = [
+        ":prod_impl",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "NetworkConnectionUtilProdModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":prod_impl",
+    ],
+)
+
+kt_android_library(
+    name = "debug_module",
+    srcs = [
+        "NetworkConnectionUtilDebugModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":debug_impl",
+    ],
+)
+
+dagger_rules()

@@ -39,6 +39,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -52,8 +53,8 @@ import javax.inject.Singleton
  * this component.
  *
  * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
- * Add: [LogReportingModule]
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule], [NetworkConnectionUtilDebugModule]
+ * Add: [LogReportingModule], [NetworkConnectionUtilProdModule]
  */
 @Singleton
 @Component(
@@ -77,7 +78,7 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    DeveloperOptionsModule::class, NetworkConnectionUtilDebugModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

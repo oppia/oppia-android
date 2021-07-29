@@ -666,6 +666,8 @@ kt_android_library(
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        #Replace debug_module with prod_module when building the app in prod mode.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )

@@ -3,6 +3,7 @@ package org.oppia.android.util.networking
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -19,24 +20,25 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.robolectric.Shadows.shadowOf
+import org.oppia.android.util.utility.NetworkConnectionTestUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [NetworkConnectionUtil]. */
+/** Tests for [ProdNetworkConnectionUtil]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class NetworkConnectionUtilTest {
+class ProdNetworkConnectionUtilTest {
 
   private val NO_CONNECTION = -1
 
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionUtil
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionUtil
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -44,7 +46,7 @@ class NetworkConnectionUtilTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionUtilTest_TestApplicationComponent.builder()
+    DaggerProdNetworkConnectionUtilTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -52,7 +54,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.LOCAL
     )
@@ -60,7 +65,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWifiConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIFI, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -68,7 +76,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_ETHERNET,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.LOCAL
     )
@@ -76,7 +87,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveEthernetConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_ETHERNET, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_ETHERNET,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -84,7 +98,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.CELLULAR
     )
@@ -92,7 +109,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveCellularConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_MOBILE, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -100,7 +120,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIMAX,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.CELLULAR
     )
@@ -108,7 +131,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_nonActiveWimaxConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_WIMAX, false)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_WIMAX,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -116,7 +142,10 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
-    setNetworkConnectionStatus(NO_CONNECTION, false)
+    setNetworkConnectionStatus(
+      status = NO_CONNECTION,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
@@ -124,19 +153,17 @@ class NetworkConnectionUtilTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
-    setNetworkConnectionStatus(ConnectivityManager.TYPE_BLUETOOTH, true)
+    setNetworkConnectionStatus(
+      status = ConnectivityManager.TYPE_BLUETOOTH,
+      networkState = NetworkInfo.State.CONNECTED
+    )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
       NetworkConnectionUtil.ConnectionStatus.NONE
     )
   }
 
-  private fun setNetworkConnectionStatus(status: Int, isConnected: Boolean) {
-    shadowOf(context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-      .setActiveNetworkInfo(
-        ShadowNetworkInfo.newInstance(
-          null, status, 0, /* isAvailable= */ true, isConnected
-        )
-      )
+  private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
+    NetworkConnectionTestUtil.setNetworkInfo(context, status, networkState)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -167,7 +194,7 @@ class NetworkConnectionUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
+      TestModule::class, NetworkConnectionUtilProdModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
@@ -180,6 +207,6 @@ class NetworkConnectionUtilTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkConnectionUtilTest: NetworkConnectionUtilTest)
+    fun inject(networkConnectionUtilProdImplTest: ProdNetworkConnectionUtilTest)
   }
 }

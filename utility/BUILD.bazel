@@ -73,9 +73,26 @@ kt_android_library(
     ],
 )
 
+# Place your file here if:
+#  - It is not a test file
+#  - Only test files depend on it
+
+kt_android_library(
+    name = "test_deps",
+    testonly = True,
+    srcs = [
+        "src/test/java/org/oppia/android/util/utility/NetworkConnectionTestUtil.kt",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
+    ":test_deps",
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
@@ -94,6 +111,8 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
