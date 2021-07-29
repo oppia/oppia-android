@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -31,6 +32,7 @@ import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -100,7 +102,7 @@ class LicenseTextViewerFragmentTest {
   }
 
   @Test
-  fun openLicenseTextViewerActivity_displaysCorrectLicenseText() {
+  fun openLicenseTextViewerActivity_dep0AndLicense0_displaysCorrectLicenseText() {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 0,
@@ -114,15 +116,181 @@ class LicenseTextViewerFragmentTest {
   }
 
   @Test
-  fun openLicenseTextViewerActivity_changeConfig_displaysCorrectLicenseText() {
+  fun openLicenseTextViewerActivity_dep0AndLicense0InConfigLand_displaysCorrectLicenseText() {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 0,
         licenseIndex = 0
       )
     ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.license_text_textview)).check(
         matches(withText(R.string.license_text_0))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep1AndLicense0_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 1,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_0))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep1AndLicense0InConfigLand_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 1,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_0))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep1AndLicense1_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 1,
+        licenseIndex = 1
+      )
+    ).use {
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_1))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep1AndLicense1InConfigLand_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 1,
+        licenseIndex = 1
+      )
+    ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_1))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep2AndLicense0_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 2,
+        licenseIndex = 0
+      )
+    ).use {
+      // Note that licenseIndex 0 implies the first license for the dependency and not that it
+      // should match with license_text_0.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_2))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep2AndLicense0InConfigLand_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 2,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      // Note that licenseIndex 0 implies the first license for the dependency and not that it
+      // should match with license_text_0.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(withText(R.string.license_text_2))
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep3AndLicense0_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 3,
+        licenseIndex = 0
+      )
+    ).use {
+      // Note that licenseIndex 0 implies the first license for the dependency and not that it
+      // should match with license_text_0.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(
+          withText(R.string.license_text_2)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep3AndLicense0InConfigLand_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 3,
+        licenseIndex = 0
+      )
+    ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      // Note that licenseIndex 0 implies the first license for the dependency and not that it
+      // should match with license_text_0.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(
+          withText(R.string.license_text_2)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep3AndLicense1_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 3,
+        licenseIndex = 1
+      )
+    ).use {
+      // Note that licenseIndex 1 implies the first license for the dependency and not that it
+      // should match with license_text_1.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(
+          withText(R.string.license_text_0)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun openLicenseTextViewerActivity_dep3AndLicense1InConfigLand_displaysCorrectLicenseText() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 3,
+        licenseIndex = 1
+      )
+    ).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      // Note that licenseIndex 1 implies the first license for the dependency and not that it
+      // should match with license_text_1.
+      onView(withId(R.id.license_text_textview)).check(
+        matches(
+          withText(R.string.license_text_0)
+        )
       )
     }
   }

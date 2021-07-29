@@ -274,8 +274,8 @@ class LicenseListFragmentTest {
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
-      ).check(matches(hasDescendant(withText(R.string.license_name_0))))
-      onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
+      ).check(matches(hasDescendant(withText(R.string.license_name_2))))
+      onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
       onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
       )
@@ -284,18 +284,8 @@ class LicenseListFragmentTest {
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
-      ).check(matches(hasDescendant(withText(R.string.license_name_1))))
-      onView(withText(R.string.license_name_1)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        RecyclerViewMatcher.atPosition(
-          recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 2
-        )
-      ).check(matches(hasDescendant(withText(R.string.license_name_2))))
-      onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
+      ).check(matches(hasDescendant(withText(R.string.license_name_0))))
+      onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
   }
 
@@ -311,8 +301,8 @@ class LicenseListFragmentTest {
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
-      ).check(matches(hasDescendant(withText(R.string.license_name_0))))
-      onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
+      ).check(matches(hasDescendant(withText(R.string.license_name_2))))
+      onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
       onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
       )
@@ -321,18 +311,8 @@ class LicenseListFragmentTest {
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
-      ).check(matches(hasDescendant(withText(R.string.license_name_1))))
-      onView(withText(R.string.license_name_1)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        RecyclerViewMatcher.atPosition(
-          recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 2
-        )
-      ).check(matches(hasDescendant(withText(R.string.license_name_2))))
-      onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
+      ).check(matches(hasDescendant(withText(R.string.license_name_0))))
+      onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
   }
 
