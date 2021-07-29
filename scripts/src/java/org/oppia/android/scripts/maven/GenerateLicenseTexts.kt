@@ -39,9 +39,15 @@ fun main(args: Array<String>) {
   GenerateLicenseTexts(LicenseFetcherImpl()).main(args)
 }
 
+/**
+ * Wrapper class to pass dependencies to be utilized by the the main method to generate license
+ * texts of the dependencies.
+ */
 class GenerateLicenseTexts(
   private val licenseFetcher: LicenseFetcher
 ) {
+
+  /** Generates a resource xml file that contains license texts of the third-party dependencies. */
   fun main(args: Array<String>) {
     if (args.size < 2) {
       println(
@@ -54,9 +60,9 @@ class GenerateLicenseTexts(
     }
     val pathToValuesDirectory = args[0]
     val pathToThirdPartyDependenciesXml = "$pathToValuesDirectory/third_party_dependencies.xml"
-    val pathToPbFile = args[1]
+    val pathToMavenDependenciesPb = args[1]
 
-    val mavenDependencyList = retrieveMavenDependencyList(pathToPbFile)
+    val mavenDependencyList = retrieveMavenDependencyList(pathToMavenDependenciesPb)
     if (mavenDependencyList.isEmpty()) {
       throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
