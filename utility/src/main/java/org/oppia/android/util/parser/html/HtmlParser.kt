@@ -55,7 +55,7 @@ class HtmlParser private constructor(
       // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
       // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
       if (isRtlLayout(htmlContentTextView)) {
-        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
       }
       htmlContentTextView.invalidate()
     }

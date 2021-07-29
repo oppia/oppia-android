@@ -77,6 +77,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -111,6 +112,9 @@ class HtmlParserTest {
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
 
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
   lateinit var context: Context
 
   @Inject
@@ -137,6 +141,8 @@ class HtmlParserTest {
 
   @After
   fun tearDown() {
+    // Ensure lingering tasks are completed.
+    testCoroutineDispatchers.advanceUntilIdle()
     Intents.release()
   }
 
@@ -307,7 +313,7 @@ class HtmlParserTest {
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_RTL
     )
-    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_RTL)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
 
   @Test
@@ -578,6 +584,7 @@ class HtmlParserTest {
           "smaller than another<br></li></ul>",
         textView
       )
+      testCoroutineDispatchers.runCurrent()
       return@runWithActivity textView
     }
   }
