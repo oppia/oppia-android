@@ -141,11 +141,11 @@ def generate_todo_assets_list_from_text_protos(
         name,
         todo_exemptions_name):
     """
-    Converts multiple lists of text proto assets to binary.
+    Converts a single list of text proto assets to binary.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.
-        todo_exemptions_name: list of str. The list of todo exemptions file names.
+        todo_exemptions_name: list of str. The list of todo exemptions file name.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.

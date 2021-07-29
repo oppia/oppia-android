@@ -143,11 +143,11 @@ class TodoCollectorTest {
       """.trimIndent()
     val testContent2 =
       """
-      # TODO(#105): Test description
+      # TODO(#10500): Test description
       """.trimIndent()
     val testContent3 =
       """
-      // TODO(#178): test todo.
+      // TODO(#17800): test todo.
       // TODO(    210)
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
@@ -177,14 +177,14 @@ class TodoCollectorTest {
       Todo(
         filePath = tempFile2.toString(),
         lineNumber = 1,
-        lineContent = "# TODO(#105): Test description"
+        lineContent = "# TODO(#10500): Test description"
       )
     )
     assertThat(collectedTodos).contains(
       Todo(
         filePath = tempFile3.toString(),
         lineNumber = 1,
-        lineContent = "// TODO(#178): test todo."
+        lineContent = "// TODO(#17800): test todo."
       )
     )
     assertThat(collectedTodos).contains(
