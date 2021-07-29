@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.maven
 
-import com.google.common.html.HtmlEscapers
 import org.oppia.android.scripts.maven.data.CopyrightLicense
 import org.oppia.android.scripts.maven.data.Dependency
 import org.oppia.android.scripts.proto.License
@@ -414,11 +413,6 @@ class GenerateLicenseTexts(
 
   private fun fetchLicenseText(url: String): String {
     return licenseFetcher.scrapeText(url)
-//    return addEscapeCharactersToLicenseText(licenseText)
-  }
-
-  private fun addEscapeCharactersToLicenseText(licenseText: String): String {
-    return HtmlEscapers.htmlEscaper().escape(licenseText)
   }
 
   private fun getTransformer(): Transformer {
