@@ -300,7 +300,7 @@ class KdocValidityCheckTest {
     val testContent =
       """
       /** Test Class. */
-      class SelectionFragmentModel @Inject constructor(){
+      class SelectionFragmentModel @Inject constructor() {
       }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
