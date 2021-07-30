@@ -51,10 +51,12 @@ kt_jvm_test(
 
 kt_jvm_test(
     name = "MavenDependenciesListGeneratorTest",
+    size = "large",
     srcs = ["MavenDependenciesListGeneratorTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:maven_dependencies_list_generator",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//third_party:org_mockito_kotlin_mockito-kotlin",

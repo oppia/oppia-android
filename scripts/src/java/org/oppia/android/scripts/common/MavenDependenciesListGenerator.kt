@@ -83,8 +83,8 @@ class MavenDependenciesListGenerator(
   fun getAllBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>
   ): Set<License> {
-    // Here broken licenses are those licenses that do not have verified_link set or
-    // there original link is found to be invalid by the developers.
+    // Here broken licenses are those licenses that do not have verified_link set and
+    // there original link is not set to be invalid by the developers.
     return mavenDependenciesList.flatMap { dependency ->
       dependency.licenseList.filter { license ->
         license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
