@@ -64,7 +64,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveWifiConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_inactiveWifiConnection_returnsNone() {
     setNetworkConnectionStatus(
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.DISCONNECTED
@@ -82,7 +82,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveEthernetConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_inactiveEthernetConnection_returnsNone() {
     setNetworkConnectionStatus(
       status = ConnectivityManager.TYPE_ETHERNET,
       networkState = NetworkInfo.State.DISCONNECTED
@@ -100,7 +100,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveCellularConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_inactiveCellularConnection_returnsNone() {
     setNetworkConnectionStatus(
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.DISCONNECTED
@@ -118,7 +118,7 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
-  fun testGetCurrentConnectionStatus_nonActiveWimaxConnection_returnsNone() {
+  fun testGetCurrentConnectionStatus_inactiveWimaxConnection_returnsNone() {
     setNetworkConnectionStatus(
       status = ConnectivityManager.TYPE_WIMAX,
       networkState = NetworkInfo.State.DISCONNECTED
