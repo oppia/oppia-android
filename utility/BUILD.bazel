@@ -77,7 +77,7 @@ kt_android_library(
     name = "network_connection_test_util",
     testonly = True,
     srcs = [
-        "src/test/java/org/oppia/android/util/utility/NetworkConnectionTestUtil.kt",
+        "src/test/java/org/oppia/android/util/networking/NetworkConnectionTestUtil.kt",
     ],
     deps = [
         "//third_party:javax_inject_javax_inject",

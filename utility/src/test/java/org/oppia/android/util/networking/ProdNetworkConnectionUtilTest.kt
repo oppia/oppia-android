@@ -20,7 +20,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.utility.NetworkConnectionTestUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -58,9 +60,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.LOCAL
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
 
   @Test
@@ -69,9 +69,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -80,9 +78,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_ETHERNET,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.LOCAL
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
 
   @Test
@@ -91,9 +87,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_ETHERNET,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -102,9 +96,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.CELLULAR
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
 
   @Test
@@ -113,9 +105,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -124,9 +114,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_WIMAX,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.CELLULAR
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
 
   @Test
@@ -135,9 +123,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_WIMAX,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -146,9 +132,7 @@ class ProdNetworkConnectionUtilTest {
       status = NO_CONNECTION,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -157,9 +141,7 @@ class ProdNetworkConnectionUtilTest {
       status = ConnectivityManager.TYPE_BLUETOOTH,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(
-      NetworkConnectionUtil.ConnectionStatus.NONE
-    )
+    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
