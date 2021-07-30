@@ -374,7 +374,7 @@ message ExplorationCheckpoint {
   int32 index_of_last_revealed_hint = 6;
 
   // Stores true or false depending upon if unrevealed solution is visible to the user.
-  bool isUnrevealedSolutionVisible = 7;
+  bool is_unrevealed_solution_visible = 7;
 
   // Count of hint that is/are available for the current pendingTopState.
   int32 hint_count = 8;
