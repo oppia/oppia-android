@@ -118,11 +118,11 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
-    name = "verify_maven_dependencies_list_is_up_to_date",
+    name = "maven_dependencies_list_check",
     testonly = True,
     data = MAVEN_ASSETS,
-    main_class = "org.oppia.android.scripts.ci.VerifyMavenDependenciesListIsUpToDateKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:verify_maven_dependencies_list_is_up_to_date_lib"],
+    main_class = "org.oppia.android.scripts.ci.MavenDependenciesListCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:maven_dependencies_list_check_lib"],
 )
 
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(

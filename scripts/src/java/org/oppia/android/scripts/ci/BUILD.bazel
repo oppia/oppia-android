@@ -18,10 +18,10 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "verify_maven_dependencies_list_is_up_to_date_lib",
+    name = "maven_dependencies_list_check_lib",
     testonly = True,
     srcs = [
-        "VerifyMavenDependenciesListIsUpToDate.kt",
+        "MavenDependenciesListCheck.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
