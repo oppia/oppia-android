@@ -285,7 +285,8 @@ internal class StateDeck internal constructor(
       this.explorationTitle = explorationTitle
       timestampOfFirstCheckpoint = timestamp
     }.build()
-    Log.d("11111",
+    Log.d(
+      "11111",
       "createExplorationCheckpoint: hintCount = ${pendingTopState.interaction.hintCount} " +
         "indexOfLastRevealedHint = $ $revealedHintsAndSolutionIndex " +
         "isUnrevealedHintVisible = $isUnrevealedHintVisible " +

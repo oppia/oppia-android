@@ -17,7 +17,6 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
@@ -97,6 +96,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

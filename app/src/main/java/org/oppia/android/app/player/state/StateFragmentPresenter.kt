@@ -20,6 +20,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.ProfileId
@@ -47,7 +48,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.model.ExplorationCheckpoint
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -309,7 +309,6 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState))
   }
 
-
   private fun unrevealedSolutionIsVisible() {
     subscribeToUnRevealedSolution(
       explorationProgressController.submitUnrevealedSolutionIsVisible(currentState)
@@ -523,7 +522,9 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Helper for [subscribeToSolution]. */
-  private fun getUnrevealedSolutionIsVisible(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+  private fun getUnrevealedSolutionIsVisible(
+    hint: LiveData<AsyncResult<Solution>>
+  ): LiveData<Solution> {
     return Transformations.map(hint, ::processUnrevealedSolution)
   }
 
