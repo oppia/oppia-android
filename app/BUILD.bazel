@@ -807,6 +807,7 @@ crashlytics_android_library(
 android_library(
     name = "crashlytics_deps",
     exports = [
+        "//third_party:androidx_core_core-ktx",
         "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
