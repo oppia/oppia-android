@@ -7,16 +7,16 @@ import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionExplorationManagerFragment]. */
 @FragmentScope
 class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val explorationProgressController: ExplorationProgressController
 ) {
 
@@ -41,7 +41,7 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     if (result.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "HintsAndSolutionExplorationManagerFragmentPresenter",
         "Failed to retrieve ephemeral state",
         result.getErrorOrNull()!!

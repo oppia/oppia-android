@@ -9,7 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */

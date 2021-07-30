@@ -49,8 +49,6 @@ class QuestionPlayerActivity :
     showStopExplorationDialogFragment()
   }
 
-  override fun stopSession() = questionPlayerActivityPresenter.stopTrainingSession()
-
   override fun restartSession() = questionPlayerActivityPresenter.restartSession()
 
   override fun onEditorAction(actionCode: Int) {
@@ -124,5 +122,9 @@ class QuestionPlayerActivity :
 
   override fun dismissConceptCard() {
     questionPlayerActivityPresenter.dismissConceptCard()
+  }
+
+  override fun stopSession() {
+    questionPlayerActivityPresenter.stopTrainingSession()
   }
 }

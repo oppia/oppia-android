@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-private const val KEY_INTERNAL_PROFILE_ID_ARGUMENT = "INTERNAL_PROFILE_ID"
+private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
 private const val KEY_STORY_ID_ARGUMENT = "STORY_ID"
 
@@ -19,7 +19,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     fun newInstance(internalProfileId: Int, topicId: String, storyId: String): StoryFragment {
       val storyFragment = StoryFragment()
       val args = Bundle()
-      args.putInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, internalProfileId)
+      args.putInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       args.putString(KEY_TOPIC_ID_ARGUMENT, topicId)
       args.putString(KEY_STORY_ID_ARGUMENT, storyId)
       storyFragment.arguments = args
@@ -43,7 +43,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to StoryFragment"
     }
-    val internalProfileId = args.getInt(KEY_INTERNAL_PROFILE_ID_ARGUMENT, -1)
+    val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     val topicId =
       checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
         "Expected topicId to be passed to StoryFragment"

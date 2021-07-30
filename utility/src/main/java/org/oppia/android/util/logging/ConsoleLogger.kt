@@ -74,7 +74,7 @@ class ConsoleLogger @Inject constructor(
   }
 
   private fun isLogEnable(logLevel: LogLevel): Boolean {
-    return globalLogLevel.logLevel < logLevel.logLevel
+    return globalLogLevel.logLevel <= logLevel.logLevel
   }
 
   private fun writeLog(logLevel: LogLevel, tag: String, log: String) {

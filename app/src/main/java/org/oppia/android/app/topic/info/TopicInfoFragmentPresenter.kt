@@ -23,11 +23,11 @@ import org.oppia.android.databinding.TopicInfoChapterListItemBinding
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.databinding.TopicInfoSkillsItemBinding
 import org.oppia.android.databinding.TopicInfoStorySummaryBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val profileManagementController: ProfileManagementController
@@ -157,7 +157,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
-      logger.e("TopicInfoFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
+      oppiaLogger.e("TopicInfoFragment", "Failed to retrieve topic", topic.getErrorOrNull()!!)
     }
     return topic.getOrDefault(Topic.getDefaultInstance())
   }
@@ -296,7 +296,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
     deviceSettingsResult: AsyncResult<DeviceSettings>
   ): Boolean {
     if (deviceSettingsResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicInfoFragmentPresenter",
         "Failed to retrieve profile",
         deviceSettingsResult.getErrorOrNull()!!
@@ -320,7 +320,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
     profileResult: AsyncResult<Profile>
   ): Boolean {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "TopicInfoFragmentPresenter",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!

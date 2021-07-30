@@ -6,6 +6,12 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.android.app.devoptions.DeveloperOptionsActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -45,6 +51,7 @@ import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
@@ -76,22 +83,26 @@ interface ActivityComponent {
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
+  fun inject(audioLanguageActivity: AudioLanguageActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
-  fun inject(audioLanguageActivity: AudioLanguageActivity)
+  fun inject(developerOptionsActivity: DeveloperOptionsActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
-  fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
+  fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
+  fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
+  fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
@@ -99,7 +110,6 @@ interface ActivityComponent {
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
-  fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)
@@ -107,15 +117,19 @@ interface ActivityComponent {
   fun inject(profileProgressActivity: ProfileProgressActivity)
   fun inject(profileRenameActivity: ProfileRenameActivity)
   fun inject(profileResetPinActivity: ProfileResetPinActivity)
+  fun inject(questionPlayerActivity: QuestionPlayerActivity)
+  fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
+  fun inject(splashTestActivity: SplashTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
-  fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
+  fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
+  fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

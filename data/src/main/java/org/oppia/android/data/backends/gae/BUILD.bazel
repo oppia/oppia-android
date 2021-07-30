@@ -17,6 +17,7 @@ kt_android_library(
     deps = [
         ":constants",
         ":network_settings",
+        "//model:arguments_java_proto_lite",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
@@ -39,6 +40,17 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "oppia_retrofit",
+    srcs = [
+        "OppiaRetrofit.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "NetworkModule.kt",
@@ -48,6 +60,7 @@ kt_android_library(
         ":dagger",
         ":network_interceptors",
         ":network_settings",
+        ":oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//third_party:com_squareup_retrofit2_converter-moshi",
     ],

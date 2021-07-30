@@ -17,7 +17,6 @@ import org.oppia.android.testing.network.MockTopicService
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [JsonPrefixNetworkInterceptorTest] */
@@ -83,9 +82,6 @@ class JsonPrefixNetworkInterceptorTest {
       .build()
       .inject(this)
   }
-
-  @Qualifier
-  annotation class OppiaRetrofit
 
   // TODO(#89): Move this to a common test application component.
   @Module

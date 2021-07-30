@@ -33,8 +33,8 @@ jobs:
         # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
         # comma-separated list of test targets for the matrix.
         run: |
-          bash ./scripts/compute_affected_tests.sh ./affected_targets.txt
-          TEST_TARGET_LIST=$(cat ./affected_targets.txt | sed 's/^\|$/"/g' | paste -sd, -)
+          bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log origin/develop
+          TEST_TARGET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
           echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
           if [[ ! -z "$TEST_TARGET_LIST" ]]; then
@@ -72,12 +72,13 @@ jobs:
         with:
           java-version: 9
 
-      - name: Check Java version & path
-        run: |
-          which java
-          java -version
-          echo "Java home: $JAVA_HOME"
-          $JAVA_HOME/bin/java -version
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Compute test caching bucket
         env:
@@ -128,20 +129,6 @@ jobs:
             rm -rf $EXPANDED_BAZEL_CACHE_PATH
           fi
 
-      - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
-        with:
-          version: 4.0.0
-          
-      - name: Configure Bazel to use JDK 9 for building
-        run: |
-          echo "build --java_language_version=9" >> $HOME/.bazelrc
-
-      - name: Configure Bazel to use specific sandbox tmpfs
-        run: |
-          echo "build --enable_platform_specific_config" >> $HOME/.bazelrc
-          echo "build:linux --sandbox_tmpfs_path=/tmp" >> $HOME/.bazelrc
-
       - name: Configure Bazel to use a local cache
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
@@ -150,17 +137,6 @@ jobs:
           echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
-
-      - name: Check Bazel environment
-        run: bazel info
-
-      - name: Set up Oppia Bazel Android Tools
-        run: |
-          mkdir $HOME/opensource
-          cd $HOME/opensource
-          git clone https://github.com/oppia/oppia-bazel-tools
-          echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
-          echo build --android_databinding_use_androidx >> $HOME/.bazelrc
 
       # See explanation in bazel_build_app for how this is installed.
       - name: Install git-secret (non-fork only)

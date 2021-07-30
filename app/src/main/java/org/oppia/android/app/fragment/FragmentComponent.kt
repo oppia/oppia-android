@@ -7,6 +7,11 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
+import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
+import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
@@ -32,6 +37,7 @@ import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
+import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -80,6 +86,7 @@ interface FragmentComponent {
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
+  fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
@@ -91,12 +98,16 @@ interface FragmentComponent {
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
+  fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
+  fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileEditFragment: ProfileEditFragment)
   fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
@@ -113,6 +124,7 @@ interface FragmentComponent {
   fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
+  fun inject(viewEventLogsFragment: ViewEventLogsFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)

@@ -9,13 +9,13 @@ import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.DefaultGcsPrefix
-import org.oppia.android.util.parser.ImageLoader
-import org.oppia.android.util.parser.ImageTransformation
-import org.oppia.android.util.parser.ImageViewTarget
-import org.oppia.android.util.parser.ThumbnailDownloadUrlTemplate
+import org.oppia.android.util.parser.image.DefaultGcsPrefix
+import org.oppia.android.util.parser.image.ImageLoader
+import org.oppia.android.util.parser.image.ImageTransformation
+import org.oppia.android.util.parser.image.ImageViewTarget
+import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
 
 /** A custom [AppCompatImageView] used to show lesson thumbnails. */
@@ -49,7 +49,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   lateinit var gcsPrefix: String
 
   @Inject
-  lateinit var logger: ConsoleLogger
+  lateinit var oppiaLogger: OppiaLogger
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
@@ -78,7 +78,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       ::resourceBucketName.isInitialized &&
       ::gcsPrefix.isInitialized &&
       ::imageLoader.isInitialized &&
-      ::logger.isInitialized
+      ::oppiaLogger.isInitialized
     ) {
       loadLessonThumbnail()
     }
@@ -102,6 +102,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     imageView.setBackgroundColor(
       (0xff000000L or lessonThumbnail.backgroundColorRgb.toLong()).toInt()
     )
+    imageView.scaleType = ScaleType.FIT_CENTER
   }
 
   /** Loads an image using Glide from [filename]. */
@@ -125,9 +126,10 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       super.onAttachedToWindow()
       (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
         .createViewComponent(this).inject(this)
+      checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
-      if (::logger.isInitialized)
-        logger.e(
+      if (::oppiaLogger.isInitialized)
+        oppiaLogger.e(
           "LessonThumbnailImageView",
           "Throws exception on attach to window",
           e

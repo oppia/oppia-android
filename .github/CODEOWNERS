@@ -26,13 +26,6 @@
 # Codeowners ownership (for adding/changing/removing code owners).
 .github/CODEOWNERS @oppia/owners
 
-# Bazel build files.
-WORKSPACE @BenHenning
-*.bzl @BenHenning
-*.bazel @BenHenning
-.bazelrc @BenHenning
-/tools/android/ @BenHenning
-
 # Gradle build files.
 *.gradle @BenHenning
 gradle.properties @BenHenning
@@ -50,6 +43,7 @@ gradlew.bat @BenHenning
 *.secret @BenHenning
 
 # CI configuration.
+/.github/actions/ @BenHenning
 /.github/workflows/ @BenHenning
 
 # All tests.
@@ -70,6 +64,9 @@ gradlew.bat @BenHenning
 
 # Linter configuration.
 buf.yaml @anandwana001
+
+# Third-party dependencies.
+/third_party/ @BenHenning
 
 # IDEA IDE configuration.
 .editorconfig @BenHenning
@@ -180,14 +177,32 @@ NOTICE @BenHenning
 #####################################################################################
 
 # Global scripts code ownership.
-/scripts/ @anandwana001 @BenHenning
+/scripts/ @BenHenning
+
+# Shell file ownership.
+/scripts/**/*.sh @anandwana001 @BenHenning
+
+# Static analysis check configuration files ownership.
+/scripts/assets/ @BenHenning
 
 #####################################################################################
 #                                      model                                        #
 #####################################################################################
 
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
-*.proto @BenHenning @vinitamurthi
+*.proto @vinitamurthi @BenHenning
 
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
+
+#####################################################################################
+#                                global overrides                                   #
+#####################################################################################
+
+# Bazel build files. This is added after everything else to ensure Bazel files are always reviewed by the same people.
+WORKSPACE @BenHenning
+*.bzl @BenHenning
+*.bazel @BenHenning
+.bazelrc @BenHenning
+/tools/android/ @BenHenning
+

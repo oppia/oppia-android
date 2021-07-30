@@ -116,7 +116,7 @@ google_services_workspace_dependencies()
 
 git_repository(
     name = "circularimageview",
-    commit = "8a65ba42b3fee21b5e19ca5c8690185f7c60f65d",
+    commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
     remote = "https://github.com/oppia/CircularImageview",
 )
 
@@ -144,12 +144,16 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    fail_if_repin_required = True,
     fetch_sources = True,
+    maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
-        "https://bintray.com/bintray/jcenter",
-        "https://jcenter.bintray.com/",
         "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
 )
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()

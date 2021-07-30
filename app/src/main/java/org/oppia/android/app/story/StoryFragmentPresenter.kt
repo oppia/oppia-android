@@ -31,8 +31,8 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.HtmlParser
-import org.oppia.android.util.parser.TopicHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
@@ -76,7 +76,7 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
-    binding.storyToolbar.setOnClickListener {
+    binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
     }
 
@@ -109,7 +109,8 @@ class StoryFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      isCheckpointingEnabled = false
     )
   }
 

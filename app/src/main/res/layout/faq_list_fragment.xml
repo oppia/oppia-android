@@ -15,7 +15,7 @@
     android:background="@color/generalNavigationBackground"
     android:clipToPadding="false"
     android:overScrollMode="never"
-    android:paddingBottom="80dp"
+    android:paddingBottom="@dimen/faq_list_scroll_padding_bottom"
     android:scrollbars="none"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
       android:background="@color/white"
       android:clipToPadding="false"
       android:nestedScrollingEnabled="false"
-      android:paddingBottom="60dp"
+      android:paddingBottom="@dimen/faq_list_padding_bottom"
       app:list="@{viewModel.faqItemList}" />
   </androidx.core.widget.NestedScrollView>
 </layout>

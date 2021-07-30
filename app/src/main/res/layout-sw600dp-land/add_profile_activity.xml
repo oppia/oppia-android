@@ -183,6 +183,8 @@
               android:layout_marginStart="28dp"
               android:layout_marginTop="32dp"
               android:focusable="true"
+              android:clickable="@{viewModel.validPin ? true : false}"
+              android:importantForAccessibility="yes"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_confirm_pin">
 
               <TextView
@@ -212,9 +214,8 @@
                 android:id="@+id/add_profile_activity_allow_download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="@{viewModel.validPin ? true : false}"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

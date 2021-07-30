@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Checks to ensure the usage of any prohibited file content in the codebase.
+message FileContentChecks {
+  // List of all the file content checks.
+  repeated FileContentCheck file_content_checks = 1;
+}
+
+// Check to ensure if any prohibited file content is used in the codebase.
+message FileContentCheck {
+  // Matches to filename in which to do the content check.
+  string filename_regex = 1;
+
+  // Regex which should not be contained in the file.
+  string prohibited_content_regex = 2;
+
+  // Error to show if any file has content matching the prohibited content regex.
+  string failure_message = 3;
+
+  // Names of all the files which should be exempted for this check.
+  repeated string exempted_file_name = 4;
+}
