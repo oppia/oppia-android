@@ -124,7 +124,7 @@ jobs:
         run: |
           bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 
-      - name: KDoc validity Check
+      - name: KDoc Validation Check
         if: always()
         run: |
           bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb

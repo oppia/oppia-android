@@ -12,12 +12,13 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
+private const val KDOC_CHECK_PASSED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK PASSED"
+private const val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK FAILED"
+
 /** Tests for [KdocValidityCheck]. */
 class KdocValidityCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
-  private val KDOC_CHECK_PASSED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK PASSED"
-  private val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK FAILED"
   private val pathToProtoBinary = "scripts/assets/kdoc_validity_exemptions.pb"
 
   @Rule
