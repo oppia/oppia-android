@@ -8,8 +8,12 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
+import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
@@ -89,6 +93,7 @@ interface ActivityComponent {
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
+  fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
@@ -104,8 +109,11 @@ interface ActivityComponent {
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
+  fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
+  fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
