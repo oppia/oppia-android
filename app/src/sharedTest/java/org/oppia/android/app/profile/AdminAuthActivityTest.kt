@@ -105,9 +105,6 @@ class AdminAuthActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  @Inject
-  lateinit var textInputAction: TextInputAction
-
   private val internalProfileId: Int = 0
 
   @get:Rule

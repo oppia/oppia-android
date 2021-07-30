@@ -123,9 +123,6 @@ class AdminPinActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  @Inject
-  lateinit var textInputAction: TextInputAction
-
   @Before
   fun setUp() {
     Intents.init()

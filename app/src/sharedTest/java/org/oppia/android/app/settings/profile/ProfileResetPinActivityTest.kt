@@ -114,9 +114,6 @@ class ProfileResetPinActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  @Inject
-  lateinit var textInputAction: TextInputAction
-
   private val internalProfileId = 0
 
   @Before

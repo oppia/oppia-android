@@ -108,9 +108,6 @@ class ProfileRenameActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  @Inject
-  lateinit var textInputAction: TextInputAction
-
   @get:Rule
   val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(
     ProfileRenameActivity::class.java,

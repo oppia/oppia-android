@@ -114,9 +114,6 @@ class PinPasswordActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  @Inject
-  lateinit var textInputAction: TextInputAction
-
   private val adminPin = "12345"
   private val adminId = 0
   private val userId = 1
