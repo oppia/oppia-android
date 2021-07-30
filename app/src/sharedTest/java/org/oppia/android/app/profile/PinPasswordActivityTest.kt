@@ -329,7 +329,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(TextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -340,7 +340,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasNoErrorText()))
+        .check(matches(TextInputAction.hasNoErrorText()))
     }
   }
 
@@ -381,7 +381,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(TextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
       onView(
         allOf(
           withId(R.id.reset_pin_input_pin_edit_text),
@@ -392,7 +392,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(textInputAction.hasNoErrorText()))
+        .check(matches(TextInputAction.hasNoErrorText()))
     }
   }
 
@@ -632,7 +632,7 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(TextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -642,7 +642,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasNoErrorText()))
+        .check(matches(TextInputAction.hasNoErrorText()))
     }
   }
 
@@ -669,10 +669,10 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(TextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.admin_settings_incorrect)))
+        .check(matches(TextInputAction.hasErrorText(R.string.admin_settings_incorrect)))
     }
   }
 
@@ -711,7 +711,7 @@ class PinPasswordActivityTest {
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(textInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(matches(TextInputAction.hasErrorText(R.string.add_profile_error_pin_length)))
     }
   }
 
