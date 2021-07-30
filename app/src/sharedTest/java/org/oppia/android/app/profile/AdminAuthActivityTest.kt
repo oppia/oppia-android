@@ -264,7 +264,13 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
     }
   }
 
@@ -289,7 +295,13 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
     }
   }
 
@@ -586,10 +598,22 @@ class AdminAuthActivityTest {
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
     }
   }
 
@@ -614,10 +638,22 @@ class AdminAuthActivityTest {
         pressImeActionButton()
       )
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
-        .check(matches(TextInputAction.hasErrorText(R.string.admin_auth_incorrect)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_incorrect)
+            )
+          )
+        )
     }
   }
 

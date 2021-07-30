@@ -392,7 +392,9 @@ class AdminPinActivityTest {
         .check(
           matches(
             TextInputAction.hasErrorText(
-              R.string.admin_pin_error_pin_confirm_wrong
+              context.resources.getString(
+                R.string.admin_pin_error_pin_confirm_wrong
+              )
             )
           )
         )
@@ -432,7 +434,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           TextInputAction.hasErrorText(
-            R.string.admin_pin_error_pin_confirm_wrong
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -784,7 +786,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           TextInputAction.hasErrorText(
-            R.string.admin_pin_error_pin_confirm_wrong
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -827,7 +829,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           TextInputAction.hasErrorText(
-            R.string.admin_pin_error_pin_confirm_wrong
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -963,7 +965,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           TextInputAction.hasErrorText(
-            R.string.admin_pin_error_pin_confirm_wrong
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -1004,7 +1006,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           TextInputAction.hasErrorText(
-            R.string.admin_pin_error_pin_confirm_wrong
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
