@@ -8,15 +8,16 @@ Note that:
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-# Common deps for each test suite.
-android_library(
-    name = "instrumentation_deps",
+kt_android_library(
+    name = "e2e_test_helper",
     testonly = True,
-    exports = [
+    srcs = [
+        "EndToEndTestHelper.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
         "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_runner",
         "//third_party:androidx_test_uiautomator_uiautomator",
-        "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
     ],
 )
@@ -25,10 +26,15 @@ kt_android_library(
     name = "exploration_player_test_lib",
     testonly = True,
     srcs = [
-        "ExplorationPlayerTest.kt",
+        "player/ExplorationPlayerTest.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":instrumentation_deps",
+        ":e2e_test_helper",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:androidx_test_uiautomator_uiautomator",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
     ],
 )
