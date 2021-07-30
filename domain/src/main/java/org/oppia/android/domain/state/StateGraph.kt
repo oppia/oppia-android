@@ -48,6 +48,7 @@ internal class StateGraph internal constructor(
   ): Hint {
     return Hint.newBuilder()
       .setHintIsRevealed(hintIsRevealed)
+      .setUnrevealedHintIsVisible(!hintIsRevealed)
       .setHintContent(currentState.interaction.getHint(hintIndex).hintContent)
       .setState(currentState)
       .build()
@@ -55,10 +56,12 @@ internal class StateGraph internal constructor(
 
   /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
   internal fun computeSolutionForResult(
-    currentState: State
+    currentState: State,
+    solutionIsRevealed: Boolean
   ): Solution {
     return Solution.newBuilder()
-      .setSolutionIsRevealed(true)
+      .setSolutionIsRevealed(solutionIsRevealed)
+      .setUnrevealedSolutionIsVisible(!solutionIsRevealed)
       .setAnswerIsExclusive(currentState.interaction.solution.answerIsExclusive)
       .setCorrectAnswer(currentState.interaction.solution.correctAnswer)
       .setExplanation(currentState.interaction.solution.explanation).build()

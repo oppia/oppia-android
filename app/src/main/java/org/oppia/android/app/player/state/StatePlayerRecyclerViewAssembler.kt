@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -16,16 +17,19 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerSavedHintState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -89,11 +93,17 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
+
+private const val KEY_HINT_STATE = "KEY_HINT_STATE"
+
+private const val DEFAULT_HINT_SEQUENCE_NUMBER = 0
+private val DEFAULT_EXPLORATION_CHECKPOINT = ExplorationCheckpoint.getDefaultInstance()
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
@@ -193,6 +203,72 @@ class StatePlayerRecyclerViewAssembler private constructor(
     ConceptCardFragment
       .newInstance(skillId)
       .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+  }
+
+  /**
+   * Saves transient state that the assembler depends on.
+   *
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be restored via [restoreState].
+   */
+  fun saveState(
+    bundle: Bundle,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): Bundle {
+
+    val statePlayerSavedHintState = StatePlayerSavedHintState.newBuilder().apply {
+      this.explorationCheckpoint = explorationCheckpoint
+      hintSequenceNumber = hintHandler.hintSequenceNumber
+    }.build()
+    bundle.putProto(KEY_HINT_STATE, statePlayerSavedHintState)
+    return bundle
+  }
+
+  /**
+   * Restores transient state that the assembler depends on.
+   *
+   * This should be used to retain state across configuration changes,
+   * and state saved through this method should be saved via [saveState].
+   */
+  fun restoreState(bundle: Bundle) {
+    val hintState = bundle.getProto(
+      KEY_HINT_STATE,
+      StatePlayerSavedHintState.newBuilder().apply {
+        explorationCheckpoint = DEFAULT_EXPLORATION_CHECKPOINT
+        hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
+      }.build()
+    )
+
+    // Return because there is no checkpoint in the bundle to restore the hintHandler.
+    if (hintState.explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) return
+
+    restoreHintHandlerFromCheckpoint(hintState.explorationCheckpoint)
+    hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
+  }
+
+  fun restoreHintHandlerFromCheckpoint(explorationCheckpoint: ExplorationCheckpoint) {
+    hintHandler.previousHelpIndex =
+      if (explorationCheckpoint.hintIndex != -1) {
+        if (explorationCheckpoint.hintIndex == explorationCheckpoint.indexOfLastRevealedHint) {
+          HelpIndex.newBuilder().setEverythingRevealed(true).build()
+        } else if (explorationCheckpoint.hintIndex >= explorationCheckpoint.hintCount) {
+          if (explorationCheckpoint.isUnrevealedSolutionVisible) {
+            HelpIndex.newBuilder().setShowSolution(true).build()
+          } else {
+            HelpIndex.newBuilder().setEverythingRevealed(true).build()
+          }
+        } else {
+          HelpIndex.newBuilder().setHintIndex(explorationCheckpoint.hintIndex).build()
+        }
+      } else {
+        HelpIndex.getDefaultInstance()
+      }
+
+    hintHandler.apply {
+      isHintVisibleInLatestState = explorationCheckpoint.hintIndex != -1
+      trackedWrongAnswerCount = explorationCheckpoint.pendingUserAnswersCount
+      indexOfLastRevealedHint = explorationCheckpoint.indexOfLastRevealedHint
+    }
   }
 
   /**
@@ -1452,11 +1528,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val delayShowAdditionalHintsMs: Long,
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
-    private var trackedWrongAnswerCount = 0
-    private var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
-    private var hintSequenceNumber = 0
-    private var isHintVisibleInLatestState = false
-    private var indexOfLastRevealedHint: Int = -1
+    var trackedWrongAnswerCount = 0
+    var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
+    var hintSequenceNumber = 0
+    var isHintVisibleInLatestState = false
+    var indexOfLastRevealedHint: Int = -1
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
@@ -1489,11 +1565,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
         return
       }
 
-      // Restore the variables of HintHandler because these values will be lost in case of
-      // configuration changes or if the exploration has resumed.
-      if (!isHintVisibleInLatestState)
-        restoreHintHandler(state)
-
       // If hint was visible in the current state show all previous hints coming back to the current
       // state. If any hint was revealed and user move between current and completed states, then
       // show those revealed hints back by making icon visible else use the previous help index.
@@ -1513,15 +1584,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
 
+      indexOfLastRevealedHint = state.interaction.hintList.indexOfLast { hint ->
+        hint.hintIsRevealed
+      }
+      val indexOfVisibleUnrevealedHint = state.interaction.hintList.indexOfLast { hint ->
+        hint.unrevealedHintIsVisible
+      }
+
       // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
       // doesn't answer after some duration). Note that if there's already a timer to show a hint,
       // it will be reset for each subsequent answer.
       val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
       val isFirstHint = previousHelpIndex.indexTypeCase == INDEXTYPE_NOT_SET
       val wrongAnswerCount = pendingState.wrongAnswerList.size
-      indexOfLastRevealedHint = state.interaction.hintList.indexOfLast { hint ->
-        hint.hintIsRevealed
-      }
 
       if (wrongAnswerCount == trackedWrongAnswerCount) {
         // If no answers have been submitted, schedule a task to automatically help after a fixed

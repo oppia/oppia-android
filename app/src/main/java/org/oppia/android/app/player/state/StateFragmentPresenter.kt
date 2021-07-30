@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -75,6 +77,9 @@ class StateFragmentPresenter @Inject constructor(
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
   private val hasConversationView = true
 
+  private var hasExplorationJustLoaded: Boolean = false
+  private var explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+
   private lateinit var currentState: State
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
@@ -100,12 +105,14 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    savedInstanceState: Bundle?
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
+    hasExplorationJustLoaded = savedInstanceState != null
 
     binding = StateFragmentBinding.inflate(
       inflater,
@@ -154,9 +161,17 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
 
+    savedInstanceState?.let {
+      recyclerViewAssembler.restoreState(savedInstanceState)
+    }
+
     subscribeToCurrentState()
     markExplorationAsRecentlyPlayed()
     return binding.root
+  }
+
+  fun handleOnSaveInstanceState(bundle: Bundle) {
+    recyclerViewAssembler.saveState(bundle, explorationCheckpoint)
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -204,14 +219,18 @@ class StateFragmentPresenter @Inject constructor(
   fun onHintAvailable(
     helpIndex: HelpIndex,
     indexOfLastRevealedHint: Int,
-    isSolutionRevealed: Boolean
+    allHintRevealed: Boolean
   ) {
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
         if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+          // Update the ViewModel with the index on new un-revealed hint.
           viewModel.newAvailableHintIndex = helpIndex.hintIndex
+          unrevealedHintIsVisible(saveUserChoice = true, hintIndex = helpIndex.hintIndex)
         } else {
+          // Update the ViewModel with the index of the last revealed hint.
           viewModel.newAvailableHintIndex = indexOfLastRevealedHint
+          unrevealedSolutionIsVisible()
         }
         viewModel.allHintsExhausted =
           helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
@@ -219,7 +238,8 @@ class StateFragmentPresenter @Inject constructor(
         viewModel.setHintBulbVisibility(true)
       }
       HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        viewModel.allHintsExhausted = isSolutionRevealed
+        viewModel.allHintsExhausted = allHintRevealed
+        // Update the ViewModel with the index of the last revealed hint.
         viewModel.newAvailableHintIndex = indexOfLastRevealedHint
         viewModel.setHintOpenedAndUnRevealedVisibility(false)
         viewModel.setHintBulbVisibility(true)
@@ -289,6 +309,23 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState))
   }
 
+
+  private fun unrevealedSolutionIsVisible() {
+    subscribeToUnRevealedSolution(
+      explorationProgressController.submitUnrevealedSolutionIsVisible(currentState)
+    )
+  }
+
+  private fun unrevealedHintIsVisible(saveUserChoice: Boolean, hintIndex: Int) {
+    subscribeToUnrevealedHint(
+      explorationProgressController.submitUnrevealedHintIsVisible(
+        currentState,
+        saveUserChoice,
+        hintIndex
+      )
+    )
+  }
+
   private fun getStateViewModel(): StateViewModel {
     return viewModelProvider.getForFragment(fragment, StateViewModel::class.java)
   }
@@ -330,6 +367,12 @@ class StateFragmentPresenter @Inject constructor(
 
     val ephemeralState = result.getOrThrow()
     explorationCheckpointState = ephemeralState.checkpointState
+    explorationCheckpoint = ephemeralState.explorationCheckpoint
+
+    if (hasExplorationJustLoaded) {
+      recyclerViewAssembler.restoreHintHandlerFromCheckpoint(explorationCheckpoint)
+    }
+
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
       viewModel.isSplitView.set(true)
@@ -366,6 +409,24 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
+   * This function listens to the result of UnrevealedHintIsVisible.
+   * Whenever a un-revealed hint is visible, this function will wait for the response from that
+   * function and based on which we can move to next state.
+   */
+  private fun subscribeToUnrevealedHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getUnrevealedHintIsVisible(hintResultLiveData)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the un-revealed hint is visible, show dot and radar.
+        if (result.unrevealedHintIsVisible) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        }
+      }
+    )
+  }
+
+  /**
    * This function listens to the result of RevealHint.
    * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
    * this function will wait for the response from that function and based on which we can move to
@@ -379,6 +440,27 @@ class StateFragmentPresenter @Inject constructor(
         // If the hint was revealed remove dot and radar.
         if (result.hintIsRevealed) {
           viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
+  }
+
+  /**
+   * This function listens to the result of UnrevealedSolutionIsVisible.
+   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
+   * this function will wait for the response from that function and based on which we can move to
+   * next state.
+   */
+  private fun subscribeToUnRevealedSolution(
+    solutionResultLiveData: LiveData<AsyncResult<Solution>>
+  ) {
+    val solutionLiveData = getUnrevealedSolutionIsVisible(solutionResultLiveData)
+    solutionLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the hint was revealed remove dot and radar.
+        if (result.unrevealedSolutionIsVisible) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
         }
       }
     )
@@ -440,11 +522,19 @@ class StateFragmentPresenter @Inject constructor(
     return Transformations.map(hint, ::processSolution)
   }
 
+  /** Helper for [subscribeToSolution]. */
+  private fun getUnrevealedSolutionIsVisible(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
+    return Transformations.map(hint, ::processUnrevealedSolution)
+  }
+
   /** Helper for [subscribeToHint]. */
   private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
     return Transformations.map(hint, ::processHint)
   }
-
+  /** Helper for [unrevealedHintIsVisible]. */
+  private fun getUnrevealedHintIsVisible(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
+    return Transformations.map(hint, ::processUnrevealedHint)
+  }
   /** Helper for subscribeToAnswerOutcome. */
   private fun getAnswerOutcome(
     answerOutcome: LiveData<AsyncResult<AnswerOutcome>>
@@ -466,6 +556,18 @@ class StateFragmentPresenter @Inject constructor(
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
+  /** Helper for [subscribeToUnrevealedHint]. */
+  private fun processUnrevealedHint(hintResult: AsyncResult<Hint>): Hint {
+    if (hintResult.isFailure()) {
+      oppiaLogger.e(
+        "StateFragment",
+        "Failed to show new hint",
+        hintResult.getErrorOrNull()!!
+      )
+    }
+    return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+
   /** Helper for [subscribeToHint]. */
   private fun processHint(hintResult: AsyncResult<Hint>): Hint {
     if (hintResult.isFailure()) {
@@ -476,6 +578,18 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
     return hintResult.getOrDefault(Hint.getDefaultInstance())
+  }
+
+  /** Helper for [subscribeToUnRevealedSolution]. */
+  private fun processUnrevealedSolution(solutionResult: AsyncResult<Solution>): Solution {
+    if (solutionResult.isFailure()) {
+      oppiaLogger.e(
+        "StateFragment",
+        "Failed to show new solution",
+        solutionResult.getErrorOrNull()!!
+      )
+    }
+    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   /** Helper for [subscribeToSolution]. */
