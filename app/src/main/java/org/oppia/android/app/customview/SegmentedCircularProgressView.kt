@@ -68,28 +68,16 @@ class SegmentedCircularProgressView : View {
     calculateSweepAngle()
 
     chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    chapterFinishedArcPaint.style = Paint.Style.STROKE
-    chapterFinishedArcPaint.strokeCap = Paint.Cap.ROUND
-    chapterFinishedArcPaint.strokeWidth = strokeWidth
-    chapterFinishedArcPaint.color =
-      ContextCompat.getColor(context, R.color.oppiaProgressChapterFinished)
+    setupArcPaint(chapterFinishedArcPaint, R.color.oppiaProgressChapterFinished)
 
     chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    chapterInProgressArcPaint.style = Paint.Style.STROKE
-    chapterInProgressArcPaint.strokeCap = Paint.Cap.ROUND
-    chapterInProgressArcPaint.strokeWidth = strokeWidth
-    chapterInProgressArcPaint.color =
-      ContextCompat.getColor(context, R.color.oppiaProgressChapterInProgress)
+    setupArcPaint(chapterInProgressArcPaint, R.color.oppiaProgressChapterInProgress)
 
     chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    chapterNotStartedArcPaint.style = Paint.Style.STROKE
-    chapterNotStartedArcPaint.strokeCap = Paint.Cap.ROUND
-    chapterNotStartedArcPaint.strokeWidth = strokeWidth
     if (chaptersFinished != 0) {
-      chapterNotStartedArcPaint.color =
-        ContextCompat.getColor(context, R.color.oppiaProgressChapterNotFinished)
+      setupArcPaint(chapterNotStartedArcPaint, R.color.oppiaProgressChapterNotFinished)
     } else {
-      chapterNotStartedArcPaint.color = ContextCompat.getColor(context, R.color.grey_shade_20)
+      setupArcPaint(chapterNotStartedArcPaint, R.color.grey_shade_20)
     }
   }
 
@@ -180,5 +168,14 @@ class SegmentedCircularProgressView : View {
       dp.toFloat(),
       resources.displayMetrics
     )
+  }
+
+  private fun setupArcPaint(arcPaint: Paint, color: Int) {
+    arcPaint.apply {
+      style = Paint.Style.STROKE
+      strokeCap = Paint.Cap.ROUND
+      strokeWidth = strokeWidth
+      this.color = ContextCompat.getColor(context, color)
+    }
   }
 }

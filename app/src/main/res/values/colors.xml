@@ -29,7 +29,7 @@
   <color name="oppiaSolidBlue">#4DA5D3EC</color>
   <color name="oppiaStrokeBlack">#CC333333</color>
   <color name="oppiaProgressChapterFinished">#E76F51</color>
-  <color name="oppiaProgressChapterInProgress">#E7ac9B</color>
+  <color name="oppiaProgressChapterInProgress">#E7AC9B</color>
   <color name="oppiaProgressChapterNotFinished">#999999</color>
   <color name="oppiaAdminAuthSecondaryText">#555555</color>
   <color name="oppiaOnboardingDivider">#707070</color>
