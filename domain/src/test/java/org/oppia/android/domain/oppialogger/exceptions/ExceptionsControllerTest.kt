@@ -42,7 +42,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.networking.ProdNetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -85,9 +84,6 @@ class ExceptionsControllerTest {
 
   @Before
   fun setUp() {
-    debugNetworkConnectionUtil = DebugNetworkConnectionUtil(
-      ProdNetworkConnectionUtil(ApplicationProvider.getApplicationContext())
-    )
     setUpTestApplicationComponent()
   }
 

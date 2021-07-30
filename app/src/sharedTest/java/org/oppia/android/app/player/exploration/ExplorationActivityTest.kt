@@ -183,8 +183,6 @@ class ExplorationActivityTest {
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
-        debugNetworkConnectionUtil =
-          activity.networkConnectionUtil as DebugNetworkConnectionUtil
         explorationDataController = activity.explorationDataController
         explorationDataController.startPlayingExploration(
           internalProfileId,

@@ -5,7 +5,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug builds.
+ * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug
+ * builds and tests.
  */
 @Singleton
 class DebugNetworkConnectionUtil @Inject constructor(
@@ -19,15 +20,14 @@ class DebugNetworkConnectionUtil @Inject constructor(
     if (actualConnectionStatus == ConnectionStatus.NONE) {
       forcedConnectionStatus = null
     }
-    forcedConnectionStatus?.let {
-      return it
-    }
-    return actualConnectionStatus
+    return forcedConnectionStatus ?: actualConnectionStatus
   }
 
   /**
    * Forces [connectionStatus] as the current connection status of the device and returns a
-   * [Boolean] indicating result.
+   * [Boolean] indicating whether the operation was successful or not. The [Boolean] will be false
+   * when we try to force an impossible situation, i.e., forcing [CELLULAR] or [WIFI] network when
+   * there is no actual network connection. In all other cases the [Boolean] will be true.
    */
   fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
     if (prodNetworkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
