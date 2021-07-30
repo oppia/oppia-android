@@ -5,6 +5,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load(
     "//scripts:script_assets.bzl",
+    "generate_accessibility_label_assets_list_from_text_protos",
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
     "generate_test_file_assets_list_from_text_protos",
@@ -122,4 +123,19 @@ kt_jvm_binary(
     data = MAVEN_ASSETS,
     main_class = "org.oppia.android.scripts.ci.VerifyMavenDependenciesListIsUpToDateKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:verify_maven_dependencies_list_is_up_to_date_lib"],
+)
+
+ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
+    name = "accessibility_label_exemption_assets",
+    accessibility_label_exemptions_name = ["accessibility_label_exemptions"],
+)
+
+kt_jvm_binary(
+    name = "accessibility_label_check",
+    testonly = True,
+    data = ACCESSIBILITY_LABEL_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.label.AccessibilityLabelCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/label:accessibility_label_check_lib",
+    ],
 )

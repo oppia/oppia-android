@@ -119,6 +119,11 @@ jobs:
         run: |
           bazel run //scripts:test_file_check -- $(pwd)
 
+      - name: Accessibility label Check
+        if: always()
+        run: |
+          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
+
   third_party_dependencies_check:
     name: Maven Dependncies Checks
     runs-on: ubuntu-18.04
