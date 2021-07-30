@@ -4,6 +4,8 @@ Note that:
  - All the android_binaries are named similar to the respective class name of the test suite.
 """
 
+load(":test.bzl", "END_TO_END_TEST_SUITES")
+
 [android_binary(
     name = testclass + "Binary",
     testonly = True,
