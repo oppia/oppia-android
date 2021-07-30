@@ -112,7 +112,7 @@ class StateFragmentPresenter @Inject constructor(
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
-    hasExplorationJustLoaded = savedInstanceState != null
+    hasExplorationJustLoaded = savedInstanceState == null
 
     binding = StateFragmentBinding.inflate(
       inflater,

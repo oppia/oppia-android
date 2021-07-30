@@ -1,6 +1,5 @@
 package org.oppia.android.domain.state
 
-import android.util.Log
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
@@ -257,7 +256,7 @@ internal class StateDeck internal constructor(
     explorationTitle: String,
     timestamp: Long
   ): ExplorationCheckpoint {
-    val t = ExplorationCheckpoint.newBuilder().apply {
+    return ExplorationCheckpoint.newBuilder().apply {
       addAllCompletedStatesInCheckpoint(
         previousStates.map { state ->
           CompletedStateInCheckpoint.newBuilder().apply {
@@ -285,14 +284,6 @@ internal class StateDeck internal constructor(
       this.explorationTitle = explorationTitle
       timestampOfFirstCheckpoint = timestamp
     }.build()
-    Log.d(
-      "11111",
-      "createExplorationCheckpoint: hintCount = ${pendingTopState.interaction.hintCount} " +
-        "indexOfLastRevealedHint = $ $revealedHintsAndSolutionIndex " +
-        "isUnrevealedHintVisible = $isUnrevealedHintVisible " +
-        "isUnrevealedSolutionvisble = $isUnrevealedSolutionVisible "
-    )
-    return t
   }
 
   private fun getCurrentPendingState(): EphemeralState {
