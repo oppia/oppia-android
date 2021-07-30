@@ -606,13 +606,20 @@ class ViewEventLogsFragmentTest {
       ExplorationStorageModule::class
     ]
   )
+  /** [ApplicationComponent] for [ViewEventLogsFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [ViewEventLogsFragmentTest] providing the required
+     * dagger modules.
+     */
     fun inject(viewEventLogsFragmentTest: ViewEventLogsFragmentTest)
   }
 
+  /** [Application] class for [ViewEventLogsFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerViewEventLogsFragmentTest_TestApplicationComponent.builder()
@@ -625,6 +632,7 @@ class ViewEventLogsFragmentTest {
       FirebaseApp.initializeApp(applicationContext)
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(viewEventLogsFragmentTest: ViewEventLogsFragmentTest) {
       component.inject(viewEventLogsFragmentTest)
     }
