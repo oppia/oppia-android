@@ -7,6 +7,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "GenerateMavenDependenciesListTest",
+    size = "large",
     srcs = ["GenerateMavenDependenciesListTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
