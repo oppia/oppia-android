@@ -1,11 +1,14 @@
 """
-This library contains all android_binary targets to each test suite in instrumentation module.
+This library contains all android_binary and android_instrumentation_test targets to each
+test suite in instrumentation module.
 Note that:
  - All the android_binaries are named similar to the respective class name of the test suite.
 """
 
 load(":test.bzl", "END_TO_END_TEST_SUITES")
 
+# android_binary wrapper for each test suite under instrumentation module.
+# Note that: Target name is class name of the test suite ending with "Binary".
 [android_binary(
     name = testclass + "Binary",
     testonly = True,
@@ -15,19 +18,12 @@ load(":test.bzl", "END_TO_END_TEST_SUITES")
     deps = [library],
 ) for testclass, library in END_TO_END_TEST_SUITES.items()]
 
+# android_instrumentation_test wrapper for each test suite under instrumentation module.
+# Note that:
+# - Target name is the class name of the test suite.
+# - The test doesn't run to completion #3617 for details.
 [android_instrumentation_test(
     name = testclass,
     target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
     test_app = ":" + testclass + "Binary",
 ) for testclass, library in END_TO_END_TEST_SUITES.items()]
-
-android_binary(
-    name = "ExplorationPlayerTest",
-    testonly = True,
-    custom_package = "org.oppia.android",
-    instruments = "//:oppia_test",
-    manifest = "src/AndroidManifest.xml",
-    deps = [
-        "//instrumentation/src/javatest/org/oppia/android/instrumentation:exploration_player_test_lib",
-    ],
-)
