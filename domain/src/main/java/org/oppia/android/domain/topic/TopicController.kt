@@ -341,7 +341,6 @@ class TopicController @Inject constructor(
     }
   }
 
-  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
