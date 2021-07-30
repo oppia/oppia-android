@@ -473,7 +473,7 @@ class TopicController @Inject constructor(
 
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Int {
     // TODO(#169): Compute this based on protos & the combined topic package.
-    // TODO(#386): Incorporate image files in this computation.
+    // TODO(#169): Incorporate image files in this computation.
     return constituentFiles.map { file ->
       if (loadLessonProtosFromAssets) {
         assetRepository.getLocalAssetProtoSize(file)
