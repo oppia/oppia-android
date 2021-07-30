@@ -11,9 +11,10 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
-/** Worker class that fetches anc cache the latest platform parameters from the remote service. */
+/** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -27,6 +28,8 @@ class PlatformParameterSyncUpWorker private constructor(
     const val WORKER_TYPE_KEY = "worker_type_key"
     const val TAG = "PlatformParameterWorker.tag"
     const val PLATFORM_PARAMETER_WORKER = "platform_parameter_worker"
+    const val EXCEPTION_MSG =
+      "Platform Parameter Value has incorrect data type, ie. other than String/Int/Boolean"
   }
 
   override suspend fun doWork(): Result {
@@ -45,7 +48,7 @@ class PlatformParameterSyncUpWorker private constructor(
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
         is Boolean -> platformParameter.boolean = value
-        else -> continue
+        else -> throw IllegalArgumentException(EXCEPTION_MSG)
       }
       platformParameterList.add(platformParameter.build())
     }

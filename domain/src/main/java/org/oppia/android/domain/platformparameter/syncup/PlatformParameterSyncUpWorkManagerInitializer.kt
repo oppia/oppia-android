@@ -19,36 +19,36 @@ import javax.inject.Singleton
  */
 @Singleton
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
-  private val context: Context,
+  private val context: Context
 ) : ApplicationStartupListener {
 
-  private val OPPIA_PLATFORM_PARAMETER_WORK = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
+  private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
 
   private val platformParameterSyncUpWorkerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
     .setRequiresBatteryNotLow(true)
     .build()
 
-  private val workerTypeForSyncingUpParameters: Data = Data.Builder()
+  private val workerTypeForSyncingPlatformParameters: Data = Data.Builder()
     .putString(
       PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
       PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
     )
     .build()
 
-  private val workRequestForSyncingUpPlatformParameters = PeriodicWorkRequest
+  private val workRequestForSyncingPlatformParameters = PeriodicWorkRequest
     .Builder(PlatformParameterSyncUpWorker::class.java, 12, TimeUnit.HOURS)
     .addTag(PlatformParameterSyncUpWorker.TAG)
-    .setInputData(workerTypeForSyncingUpParameters)
+    .setInputData(workerTypeForSyncingPlatformParameters)
     .setConstraints(platformParameterSyncUpWorkerConstraints)
     .build()
 
   override fun onCreate() {
     val workManager = WorkManager.getInstance(context)
     workManager.enqueueUniquePeriodicWork(
-      OPPIA_PLATFORM_PARAMETER_WORK,
+      OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME,
       ExistingPeriodicWorkPolicy.KEEP,
-      workRequestForSyncingUpPlatformParameters
+      workRequestForSyncingPlatformParameters
     )
   }
 
@@ -56,8 +56,8 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   fun getSyncUpWorkerConstraints(): Constraints = platformParameterSyncUpWorkerConstraints
 
   /** Returns the [UUID] of the work request that is enqueued to sync-up platform parameters. */
-  fun getSyncUpWorkRequestId(): UUID = workRequestForSyncingUpPlatformParameters.id
+  fun getSyncUpWorkRequestId(): UUID = workRequestForSyncingPlatformParameters.id
 
   /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
-  fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingUpParameters
+  fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingPlatformParameters
 }
