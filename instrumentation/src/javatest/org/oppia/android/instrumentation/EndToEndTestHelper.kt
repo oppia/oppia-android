@@ -8,7 +8,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import org.junit.Assert
 
-/** This object contains common operations used for end-to-end tests */
+/** This object contains common operations used for end-to-end tests. */
 object EndToEndTestHelper {
 
   private val OPPIA_PACKAGE = "org.oppia.android"
