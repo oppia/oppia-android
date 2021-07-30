@@ -594,7 +594,7 @@ class TopicLessonsFragmentTest {
         position = itemPosition,
         targetViewId = R.id.chapter_play_state_icon
       )
-    ).check(matches(withDrawable(R.drawable.ic_arrow_right_grey_24dp)))
+    ).check(matches(withDrawable(R.drawable.ic_pending_24dp)))
   }
 
   private fun verifyChapterCompletedIconIsDisplayed(itemPosition: Int) {
