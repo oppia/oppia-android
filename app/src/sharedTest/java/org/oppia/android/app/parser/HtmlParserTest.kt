@@ -286,19 +286,11 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val textView = activityRule.scenario.runWithActivity {
-      it.getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_LTR)
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
-        textView
-      )
-      return@runWithActivity textView
-    }
-    assertThat(textView.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_LTR
+    )
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test
@@ -313,7 +305,7 @@ class HtmlParserTest {
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_RTL
     )
-    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
   }
 
   @Test
@@ -325,11 +317,11 @@ class HtmlParserTest {
       imageCenterAlign = true
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
-    val textViewLtr = arrangeTextViewWithLayoutDirection(
+    val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_LTR
     )
-    assertThat(textViewLtr.layoutDirection).isEqualTo(View.LAYOUT_DIRECTION_LTR)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test
@@ -576,7 +568,7 @@ class HtmlParserTest {
   ): TextView {
     return activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      ViewCompat.setLayoutDirection(textView,layoutDirection)
+      ViewCompat.setLayoutDirection(textView, layoutDirection)
       htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
