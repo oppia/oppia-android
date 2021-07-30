@@ -65,7 +65,7 @@ android_binary(
     ],
 )
 
-# Used for end to end tests
+# Used for end-to-end tests
 android_binary(
     name = "oppia_test",
     testonly = True,
@@ -77,7 +77,7 @@ android_binary(
         "minSdkVersion": "19",
         "targetSdkVersion": "29",
         "versionCode": "0",
-        "versionName": "0.1-alpha",
+        "versionName": "0.1-test",
     },
     multidex = "native",
     visibility = ["//:oppia_testing_visibility"],

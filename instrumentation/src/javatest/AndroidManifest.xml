@@ -3,10 +3,9 @@
   package="org.oppia.android.app.instrumentation">
   <uses-sdk
     android:minSdkVersion="19"
-    android:targetSdkVersion="28" />
+    android:targetSdkVersion="29" />
   <instrumentation
     android:targetPackage="org.oppia.android"
     android:name="androidx.test.runner.AndroidJUnitRunner" />
-  <application
-    android:label="OppiaTest" />
+  <application android:label="OppiaTest" />
 </manifest>

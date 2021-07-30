@@ -4,6 +4,21 @@ Note that:
  - All the android_binaries are named similar to the respective class name of the test suite.
 """
 
+[android_binary(
+    name = testclass + "Binary",
+    testonly = True,
+    custom_package = "org.oppia.android",
+    instruments = "//:oppia_test",
+    manifest = "src/javatest/AndroidManifest.xml",
+    deps = [library],
+) for testclass, library in END_TO_END_TEST_SUITES.items()]
+
+[android_instrumentation_test(
+    name = testclass,
+    target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
+    test_app = ":" + testclass + "Binary",
+) for testclass, library in END_TO_END_TEST_SUITES.items()]
+
 android_binary(
     name = "ExplorationPlayerTest",
     testonly = True,
