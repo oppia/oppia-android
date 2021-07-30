@@ -37,7 +37,7 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = viewModel
     }
-    binding.licenseTextTextview.movementMethod = LinkMovementMethod.getInstance()
+    binding.copyrightLicenseTextView.movementMethod = LinkMovementMethod.getInstance()
 
     return binding.root
   }

@@ -13,7 +13,7 @@
     android:layout_height="match_parent">
 
     <TextView
-      android:id="@+id/license_text_textview"
+      android:id="@+id/copyright_license_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:autoLink="web"
