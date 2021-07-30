@@ -20,16 +20,15 @@ class NetworkConnectionTestUtil {
     fun setNetworkInfo(context: Context, status: Int, networkState: NetworkInfo.State) {
       shadowOf(
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-      )
-        .setActiveNetworkInfo(
-          ShadowNetworkInfo.newInstance(
-            /* detailedState= */ null,
-            /* type= */ status,
-            /* subType= */ 0,
-            /* isAvailable= */ true,
-            /* state= */ networkState
-          )
+      ).setActiveNetworkInfo(
+        ShadowNetworkInfo.newInstance(
+          /* detailedState= */ null,
+          /* type= */ status,
+          /* subType= */ 0,
+          /* isAvailable= */ true,
+          /* state= */ networkState
         )
+      )
     }
   }
 }
