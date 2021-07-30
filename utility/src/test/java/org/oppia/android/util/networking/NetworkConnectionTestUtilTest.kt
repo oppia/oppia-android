@@ -40,7 +40,7 @@ class NetworkConnectionTestUtilTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var networkConnectionUtil: ProdNetworkConnectionUtil
+  lateinit var networkConnectionUtilProdImpl: NetworkConnectionUtilProdImpl
 
   @Before
   fun setUp() {
@@ -60,7 +60,7 @@ class NetworkConnectionTestUtilTest {
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
+    assertThat(networkConnectionUtilProdImpl.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
 
   @Test
@@ -69,7 +69,7 @@ class NetworkConnectionTestUtilTest {
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+    assertThat(networkConnectionUtilProdImpl.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -78,7 +78,7 @@ class NetworkConnectionTestUtilTest {
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
+    assertThat(networkConnectionUtilProdImpl.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
 
   @Test
@@ -87,7 +87,7 @@ class NetworkConnectionTestUtilTest {
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+    assertThat(networkConnectionUtilProdImpl.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   @Test
@@ -96,7 +96,7 @@ class NetworkConnectionTestUtilTest {
       status = NO_CONNECTION,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+    assertThat(networkConnectionUtilProdImpl.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
   private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {

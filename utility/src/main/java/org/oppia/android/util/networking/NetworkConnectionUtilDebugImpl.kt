@@ -9,14 +9,14 @@ import javax.inject.Singleton
  * builds and tests.
  */
 @Singleton
-class DebugNetworkConnectionUtil @Inject constructor(
-  private val prodNetworkConnectionUtil: ProdNetworkConnectionUtil
+class NetworkConnectionUtilDebugImpl @Inject constructor(
+  private val networkConnectionUtilProdImpl: NetworkConnectionUtilProdImpl
 ) : NetworkConnectionUtil {
 
   private var forcedConnectionStatus: ConnectionStatus? = null
 
   override fun getCurrentConnectionStatus(): ConnectionStatus {
-    val actualConnectionStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    val actualConnectionStatus = networkConnectionUtilProdImpl.getCurrentConnectionStatus()
     if (actualConnectionStatus == ConnectionStatus.NONE) {
       forcedConnectionStatus = null
     }
@@ -30,7 +30,7 @@ class DebugNetworkConnectionUtil @Inject constructor(
    * there is no actual network connection. In all other cases the [Boolean] will be true.
    */
   fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
-    if (prodNetworkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
+    if (networkConnectionUtilProdImpl.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
       (connectionStatus == ConnectionStatus.CELLULAR || connectionStatus == ConnectionStatus.LOCAL)
     ) {
       forcedConnectionStatus = null

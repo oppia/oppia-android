@@ -8,7 +8,7 @@ import javax.inject.Inject
 /**
  * [NetworkConnectionUtil] which gets the current [ConnectionStatus] of the device in production builds.
  */
-class ProdNetworkConnectionUtil @Inject constructor(
+class NetworkConnectionUtilProdImpl @Inject constructor(
   private val context: Context
 ) : NetworkConnectionUtil {
 

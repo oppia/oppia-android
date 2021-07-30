@@ -7,5 +7,5 @@ import dagger.Module
 @Module
 interface NetworkConnectionUtilProdModule {
   @Binds
-  fun bindsNetworkConnectionUtil(impl: ProdNetworkConnectionUtil): NetworkConnectionUtil
+  fun bindsNetworkConnectionUtil(impl: NetworkConnectionUtilProdImpl): NetworkConnectionUtil
 }

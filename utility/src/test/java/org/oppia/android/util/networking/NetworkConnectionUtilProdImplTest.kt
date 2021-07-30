@@ -28,11 +28,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ProdNetworkConnectionUtil]. */
+/** Tests for [NetworkConnectionUtilProdImpl]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class ProdNetworkConnectionUtilTest {
+class NetworkConnectionUtilProdImplTest {
 
   private val NO_CONNECTION = -1
 
@@ -48,7 +48,7 @@ class ProdNetworkConnectionUtilTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerProdNetworkConnectionUtilTest_TestApplicationComponent.builder()
+    DaggerNetworkConnectionUtilProdImplTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -189,6 +189,6 @@ class ProdNetworkConnectionUtilTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkConnectionUtilProdImplTest: ProdNetworkConnectionUtilTest)
+    fun inject(networkConnectionUtilProdImplTest: NetworkConnectionUtilProdImplTest)
   }
 }
