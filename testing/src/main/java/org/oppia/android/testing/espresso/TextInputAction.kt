@@ -4,12 +4,11 @@ import com.google.android.material.textfield.TextInputLayout
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import javax.inject.Inject
 
 /**
  * Action for matching error text and performing other actions on TextInputLayout in a test infrastructure-specific way.
  */
-class TextInputAction @Inject constructor() {
+class TextInputAction {
 
   companion object {
     /**
