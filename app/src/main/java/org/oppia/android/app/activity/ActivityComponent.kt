@@ -8,6 +8,7 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
+import org.oppia.android.app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -99,6 +100,7 @@ interface ActivityComponent {
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
+  fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
