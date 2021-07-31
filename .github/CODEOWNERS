@@ -195,6 +195,14 @@ NOTICE @BenHenning
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
 
+
+#####################################################################################
+#                                  instrumentation                                  #
+#####################################################################################
+
+# UiAutomator configuration files ownership.
+/instrumentation/src/javatest/**/*.kt @anandwana001 @BenHenning
+
 #####################################################################################
 #                                global overrides                                   #
 #####################################################################################
