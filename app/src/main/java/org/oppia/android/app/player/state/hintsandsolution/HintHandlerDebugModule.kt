@@ -7,5 +7,5 @@ import dagger.Module
 @Module
 interface HintHandlerDebugModule {
   @Binds
-  fun bindsHintHandler(debugHintHandler: DebugHintHandler): HintHandler
+  fun bindsHintHandler(hintHandlerDebugImpl: HintHandlerDebugImpl): HintHandler
 }

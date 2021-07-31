@@ -7,5 +7,5 @@ import dagger.Module
 @Module
 interface HintHandlerProdModule {
   @Binds
-  fun bindsHintHandler(prodHintHandler: ProdHintHandler): HintHandler
+  fun bindsHintHandler(hintHandlerProdImpl: HintHandlerProdImpl): HintHandler
 }

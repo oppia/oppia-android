@@ -46,7 +46,7 @@ import javax.inject.Inject
  * they will reach a terminal state for hints and no additional hints or solutions will be made
  * available.
  */
-class ProdHintHandler @Inject constructor(
+class HintHandlerProdImpl @Inject constructor(
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val fragment: Fragment,
   @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,

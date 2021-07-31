@@ -10,25 +10,25 @@ import javax.inject.Inject
  * [HintHandler] for showing all hints and solution based on availability, bypassing the wrong
  * answer check and scheduling of hints, if 'Show all hints and solution' functionality is enabled
  * in the 'Developer Options Menu'. If this functionality is disabled then it will fall back to the
- * [ProdHintHandler] and provide its functionalities.
+ * [HintHandlerProdImpl] and provide its functionalities.
  */
-class DebugHintHandler @Inject constructor(
-  private val prodHintHandler: ProdHintHandler,
+class HintHandlerDebugImpl @Inject constructor(
+  private val hintHandlerProdImpl: HintHandlerProdImpl,
   private val explorationProgressController: ExplorationProgressController,
   private val showAllHintsAndSolutionChecker: ShowAllHintsAndSolutionChecker
 ) : HintHandler {
 
   override fun reset() {
-    prodHintHandler.reset()
+    hintHandlerProdImpl.reset()
   }
 
   override fun hideHint() {
-    prodHintHandler.hideHint()
+    hintHandlerProdImpl.hideHint()
   }
 
   override fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
     if (showAllHintsAndSolutionChecker.getShowAllHintsAndSolution()) showAllHintsAndSolution(state)
-    else prodHintHandler.maybeScheduleShowHint(state, pendingState)
+    else hintHandlerProdImpl.maybeScheduleShowHint(state, pendingState)
   }
 
   /** Shows all hints and solution. */
@@ -38,11 +38,11 @@ class DebugHintHandler @Inject constructor(
       return
     }
 
-    prodHintHandler.checkForHintsToBeRevealed(state)
+    hintHandlerProdImpl.checkForHintsToBeRevealed(state)
 
     state.interaction.hintList.forEach { _ ->
-      val nextUnrevealedHintIndex = prodHintHandler.getNextHintIndexToReveal(state)
-      prodHintHandler.showHintImmediately(nextUnrevealedHintIndex)
+      val nextUnrevealedHintIndex = hintHandlerProdImpl.getNextHintIndexToReveal(state)
+      hintHandlerProdImpl.showHintImmediately(nextUnrevealedHintIndex)
       explorationProgressController.submitHintIsRevealed(
         state,
         true,
