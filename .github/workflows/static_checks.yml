@@ -148,4 +148,4 @@ jobs:
       - name: Maven Dependencies Update Check
         if: always()
         run: |
-          bazel run //scripts:verify_maven_dependencies_list_is_up_to_date -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
+          bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
