@@ -112,9 +112,6 @@ class HtmlParserTest {
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
   lateinit var context: Context
 
   @Inject
@@ -141,8 +138,7 @@ class HtmlParserTest {
 
   @After
   fun tearDown() {
-    // Ensure lingering tasks are completed.
-    testCoroutineDispatchers.advanceUntilIdle()
+//    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -317,6 +313,7 @@ class HtmlParserTest {
       imageCenterAlign = true
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
+    
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_LTR
@@ -576,7 +573,6 @@ class HtmlParserTest {
           "smaller than another<br></li></ul>",
         textView
       )
-      testCoroutineDispatchers.runCurrent()
       return@runWithActivity textView
     }
   }
