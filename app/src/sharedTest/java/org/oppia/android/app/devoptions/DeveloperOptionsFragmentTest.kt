@@ -38,6 +38,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
@@ -335,6 +336,31 @@ class DeveloperOptionsFragmentTest {
         onView(withId(R.id.force_crash_text_view)).perform(click())
       }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickForceNetworkType_opensForceNetworkTypeActivity() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_network_type_text_view)).perform(click())
+      intended(hasComponent(ForceNetworkTypeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_land_clickForceNetworkType_opensForceNetworkTypeActivity() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_network_type_text_view)).perform(click())
+      intended(hasComponent(ForceNetworkTypeActivity::class.java.name))
     }
   }
 
