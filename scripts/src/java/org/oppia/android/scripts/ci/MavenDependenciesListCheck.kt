@@ -29,10 +29,19 @@ fun main(args: Array<String>) {
   MavenDependenciesListCheck(LicenseFetcherImpl()).main(args)
 }
 
+/**
+ * Wrapper class to pass [LicenseFetcher] and [CommandExecutor] to be utilized by the the main
+ * method.
+ */
 class MavenDependenciesListCheck(
   private val licenseFetcher: LicenseFetcher,
   private val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
+
+  /**
+   * Verifies that the list of third-party maven dependencies in maven_dependnecies.textproto is
+   * up-to-date.
+   */
   fun main(args: Array<String>) {
     val pathToRoot = args[0]
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"

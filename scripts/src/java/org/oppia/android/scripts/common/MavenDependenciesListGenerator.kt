@@ -17,11 +17,19 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 private const val MAVEN_PREFIX = "@maven//:"
 
+/**
+ * Helper class that contains methods to compile third-party maven dependencies list on which
+ * Oppia Android depends.
+ */
 class MavenDependenciesListGenerator(
-  val licenseFetcher: LicenseFetcher,
-  val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val licenseFetcher: LicenseFetcher,
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
 
+  /**
+   * Returns the list of dependency names with the help of Bazel Query on which Oppia Android
+   * depends.
+   */
   fun retrieveThirdPartyMavenDependenciesList(
     rootPath: String
   ): List<String> {
@@ -32,6 +40,16 @@ class MavenDependenciesListGenerator(
       }
   }
 
+  /**
+   * Helper function to merge manual updates from the textproto file to the list of dependencies
+   * compiled with the help of Bazel Query and POM file links.
+   *
+   * @param dependencyListFromPom list of dependencies updated with the help of Bazel Query and
+   *    POM file links
+   * @param dependencyListFromProto instance of the proto class
+   *
+   * @return list of dependencies where some dependencies contains manually provided updates
+   */
   fun addChangesFromTextProto(
     dependencyListFromPom: List<MavenDependency>,
     dependencyListFromProto: List<MavenDependency>
@@ -43,6 +61,7 @@ class MavenDependenciesListGenerator(
     }
   }
 
+  /** Returns the set of licenses whose `original_link` has been verified manually. */
   fun retrieveManuallyUpdatedLicensesSet(
     mavenDependenciesList: List<MavenDependency>
   ): Set<License> {
@@ -53,6 +72,16 @@ class MavenDependenciesListGenerator(
     }.toSet()
   }
 
+  /**
+   * Helper function to update all dependencies' licenses that have been verified manually.
+   *
+   * @param latestDependenciesList list of dependencies that has some dependencies with verified
+   *    licenses
+   * @param manuallyUpdatedLicenses set of licenses that have been updated manually
+   *
+   * @return list of dependencies where all dependencies' licenses contain manually provided
+   *    updates
+   */
   fun updateMavenDependenciesList(
     latestDependenciesList: List<MavenDependency>,
     manuallyUpdatedLicenses: Set<License>
@@ -71,6 +100,12 @@ class MavenDependenciesListGenerator(
     }
   }
 
+  /**
+   * Writes the list of final list of dependencies to the maven_dependencies.textproto file.
+   *
+   * @param pathToTextProto path to the maven_dependencies.textproto file
+   * @param mavenDependencyList final list of dependencies
+   */
   fun writeTextProto(
     pathToTextProto: String,
     mavenDependencyList: MavenDependencyList
@@ -80,6 +115,10 @@ class MavenDependenciesListGenerator(
     }
   }
 
+  /**
+   * Returns the set of licenses that do not have verified_link set and there original link is
+   * not set to be invalid by the developers.
+   */
   fun getAllBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>
   ): Set<License> {
@@ -93,6 +132,16 @@ class MavenDependenciesListGenerator(
     }.toSet()
   }
 
+  /**
+   * Generates a map that maps broken licenses to the first dependency that should be updated
+   * manually in order to update all occurences of this license.
+   *
+   * @param mavenDependenciesList final list of dependencies
+   * @param brokenLicenses set of licenses that do not have verified_link set and there original
+   *    link is not set to be invalid by the developers.
+   *
+   * @return map that maps a broken license to the first dependency in maven_dependencies.textproto
+   */
   fun findFirstDependenciesWithBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>,
     brokenLicenses: Set<License>
@@ -102,11 +151,15 @@ class MavenDependenciesListGenerator(
     }
   }
 
+  /**
+   * Returns the set of dependencies whose license list is empty or some of their license link was
+   * found to be invalid.
+   */
   fun getDependenciesThatNeedIntervention(
     mavenDependenciesList: List<MavenDependency>
   ): Set<MavenDependency> {
     // The dependencies whose license list is empty or some of their license link was found to
-    // be invalid need intervention. In this case, the developer needs to manually fill in
+    // be invalid need further intervention. In this case, the developer needs to manually fill in
     // the license links for each of these dependencies.
     return mavenDependenciesList.filter { dependency ->
       dependency.licenseList.isEmpty() ||
@@ -122,7 +175,7 @@ class MavenDependenciesListGenerator(
    *
    * @param pathToPbFile path to the pb file to be parsed
    *
-   * @return list of [MavenDependency]
+   * @return list of dependencies
    */
   fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
     return parseTextProto(
@@ -131,6 +184,15 @@ class MavenDependenciesListGenerator(
     ).mavenDependencyList
   }
 
+  /**
+   * Retrieve the list of [MavenListDependency] such that each of these dependencies is present
+   * in maven_install.json and is also obtained from the Bazel Query.
+   *
+   * @param pathToMavenInstall path to the maven_install.json file
+   * @param bazelQueryDepsNames list of dependency names generated from Bazel Query
+   *
+   * @return list of [MavenListDependency]
+   */
   fun getDependencyListFromMavenInstall(
     pathToMavenInstall: String,
     bazelQueryDepsNames: List<String>
@@ -141,6 +203,15 @@ class MavenDependenciesListGenerator(
     }
   }
 
+  /**
+   * Extracts the license names and license links of the dependencies from their corresponding POM
+   * files.
+   *
+   * @param finalDependenciesList list of dependencies that is obtained by the intersection of
+   *    the list generated by Bazel Query and the list generated from maven_install.json
+   *
+   * @return mavenDependencyList that has dependencies with licenses extracted from their POM files
+   */
   fun retrieveDependencyListFromPom(
     finalDependenciesList: List<MavenListDependency>
   ): MavenDependencyList {
@@ -160,6 +231,15 @@ class MavenDependenciesListGenerator(
     return MavenDependencyList.newBuilder().addAllMavenDependency(mavenDependencyList).build()
   }
 
+  /**
+   * Parses the maven_install.json file to compile the list of maven dependencies.
+   *
+   * @param pathToMavenInstall path to the maven_install.json file
+   * @param bazelQueryDepsNames list of dependency names obtained from the bazel query
+   *
+   * @return list of [MavenListDependency] that contains the artifact name and a URL that is used
+   *    to obtain the URL of the POM file of the dependency
+   */
   fun genearateDependenciesListFromMavenInstall(
     pathToMavenInstall: String,
     bazelQueryDepsNames: List<String>
