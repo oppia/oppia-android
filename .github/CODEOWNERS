@@ -201,7 +201,7 @@ NOTICE @BenHenning
 #####################################################################################
 
 # UiAutomator configuration files ownership.
-/instrumentation/src/javatest/*.kt @anandwana001 @BenHenning
+/instrumentation/src/javatest/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #
