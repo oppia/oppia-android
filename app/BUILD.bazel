@@ -134,7 +134,6 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
-    "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
@@ -179,6 +178,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsOverrideAppBehaviorsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsViewLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/NetworkTypeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedItemViewModel.kt",
