@@ -5,9 +5,9 @@ import dagger.Provides
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 
-/** Provides GCS resource bucket names. */
+/** Provides Fake GCS resource of local dev server. */
 @Module
-class TestGcsResourceModule {
+class EndToEndTestGcsResourceModule {
   @Provides
   @DefaultResourceBucketName
   fun provideDefaultGcsResource(): String {

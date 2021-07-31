@@ -20,7 +20,7 @@ import javax.inject.Singleton
  * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
  */
 @Module
-class TestNetworkModule {
+class EndToEndTestNetworkModule {
 
   private val TEST_DEVELOPMENT_URL = "http://localhost:8181/"
 

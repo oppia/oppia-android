@@ -12,7 +12,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
-/** The root [Application] of the Oppia app. */
+/** The root [Application] of the oppia_test app. */
 class OppiaTestApplication :
   MultiDexApplication(),
   ActivityComponentFactory,

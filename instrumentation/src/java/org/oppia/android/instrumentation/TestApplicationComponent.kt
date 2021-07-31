@@ -48,8 +48,8 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * Root Dagger component for the application. All application-scoped modules should be included in
- * this component.
+ * Root Dagger component for the test application. All application-scoped modules should be included
+ * in this component.
  *
  * At the time of building the app in prod mode -
  * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
@@ -64,8 +64,8 @@ import javax.inject.Singleton
     ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
     NumberWithUnitsRuleModule::class, NumericInputRuleModule::class,
     TextInputRuleModule::class, DragDropSortInputModule::class,
-    InteractionsModule::class, TestGcsResourceModule::class,
-    GlideImageLoaderModule::class, TestImageParsingModule::class,
+    InteractionsModule::class, EndToEndTestGcsResourceModule::class,
+    GlideImageLoaderModule::class, EndToEndTestImageParsingModule::class,
     HtmlParserEntityTypeModule::class, CachingModule::class,
     QuestionModule::class, DebugLogReportingModule::class,
     AccessibilityProdModule::class, ImageClickInputModule::class,
@@ -75,7 +75,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    TestNetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
+    EndToEndTestNetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class
   ]

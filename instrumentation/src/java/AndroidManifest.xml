@@ -24,9 +24,11 @@
     <meta-data
       android:name="automatic_app_expiration_enabled"
       android:value="false" />
-    <meta-data      android:name="expiration_date"
+    <meta-data
+      android:name="expiration_date"
       android:value="2020-09-01" />
 
+    <!-- TODO(#3619): Remove Redefined activities. -->
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:label="@string/administrator_controls_title"

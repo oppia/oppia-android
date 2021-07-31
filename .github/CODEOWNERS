@@ -200,6 +200,9 @@ NOTICE @BenHenning
 #                                  instrumentation                                  #
 #####################################################################################
 
+# Test modules and Test application, Dagger configuration for end-to-end tests.
+/instrumentation/src/java/**/*.kt @BenHenning
+
 # UiAutomator configuration files ownership.
 /instrumentation/src/javatest/**/*.kt @anandwana001 @BenHenning
 

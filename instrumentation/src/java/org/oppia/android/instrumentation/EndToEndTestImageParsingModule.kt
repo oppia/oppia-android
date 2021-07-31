@@ -7,9 +7,9 @@ import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Singleton
 
-/** Provides image-extraction URL dependencies. */
+/** Provides image-extraction URL dependencies from local dev server. */
 @Module
-class TestImageParsingModule {
+class EndToEndTestImageParsingModule {
   @Provides
   @DefaultGcsPrefix
   @Singleton
