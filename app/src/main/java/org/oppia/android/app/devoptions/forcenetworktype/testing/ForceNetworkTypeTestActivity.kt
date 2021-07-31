@@ -1,7 +1,5 @@
 package org.oppia.android.app.devoptions.forcenetworktype.testing
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -28,12 +26,5 @@ class ForceNetworkTypeTestActivity : InjectableAppCompatActivity() {
   private fun getForceNetworkTypeFragment(): ForceNetworkTypeFragment? {
     return supportFragmentManager
       .findFragmentById(R.id.force_network_type_container) as ForceNetworkTypeFragment?
-  }
-
-  companion object {
-    /** Returns [Intent] for [ForceNetworkTypeTestActivity]. */
-    fun createForceNetworkTypeTestIntent(context: Context): Intent {
-      return Intent(context, ForceNetworkTypeTestActivity::class.java)
-    }
   }
 }
