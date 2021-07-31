@@ -35,3 +35,19 @@ message AccessibilityLabelExemptions {
   // at the correct lexicographical position in the textproto file.
   repeated string exempted_activity = 1;
 }
+
+// Exemptions for the KDoc validity check. Exemptions indicate files for which we should
+// not check for the presence of KDocs.
+message KdocValidityExemptions {
+  // List of all the files which should be exempted for the KDoc check.
+  // For exempting any file, provide its relative path to root in
+  // 'script/assets/kdoc_validity_exemptions.textproto'.
+  // Also, note that the exemptions in the text proto file are maintained in lexicographical order.
+  // While adding any new file, please add it only at the correct lexicographical position,
+  // so that the list remains sorted.
+  //
+  // For example if we want to add the 'ActivityComponent.kt' file to the exemption list, add:
+  // 'exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"'
+  // at the correct lexicographical position in the text proto file.
+  repeated string exempted_file_path = 1;
+}
