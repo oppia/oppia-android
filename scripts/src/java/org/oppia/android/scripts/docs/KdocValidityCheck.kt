@@ -25,7 +25,7 @@ import java.io.File
 import java.io.FileInputStream
 
 /**
- * Script for ensuring that KDocs validity on all non-private:
+ * Script for ensuring the KDocs validity on all non-private:
  * - Classes
  * - Functions
  * - Values/fields
