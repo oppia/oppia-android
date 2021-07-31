@@ -33,6 +33,8 @@
       android:enabled="@{isChapterCheckboxEnabled}"
       android:fontFamily="sans-serif"
       android:gravity="start|top"
+      android:minWidth="48dp"
+      android:minHeight="48dp"
       android:paddingBottom="26dp"
       android:text="@{viewModel.chapterSummary.name}"
       android:textAlignment="viewStart"
