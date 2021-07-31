@@ -58,7 +58,8 @@ class OngoingListAdapter(
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
         (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
-      }else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
+      }
+      else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
 
   override fun getItemViewType(position: Int): Int {
