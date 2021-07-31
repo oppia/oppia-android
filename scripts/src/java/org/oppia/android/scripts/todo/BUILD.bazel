@@ -35,8 +35,8 @@ kt_jvm_library(
     srcs = ["ClosedIssueCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-    ":todo_collector",
-    "//scripts/src/java/org/oppia/android/scripts/todo/data:todo",
-    "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        ":todo_collector",
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/todo/data:todo",
     ],
 )
