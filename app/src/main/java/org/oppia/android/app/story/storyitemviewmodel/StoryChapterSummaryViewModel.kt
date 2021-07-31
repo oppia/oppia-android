@@ -2,6 +2,7 @@ package org.oppia.android.app.story.storyitemviewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
@@ -33,15 +34,72 @@ class StoryChapterSummaryViewModel(
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
   val missingPrerequisiteChapter: ChapterSummary = chapterSummary.missingPrerequisiteChapter
+  val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
 
   fun onExplorationClicked() {
+    val shouldSavePartialProgress =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        else -> false
+      }
+    val canExplorationBeResumed =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED -> true
+        else -> false
+      }
+
+    startOrResumeExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      canExplorationBeResumed,
+      backflowScreen = 1
+    )
+  }
+
+  private fun startOrResumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    canExplorationBeResumed: Boolean,
+    backflowScreen: Int?
+  ) {
+    if (canExplorationBeResumed) {
+      explorationSelectionListener.selectExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        canExplorationBeResumed,
+        shouldSavePartialProgress,
+        backflowScreen
+      )
+    } else {
+      playExploration(
+        canExplorationBeResumed,
+        shouldSavePartialProgress,
+        backflowScreen
+      )
+    }
+  }
+
+  private fun playExploration(
+    canExplorationBeResumed: Boolean,
+    shouldSavePartialProgress: Boolean,
+    backflowScreen: Int?
+  ) {
     explorationDataController.stopPlayingExploration()
     explorationDataController.startPlayingExploration(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false,
+      shouldSavePartialProgress = shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
     ).observe(
@@ -60,8 +118,10 @@ class StoryChapterSummaryViewModel(
               internalProfileId,
               topicId,
               storyId,
-              explorationId, /* backflowScreen= */
-              1
+              explorationId,
+              canExplorationBeResumed,
+              shouldSavePartialProgress,
+              backflowScreen
             )
           }
         }

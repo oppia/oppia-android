@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -39,6 +41,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
 
+  private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private var internalProfileId: Int = -1
   private lateinit var binding: RecentlyPlayedFragmentBinding
@@ -216,16 +219,68 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    playExploration(promotedStory.topicId, promotedStory.storyId, promotedStory.explorationId)
+    val shouldSavePartialProgress =
+      when (promotedStory.chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        else -> false
+      }
+    val canExplorationBeResumed =
+      when (promotedStory.chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED -> true
+        else -> false
+      }
+
+    startOrResumeExploration(
+      internalProfileId,
+      promotedStory.topicId,
+      promotedStory.storyId,
+      promotedStory.explorationId,
+      shouldSavePartialProgress,
+      canExplorationBeResumed,
+      backflowScreen = null
+    )
   }
 
-  private fun playExploration(topicId: String, storyId: String, explorationId: String) {
+  private fun startOrResumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    canExplorationBeResumed: Boolean,
+    backflowScreen: Int?
+  ) {
+    if (canExplorationBeResumed) {
+      routeToResumeLessonListener.routeToResumeLesson(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen = null
+      )
+    } else {
+      playExploration(
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress
+      )
+    }
+  }
+
+  private fun playExploration(
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+  ) {
     explorationDataController.startPlayingExploration(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false,
+      shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
     ).observe(
@@ -245,8 +300,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              /* backflowScreen = */ null,
-              isCheckpointingEnabled = false
+              backflowScreen = null,
+              shouldSavePartialProgress
             )
             activity.finish()
           }

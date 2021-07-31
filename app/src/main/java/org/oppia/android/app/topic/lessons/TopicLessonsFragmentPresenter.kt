@@ -13,6 +13,7 @@ import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
@@ -34,6 +35,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
 
+  private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 
@@ -204,6 +206,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
+    shouldSavePartialProgress: Boolean,
     backflowScreen: Int?
   ) {
     explorationDataController.startPlayingExploration(
@@ -211,7 +214,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = true,
+      shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
     ).observe(
@@ -240,17 +243,64 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     )
   }
 
-  fun selectChapterSummary(storyId: String, explorationId: String) {
-    playExploration(
+  fun selectChapterSummary(
+    storyId: String,
+    explorationId: String,
+    chapterPlayState: ChapterPlayState
+  ) {
+    val shouldSavePartialProgress =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        else -> false
+      }
+    val canExplorationBeResumed =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED -> true
+        else -> false
+      }
+
+    startOrResumeExploration(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
+      shouldSavePartialProgress,
+      canExplorationBeResumed,
       backflowScreen = 0
     )
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+  }
+
+  private fun startOrResumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    canExplorationBeResumed: Boolean,
+    backflowScreen: Int?
+  ) {
+    if (canExplorationBeResumed) {
+      routeToResumeLessonListener.routeToResumeLesson(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
+      )
+    } else {
+      playExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        backflowScreen = 0
+      )
+    }
   }
 }
