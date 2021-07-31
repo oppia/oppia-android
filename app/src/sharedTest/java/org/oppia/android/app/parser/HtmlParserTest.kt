@@ -312,7 +312,6 @@ class HtmlParserTest {
       imageCenterAlign = true
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
-    
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_LTR
