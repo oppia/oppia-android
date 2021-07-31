@@ -573,6 +573,7 @@ exempted_file_path: "domain/src/test/java/org/oppia/android/domain/topic/StoryPr
 exempted_file_path: "domain/src/test/java/org/oppia/android/domain/topic/TopicControllerTest.kt"
 exempted_file_path: "domain/src/test/java/org/oppia/android/domain/topic/TopicListControllerTest.kt"
 exempted_file_path: "domain/src/test/java/org/oppia/android/domain/util/StateRetrieverTest.kt"
+exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/TestApplicationComponent.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt"
