@@ -1,0 +1,36 @@
+# Contains job to check that all the todos are resolved for the closed issue.
+
+name: Closed Issue Check
+
+on:
+  issues:
+    types: [closed, reopened]
+
+permissions:
+  issues: write
+
+jobs:
+  script_check:
+    name: Script Check
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Closed Issue Check
+        id: closedIssueCheck
+        if: ${{ github.event_name == 'closed' }}
+        run: |
+          bazel run //scripts:closed_issue_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
+
+      - name: Failure Action
+        if: failure() && steps.closedIssueCheck.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue reopen ${{ github.event.issue.number }}
+          gh issue comment ${{ github.event.issue.number }} -F $(pwd)/todo_list.txt

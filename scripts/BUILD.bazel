@@ -163,3 +163,12 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_check_lib",
     ],
 )
+
+kt_jvm_binary(
+    name = "closed_issue_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.todo.ClosedIssueCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:closed_issue_check_lib",
+    ],
+)
