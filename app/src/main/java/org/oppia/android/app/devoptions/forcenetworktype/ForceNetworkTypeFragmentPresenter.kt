@@ -27,6 +27,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<NetworkTypeItemViewModel>
 
+  /** Called when [ForceNetworkTypeFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?

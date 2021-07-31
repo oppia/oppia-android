@@ -11,6 +11,7 @@ class ForceNetworkTypeActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
+  /** Called when [ForceNetworkTypeActivity] is created. Handles UI for the activity. */
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)

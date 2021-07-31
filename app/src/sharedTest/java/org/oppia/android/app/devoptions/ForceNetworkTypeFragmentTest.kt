@@ -370,13 +370,20 @@ class ForceNetworkTypeFragmentTest {
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
+  /** [ApplicationComponent] for [ForceNetworkTypeFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [ForceNetworkTypeFragmentTest] providing the required
+     * dagger modules.
+     */
     fun inject(forceNetworkTypeFragmentTest: ForceNetworkTypeFragmentTest)
   }
 
+  /** [Application] class for [ForceNetworkTypeFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerForceNetworkTypeFragmentTest_TestApplicationComponent.builder()
@@ -384,6 +391,7 @@ class ForceNetworkTypeFragmentTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(forceNetworkTypeFragmentTest: ForceNetworkTypeFragmentTest) {
       component.inject(forceNetworkTypeFragmentTest)
     }

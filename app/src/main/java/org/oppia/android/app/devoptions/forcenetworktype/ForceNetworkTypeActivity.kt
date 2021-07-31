@@ -20,6 +20,7 @@ class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns [Intent] for [ForceNetworkTypeActivity]. */
     fun createForceNetworkTypeActivityIntent(context: Context): Intent {
       return Intent(context, ForceNetworkTypeActivity::class.java)
     }

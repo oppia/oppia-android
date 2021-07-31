@@ -14,6 +14,7 @@ class ForceNetworkTypeFragment : InjectableFragment() {
   lateinit var forceNetworkTypeFragmentPresenter: ForceNetworkTypeFragmentPresenter
 
   companion object {
+    /** Returns a new instance of [ForceNetworkTypeFragment]. */
     fun newInstance(): ForceNetworkTypeFragment = ForceNetworkTypeFragment()
   }
 
