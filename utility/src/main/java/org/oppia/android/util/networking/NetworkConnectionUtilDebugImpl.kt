@@ -9,17 +9,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug builds.
+ * [NetworkConnectionUtil] that gets and sets the current [ConnectionStatus] of the device in debug
+ * builds and tests.
  */
 @Singleton
-class DebugNetworkConnectionUtil @Inject constructor(
-  private val prodNetworkConnectionUtil: ProdNetworkConnectionUtil
+class NetworkConnectionUtilDebugImpl @Inject constructor(
+  private val networkConnectionUtilProdImpl: NetworkConnectionUtilProdImpl
 ) : NetworkConnectionUtil {
 
   private var forcedConnectionStatus: ConnectionStatus = DEFAULT
 
   override fun getCurrentConnectionStatus(): ConnectionStatus {
-    val actualConnectionStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    val actualConnectionStatus = networkConnectionUtilProdImpl.getCurrentConnectionStatus()
     if (actualConnectionStatus == NONE) {
       forcedConnectionStatus = DEFAULT
     }
@@ -30,11 +31,13 @@ class DebugNetworkConnectionUtil @Inject constructor(
   }
 
   /**
-   * Forces [forcedStatus] as the current connection status of the device and returns a
-   * [Boolean] indicating result.
+   * Forces [connectionStatus] as the current connection status of the device and returns a
+   * [Boolean] indicating whether the operation was successful or not. The [Boolean] will be false
+   * when we try to force an impossible situation, i.e., forcing [CELLULAR] or [WIFI] network when
+   * there is no actual network connection. In all other cases the [Boolean] will be true.
    */
   fun setCurrentConnectionStatus(forcedStatus: ConnectionStatus): Boolean {
-    val actualStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    val actualStatus = networkConnectionUtilProdImpl.getCurrentConnectionStatus()
     if (actualStatus == NONE && (forcedStatus == CELLULAR || forcedStatus == LOCAL)) {
       forcedConnectionStatus = DEFAULT
       return false

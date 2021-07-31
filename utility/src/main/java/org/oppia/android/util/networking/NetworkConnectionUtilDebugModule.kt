@@ -2,12 +2,11 @@ package org.oppia.android.util.networking
 
 import dagger.Binds
 import dagger.Module
-import javax.inject.Singleton
 
 /** Provides debug implementation of [NetworkConnectionUtil]. */
 @Module
 interface NetworkConnectionUtilDebugModule {
-  @Singleton
+  /** Binds [NetworkConnectionUtilDebugImpl] to [NetworkConnectionUtil]. */
   @Binds
-  fun bindsNetworkConnectionUtil(impl: DebugNetworkConnectionUtil): NetworkConnectionUtil
+  fun bindsNetworkConnectionUtil(impl: NetworkConnectionUtilDebugImpl): NetworkConnectionUtil
 }
