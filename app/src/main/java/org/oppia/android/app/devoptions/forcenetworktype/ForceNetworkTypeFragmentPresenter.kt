@@ -11,6 +11,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ForceNetworkTypeFragmentBinding
 import org.oppia.android.databinding.ForceNetworkTypeNetworkItemViewBinding
+import org.oppia.android.util.networking.DebugNetworkConnectionUtil
 import javax.inject.Inject
 
 /** The presenter for [ForceNetworkTypeFragment]. */
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val debugNetworkConnectionUtil: DebugNetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<ForceNetworkTypeViewModel>
 ) {
 
@@ -60,9 +62,22 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
       .newBuilder<NetworkTypeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ForceNetworkTypeNetworkItemViewBinding::inflate,
-        setViewModel = ForceNetworkTypeNetworkItemViewBinding::setViewModel
+        setViewModel = this::bindNetworkItemView
       )
       .build()
+  }
+
+  private fun bindNetworkItemView(
+    binding: ForceNetworkTypeNetworkItemViewBinding,
+    model: NetworkTypeItemViewModel
+  ) {
+    binding.viewModel = model
+    binding.isNetworkSelected =
+      debugNetworkConnectionUtil.getForcedConnectionStatus() == model.networkType
+    binding.networkTypeLayout.setOnClickListener {
+      debugNetworkConnectionUtil.setCurrentConnectionStatus(model.networkType)
+      bindingAdapter.notifyDataSetChanged()
+    }
   }
 
   private fun getForceNetworkTypeViewModel(): ForceNetworkTypeViewModel {

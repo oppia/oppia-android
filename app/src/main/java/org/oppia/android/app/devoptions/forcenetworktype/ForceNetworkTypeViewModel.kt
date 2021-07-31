@@ -1,9 +1,8 @@
 package org.oppia.android.app.devoptions.forcenetworktype
 
-import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
 /**
@@ -11,9 +10,7 @@ import javax.inject.Inject
  * [NetworkTypeItemViewModel] which in turn display the available network types.
  */
 @FragmentScope
-class ForceNetworkTypeViewModel @Inject constructor(
-  private val activity: AppCompatActivity
-) : ObservableViewModel() {
+class ForceNetworkTypeViewModel @Inject constructor() : ObservableViewModel() {
 
   /**
    * List of [NetworkTypeItemViewModel] used to populate recyclerview of [ForceNetworkTypeFragment]
@@ -25,10 +22,10 @@ class ForceNetworkTypeViewModel @Inject constructor(
 
   private fun processNetworkTypeList(): List<NetworkTypeItemViewModel> {
     return listOf(
-      NetworkTypeItemViewModel(activity.getString(R.string.default_network)),
-      NetworkTypeItemViewModel(activity.getString(R.string.wifi_network)),
-      NetworkTypeItemViewModel(activity.getString(R.string.cellular_network)),
-      NetworkTypeItemViewModel(activity.getString(R.string.no_network))
+      NetworkTypeItemViewModel(NetworkConnectionUtil.ConnectionStatus.DEFAULT),
+      NetworkTypeItemViewModel(NetworkConnectionUtil.ConnectionStatus.LOCAL),
+      NetworkTypeItemViewModel(NetworkConnectionUtil.ConnectionStatus.CELLULAR),
+      NetworkTypeItemViewModel(NetworkConnectionUtil.ConnectionStatus.NONE)
     )
   }
 }

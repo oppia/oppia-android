@@ -5,11 +5,18 @@
   <data>
 
     <variable
+      name="isNetworkSelected"
+      type="Boolean" />
+
+    <import type="android.view.View" />
+
+    <variable
       name="viewModel"
       type="org.oppia.android.app.devoptions.forcenetworktype.NetworkTypeItemViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/network_type_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,7 +29,7 @@
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.networkType}"
+      android:text="@{viewModel.formatNetworkTypeString}"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +43,7 @@
       android:layout_marginBottom="4dp"
       android:contentDescription="@{@string/network_selected}"
       android:src="@drawable/ic_check_24dp"
+      android:visibility="@{isNetworkSelected ? View.VISIBLE : View.GONE }"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

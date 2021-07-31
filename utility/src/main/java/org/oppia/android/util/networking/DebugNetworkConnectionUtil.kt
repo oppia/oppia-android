@@ -1,6 +1,10 @@
 package org.oppia.android.util.networking
 
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.DEFAULT
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,34 +16,33 @@ class DebugNetworkConnectionUtil @Inject constructor(
   private val prodNetworkConnectionUtil: ProdNetworkConnectionUtil
 ) : NetworkConnectionUtil {
 
-  private var forcedConnectionStatus: ConnectionStatus? = null
+  private var forcedConnectionStatus: ConnectionStatus = DEFAULT
 
   override fun getCurrentConnectionStatus(): ConnectionStatus {
     val actualConnectionStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
-    if (actualConnectionStatus == ConnectionStatus.NONE) {
-      forcedConnectionStatus = null
+    if (actualConnectionStatus == NONE) {
+      forcedConnectionStatus = DEFAULT
     }
-    forcedConnectionStatus?.let {
-      return it
+    if (forcedConnectionStatus == DEFAULT) {
+      return actualConnectionStatus
     }
-    return actualConnectionStatus
+    return forcedConnectionStatus
   }
 
   /**
-   * Forces [connectionStatus] as the current connection status of the device and returns a
+   * Forces [forcedStatus] as the current connection status of the device and returns a
    * [Boolean] indicating result.
    */
-  fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus): Boolean {
-    if (prodNetworkConnectionUtil.getCurrentConnectionStatus() == ConnectionStatus.NONE &&
-      (connectionStatus == ConnectionStatus.CELLULAR || connectionStatus == ConnectionStatus.LOCAL)
-    ) {
-      forcedConnectionStatus = null
+  fun setCurrentConnectionStatus(forcedStatus: ConnectionStatus): Boolean {
+    val actualStatus = prodNetworkConnectionUtil.getCurrentConnectionStatus()
+    if (actualStatus == NONE && (forcedStatus == CELLULAR || forcedStatus == LOCAL)) {
+      forcedConnectionStatus = DEFAULT
       return false
     }
-    forcedConnectionStatus = connectionStatus
+    forcedConnectionStatus = forcedStatus
     return true
   }
 
   /** Returns the [forcedConnectionStatus] indicating whether the connection status was forced or not. */
-  fun getForcedConnectionStatus(): ConnectionStatus? = forcedConnectionStatus
+  fun getForcedConnectionStatus(): ConnectionStatus = forcedConnectionStatus
 }

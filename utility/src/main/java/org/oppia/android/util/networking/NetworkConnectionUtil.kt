@@ -11,7 +11,10 @@ interface NetworkConnectionUtil {
     CELLULAR,
 
     /** Not connected to a network. */
-    NONE
+    NONE,
+
+    /** Refers to the actual connection status of the device. */
+    DEFAULT
   }
 
   /** Returns a [ConnectionStatus] indicating the current connection status of the device. */
