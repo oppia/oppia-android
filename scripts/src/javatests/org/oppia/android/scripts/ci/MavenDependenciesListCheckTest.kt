@@ -11,6 +11,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.LicenseFetcher
+import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
@@ -27,21 +28,21 @@ import java.util.concurrent.TimeUnit
 class MavenDependenciesListCheckTest {
 
   private val THIRD_PARTY_PREFIX = "//third_pary:"
-  private val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
-  private val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
-  private val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
+  private val DATA_BINDING_DEP = "androidx.databinding:databinding-adapters:3.4.2"
+  private val PROTO_LITE_DEP = "com.google.protobuf:protobuf-lite:3.0.0"
+  private val GLIDE_DEP =
     "com.github.bumptech.glide:annotations:4.11.0"
-  private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
-  private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
-  private val DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME =
-    "com.squareup.moshi:moshi:1.11.0"
+  private val FIREBASE_ANALYTICS_DEP = "com.google.firebase:firebase-analytics:17.5.0"
+  private val IO_FABRIC_DEP = "io.fabric.sdk.android:fabric:1.4.7"
+  private val FIREBASE_ANALYTICS_UPGRADED_DEP =
+    "com.google.firebase:firebase-analytics:19.0.0"
 
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"
   private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
   private val FIREBASE_ANALYTICS_VERSION = "17.5.0"
+  private val FIREBASE_ANALYTICS_UPGRADED_VERSION = "19.0.0"
   private val IO_FABRIC_VERSION = "1.4.7"
-  private val MOSHI_VERSION = "1.11.0"
 
   private val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/databinding-" +
     "adapters/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION.pom"
@@ -53,14 +54,15 @@ class MavenDependenciesListCheckTest {
     "/annotations/$GLIDE_ANNOTATIONS_VERSION/annotations-$GLIDE_ANNOTATIONS_VERSION.pom"
   private val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/firebase-" +
     "analytics/$FIREBASE_ANALYTICS_VERSION/firebase-analytics-$FIREBASE_ANALYTICS_VERSION.pom"
-  private val MOSHI_POM = "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/" +
-    "$MOSHI_VERSION/moshi-$MOSHI_VERSION.pom"
+  private val UPGRADED_FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/" +
+    "firebase-analytics/$FIREBASE_ANALYTICS_UPGRADED_VERSION/firebase-analytics-" +
+    "$FIREBASE_ANALYTICS_UPGRADED_VERSION.pom"
 
   private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
   private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
     "License links are invalid or not available for some dependencies"
   private val SCRIPT_PASSED_MESSAGE =
-    "Script executed succesfully: maven_dependencies.textproto updated successfully."
+    "maven_dependencies.textproto is up-to-date."
   private val MISSING_DEPENDENCIES_ONLY_FAILURE =
     "Missing dependencies in maven_dependencies.textproto"
   private val REDUNDANT_DEPENDENCIES_ONLY_FAILURE =
@@ -96,7 +98,7 @@ class MavenDependenciesListCheckTest {
   fun testMavenDepsListCheck_emptyPbFile_failsAndCallsOutMissingDeps() {
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
+    val coordsList = listOf(DATA_BINDING_DEP, FIREBASE_ANALYTICS_DEP)
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
@@ -120,14 +122,14 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
+      artifact_name: "$DATA_BINDING_DEP"
       artifact_version: "$DATA_BINDING_VERSION"
       license {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
       
-      artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
@@ -155,12 +157,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build()
@@ -169,9 +171,9 @@ class MavenDependenciesListCheckTest {
     }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
+      DATA_BINDING_DEP,
+      GLIDE_DEP,
+      FIREBASE_ANALYTICS_DEP,
     )
     setUpBazelEnvironment(coordsList)
 
@@ -196,7 +198,7 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
@@ -224,7 +226,7 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build()
@@ -233,9 +235,9 @@ class MavenDependenciesListCheckTest {
     }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
+      DATA_BINDING_DEP,
+      GLIDE_DEP,
+      FIREBASE_ANALYTICS_DEP,
     )
     setUpBazelEnvironment(coordsList)
 
@@ -260,14 +262,14 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
+      artifact_name: "$DATA_BINDING_DEP"
       artifact_version: "$DATA_BINDING_VERSION"
       license {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
       
-      artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
@@ -295,12 +297,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build()
@@ -308,7 +310,7 @@ class MavenDependenciesListCheckTest {
       )
     }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
-    val coordsList = listOf(DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
+    val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
@@ -332,7 +334,7 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
+      artifact_name: "$DATA_BINDING_DEP"
       artifact_version: "$DATA_BINDING_VERSION"
       license {
         license_name: "The Apache License, Version 2.0"
@@ -365,17 +367,17 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE
+            this.artifactName = FIREBASE_ANALYTICS_DEP
             this.artifactVersion = FIREBASE_ANALYTICS_VERSION
             this.addLicense(license3)
           }.build()
@@ -383,7 +385,7 @@ class MavenDependenciesListCheckTest {
       )
     }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
-    val coordsList = listOf(DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
+    val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
@@ -407,14 +409,14 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
+      artifact_name: "$DATA_BINDING_DEP"
       artifact_version: "$DATA_BINDING_VERSION"
       license {
         license_name: "The Apache License, Version 2.0"
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
       
-      artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
@@ -443,12 +445,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build()
@@ -457,8 +459,8 @@ class MavenDependenciesListCheckTest {
     }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_DIRECT_LINK_ONLY_LICENSE
+      GLIDE_DEP,
+      FIREBASE_ANALYTICS_DEP
     )
     setUpBazelEnvironment(coordsList)
 
@@ -483,7 +485,7 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
+      artifact_name: "$DATA_BINDING_DEP"
       artifact_version: "$DATA_BINDING_VERSION"
       license {
         license_name: "The Apache License, Version 2.0"
@@ -496,7 +498,7 @@ class MavenDependenciesListCheckTest {
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
       more.
       
-      artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
       license {
         license_name: "Android Software Development Kit License"
@@ -525,12 +527,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+            this.artifactName = GLIDE_DEP
             this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
             this.addAllLicense(listOf(license1, license2))
           }.build()
@@ -540,8 +542,8 @@ class MavenDependenciesListCheckTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+      DATA_BINDING_DEP,
+      GLIDE_DEP
     )
     setUpBazelEnvironment(coordsList)
 
@@ -575,12 +577,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_NO_LICENSE
+            this.artifactName = PROTO_LITE_DEP
             this.artifactVersion = PROTO_LITE_VERSION
           }.build()
         )
@@ -589,8 +591,8 @@ class MavenDependenciesListCheckTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_NO_LICENSE
+      DATA_BINDING_DEP,
+      PROTO_LITE_DEP
     )
     setUpBazelEnvironment(coordsList)
 
@@ -607,6 +609,88 @@ class MavenDependenciesListCheckTest {
       )
     }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
+  }
+
+  @Test
+  fun testMavenDepsListCheck_depVersionDowngraded_failsWithException() {
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val license1 = License.newBuilder().apply {
+      this.licenseName = "The Apache License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.scrapableLink = ScrapableLink.newBuilder().apply {
+        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }.build()
+    }.build()
+    val license2 = License.newBuilder().apply {
+      this.licenseName = "Android Software Development Kit License"
+      this.originalLink = "https://developer.android.com/studio/terms.html"
+    }.build()
+    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
+      this.addAllMavenDependency(
+        listOf(
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DATA_BINDING_DEP
+            this.artifactVersion = DATA_BINDING_VERSION
+            this.addLicense(license1)
+          }.build(),
+          MavenDependency.newBuilder().apply {
+            this.artifactName = FIREBASE_ANALYTICS_UPGRADED_DEP
+            this.artifactVersion = FIREBASE_ANALYTICS_UPGRADED_VERSION
+            this.addLicense(license2)
+          }.build()
+        )
+      )
+    }.build()
+    mavenDependencyList.writeTo(pbFile.outputStream())
+
+    val coordsList = listOf(
+      DATA_BINDING_DEP,
+      FIREBASE_ANALYTICS_UPGRADED_DEP
+    )
+    setUpBazelEnvironment(coordsList)
+
+    val exception = assertThrows(Exception::class) {
+      MavenDependenciesListCheck(
+        mockLicenseFetcher,
+        commandExecutor
+      ).main(
+        arrayOf(
+          "${tempFolder.root}",
+          "scripts/assets/maven_install.json",
+          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        )
+      )
+    }
+    assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
+    assertThat(outContent.toString()).isEqualTo(
+      """
+      Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+      running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
+      
+      artifact_name: "$FIREBASE_ANALYTICS_UPGRADED_DEP"
+      artifact_version: "$FIREBASE_ANALYTICS_UPGRADED_VERSION"
+      license {
+        license_name: "Android Software Development Kit License"
+        original_link: "https://developer.android.com/studio/terms.html"
+      }
+      
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
+      
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
+      artifact_version: "$FIREBASE_ANALYTICS_VERSION"
+      license {
+        license_name: "Android Software Development Kit License"
+        original_link: "https://developer.android.com/studio/terms.html"
+      }
+      """.trimIndent() + "\n\n"
+    )
   }
 
   @Test
@@ -629,12 +713,12 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+            this.artifactName = DATA_BINDING_DEP
             this.artifactVersion = DATA_BINDING_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_INVALID_LINKS
+            this.artifactName = IO_FABRIC_DEP
             this.artifactVersion = IO_FABRIC_VERSION
             this.addLicense(license2)
           }.build()
@@ -644,8 +728,8 @@ class MavenDependenciesListCheckTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_INVALID_LINKS
+      DATA_BINDING_DEP,
+      IO_FABRIC_DEP
     )
     setUpBazelEnvironment(coordsList)
 
@@ -664,9 +748,71 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
   }
 
-  private fun setUpBazelEnvironment(coordsList: List<String>) {
+  @Test
+  fun testMavenDepsListCheck_allDepsUpToDate_checkPasses() {
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val license1 = License.newBuilder().apply {
+      this.licenseName = "The Apache License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.scrapableLink = ScrapableLink.newBuilder().apply {
+        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }.build()
+    }.build()
+    val license2 = License.newBuilder().apply {
+      this.licenseName = "Android Software Development Kit License"
+      this.originalLink = "https://developer.android.com/studio/terms.html"
+      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
+        url = "https://developer.android.com/studio/terms.html"
+      }.build()
+    }.build()
+    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
+      this.addAllMavenDependency(
+        listOf(
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DATA_BINDING_DEP
+            this.artifactVersion = DATA_BINDING_VERSION
+            this.addLicense(license1)
+          }.build(),
+          MavenDependency.newBuilder().apply {
+            this.artifactName = FIREBASE_ANALYTICS_DEP
+            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+            this.addLicense(license2)
+          }.build()
+        )
+      )
+    }.build()
+    mavenDependencyList.writeTo(pbFile.outputStream())
+
+    val coordsList = listOf(
+      DATA_BINDING_DEP,
+      FIREBASE_ANALYTICS_UPGRADED_DEP
+    )
+    setUpBazelEnvironment(coordsList)
+
+    MavenDependenciesListCheck(
+      mockLicenseFetcher,
+      commandExecutor
+    ).main(
+      arrayOf(
+        "${tempFolder.root}",
+        "scripts/assets/maven_install.json",
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+      )
+    )
+    assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
+  }
+
+  private fun setUpBazelEnvironment(coordsList: List<String>, updatedVersion: Boolean = false) {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
-    writeMavenInstallJson(mavenInstallJson)
+    if (updatedVersion) {
+      writeMavenInstallJson(
+        mavenInstallJsonFile = mavenInstallJson,
+        firebaseAnalyticsCoord = FIREBASE_ANALYTICS_UPGRADED_DEP,
+        firebaseAnalayticsPom = UPGRADED_FIREBASE_ANALYTICS_POM
+      )
+    } else {
+      writeMavenInstallJson(mavenInstallJson)
+    }
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
     val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
       "//third_party:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
@@ -726,8 +872,12 @@ class MavenDependenciesListCheckTest {
   }
 
   /** Helper function to write a fake maven_install.json file. */
-  private fun writeMavenInstallJson(file: File) {
-    file.writeText(
+  private fun writeMavenInstallJson(
+    mavenInstallJsonFile: File,
+    firebaseAnalyticsCoord: String = FIREBASE_ANALYTICS_DEP,
+    firebaseAnalayticsPom: String = FIREBASE_ANALYTICS_POM
+  ) {
+    mavenInstallJsonFile.writeText(
       """
       {
         "dependency_tree": {
@@ -741,16 +891,12 @@ class MavenDependenciesListCheckTest {
               "url": "${GLIDE_ANNOTATIONS_POM.dropLast(3)}jar"
             },
             {
-              "coord": "com.google.firebase:firebase-analytics:17.5.0",
-              "url": "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
+              "coord": "$firebaseAnalyticsCoord",
+              "url": "${firebaseAnalayticsPom.dropLast(3)}aar"
             },
             {
                "coord": "com.google.protobuf:protobuf-lite:3.0.0",
                "url": "${PROTO_LITE_POM.dropLast(3)}jar"
-            },
-            {
-              "coord": "com.squareup.moshi:moshi:1.11.0",
-               "url": "${MOSHI_POM.dropLast(3)}jar"
             },
             {
               "coord": "io.fabric.sdk.android:fabric:1.4.7",
@@ -814,14 +960,14 @@ class MavenDependenciesListCheckTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(MOSHI_POM)) }
+      on { scrapeText(eq(UPGRADED_FIREBASE_ANALYTICS_POM)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <licenses>
             <license>
-              <name>The Apache Software License, Version 2.0</name>
-              <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+              <name>Android Software Development Kit License</name>
+              <url>https://developer.android.com/studio/terms.html</url>
               <distribution>repo</distribution>
             </license>
           </licenses>
