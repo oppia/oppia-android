@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -17,7 +16,6 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
@@ -95,6 +93,7 @@ import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -214,7 +213,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       trackedWrongAnswerCount = hintState.trackedAnswerCount
       helpIndex = hintState.helpIndex
     }
-    Log.d("12345", "updateHintState: ${hintHandler.helpIndex.indexTypeCase}")
   }
 
   /**

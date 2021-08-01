@@ -174,7 +174,7 @@ class SegmentedCircularProgressView : View {
     arcPaint.apply {
       style = Paint.Style.STROKE
       strokeCap = Paint.Cap.ROUND
-      strokeWidth = this@SegmentedCircularProgressView.strokeWidth
+      strokeWidth = strokeWidth
       this.color = ContextCompat.getColor(context, color)
     }
   }

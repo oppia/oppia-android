@@ -9,13 +9,13 @@ import java.util.concurrent.TimeUnit
 class HintsAndSolutionConfigModule {
   @Provides
   @DelayShowInitialHintMillis
-  fun provideInitialDelayForShowingHintsMillis(): Long = TimeUnit.SECONDS.toMillis(30)
+  fun provideInitialDelayForShowingHintsMillis(): Long = TimeUnit.SECONDS.toMillis(60)
 
   @Provides
   @DelayShowAdditionalHintsMillis
-  fun provideDelayForShowingAdditionalHintsMillis(): Long = TimeUnit.SECONDS.toMillis(15)
+  fun provideDelayForShowingAdditionalHintsMillis(): Long = TimeUnit.SECONDS.toMillis(30)
 
   @Provides
   @DelayShowAdditionalHintsFromWrongAnswerMillis
-  fun provideDelayForShowingHintsAfterOneWrongAnswerMillis(): Long = TimeUnit.SECONDS.toMillis(5)
+  fun provideDelayForShowingHintsAfterOneWrongAnswerMillis(): Long = TimeUnit.SECONDS.toMillis(10)
 }
