@@ -88,13 +88,29 @@ class MavenDependenciesListCheck(
       dependenciesListFromTextProto
     )
     if (redundantDependencies.isNotEmpty()) {
-      println("Please remove these redundant dependencies from maven_dependencies.textproto\n")
+      println(
+        """
+        Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+        running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+        may fix this.
+        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+        more.
+        """.trimIndent() + "\n"
+      )
       redundantDependencies.forEach {
         println(it)
       }
     }
     if (missindDependencies.isNotEmpty()) {
-      println("Please add these missing dependencies to maven_dependencies.textproto\n")
+      println(
+        """
+        Please add these missing dependencies to maven_dependencies.textproto. Note that running
+        the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+        may fix this.
+        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+        more.
+        """.trimIndent() + "\n"
+      )
       missindDependencies.forEach {
         println(it)
       }

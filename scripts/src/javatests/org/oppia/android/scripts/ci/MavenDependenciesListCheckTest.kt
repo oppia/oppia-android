@@ -114,7 +114,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please add these missing dependencies to maven_dependencies.textproto
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
       artifact_version: "$DATA_BINDING_VERSION"
@@ -186,7 +190,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please add these missing dependencies to maven_dependencies.textproto
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
@@ -246,7 +254,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please add these missing dependencies to maven_dependencies.textproto
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
       artifact_version: "$DATA_BINDING_VERSION"
@@ -314,7 +326,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please remove these redundant dependencies from maven_dependencies.textproto
+      Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+      running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
       artifact_version: "$DATA_BINDING_VERSION"
@@ -385,7 +401,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please remove these redundant dependencies from maven_dependencies.textproto
+      Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+      running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
       artifact_version: "$DATA_BINDING_VERSION"
@@ -457,7 +477,11 @@ class MavenDependenciesListCheckTest {
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
-      Please remove these redundant dependencies from maven_dependencies.textproto
+      Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+      running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_SCRAPABLE_LICENSE"
       artifact_version: "$DATA_BINDING_VERSION"
@@ -466,7 +490,11 @@ class MavenDependenciesListCheckTest {
         original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
       }
       
-      Please add these missing dependencies to maven_dependencies.textproto
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
       
       artifact_name: "$DEP_WITH_DIRECT_LINK_ONLY_LICENSE"
       artifact_version: "$FIREBASE_ANALYTICS_VERSION"
