@@ -612,6 +612,88 @@ class MavenDependenciesListCheckTest {
   }
 
   @Test
+  fun testMavenDepsListCheck_depVersionUpgraded_failsWithException() {
+    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
+    val license1 = License.newBuilder().apply {
+      this.licenseName = "The Apache License, Version 2.0"
+      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.scrapableLink = ScrapableLink.newBuilder().apply {
+        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }.build()
+    }.build()
+    val license2 = License.newBuilder().apply {
+      this.licenseName = "Android Software Development Kit License"
+      this.originalLink = "https://developer.android.com/studio/terms.html"
+    }.build()
+    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
+      this.addAllMavenDependency(
+        listOf(
+          MavenDependency.newBuilder().apply {
+            this.artifactName = DATA_BINDING_DEP
+            this.artifactVersion = DATA_BINDING_VERSION
+            this.addLicense(license1)
+          }.build(),
+          MavenDependency.newBuilder().apply {
+            this.artifactName = FIREBASE_ANALYTICS_DEP
+            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+            this.addLicense(license2)
+          }.build()
+        )
+      )
+    }.build()
+    mavenDependencyList.writeTo(pbFile.outputStream())
+
+    val coordsList = listOf(
+      DATA_BINDING_DEP,
+      FIREBASE_ANALYTICS_UPGRADED_DEP
+    )
+    setUpBazelEnvironment(coordsList = coordsList, updatedVersion = true)
+
+    val exception = assertThrows(Exception::class) {
+      MavenDependenciesListCheck(
+        mockLicenseFetcher,
+        commandExecutor
+      ).main(
+        arrayOf(
+          "${tempFolder.root}",
+          "scripts/assets/maven_install.json",
+          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        )
+      )
+    }
+    assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
+    assertThat(outContent.toString()).isEqualTo(
+      """
+      Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
+      running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
+      
+      artifact_name: "$FIREBASE_ANALYTICS_DEP"
+      artifact_version: "$FIREBASE_ANALYTICS_VERSION"
+      license {
+        license_name: "Android Software Development Kit License"
+        original_link: "https://developer.android.com/studio/terms.html"
+      }
+      
+      Please add these missing dependencies to maven_dependencies.textproto. Note that running
+      the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
+      may fix this.
+      Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
+      more.
+      
+      artifact_name: "$FIREBASE_ANALYTICS_UPGRADED_DEP"
+      artifact_version: "$FIREBASE_ANALYTICS_UPGRADED_VERSION"
+      license {
+        license_name: "Android Software Development Kit License"
+        original_link: "https://developer.android.com/studio/terms.html"
+      }
+      """.trimIndent() + "\n\n"
+    )
+  }
+
+  @Test
   fun testMavenDepsListCheck_depVersionDowngraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val license1 = License.newBuilder().apply {
