@@ -4,24 +4,17 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,9 +28,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -64,10 +55,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.story.StoryProgressTestHelper
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -82,7 +70,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO(#3422): Separate MarkTopicsCompletedActivityTest into activity and fragment test files.
 /** Tests for [MarkTopicsCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -93,16 +80,6 @@ import javax.inject.Singleton
 class MarkTopicsCompletedActivityTest {
 
   private val internalProfileId = 0
-  private lateinit var profileId: ProfileId
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
   lateinit var context: Context
@@ -119,15 +96,7 @@ class MarkTopicsCompletedActivityTest {
 
   @Before
   fun setUp() {
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     setUpTestApplicationComponent()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    testCoroutineDispatchers.registerIdlingResource()
-  }
-
-  @After
-  fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -145,386 +114,31 @@ class MarkTopicsCompletedActivityTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedActivity_topicsAreShown() {
+  fun testMarkTopicsCompletedActivity_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
       createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "First Test Topic"
-      )
-      scrollToPosition(position = 1)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Second Test Topic"
-      )
-      scrollToPosition(position = 2)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Fractions"
-      )
-      scrollToPosition(position = 3)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Ratios and Proportional Reasoning"
+      onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
+        matches(isDisplayed())
       )
     }
   }
 
   @Test
-  fun testMarkTopicsCompletedActivity_configChange_topicsAreShown() {
+  fun testMarkTopicsCompletedActivity_configChange_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
       createMarkTopicsCompletedActivityIntent(internalProfileId)
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "First Test Topic"
+      onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
+        matches(isDisplayed())
       )
-      scrollToPosition(position = 1)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Second Test Topic"
-      )
-      scrollToPosition(position = 2)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Fractions"
-      )
-      scrollToPosition(position = 3)
-      verifyTopicNameOnTopicSummaryListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Ratios and Proportional Reasoning"
-      )
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAll_isChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAll_configChange_isChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAll_selectsAllTopics() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAll_configChange_selectsAllTopics() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectTopics_topicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectTopics_configChange_topicsAreChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAllTopics_allCheckBoxIsChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAllTopics_configChange_allCheckBoxIsChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAllTopics_unselectOneTopic_allCheckBoxIsNotChecked() {
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_selectAllTopics_unselectOneTopic_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 1)
-      performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_fractionsTopicIsCompleted_isCheckedAndDisabled() {
-    markFractionsTopicCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(isChecked())).check(matches(not(isEnabled())))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_fractionsTopicIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
-    markFractionsTopicCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.mark_topics_completed_recycler_view,
-          position = 2,
-          targetViewId = R.id.mark_topics_completed_topic_check_box
-        )
-      ).check(matches(isChecked())).check(matches(not(isEnabled())))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_configChange_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_allLessonsAreCompleted_allCheckboxIsChecked() {
-    markAllLessonsCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_allLessonsAreCompleted_configChange_allCheckboxIsChecked() {
-    markAllLessonsCompleted()
-    launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
     }
   }
 
   private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
     return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
       context, internalProfileId
-    )
-  }
-
-  private fun verifyTopicNameOnTopicSummaryListItemAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_topics_completed_topic_check_box
-      )
-    ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyItemCheckedOnTopicSummaryListItem(itemPosition: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_topics_completed_topic_check_box
-      )
-    ).check(matches(isChecked()))
-  }
-
-  private fun performItemCheckOnTopicSummaryListItem(itemPosition: Int) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.mark_topics_completed_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.mark_topics_completed_topic_check_box
-      )
-    ).perform(click())
-  }
-
-  private fun markFractionsTopicCompleted() {
-    storyProgressTestHelper.markCompletedFractionsTopic(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-  }
-
-  private fun markAllLessonsCompleted() {
-    storyProgressTestHelper.markAllTopicsAsCompleted(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-  }
-
-  private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.mark_topics_completed_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(position)
     )
   }
 
