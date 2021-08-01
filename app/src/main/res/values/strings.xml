@@ -81,6 +81,7 @@
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter is completed</string>
+  <string name="chapter_in_progress">Chapter is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
