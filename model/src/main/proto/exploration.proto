@@ -241,8 +241,8 @@ message EphemeralState {
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
 
-  // The current checkpoint for the exploration.
-  ExplorationCheckpoint exploration_checkpoint = 8;
+  // The state of hints for the current exploration.
+  HintState hint_state = 8;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -327,7 +327,7 @@ message HelpIndex {
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
     // Indicates this help index corresponds to the index of a hint within the hint list of a state.
-    int32 hint_index = 1;
+    HintIndex hint_index = 1;
 
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
@@ -342,77 +342,16 @@ message HelpIndex {
   }
 }
 
-// Top-level proto used to store exploration checkpoint per-profile basis.
-message ExplorationCheckpointDatabase {
-
-  // Map from exploration ID to ExplorationCheckpoint.
-  map<string, ExplorationCheckpoint> exploration_checkpoint = 1;
+message HintIndex {
+  int32 index = 1;
+  bool is_hint_revealed = 2;
 }
 
-// Corresponds to the exploration checkpoint which will be used to resume the exploration.
-// This model contains information about all states of the deck which have been visited by the user.
-message ExplorationCheckpoint {
-
-  // The name of the latest state in the deck.
-  string pending_state_name = 1;
-
-  // The list of all states which the learner has previously completed.
-  repeated CompletedStateInCheckpoint completed_states_in_checkpoint = 2;
-
-  // Stores answers to the latest state in the deck.
-  repeated AnswerAndResponse pending_user_answers = 3;
-
-  // The index of the current selected state from the deck of states.
-  int32 state_index = 4;
-
-  // Stores -1 if no hint for the pending top state has been revealed otherwise it stores the index
-  // of the hint that the learner has revealed.
-  int32 hint_index = 5;
-
-  // Stores the index of most recent hint that was revealed by the user, if no hint has been
-  // revealed by the user yet, it stores -1.
-  int32 index_of_last_revealed_hint = 6;
-
-  // Stores true or false depending upon if unrevealed solution is visible to the user.
-  bool is_unrevealed_solution_visible = 7;
-
-  // Count of hint that is/are available for the current pendingTopState.
-  int32 hint_count = 8;
-
-  // The title of the exploration whose checkpoint is saved.
-  string exploration_title = 10;
-
-  // Stores the version of the exploration which is compatible with the saved checkpoint.
-  int32 exploration_version = 11;
-
-  // The timestamp in milliseconds of when the checkpoint was saved for the first time.
-  int64 timestamp_of_first_checkpoint = 12;
-}
-
-// Corresponds to exploration states that have been completed.
-message CompletedStateInCheckpoint {
-
-  // Corresponds to an exploration state that the learner has previous completed. Contains a list
-  // of AnswerAndResponse for a previous state.
-  CompletedState completed_state = 1;
-
-  // The name of the state previously completed.
-  string state_name = 2;
-}
-
-// Structure that holds the the exploration_title and the exploration_id associated with a saved
-// checkpoint. This container is used to return the details required to delete the oldest checkpoint
-// when the space allocated to save the checkpoints runs out.
-message ExplorationCheckpointDetails{
-
-  // The ID of the stored exploration checkpoint.
-  string exploration_id = 1;
-
-  // The title of the exploration whose checkpoint is saved.
-  string exploration_title = 2;
-
-  // Stores the version of the exploration which is compatible with the saved checkpoint.
-  int32 exploration_version = 3;
+message HintState {
+  HelpIndex help_index = 1;
+  int32 hint_sequence_number = 4;
+  int32 tracked_answer_count = 5;
+  bool is_hint_visible_in_latest_state = 6;
 }
 
 // Different states in which exploration checkpoint can exist.

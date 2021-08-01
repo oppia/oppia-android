@@ -2,12 +2,18 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
@@ -22,10 +28,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -140,7 +142,10 @@ class ExplorationProgressController @Inject constructor(
    * [LiveData] from  [getCurrentState]. Also note that the returned [LiveData] will only have a
    * single value and not be reused after that point.
    */
-  fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
+  fun submitAnswer(
+    userAnswer: UserAnswer,
+    hintState: HintState
+  ): LiveData<AsyncResult<AnswerOutcome>> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -185,6 +190,7 @@ class ExplorationProgressController @Inject constructor(
             )
           }
         } finally {
+          explorationProgress.hintState = hintState
           // If the answer was submitted on behalf of the Continue interaction, don't save
           // checkpoint because it will be saved when the learner moves to the next state.
           if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
@@ -209,8 +215,7 @@ class ExplorationProgressController @Inject constructor(
 
   fun submitUnrevealedHintIsVisible(
     state: State,
-    hintIsRevealed: Boolean,
-    hintIndex: Int
+    hintState: HintState
   ): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
@@ -232,20 +237,22 @@ class ExplorationProgressController @Inject constructor(
         ) {
           "Cannot submit an answer while another answer is pending."
         }
+        explorationProgress.hintState = hintState
         lateinit var hint: Hint
         try {
           explorationProgress.stateDeck.submitUnrevealedHintIsVisible(
             state,
-            hintIsRevealed,
-            hintIndex
+            hintState.helpIndex.hintIndex.isHintRevealed,
+            hintState.helpIndex.hintIndex.index
           )
           hint = explorationProgress.stateGraph.computeHintForResult(
             state,
-            hintIsRevealed,
-            hintIndex
+            hintState.helpIndex.hintIndex.isHintRevealed,
+            hintState.helpIndex.hintIndex.index
           )
-          explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+          explorationProgress.stateDeck.pushStateForHint(state, hintState.helpIndex.hintIndex.index)
         } finally {
+          explorationProgress.hintState = hintState
           // Mark a checkpoint in the exploration everytime a new hint is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -264,8 +271,7 @@ class ExplorationProgressController @Inject constructor(
 
   fun submitHintIsRevealed(
     state: State,
-    hintIsRevealed: Boolean,
-    hintIndex: Int
+    hintState: HintState
   ): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
@@ -289,14 +295,19 @@ class ExplorationProgressController @Inject constructor(
         }
         lateinit var hint: Hint
         try {
-          explorationProgress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
+          explorationProgress.stateDeck.submitHintRevealed(
+            state,
+            hintState.helpIndex.hintIndex.isHintRevealed,
+            hintState.helpIndex.hintIndex.index
+          )
           hint = explorationProgress.stateGraph.computeHintForResult(
             state,
-            hintIsRevealed,
-            hintIndex
+            hintState.helpIndex.hintIndex.isHintRevealed,
+            hintState.helpIndex.hintIndex.index
           )
-          explorationProgress.stateDeck.pushStateForHint(state, hintIndex)
+          explorationProgress.stateDeck.pushStateForHint(state, hintState.helpIndex.hintIndex.index)
         } finally {
+          explorationProgress.hintState = hintState
           // Mark a checkpoint in the exploration everytime a new hint is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -314,7 +325,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   fun submitUnrevealedSolutionIsVisible(
-    state: State
+    state: State,
+    hintState: HintState
   ): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
@@ -346,6 +358,7 @@ class ExplorationProgressController @Inject constructor(
           )
           explorationProgress.stateDeck.pushStateForSolution(state)
         } finally {
+          explorationProgress.hintState = hintState
           // Mark a checkpoint in the exploration if the solution is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -364,7 +377,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   fun submitSolutionIsRevealed(
-    state: State
+    state: State,
+    hintState: HintState
   ): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {
@@ -396,6 +410,7 @@ class ExplorationProgressController @Inject constructor(
           )
           explorationProgress.stateDeck.pushStateForSolution(state)
         } finally {
+          explorationProgress.hintState = hintState
           // Mark a checkpoint in the exploration if the solution is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -517,18 +532,17 @@ class ExplorationProgressController @Inject constructor(
    * IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
    */
   private fun saveExplorationCheckpoint() {
-    // Update explorationProgress.explorationCheckpoint to keep track of the current ephemeral
-    // state.
+    // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
+    // when the current exploration has been already completed previously.
+    if (!explorationProgress.shouldSavePartialProgress) return
+
     explorationProgress.explorationCheckpoint =
       explorationProgress.stateDeck.createExplorationCheckpoint(
+        explorationProgress.hintState,
         explorationProgress.currentExploration.version,
         explorationProgress.currentExploration.title,
         oppiaClock.getCurrentTimeMs()
       )
-
-    // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
-    // when the current exploration has been already completed previously.
-    if (!explorationProgress.shouldSavePartialProgress) return
 
     val profileId: ProfileId = explorationProgress.currentProfileId
     val topicId: String = explorationProgress.currentTopicId
@@ -684,6 +698,7 @@ class ExplorationProgressController @Inject constructor(
               explorationProgress.stateDeck.getCurrentEphemeralState()
                 .toBuilder()
                 .setCheckpointState(explorationProgress.checkpointState)
+                .setHintState(explorationProgress.hintState)
                 .build()
             )
           } catch (e: Exception) {
@@ -696,6 +711,7 @@ class ExplorationProgressController @Inject constructor(
             explorationProgress.stateDeck.getCurrentEphemeralState()
               .toBuilder()
               .setCheckpointState(explorationProgress.checkpointState)
+              .setHintState(explorationProgress.hintState)
               .build()
           )
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
@@ -707,6 +723,9 @@ class ExplorationProgressController @Inject constructor(
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
+
+    // Load hintState with a checkpoint or to reset it if checkpoint is of default instance.
+    loadHintState(progress)
 
     // Either resume or reset the StateDeck depending upon the exploration checkpoint.
     loadStateDeck(progress, exploration)
@@ -758,10 +777,33 @@ class ExplorationProgressController @Inject constructor(
     )
   }
 
+  private fun loadHintState(progress: ExplorationProgress) {
+    progress.hintState =
+      if (progress.explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
+        HintState.newBuilder().apply {
+          isHintVisibleInLatestState = false
+          helpIndex = HelpIndex.getDefaultInstance()
+          trackedAnswerCount = 0
+          hintSequenceNumber = 0
+        }.build()
+      } else {
+        HintState.newBuilder().apply {
+          isHintVisibleInLatestState =
+            progress.explorationCheckpoint.helpIndex != HelpIndex.getDefaultInstance()
+          helpIndex = progress.explorationCheckpoint.helpIndex
+          trackedAnswerCount = progress.explorationCheckpoint.pendingUserAnswersCount
+          hintSequenceNumber = 0
+        }.build()
+      }
+  }
+
   /**
    * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
    * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
    * re-initialized with the values created from the saved [ExplorationCheckpoint].
+   *
+   * This function expects explorationProgress.hintState to be initialized with the correct values,
+   * so it should only be called after the function [loadHintState] has executed.
    */
   private fun loadStateDeck(progress: ExplorationProgress, exploration: Exploration) {
     if (progress.explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
@@ -771,10 +813,7 @@ class ExplorationProgressController @Inject constructor(
         createPendingTopStateFromCheckpoint(progress),
         getPreviousStatesFromCheckpoint(progress),
         progress.explorationCheckpoint.pendingUserAnswersList,
-        progress.explorationCheckpoint.stateIndex,
-        progress.explorationCheckpoint.hintIndex,
-        progress.explorationCheckpoint.indexOfLastRevealedHint,
-        progress.explorationCheckpoint.isUnrevealedSolutionVisible
+        progress.explorationCheckpoint.stateIndex
       )
     }
   }
@@ -790,15 +829,9 @@ class ExplorationProgressController @Inject constructor(
       progress.stateGraph.getState(progress.explorationCheckpoint.pendingStateName)
     val hintList = createHintListFromCheckpoint(
       pendingTopState.interaction.hintList,
-      progress.explorationCheckpoint.hintIndex,
-      progress.explorationCheckpoint.indexOfLastRevealedHint
+      progress.hintState.helpIndex
     )
-    val solution = createSolutionFromCheckpoint(
-      isSolutionRevealed = progress.explorationCheckpoint.hintIndex >=
-        progress.explorationCheckpoint.hintCount,
-      isUnrevealedSolutionVisible = progress.explorationCheckpoint.isUnrevealedSolutionVisible,
-      pendingTopState = pendingTopState
-    )
+    val solution = createSolutionFromCheckpoint(pendingTopState, progress.hintState.helpIndex)
     val interactionBuilder =
       pendingTopState.interaction.toBuilder()
         .clearHint()
@@ -813,23 +846,43 @@ class ExplorationProgressController @Inject constructor(
    * state before the checkpoint was saved.
    *
    * @param pendingStateHintList the list of hint for the current pending state
-   * @param indexOfLastRevealedHint the index of last revealed hint in the pending state
-   * @param hintIndex the index of the most recent hint or solution that was visible to the user
-   *     either in revealed or in un-revealed state
+   * @param helpIndex the state of hints for the exploration which was generated using the saved
+   *     checkpoint
    */
   private fun createHintListFromCheckpoint(
     pendingStateHintList: List<Hint>,
-    indexOfLastRevealedHint: Int,
-    hintIndex: Int
+    helpIndex: HelpIndex
   ): List<Hint> {
     val updatedHintList: MutableList<Hint> = ArrayList()
-    pendingStateHintList.forEachIndexed { index, hint ->
-      updatedHintList.add(
-        hint.toBuilder()
-          .setHintIsRevealed(index <= indexOfLastRevealedHint)
-          .setUnrevealedHintIsVisible(index == hintIndex)
-          .build()
-      )
+    if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+      pendingStateHintList.forEachIndexed { index, hint ->
+        if (index <= helpIndex.hintIndex.index) {
+          // Mark all hints as visible and revealed which have an index less than that stored in
+          // the HintState.
+          updatedHintList.add(
+            hint.toBuilder().apply {
+              hintIsRevealed = true
+              unrevealedHintIsVisible = false
+            }.build()
+          )
+        } else if (index == helpIndex.hintIndex.index) {
+          updatedHintList.add(
+            hint.toBuilder().apply {
+              hintIsRevealed = helpIndex.hintIndex.isHintRevealed
+              unrevealedHintIsVisible = !helpIndex.hintIndex.isHintRevealed
+            }.build()
+          )
+        }
+      }
+    } else {
+      pendingStateHintList.forEach { hint ->
+        updatedHintList.add(
+          hint.toBuilder().apply {
+            hintIsRevealed = true
+            unrevealedHintIsVisible = false
+          }.build()
+        )
+      }
     }
     return updatedHintList
   }
@@ -838,25 +891,28 @@ class ExplorationProgressController @Inject constructor(
    * Set solution is reveled in the pendingState to true or false depending upon if solution was
    * revealed for the current state pending state before the checkpoint was saved.
    *
-   * @param isUnrevealedSolutionVisible indicates if the unrevealed solution was visible to the user
-   *     before the checkpoint was created
-   * @param isSolutionRevealed indicates if the solution was revealed in the current pending state
-   *     before the checkpoint was created
    * @param pendingTopState the pending state created from the checkpoint
+   * @param helpIndex the state of solution for the exploration which was generated using the saved
+   *     checkpoint
    */
   private fun createSolutionFromCheckpoint(
-    isUnrevealedSolutionVisible: Boolean,
-    isSolutionRevealed: Boolean,
-    pendingTopState: State
+    pendingTopState: State,
+    helpIndex: HelpIndex
   ): Solution {
-    return if (isSolutionRevealed || isUnrevealedSolutionVisible) {
-      pendingTopState.interaction.solution.toBuilder()
-        .setSolutionIsRevealed(isSolutionRevealed)
-        .setUnrevealedSolutionIsVisible(isUnrevealedSolutionVisible)
-        .setUnrevealedSolutionIsVisible(!isSolutionRevealed)
-        .build()
-    } else {
-      pendingTopState.interaction.solution
+    return when (helpIndex.indexTypeCase) {
+      HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+        pendingTopState.interaction.solution.toBuilder()
+          .setSolutionIsRevealed(false)
+          .setUnrevealedSolutionIsVisible(true)
+          .build()
+      }
+      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+        pendingTopState.interaction.solution.toBuilder()
+          .setSolutionIsRevealed(true)
+          .setUnrevealedSolutionIsVisible(false)
+          .build()
+      }
+      else -> pendingTopState.interaction.solution
     }
   }
 

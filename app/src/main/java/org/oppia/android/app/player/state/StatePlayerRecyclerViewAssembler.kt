@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -17,18 +17,19 @@ import androidx.databinding.ObservableList
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
-import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HintIndex
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
-import org.oppia.android.app.model.StatePlayerSavedHintState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -92,18 +93,10 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
-
-private const val KEY_HINT_STATE = "KEY_HINT_STATE"
-
-private const val DEFAULT_HINT_SEQUENCE_NUMBER = 0
-private val DEFAULT_EXPLORATION_CHECKPOINT = ExplorationCheckpoint.getDefaultInstance()
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
@@ -205,69 +198,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
-  /**
-   * Saves transient state that the assembler depends on.
-   *
-   * This should be used to retain state across configuration changes,
-   * and state saved through this method should be restored via [restoreState].
-   */
-  fun saveState(
-    bundle: Bundle,
-    explorationCheckpoint: ExplorationCheckpoint
-  ): Bundle {
-
-    val statePlayerSavedHintState = StatePlayerSavedHintState.newBuilder().apply {
-      this.explorationCheckpoint = explorationCheckpoint
+  fun createLatestHintState(): HintState {
+    return HintState.newBuilder().apply {
+      isHintVisibleInLatestState = hintHandler.isHintVisibleInLatestState
       hintSequenceNumber = hintHandler.hintSequenceNumber
+      trackedAnswerCount = hintHandler.trackedWrongAnswerCount
+      helpIndex = hintHandler.previousHelpIndex
     }.build()
-    bundle.putProto(KEY_HINT_STATE, statePlayerSavedHintState)
-    return bundle
   }
 
-  /**
-   * Restores transient state that the assembler depends on.
-   *
-   * This should be used to retain state across configuration changes,
-   * and state saved through this method should be saved via [saveState].
-   */
-  fun restoreState(bundle: Bundle) {
-    val hintState = bundle.getProto(
-      KEY_HINT_STATE,
-      StatePlayerSavedHintState.newBuilder().apply {
-        explorationCheckpoint = DEFAULT_EXPLORATION_CHECKPOINT
-        hintSequenceNumber = DEFAULT_HINT_SEQUENCE_NUMBER
-      }.build()
-    )
-
-    // Return because there is no checkpoint in the bundle to restore the hintHandler.
-    if (hintState.explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) return
-
-    restoreHintHandlerFromCheckpoint(hintState.explorationCheckpoint)
-    hintHandler.hintSequenceNumber = hintState.hintSequenceNumber
-  }
-
-  fun restoreHintHandlerFromCheckpoint(explorationCheckpoint: ExplorationCheckpoint) {
-    hintHandler.previousHelpIndex =
-      if (explorationCheckpoint.hintIndex != -1) {
-        if (explorationCheckpoint.hintIndex == explorationCheckpoint.indexOfLastRevealedHint) {
-          HelpIndex.newBuilder().setEverythingRevealed(true).build()
-        } else if (explorationCheckpoint.hintIndex >= explorationCheckpoint.hintCount) {
-          if (explorationCheckpoint.isUnrevealedSolutionVisible) {
-            HelpIndex.newBuilder().setShowSolution(true).build()
-          } else {
-            HelpIndex.newBuilder().setEverythingRevealed(true).build()
-          }
-        } else {
-          HelpIndex.newBuilder().setHintIndex(explorationCheckpoint.hintIndex).build()
-        }
-      } else {
-        HelpIndex.getDefaultInstance()
-      }
-
+  fun updateHintState(hintState: HintState) {
     hintHandler.apply {
-      isHintVisibleInLatestState = explorationCheckpoint.hintIndex != -1
-      trackedWrongAnswerCount = explorationCheckpoint.pendingUserAnswersCount
-      indexOfLastRevealedHint = explorationCheckpoint.indexOfLastRevealedHint
+      isHintVisibleInLatestState = hintState.isHintVisibleInLatestState
+      hintSequenceNumber = hintState.hintSequenceNumber
+      trackedWrongAnswerCount = hintState.trackedAnswerCount
+      previousHelpIndex = hintState.helpIndex
     }
   }
 
@@ -1532,7 +1477,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     var previousHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
     var hintSequenceNumber = 0
     var isHintVisibleInLatestState = false
-    var indexOfLastRevealedHint: Int = -1
 
     /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
     fun reset() {
@@ -1543,15 +1487,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // scheduled without overlapping with past sequence numbers.
       hintSequenceNumber++
       isHintVisibleInLatestState = false
-      indexOfLastRevealedHint = -1
     }
 
     /** Hide hint when moving to any previous state. */
     fun hideHint() {
       (fragment as ShowHintAvailabilityListener).onHintAvailable(
-        HelpIndex.getDefaultInstance(),
-        indexOfLastRevealedHint = -1,
-        isSolutionRevealed = false
+        HelpIndex.getDefaultInstance()
       )
     }
 
@@ -1569,26 +1510,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // state. If any hint was revealed and user move between current and completed states, then
       // show those revealed hints back by making icon visible else use the previous help index.
       if (isHintVisibleInLatestState) {
-        if (state.interaction.hintList[previousHelpIndex.hintIndex].hintIsRevealed) {
+        if (state.interaction.hintList[previousHelpIndex.hintIndex.index].hintIsRevealed) {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
-            HelpIndex.newBuilder().setEverythingRevealed(true).build(),
-            indexOfLastRevealedHint = indexOfLastRevealedHint,
-            isSolutionRevealed = state.interaction.solution.solutionIsRevealed
+            HelpIndex.newBuilder().setEverythingRevealed(true).build()
           )
         } else {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
-            previousHelpIndex,
-            indexOfLastRevealedHint = indexOfLastRevealedHint,
-            isSolutionRevealed = state.interaction.solution.solutionIsRevealed
+            previousHelpIndex
           )
         }
-      }
-
-      indexOfLastRevealedHint = state.interaction.hintList.indexOfLast { hint ->
-        hint.hintIsRevealed
-      }
-      val indexOfVisibleUnrevealedHint = state.interaction.hintList.indexOfLast { hint ->
-        hint.unrevealedHintIsVisible
       }
 
       // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
@@ -1597,7 +1527,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
       val isFirstHint = previousHelpIndex.indexTypeCase == INDEXTYPE_NOT_SET
       val wrongAnswerCount = pendingState.wrongAnswerList.size
-
       if (wrongAnswerCount == trackedWrongAnswerCount) {
         // If no answers have been submitted, schedule a task to automatically help after a fixed
         // amount of time. This will automatically reset if something changes other than answers
@@ -1605,19 +1534,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         if (isFirstHint) {
           // The learner needs to wait longer for the initial hint to show since they need some time
           // to read through and consider the question.
-          scheduleShowHint(
-            delayShowInitialHintMs,
-            nextUnrevealedHintIndex,
-            indexOfLastRevealedHint,
-            state.interaction.solution.solutionIsRevealed
-          )
+          scheduleShowHint(delayShowInitialHintMs, nextUnrevealedHintIndex)
         } else {
-          scheduleShowHint(
-            delayShowAdditionalHintsMs,
-            nextUnrevealedHintIndex,
-            indexOfLastRevealedHint,
-            state.interaction.solution.solutionIsRevealed
-          )
+          scheduleShowHint(delayShowAdditionalHintsMs, nextUnrevealedHintIndex)
         }
       } else {
         // See if the learner's new wrong answer justifies showing a hint.
@@ -1625,19 +1544,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
           if (wrongAnswerCount > 1) {
             // If more than one answer has been submitted and no hint has yet been shown, show a
             // hint immediately since the learner is probably stuck.
-            showHintImmediately(
-              nextUnrevealedHintIndex,
-              indexOfLastRevealedHint,
-              state.interaction.solution.solutionIsRevealed
-            )
+            showHintImmediately(nextUnrevealedHintIndex)
           }
         } else {
           // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
           scheduleShowHint(
             delayShowAdditionalHintsFromWrongAnswerMs,
-            nextUnrevealedHintIndex,
-            indexOfLastRevealedHint,
-            state.interaction.solution.solutionIsRevealed
+            nextUnrevealedHintIndex
           )
         }
         trackedWrongAnswerCount = wrongAnswerCount
@@ -1662,7 +1575,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return if (!hasHelp) {
         HelpIndex.getDefaultInstance()
       } else if (lastUnrevealedHintIndex != null) {
-        HelpIndex.newBuilder().setHintIndex(lastUnrevealedHintIndex).build()
+        HelpIndex.newBuilder().apply { HintIndex.newBuilder().apply {
+            index = lastUnrevealedHintIndex
+            isHintRevealed = false
+          }.build()
+        }.build()
       } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
         HelpIndex.newBuilder().setShowSolution(true).build()
       } else {
@@ -1674,22 +1591,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Schedules to allow the hint of the specified index to be shown after the specified delay,
      * cancelling any previously pending hints initiated by calls to this method.
      */
-    private fun scheduleShowHint(
-      delayMs: Long,
-      helpIndexToShow: HelpIndex,
-      indexOfLastRevealedHint: Int,
-      isSolutionRevealed: Boolean
-    ) {
+    private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
       val targetSequenceNumber = ++hintSequenceNumber
       lifecycleSafeTimerFactory.createTimer(delayMs).observe(
         fragment,
         Observer {
-          showHint(
-            targetSequenceNumber,
-            helpIndexToShow,
-            indexOfLastRevealedHint,
-            isSolutionRevealed
-          )
+          showHint(targetSequenceNumber, helpIndexToShow)
         }
       )
     }
@@ -1698,52 +1605,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Immediately indicates the specified hint is ready to be shown, cancelling any previously
      * pending hints initiated by calls to [scheduleShowHint].
      */
-    private fun showHintImmediately(
-      helpIndexToShow: HelpIndex,
-      indexOfLastRevealedHint: Int,
-      isSolutionRevealed: Boolean
-    ) {
-      showHint(++hintSequenceNumber, helpIndexToShow, indexOfLastRevealedHint, isSolutionRevealed)
+    private fun showHintImmediately(helpIndexToShow: HelpIndex) {
+      showHint(++hintSequenceNumber, helpIndexToShow)
     }
 
-    private fun showHint(
-      targetSequenceNumber: Int,
-      helpIndexToShow: HelpIndex,
-      indexOfLastRevealedHint: Int,
-      isSolutionRevealed: Boolean
-    ) {
+    private fun showHint(targetSequenceNumber: Int, helpIndexToShow: HelpIndex) {
       // Only finish this timer if no other hints were scheduled and no cancellations occurred.
       if (targetSequenceNumber == hintSequenceNumber) {
         if (previousHelpIndex != helpIndexToShow) {
           // Only indicate the hint is available if its index is actually new (including if it
           // becomes null such as in the case of the solution becoming available).
-          (fragment as ShowHintAvailabilityListener).onHintAvailable(
-            helpIndexToShow,
-            indexOfLastRevealedHint,
-            isSolutionRevealed
-          )
-          previousHelpIndex = helpIndexToShow
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
+          val hintIndex = helpIndexToShow.hintIndex.toBuilder().setIsHintRevealed(true).build()
+          previousHelpIndex = helpIndexToShow.toBuilder().setHintIndex(hintIndex).build()
           isHintVisibleInLatestState = true
         }
-      }
-    }
-
-    /** Restores the variables of [HintHandler]  if the exploration is resumed. */
-    private fun restoreHintHandler(state: State) {
-      // isHintVisibleInLatestState will be true if attest one hint is visible to the learner.
-      isHintVisibleInLatestState = state.interaction.hintList[0].hintIsRevealed
-      if (isHintVisibleInLatestState) {
-        indexOfLastRevealedHint = state.interaction.hintList.indexOfLast { hint ->
-          hint.hintIsRevealed
-        }
-      }
-
-      previousHelpIndex = when (indexOfLastRevealedHint) {
-        state.interaction.hintCount -> {
-          HelpIndex.newBuilder().setEverythingRevealed(true).build()
-        }
-        -1 -> HelpIndex.getDefaultInstance()
-        else -> HelpIndex.newBuilder().setHintIndex(indexOfLastRevealedHint).build()
       }
     }
   }

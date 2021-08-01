@@ -6,8 +6,6 @@ import org.oppia.android.app.model.HelpIndex
 interface ShowHintAvailabilityListener {
   /** Called when a hint is available to be shown, or if hints have been revealed. */
   fun onHintAvailable(
-    helpIndex: HelpIndex,
-    indexOfLastRevealedHint: Int,
-    isSolutionRevealed: Boolean
+    helpIndex: HelpIndex
   )
 }
