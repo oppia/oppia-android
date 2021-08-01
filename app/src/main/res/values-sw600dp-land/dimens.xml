@@ -275,4 +275,10 @@
   <dimen name="concept_card_explanation_text_marginTop">16dp</dimen>
   <dimen name="concept_card_explanation_text_marginEnd">176dp</dimen>
 
+  <!-- All Topics -->
+  <dimen name="all_topics_text_margin_start">96dp</dimen>
+  <dimen name="all_topics_text_margin_top">68dp</dimen>
+  <dimen name="all_topics_text_margin_end">76dp</dimen>
+  <dimen name="all_topics_text_margin_bottom">24dp</dimen>
+
 </resources>

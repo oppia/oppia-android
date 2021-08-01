@@ -435,4 +435,10 @@
   <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
   <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
 
+  <!-- All Topics -->
+  <dimen name="all_topics_text_margin_start">28dp</dimen>
+  <dimen name="all_topics_text_margin_top">56dp</dimen>
+  <dimen name="all_topics_text_margin_end">32dp</dimen>
+  <dimen name="all_topics_text_margin_bottom">12dp</dimen>
+
 </resources>
