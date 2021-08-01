@@ -42,8 +42,12 @@ private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
 private const val RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID =
   "retrieve_chapter_play_state_data_provider_id"
 private const val RECORD_COMPLETED_CHAPTER_PROVIDER_ID = "record_completed_chapter_provider_id"
-private const val RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID =
-  "record_recently_played_chapter_provider_id"
+private const val RECORD_IN_PROGRESS_SAVED_CHAPTER_PROVIDER_ID =
+  "record_in_progress_saved_chapter_provider_id"
+private const val RECORD_STARTED_NOT_COMPLETED_CHAPTER_PROVIDER_ID =
+  "record_STARTED_NOT_COMPLETED_chapter_provider_id"
+private const val RECORD_IN_PROGRESS_NOT_SAVED_CHAPTER_PROVIDER_ID =
+  "record_in_progress_not_saved_chapter_provider_id"
 
 /**
  * Controller that records and provides completion statuses of chapters within the context of a
@@ -71,12 +75,12 @@ class StoryProgressController @Inject constructor(
    * topic. Returns a [DataProvider] that provides exactly one [AsyncResult] to indicate whether
    * this operation has succeeded. This method will never return a pending result.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
-   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
-   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored
+   * @param storyId the ID corresponding to the story for which progress needs to be stored
    * @param explorationId the chapter id which will marked as [ChapterPlayState.COMPLETED]
-   * @param completionTimestamp the timestamp at the exploration was finished.
-   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
+   * @param completionTimestamp the timestamp at the exploration was finished
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordCompletedChapter(
     profileId: ProfileId,
@@ -158,7 +162,9 @@ class StoryProgressController @Inject constructor(
             explorationId
           )
 
-        val chapterProgressBuilder = if (previousChapterProgress != null) {
+        val chapterProgressBuilder = if (previousChapterProgress != null &&
+          previousChapterProgress.chapterPlayState == ChapterPlayState.COMPLETED
+        ) {
           previousChapterProgress.toBuilder()
         } else {
           ChapterProgress.newBuilder()
@@ -203,7 +209,7 @@ class StoryProgressController @Inject constructor(
       }
 
     return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID
+      RECORD_IN_PROGRESS_SAVED_CHAPTER_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
@@ -218,8 +224,8 @@ class StoryProgressController @Inject constructor(
    * @param topicId the ID corresponding to the topic for which progress needs to be stored
    * @param storyId the ID corresponding to the story for which progress needs to be stored
    * @param explorationId the chapter id which will marked as [ChapterPlayState.IN_PROGRESS_NOT_SAVED]
-   *        if it has not been [ChapterPlayState.COMPLETED] already
-   * @param lastPlayedTimestamp the timestamp at the exploration was finished.
+   *     if it has not been [ChapterPlayState.COMPLETED] already
+   * @param lastPlayedTimestamp the timestamp at the exploration was finished
    * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
   fun recordChapterAsInProgressNotSaved(
@@ -239,7 +245,9 @@ class StoryProgressController @Inject constructor(
             explorationId
           )
 
-        val chapterProgressBuilder = if (previousChapterProgress != null) {
+        val chapterProgressBuilder = if (previousChapterProgress != null &&
+          previousChapterProgress.chapterPlayState == ChapterPlayState.COMPLETED
+        ) {
           previousChapterProgress.toBuilder()
         } else {
           ChapterProgress.newBuilder()
@@ -284,7 +292,7 @@ class StoryProgressController @Inject constructor(
       }
 
     return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID
+      RECORD_IN_PROGRESS_NOT_SAVED_CHAPTER_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }
@@ -295,15 +303,15 @@ class StoryProgressController @Inject constructor(
    * [DataProvider] that provides exactly one [AsyncResult] to indicate whether this operation has
    * succeeded. This method will never return a pending result.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs to be stored.
-   * @param topicId the ID corresponding to the topic for which progress needs to be stored.
-   * @param storyId the ID corresponding to the story for which progress needs to be stored.
+   * @param profileId the ID corresponding to the profile for which progress needs to be stored
+   * @param topicId the ID corresponding to the topic for which progress needs to be stored
+   * @param storyId the ID corresponding to the story for which progress needs to be stored
    * @param explorationId the chapter id which will marked as [ChapterPlayState.NOT_STARTED] if it
-   *    has not been [ChapterPlayState.COMPLETED] already.
-   * @param lastPlayedTimestamp the timestamp at which the exploration was last played.
-   * @return a [DataProvider] that indicates the success/failure of this record progress operation.
+   *    has not been [ChapterPlayState.COMPLETED] already
+   * @param lastPlayedTimestamp the timestamp at which the exploration was last played
+   * @return a [DataProvider] that indicates the success/failure of this record progress operation
    */
-  fun recordRecentlyPlayedChapter(
+  fun recordChapterAsStartedNotCompleted(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -365,7 +373,7 @@ class StoryProgressController @Inject constructor(
       }
 
     return dataProviders.createInMemoryDataProviderAsync(
-      RECORD_RECENTLY_PLAYED_CHAPTER_PROVIDER_ID
+      RECORD_STARTED_NOT_COMPLETED_CHAPTER_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferred)
     }

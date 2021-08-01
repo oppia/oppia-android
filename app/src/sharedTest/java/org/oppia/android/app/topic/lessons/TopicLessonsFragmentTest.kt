@@ -406,6 +406,96 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_partialProgIconIsDisplayed() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayed(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_configChange_partialProgIconIsDisplayed() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(isRoot()).perform(orientationLandscape())
+      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayed(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_completedIconIsDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayed(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_configChange_completedIconIsDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(isRoot()).perform(orientationLandscape())
+      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayed(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_startedNotCompleted_chapterPlayStateIconIsNotVisible() {
+    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsNotVisible(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_unsavedPartialProg_chapterPlayStateIconIsNotVisible() {
+    storyProgressTestHelper.markInProgressNotSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsNotVisible(itemPosition = 0)
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -475,6 +565,46 @@ class TopicLessonsFragmentTest {
         targetViewId = R.id.story_name_chapter_count_container
       )
     ).check(matches(withContentDescription(stringToMatch)))
+  }
+
+  private fun verifyChapterPlayStateIconIsVisible(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  private fun verifyChapterPlayStateIconIsNotVisible(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(not(isDisplayed())))
+  }
+
+  private fun verifyPartialProgressIconIsDisplayed(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withDrawable(R.drawable.ic_pending_24dp)))
+  }
+
+  private fun verifyChapterCompletedIconIsDisplayed(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withDrawable(R.drawable.ic_check_24dp)))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
