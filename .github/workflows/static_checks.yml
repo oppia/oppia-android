@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:    
+    branches:
       - develop
-      
+
 jobs:
   check_codeowners:
     name: Check CODEOWNERS & Repository files
@@ -128,3 +128,19 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
+
+  third_party_dependencies_check:
+    name: Maven Dependencies Checks
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: License Texts Check
+        if: always()
+        run: |
+          bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
