@@ -434,10 +434,20 @@
   <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
   <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">28dp</dimen>
   <dimen name="all_topics_text_margin_top">56dp</dimen>
   <dimen name="all_topics_text_margin_end">32dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
+=======
+  <!-- Profile Chooser Fragment -->
+  <dimen name="profile_chooser_fragment_profile_select_text_marginTop">32dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_martinTop">10dp</dimen>
+  <dimen name="profile_chooser_profile_view_view_marginTop">30dp</dimen>
+>>>>>>> Stashed changes
 
+>>>>>>> Stashed changes
 </resources>
