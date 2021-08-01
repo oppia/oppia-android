@@ -131,7 +131,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
         if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
-          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex
+          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex.index
         }
         questionViewModel.allHintsExhausted =
           helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION

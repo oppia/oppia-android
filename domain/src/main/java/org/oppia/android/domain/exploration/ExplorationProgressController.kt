@@ -188,9 +188,19 @@ class ExplorationProgressController @Inject constructor(
               explorationProgress.stateGraph.getState(answerOutcome.stateName),
               prohibitSameStateName = true
             )
+            // Reset the hintState if answer leads to a different part of the graph.
+            explorationProgress.hintState = HintState.newBuilder().apply {
+              trackedAnswerCount = 0
+              hintSequenceNumber = hintState.hintSequenceNumber + 1
+              isHintVisibleInLatestState = false
+              helpIndex = HelpIndex.getDefaultInstance()
+            }.build()
+          } else {
+            // Update explorationProgress.hintState with the latest hintState if answer is not
+            // does not lead to a new state.
+            explorationProgress.hintState = hintState
           }
         } finally {
-          explorationProgress.hintState = hintState
           // If the answer was submitted on behalf of the Continue interaction, don't save
           // checkpoint because it will be saved when the learner moves to the next state.
           if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
@@ -508,7 +518,6 @@ class ExplorationProgressController @Inject constructor(
           "Cannot navigate to a next state if an answer submission is pending."
         }
         explorationProgress.stateDeck.navigateToNextState()
-
         // Only mark checkpoint if current state is pending state. This ensures that checkpoints
         // will not be marked on any of the completed states.
         if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {

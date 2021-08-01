@@ -82,14 +82,8 @@ class StateFragment :
       internalProfileId,
       topicId,
       storyId,
-      explorationId,
-      savedInstanceState
+      explorationId
     )
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    stateFragmentPresenter.handleOnSaveInstanceState(outState)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -109,12 +103,8 @@ class StateFragment :
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(
-    helpIndex: HelpIndex,
-    indexOfLastRevealedHint: Int,
-    isSolutionRevealed: Boolean
-  ) =
-    stateFragmentPresenter.onHintAvailable(helpIndex, indexOfLastRevealedHint, isSolutionRevealed)
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    stateFragmentPresenter.onHintAvailable(helpIndex)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
@@ -133,7 +123,7 @@ class StateFragment :
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+    stateFragmentPresenter.revealHint()
   }
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()
