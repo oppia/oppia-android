@@ -1,5 +1,6 @@
 """
-Libraries corresponding to parse maven_install.json file.
+Libraries corresponding to parse maven_install.json file and storing license details to be used
+within GenerateLicenseTexts.kt.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
@@ -14,4 +15,14 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = ["//third_party:moshi"],
+)
+
+kt_jvm_library(
+    name = "copyright_license_lib",
+    testonly = True,
+    srcs = [
+        "CopyrightLicense.kt",
+        "Dependency.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
