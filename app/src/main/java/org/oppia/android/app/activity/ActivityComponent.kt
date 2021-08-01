@@ -54,6 +54,7 @@ import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.android.app.testing.RecentlyPlayedFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
@@ -126,6 +127,7 @@ interface ActivityComponent {
   fun inject(questionPlayerActivity: QuestionPlayerActivity)
   fun inject(readingTextSizeActivity: ReadingTextSizeActivity)
   fun inject(recentlyPlayedActivity: RecentlyPlayedActivity)
+  fun inject(recentlyPlayedFragmentTestActivity: RecentlyPlayedFragmentTestActivity)
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
