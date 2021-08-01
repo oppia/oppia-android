@@ -18,6 +18,18 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "maven_dependencies_list_check_lib",
+    testonly = True,
+    srcs = [
+        "MavenDependenciesListCheck.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:maven_dependencies_list_generator",
+    ],
+)
+
+kt_jvm_library(
     name = "license_texts_check_lib",
     testonly = True,
     srcs = ["LicenseTextsCheck.kt"],

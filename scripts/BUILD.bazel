@@ -119,6 +119,14 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
+    name = "maven_dependencies_list_check",
+    testonly = True,
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.scripts.ci.MavenDependenciesListCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:maven_dependencies_list_check_lib"],
+)
+
+kt_jvm_binary(
     name = "generate_license_texts",
     testonly = True,
     data = MAVEN_ASSETS,
@@ -154,11 +162,4 @@ kt_jvm_binary(
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
     ],
-)
-
-kt_jvm_binary(
-    name = "license_texts_check",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.ci.LicenseTextsCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:license_texts_check_lib"],
 )

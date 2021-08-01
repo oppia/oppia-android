@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.maven
+package org.oppia.android.scripts.common
 
 /** Utility class to extract the license text from a given URL. */
 interface LicenseFetcher {
