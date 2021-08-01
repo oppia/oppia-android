@@ -583,7 +583,6 @@ exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/Moc
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockConceptCardService.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockExplorationService.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockFeedbackReportingService.kt"
-exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockPlatformParameterService.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockQuestionPlayerService.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockStoryService.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockSubtopicService.kt"
