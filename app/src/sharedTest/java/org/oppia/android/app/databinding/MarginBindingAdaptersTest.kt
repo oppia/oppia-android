@@ -290,9 +290,14 @@ class MarginBindingAdaptersTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /** Inject [MarginBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(marginBindableAdaptersTest: MarginBindingAdaptersTest)
   }
 
+  /**
+   * Class to override a dependency throughout the test application, instead of overriding the
+   * dependencies in every test class, we can just do it once by extending the Application class.
+   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerMarginBindingAdaptersTest_TestApplicationComponent.builder()
@@ -311,6 +316,9 @@ class MarginBindingAdaptersTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
+  /**
+   * Represents an operation that accepts a single input argument and returns no result.
+   */
   private interface Consumer<T> {
     fun consume(value: T)
   }
