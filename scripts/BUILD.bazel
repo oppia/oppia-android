@@ -147,3 +147,10 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
     ],
 )
+
+kt_jvm_binary(
+    name = "license_texts_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.LicenseTextsCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:license_texts_check_lib"],
+)
