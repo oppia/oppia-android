@@ -84,6 +84,8 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
 
+  private var isCurrentStatePendingState: Boolean = false
+
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
   }
@@ -202,6 +204,14 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onHintAvailable(helpIndex: HelpIndex) {
+    if (
+      !isCurrentStatePendingState ||
+      helpIndex.indexTypeCase != HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+    ) {
+      // If current state is not pending state, do not allow any new hints, new solutions or the
+      // hint icon to be visible.
+      return
+    }
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX -> {
         // Update the ViewModel with the index of the un-revealed hint.
@@ -213,13 +223,8 @@ class StateFragmentPresenter @Inject constructor(
         } else {
           viewModel.setHintOpenedAndUnRevealedVisibility(true)
           viewModel.setHintBulbVisibility(true)
-          if (
-            !currentState.interaction.hintList[helpIndex.hintIndex.index].unrevealedHintIsVisible
-          ) {
-            // Notify the ExplorationProgressController that an un-revealed hint is visible if it
-            // is not already notified.
-            unrevealedHintIsVisible()
-          }
+          // Notify the ExplorationProgressController that an un-revealed hint is visible.
+          unrevealedHintIsVisible(helpIndex.hintIndex.index)
         }
       }
       HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
@@ -227,11 +232,8 @@ class StateFragmentPresenter @Inject constructor(
         // 1 is subtracted from the hint count because hints are indexed from 0.
         viewModel.newAvailableHintIndex = currentState.interaction.hintCount - 1
         viewModel.allHintsExhausted = true
-        if (!currentState.interaction.solution.unrevealedSolutionIsVisible) {
-          // Notify the ExplorationProgressController that un-revealed solution is visible if it
-          // is not already notified.
-          unrevealedSolutionIsVisible()
-        }
+        // Notify the ExplorationProgressController that un-revealed solution is visible.
+        unrevealedSolutionIsVisible()
         viewModel.setHintOpenedAndUnRevealedVisibility(true)
         viewModel.setHintBulbVisibility(true)
       }
@@ -319,6 +321,15 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun unrevealedSolutionIsVisible() {
+    if (
+      !currentState.interaction.solution.unrevealedSolutionIsVisible ||
+      currentState.interaction.solution.solutionIsRevealed
+    ) {
+      // If solution is already marked as un-revealed but visible or if the solution has been
+      // revealed by the user, do nothing.
+      return
+    }
+
     subscribeToUnRevealedSolution(
       explorationProgressController.submitUnrevealedSolutionIsVisible(
         currentState,
@@ -327,7 +338,15 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun unrevealedHintIsVisible() {
+  private fun unrevealedHintIsVisible(indexOfHint: Int) {
+    if (
+      currentState.interaction.hintList[indexOfHint].unrevealedHintIsVisible ||
+      currentState.interaction.hintList[indexOfHint].hintIsRevealed
+    ) {
+      // If solution is already marked as unrevealed or if the solution has been revealed by the
+      // user, do nothing.
+      return
+    }
     subscribeToUnrevealedHint(
       explorationProgressController.submitUnrevealedHintIsVisible(
         currentState,
@@ -394,6 +413,10 @@ class StateFragmentPresenter @Inject constructor(
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
+
+    isCurrentStatePendingState =
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
+
     showOrHideAudioByState(ephemeralState.state)
 
     val dataPair = recyclerViewAssembler.compute(
@@ -416,24 +439,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /**
-   * This function listens to the result of UnrevealedHintIsVisible.
-   * Whenever a un-revealed hint is visible, this function will wait for the response from that
-   * function and based on which we can move to next state.
-   */
-  private fun subscribeToUnrevealedHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
-    val hintLiveData = getUnrevealedHintIsVisible(hintResultLiveData)
-    hintLiveData.observe(
-      fragment,
-      Observer { result ->
-        // If the un-revealed hint is visible, show dot and radar.
-        if (result.unrevealedHintIsVisible) {
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
-        }
-      }
-    )
-  }
-
-  /**
    * This function listens to the result of RevealHint.
    * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
    * this function will wait for the response from that function and based on which we can move to
@@ -447,6 +452,24 @@ class StateFragmentPresenter @Inject constructor(
         // If the hint was revealed remove dot and radar.
         if (result.hintIsRevealed) {
           viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+      }
+    )
+  }
+
+  /**
+   * This function listens to the result of UnrevealedHintIsVisible.
+   * Whenever a un-revealed hint is visible, this function will wait for the response from that
+   * function and based on which we can move to next state.
+   */
+  private fun subscribeToUnrevealedHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
+    val hintLiveData = getUnrevealedHintIsVisible(hintResultLiveData)
+    hintLiveData.observe(
+      fragment,
+      Observer { result ->
+        // If the un-revealed hint is visible, show dot and radar.
+        if (result.unrevealedHintIsVisible) {
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
         }
       }
     )

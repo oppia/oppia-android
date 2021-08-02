@@ -1496,7 +1496,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
 
     /**
-     * Handles potentially new wrong answers that were submnitted, and if so schedules a hint to be
+     * Handles potentially new wrong answers that were submitted, and if so schedules a hint to be
      * shown to the user if hints are available.
      */
     fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
@@ -1566,13 +1566,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return if (!hasHelp) {
         HelpIndex.getDefaultInstance()
       } else if (lastUnrevealedHintIndex != null) {
-        HelpIndex.newBuilder().apply {
-          hintIndex =
-            HintIndex.newBuilder().apply {
-              index = lastUnrevealedHintIndex
-              isHintRevealed = false
-            }.build()
-        }.build()
+        HelpIndex.newBuilder()
+          .setHintIndex(
+            HintIndex.newBuilder()
+              .setIndex(lastUnrevealedHintIndex).setIsHintRevealed(false).build()
+          ).build()
       } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
         HelpIndex.newBuilder().setShowSolution(true).build()
       } else {
