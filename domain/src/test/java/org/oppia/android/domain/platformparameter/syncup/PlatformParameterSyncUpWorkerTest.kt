@@ -38,11 +38,13 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
+import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
@@ -100,9 +102,8 @@ class PlatformParameterSyncUpWorkerTest {
   @Inject
   lateinit var context: Context
 
-  private val testVersionName = "1.0"
-
-  private val testVersionCode = 1
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   private val expectedTestStringParameter = PlatformParameter.newBuilder()
     .setName(TEST_STRING_PARAM_NAME)
@@ -114,6 +115,11 @@ class PlatformParameterSyncUpWorkerTest {
     .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
     .build()
 
+  private val defaultTestIntegerParameter = PlatformParameter.newBuilder()
+    .setName(TEST_INTEGER_PARAM_NAME)
+    .setInteger(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+    .build()
+
   private val expectedTestBooleanParameter = PlatformParameter.newBuilder()
     .setName(TEST_BOOLEAN_PARAM_NAME)
     .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
@@ -122,13 +128,12 @@ class PlatformParameterSyncUpWorkerTest {
   // Not including "expectedTestBooleanParameter" in this list to prove that a refresh took place
   private val mockPlatformParameterList = listOf<PlatformParameter>(
     expectedTestStringParameter,
-    expectedTestIntegerParameter
+    defaultTestIntegerParameter // using default value here just to prove refresh took place
   )
 
   @Before
   fun setup() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(platformParameterSyncUpWorkerFactory)
@@ -137,7 +142,10 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsEmpty_refreshPlatformParameters_verifyCachedValues() {
+  fun testSyncUpWorker_previousDatabaseIsEmpty_getCorrectPlatformParameter_verifyCachedValues() {
+    // setup versionName to get correct network response from mock platform parameter service
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+
     // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request
     platformParameterController.updatePlatformParameterDatabase(listOf())
 
@@ -174,7 +182,42 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsNotEmpty_refreshPlatformParameters_verifyCachedValues() {
+  fun testSyncUpWorker_previousDatabaseIsEmpty_getWrongPlatformParameter_verifyWorkerCrashes() {
+    // setup versionName to get incorrect network response from mock platform parameter service
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+
+    // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request
+    platformParameterController.updatePlatformParameterDatabase(listOf())
+
+    val workManager = WorkManager.getInstance(context)
+
+    val inputData = Data.Builder().putString(
+      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+      .setInputData(inputData)
+      .build()
+
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+
+    val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
+    assertThat(exceptionMessage).isEqualTo(
+      PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG
+    )
+  }
+
+  @Test
+  fun testSyncUpWorker_previousDatabaseIsNotEmpty_getCorrectPlatformParameter_verifyCachedValues() {
+    // setup versionName to get correct network response from mock platform parameter service
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
     // Work request that is not first
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
@@ -206,18 +249,53 @@ class PlatformParameterSyncUpWorkerTest {
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
     assertThat(platformParameterMap).isNotEmpty()
 
-    // New Boolean Platform Parameter is now present in the Database along with the previous ones
+    // New Boolean Platform Parameter is now present in the Database
     assertThat(platformParameterMap).containsEntry(
       TEST_BOOLEAN_PARAM_NAME,
       expectedTestBooleanParameter
     )
+    // Previous String Platform Parameter is still same in the Database
     assertThat(platformParameterMap).containsEntry(
       TEST_STRING_PARAM_NAME,
       expectedTestStringParameter
     )
+    // Previous Integer Platform Parameter updated to new value in the Database
     assertThat(platformParameterMap).containsEntry(
       TEST_INTEGER_PARAM_NAME,
       expectedTestIntegerParameter
+    )
+  }
+
+  @Test
+  fun testSyncUpWorker_previousDatabaseIsNotEmpty_getWrongPlatformParameter_verifyWorkerCrashes() {
+    // setup versionName to get incorrect network response from mock platform parameter service
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+
+    // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
+    // Work request that is not first
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+
+    val workManager = WorkManager.getInstance(context)
+
+    val inputData = Data.Builder().putString(
+      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+      .setInputData(inputData)
+      .build()
+
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+
+    val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
+    assertThat(exceptionMessage).isEqualTo(
+      PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG
     )
   }
 
@@ -225,7 +303,7 @@ class PlatformParameterSyncUpWorkerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpApplicationForContext() {
+  private fun setUpApplicationForContext(testAppVersionName: String) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
@@ -236,8 +314,7 @@ class PlatformParameterSyncUpWorkerTest {
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
-    packageInfo.versionName = testVersionName
-    packageInfo.versionCode = testVersionCode
+    packageInfo.versionName = testAppVersionName
     packageManager.installPackage(packageInfo)
   }
 

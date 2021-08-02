@@ -9,6 +9,7 @@ import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalArgumentException
@@ -21,12 +22,13 @@ class PlatformParameterSyncUpWorker private constructor(
   private val platformParameterController: PlatformParameterController,
   private val platformParameterService: PlatformParameterService,
   private val oppiaLogger: OppiaLogger,
+  private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : CoroutineWorker(context, params) {
 
   companion object {
     /** Exception message when the type of values received in the network response are not valid. */
-    const val EXCEPTION_MSG =
+    const val INCORRECT_TYPE_EXCEPTION_MSG =
       "Platform Parameter Value has incorrect data type, ie. other than String/Int/Boolean"
 
     /** A Tag for the logs that are associated with PlatformParameterSyncUpWorker. */
@@ -55,7 +57,7 @@ class PlatformParameterSyncUpWorker private constructor(
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
         is Boolean -> platformParameter.boolean = value
-        else -> throw IllegalArgumentException(EXCEPTION_MSG)
+        else -> throw IllegalArgumentException(INCORRECT_TYPE_EXCEPTION_MSG)
       }
       platformParameterList.add(platformParameter.build())
     }
@@ -74,6 +76,7 @@ class PlatformParameterSyncUpWorker private constructor(
       Result.success()
     } catch (e: Exception) {
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
+      exceptionsController.logNonFatalException(e)
       Result.failure()
     }
   }
@@ -83,6 +86,7 @@ class PlatformParameterSyncUpWorker private constructor(
     private val platformParameterController: PlatformParameterController,
     private val platformParameterService: PlatformParameterService,
     private val oppiaLogger: OppiaLogger,
+    private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     /** A function that returns an instance of [PlatformParameterSyncUpWorker]. */
@@ -93,6 +97,7 @@ class PlatformParameterSyncUpWorker private constructor(
         platformParameterController,
         platformParameterService,
         oppiaLogger,
+        exceptionsController,
         backgroundDispatcher
       )
     }

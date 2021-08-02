@@ -14,20 +14,38 @@ import retrofit2.mock.BehaviorDelegate
 class MockPlatformParameterService(
   private val delegate: BehaviorDelegate<PlatformParameterService>
 ) : PlatformParameterService {
+
+  private val TEST_OBJECT_AS_PARAM_VALUE = listOf<String>()
+
+  companion object {
+    const val appVersionForCorrectResponse = "1.0"
+    const val appVersionForWrongResponse = "2.0"
+    const val appVersionForEmptyResponse = "3.0"
+  }
+
   override fun getPlatformParametersByVersion(
     version: String,
     plaformType: String
   ): Call<Map<String, Any>> {
-    val parameters = createMockPlatformParameterMap()
+    val parameters = createMockPlatformParameterMap(version)
     return delegate.returningResponse(parameters).getPlatformParametersByVersion(version)
   }
 
   // Creates a Mock Response containing Map of PlatformParameters for testing
-  private fun createMockPlatformParameterMap(): Map<String, Any> {
-    return mapOf(
-      TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
-      TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-      TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
-    )
+  private fun createMockPlatformParameterMap(appVersion: String): Map<String, Any> {
+    return when (appVersion) {
+      appVersionForCorrectResponse -> mapOf(
+        TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
+        TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
+        TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
+      )
+      appVersionForWrongResponse -> mapOf(
+        TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
+        TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
+        TEST_BOOLEAN_PARAM_NAME to TEST_OBJECT_AS_PARAM_VALUE // unsupported value type in response
+      )
+      // appVersionForEmptyResponse does not have a separate case as it can be handled by else
+      else -> mapOf()
+    }
   }
 }
