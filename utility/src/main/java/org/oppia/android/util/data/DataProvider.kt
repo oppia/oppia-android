@@ -8,7 +8,7 @@ import android.content.Context
  * @param <T> The type of data being provided.
  */
 abstract class DataProvider<T>(val context: Context) {
-  
+
   /**
    * Returns a unique identifier that corresponds to this data provider. This should be a trivially
    * copyable and immutable object. This ID is used to determine which data provider subscribers
