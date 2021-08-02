@@ -50,7 +50,7 @@ fun main(vararg args: String) {
 
   if (closedIssueFailureTodos.isNotEmpty()) {
     generateTodoListFile(repoPath, closedIssueFailureTodos, githubPermalinkUrl)
-    throw Exception("CLOSED ISSUE CHECK PASSED")
+    throw Exception("CLOSED ISSUE CHECK FAILED")
   } else {
     println("CLOSED ISSUE CHECK PASSED")
   }
@@ -91,12 +91,13 @@ private fun generateTodoListFile(
   val todoListFile = File(repoPath + "todo_list.txt")
   todoListFile.appendText("The issue is reopened because of the following unresolved TODOs:")
   todoListFile.appendText("\n")
-  closedIssueFailureTodos.forEach { todo ->
-    todoListFile.appendText(
-      "$githubPermalinkUrl${(todo.filePath).removePrefix(repoPath)}#L${todo.lineNumber}"
-    )
-    todoListFile.appendText("\n")
-  }
+  closedIssueFailureTodos.sortedWith(compareBy({ it.filePath }, { it.lineNumber }))
+    .forEach { todo ->
+      todoListFile.appendText(
+        "$githubPermalinkUrl${(todo.filePath).removePrefix(repoPath)}#L${todo.lineNumber}"
+      )
+      todoListFile.appendText("\n")
+    }
 }
 
 /**
