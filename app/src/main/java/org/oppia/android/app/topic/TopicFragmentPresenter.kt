@@ -38,7 +38,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val isTopicDownloaded = false
 
   // TODO(3082): Replace this variable with the injected annotation
-  private val enableMyDownloads = true
+  private var enableMyDownloads = true
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -46,7 +46,8 @@ class TopicFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    isConfigChanged: Boolean
+    isConfigChanged: Boolean,
+    enableMyDownloads: Boolean
   ): View? {
     val binding = TopicFragmentBinding.inflate(
       inflater,
@@ -55,6 +56,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
     this.storyId = storyId
+    this.enableMyDownloads = enableMyDownloads
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId

@@ -32,7 +32,8 @@ class TopicTestActivity :
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
-      storyId = ""
+      storyId = "",
+      enableMyDownloads = false
     )
   }
 

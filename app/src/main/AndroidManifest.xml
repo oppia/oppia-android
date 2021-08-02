@@ -193,6 +193,9 @@
       android:label="@string/topic_page"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.topicdownloaded.TopicDownloadedActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.walkthrough.WalkthroughActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.LessonThumbnailImageViewTestActivity" />

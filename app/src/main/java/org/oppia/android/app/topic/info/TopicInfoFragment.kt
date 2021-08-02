@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.topic.ENABLE_MY_DOWNLOADS_ARGUMENT_KEY
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
@@ -20,11 +21,16 @@ class TopicInfoFragment :
       "TopicInfoFragment.topic_download_dialog_tag"
 
     /** Returns a new [TopicInfoFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
+    fun newInstance(
+      internalProfileId: Int,
+      topicId: String,
+      enableMyDownloads: Boolean
+    ): TopicInfoFragment {
       val topicInfoFragment = TopicInfoFragment()
       val args = Bundle()
       args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putBoolean(ENABLE_MY_DOWNLOADS_ARGUMENT_KEY, enableMyDownloads)
       topicInfoFragment.arguments = args
       return topicInfoFragment
     }
@@ -47,11 +53,13 @@ class TopicInfoFragment :
     val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
+    val enableMyDownloads = arguments?.getBoolean(ENABLE_MY_DOWNLOADS_ARGUMENT_KEY, false)!!
     return topicInfoFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
-      topicId
+      topicId,
+      enableMyDownloads
     )
   }
 

@@ -27,6 +27,9 @@ class TopicActivity :
   private lateinit var topicId: String
   private var storyId: String? = null
 
+  // TODO(): Replace this variable with injecting annotation
+  private var enableMyDownloads = true
+
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -37,8 +40,9 @@ class TopicActivity :
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
+    this.enableMyDownloads = intent?.getBooleanExtra("download", true)!!
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId, enableMyDownloads)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -134,6 +138,19 @@ class TopicActivity :
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      return intent
+    }
+
+    fun createTopicActivityWithEnableMyDownloads(
+      context: Context,
+      internalProfileId: Int,
+      topicId: String,
+      enableMyDownloads: Boolean
+    ): Intent {
+      val intent = Intent(context, TopicActivity::class.java)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      intent.putExtra("download", enableMyDownloads)
       return intent
     }
   }

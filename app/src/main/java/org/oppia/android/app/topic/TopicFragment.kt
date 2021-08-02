@@ -27,6 +27,7 @@ class TopicFragment : InjectableFragment() {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
     val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    val enableMyDownloads = arguments?.getBoolean(ENABLE_MY_DOWNLOADS_ARGUMENT_KEY, false)!!
 
     return topicFragmentPresenter.handleCreateView(
       inflater,
@@ -34,7 +35,8 @@ class TopicFragment : InjectableFragment() {
       internalProfileId,
       topicId,
       storyId,
-      isConfigChanged = savedInstanceState != null
+      isConfigChanged = savedInstanceState != null,
+      enableMyDownloads = enableMyDownloads
     )
   }
 }

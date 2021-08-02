@@ -11,6 +11,7 @@ const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 const val STORY_ID_ARGUMENT_KEY = "story_id"
+const val ENABLE_MY_DOWNLOADS_ARGUMENT_KEY = "enable_my_downloads"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
@@ -21,7 +22,12 @@ class TopicActivityPresenter @Inject constructor(
 
   private lateinit var profileId: ProfileId
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, storyId: String?) {
+  fun handleOnCreate(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String?,
+    enableMyDownloads: Boolean
+  ) {
     this.topicId = topicId
     activity.setContentView(R.layout.topic_activity)
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -30,6 +36,7 @@ class TopicActivityPresenter @Inject constructor(
       val args = Bundle()
       args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+      args.putBoolean(ENABLE_MY_DOWNLOADS_ARGUMENT_KEY, enableMyDownloads)
       if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       }

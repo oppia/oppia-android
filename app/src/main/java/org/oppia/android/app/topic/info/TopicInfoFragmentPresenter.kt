@@ -18,6 +18,7 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topicdownloaded.TopicDownloadedActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicInfoChapterListItemBinding
 import org.oppia.android.databinding.TopicInfoFragmentBinding
@@ -46,17 +47,19 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val enableMyDownloads = true
+  private var enableMyDownloads = false
   private val isTopicDownloaded = false
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
-    topicId: String
+    topicId: String,
+    enableMyDownloads: Boolean
   ): View? {
     this.internalProfileId = internalProfileId
     this.topicId = topicId
+    this.enableMyDownloads = enableMyDownloads
     binding = TopicInfoFragmentBinding.inflate(
       inflater,
       container,
@@ -106,7 +109,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       .newBuilder<TopicInfoChapterItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicInfoChapterListItemBinding::inflate,
-        setViewModel = TopicInfoChapterListItemBinding::setViewModel,
+        setViewModel = TopicInfoChapterListItemBinding::setViewModel
       ).build()
   }
 
@@ -209,17 +212,20 @@ class TopicInfoFragmentPresenter @Inject constructor(
   }
 
   fun showTopicDownloadDialog() {
+    val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
+      activity,
+      internalProfileId,
+      topicId
+    )
+    activity.startActivity(intent)
+    activity.finish()
+
     profileDownloadAccessLiveData.observe(
       fragment,
       Observer<Boolean> { allowDownloadAccess ->
         deviceSettingsDownloadAccessLiveData.observe(
           fragment,
           Observer<Boolean> { allowDownloadAndUpdateOnlyOnWifi ->
-            TopicInfoDownloadBottomSheetDialogFragment.newInstance(
-              topicInfoViewModel.topic.get()!!.name
-            ).apply {
-              show(fragment.parentFragmentManager, "tag")
-            }
             /*if (!allowDownloadAccess) {
               // ask for admin pin
             } else {
