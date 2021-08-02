@@ -478,7 +478,8 @@ class StateAssemblerPaddingBindingAdaptersTest {
     /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
-     fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
+
+    fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
   }
 
   /**
