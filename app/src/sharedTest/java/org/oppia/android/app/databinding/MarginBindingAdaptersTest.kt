@@ -286,7 +286,9 @@ class MarginBindingAdaptersTest {
       ExplorationStorageModule::class
     ]
   )
+  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
@@ -305,6 +307,7 @@ class MarginBindingAdaptersTest {
         .build() as TestApplicationComponent
     }
 
+    /** Inject [MarginBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(marginBindableAdaptersTest: MarginBindingAdaptersTest) {
       component.inject(marginBindableAdaptersTest)
     }
@@ -316,10 +319,8 @@ class MarginBindingAdaptersTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
-  /**
-   * Represents an operation that accepts a single input argument and returns no result.
-   */
   private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
     fun consume(value: T)
   }
 }

@@ -472,11 +472,13 @@ class StateAssemblerPaddingBindingAdaptersTest {
       ExplorationStorageModule::class
     ]
   )
+
+  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
-    /** Inject [StateAssemblerPaddingBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
+     fun inject(StateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest)
   }
 
   /**
@@ -490,6 +492,7 @@ class StateAssemblerPaddingBindingAdaptersTest {
         .build() as TestApplicationComponent
     }
 
+    /** Inject [StateAssemblerPaddingBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(stateAssemblerPaddingBindingAdaptersTest: StateAssemblerPaddingBindingAdaptersTest) {
       component.inject(stateAssemblerPaddingBindingAdaptersTest)
     }
@@ -501,10 +504,8 @@ class StateAssemblerPaddingBindingAdaptersTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
-  /**
-   * Represents an operation that accepts a single input argument and returns no result.
-   */
   private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
     fun consume(value: T)
   }
 }
