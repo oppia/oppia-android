@@ -15,7 +15,7 @@ class TopicDownloadedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  /* Bind TopicDownloadedFragmentBinding with the TopicDownloadedFragment */
+  /** Bind TopicDownloadedFragmentBinding with the TopicDownloadedFragment */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
