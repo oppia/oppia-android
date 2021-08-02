@@ -25,11 +25,18 @@ class PlatformParameterSyncUpWorker private constructor(
 ) : CoroutineWorker(context, params) {
 
   companion object {
-    const val WORKER_TYPE_KEY = "worker_type_key"
-    const val TAG = "PlatformParameterWorker.tag"
-    const val PLATFORM_PARAMETER_WORKER = "platform_parameter_worker"
+    /** Exception message when the type of values received in the network response are not valid. */
     const val EXCEPTION_MSG =
       "Platform Parameter Value has incorrect data type, ie. other than String/Int/Boolean"
+
+    /** A Tag for the logs that are associated with PlatformParameterSyncUpWorker. */
+    const val TAG = "PlatformParameterWorker.tag"
+
+    /** Value of worker-type associated with this PlatformParameterSyncUpWorker. */
+    const val PLATFORM_PARAMETER_WORKER = "platform_parameter_worker"
+
+    /** Key for passing the worker-type as a parameter to PlatformParameterSyncUpWorker. */
+    const val WORKER_TYPE_KEY = "worker_type_key"
   }
 
   override suspend fun doWork(): Result {
@@ -78,6 +85,7 @@ class PlatformParameterSyncUpWorker private constructor(
     private val oppiaLogger: OppiaLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
+    /** A function that returns an instance of [PlatformParameterSyncUpWorker]. */
     fun create(context: Context, params: WorkerParameters): CoroutineWorker {
       return PlatformParameterSyncUpWorker(
         context,
