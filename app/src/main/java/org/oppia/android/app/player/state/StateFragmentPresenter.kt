@@ -205,11 +205,11 @@ class StateFragmentPresenter @Inject constructor(
 
   fun onHintAvailable(helpIndex: HelpIndex) {
     if (
-      !isCurrentStatePendingState ||
+      !isCurrentStatePendingState &&
       helpIndex.indexTypeCase != HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
     ) {
-      // If current state is not pending state, do not allow any new hints, new solutions or the
-      // hint icon to be visible.
+      // If current state is not pending state and HelpIndex does not equal default instance,
+      // do not allow any new hints, new solutions or the hint icon to be visible.
       return
     }
     when (helpIndex.indexTypeCase) {
@@ -217,15 +217,10 @@ class StateFragmentPresenter @Inject constructor(
         // Update the ViewModel with the index of the un-revealed hint.
         viewModel.newAvailableHintIndex = helpIndex.hintIndex.index
         viewModel.allHintsExhausted = false
-        if (helpIndex.hintIndex.isHintRevealed) {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
-          viewModel.setHintBulbVisibility(true)
-        } else {
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
-          viewModel.setHintBulbVisibility(true)
-          // Notify the ExplorationProgressController that an un-revealed hint is visible.
-          unrevealedHintIsVisible(helpIndex.hintIndex.index)
-        }
+        viewModel.setHintOpenedAndUnRevealedVisibility(!helpIndex.hintIndex.isHintRevealed)
+        viewModel.setHintBulbVisibility(true)
+        // Notify the ExplorationProgressController that an un-revealed hint is visible.
+        unrevealedHintIsVisible(helpIndex.hintIndex.index)
       }
       HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
         // Solution being visible implies that all hints have been viewed by the user.
@@ -234,7 +229,9 @@ class StateFragmentPresenter @Inject constructor(
         viewModel.allHintsExhausted = true
         // Notify the ExplorationProgressController that un-revealed solution is visible.
         unrevealedSolutionIsVisible()
-        viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        viewModel.setHintOpenedAndUnRevealedVisibility(
+          !currentState.interaction.solution.solutionIsRevealed
+        )
         viewModel.setHintBulbVisibility(true)
       }
       HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
@@ -322,7 +319,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun unrevealedSolutionIsVisible() {
     if (
-      !currentState.interaction.solution.unrevealedSolutionIsVisible ||
+      currentState.interaction.solution.unrevealedSolutionIsVisible ||
       currentState.interaction.solution.solutionIsRevealed
     ) {
       // If solution is already marked as un-revealed but visible or if the solution has been
