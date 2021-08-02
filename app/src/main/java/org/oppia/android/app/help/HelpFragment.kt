@@ -25,4 +25,9 @@ class HelpFragment : InjectableFragment() {
   ): View? {
     return helpFragmentPresenter.handleCreateView(inflater, container)
   }
+
+  override fun onResume() {
+    super.onResume()
+    helpFragmentPresenter.handleOnResume()
+  }
 }

@@ -12,6 +12,8 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HelpFragmentBinding
 import org.oppia.android.databinding.HelpItemBinding
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.help_item.*
+import kotlinx.android.synthetic.main.help_item.view.*
 
 /** The presenter for [HelpFragment]. */
 @FragmentScope
@@ -53,5 +55,11 @@ class HelpFragmentPresenter @Inject constructor(
 
   private fun getHelpListViewModel(): HelpListViewModel {
     return viewModelProvider.getForFragment(fragment, HelpListViewModel::class.java)
+  }
+
+  fun handleOnResume(){
+    if(fragment.help_item_text_view != null){
+      fragment.help_item_text_view.isEnabled = true
+    }
   }
 }
