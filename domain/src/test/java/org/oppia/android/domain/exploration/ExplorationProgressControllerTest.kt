@@ -33,7 +33,10 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HintIndex
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Point2d
@@ -427,7 +430,10 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError() {
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(0),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -456,7 +462,10 @@ class ExplorationProgressControllerTest {
     )
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(0),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -485,7 +494,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(2),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -511,7 +523,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(2),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -539,7 +554,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(0),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -565,7 +583,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(
+        userAnswer = createMultipleChoiceAnswer(0),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -997,7 +1018,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+      explorationProgressController.submitAnswer(
+        userAnswer = createTextInputAnswer("Finnish"),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1025,7 +1049,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+      explorationProgressController.submitAnswer(
+        userAnswer = createTextInputAnswer("Klingon"),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1097,8 +1124,13 @@ class ExplorationProgressControllerTest {
 
     val result = explorationProgressController.submitHintIsRevealed(
       state = currentState.state,
-      hintIsRevealed = true,
-      hintIndex = 0,
+      hintState =
+        HintState.newBuilder()
+          .setHelpIndex(
+            HelpIndex.newBuilder()
+              .setHintIndex(HintIndex.newBuilder().setIndex(0).setIsHintRevealed(true).build())
+              .build()
+          ).build()
     )
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
@@ -1141,7 +1173,14 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    val result = explorationProgressController.submitSolutionIsRevealed(
+      state = currentState.state,
+      hintState =
+        HintState.newBuilder()
+          .setHelpIndex(
+            HelpIndex.newBuilder().setEverythingRevealed(true).build()
+          ).build()
+    )
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1208,7 +1247,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+      explorationProgressController.submitAnswer(
+        createTextInputAnswer("Finnish"),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1240,7 +1282,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
+      explorationProgressController.submitAnswer(
+        userAnswer = createTextInputAnswer("Finnish  "),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1274,7 +1319,10 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+      explorationProgressController.submitAnswer(
+        userAnswer = createTextInputAnswer("Klingon"),
+        hintState = HintState.getDefaultInstance()
+      )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1526,7 +1574,10 @@ class ExplorationProgressControllerTest {
     )
     navigateToPrototypeNumericInputState()
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
+    val result = explorationProgressController.submitAnswer(
+      createNumericInputAnswer(121.0),
+      hintState = HintState.getDefaultInstance()
+    )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1554,7 +1605,8 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(
-      createNumericInputAnswer(122.0)
+      createNumericInputAnswer(122.0),
+      hintState = HintState.getDefaultInstance()
     )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
@@ -1582,7 +1634,10 @@ class ExplorationProgressControllerTest {
     )
     // The first state of the exploration is the Continue interaction.
 
-    val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
+    val result = explorationProgressController.submitAnswer(
+      createContinueButtonAnswer(),
+      hintState = HintState.getDefaultInstance()
+    )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1819,7 +1874,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
     val result = explorationProgressController.submitAnswer(
-      createMultipleChoiceAnswer(0)
+      createMultipleChoiceAnswer(0),
+      hintState = HintState.getDefaultInstance()
     )
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
@@ -2102,8 +2158,13 @@ class ExplorationProgressControllerTest {
 
     val result = explorationProgressController.submitHintIsRevealed(
       state = currentState.state,
-      hintIsRevealed = true,
-      hintIndex = 0,
+      hintState =
+        HintState.newBuilder()
+          .setHelpIndex(
+            HelpIndex.newBuilder()
+              .setHintIndex(HintIndex.newBuilder().setIndex(0).setIsHintRevealed(true).build())
+              .build()
+          ).build()
     )
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
@@ -2136,7 +2197,13 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    val result = explorationProgressController.submitSolutionIsRevealed(
+      currentState.state,
+      hintState = HintState.newBuilder()
+        .setHelpIndex(
+          HelpIndex.newBuilder().setEverythingRevealed(true).build()
+        ).build()
+    )
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -2299,6 +2366,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentState.state.name).isEqualTo("Fractions")
   }
+
   @Test
   fun testCheckpointing_OnSecondState_submitWrongAns_resumeExploration_checkWrongAnswersVisible() {
     subscribeToCurrentStateToAllowExplorationToLoad()
@@ -2406,170 +2474,6 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     assertThat(currentState.state.name).isEqualTo("Fractions")
     assertThat(currentState.completedState.answerCount).isEqualTo(3)
-  }
-
-  @Test
-  fun testCheckpointing_submitTwoWrongAns_resumeExploration_checkHintIsNotRevealed() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      ExplorationCheckpoint.getDefaultInstance()
-    )
-    playThroughPrototypeState1AndMoveToNextState()
-    submitWrongAnswerForPrototypeState2()
-    submitWrongAnswerForPrototypeState2()
-
-    endExploration()
-
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
-    )
-
-    // Verify that hint is not revealed.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.state.interaction.hintList.isEmpty()).isFalse()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
-  }
-
-  @Test
-  fun testCheckpointing_submitTwoWrongAns_revealFirstHint_resumeExploration_checkHintIsRevealed() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      ExplorationCheckpoint.getDefaultInstance()
-    )
-    playThroughPrototypeState1AndMoveToNextState()
-    submitWrongAnswerForPrototypeState2()
-    submitWrongAnswerForPrototypeState2()
-
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    var currentState = currentStateResultCaptor.value.getOrThrow()
-
-    explorationProgressController.submitHintIsRevealed(
-      state = currentState.state,
-      hintIsRevealed = true,
-      hintIndex = 0,
-    ).observeForever(mockAsyncHintObserver)
-
-    endExploration()
-
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
-    )
-
-    // Verify that hint is revealed.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.state.interaction.hintList.isEmpty()).isFalse()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
-  }
-
-  @Test
-  fun testCheckpointing_submitTwoWrongAns_resumeExploration_checkSolIsNotRevealed() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      ExplorationCheckpoint.getDefaultInstance()
-    )
-    playThroughPrototypeState1AndMoveToNextState()
-    submitWrongAnswerForPrototypeState2()
-    submitWrongAnswerForPrototypeState2()
-
-    endExploration()
-
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
-    )
-
-    // Verify that hint is revealed.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.state.interaction.hintList.isEmpty()).isFalse()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
-  }
-
-  @Test
-  fun testCheckpointing_submitTwoWrongAns_revealSolution_resumeExploration_checkSolIsRevealed() {
-    subscribeToCurrentStateToAllowExplorationToLoad()
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      ExplorationCheckpoint.getDefaultInstance()
-    )
-    playThroughPrototypeState1AndMoveToNextState()
-    submitWrongAnswerForPrototypeState2()
-    submitWrongAnswerForPrototypeState2()
-
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    var currentState = currentStateResultCaptor.value.getOrThrow()
-
-    explorationProgressController.submitSolutionIsRevealed(
-      state = currentState.state,
-    ).observeForever(mockAsyncSolutionObserver)
-
-    endExploration()
-
-    playExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
-    )
-
-    // Verify that hint is revealed.
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentState.state.interaction.hintList.isEmpty()).isFalse()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isTrue()
   }
 
   @Test
@@ -2817,50 +2721,72 @@ class ExplorationProgressControllerTest {
 
   private fun submitContinueButtonAnswer() {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createContinueButtonAnswer())
+      explorationProgressController.submitAnswer(
+        createContinueButtonAnswer(),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitFractionAnswer(fraction: Fraction) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createFractionAnswer(fraction))
+      explorationProgressController.submitAnswer(
+        createFractionAnswer(fraction),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
+      explorationProgressController.submitAnswer(
+        createMultipleChoiceAnswer(choiceIndex),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitItemSelectionAnswer(vararg contentIds: String) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createItemSelectionAnswer(contentIds.toList()))
+      explorationProgressController.submitAnswer(
+        createItemSelectionAnswer(contentIds.toList()),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitNumericInputAnswer(numericAnswer: Double) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
+      explorationProgressController.submitAnswer(
+        createNumericInputAnswer(numericAnswer),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitRatioInputAnswer(ratioExpression: RatioExpression) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createRatioInputAnswer(ratioExpression))
+      explorationProgressController.submitAnswer(
+        createRatioInputAnswer(ratioExpression),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitTextInputAnswer(@Suppress("SameParameterValue") textAnswer: String) {
     verifyOperationSucceeds(
-      explorationProgressController.submitAnswer(createTextInputAnswer(textAnswer))
+      explorationProgressController.submitAnswer(
+        createTextInputAnswer(textAnswer),
+        hintState = HintState.getDefaultInstance()
+      )
     )
   }
 
   private fun submitDragAndDropAnswer(vararg selectedChoicesLists: List<String>) {
     verifyOperationSucceeds(
       explorationProgressController.submitAnswer(
-        createDragAndDropAnswer(selectedChoicesLists.toList())
+        createDragAndDropAnswer(selectedChoicesLists.toList()),
+        hintState = HintState.getDefaultInstance()
       )
     )
   }
@@ -2868,7 +2794,8 @@ class ExplorationProgressControllerTest {
   private fun submitImageRegionAnswer(clickX: Float, clickY: Float, clickedRegion: String) {
     verifyOperationSucceeds(
       explorationProgressController.submitAnswer(
-        createImageRegionAnswer(clickX, clickY, clickedRegion)
+        createImageRegionAnswer(clickX, clickY, clickedRegion),
+        hintState = HintState.getDefaultInstance()
       )
     )
   }
@@ -3268,7 +3195,7 @@ class ExplorationProgressControllerTest {
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
 
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex.hintIndex.index)
       .isEqualTo(indexOfRevealedHint)
   }
 
@@ -3291,8 +3218,8 @@ class ExplorationProgressControllerTest {
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
 
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().solutionIsRevealed)
-      .isEqualTo(isSolutionRevealed)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
   }
 
   /**
