@@ -88,6 +88,7 @@
   <string name="revision">Revision</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
+  <string name="topic_download_page">Topic Download page</string>
   <string name="topic_name">Topic: %s</string>
   <string name="topic_not_downloaded_name">Info: %s</string>
   <string name="topic">Topic</string>

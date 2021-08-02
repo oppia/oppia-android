@@ -16,6 +16,7 @@ class TopicInfoDownloadBottomSheetDialogFragmentPresenter @Inject constructor(
 
   private val topicInfoBottomSheetListener = fragment as TopicInfoBottomSheetListener
 
+  // Returns the root of TopicInfoDownloadBottomSheetBinding
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

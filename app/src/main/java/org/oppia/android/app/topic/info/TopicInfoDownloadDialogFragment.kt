@@ -10,6 +10,9 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 
+/**
+ * DialogFragment that indicates the networking detail for topic download.
+ */
 class TopicInfoDownloadDialogFragment : DialogFragment() {
 
   companion object {

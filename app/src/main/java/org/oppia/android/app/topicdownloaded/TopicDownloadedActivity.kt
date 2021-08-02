@@ -11,6 +11,15 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
 
   companion object {
 
+    /**
+     * This function creates the intent of [TopicDownloadedActivity].
+     *
+     * @param [content]: context of the screen from where thi activity starts.
+     * @param [internalProfileId]: Id of the profile.
+     * @param [topicId]: Id of the topic.
+     *
+     * @return [Intent]: Intent
+     */
     fun createTopicDownloadedActivityIntent(
       context: Context,
       internalProfileId: Int,

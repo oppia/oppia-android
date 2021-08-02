@@ -9,11 +9,13 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.TopicDownloadedFragmentBinding
 import javax.inject.Inject
 
+/** The presenter for [TopicDownloadedFragment]. */
 @FragmentScope
 class TopicDownloadedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
+  // Bind TopicDownloadedFragmentBinding with the TopicDownloadedFragment
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

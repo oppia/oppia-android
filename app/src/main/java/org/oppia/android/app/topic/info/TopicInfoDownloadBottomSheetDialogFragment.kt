@@ -15,7 +15,14 @@ class TopicInfoDownloadBottomSheetDialogFragment :
   TopicInfoBottomSheetListener {
 
   companion object {
+    // argument key for passing topic name
     const val TOPIC_NAME = "TOPIC_NAME"
+
+    /**
+     * This function is responsible for displaying content in BottomSheetDialogFragment.
+     *
+     * @return [TopicInfoDownloadBottomSheetDialogFragment]: DialogFragment
+     */
     fun newInstance(topicName: String): TopicInfoDownloadBottomSheetDialogFragment {
       val topicInfoDownloadBottomSheetDialogFragment = TopicInfoDownloadBottomSheetDialogFragment()
       val args = Bundle()

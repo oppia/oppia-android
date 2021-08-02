@@ -194,6 +194,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.topicdownloaded.TopicDownloadedActivity"
+      android:label="@string/topic_download_page"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
