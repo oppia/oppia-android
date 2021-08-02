@@ -13,6 +13,7 @@ class TopicDownloadedActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
+  /** Shows the TopicDownloadedFragment */
   fun handleOnCreate(internalProfileId: Int, topicId: String) {
     activity.setContentView(R.layout.topic_downloaded_activity)
     // Bundle object to put [internalProfileId] and [topicId] to pass to [TopicDownloadedFragment].

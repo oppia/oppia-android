@@ -15,7 +15,7 @@ class TopicInfoDownloadBottomSheetDialogFragment :
   TopicInfoBottomSheetListener {
 
   companion object {
-    // argument key for passing topic name
+    /** argument key for passing topic name */
     const val TOPIC_NAME = "TOPIC_NAME"
 
     /**

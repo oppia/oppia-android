@@ -17,7 +17,7 @@ class TopicInfoFragment :
   TopicInfoDownloadDialogInterface,
   TopicInfoListener {
   companion object {
-    // Tag for TopicInfoDownloadDialogFragment
+    /** Tag for TopicInfoDownloadDialogFragment */
     internal const val TOPIC_DOWNLOAD_DIALOG_TAG =
       "TopicInfoFragment.topic_download_dialog_tag"
 
