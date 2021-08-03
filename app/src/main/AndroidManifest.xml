@@ -172,7 +172,6 @@
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.testing.RecentlyPlayedFragmentTestActivity" />
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
