@@ -23,7 +23,7 @@ jobs:
 
       - name: Closed Issue Check
         id: closedIssueCheck
-        if: ${{ github.event_name == 'closed' }}
+        if: ${{ github.event.action == 'closed' }}
         run: |
           bazel run //scripts:closed_issue_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
 
