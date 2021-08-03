@@ -189,6 +189,34 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgressInExp0_contentDescriptionIsCrt() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgressInExp1_contentDescriptionIsCrt() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp1(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "50%")
+    }
+  }
+
+  @Test
   fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
@@ -407,6 +435,40 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_verifyContentDescriptionIsCorrect() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconContentDescriptionIsCorrect(
+        itemPosition = 0,
+        contentDescription = "Chapter 1 with title What is a Ratio? is in progress"
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_topicCompleted_verifyContentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconContentDescriptionIsCorrect(
+        itemPosition = 0,
+        contentDescription = "Chapter 1 with title What is a Ratio? is completed"
+      )
+    }
+  }
+
+  @Test
   fun testLessonPlayFrag_loadRatiosTopic_partialProg_partialProgIconIsDisplayed() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId,
@@ -565,6 +627,19 @@ class TopicLessonsFragmentTest {
         targetViewId = R.id.story_name_chapter_count_container
       )
     ).check(matches(withContentDescription(stringToMatch)))
+  }
+
+  private fun verifyChapterPlayStateIconContentDescriptionIsCorrect(
+    itemPosition: Int,
+    contentDescription: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withContentDescription(contentDescription)))
   }
 
   private fun verifyChapterPlayStateIconIsVisible(itemPosition: Int) {
