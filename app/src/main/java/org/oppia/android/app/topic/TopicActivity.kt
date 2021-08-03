@@ -29,6 +29,7 @@ class TopicActivity :
 
   // TODO(): Replace this variable with injecting annotation
   private var enableMyDownloads = true
+  private var isTopicDownloaded = false
 
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
@@ -40,9 +41,16 @@ class TopicActivity :
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
-    this.enableMyDownloads = intent?.getBooleanExtra("download", true)!!
+    enableMyDownloads = intent?.getBooleanExtra("download", true)!!
+    isTopicDownloaded = intent?.getBooleanExtra("isTopicDownloaded", false)!!
     storyId = intent?.getStringExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    topicActivityPresenter.handleOnCreate(internalProfileId, topicId, storyId, enableMyDownloads)
+    topicActivityPresenter.handleOnCreate(
+      internalProfileId,
+      topicId,
+      storyId,
+      enableMyDownloads,
+      isTopicDownloaded
+    )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -145,12 +153,14 @@ class TopicActivity :
       context: Context,
       internalProfileId: Int,
       topicId: String,
-      enableMyDownloads: Boolean
+      enableMyDownloads: Boolean,
+      isTopicDownloaded: Boolean
     ): Intent {
       val intent = Intent(context, TopicActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra("download", enableMyDownloads)
+      intent.putExtra("isTopicDownloaded", isTopicDownloaded)
       return intent
     }
   }

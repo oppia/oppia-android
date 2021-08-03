@@ -35,7 +35,7 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var viewPager: ViewPager2
 
   // TODO(3082): Remove this variable with the one, received from Home Activity
-  private val isTopicDownloaded = false
+  private var isTopicDownloaded = false
 
   // TODO(3082): Replace this variable with the injected annotation
   private var enableMyDownloads = true
@@ -47,7 +47,8 @@ class TopicFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     isConfigChanged: Boolean,
-    enableMyDownloads: Boolean
+    enableMyDownloads: Boolean,
+    isTopicDownloaded: Boolean
   ): View? {
     val binding = TopicFragmentBinding.inflate(
       inflater,
@@ -57,6 +58,7 @@ class TopicFragmentPresenter @Inject constructor(
     binding.lifecycleOwner = fragment
     this.storyId = storyId
     this.enableMyDownloads = enableMyDownloads
+    this.isTopicDownloaded = isTopicDownloaded
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
     this.internalProfileId = internalProfileId

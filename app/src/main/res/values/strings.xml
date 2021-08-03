@@ -114,7 +114,7 @@
   <string name="all_topics">All Topics</string>
   <string name="topic_info_skills_heading">Skills</string>
   <string name="topic_info_download_to_play">DOWNLOAD TO PLAY</string>
-  <string name="topic_info_topic_downloaded">Topic Downlaoded</string>
+  <string name="topic_info_topic_downloaded">Downlaoded</string>
   <string name="topic_info_download_topic">Downlaod Topic</string>
   <string name="topic_info_downloaded_message">Your download for %s is complete!</string>
   <string name="show_hide_chapter_list">Show/Hide Chapter list of %s</string>
@@ -509,4 +509,5 @@
   <string name="developer_options_force_crash">Force crash</string>
   <string name="all">All</string>
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
+  <string name="topic_download_view">View</string>
 </resources>

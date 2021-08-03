@@ -12,6 +12,7 @@ const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 const val STORY_ID_ARGUMENT_KEY = "story_id"
 const val ENABLE_MY_DOWNLOADS_ARGUMENT_KEY = "enable_my_downloads"
+const val IS_TOPIC_DOWNLOADED = "is_topic_downloaded"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
@@ -26,7 +27,8 @@ class TopicActivityPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String?,
-    enableMyDownloads: Boolean
+    enableMyDownloads: Boolean,
+    isTopicDownloaded: Boolean
   ) {
     this.topicId = topicId
     activity.setContentView(R.layout.topic_activity)
@@ -37,6 +39,7 @@ class TopicActivityPresenter @Inject constructor(
       args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
       args.putBoolean(ENABLE_MY_DOWNLOADS_ARGUMENT_KEY, enableMyDownloads)
+      args.putBoolean(IS_TOPIC_DOWNLOADED, isTopicDownloaded)
       if (storyId != null) {
         args.putString(STORY_ID_ARGUMENT_KEY, storyId)
       }

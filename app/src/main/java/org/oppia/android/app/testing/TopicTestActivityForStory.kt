@@ -34,7 +34,8 @@ class TopicTestActivityForStory :
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0,
-      enableMyDownloads = false
+      enableMyDownloads = false,
+      isTopicDownloaded = false
     )
   }
 

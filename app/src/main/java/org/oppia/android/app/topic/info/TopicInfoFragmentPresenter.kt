@@ -48,18 +48,20 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private var enableMyDownloads = false
-  private val isTopicDownloaded = false
+  private var isTopicDownloaded = false
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
     topicId: String,
-    enableMyDownloads: Boolean
+    enableMyDownloads: Boolean,
+    isTopicDownloaded: Boolean
   ): View? {
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.enableMyDownloads = enableMyDownloads
+    this.isTopicDownloaded = isTopicDownloaded
     binding = TopicInfoFragmentBinding.inflate(
       inflater,
       container,
@@ -212,13 +214,16 @@ class TopicInfoFragmentPresenter @Inject constructor(
   }
 
   fun showTopicDownloadDialog() {
-    val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
-      activity,
-      internalProfileId,
-      topicId
-    )
-    activity.startActivity(intent)
-    activity.finish()
+    if (enableMyDownloads) {
+      val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
+        activity,
+        internalProfileId,
+        topicId,
+        topicInfoViewModel.topic.get()!!.name
+      )
+      activity.startActivity(intent)
+      activity.finish()
+    }
 
     profileDownloadAccessLiveData.observe(
       fragment,

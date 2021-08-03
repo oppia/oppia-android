@@ -28,11 +28,21 @@ class ViewPagerAdapter(
 
   override fun createFragment(position: Int): Fragment {
     if (enableMyDownloads && !isTopicDownloaded) {
-      return TopicInfoFragment.newInstance(internalProfileId, topicId, enableMyDownloads)
+      return TopicInfoFragment.newInstance(
+        internalProfileId,
+        topicId,
+        enableMyDownloads,
+        isTopicDownloaded
+      )
     } else {
       return when (TopicTab.getTabForPosition(position, enablePracticeTab)) {
         TopicTab.INFO -> {
-          TopicInfoFragment.newInstance(internalProfileId, topicId, enableMyDownloads)
+          TopicInfoFragment.newInstance(
+            internalProfileId,
+            topicId,
+            enableMyDownloads,
+            isTopicDownloaded
+          )
         }
         TopicTab.LESSONS -> {
           TopicLessonsFragment.newInstance(internalProfileId, topicId, storyId)

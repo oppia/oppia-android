@@ -40,7 +40,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/download_status_image_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
+        app:lessonThumbnail="@{viewModel.topic.topicThumbnail}"
+        tools:src="@tools:sample/avatars" />
 
       <FrameLayout
         android:id="@+id/thumbnail_gradient_container"
@@ -66,7 +67,8 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Fraction" />
 
       <TextView
         android:id="@+id/story_count_text_view"
@@ -82,7 +84,8 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view"
+        tools:text="1 Story" />
 
       <TextView
         android:id="@+id/topic_description_text_view"
@@ -101,7 +104,8 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/story_count_text_view"
+        tools:text="@android:string/httpErrorBadUrl" />
 
       <TextView
         android:id="@+id/see_more_text_view"
@@ -133,8 +137,6 @@
         android:layout_marginBottom="32dp"
         android:onClick="@{viewModel::clickTopicDownload}"
         android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? @id/stories_heading : ConstraintSet.UNSET}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 

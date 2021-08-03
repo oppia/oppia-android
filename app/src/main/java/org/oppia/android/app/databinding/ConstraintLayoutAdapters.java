@@ -19,20 +19,6 @@ public final class ConstraintLayoutAdapters {
     constraintSet.applyTo(constraintLayout);
   }
 
-  /** Binding adapter for setting a layout_constraintBottom_toTopOf to a view. */
-  @BindingAdapter("app:layout_constraintBottom_toTopOf")
-  public static void setConstraintBottomToTopOf(@NonNull View view, int constraintToId) {
-    ConstraintLayout constraintLayout = (ConstraintLayout) view.getParent();
-    ConstraintSet constraintSet = new ConstraintSet();
-    constraintSet.clone(constraintLayout);
-    if (constraintToId == ConstraintSet.UNSET) {
-      constraintSet.clear(constraintToId);
-    } else {
-      constraintSet.connect(view.getId(), ConstraintSet.BOTTOM, constraintToId, ConstraintSet.TOP);
-    }
-    constraintSet.applyTo(constraintLayout);
-  }
-
   /** Binding adapter for setting layout_constraintHorizontal_bias to a view. */
   @BindingAdapter("app:layout_constraintHorizontal_bias")
   public static void setHorizontalBias(@NonNull View view, float value) {

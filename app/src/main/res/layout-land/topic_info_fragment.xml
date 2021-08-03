@@ -111,8 +111,6 @@
         android:layout_marginBottom="32dp"
         android:onClick="@{viewModel::clickTopicDownload}"
         android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@{viewModel.enableMyDownloads &amp;&amp; !viewModel.isTopicDownloaded ? @id/stories_heading : ConstraintSet.UNSET}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 

@@ -3,6 +3,13 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.topicdownloaded.TopicDownloadedViewModel" />
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,11 +21,21 @@
       android:layout_marginTop="100dp"
       android:layout_marginEnd="52dp"
       android:gravity="center"
-      android:text="@{String.format(@string/topic_info_downloaded_message, 1)}"
+      android:text="@{String.format(@string/topic_info_downloaded_message, viewModel.topicName)}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       tools:text="@string/topic_info_downloaded_message" />
+
+    <ImageView
+      android:id="@+id/topic_downloaded_check"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:src="@drawable/ic_check_circle_24px"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/topic_downloaded_message" />
 
     <Button
       android:id="@+id/view"
@@ -26,11 +43,12 @@
       android:layout_width="0dp"
       android:layout_height="48dp"
       android:layout_marginStart="52dp"
-      android:layout_marginTop="40dp"
+      android:layout_marginTop="88dp"
       android:layout_marginEnd="52dp"
-      android:text="View"
+      android:onClick="@{viewModel::viewDownloadedTopic}"
+      android:text="@string/topic_download_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/topic_downloaded_message" />
+      app:layout_constraintTop_toBottomOf="@+id/topic_downloaded_check" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -23,11 +23,13 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
     fun createTopicDownloadedActivityIntent(
       context: Context,
       internalProfileId: Int,
-      topicId: String
+      topicId: String,
+      topicName: String
     ): Intent {
       val intent = Intent(context, TopicDownloadedActivity::class.java)
       intent.putExtra("id", internalProfileId)
       intent.putExtra("topicId", topicId)
+      intent.putExtra("topicName", topicName)
       return intent
     }
   }
@@ -42,6 +44,9 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
       "Expected extra topic ID to be included for TopicDownloadedFragment."
     }
     val internalProfileId = intent.getIntExtra("id", 0)
-    topicDownloadedActivityPresenter.handleOnCreate(internalProfileId, topicId)
+    val topicName = checkNotNull(intent.getStringExtra("topicName")) {
+      "Expected extra topic Name to be included for TopicDownloadedFragment."
+    }
+    topicDownloadedActivityPresenter.handleOnCreate(internalProfileId, topicId, topicName)
   }
 }
