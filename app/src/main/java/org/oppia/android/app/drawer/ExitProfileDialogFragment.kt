@@ -62,14 +62,7 @@ class ExitProfileDialogFragment : DialogFragment() {
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        if (!restoreLastCheckedItem) {
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
-        activity!!.startActivity(intent)
-      }
+      .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ -> activity!!.finish() }
       .create()
     alertDialog.setCanceledOnTouchOutside(false)
     return alertDialog
