@@ -7,7 +7,8 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 
 /**
- * Action for matching error text and performing other actions on TextInputLayout in a test infrastructure-specific way.
+ * Action for matching error text and performing other actions on TextInputLayout
+ * in a test infrastructure-specific way.
  */
 class TextInputAction {
 
