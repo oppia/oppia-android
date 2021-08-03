@@ -77,10 +77,12 @@
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:cursorVisible="true"
             android:imeOptions="actionNext"
             android:inputType="numberPassword"
             android:maxLength="5"
-            android:text="@{viewModel.savedPin}" />
+            android:text="@{viewModel.savedPin}"
+            android:textCursorDrawable="@null" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -101,10 +103,12 @@
             style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:cursorVisible="true"
             android:imeOptions="actionDone"
             android:inputType="numberPassword"
             android:maxLength="5"
-            android:text="@{viewModel.savedConfirmPin}" />
+            android:text="@{viewModel.savedConfirmPin}"
+            android:textCursorDrawable="@null" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
