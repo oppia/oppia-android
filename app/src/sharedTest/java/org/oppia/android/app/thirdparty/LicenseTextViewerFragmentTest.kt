@@ -8,7 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -123,7 +123,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_0))
       )
@@ -152,7 +152,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_0))
       )
@@ -181,7 +181,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 1
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_1))
       )
@@ -212,7 +212,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
@@ -247,7 +247,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
@@ -284,7 +284,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 1
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 1 implies the first license for the dependency and not that it
       // should match with license_text_1.
       onView(withId(R.id.copyright_license_text_view)).check(
