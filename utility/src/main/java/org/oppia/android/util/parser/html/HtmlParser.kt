@@ -51,14 +51,12 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean = false
   ): Spannable {
 
-    htmlContentTextView.post {
       // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
       // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
       if (isRtlLayout(htmlContentTextView)) {
         htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
       }
       htmlContentTextView.invalidate()
-    }
 
     var htmlContent = rawString
     if ("\n\t" in htmlContent) {
