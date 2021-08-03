@@ -1,6 +1,5 @@
 package org.oppia.android.app.help.thirdparty
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -18,14 +17,13 @@ class LicenseListViewModel @Inject constructor(
     getRecyclerViewItemList()
   }
 
-  @SuppressLint("ResourceType")
   private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
     val thirdPartyDependencyLicenseNamesArray = activity.resources.obtainTypedArray(
       R.array.third_party_dependency_license_names_array
     )
     val licenseNamesArrayId = thirdPartyDependencyLicenseNamesArray.getResourceId(
       dependencyIndex,
-      0
+      /* defValue= */ 0
     )
     val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
 

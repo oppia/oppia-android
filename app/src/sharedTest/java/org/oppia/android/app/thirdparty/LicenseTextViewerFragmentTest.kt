@@ -32,7 +32,7 @@ import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -123,7 +123,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_0))
       )
@@ -152,7 +152,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_0))
       )
@@ -181,7 +181,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 1
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(withText(R.string.license_text_1))
       )
@@ -212,7 +212,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
@@ -247,7 +247,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 0
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
@@ -284,7 +284,7 @@ class LicenseTextViewerFragmentTest {
         licenseIndex = 1
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 1 implies the first license for the dependency and not that it
       // should match with license_text_1.
       onView(withId(R.id.copyright_license_text_view)).check(

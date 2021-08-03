@@ -15,7 +15,7 @@ class LicenseTextViewModel(
   )
   private val licenseTextsArrayId = dependenciesWithLicenseTexts.getResourceId(
     dependencyIndex,
-    0
+    /* defValue= */ 0
   )
   private val licenseTextsArray: Array<String> = activity.resources.getStringArray(
     licenseTextsArrayId

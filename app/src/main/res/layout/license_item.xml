@@ -21,13 +21,15 @@
       style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@drawable/general_item_background_border"
+      android:fontFamily="sans-serif-smallcaps"
       android:onClick="@{() -> viewModel.clickOnLicenseItem()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@{viewModel.licenseName}"
-      android:textAlignment="viewStart"
+      android:textColor="@color/black"
+      android:textSize="14sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>

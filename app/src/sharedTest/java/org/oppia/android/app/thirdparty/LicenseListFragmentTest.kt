@@ -9,16 +9,18 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,10 +39,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -113,14 +115,14 @@ class LicenseListFragmentTest {
   fun openLicenseListActivity_selectItem_opensLicenseTextViewerActivity() {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
       ).perform(click())
-      Intents.intended(
-        Matchers.allOf(
-          IntentMatchers.hasComponent(LicenseTextViewerActivity::class.java.name)
+      intended(
+        allOf(
+          hasComponent(LicenseTextViewerActivity::class.java.name)
         )
       )
     }
@@ -129,16 +131,16 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_changeConfig_selectItem_opensLicenseTextViewerActivity() {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
       ).perform(click())
-      Intents.intended(
-        Matchers.allOf(
-          IntentMatchers.hasComponent(LicenseTextViewerActivity::class.java.name)
+      intended(
+        allOf(
+          hasComponent(LicenseTextViewerActivity::class.java.name)
         )
       )
     }
@@ -147,11 +149,11 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex0_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
@@ -163,12 +165,12 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex0_configLandscape_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
@@ -180,21 +182,21 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex1_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(1)).use {
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
@@ -206,22 +208,22 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex1_configLandscape_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(1)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0,
         )
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
@@ -233,11 +235,11 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex2_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(2)).use {
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
@@ -249,12 +251,12 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex2_configLandscape_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(2)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
@@ -266,21 +268,21 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex3_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(3)).use {
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
@@ -292,22 +294,22 @@ class LicenseListFragmentTest {
   @Test
   fun openLicenseListActivity_dependencyIndex3_configLandscape_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(3)).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0
         )
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
-      onView(ViewMatchers.withId(R.id.license_list_fragment_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(1)
+      onView(withId(R.id.license_list_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
       )
       onView(
-        RecyclerViewMatcher.atPosition(
+        atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 1
         )
