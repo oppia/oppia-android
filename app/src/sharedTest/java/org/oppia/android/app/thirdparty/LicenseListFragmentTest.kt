@@ -41,6 +41,8 @@ import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplication
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplicationComponent
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -352,13 +354,22 @@ class LicenseListFragmentTest {
       ExplorationStorageModule::class
     ]
   )
+
+  /** [ApplicationComponent] for [LicenseListFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [LicenseListFragmentTest] providing the required
+     * dagger modules.
+     */
     fun inject(licenseListFragmentTest: LicenseListFragmentTest)
   }
 
+  /** [Application] class for [LicenseListFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLicenseListFragmentTest_TestApplicationComponent.builder()
@@ -366,6 +377,7 @@ class LicenseListFragmentTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(licenseListFragmentTest: LicenseListFragmentTest) {
       component.inject(licenseListFragmentTest)
     }

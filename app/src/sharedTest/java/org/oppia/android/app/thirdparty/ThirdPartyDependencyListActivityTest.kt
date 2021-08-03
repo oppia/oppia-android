@@ -26,6 +26,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplication
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplicationComponent
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -136,13 +138,22 @@ class ThirdPartyDependencyListActivityTest {
       ExplorationStorageModule::class
     ]
   )
+
+  /** [ApplicationComponent] for [ThirdPartyDependencyListActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [ThirdPartyDependencyListActivityTest] providing the required
+     * dagger modules.
+     */
     fun inject(thirdPartyDependencyListActivityTest: ThirdPartyDependencyListActivityTest)
   }
 
+  /** [Application] class for [ThirdPartyDependencyListActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerThirdPartyDependencyListActivityTest_TestApplicationComponent.builder()
@@ -150,6 +161,7 @@ class ThirdPartyDependencyListActivityTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(thirdPartyDependencyListActivityTest: ThirdPartyDependencyListActivityTest) {
       component.inject(thirdPartyDependencyListActivityTest)
     }

@@ -27,6 +27,8 @@ import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplication
+import org.oppia.android.app.thirdparty.LicenseListActivityTest.TestApplicationComponent
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -148,13 +150,22 @@ class LicenseTextViewerActivityTest {
       ExplorationStorageModule::class
     ]
   )
+
+  /** [ApplicationComponent] for [LicenseTextViewerActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [LicenseTextViewerActivityTest] providing the required
+     * dagger modules.
+     */
     fun inject(licenseTextViewerActivityTest: LicenseTextViewerActivityTest)
   }
 
+  /** [Application] class for [LicenseTextViewerActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLicenseTextViewerActivityTest_TestApplicationComponent.builder()
@@ -162,6 +173,7 @@ class LicenseTextViewerActivityTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(licenseTextViewerActivityTest: LicenseTextViewerActivityTest) {
       component.inject(licenseTextViewerActivityTest)
     }

@@ -139,13 +139,22 @@ class LicenseListActivityTest {
       ExplorationStorageModule::class
     ]
   )
+
+  /** [ApplicationComponent] for [LicenseListActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
+    /**
+     * Injects [TestApplicationComponent] to [LicenseListActivityTest] providing the required
+     * dagger modules.
+     */
     fun inject(licenseListActivityTest: LicenseListActivityTest)
   }
 
+  /** [Application] class for [LicenseListActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLicenseListActivityTest_TestApplicationComponent.builder()
@@ -153,6 +162,7 @@ class LicenseListActivityTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(licenseListActivityTest: LicenseListActivityTest) {
       component.inject(licenseListActivityTest)
     }
