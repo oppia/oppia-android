@@ -259,4 +259,14 @@
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
 
+  <!-- Coming Soon Topic List -->
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_start">72dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_end">72dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_margin_top">42dp</dimen>
+  <dimen name="coming_soon_text_padding_start">0dp</dimen>
+  <dimen name="coming_soon_text_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_margin_top">16dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
+  <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
+
 </resources>
