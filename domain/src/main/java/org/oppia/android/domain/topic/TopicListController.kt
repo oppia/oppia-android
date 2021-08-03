@@ -713,10 +713,13 @@ class TopicListController @Inject constructor(
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setIsTopicLearned(isTopicConsideredCompleted)
-    if (nextChapterName != null && explorationId != null && chapterProgress != null) {
+    if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
       promotedStoryBuilder.explorationId = explorationId
-      promotedStoryBuilder.chapterPlayState = chapterProgress.chapterPlayState
+      // If the chapterProgress equals null that means the chapter has no progress associated with
+      // it because it is not yet started.
+      promotedStoryBuilder.chapterPlayState =
+        chapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
     }
     return promotedStoryBuilder.build()
   }
