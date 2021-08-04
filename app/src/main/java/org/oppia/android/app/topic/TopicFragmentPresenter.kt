@@ -97,9 +97,9 @@ class TopicFragmentPresenter @Inject constructor(
         tab.text = fragment.getString(topicTab.tabLabelResId)
         tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       }.attach()
-    }
-    if (!isConfigChanged && topicId.isNotEmpty()) {
-      setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      if (!isConfigChanged && topicId.isNotEmpty()) {
+        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      }
     }
   }
 

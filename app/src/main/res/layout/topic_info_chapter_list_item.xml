@@ -20,7 +20,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1), viewModel.chapterName)}"
+      android:text="@{String.format(@string/topic_chapter_index, (viewModel.index + 1), viewModel.chapterName)}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="14sp"
       tools:text="1. Parts of Multiplication Equations" />
