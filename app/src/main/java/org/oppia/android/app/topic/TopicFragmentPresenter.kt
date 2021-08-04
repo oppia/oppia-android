@@ -19,6 +19,7 @@ import org.oppia.android.util.platformparameter.MyDownloads
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import javax.inject.Provider
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -29,7 +30,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
-  @MyDownloads private val myDownloadsFeatureFlag: PlatformParameterValue<Boolean>
+  @MyDownloads private val myDownloadsFeatureFlag: Provider<PlatformParameterValue<Boolean>>
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -68,7 +69,7 @@ class TopicFragmentPresenter @Inject constructor(
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
-    viewModel.enableMyDownloads = myDownloadsFeatureFlag.value
+    viewModel.enableMyDownloads = myDownloadsFeatureFlag.get().value
     binding.viewModel = viewModel
 
     setUpViewPager(viewPager, topicId, isConfigChanged)
@@ -88,10 +89,10 @@ class TopicFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         enablePracticeTab,
-        myDownloadsFeatureFlag.value
+        myDownloadsFeatureFlag.get().value
       )
     viewPager2.adapter = adapter
-    if (!myDownloadsFeatureFlag.value) {
+    if (!myDownloadsFeatureFlag.get().value) {
       TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
         val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
         tab.text = fragment.getString(topicTab.tabLabelResId)

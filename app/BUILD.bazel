@@ -104,6 +104,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
+    "src/main/java/org/oppia/android/app/topic/info/TopicInfoListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
