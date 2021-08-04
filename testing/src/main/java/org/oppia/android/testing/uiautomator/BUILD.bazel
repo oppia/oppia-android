@@ -15,6 +15,7 @@ kt_android_library(
     deps = [
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_uiautomator_uiautomator",
+        "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
     ],
 )

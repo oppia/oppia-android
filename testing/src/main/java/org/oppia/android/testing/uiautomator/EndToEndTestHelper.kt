@@ -9,7 +9,7 @@ import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 
 /** This object contains common operations used for end-to-end tests. */
 object EndToEndTestHelper {
@@ -21,23 +21,22 @@ object EndToEndTestHelper {
   /** Starts Oppia from the home screen. */
   fun UiDevice.startOppiaFromScratch() {
     // Start from the home screen
-    pressHome()
+    this.pressHome()
 
     // Wait for launcher
-    val launcherPackage = findObject(UiSelector().packageName(launcherPackageName))
-    launcherPackage.waitForExists(LAUNCH_TIMEOUT)
-    assertTrue(launcherPackage.exists())
+    val launcherPackage = launcherPackageName
+    assertThat(launcherPackage).isNotNull()
+    this.wait(Until.hasObject(By.pkg(launcherPackage).depth(1)), LAUNCH_TIMEOUT)
 
     // Launch the blueprint app
     val context = ApplicationProvider.getApplicationContext<Context>()
-    val intent = context.packageManager.getLaunchIntentForPackage(OPPIA_PACKAGE)
+    val intent = context.packageManager
+      .getLaunchIntentForPackage(OPPIA_PACKAGE)
     intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
     context.startActivity(intent)
 
     // Wait for the app to appear
-    val oppiaPackage = findObject(UiSelector().packageName(OPPIA_PACKAGE))
-    oppiaPackage.waitForExists(LAUNCH_TIMEOUT)
-    assertTrue(oppiaPackage.exists())
+    this.wait(Until.hasObject(By.pkg(OPPIA_PACKAGE)), LAUNCH_TIMEOUT)
   }
 
   /** Waits for the view with given resourceId to appear. */
@@ -46,7 +45,8 @@ object EndToEndTestHelper {
   }
 
   /** Returns the UiObject for the given resourceId. */
-  fun UiDevice.findObjectByRes(resourceId: String): UiObject2 {
+  fun UiDevice.findObjectByRes(resourceId: String): UiObject2? {
+    waitForRes(resourceId)
     return findObject(By.res("$OPPIA_PACKAGE:id/$resourceId"))
   }
 
