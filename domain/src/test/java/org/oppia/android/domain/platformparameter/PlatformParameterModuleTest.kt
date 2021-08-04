@@ -13,13 +13,13 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_VALUE
+import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -55,11 +55,11 @@ class PlatformParameterModuleTest {
 
   private val platformParameterMapWithValues by lazy {
     val mockStringPlatformParameter = PlatformParameter.newBuilder()
-      .setString(TEST_STRING_PARAM_VALUE).build()
+      .setString(TEST_STRING_PARAM_SERVER_VALUE).build()
     val mockIntegerPlatformParameter = PlatformParameter.newBuilder()
-      .setInteger(TEST_INTEGER_PARAM_VALUE).build()
+      .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE).build()
     val mockBooleanPlatformParameter = PlatformParameter.newBuilder()
-      .setBoolean(TEST_BOOLEAN_PARAM_VALUE).build()
+      .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE).build()
 
     mapOf<String, PlatformParameter>(
       TEST_STRING_PARAM_NAME to mockStringPlatformParameter,
@@ -70,9 +70,9 @@ class PlatformParameterModuleTest {
 
   private val partialPlatformParameterMapWithValues by lazy {
     val mockIntegerPlatformParameter = PlatformParameter.newBuilder()
-      .setInteger(TEST_INTEGER_PARAM_VALUE).build()
+      .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE).build()
     val mockBooleanPlatformParameter = PlatformParameter.newBuilder()
-      .setBoolean(TEST_BOOLEAN_PARAM_VALUE).build()
+      .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE).build()
 
     mapOf<String, PlatformParameter>(
       TEST_INTEGER_PARAM_NAME to mockIntegerPlatformParameter,
@@ -84,7 +84,7 @@ class PlatformParameterModuleTest {
   fun testModule_initPlatformParameterMap_retrieveTestStringParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
     assertThat(stringPlatformParameterProvider.get().value)
-      .isEqualTo(TEST_STRING_PARAM_VALUE)
+      .isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
   }
 
   @Test
@@ -98,7 +98,7 @@ class PlatformParameterModuleTest {
   fun testModule_initPlatformParameterMap_retrieveTestIntegerParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
     assertThat(integerPlatformParameterProvider.get().value)
-      .isEqualTo(TEST_INTEGER_PARAM_VALUE)
+      .isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
   }
 
   @Test
@@ -112,7 +112,7 @@ class PlatformParameterModuleTest {
   fun testModule_initPlatformParameterMap_retrieveTestBooleanParameter_returnsParamValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
     assertThat(booleanPlatformParameterProvider.get().value)
-      .isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
+      .isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   @Test
@@ -131,8 +131,10 @@ class PlatformParameterModuleTest {
       .isEqualTo(TEST_STRING_PARAM_DEFAULT_VALUE)
 
     // As the partial map had Integer and Boolean Parameter therefore true parameter value was injected
-    assertThat(integerPlatformParameterProvider.get().value).isEqualTo(TEST_INTEGER_PARAM_VALUE)
-    assertThat(booleanPlatformParameterProvider.get().value).isEqualTo(TEST_BOOLEAN_PARAM_VALUE)
+    assertThat(integerPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
+    assertThat(booleanPlatformParameterProvider.get().value)
+      .isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   private fun setUpTestApplicationComponent(platformParameterMap: Map<String, PlatformParameter>) {
