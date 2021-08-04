@@ -73,6 +73,12 @@ kt_android_library(
     ],
 )
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
