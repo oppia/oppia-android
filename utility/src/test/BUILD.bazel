@@ -1,0 +1,10 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Top-level utility module files & targets for tests.
+"""
+
+filegroup(
+    name = "test_manifest",
+    srcs = ["AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)

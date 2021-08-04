@@ -73,22 +73,9 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "network_connection_test_util",
-    testonly = True,
-    srcs = [
-        "src/test/java/org/oppia/android/util/networking/NetworkConnectionTestUtil.kt",
-    ],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-        "//third_party:org_robolectric_robolectric",
-    ],
-)
-
 # keep sorted
 TEST_DEPS = [
     ":dagger",
-    ":network_connection_test_util",
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
@@ -107,14 +94,15 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
-    "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = [
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugImplTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionTestUtilTest.kt",
 ]
 
 [utility_test(
