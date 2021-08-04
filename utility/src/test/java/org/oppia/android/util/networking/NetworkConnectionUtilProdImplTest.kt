@@ -42,6 +42,9 @@ class NetworkConnectionUtilProdImplTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -56,7 +59,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.CONNECTED
     )
@@ -65,7 +68,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_inactiveWifiConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.DISCONNECTED
     )
@@ -74,7 +77,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
       networkState = NetworkInfo.State.CONNECTED
     )
@@ -83,7 +86,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_inactiveEthernetConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
       networkState = NetworkInfo.State.DISCONNECTED
     )
@@ -92,7 +95,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.CONNECTED
     )
@@ -101,7 +104,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_inactiveCellularConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.DISCONNECTED
     )
@@ -110,7 +113,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
       networkState = NetworkInfo.State.CONNECTED
     )
@@ -119,7 +122,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_inactiveWimaxConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
       networkState = NetworkInfo.State.DISCONNECTED
     )
@@ -128,7 +131,7 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = NO_CONNECTION,
       networkState = NetworkInfo.State.DISCONNECTED
     )
@@ -137,19 +140,14 @@ class NetworkConnectionUtilProdImplTest {
 
   @Test
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
-    setNetworkConnectionStatus(
+    networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_BLUETOOTH,
       networkState = NetworkInfo.State.CONNECTED
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
-  private fun setNetworkConnectionStatus(status: Int, networkState: NetworkInfo.State) {
-    NetworkConnectionTestUtil.setNetworkInfo(context, status, networkState)
-  }
-
   // TODO(#89): Move this to a common test application component.
-  /** Test specific dagger module for [NetworkConnectionUtilProdImplTest]. */
   @Module
   class TestModule {
     @Provides
@@ -181,23 +179,15 @@ class NetworkConnectionUtilProdImplTest {
       RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
-  /** Test specific [ApplicationComponent] for [NetworkConnectionUtilProdImplTest]. */
   interface TestApplicationComponent {
-    /** Test specific [Component.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder {
-      /** Binds [Application] to [TestApplicationComponent]. */
       @BindsInstance
       fun setApplication(application: Application): Builder
 
-      /** Builds [TestApplicationComponent]. */
       fun build(): TestApplicationComponent
     }
 
-    /**
-     * Injects [TestApplicationComponent] to [NetworkConnectionUtilProdImplTest] providing the required
-     * dagger modules.
-     */
     fun inject(networkConnectionUtilProdImplTest: NetworkConnectionUtilProdImplTest)
   }
 }
