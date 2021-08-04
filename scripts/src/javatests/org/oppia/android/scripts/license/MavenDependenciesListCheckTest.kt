@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.ci
+package org.oppia.android.scripts.license
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.After

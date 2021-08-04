@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.ci
+package org.oppia.android.scripts.license
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -16,7 +16,7 @@ import org.oppia.android.scripts.proto.MavenDependency
  *   <path_to_maven_install_json> <path_to_maven_dependencies_pb>
  *
  *
- * @param [args]: Array of [String] containg different paths required by the script
+ * Arguments:
  * - path_to_root: directory path to the root of the Oppia Android repository.
  * - path_to_maven_install_json: relative path to the maven_install.json file.
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
