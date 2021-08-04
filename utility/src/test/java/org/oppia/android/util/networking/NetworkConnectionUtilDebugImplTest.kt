@@ -207,7 +207,6 @@ class NetworkConnectionUtilDebugImplTest {
   }
 
   // TODO(#89): Move this to a common test application component.
-  /** Test specific dagger module for [NetworkConnectionUtilDebugImplTest]. */
   @Module
   class TestModule {
     @Provides
@@ -239,23 +238,15 @@ class NetworkConnectionUtilDebugImplTest {
       RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
-  /** Test specific [ApplicationComponent] for [NetworkConnectionUtilDebugImplTest]. */
   interface TestApplicationComponent {
-    /** Test specific [Component.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder {
-      /** Binds [Application] to [TestApplicationComponent]. */
       @BindsInstance
       fun setApplication(application: Application): Builder
 
-      /** Builds [TestApplicationComponent]. */
       fun build(): TestApplicationComponent
     }
 
-    /**
-     * Injects [TestApplicationComponent] to [NetworkConnectionUtilDebugImplTest] providing the required
-     * dagger modules.
-     */
     fun inject(networkConnectionUtilDebugImplTest: NetworkConnectionUtilDebugImplTest)
   }
 }
