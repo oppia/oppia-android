@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
-/** Content view model for the recycler view in [LicenseListFragment]. */
+/** Content view model for the in [LicenseTextViewerFragment] that contains the license text. */
 class LicenseTextViewModel(
   val activity: AppCompatActivity,
   val dependencyIndex: Int,

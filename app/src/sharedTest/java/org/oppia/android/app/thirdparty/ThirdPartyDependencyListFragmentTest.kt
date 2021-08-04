@@ -434,7 +434,7 @@ class ThirdPartyDependencyListFragmentTest {
 
   private fun retrieveDependencyVersion(id: Int): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
-    return res.getString(R.string.third_party_dependency_version, res.getString(id))
+    return res.getString(R.string.third_party_dependency_version_formatter, res.getString(id))
   }
 
   private fun omitVersion(artifactName: String): String {

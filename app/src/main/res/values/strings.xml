@@ -482,8 +482,7 @@
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
-  <string name="third_party_dependencies">Third Party Dependencies</string>
-  <string name="third_party_dependency_version">v %s</string>
+  <string name="third_party_dependency_version_formatter">version %s</string>
 
   <!-- LicenseListActivity -->
   <string name="license_list_activity_title">Copyright Licenses</string>

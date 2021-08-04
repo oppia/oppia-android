@@ -5,19 +5,21 @@ import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** View model in [LicenseListFragment]. */
+/**
+ * View model in [LicenseListFragment] that contains the list of licenses corresponding to a
+ * third-party dependency.
+ */
 class LicenseListViewModel @Inject constructor(
   val activity: AppCompatActivity,
   val dependencyIndex: Int
 ) : ObservableViewModel() {
-  private val arrayList = ArrayList<LicenseItemViewModel>()
 
   /** Stores the list of licenses of the third-party dependency. */
   val licenseItemList: List<LicenseItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
 
-  private fun getRecyclerViewItemList(): ArrayList<LicenseItemViewModel> {
+  private fun getRecyclerViewItemList(): List<LicenseItemViewModel> {
     val thirdPartyDependencyLicenseNamesArray = activity.resources.obtainTypedArray(
       R.array.third_party_dependency_license_names_array
     )
@@ -26,13 +28,10 @@ class LicenseListViewModel @Inject constructor(
       /* defValue= */ 0
     )
     val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
-
-    licenseNamesArray.forEachIndexed { licenseIndex, name ->
-      val licenseItemViewModel =
-        LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex)
-      arrayList.add(licenseItemViewModel)
+    val itemList = licenseNamesArray.mapIndexed { licenseIndex, name ->
+      LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex)
     }
     thirdPartyDependencyLicenseNamesArray.recycle()
-    return arrayList
+    return itemList
   }
 }

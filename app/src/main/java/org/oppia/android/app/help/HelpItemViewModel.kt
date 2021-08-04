@@ -15,7 +15,7 @@ class HelpItemViewModel(
         val routeToFAQListener = activity as RouteToFAQListListener
         routeToFAQListener.onRouteToFAQList()
       }
-      activity.getString(R.string.third_party_dependencies) -> {
+      activity.getString(R.string.third_party_dependency_list_activity_title) -> {
         val routeToThirdPartyDependencyListListener = activity
           as RouteToThirdPartyDependencyListListener
         routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()

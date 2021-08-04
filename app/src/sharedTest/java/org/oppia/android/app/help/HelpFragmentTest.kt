@@ -251,7 +251,7 @@ class HelpFragmentTest {
           targetViewId = R.id.help_item_text_view
         )
       ).check(
-        matches(withText(R.string.third_party_dependencies))
+        matches(withText(R.string.third_party_dependency_list_activity_title))
       )
     }
   }
@@ -274,7 +274,7 @@ class HelpFragmentTest {
           position = 1,
           targetViewId = R.id.help_item_text_view
         )
-      ).check(matches(withText(R.string.third_party_dependencies)))
+      ).check(matches(withText(R.string.third_party_dependency_list_activity_title)))
     }
   }
 

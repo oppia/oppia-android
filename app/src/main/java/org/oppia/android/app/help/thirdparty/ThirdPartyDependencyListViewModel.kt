@@ -5,41 +5,36 @@ import org.oppia.android.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-/** View model in [ThirdPartyDependencyListFragment]. */
+/**
+ * View model in [ThirdPartyDependencyListFragment] that contains the list of third-party
+ * dependencies and their versions.
+ */
 class ThirdPartyDependencyListViewModel @Inject constructor(
   val activity: AppCompatActivity
 ) : ObservableViewModel() {
-  private val arrayList = ArrayList<ThirdPartyDependencyItemViewModel>()
 
   /** Stores the list of third-party dependencies. */
   val thirdPartyDependencyItemList: List<ThirdPartyDependencyItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
 
-  private fun getRecyclerViewItemList(): ArrayList<ThirdPartyDependencyItemViewModel> {
+  private fun getRecyclerViewItemList(): List<ThirdPartyDependencyItemViewModel> {
     val thirdPartyDependencyNames: Array<String> =
       activity.resources.getStringArray(R.array.third_party_dependency_names_array)
     val thirdPartyDependencyVersions: Array<String> =
       activity.resources.getStringArray(
         R.array.third_party_dependency_versions_array
       )
-    thirdPartyDependencyNames.forEachIndexed { index, name ->
-      val thirdPartyDependencyItemViewModel =
-        ThirdPartyDependencyItemViewModel(
-          activity = activity,
-          name = omitVersion(name),
-          version = activity.resources.getString(
-            R.string.third_party_dependency_version,
-            thirdPartyDependencyVersions[index]
-          ),
-          dependencyIndex = index
-        )
-      arrayList.add(thirdPartyDependencyItemViewModel)
+    return thirdPartyDependencyNames.mapIndexed { index, name ->
+      ThirdPartyDependencyItemViewModel(
+        activity = activity,
+        dependencyName = name,
+        dependencyVersion = activity.resources.getString(
+          R.string.third_party_dependency_version_formatter,
+          thirdPartyDependencyVersions[index]
+        ),
+        dependencyIndex = index
+      )
     }
-    return arrayList
-  }
-
-  private fun omitVersion(artifactName: String): String {
-    return artifactName.substring(0, artifactName.lastIndexOf(':'))
   }
 }

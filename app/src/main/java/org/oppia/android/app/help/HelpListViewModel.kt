@@ -25,7 +25,7 @@ class HelpListViewModel @Inject constructor(
           helpItemViewModel = HelpItemViewModel(activity, category)
         }
         HelpItems.THIRD_PARTY -> {
-          category = activity.getString(R.string.third_party_dependencies)
+          category = activity.getString(R.string.third_party_dependency_list_activity_title)
           helpItemViewModel = HelpItemViewModel(activity, category)
         }
       }
