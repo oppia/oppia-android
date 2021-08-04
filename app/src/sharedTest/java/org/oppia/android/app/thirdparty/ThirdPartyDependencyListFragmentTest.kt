@@ -427,22 +427,13 @@ class ThirdPartyDependencyListFragmentTest {
   }
 
   private fun retrieveDependencyName(id: Int): String {
-    val dependencyNameWithVersion = ApplicationProvider.getApplicationContext<TestApplication>()
+    return ApplicationProvider.getApplicationContext<TestApplication>()
       .resources.getString(id)
-    return omitVersion(dependencyNameWithVersion)
   }
 
   private fun retrieveDependencyVersion(id: Int): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
     return res.getString(R.string.third_party_dependency_version_formatter, res.getString(id))
-  }
-
-  private fun omitVersion(artifactName: String): String {
-    return artifactName.substring(0, artifactName.lastIndexOf(':'))
-  }
-
-  private fun prependV(version: String): String {
-    return "v $version"
   }
 
   private fun setUpTestApplicationComponent() {
