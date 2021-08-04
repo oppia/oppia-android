@@ -120,7 +120,7 @@ dependencies {
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
-      'com.jackandphantom.android:circularimageview:1.2.0',
+      'com.github.oppia:CircularImageview:35d08ba88a',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
@@ -162,7 +162,7 @@ dependencies {
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
-  androidTestImplementation (project(":testing")) {
+  androidTestImplementation(project(":testing")) {
     exclude group: 'org.apache.maven', module: 'maven-artifact'
     exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
     exclude group: 'org.apache.maven', module: 'maven-model'
