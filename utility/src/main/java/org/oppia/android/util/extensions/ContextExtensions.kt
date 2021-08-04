@@ -10,7 +10,7 @@ fun Context.getVersionName(): String {
 }
 
 /** Returns the current app version code. */
-fun Context.getLongVersionCode(): Long {
+fun Context.getVersionCode(): Long {
   return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
     // Check the SDK version to make sure that the method call exists for the API level.
     this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).longVersionCode
