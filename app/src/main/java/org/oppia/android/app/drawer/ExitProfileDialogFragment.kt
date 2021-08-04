@@ -3,6 +3,7 @@ package org.oppia.android.app.drawer
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
@@ -10,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 
