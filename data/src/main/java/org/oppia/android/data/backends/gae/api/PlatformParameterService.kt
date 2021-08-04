@@ -10,7 +10,7 @@ interface PlatformParameterService {
   /**
    * Retrieves map of platform parameters where the keys corresponds to parameter names and values
    * corresponds to their server value.
-   * [Reference](https://github.com/oppia/oppia/blob/50f5cffdfccf19dad4d7144addb44a74cad23d3c/core/controllers/platform_feature_test.py)
+   * [Reference](https://github.com/oppia/oppia/blob/50f5cf/core/controllers/platform_feature.py)
    *
    * @param version app version at from build time
    * @param platformType type of client from which the request is made. It should have
