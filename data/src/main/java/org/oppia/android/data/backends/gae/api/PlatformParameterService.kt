@@ -8,15 +8,14 @@ import retrofit2.http.Query
 interface PlatformParameterService {
 
   /**
-   * This function returns a Map of Platform Parameters where the keys corresponds to parameter
-   * names and values corresponds to their server value.
-   * [Reference](https://github.com/oppia/oppia/blob/develop/core/controllers/platform_feature.py)
+   * Retrieves map of platform parameters where the keys corresponds to parameter names and values
+   * corresponds to their server value.
+   * [Reference](https://github.com/oppia/oppia/blob/50f5cffdfccf19dad4d7144addb44a74cad23d3c/core/controllers/platform_feature_test.py)
    *
-   * @param version [String] - App version at the time of Build.
-   * @param platformType [String] - Type of client from which the request is made. It should have
-   * a default value of "Android" for Oppia-Android.
-   *
-   * @return [Map]<[String], [Any]> - Platform parameter values mapped to their names.
+   * @param version app version at from build time
+   * @param platformType type of client from which the request is made. It should have
+   *     a default value of "Android" for Oppia-Android.
+   * @return platform parameter values mapped to their names
    */
   // TODO(#3506): Change the URL to point to the updated endpoint.
   @GET("platform_features_evaluation_handler")
