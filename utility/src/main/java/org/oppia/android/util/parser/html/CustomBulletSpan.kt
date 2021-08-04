@@ -28,7 +28,7 @@ class CustomBulletSpan {
       val resources = context.resources
       val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
       val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
-      /** The space between the start of the line and the bullet. */
+      // The space between the start of the line and the bullet.
       val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
 
       val bulletSpans = spannableStringBuilder.getSpans(
