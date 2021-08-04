@@ -13,7 +13,7 @@ private const val WARNING_COMMENT =
  * Usage:
  *   bazel run //scripts:maven_dependencies_list_check -- <path_to_third_party_deps_xml>
  *
- * @param [args]: Array of [String] containg different paths required by the script
+ * Arguments:
  * - path_to_third_party_deps_xml: path to the third_party_dependencies.xml
  *
  * Example:
@@ -21,11 +21,11 @@ private const val WARNING_COMMENT =
  */
 fun main(args: Array<String>) {
   if (args.size < 1) {
-    throw Exception("Too few Arguments passed")
+    throw Exception("Too few arguments passed")
   }
   val pathToThirdPartyDepsXml = args[0]
   val thirdPartyDepsXml = File(pathToThirdPartyDepsXml)
-  val xmlContent = thirdPartyDepsXml.readLines().joinToString(separator = "\n")
+  val xmlContent = thirdPartyDepsXml.readText()
 
   checkIfCommentIsPresent(xmlContent = xmlContent, comment = WARNING_COMMENT)
 
@@ -33,8 +33,8 @@ fun main(args: Array<String>) {
 }
 
 private fun checkIfCommentIsPresent(xmlContent: String, comment: String) {
-  if (!xmlContent.contains(comment)) {
+  if (comment !in xmlContent) {
     println("Please revert the changes in third_party_dependencies.xml")
-    throw Exception("License texts checked into VCS")
+    throw Exception("License texts potentially checked into VCS")
   }
 }
