@@ -1083,7 +1083,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as Started_not_completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsStartedNotCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -1094,7 +1094,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as in_progress_saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsInProgressSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -1105,24 +1105,13 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as in_progress_not_saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsInProgressNotSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedTestTopic1(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedRatios(profileId, timestampOlderThanOneWeek)
-    markInProgressNotSavedFractions(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
-   * [markInProgressSavedTestTopic0Story0Exp0].
-   */
-  fun markAllTopicsAsRecentlyPlayed(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markStartedNotCompletedTestTopic0(profileId, timestampOlderThanOneWeek)
-    markInProgressSavedTestTopic1(profileId, timestampOlderThanOneWeek)
-    markInProgressSavedRatios(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedFractions(profileId, timestampOlderThanOneWeek)
   }
 
