@@ -137,7 +137,6 @@ class HtmlParserTest {
 
   @After
   fun tearDown() {
-//    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
