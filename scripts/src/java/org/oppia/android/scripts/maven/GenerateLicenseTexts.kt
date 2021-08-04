@@ -204,7 +204,7 @@ class GenerateLicenseTexts(
   }
 
   private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {
-    return dependencyList.map { it.name }
+    return dependencyList.map { omitVersion(it.name) }
   }
 
   private fun retrieveArtifactsVersionsList(
@@ -419,6 +419,10 @@ class GenerateLicenseTexts(
 
   private fun fetchLicenseText(url: String): String {
     return licenseFetcher.scrapeText(url)
+  }
+
+  private fun omitVersion(artifactName: String): String {
+    return artifactName.substring(0, artifactName.lastIndexOf(':'))
   }
 
   private fun getTransformer(): Transformer {

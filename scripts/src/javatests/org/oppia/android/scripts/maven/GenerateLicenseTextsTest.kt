@@ -248,9 +248,9 @@ class GenerateLicenseTextsTest {
       itemList = dependencyNamesList,
       expectedSize = 3,
       expectedList = listOf(
-        "artifact.name:1",
-        "artifact.name:2",
-        "artifact.name:3"
+        "artifact.name",
+        "artifact.name",
+        "artifact.name"
       )
     )
     verifyList(
