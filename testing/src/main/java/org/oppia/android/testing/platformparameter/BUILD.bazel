@@ -1,6 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
-Package for PlatformParameter-specific test utilities and helpers.
+Package for test-specific platform parameter utilities and helpers.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
