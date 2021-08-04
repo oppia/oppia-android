@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockPlatformParameterService
+import org.oppia.android.testing.network.MockPlatformParameterService.Companion.appVersionForCorrectResponse
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
@@ -55,11 +56,11 @@ class PlatformParameterServiceTest {
     val platformParameterService = setUpInterceptedPlatformParameterService()
     mockWebServer.enqueue(MockResponse().setBody("{}"))
 
-    platformParameterService.getPlatformParametersByVersion("1").execute()
+    platformParameterService.getPlatformParametersByVersion(appVersionForCorrectResponse).execute()
     val interceptedRequest = mockWebServer.takeRequest()
 
     val appVersion = interceptedRequest.requestUrl?.queryParameter("app_version")
-    assertThat(appVersion).isEqualTo("1")
+    assertThat(appVersion).isEqualTo(appVersionForCorrectResponse)
 
     val platformType = interceptedRequest.requestUrl?.queryParameter("platform_type")
     assertThat(platformType).isEqualTo("Android")
@@ -68,7 +69,7 @@ class PlatformParameterServiceTest {
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_verifySuccessfulResponse() {
     val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = "1")
+      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
       .execute()
     assertThat(response.isSuccessful).isTrue()
 
@@ -79,7 +80,7 @@ class PlatformParameterServiceTest {
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForStringParam() {
     val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = "1")
+      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
       .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE)
@@ -88,7 +89,7 @@ class PlatformParameterServiceTest {
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForIntegerParam() {
     val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = "1")
+      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
       .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE)
@@ -97,7 +98,7 @@ class PlatformParameterServiceTest {
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForBooleanParam() {
     val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = "1")
+      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
       .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)

@@ -18,8 +18,11 @@ class MockPlatformParameterService(
   private val TEST_OBJECT_AS_PARAM_VALUE = listOf<String>()
 
   companion object {
+    /** Mock app version which is used to get right response from [MockPlatformParameterService] */
     const val appVersionForCorrectResponse = "1.0"
+    /** Mock app version which is used to get wrong response from [MockPlatformParameterService] */
     const val appVersionForWrongResponse = "2.0"
+    /** Mock app version which is used to get empty response from [MockPlatformParameterService] */
     const val appVersionForEmptyResponse = "3.0"
   }
 
