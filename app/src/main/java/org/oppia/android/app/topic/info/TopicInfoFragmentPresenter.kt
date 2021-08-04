@@ -67,7 +67,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       adapter = createSkillRecyclerViewAdapter()
     }
     binding.topicInfoStorySummaryRecyclerView.apply {
-      this.adapter = createStoryRecyclerViewAdapter()
+      adapter = createStoryRecyclerViewAdapter()
     }
     return binding.root
   }

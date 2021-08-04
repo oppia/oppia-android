@@ -9,6 +9,7 @@ import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.MY_DOWNLOADS_FLAG
 import org.oppia.android.util.platformparameter.MY_DOWNLOADS_IS_DISABLE
 import javax.inject.Inject
@@ -29,7 +30,7 @@ class TopicDownloadedViewModel @Inject constructor(
   /** Id of the downloaded topic */
   lateinit var topicId: String
 
-  private val mockPlatformParameterList by lazy {
+  private val platformParameterList by lazy {
     val disableMyDownloadsFeature = PlatformParameter.newBuilder()
       .setName(MY_DOWNLOADS_FLAG)
       .setBoolean(MY_DOWNLOADS_IS_DISABLE)
@@ -41,14 +42,16 @@ class TopicDownloadedViewModel @Inject constructor(
 
   /** Starts TopicActivity with downloaded topic */
   fun viewDownloadedTopic(@Suppress("UNUSED_PARAMETER") v: View) {
-    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
-    activity.startActivity(
-      TopicActivity.createTopicActivityIntent(
-        activity,
-        internalProfileId,
-        topicId
+    platformParameterController.updatePlatformParameterDatabase(platformParameterList)
+    platformParameterController.getParameterDatabase().toLiveData().observeForever {
+      activity.startActivity(
+        TopicActivity.createTopicActivityIntent(
+          activity,
+          internalProfileId,
+          topicId
+        )
       )
-    )
-    activity.finish()
+      activity.finish()
+    }
   }
 }
