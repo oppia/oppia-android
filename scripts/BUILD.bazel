@@ -122,8 +122,8 @@ kt_jvm_binary(
     name = "maven_dependencies_list_check",
     testonly = True,
     data = MAVEN_ASSETS,
-    main_class = "org.oppia.android.scripts.ci.MavenDependenciesListCheckKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:maven_dependencies_list_check_lib"],
+    main_class = "org.oppia.android.scripts.license.MavenDependenciesListCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_check_lib"],
 )
 
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
