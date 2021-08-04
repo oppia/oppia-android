@@ -68,6 +68,9 @@ buf.yaml @anandwana001
 # Third-party dependencies.
 /third_party/ @BenHenning
 
+# License Texts XML.
+/app/src/main/res/values/third_party_dependencies.xml @BenHenning
+
 # IDEA IDE configuration.
 .editorconfig @BenHenning
 /.idea/ @BenHenning
