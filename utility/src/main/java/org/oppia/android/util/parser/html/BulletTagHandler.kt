@@ -25,10 +25,7 @@ class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     output.getSpans(0, output.length, Bullet::class.java).lastOrNull()?.let {
       val spanEnd = output.getSpanEnd(it)
       val start = output.getSpanStart(it)
-      // no need for newline if empty span. This fix 'PARAGRAPH span must start at paragraph boundary'.
-      if (start == spanEnd) {
-        output.removeSpan(it)
-      }
+      output.removeSpan(it)
       if (start != output.length) {
         output.setSpan(
           BulletSpan(),
