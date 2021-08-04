@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -747,14 +747,14 @@ class PinPasswordActivityTest {
           isDescendantOfA(withId(R.id.admin_settings_input_pin))
         )
       ).inRoot(isDialog())
-        .perform(editTextInputAction.appendText(""), ViewActions.pressImeActionButton())
+        .perform(editTextInputAction.appendText(""), pressImeActionButton())
       onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_null)))
     }
   }
 
   @Test
-  fun testPinPassword_User_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
+  fun testPinPassword_user_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -771,7 +771,7 @@ class PinPasswordActivityTest {
           isDescendantOfA(withId(R.id.admin_settings_input_pin))
         )
       ).inRoot(isDialog())
-        .perform(editTextInputAction.appendText(""), ViewActions.pressImeActionButton())
+        .perform(editTextInputAction.appendText(""), pressImeActionButton())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasErrorText(R.string.admin_auth_null)))
