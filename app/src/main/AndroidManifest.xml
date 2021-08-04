@@ -70,6 +70,10 @@
       android:label="@string/ongoing_topic_list_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.topicdownloaded.TopicDownloadedActivity"
+      android:label="@string/topic_download_page"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.options.AppLanguageActivity"
       android:label="@string/app_language_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />

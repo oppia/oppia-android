@@ -52,6 +52,7 @@ import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManage
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardFragment
+import org.oppia.android.app.topicdownloaded.TopicDownloadedFragment
 import org.oppia.android.app.view.ViewComponent
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
@@ -116,6 +117,7 @@ interface FragmentComponent {
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
+  fun inject(topicDownloadedFragment: TopicDownloadedFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)

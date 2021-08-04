@@ -89,6 +89,8 @@
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="topic_download_page">Topic Download page</string>
+  <string name="topic_not_downloaded_name">Info: %s</string>
   <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
@@ -110,6 +112,21 @@
   <string name="status_completed">Completed</string>
   <string name="show_chapter_list">Show chapter list</string>
   <string name="hide_chapter_list">Hide chapter list</string>
+  <string name="topic_info_skills_heading">Skills</string>
+  <string name="topic_info_download_to_play">DOWNLOAD TO PLAY</string>
+  <string name="topic_info_topic_downloaded">Downlaoded</string>
+  <string name="topic_info_download_topic">Downlaod Topic</string>
+  <string name="topic_info_downloaded_message">Your download for %s is complete!</string>
+  <string name="show_hide_chapter_list">Show/Hide Chapter list of %s</string>
+  <plurals name="story_play_heading">
+    <item quantity="one">
+      Story You Can Play
+    </item>
+    <item quantity="other">
+      Stories You Can Play
+    </item>
+  </plurals>
+  <string name="topic_download_view">View</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="preferences">Preferences</string>
   <string name="profile_progress_activity_title">Profile Progress Page</string>

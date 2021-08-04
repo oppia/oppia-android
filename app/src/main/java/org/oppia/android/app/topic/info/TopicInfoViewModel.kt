@@ -1,7 +1,9 @@
 package org.oppia.android.app.topic.info
 
 import android.content.Context
+import android.view.View
 import androidx.databinding.ObservableField
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -14,8 +16,11 @@ import javax.inject.Inject
 @FragmentScope
 class TopicInfoViewModel @Inject constructor(
   private val context: Context,
+  private val fragment: Fragment,
   @TopicHtmlParserEntityType val entityType: String
 ) : ObservableViewModel() {
+
+  private val topicInfoListener = fragment as TopicInfoListener
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
   val topicSize = ObservableField<String>("")
@@ -24,6 +29,9 @@ class TopicInfoViewModel @Inject constructor(
     ObservableField(R.drawable.ic_available_offline_primary_24dp)
   val isDescriptionExpanded = ObservableField<Boolean>(true)
   val isSeeMoreVisible = ObservableField<Boolean>(true)
+  val enableMyDownloads = ObservableField<Boolean>(true)
+  val skillsItemList = ObservableField<List<TopicInfoSkillItemViewModel>>()
+  val storyItemList = ObservableField<List<TopicInfoStoryItemViewModel>>()
 
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
@@ -47,5 +55,9 @@ class TopicInfoViewModel @Inject constructor(
 
   fun clickSeeMore() {
     isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
+  }
+
+  fun clickTopicDownload(@Suppress("UNUSED_PARAMETER") v: View) {
+    topicInfoListener.onDownloadTopicClicked()
   }
 }

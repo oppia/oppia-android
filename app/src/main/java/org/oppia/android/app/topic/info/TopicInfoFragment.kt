@@ -11,7 +11,7 @@ import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** Fragment that contains info of Topic. */
-class TopicInfoFragment : InjectableFragment() {
+class TopicInfoFragment : InjectableFragment(), TopicInfoListener {
   companion object {
     /** Returns a new [TopicInfoFragment]. */
     fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
@@ -47,5 +47,9 @@ class TopicInfoFragment : InjectableFragment() {
       internalProfileId,
       topicId
     )
+  }
+
+  override fun onDownloadTopicClicked() {
+    topicInfoFragmentPresenter.showDownloadedTopic()
   }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -17,18 +18,23 @@
     <ScrollView
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:layout_weight="1">
+      android:layout_weight="1"
+      android:background="@color/white"
+      android:fillViewport="true"
+      android:overScrollMode="never"
+      android:scrollbars="none">
 
       <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topic_info_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content">
 
         <TextView
           android:id="@+id/topic_name_text_view"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginStart="64dp"
+          android:layout_marginTop="64dp"
           android:layout_marginEnd="64dp"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.topic.name}"
@@ -101,8 +107,8 @@
           android:layout_height="20dp"
           android:layout_marginStart="64dp"
           android:layout_marginTop="32dp"
+          android:onClick="@{viewModel::clickTopicDownload}"
           android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
-          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 
@@ -113,7 +119,7 @@
           android:layout_marginStart="12dp"
           android:fontFamily="sans-serif"
           android:gravity="center_vertical"
-          android:text="@string/topic_downloaded"
+          android:text="@{viewModel.enableMyDownloads ? @string/topic_info_topic_downloaded : @string/topic_info_download_topic}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="18sp"
           app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
@@ -135,6 +141,64 @@
           app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
           app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
           app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
+
+        <TextView
+          android:id="@+id/stories_heading"
+          style="@style/Heading2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="36dp"
+          android:text="@{@plurals/story_play_heading(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+          android:visibility="@{viewModel.enableMyDownloads ? View.VISIBLE : View.GONE}"
+          app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
+          app:layout_constraintTop_toBottomOf="@+id/download_story_count_text_view"
+          tools:text="Stories you can play" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/topic_info_story_summary_recycler_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="32dp"
+          android:clipToPadding="false"
+          android:overScrollMode="never"
+          android:paddingBottom="16dp"
+          android:scrollbars="none"
+          android:visibility="@{viewModel.enableMyDownloads ? View.VISIBLE : View.GONE}"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
+          app:layout_constraintTop_toBottomOf="@+id/stories_heading"
+          app:list="@{viewModel.storyItemList}" />
+
+        <TextView
+          android:id="@+id/skills_heading"
+          style="@style/Heading2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="36dp"
+          android:text="@string/topic_info_skills_heading"
+          android:visibility="@{viewModel.topic.subtopicList.size() != 0 &amp;&amp; viewModel.enableMyDownloads ? View.VISIBLE: View.GONE}"
+          app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
+          app:layout_constraintTop_toBottomOf="@+id/topic_info_story_summary_recycler_view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/skills_recycler_view"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="32dp"
+          android:clipToPadding="false"
+          android:overScrollMode="never"
+          android:paddingBottom="187dp"
+          android:scrollbars="none"
+          android:visibility="@{viewModel.topic.subtopicList.size() != 0 &amp;&amp; viewModel.enableMyDownloads ? View.VISIBLE: View.GONE}"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
+          app:layout_constraintTop_toBottomOf="@+id/skills_heading"
+          app:list="@{viewModel.skillsItemList}" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
