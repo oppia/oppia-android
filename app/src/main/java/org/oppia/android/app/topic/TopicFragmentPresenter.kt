@@ -71,7 +71,6 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     viewModel.enableMyDownloads = myDownloadsFeatureFlag.get().value
     binding.viewModel = viewModel
-
     setUpViewPager(viewPager, topicId, isConfigChanged)
     return binding.root
   }
