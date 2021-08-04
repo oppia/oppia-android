@@ -60,7 +60,7 @@ class OngoingListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        (holder as OngoingStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
         val marginMin =
           (activity as Context).resources.getDimensionPixelSize(R.dimen.recently_played_margin_min)
         val marginMax =
@@ -166,7 +166,7 @@ class OngoingListAdapter(
       is SectionTitleViewModel -> {
         VIEW_TYPE_SECTION_TITLE_TEXT
       }
-      is OngoingStoryViewModel -> {
+      is PromotedStoryViewModel -> {
         VIEW_TYPE_SECTION_STORY_ITEM
       }
       else -> throw IllegalArgumentException(
@@ -194,7 +194,7 @@ class OngoingListAdapter(
   private class OngoingStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(ongoingStoryViewModel: OngoingStoryViewModel) {
+    internal fun bind(ongoingStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = ongoingStoryViewModel
     }
   }

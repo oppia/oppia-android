@@ -60,11 +60,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
     binding.lifecycleOwner = fragment
 
-    subscribeToOngoingStoryList()
+    subscribeToPromotedStoryList()
     return binding.root
   }
 
-  private val ongoingStoryListSummaryResultLiveData:
+  private val promotedStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
       topicListController.getPromotedActivityList(
@@ -72,7 +72,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       ).toLiveData()
     }
 
-  private fun subscribeToOngoingStoryList() {
+  private fun subscribeToPromotedStoryList() {
     getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
       {
@@ -115,7 +115,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun getOngoingStoryViewModel(promotedStory: PromotedStory): RecentlyPlayedItemViewModel {
-    return OngoingStoryViewModel(
+    return PromotedStoryViewModel(
       promotedStory,
       entityType,
       fragment as OngoingStoryClickListener
@@ -152,7 +152,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
     // If there's an error loading the data, assume the default.
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+    return Transformations.map(promotedStoryListSummaryResultLiveData) {
       it.getOrDefault(
         PromotedActivityList.getDefaultInstance()
       )
