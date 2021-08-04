@@ -606,8 +606,10 @@ class ViewEventLogsFragmentTest {
       ExplorationStorageModule::class
     ]
   )
+
   /** [ApplicationComponent] for [ViewEventLogsFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
