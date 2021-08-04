@@ -44,7 +44,6 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/oppiaGreyBackground"
         android:clipToPadding="false"
-        android:fillViewport="@bool/faq_single_activity_scroll_fill_view_port"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/faq_single_activity_scroll_padding_bottom"
         android:scrollbars="none">

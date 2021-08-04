@@ -2,5 +2,4 @@
 <resources>
   <bool name="isTablet">false</bool>
   <bool name="shouldCheckForSplittingInteraction">false</bool>
-  <bool name="faq_single_activity_scroll_fill_view_port">false</bool>
 </resources>
