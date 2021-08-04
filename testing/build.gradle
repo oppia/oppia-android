@@ -56,6 +56,7 @@ dependencies {
       'androidx.test.espresso:espresso-accessibility:3.1.0',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test:runner:1.2.0',
+      'androidx.test.uiautomator:uiautomator:2.2.0',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
       'nl.dionsegijn:konfetti:1.2.5',

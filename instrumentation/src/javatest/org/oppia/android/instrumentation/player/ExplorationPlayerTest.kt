@@ -2,20 +2,17 @@ package org.oppia.android.instrumentation.player
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
-import androidx.test.uiautomator.UiCollection
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until.hasObject
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.oppia.android.instrumentation.EndToEndTestHelper.startOppiaFromScratch
+import org.oppia.android.testing.uiautomator.EndToEndTestHelper.findObjectByRes
+import org.oppia.android.testing.uiautomator.EndToEndTestHelper.scrollRecyclerViewTextIntoView
+import org.oppia.android.testing.uiautomator.EndToEndTestHelper.startOppiaFromScratch
+import org.oppia.android.testing.uiautomator.EndToEndTestHelper.waitForRes
 
 /** Tests for Explorations. */
 class ExplorationPlayerTest {
-  private val OPPIA_PACKAGE = "org.oppia.android"
-  private val TRANSITION_TIMEOUT = 5000L
   private lateinit var device: UiDevice
 
   @Before
@@ -28,14 +25,8 @@ class ExplorationPlayerTest {
   @Test
   fun testExploration_prototypeExploration_toolbarTitle_isDisplayedSuccessfully() {
     navigateToPrototypeExploration()
-    device.wait(
-      hasObject(
-        By.res("$OPPIA_PACKAGE:id/exploration_toolbar_title")
-      ),
-      TRANSITION_TIMEOUT
-    )
-    val explorationTitle = device.findObject(By.res("$OPPIA_PACKAGE:id/exploration_toolbar_title"))
-    assertEquals("Prototype Exploration", explorationTitle.text)
+    val explorationTitle = device.findObjectByRes("exploration_toolbar_title")
+    assertThat(explorationTitle).isNotNull()
   }
 
   /** Navigates and opens the Prototype Exploration using the admin profile. */
@@ -43,27 +34,18 @@ class ExplorationPlayerTest {
     val skip_button = device.findObject(By.res("$OPPIA_PACKAGE:id/skip_text_view"))
     skip_button?.let {
       it.click()
-      device.wait(
-        hasObject(By.res("$OPPIA_PACKAGE:id/get_started_button")),
-        TRANSITION_TIMEOUT
-      )
-      device.findObject(By.res("$OPPIA_PACKAGE:id/get_started_button"))
-        .click()
+      device.waitForRes("get_started_button")
+      device.findObjectByRes("get_started_button").click()
     }
-    device.wait(
-      hasObject(By.res("$OPPIA_PACKAGE:id/profile_select_text")),
-      TRANSITION_TIMEOUT
-    )
-    val profiles = UiCollection(UiSelector().className("androidx.recyclerview.widget.RecyclerView"))
-    profiles.getChildByText(UiSelector().className("android.widget.LinearLayout"), "Admin").click()
-    val recyclerview = UiScrollable(UiSelector().scrollable(true))
-    recyclerview.setAsVerticalList()
-    recyclerview.scrollTextIntoView("First Test Topic")
+    device.waitForRes("profile_select_text")
+    device.findObject(By.text("Admin")).click()
+    scrollRecyclerViewTextIntoView("First Test Topic")
     val firstTestTopicText = device.findObject(UiSelector().text("First Test Topic"))
     firstTestTopicText.click()
-    device.findObject(UiSelector().text("First Test Topic")).click()
-    device.findObject(UiSelector().text("LESSONS")).click()
-    device.findObject(UiSelector().text("First Story")).click()
-    device.findObject(UiSelector().text("Chapter 1: Prototype Exploration")).click()
+    device.findObject(By.text("First Test Topic")).click()
+    device.findObject(By.text("LESSONS")).click()
+    device.findObject(By.text("First Story")).click()
+    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
+    device.findObject(By.text("Chapter 1: Prototype Exploration")).click()
   }
 }

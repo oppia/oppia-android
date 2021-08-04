@@ -6,19 +6,23 @@ Note that:
  of the test suite.
 """
 
-load(":oppia_instrumentation_test.bzl", "oppia_instrumentation_test")
-
-oppia_instrumentation_test(
-    name = "ExplorationPlayerTest",
-    srcs = [
-        "//instrumentation/src/javatest/org/oppia/android/instrumentation:player/ExplorationPlayerTest.kt",
-    ],
+# Used for end-to-end tests
+android_binary(
+    name = "oppia_test",
+    testonly = True,
+    custom_package = "org.oppia.android",
+    enable_data_binding = True,
+    manifest = "//app:src/main/AndroidManifest.xml",
+    manifest_values = {
+        "applicationId": "org.oppia.android",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "29",
+        "versionCode": "0",
+        "versionName": "0.1-test",
+    },
+    multidex = "native",
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//instrumentation/src/javatest/org/oppia/android/instrumentation:e2e_test_helper",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:androidx_test_runner",
-        "//third_party:androidx_test_uiautomator_uiautomator",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
+        "//app",
     ],
 )

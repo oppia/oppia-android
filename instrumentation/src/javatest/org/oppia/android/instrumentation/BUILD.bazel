@@ -6,20 +6,19 @@ Note that:
  and ends with "_lib"
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("//instrumentation:oppia_instrumentation_test.bzl", "oppia_instrumentation_test")
 
-exports_files(["player/ExplorationPlayerTest.kt"])
-
-kt_android_library(
-    name = "e2e_test_helper",
-    testonly = True,
+oppia_instrumentation_test(
+    name = "ExplorationPlayerTest",
     srcs = [
-        "EndToEndTestHelper.kt",
+        "player/ExplorationPlayerTest.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
     deps = [
+        "//testing/src/main/java/org/oppia/android/testing/uiautomator:e2e_test_helper",
         "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
         "//third_party:androidx_test_uiautomator_uiautomator",
+        "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
     ],
 )
