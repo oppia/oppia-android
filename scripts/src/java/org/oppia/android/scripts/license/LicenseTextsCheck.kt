@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.ci
+package org.oppia.android.scripts.license
 
 import java.io.File
 
