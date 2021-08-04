@@ -110,8 +110,6 @@ class LicenseTextsCheckTest {
 
   @Test
   fun testLicenseTexsCheck_xmlFileNotPresent_checkFailsWithFileNotFoundException() {
-    main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
-
     val exception = assertThrows(FileNotFoundException::class) {
       main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
     }
