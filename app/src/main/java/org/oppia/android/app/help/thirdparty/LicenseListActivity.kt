@@ -20,7 +20,7 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
   }
 
   companion object {
-    private const val THIRD_PARTY_DEPENDENCY_INDEX = "ThirdPartyListActivity.dependencyIndex"
+    private const val THIRD_PARTY_DEPENDENCY_INDEX = "LicenseListActivity.dependency_index"
 
     /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
