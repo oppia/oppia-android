@@ -14,14 +14,14 @@ fun main(vararg args: String) {
 
   val failureCommentContentList = File(repoPath, failureCommentFilePath).readText().trim().lines()
 
-  if (latestCommentContentList.size != failureCommentContentList.size) exitProcess(1)
+  if (latestCommentContentList.size != failureCommentContentList.size) exitProcess(0)
 
-  if (latestCommentContentList.first() != failureCommentContentList.first()) exitProcess(1)
+  if (latestCommentContentList.first() != failureCommentContentList.first()) exitProcess(0)
 
   for (index in 1 until latestCommentContentList.size) {
     val latestCommentLineContent = latestCommentContentList[index].substring(85)
     val failureCommentLineContent = failureCommentContentList[index].substring(85)
-    if (latestCommentLineContent != failureCommentLineContent) exitProcess(1)
+    if (latestCommentLineContent != failureCommentLineContent) exitProcess(0)
   }
 
   throw Exception("COMMENT ALREADY EXISTS")
