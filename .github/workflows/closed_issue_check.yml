@@ -27,10 +27,25 @@ jobs:
         run: |
           bazel run //scripts:closed_issue_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
 
-      - name: Failure Action
+      - name: Reopen Issue
         if: failure() && steps.closedIssueCheck.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue reopen ${{ github.event.issue.number }}
+
+      - name: Check for duplicate comment
+        id: duplicateCommentCheck
+        if: failure() && steps.closedIssueCheck.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue view ${{ github.event.issue.number }} --json comments --jq '.comments[-1].body' > $(pwd)/latest_comment.txt
+          bazel run //scripts:comment_check -- $(pwd) latest_comment.txt todo_list.txt
+
+      - name: Add Comment
+        if: failure() && steps.duplicateCommentCheck.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
           gh issue comment ${{ github.event.issue.number }} -F $(pwd)/todo_list.txt

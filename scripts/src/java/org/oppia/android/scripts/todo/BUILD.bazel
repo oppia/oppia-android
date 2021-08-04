@@ -40,3 +40,10 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/todo/data:todo",
     ],
 )
+
+kt_jvm_library(
+    name = "comment_check_lib",
+    testonly = True,
+    srcs = ["CommentCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)
