@@ -126,7 +126,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -149,7 +149,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -171,7 +171,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -194,7 +194,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -216,7 +216,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -239,7 +239,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -262,7 +262,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -285,7 +285,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -308,7 +308,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -331,7 +331,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -355,7 +355,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -379,7 +379,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -403,7 +403,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
@@ -427,7 +427,7 @@ class StateAssemblerMarginBindingAdaptersTest {
       )
       return@runWithActivity textView
     }
-    /**
+    /*
      * Note that the margin starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
