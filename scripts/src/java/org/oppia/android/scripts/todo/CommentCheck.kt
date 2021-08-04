@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.todo
 
-import kotlin.system.exitProcess
 import java.io.File
+import kotlin.system.exitProcess
 
 fun main(vararg args: String) {
   val repoPath = args[0]
