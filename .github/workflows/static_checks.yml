@@ -145,6 +145,11 @@ jobs:
         run: |
           REPIN=1 bazel run @unpinned_maven//:pin
 
+      - name: License Details Check
+        if: always()
+        run: |
+          bazel run //scripts:generate_maven_dependencies_list -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
+
       - name: Maven Dependencies Update Check
         if: always()
         run: |
