@@ -450,4 +450,8 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">28dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">28dp</dimen>
 
+  <!--  Topic practice footer view-->
+  <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
+  <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
+
 </resources>
