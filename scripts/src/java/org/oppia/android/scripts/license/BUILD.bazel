@@ -14,9 +14,9 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "maven_dependencies_list_generator",
+    name = "maven_dependencies_retriever",
     testonly = True,
-    srcs = ["MavenDependenciesListGenerator.kt"],
+    srcs = ["MavenDependenciesRetriever.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":license_fetcher",
@@ -34,6 +34,6 @@ kt_jvm_library(
     srcs = ["MavenDependenciesListCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_generator",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
     ],
 )

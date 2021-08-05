@@ -24,25 +24,21 @@ import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
-/** Tests for [MavenDependenciesListGenerator]. */
-class MavenDependenciesListGeneratorTest {
+/** Tests for [MavenDependenciesRetriever]. */
+class MavenDependenciesRetrieverTest {
 
-  private val THIRD_PARTY_PREFIX = "//third_pary:"
   private val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
   private val DEP_WITH_NO_LICENSE = "com.google.protobuf:protobuf-lite:3.0.0"
   private val DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES =
     "com.github.bumptech.glide:annotations:4.11.0"
   private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
   private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
-  private val DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME =
-    "com.squareup.moshi:moshi:1.11.0"
 
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"
   private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
   private val FIREBASE_ANALYTICS_VERSION = "17.5.0"
   private val IO_FABRIC_VERSION = "1.4.7"
-  private val MOSHI_VERSION = "1.11.0"
 
   private val DATA_BINDING_POM = "https://maven.google.com/androidx/databinding/databinding-" +
     "adapters/$DATA_BINDING_VERSION/databinding-adapters-$DATA_BINDING_VERSION.pom"
@@ -54,8 +50,6 @@ class MavenDependenciesListGeneratorTest {
     "/annotations/$GLIDE_ANNOTATIONS_VERSION/annotations-$GLIDE_ANNOTATIONS_VERSION.pom"
   private val FIREBASE_ANALYTICS_POM = "https://maven.google.com/com/google/firebase/firebase-" +
     "analytics/$FIREBASE_ANALYTICS_VERSION/firebase-analytics-$FIREBASE_ANALYTICS_VERSION.pom"
-  private val MOSHI_POM = "https://repo1.maven.org/maven2/com/squareup/moshi/moshi/" +
-    "$MOSHI_VERSION/moshi-$MOSHI_VERSION.pom"
 
   private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
   private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
@@ -68,8 +62,8 @@ class MavenDependenciesListGeneratorTest {
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private val mavenDependenciesListGenerator by lazy {
-    initializeMavenDependenciesListGenerator()
+  private val MavenDependenciesRetriever by lazy {
+    initializeMavenDependenciesRetriever()
   }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
@@ -100,7 +94,7 @@ class MavenDependenciesListGeneratorTest {
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
-    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
+    val depsList = MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
     assertThat(depsList).contains(
       omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
     )
@@ -119,7 +113,7 @@ class MavenDependenciesListGeneratorTest {
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
-    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
+    val depsList = MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
     assertThat(depsList).contains(
       omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
     )
@@ -178,7 +172,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesListGenerator.addChangesFromTextProto(
+    val finalDepsList = MavenDependenciesRetriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
@@ -237,7 +231,7 @@ class MavenDependenciesListGeneratorTest {
     )
     val updatedMavenDependenciesList = mavenDependenciesList
 
-    val finalDepsList = mavenDependenciesListGenerator.addChangesFromTextProto(
+    val finalDepsList = MavenDependenciesRetriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
@@ -289,7 +283,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
     assertThat(licenseSet).isEmpty()
@@ -321,7 +315,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
     assertThat(licenseSet.size).isEqualTo(1)
@@ -374,7 +368,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val licenseSet = mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
     assertThat(licenseSet.size).isEqualTo(3)
@@ -424,7 +418,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesListGenerator.updateMavenDependenciesList(
+    val finalDepsList = MavenDependenciesRetriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>()
     )
@@ -464,7 +458,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val finalDepsList = mavenDependenciesListGenerator.updateMavenDependenciesList(
+    val finalDepsList = MavenDependenciesRetriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>(updatedLicense2)
     )
@@ -498,7 +492,7 @@ class MavenDependenciesListGeneratorTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
-    mavenDependenciesListGenerator.writeTextProto(
+    MavenDependenciesRetriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -538,7 +532,7 @@ class MavenDependenciesListGeneratorTest {
       )
     }.build()
 
-    mavenDependenciesListGenerator.writeTextProto(
+    MavenDependenciesRetriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
@@ -597,7 +591,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesListGenerator.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).isEmpty()
   }
 
@@ -624,7 +618,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesListGenerator.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses.size).isEqualTo(2)
     verifyLicenseHasVerifiedLinkNotSet(
       license = brokenLicenses.elementAt(0),
@@ -665,7 +659,7 @@ class MavenDependenciesListGeneratorTest {
       }.build()
     )
 
-    val brokenLicenses = mavenDependenciesListGenerator.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).doesNotContain(license2)
   }
 
@@ -699,7 +693,7 @@ class MavenDependenciesListGeneratorTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesListGenerator.findFirstDependenciesWithBrokenLicenses(
+      MavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>()
       )
@@ -740,7 +734,7 @@ class MavenDependenciesListGeneratorTest {
     )
 
     val licenseToDepNameMap =
-      mavenDependenciesListGenerator.findFirstDependenciesWithBrokenLicenses(
+      MavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>(license1, license2)
       )
@@ -784,7 +778,7 @@ class MavenDependenciesListGeneratorTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesListGenerator.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).isEmpty()
   }
 
@@ -820,7 +814,7 @@ class MavenDependenciesListGeneratorTest {
     )
 
     val depsThatNeedInterventionSet =
-      mavenDependenciesListGenerator.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet.size).isEqualTo(2)
     assertIsDependency(
       dependency = depsThatNeedInterventionSet.elementAt(0),
@@ -841,7 +835,7 @@ class MavenDependenciesListGeneratorTest {
 
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val mavenDependenciesList = mavenDependenciesListGenerator.retrieveMavenDependencyList(
+    val mavenDependenciesList = MavenDependenciesRetriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -882,7 +876,7 @@ class MavenDependenciesListGeneratorTest {
 
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val mavenDependenciesList = mavenDependenciesListGenerator.retrieveMavenDependencyList(
+    val mavenDependenciesList = MavenDependenciesRetriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -916,7 +910,7 @@ class MavenDependenciesListGeneratorTest {
   fun testGetDepListFromMavenInstall_emptyBazelQueryDepsList_returnsEmptyDepList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesListGenerator
+    val mavenListDependencies = MavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
@@ -928,7 +922,7 @@ class MavenDependenciesListGeneratorTest {
   fun testGetDepListFromMavenInstall_commonBazelQueryDepsList_returnsCorrectDepsList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesListGenerator
+    val mavenListDependencies = MavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
@@ -959,7 +953,7 @@ class MavenDependenciesListGeneratorTest {
 
   @Test
   fun testRetrieveDepListFromPom_emptyMavenListDependencies_returnsEmptyMavenDepList() {
-    val mavenDependencyList = mavenDependenciesListGenerator.retrieveDependencyListFromPom(
+    val mavenDependencyList = MavenDependenciesRetriever.retrieveDependencyListFromPom(
       listOf()
     )
     assertThat(mavenDependencyList.mavenDependencyList).isEmpty()
@@ -967,7 +961,7 @@ class MavenDependenciesListGeneratorTest {
 
   @Test
   fun testRetrieveDepListFromPom_mixedDepTypes_returnsCorrectMavenDepList() {
-    val mavenDependencyList = mavenDependenciesListGenerator.retrieveDependencyListFromPom(
+    val mavenDependencyList = MavenDependenciesRetriever.retrieveDependencyListFromPom(
       listOf(
         MavenListDependency(
           coord = DEP_WITH_SCRAPABLE_LICENSE,
@@ -1005,7 +999,7 @@ class MavenDependenciesListGeneratorTest {
   fun testGenerateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesListGenerator
+    val mavenListDependencies = MavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
@@ -1017,7 +1011,7 @@ class MavenDependenciesListGeneratorTest {
   fun testGenerateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = mavenDependenciesListGenerator
+    val mavenListDependencies = MavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
@@ -1222,10 +1216,6 @@ class MavenDependenciesListGeneratorTest {
                "url": "${PROTO_LITE_POM.dropLast(3)}jar"
             },
             {
-              "coord": "com.squareup.moshi:moshi:1.11.0",
-               "url": "${MOSHI_POM.dropLast(3)}jar"
-            },
-            {
               "coord": "io.fabric.sdk.android:fabric:1.4.7",
               "url": "${IO_FABRIC_POM.dropLast(3)}aar"
             }
@@ -1289,19 +1279,6 @@ class MavenDependenciesListGeneratorTest {
           </licenses>
           """.trimIndent()
         )
-      on { scrapeText(eq(MOSHI_POM)) }
-        .doReturn(
-          """
-          <?xml version="1.0" encoding="UTF-8"?>
-          <licenses>
-            <license>
-              <name>The Apache Software License, Version 2.0</name>
-              <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-              <distribution>repo</distribution>
-            </license>
-          </licenses>
-          """.trimIndent()
-        )
       on { scrapeText(eq(IO_FABRIC_POM)) }
         .doReturn(
           """
@@ -1325,8 +1302,8 @@ class MavenDependenciesListGeneratorTest {
     }
   }
 
-  private fun initializeMavenDependenciesListGenerator(): MavenDependenciesListGenerator {
-    return MavenDependenciesListGenerator(
+  private fun initializeMavenDependenciesRetriever(): MavenDependenciesRetriever {
+    return MavenDependenciesRetriever(
       "${tempFolder.root}",
       mockLicenseFetcher,
       commandExecutor

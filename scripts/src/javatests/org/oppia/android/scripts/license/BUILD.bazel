@@ -19,11 +19,11 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
-    name = "MavenDependenciesListGeneratorTest",
+    name = "MavenDependenciesRetrieverTest",
     size = "large",
-    srcs = ["MavenDependenciesListGeneratorTest.kt"],
+    srcs = ["MavenDependenciesRetrieverTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_generator",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",

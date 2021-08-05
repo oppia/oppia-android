@@ -21,7 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 private const val MAVEN_PREFIX = "@maven//:"
 
 /** Helper to compile the third-party maven dependencies list for Oppia Android. */
-class MavenDependenciesListGenerator(
+class MavenDependenciesRetriever(
   private val rootPath: String,
   private val licenseFetcher: LicenseFetcher,
   private val commandExecutor: CommandExecutor = CommandExecutorImpl()

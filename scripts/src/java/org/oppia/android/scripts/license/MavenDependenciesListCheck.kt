@@ -44,40 +44,40 @@ class MavenDependenciesListCheck(
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[2]
 
-    val mavenDependenciesListGenerator = MavenDependenciesListGenerator(
+    val MavenDependenciesRetriever = MavenDependenciesRetriever(
       pathToRoot,
       licenseFetcher,
       commandExecutor
     )
 
     val bazelQueryDepsList =
-      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
+      MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val mavenInstallDepsList = MavenDependenciesRetriever.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
     val dependenciesListFromPom =
-      mavenDependenciesListGenerator
+      MavenDependenciesRetriever
         .retrieveDependencyListFromPom(mavenInstallDepsList)
         .mavenDependencyList
 
     val dependenciesListFromTextProto =
-      mavenDependenciesListGenerator
+      MavenDependenciesRetriever
         .retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
     val updatedDependenciesList =
-      mavenDependenciesListGenerator.addChangesFromTextProto(
+      MavenDependenciesRetriever.addChangesFromTextProto(
         dependenciesListFromPom,
         dependenciesListFromTextProto
       )
 
     val manuallyUpdatedLicenses =
-      mavenDependenciesListGenerator
+      MavenDependenciesRetriever
         .retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
     val finalDependenciesList =
-      mavenDependenciesListGenerator.updateMavenDependenciesList(
+      MavenDependenciesRetriever.updateMavenDependenciesList(
         updatedDependenciesList,
         manuallyUpdatedLicenses
       )
