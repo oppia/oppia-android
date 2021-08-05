@@ -108,7 +108,7 @@
           android:layout_marginStart="64dp"
           android:layout_marginTop="32dp"
           android:onClick="@{viewModel::clickTopicDownload}"
-          android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+          android:src="@{viewModel.enableMyDownloads ? @drawable/ic_file_download_primary_24dp : @drawable/ic_available_offline_primary_24dp}"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 
@@ -119,7 +119,7 @@
           android:layout_marginStart="12dp"
           android:fontFamily="sans-serif"
           android:gravity="center_vertical"
-          android:text="@{viewModel.enableMyDownloads ? @string/topic_info_topic_downloaded : @string/topic_info_download_topic}"
+          android:text="@{viewModel.enableMyDownloads ? @string/topic_info_download_topic : @string/topic_info_topic_downloaded}"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="18sp"
           app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
