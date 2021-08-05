@@ -2,9 +2,9 @@ package org.oppia.android.scripts.maven
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.LicenseFetcher
-import org.oppia.android.scripts.common.LicenseFetcherImpl
-import org.oppia.android.scripts.common.MavenDependenciesListGenerator
+import org.oppia.android.scripts.license.LicenseFetcher
+import org.oppia.android.scripts.license.LicenseFetcherImpl
+import org.oppia.android.scripts.license.MavenDependenciesListGenerator
 import org.oppia.android.scripts.proto.MavenDependencyList
 
 /**
@@ -48,10 +48,10 @@ class GenerateMavenDependenciesList(
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
     val pathToMavenDependenciesPb = args[3]
 
-    val mavenDependenciesListGenerator = MavenDependenciesListGenerator(licenseFetcher)
+    val mavenDependenciesListGenerator = MavenDependenciesListGenerator(pathToRoot, licenseFetcher)
 
     val bazelQueryDepsList =
-      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(pathToRoot)
+      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
     val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList

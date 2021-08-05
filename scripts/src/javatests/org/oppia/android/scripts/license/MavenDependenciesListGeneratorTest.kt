@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.common
+package org.oppia.android.scripts.license
 
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.TextFormat
@@ -10,6 +10,7 @@ import org.junit.rules.TemporaryFolder
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.maven.data.MavenListDependency
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -67,10 +68,10 @@ class MavenDependenciesListGeneratorTest {
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private val mavenDependenciesListGenerator = MavenDependenciesListGenerator(
-    mockLicenseFetcher,
-    commandExecutor
-  )
+  private val mavenDependenciesListGenerator by lazy {
+    initializeMavenDependenciesListGenerator()
+  }
+
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Rule
@@ -99,9 +100,7 @@ class MavenDependenciesListGeneratorTest {
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
-    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(
-      "${tempFolder.root}"
-    )
+    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
     assertThat(depsList).contains(
       omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
     )
@@ -120,9 +119,7 @@ class MavenDependenciesListGeneratorTest {
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
-    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(
-      "${tempFolder.root}"
-    )
+    val depsList = mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
     assertThat(depsList).contains(
       omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
     )
@@ -137,7 +134,7 @@ class MavenDependenciesListGeneratorTest {
   }
 
   @Test
-  fun testAddChangesFromTextProto_DepsUpdated_returnsDepsListWithUpdatedDeps() {
+  fun testAddChangesFromTextProto_depsUpdated_returnsDepsListWithUpdatedDeps() {
     val license1 = License.newBuilder().apply {
       this.licenseName = "The Apache License, Version 2.0"
       this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -920,7 +917,7 @@ class MavenDependenciesListGeneratorTest {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
     val mavenListDependencies = mavenDependenciesListGenerator
-      .genearateDependenciesListFromMavenInstall(
+      .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
       )
@@ -932,7 +929,7 @@ class MavenDependenciesListGeneratorTest {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
     val mavenListDependencies = mavenDependenciesListGenerator
-      .genearateDependenciesListFromMavenInstall(
+      .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
           omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE),
@@ -1005,11 +1002,11 @@ class MavenDependenciesListGeneratorTest {
   }
 
   @Test
-  fun testGenearateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
+  fun testGenerateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
     val mavenListDependencies = mavenDependenciesListGenerator
-      .genearateDependenciesListFromMavenInstall(
+      .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
       )
@@ -1017,11 +1014,11 @@ class MavenDependenciesListGeneratorTest {
   }
 
   @Test
-  fun testGenearateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
+  fun testGenerateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
     val mavenListDependencies = mavenDependenciesListGenerator
-      .genearateDependenciesListFromMavenInstall(
+      .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
           omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE),
@@ -1326,5 +1323,13 @@ class MavenDependenciesListGeneratorTest {
           """.trimIndent()
         )
     }
+  }
+
+  private fun initializeMavenDependenciesListGenerator(): MavenDependenciesListGenerator {
+    return MavenDependenciesListGenerator(
+      "${tempFolder.root}",
+      mockLicenseFetcher,
+      commandExecutor
+    )
   }
 }

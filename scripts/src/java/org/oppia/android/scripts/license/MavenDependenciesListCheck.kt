@@ -2,9 +2,6 @@ package org.oppia.android.scripts.license
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.LicenseFetcher
-import org.oppia.android.scripts.common.LicenseFetcherImpl
-import org.oppia.android.scripts.common.MavenDependenciesListGenerator
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -48,36 +45,42 @@ class MavenDependenciesListCheck(
     val pathToMavenDependenciesPb = args[2]
 
     val mavenDependenciesListGenerator = MavenDependenciesListGenerator(
+      pathToRoot,
       licenseFetcher,
       commandExecutor
     )
 
     val bazelQueryDepsList =
-      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(pathToRoot)
+      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList()
     val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
-    val dependenciesListFromPom = mavenDependenciesListGenerator
-      .retrieveDependencyListFromPom(mavenInstallDepsList)
-      .mavenDependencyList
+    val dependenciesListFromPom =
+      mavenDependenciesListGenerator
+        .retrieveDependencyListFromPom(mavenInstallDepsList)
+        .mavenDependencyList
 
-    val dependenciesListFromTextProto = mavenDependenciesListGenerator
-      .retrieveMavenDependencyList(pathToMavenDependenciesPb)
+    val dependenciesListFromTextProto =
+      mavenDependenciesListGenerator
+        .retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
-    val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
-      dependenciesListFromPom,
-      dependenciesListFromTextProto
-    )
+    val updatedDependenciesList =
+      mavenDependenciesListGenerator.addChangesFromTextProto(
+        dependenciesListFromPom,
+        dependenciesListFromTextProto
+      )
 
-    val manuallyUpdatedLicenses = mavenDependenciesListGenerator
-      .retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
+    val manuallyUpdatedLicenses =
+      mavenDependenciesListGenerator
+        .retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
-    val finalDependenciesList = mavenDependenciesListGenerator.updateMavenDependenciesList(
-      updatedDependneciesList,
-      manuallyUpdatedLicenses
-    )
+    val finalDependenciesList =
+      mavenDependenciesListGenerator.updateMavenDependenciesList(
+        updatedDependenciesList,
+        manuallyUpdatedLicenses
+      )
 
     val redundantDependencies = findRedundantDependencies(
       finalDependenciesList,
