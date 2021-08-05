@@ -36,14 +36,14 @@ private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
-  GenerateLicenseTexts(LicenseFetcherImpl()).main(args)
+  RetrieveLicenseTexts(LicenseFetcherImpl()).main(args)
 }
 
 /**
  * Wrapper class to pass dependencies to be utilized by the the main method to generate license
  * texts of the dependencies.
  */
-class GenerateLicenseTexts(
+class RetrieveLicenseTexts(
   private val licenseFetcher: LicenseFetcher
 ) {
 

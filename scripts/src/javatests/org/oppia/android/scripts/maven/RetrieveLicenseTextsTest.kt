@@ -23,8 +23,8 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import javax.xml.parsers.DocumentBuilderFactory
 
-/** Tests for [GenerateLicenseTexts]. */
-class GenerateLicenseTextsTest {
+/** Tests for [RetrieveLicenseTexts]. */
+class RetrieveLicenseTextsTest {
   private val TOO_FEW_ARGS_FAILURE = "Too few arguments passed"
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"
@@ -60,7 +60,7 @@ class GenerateLicenseTextsTest {
   @Test
   fun testScript_noArguments_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) {
-      GenerateLicenseTexts(mockLicenseFetcher).main(arrayOf())
+      RetrieveLicenseTexts(mockLicenseFetcher).main(arrayOf())
     }
 
     assertThat(exception).hasMessageThat().contains(TOO_FEW_ARGS_FAILURE)
@@ -70,7 +70,7 @@ class GenerateLicenseTextsTest {
   @Test
   fun testScript_oneArguments_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) {
-      GenerateLicenseTexts(mockLicenseFetcher).main(
+      RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values"
         )
@@ -89,7 +89,7 @@ class GenerateLicenseTextsTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      GenerateLicenseTexts(mockLicenseFetcher).main(
+      RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
@@ -108,7 +108,7 @@ class GenerateLicenseTextsTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      GenerateLicenseTexts(mockLicenseFetcher).main(
+      RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
@@ -138,7 +138,7 @@ class GenerateLicenseTextsTest {
     mavenDependencyList.writeTo(pbFile.outputStream())
 
     val exception = assertThrows(Exception::class) {
-      GenerateLicenseTexts(mockLicenseFetcher).main(
+      RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
           "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
@@ -181,7 +181,7 @@ class GenerateLicenseTextsTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    GenerateLicenseTexts(mockLicenseFetcher).main(
+    RetrieveLicenseTexts(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}/values",
         "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
@@ -230,7 +230,7 @@ class GenerateLicenseTextsTest {
     val xmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    GenerateLicenseTexts(mockLicenseFetcher).main(
+    RetrieveLicenseTexts(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}/values",
         "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
