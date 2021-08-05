@@ -36,7 +36,7 @@ class NetworkConnectionUtilDebugModuleTest {
   }
 
   @Test
-  fun testNetworkConnectionUtilProdModule_debugImplementationIsInjected() {
+  fun testNetworkConnectionUtilDebugModule_debugImplementationIsInjected() {
     assertThat(networkConnectionUtil).isInstanceOf(NetworkConnectionUtilDebugImpl::class.java)
   }
 

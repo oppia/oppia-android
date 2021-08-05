@@ -1,5 +1,5 @@
 """
-Tests for networking-specific test utilities.
+Tests for networking-specific utilities.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -18,21 +18,6 @@ kt_android_library(
     ],
 )
 
-# keep sorted
-COMMON_TEST_DEPS = [
-    ":dagger",
-    ":network_connection_test_util",
-    "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-    "//third_party:androidx_test_core",
-    "//third_party:androidx_test_ext_junit",
-    "//third_party:com_google_truth_truth",
-    "//third_party:junit_junit",
-    "//third_party:robolectric_android-all",
-    "//utility/src/main/java/org/oppia/android/util/logging:annotations",
-    "//utility/src/main/java/org/oppia/android/util/logging:log_level",
-]
-
 oppia_android_test(
     name = "NetworkConnectionUtilProdModuleTest",
     srcs = ["NetworkConnectionUtilProdModuleTest.kt"],
@@ -40,8 +25,19 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        ":dagger",
+        ":network_connection_test_util",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
-    ] + COMMON_TEST_DEPS,
+    ],
 )
 
 oppia_android_test(
@@ -51,8 +47,19 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        ":dagger",
+        ":network_connection_test_util",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
-    ] + COMMON_TEST_DEPS,
+    ],
 )
 
 oppia_android_test(
@@ -62,8 +69,19 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        ":dagger",
+        ":network_connection_test_util",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
-    ] + COMMON_TEST_DEPS,
+    ],
 )
 
 oppia_android_test(
@@ -73,8 +91,19 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        ":dagger",
+        ":network_connection_test_util",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
-    ] + COMMON_TEST_DEPS,
+    ],
 )
 
 oppia_android_test(
@@ -84,8 +113,19 @@ oppia_android_test(
     test_class = "org.oppia.android.util.networking.NetworkConnectionTestUtilTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        ":dagger",
+        ":network_connection_test_util",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_core",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_level",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
-    ] + COMMON_TEST_DEPS,
+    ],
 )
 
 dagger_rules()
