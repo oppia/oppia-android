@@ -91,9 +91,12 @@ private fun computeAffectedTargetsForNonDevelopBranch(
 
   // Compute the list of Bazel files that were changed.
   val changedBazelFiles = changedFiles.filter { file ->
-    file.endsWith(".bzl", ignoreCase = true) ||
-      file.endsWith(".bazel", ignoreCase = true) ||
-      file == "WORKSPACE"
+    (
+      file.endsWith(".bzl", ignoreCase = true) ||
+        file.endsWith(".bazel", ignoreCase = true) ||
+        file == "WORKSPACE"
+      ) &&
+      file.startsWith("instrumentation/")
   }
   println("Changed Bazel-specific support files: $changedBazelFiles")
 

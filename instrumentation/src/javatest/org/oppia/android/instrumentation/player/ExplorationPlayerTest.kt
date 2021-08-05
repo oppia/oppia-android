@@ -6,10 +6,10 @@ import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.oppia.android.testing.uiautomator.EndToEndTestHelper.findObjectByRes
-import org.oppia.android.testing.uiautomator.EndToEndTestHelper.scrollRecyclerViewTextIntoView
-import org.oppia.android.testing.uiautomator.EndToEndTestHelper.startOppiaFromScratch
-import org.oppia.android.testing.uiautomator.EndToEndTestHelper.waitForRes
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
 
 /** Tests for Explorations. */
 class ExplorationPlayerTest {
@@ -30,12 +30,9 @@ class ExplorationPlayerTest {
 
   /** Navigates and opens the Prototype Exploration using the admin profile. */
   private fun navigateToPrototypeExploration() {
-    val skip_button = device.findObjectByRes("skip_text_view")
-    skip_button?.let {
-      it.click()
-      device.waitForRes("get_started_button")
-      device.findObjectByRes("get_started_button")?.click()
-    }
+    device.findObjectByRes("skip_text_view")?.click()
+    device.waitForRes("get_started_button")
+    device.findObjectByRes("get_started_button")?.click()
     device.waitForRes("profile_select_text")
     device.findObject(By.text("Admin")).click()
     scrollRecyclerViewTextIntoView("First Test Topic")
