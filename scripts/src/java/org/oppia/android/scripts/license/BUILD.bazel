@@ -34,6 +34,6 @@ kt_jvm_library(
     srcs = ["MavenDependenciesListCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:maven_dependencies_list_generator",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_generator",
     ],
 )
