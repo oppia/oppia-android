@@ -668,61 +668,6 @@ class MavenDependenciesListCheckTest {
   }
 
   @Test
-  fun testMavenDepsListCheck_depWithInvalidLicenseLink_failsWithException() {
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Fabric Software and Services Agreement"
-      this.originalLink = "https://fabric.io/terms"
-      this.isOriginalLinkInvalid = true
-    }.build()
-
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = IO_FABRIC_DEP
-            this.artifactVersion = IO_FABRIC_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      IO_FABRIC_DEP
-    )
-    setUpBazelEnvironment(coordsList)
-
-    val exception = assertThrows(Exception::class) {
-      MavenDependenciesListCheck(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
-    }
-    assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
-  }
-
-  @Test
   fun testMavenDepsListCheck_allDepsUpToDate_checkPasses() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val license1 = License.newBuilder().apply {
