@@ -91,18 +91,21 @@ private fun computeAffectedTargetsForNonDevelopBranch(
 
   // Compute the list of Bazel files that were changed.
   val changedBazelFiles = changedFiles.filter { file ->
-    (
-      file.endsWith(".bzl", ignoreCase = true) ||
-        file.endsWith(".bazel", ignoreCase = true) ||
-        file == "WORKSPACE"
-      ) &&
-      file.startsWith("instrumentation/")
+    file.endsWith(".bzl", ignoreCase = true) ||
+      file.endsWith(".bazel", ignoreCase = true) ||
+      file == "WORKSPACE"
   }
-  println("Changed Bazel-specific support files: $changedBazelFiles")
+
+  // The list of Bazel files to be ignored in the CI.
+  val filteredBazelFiles = changedBazelFiles.filter { file ->
+    file.startsWith("instrumentation", ignorecase = true)
+  }
+
+  println("Changed Bazel-specific support files: $filteredBazelFiles")
 
   // Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
   // framed as: if a BUILD file changes, run all tests transitively connected to it.
-  val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(changedBazelFiles)
+  val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(filteredBazelFiles)
   println("Affected test targets due to transitive build deps: $transitiveTestTargets")
 
   val allAffectedTestTargets = (affectedTestTargets + transitiveTestTargets).toSet()
