@@ -8,7 +8,7 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "NetworkConnectionTestUtilTest",
     srcs = ["NetworkConnectionTestUtilTest.kt"],
-    custom_package = "org.oppia.testing.networking",
+    custom_package = "org.oppia.android.testing.networking",
     test_class = "org.oppia.android.testing.networking.NetworkConnectionTestUtilTest",
     test_manifest = "//testing/src/test:test_manifest",
     deps = [

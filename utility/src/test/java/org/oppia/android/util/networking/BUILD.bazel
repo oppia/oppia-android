@@ -8,7 +8,7 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "NetworkConnectionUtilProdModuleTest",
     srcs = ["NetworkConnectionUtilProdModuleTest.kt"],
-    custom_package = "org.oppia.util.networking",
+    custom_package = "org.oppia.android.util.networking",
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
@@ -30,7 +30,7 @@ oppia_android_test(
 oppia_android_test(
     name = "NetworkConnectionUtilProdImplTest",
     srcs = ["NetworkConnectionUtilProdImplTest.kt"],
-    custom_package = "org.oppia.util.networking",
+    custom_package = "org.oppia.android.util.networking",
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilProdImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
@@ -52,7 +52,7 @@ oppia_android_test(
 oppia_android_test(
     name = "NetworkConnectionUtilDebugModuleTest",
     srcs = ["NetworkConnectionUtilDebugModuleTest.kt"],
-    custom_package = "org.oppia.util.networking",
+    custom_package = "org.oppia.android.util.networking",
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
@@ -74,7 +74,7 @@ oppia_android_test(
 oppia_android_test(
     name = "NetworkConnectionUtilDebugImplTest",
     srcs = ["NetworkConnectionUtilDebugImplTest.kt"],
-    custom_package = "org.oppia.util.networking",
+    custom_package = "org.oppia.android.util.networking",
     test_class = "org.oppia.android.util.networking.NetworkConnectionUtilDebugImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
