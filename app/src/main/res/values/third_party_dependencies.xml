@@ -3,7 +3,7 @@
   <string name="third_party_dependency_name_0">androidx.annotation:annotation</string>
   <string name="third_party_dependency_name_1">androidx.appcompat:appcompat</string>
   <string name="third_party_dependency_name_2">androidx.arch.core:core-common</string>
-  <string name="third_party_dependency_name_3">"com.google.protobuf:protobuf-lite"</string>
+  <string name="third_party_dependency_name_3">com.google.protobuf:protobuf-lite</string>
   <string-array name="third_party_dependency_names_array">
     <item>@string/third_party_dependency_name_0</item>
     <item>@string/third_party_dependency_name_1</item>
