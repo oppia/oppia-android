@@ -122,11 +122,10 @@ class ResumeLessonFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Config(qualifiers = "port")
   @Test
-  fun testResumeLessonFragment_configurationChange_lessonThumbnailIsDisplayed() {
+  fun testResumeLessonFragment_lessonThumbnailIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
@@ -134,10 +133,23 @@ class ResumeLessonFragmentTest {
     }
   }
 
+  @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testResumeLessonFragment_lessonThumbnailIsDisplayed() {
+  fun testResumeLessonFragment_onTablet_lessonThumbnailIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
+        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
+      )
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testResumeLessonFragment_onTablet_configurationChange_lessonThumbnailIsDisplayed() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
         matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
       )
