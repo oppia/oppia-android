@@ -29,7 +29,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import kotlinx.android.synthetic.main.ongoing_story_card.view.*
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.instanceOf
@@ -460,67 +459,6 @@ class RecentlyPlayedFragmentTest {
       .of(72f)
   }
 
-  @Config(qualifiers = "sw600dp-land")
-  @Test
-  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_tabletLandscape_rtlMarginIsCorrect() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-    activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
-    )
-    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-    testCoroutineDispatchers.runCurrent()
-    val recycler: RecyclerView =
-      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
-
-    assertThat(recycler.getChildAt(1).marginStart.toFloat())
-      .isWithin(TOLERANCE)
-      .of(96f)
-    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
-      .isWithin(TOLERANCE)
-      .of(0f)
-
-  assertThat(recycler.getChildAt(2).marginStart.toFloat())
-      .isWithin(TOLERANCE)
-      .of(64f)
-    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
-      .isWithin(TOLERANCE)
-      .of(32f)
-
-    assertThat(recycler.getChildAt(3).marginStart.toFloat())
-      .isWithin(TOLERANCE)
-      .of(32f)
-    assertThat(recycler.getChildAt(3).marginEnd.toFloat())
-      .isWithin(TOLERANCE)
-      .of(64f)
-
-    assertThat(recycler.getChildAt(4).marginStart.toFloat())
-      .isWithin(TOLERANCE)
-      .of(0f)
-    assertThat(recycler.getChildAt(4).marginEnd.toFloat())
-      .isWithin(TOLERANCE)
-      .of(96f)
-  }
-
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_tabletPortrait_rtlMarginIsCorrect() {
@@ -567,6 +505,67 @@ class RecentlyPlayedFragmentTest {
     assertThat(recycler.getChildAt(3).marginEnd.toFloat())
       .isWithin(TOLERANCE)
       .of(120f)
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_tabletLandscape_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+
+    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(96f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(64f)
+    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(32f)
+
+    assertThat(recycler.getChildAt(3).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(32f)
+    assertThat(recycler.getChildAt(3).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(64f)
+
+    assertThat(recycler.getChildAt(4).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+    assertThat(recycler.getChildAt(4).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(96f)
   }
 
   @Config(qualifiers = "port")
@@ -1248,4 +1247,3 @@ class RecentlyPlayedFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-
