@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** Activity for Force Network Type. */
+/** Activity for forcing the network mode for the app. */
 class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var forceNetworkTypeActivityPresenter: ForceNetworkTypeActivityPresenter

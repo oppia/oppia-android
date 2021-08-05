@@ -5,7 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 
-/** Activity for testing [ForceNetworkTypeTestActivity]. */
+/** Activity for testing [ForceNetworkTypeFragment]. */
 class ForceNetworkTypeTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -41,7 +41,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="18dp"
       android:layout_marginBottom="4dp"
-      android:contentDescription="@{@string/network_selected}"
+      android:contentDescription="@{@string/force_network_type_network_selected}"
       android:src="@drawable/ic_check_24dp"
       android:visibility="@{isNetworkSelected ? View.VISIBLE : View.GONE }"
       app:layout_constraintBottom_toBottomOf="parent"

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment to provide functionality to force network type of the app. */
+/** Fragment to provide functionality to force the network type of the app. */
 class ForceNetworkTypeFragment : InjectableFragment() {
   @Inject
   lateinit var forceNetworkTypeFragmentPresenter: ForceNetworkTypeFragmentPresenter

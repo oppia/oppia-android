@@ -479,7 +479,7 @@
   <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
   <string name="developer_options_force_network_type">Force network type</string>
   <string name="developer_options_force_crash">Force crash</string>
-  <string name="all">All</string>
-  <string name="mark_completed_uppercase">MARK COMPLETED</string>
-  <string name="network_selected">Network is selected</string>
+  <string name="modify_lesson_progress_all">All</string>
+  <string name="modify_lesson_progress_mark_completed_uppercase">MARK COMPLETED</string>
+  <string name="force_network_type_network_selected">Network is selected</string>
 </resources>
