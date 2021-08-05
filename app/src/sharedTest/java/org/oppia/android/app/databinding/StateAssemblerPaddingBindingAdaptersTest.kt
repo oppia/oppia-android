@@ -148,9 +148,9 @@ class StateAssemblerPaddingBindingAdaptersTest {
       return@runWithActivity textView
     }
     /*
-    * Note that the padding starts/ends below match the ones set above because, when the adapters are
-    * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
-    */
+     * Note that the padding starts/ends below match the ones set above because, when the adapters are
+     * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
+     */
     assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
     assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
   }
