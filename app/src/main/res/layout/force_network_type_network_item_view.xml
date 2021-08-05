@@ -29,7 +29,7 @@
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.formatNetworkTypeString}"
+      android:text="@{viewModel.networkTypeString}"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

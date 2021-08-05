@@ -6,9 +6,6 @@ import javax.inject.Inject
 
 /** [ViewModel] for displaying a network type for the recycler view in [ForceNetworkTypeFragment]. */
 class NetworkTypeItemViewModel @Inject constructor(
-  val networkType: NetworkConnectionUtil.ConnectionStatus
-) : ObservableViewModel() {
-
-  /** Returns the network type in a human readable format. */
-  fun formatNetworkTypeString(): String = networkType.name.toLowerCase().capitalize()
-}
+  val networkType: NetworkConnectionUtil.ConnectionStatus,
+  val networkTypeString: String
+) : ObservableViewModel()
