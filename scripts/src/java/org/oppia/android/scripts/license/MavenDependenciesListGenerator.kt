@@ -168,7 +168,7 @@ class MavenDependenciesListGenerator(
   }
 
   /**
-   * Retrieve the list of maven dependencies from maven_dependencies.textproto.
+   * Retrieves the list of maven dependencies from maven_dependencies.textproto.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @return list of dependencies
@@ -181,8 +181,8 @@ class MavenDependenciesListGenerator(
   }
 
   /**
-   * Retrieve the list of [MavenListDependency] such that each of these dependencies is present
-   * in maven_install.json and is also obtained from the Bazel Query.
+   * Retrieves the list of [MavenListDependency]s such that each of these dependencies is present
+   * in maven_install.json and is also obtained from the Bazel query.
    *
    * @param pathToMavenInstall path to the maven_install.json file
    * @param bazelQueryDepsNames list of dependency names generated from Bazel Query
@@ -230,7 +230,7 @@ class MavenDependenciesListGenerator(
    *
    * @param pathToMavenInstall path to the maven_install.json file
    * @param bazelQueryDepsNames list of dependency names obtained from the bazel query
-   * @return list of [MavenListDependency] that contains the artifact name and a URL that is used
+   * @return list of [MavenListDependency]s that contains the artifact name and a URL that is used
    *    to obtain the URL of the POM file of the dependency
    */
   fun generateDependenciesListFromMavenInstall(

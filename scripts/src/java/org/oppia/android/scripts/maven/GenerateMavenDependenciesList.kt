@@ -57,23 +57,24 @@ class GenerateMavenDependenciesList(
       bazelQueryDepsList
     )
 
-    val dependenciesListFromPom = mavenDependenciesListGenerator
-      .retrieveDependencyListFromPom(mavenInstallDepsList)
-      .mavenDependencyList
+    val dependenciesListFromPom =
+      mavenDependenciesListGenerator
+        .retrieveDependencyListFromPom(mavenInstallDepsList)
+        .mavenDependencyList
 
     val dependenciesListFromTextProto =
       mavenDependenciesListGenerator.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
-    val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
+    val updatedDependenciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
       dependenciesListFromPom,
       dependenciesListFromTextProto
     )
 
     val manuallyUpdatedLicenses =
-      mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
+      mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
     val finalDependenciesList = mavenDependenciesListGenerator.updateMavenDependenciesList(
-      updatedDependneciesList,
+      updatedDependenciesList,
       manuallyUpdatedLicenses
     )
     mavenDependenciesListGenerator.writeTextProto(
