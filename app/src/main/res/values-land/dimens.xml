@@ -246,12 +246,12 @@
   <dimen name="profile_edit_delete_margin_bottom">108dp</dimen>
 
   <!-- Concept Card Fragment -->
-  <dimen name="concept_card_heading_text_marginStart">52dp</dimen>
-  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
-  <dimen name="concept_card_heading_text_marginEnd">52dp</dimen>
-  <dimen name="concept_card_explanation_text_marginStart">64dp</dimen>
-  <dimen name="concept_card_explanation_text_marginTop">24dp</dimen>
-  <dimen name="concept_card_explanation_text_marginEnd">64dp</dimen>
+  <dimen name="concept_card_heading_text_margin_start">52dp</dimen>
+  <dimen name="concept_card_heading_text_margin_top">36dp</dimen>
+  <dimen name="concept_card_heading_text_margin_end">52dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_start">64dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_top">24dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_end">64dp</dimen>
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">72dp</dimen>
