@@ -673,7 +673,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testStoryList_markLessons_progressSaved_progressNotSaved_startedNotComp_ongoingListIsCrt() {
+  fun testStoryList_markLessons_progressSaved_notSaved_startedNotDone_ongoingListCorrect() {
     storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
       profileId0,
       timestampOlderThanOneWeek = false
