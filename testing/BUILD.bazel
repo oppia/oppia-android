@@ -13,6 +13,7 @@ load("//testing:testing_test.bzl", "testing_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/testing/mockito/*.kt",
+    "src/test/java/org/oppia/android/testing/networking/*.kt",
     "src/test/java/org/oppia/android/testing/platformparameter/*.kt",
     "src/main/java/org/oppia/android/testing/robolectric/*.kt",
     "src/main/java/org/oppia/android/testing/threading/*.kt",
@@ -94,6 +95,7 @@ TEST_DEPS = [
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = glob([
+    "src/test/java/org/oppia/android/testing/networking/*.kt",
     "src/test/java/org/oppia/android/testing/threading/*.kt",
 ])
 
