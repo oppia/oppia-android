@@ -104,6 +104,9 @@ class DeveloperOptionsFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var showAllHintsAndSolutionChecker: ShowAllHintsAndSolutionChecker
+
   @get:Rule
   val activityTestRule = ActivityTestRule(
     DeveloperOptionsTestActivity::class.java,
@@ -340,6 +343,44 @@ class DeveloperOptionsFragmentTest {
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_hintsSwitchIsDisabled_showAllHintsAndSolutionIsFalse() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(not(isChecked())))
+      assertThat(showAllHintsAndSolutionChecker.getShowAllHintsAndSolution()).isFalse()
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_hintsSwitchIsEnabled_showAllHintsAndSolutionIsTrue() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(isChecked()))
+      assertThat(showAllHintsAndSolutionChecker.getShowAllHintsAndSolution()).isTrue()
     }
   }
 
