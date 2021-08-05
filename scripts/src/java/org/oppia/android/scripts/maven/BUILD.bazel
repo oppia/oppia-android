@@ -1,5 +1,5 @@
 """
-Libraries corresponding to parse maven_install.json file and representing license details.
+Libraries corresponding to attributing third-party library copyright licenses in Oppia Android.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
