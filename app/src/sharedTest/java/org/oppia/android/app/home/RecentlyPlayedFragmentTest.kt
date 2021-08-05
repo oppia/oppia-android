@@ -1195,7 +1195,9 @@ class RecentlyPlayedFragmentTest {
   }
 
   fun setUpTestFragment(activity: RecentlyPlayedActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(testFragment, TEST_FRAGMENT_TAG)
       .commitNow()
   }
 
