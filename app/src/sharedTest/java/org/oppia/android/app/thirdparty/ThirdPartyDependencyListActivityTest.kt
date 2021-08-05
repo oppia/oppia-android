@@ -137,21 +137,14 @@ class ThirdPartyDependencyListActivityTest {
     ]
   )
 
-  /** [ApplicationComponent] for [ThirdPartyDependencyListActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
 
-    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /**
-     * Injects [TestApplicationComponent] to [ThirdPartyDependencyListActivityTest] providing the required
-     * dagger modules.
-     */
     fun inject(thirdPartyDependencyListActivityTest: ThirdPartyDependencyListActivityTest)
   }
 
-  /** [Application] class for [ThirdPartyDependencyListActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerThirdPartyDependencyListActivityTest_TestApplicationComponent.builder()

@@ -332,21 +332,14 @@ class LicenseTextViewerFragmentTest {
     ]
   )
 
-  /** [ApplicationComponent] for [LicenseTextViewerFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
 
-    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /**
-     * Injects [TestApplicationComponent] to [LicenseTextViewerFragmentTest] providing the required
-     * dagger modules.
-     */
     fun inject(licenseTextViewerFragmentTest: LicenseTextViewerFragmentTest)
   }
 
-  /** [Application] class for [LicenseTextViewerFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLicenseTextViewerFragmentTest_TestApplicationComponent.builder()
@@ -354,7 +347,6 @@ class LicenseTextViewerFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    /** Called when setting up [TestApplication]. */
     fun inject(licenseTextViewerFragmentTest: LicenseTextViewerFragmentTest) {
       component.inject(licenseTextViewerFragmentTest)
     }
