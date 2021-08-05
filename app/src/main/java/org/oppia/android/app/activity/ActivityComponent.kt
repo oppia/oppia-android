@@ -60,6 +60,7 @@ import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
 import org.oppia.android.app.testing.TopicTestActivityForStory
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.preview.TopicPreviewActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.topicdownloaded.TopicDownloadedActivity
@@ -135,6 +136,7 @@ interface ActivityComponent {
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicDownloadedActivity: TopicDownloadedActivity)
+  fun inject(topicPreviewActivity: TopicPreviewActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)

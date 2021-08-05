@@ -91,6 +91,7 @@
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="topic_download_page">Topic Download page</string>
+  <string name="topic_preview_page">Topic Preview page</string>
   <string name="topic_not_downloaded_name">Info: %s</string>
   <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
@@ -116,10 +117,10 @@
   <string name="topic_info_skills_heading">Skills</string>
   <string name="topic_info_download_to_play">DOWNLOAD TO PLAY</string>
   <string name="topic_info_topic_downloaded">Downlaoded</string>
-  <string name="topic_info_download_topic">Downlaod Topic</string>
+  <string name="topic_info_download_topic">Download Topic</string>
   <string name="topic_info_downloaded_message">Your download for %s is complete!</string>
   <string name="show_hide_chapter_list">Show/Hide Chapter list of %s</string>
-  <plurals name="story_play_heading">
+  <plurals name="topic_preview_story_heading">
     <item quantity="one">
       Story You Can Play
     </item>

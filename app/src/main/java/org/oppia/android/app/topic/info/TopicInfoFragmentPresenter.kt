@@ -3,7 +3,6 @@ package org.oppia.android.app.topic.info
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -11,34 +10,22 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.topicdownloaded.TopicDownloadedActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.databinding.TopicInfoChapterListItemBinding
 import org.oppia.android.databinding.TopicInfoFragmentBinding
-import org.oppia.android.databinding.TopicInfoSkillsItemBinding
-import org.oppia.android.databinding.TopicInfoStorySummaryBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.MyDownloads
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import javax.inject.Provider
 
 /** The presenter for [TopicInfoFragment]. */
 @FragmentScope
 class TopicInfoFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController,
-  @MyDownloads private val myDownloadsFeatureFlag: Provider<PlatformParameterValue<Boolean>>
+  private val topicController: TopicController
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
   private val topicInfoViewModel = getTopicInfoViewModel()
@@ -63,56 +50,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
       it.viewModel = topicInfoViewModel
     }
-    binding.skillsRecyclerView.apply {
-      adapter = createSkillRecyclerViewAdapter()
-    }
-    binding.topicInfoStorySummaryRecyclerView.apply {
-      adapter = createStoryRecyclerViewAdapter()
-    }
     return binding.root
-  }
-
-  private fun createStoryRecyclerViewAdapter(): BindableAdapter<TopicInfoStoryItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoStoryItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoStorySummaryBinding::inflate,
-        setViewModel = this::bindStorySummary
-      ).build()
-  }
-
-  private fun bindStorySummary(
-    binding: TopicInfoStorySummaryBinding,
-    model: TopicInfoStoryItemViewModel
-  ) {
-    binding.viewModel = model
-
-    var isChapterListVisible = false
-    binding.isListExpanded = isChapterListVisible
-
-    binding.expandListIcon.setOnClickListener {
-      isChapterListVisible = !isChapterListVisible
-      binding.isListExpanded = isChapterListVisible
-    }
-    binding.topicInfoChapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
-  }
-
-  private fun createChapterRecyclerViewAdapter(): BindableAdapter<TopicInfoChapterItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoChapterItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoChapterListItemBinding::inflate,
-        setViewModel = TopicInfoChapterListItemBinding::setViewModel
-      ).build()
-  }
-
-  private fun createSkillRecyclerViewAdapter(): BindableAdapter<TopicInfoSkillItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoSkillItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoSkillsItemBinding::inflate,
-        setViewModel = TopicInfoSkillsItemBinding::setViewModel
-      ).build()
   }
 
   private fun getTopicInfoViewModel(): TopicInfoViewModel {
@@ -129,59 +67,8 @@ class TopicInfoFragmentPresenter @Inject constructor(
         topicInfoViewModel.topicDescription.set(topic.description)
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
-        topicInfoViewModel.enableMyDownloads.set(myDownloadsFeatureFlag.get().value)
-        if (myDownloadsFeatureFlag.get().value) {
-          topicInfoViewModel.skillsItemList.set(extractTopicSkillList(topic.subtopicList))
-          topicInfoViewModel.storyItemList.set(extractTopicStorySummaryList(topic.storyList))
-        }
       }
     )
-  }
-
-  private fun extractTopicSkillList(
-    subtopicList: MutableList<Subtopic>
-  ): ArrayList<TopicInfoSkillItemViewModel> {
-    val topicSkillsList = ArrayList<TopicInfoSkillItemViewModel>()
-    topicSkillsList.addAll(
-      subtopicList.map {
-        TopicInfoSkillItemViewModel(it.title)
-      }
-    )
-    return topicSkillsList
-  }
-
-  private fun extractTopicStorySummaryList(
-    storySummaryList: MutableList<StorySummary>
-  ): ArrayList<TopicInfoStoryItemViewModel> {
-    val topicStoryList = ArrayList<TopicInfoStoryItemViewModel>()
-    val topicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
-    topicStoryList.addAll(
-      storySummaryList.map { storySummary ->
-        topicStoryChapterList.addAll(
-          storySummary.chapterList.mapIndexed { index, chapterSummary ->
-            TopicInfoChapterItemViewModel(index, chapterSummary.name)
-          }
-        )
-        val newTopicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
-        newTopicStoryChapterList.addAll(topicStoryChapterList)
-        topicStoryChapterList.clear()
-        TopicInfoStoryItemViewModel(storySummary, newTopicStoryChapterList)
-      }
-    )
-    return topicStoryList
-  }
-
-  fun showDownloadedTopic() {
-    if (myDownloadsFeatureFlag.get().value) {
-      val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
-        activity,
-        internalProfileId,
-        topicId,
-        topicInfoViewModel.topic.get()!!.name
-      )
-      activity.startActivity(intent)
-      activity.finish()
-    }
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {

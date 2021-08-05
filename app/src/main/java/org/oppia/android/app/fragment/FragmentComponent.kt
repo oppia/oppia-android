@@ -48,6 +48,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.info.TopicInfoFragment
 import org.oppia.android.app.topic.lessons.TopicLessonsFragment
 import org.oppia.android.app.topic.practice.TopicPracticeFragment
+import org.oppia.android.app.topic.preview.TopicPreviewFragment
 import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManagerFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
@@ -121,6 +122,7 @@ interface FragmentComponent {
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)
+  fun inject(topicPreviewFragment: TopicPreviewFragment)
   fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)

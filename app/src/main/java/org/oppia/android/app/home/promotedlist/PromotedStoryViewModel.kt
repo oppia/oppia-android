@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.home.RouteToTopicPreviewListener
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import java.util.Objects
@@ -19,9 +20,11 @@ class PromotedStoryViewModel(
   private val internalProfileId: Int,
   private val totalStoryCount: Int,
   val entityType: String,
-  val promotedStory: PromotedStory
+  val promotedStory: PromotedStory,
+  private val myDownloadsFeatureFlagValue: Boolean
 ) : ObservableViewModel() {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val routeToTopicPreviewListener = activity as RouteToTopicPreviewListener
 
   /**
    * Returns an [Int] for the width of the card layout of this promoted story, based on the device's orientation
@@ -37,11 +40,15 @@ class PromotedStoryViewModel(
   }
 
   fun clickOnStoryTile() {
-    routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      internalProfileId,
-      promotedStory.topicId,
-      promotedStory.storyId
-    )
+    if (myDownloadsFeatureFlagValue)
+      routeToTopicPreviewListener.routeToTopicPreview(internalProfileId, promotedStory.topicId)
+    else {
+      routeToTopicPlayStoryListener.routeToTopicPlayStory(
+        internalProfileId,
+        promotedStory.topicId,
+        promotedStory.storyId
+      )
+    }
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel

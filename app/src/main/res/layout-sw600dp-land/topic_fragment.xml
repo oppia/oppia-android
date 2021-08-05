@@ -50,7 +50,7 @@
           android:requiresFadingEdge="horizontal"
           android:scrollHorizontally="true"
           android:singleLine="true"
-          android:text="@{viewModel.enableMyDownloads ? String.format(@string/topic_not_downloaded_name, viewModel.topicNameLiveData) : String.format(@string/topic_name, viewModel.topicNameLiveData)}"
+          android:text="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
           android:textColor="@color/white"
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>
@@ -63,7 +63,6 @@
         android:layout_marginStart="192dp"
         android:layout_marginEnd="192dp"
         android:textSize="14sp"
-        android:visibility="@{viewModel.enableMyDownloads ? View.GONE : View.VISIBLE}"
         app:layout_constraintTop_toTopOf="parent"
         app:tabBackground="@color/oppiaPrimaryDark"
         app:tabGravity="fill"

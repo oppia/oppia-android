@@ -26,7 +26,6 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -43,9 +42,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
@@ -89,10 +86,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.MY_DOWNLOADS_FLAG
-import org.oppia.android.util.platformparameter.MY_DOWNLOADS_IS_DISABLE
-import org.oppia.android.util.platformparameter.MY_DOWNLOADS_IS_ENABLED_DEFAULT
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -135,9 +128,6 @@ class TopicInfoFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var platformParameterSingleton: PlatformParameterSingleton
-
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0
 
@@ -168,82 +158,7 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  fun testTopicInfoFragment_enableMyDownloads_checkTopicName_isCorrect() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_name_text_view))
-        .check(
-          matches(
-            withText(
-              containsString(
-                TOPIC_NAME
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_configurationChange_checkTopicName_isCorrect() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_name_text_view))
-        .check(
-          matches(
-            withText(
-              containsString(
-                TOPIC_NAME
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_description_text_view)).check(
-        matches(
-          withText(
-            containsString(
-              TOPIC_DESCRIPTION
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_checkTopicDescription_isCorrect() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
@@ -273,18 +188,6 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  fun testTopicInfoFragment_enableMyDownloads_configurationChange_checkTopicThumbnail_isCorrect() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
-    }
-  }
-
-  @Test
   fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
@@ -300,20 +203,28 @@ class TopicInfoFragmentTest {
   }
 
   @Test
-  fun testTopicInfoFragment_loadFragment_configurationLandscape_viewPagerIsDisplayed() {
+  fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
+      onView(withId(R.id.topic_name_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                TOPIC_NAME
+              )
+            )
+          )
+        )
     }
   }
 
   @Test
-  fun testTopicInfoFragment_configurationLandscape_viewPagerIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
+  fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
@@ -327,19 +238,6 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = TEST_TOPIC_ID
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
-  fun testTopicInfoFragment_enableMyDownloads_configurationLandscape_imageViewNotDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID
@@ -444,20 +342,6 @@ class TopicInfoFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
-  fun testTopicInfoFragment_enableMyDownloads_seeMoreIsVisible() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
-      topicId = RATIOS_TOPIC_ID
-    ).use {
-      onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
-    }
-  }
-
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(
       internalProfileId = internalProfileId,
@@ -467,82 +351,6 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_less)))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_downloadMessageIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.download_story_count_text_view))
-        .check(matches(withText(R.string.topic_info_download_topic)))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_disableMyDownloads_downloadedMessageIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_DISABLE)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.download_story_count_text_view))
-        .check(matches(withText(R.string.topic_info_topic_downloaded)))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_skillsIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.skills_heading)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.skills_recycler_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_disableMyDownloads_skillsIsNotDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_DISABLE)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.skills_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.skills_recycler_view)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_skillsFirstItemIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        RecyclerViewMatcher.atPositionOnView(
-          recyclerViewId = R.id.skills_recycler_view,
-          position = 0,
-          targetViewId = R.id.skills_name
-        )
-      ).check(matches(withText("What is a Ratio?")))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_enableMyDownloads_storyIsDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_ENABLED_DEFAULT)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.stories_heading)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.topic_info_story_summary_recycler_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testTopicInfoFragment_disableMyDownloads_storyIsNotDisplayed() {
-    updateMyDownloadsFeatureFlag(MY_DOWNLOADS_IS_DISABLE)
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
-      onView(withId(R.id.stories_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.topic_info_story_summary_recycler_view)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -591,17 +399,6 @@ class TopicInfoFragmentTest {
         description.appendText("isTextInLines")
       }
     }
-  }
-
-  /** Update PlatformParameter for MyDownloads flag. */
-  private fun updateMyDownloadsFeatureFlag(value: Boolean) {
-    val myDownloadsFeatureFlag = PlatformParameter.newBuilder()
-      .setName(MY_DOWNLOADS_FLAG)
-      .setBoolean(value)
-      .build()
-    val platformParameterMap = mutableMapOf<String, PlatformParameter>()
-    platformParameterMap.put(myDownloadsFeatureFlag.name, myDownloadsFeatureFlag)
-    platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

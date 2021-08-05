@@ -305,7 +305,8 @@ class PromotedStoryListViewModelTest {
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
-        promotedStory = promotedStory
+        promotedStory = promotedStory,
+        myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
       )
     }
   }

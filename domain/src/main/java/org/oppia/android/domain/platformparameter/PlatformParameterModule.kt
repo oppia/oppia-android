@@ -31,7 +31,7 @@ class PlatformParameterModule {
 
   @Provides
   @MyDownloads
-  fun provideMYDownloadsParam(
+  fun provideMyDownloadsParam(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(MY_DOWNLOADS_FLAG)

@@ -47,7 +47,8 @@ class HomeViewModel(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String
+  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val myDownloadsFeatureFlagValue: Boolean
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -188,7 +189,8 @@ class HomeViewModel(
             internalProfileId,
             sortedStoryList.size,
             storyEntityType,
-            promotedStory
+            promotedStory,
+            myDownloadsFeatureFlagValue
           )
         }
     }

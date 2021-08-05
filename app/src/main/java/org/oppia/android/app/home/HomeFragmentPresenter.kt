@@ -27,8 +27,11 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.platformparameter.MyDownloads
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import javax.inject.Provider
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -40,9 +43,11 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String
+  @StoryHtmlParserEntityType private val storyEntityType: String,
+  @MyDownloads private val myDownloadsFeatureFlag: Provider<PlatformParameterValue<Boolean>>
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
+  private val routeToTopicPreviewListener = activity as RouteToTopicPreviewListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -63,7 +68,8 @@ class HomeFragmentPresenter @Inject constructor(
       profileManagementController,
       topicListController,
       topicEntityType,
-      storyEntityType
+      storyEntityType,
+      myDownloadsFeatureFlag.get().value
     )
 
     val homeAdapter = createRecyclerViewAdapter()
@@ -144,7 +150,10 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+    if (myDownloadsFeatureFlag.get().value)
+      routeToTopicPreviewListener.routeToTopicPreview(internalProfileId, topicSummary.topicId)
+    else
+      routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
   }
 
   private fun logHomeActivityEvent() {

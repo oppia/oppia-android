@@ -20,7 +20,6 @@ class TopicViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  var enableMyDownloads: Boolean = false
 
   private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
     topicController.getTopic(

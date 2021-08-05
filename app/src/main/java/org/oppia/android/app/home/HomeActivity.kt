@@ -12,6 +12,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.preview.TopicPreviewActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -19,7 +20,8 @@ class HomeActivity :
   InjectableAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener {
+  RouteToRecentlyPlayedListener,
+  RouteToTopicPreviewListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
   private var internalProfileId: Int = -1
@@ -81,6 +83,16 @@ class HomeActivity :
       RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
         this,
         internalProfileId
+      )
+    )
+  }
+
+  override fun routeToTopicPreview(internalProfileId: Int, topicId: String) {
+    startActivity(
+      TopicPreviewActivity.createTopicPreviewActivityIntent(
+        this,
+        internalProfileId,
+        topicId
       )
     )
   }

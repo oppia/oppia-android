@@ -5,19 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.util.platformparameter.MY_DOWNLOADS_FLAG
-import org.oppia.android.util.platformparameter.MY_DOWNLOADS_IS_DISABLE
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */
 @FragmentScope
 class TopicDownloadedViewModel @Inject constructor(
   private val activity: AppCompatActivity,
-  private val platformParameterSingleton: PlatformParameterSingleton,
   private val intentFactoryShim: IntentFactoryShim
 ) : ObservableViewModel() {
 
@@ -32,15 +27,6 @@ class TopicDownloadedViewModel @Inject constructor(
 
   /** Starts TopicActivity with downloaded topic */
   fun viewDownloadedTopic(@Suppress("UNUSED_PARAMETER") v: View) {
-    val disableMyDownloadsFeature = PlatformParameter.newBuilder()
-      .setName(MY_DOWNLOADS_FLAG)
-      .setBoolean(MY_DOWNLOADS_IS_DISABLE)
-      .build()
-
-    val platformParameterMap = mutableMapOf<String, PlatformParameter>()
-    platformParameterMap.put(disableMyDownloadsFeature.name, disableMyDownloadsFeature)
-    platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
-
     val intent = intentFactoryShim.createTopicActivityIntent(
       activity.applicationContext,
       internalProfileId,

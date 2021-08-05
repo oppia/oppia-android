@@ -13,7 +13,10 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
+import org.oppia.android.util.platformparameter.MyDownloads
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Provider
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
@@ -22,7 +25,8 @@ class CompletedStoryListViewModel @Inject constructor(
   private val intentFactoryShim: IntentFactoryShim,
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
-  @StoryHtmlParserEntityType private val entityType: String
+  @StoryHtmlParserEntityType private val entityType: String,
+  @MyDownloads private val myDownloadsFeatureFlag: Provider<PlatformParameterValue<Boolean>>
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -69,7 +73,8 @@ class CompletedStoryListViewModel @Inject constructor(
           internalProfileId,
           completedStory,
           entityType,
-          intentFactoryShim
+          intentFactoryShim,
+          myDownloadsFeatureFlag.get().value
         )
       }
     )

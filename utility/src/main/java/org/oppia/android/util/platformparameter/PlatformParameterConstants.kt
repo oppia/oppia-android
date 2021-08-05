@@ -21,5 +21,4 @@ val SPLASH_SCREEN_WELCOME_MSG_VALUE = true
 annotation class MyDownloads
 
 val MY_DOWNLOADS_FLAG = "my_downloads_flag"
-val MY_DOWNLOADS_IS_ENABLED_DEFAULT = true
-val MY_DOWNLOADS_IS_DISABLE = false
+val MY_DOWNLOADS_IS_ENABLED_DEFAULT = false
