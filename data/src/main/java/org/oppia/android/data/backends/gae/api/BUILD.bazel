@@ -13,6 +13,7 @@ kt_android_library(
         "ConceptCardService.kt",
         "ExplorationService.kt",
         "FeedbackReportingService.kt",
+        "PlatformParameterService.kt",
         "QuestionPlayerService.kt",
         "StoryService.kt",
         "SubtopicService.kt",
