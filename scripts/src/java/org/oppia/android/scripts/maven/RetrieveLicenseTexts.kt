@@ -24,7 +24,7 @@ private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
  * on which Oppia Android depends.
  *
  * Usage:
- *   bazel run //scripts:generate_license_texts -- <path_to_directory_values>
+ *   bazel run //scripts:retrieve_license_texts -- <path_to_directory_values>
  *     <path_to_maven_dependenices.pb>
  *
  * Arguments:
@@ -32,7 +32,7 @@ private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
  * - path_to_maven_dependenices.pb: relative path to the maven_dependencies.pb
 
  * Example:
- *   bazel run //scripts:generate_license_texts -- $(pwd)/app/src/main/res/values
+ *   bazel run //scripts:retrieve_license_texts -- $(pwd)/app/src/main/res/values
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
