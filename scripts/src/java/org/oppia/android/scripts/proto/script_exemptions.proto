@@ -58,8 +58,8 @@ message TodoExemptions {
   repeated TodoExemption todo_exemption = 1;
 }
 
-// A Todo exemption indicates a todo which is not real. For example when a TODO keyword is used for
-// documentation purpose.
+// A Todo exemption indicates the usage of a todo keyword which is not meant to accomplish a TODO
+// task. For example when a TODO keyword is used for documentation purpose.
 message TodoExemption {
   // The path of the file relative to the root repository to be exempted for the check.
   string exempted_file_path = 1;
