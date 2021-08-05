@@ -1,7 +1,7 @@
 package org.oppia.android.scripts.maven
 
-import org.oppia.android.scripts.maven.data.CopyrightLicense
-import org.oppia.android.scripts.maven.data.Dependency
+import org.oppia.android.scripts.license.model.CopyrightLicense
+import org.oppia.android.scripts.license.model.Dependency
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
@@ -58,23 +58,25 @@ class GenerateLicenseTexts(
       )
       throw Exception("Too few arguments passed.")
     }
+
     val pathToValuesDirectory = args[0]
-    val pathToThirdPartyDependenciesXml = "$pathToValuesDirectory/third_party_dependencies.xml"
     val pathToMavenDependenciesPb = args[1]
+    val valuesDirectory = File(pathToValuesDirectory)
+    check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
+    val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
 
     val mavenDependencyList = retrieveMavenDependencyList(pathToMavenDependenciesPb)
     if (mavenDependencyList.isEmpty()) {
       throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
     val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
-    val dependencyList =
-      retrieveDependencyList(mavenDependencyList)
+    val dependencyList = retrieveDependencyList(mavenDependencyList)
 
     val dependencyNamesList = retrieveArtifactsNamesList(dependencyList)
     val dependencyVersionsList = retrieveArtifactsVersionsList(dependencyList)
 
     writeThirdPartyDependneciesXml(
-      pathToThirdPartyDependenciesXml,
+      thirdPartyDependenciesXml,
       dependencyNamesList,
       dependencyVersionsList,
       copyrightLicenseSet,
@@ -88,8 +90,7 @@ class GenerateLicenseTexts(
    * Retrieve the list of maven dependencies from maven_dependencies.textproto.
    *
    * @param pathToPbFile path to the pb file to be parsed
-   *
-   * @return list of [MavenDependency]
+   * @return list of [MavenDependency]s
    */
   private fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
     return parseTextProto(
@@ -99,11 +100,10 @@ class GenerateLicenseTexts(
   }
 
   /**
-   * Helper function to parse the textproto file to a proto class.
+   * Helper function to parse a binary proto file to a proto class.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @param proto instance of the proto class
-   *
    * @return proto class from the parsed textproto file
    */
   private fun parseTextProto(
@@ -127,29 +127,8 @@ class GenerateLicenseTexts(
         throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
       }
       licenseList.forEach { license ->
-        val licenseText: String
-        val licenseLink: String
-        when (license.verifiedLinkCase) {
-          License.VerifiedLinkCase.SCRAPABLE_LINK -> {
-            licenseText = fetchLicenseText(license.scrapableLink.url)
-            licenseLink = license.scrapableLink.url
-          }
-          License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
-            licenseText = fetchLicenseText(license.extractedCopyLink.url)
-            licenseLink = license.extractedCopyLink.url
-          }
-          License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
-            licenseText = license.directLinkOnly.url
-            licenseLink = license.directLinkOnly.url
-          }
-          else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
-        }
         copyrightLicensesSet.add(
-          CopyrightLicense(
-            license.licenseName,
-            licenseLink,
-            licenseText,
-          )
+          retrieveCopyrightLicense(license)
         )
       }
     }
@@ -162,34 +141,10 @@ class GenerateLicenseTexts(
     val dependencyList = mutableListOf<Dependency>()
     mavenDependencyList.forEach { mavenDependency ->
       val licenseList = mavenDependency.licenseList
-      if (licenseList.isEmpty()) {
-        throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
-      }
       val copyrightLicenseList = mutableListOf<CopyrightLicense>()
       licenseList.forEach { license ->
-        val licenseText: String
-        val licenseLink: String
-        when (license.verifiedLinkCase) {
-          License.VerifiedLinkCase.SCRAPABLE_LINK -> {
-            licenseText = fetchLicenseText(license.scrapableLink.url)
-            licenseLink = license.scrapableLink.url
-          }
-          License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
-            licenseText = fetchLicenseText(license.extractedCopyLink.url)
-            licenseLink = license.extractedCopyLink.url
-          }
-          License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
-            licenseText = license.directLinkOnly.url
-            licenseLink = license.directLinkOnly.url
-          }
-          else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
-        }
         copyrightLicenseList.add(
-          CopyrightLicense(
-            license.licenseName,
-            licenseLink,
-            licenseText
-          )
+          retrieveCopyrightLicense(license)
         )
       }
       dependencyList.add(
@@ -203,6 +158,31 @@ class GenerateLicenseTexts(
     return dependencyList
   }
 
+  private fun retrieveCopyrightLicense(license: License): CopyrightLicense {
+    val licenseText: String
+    val licenseLink: String
+    when (license.verifiedLinkCase) {
+      License.VerifiedLinkCase.SCRAPABLE_LINK -> {
+        licenseText = fetchLicenseText(license.scrapableLink.url)
+        licenseLink = license.scrapableLink.url
+      }
+      License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
+        licenseText = fetchLicenseText(license.extractedCopyLink.url)
+        licenseLink = license.extractedCopyLink.url
+      }
+      License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
+        licenseText = license.directLinkOnly.url
+        licenseLink = license.directLinkOnly.url
+      }
+      else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+    }
+    return CopyrightLicense(
+      license.licenseName,
+      licenseLink,
+      licenseText
+    )
+  }
+
   private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {
     return dependencyList.map { omitVersion(it.name) }
   }
@@ -214,13 +194,12 @@ class GenerateLicenseTexts(
   }
 
   private fun writeThirdPartyDependneciesXml(
-    pathToResourceXml: String,
+    resourceXmlFile: File,
     dependencyNamesList: List<String>,
     dependencyVersionsList: List<String>,
     copyrightLicenseSet: Set<CopyrightLicense>,
     dependencyList: List<Dependency>
   ) {
-    val file = File(pathToResourceXml)
     val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
     val doc = docBuilder.newDocument()
     val rootResourcesElement = doc.createElement("resources")
@@ -241,7 +220,7 @@ class GenerateLicenseTexts(
 
     doc.appendChild(rootResourcesElement)
     doc.xmlStandalone = true
-    getTransformer().transform(DOMSource(doc), StreamResult(file))
+    getTransformer().transform(DOMSource(doc), StreamResult(resourceXmlFile))
   }
 
   private fun writeDependenciesNamesXml(
@@ -273,7 +252,6 @@ class GenerateLicenseTexts(
     dependencyVersionsList: List<String>,
     rootResourcesElement: Element
   ) {
-
     // Add all dependencies versions as string resources.
     writeList(
       itemList = dependencyVersionsList,

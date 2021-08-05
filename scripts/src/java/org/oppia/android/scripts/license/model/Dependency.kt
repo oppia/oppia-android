@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.maven.data
+package org.oppia.android.scripts.license.model
 
 /** Data class that stores the details related to a third-party dependency. */
 data class Dependency(
