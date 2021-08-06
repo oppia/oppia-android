@@ -13,5 +13,5 @@ else
   exit 1
 fi
 
-# TODO(#1736): Add Bazel Linter to the project
+# TODO(#3000): Add Bazel Linter to the project
 # TODO(#970): Add XML Linter to the project
