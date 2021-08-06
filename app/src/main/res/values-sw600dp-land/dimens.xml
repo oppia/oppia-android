@@ -250,6 +250,7 @@
   <dimen name="faq_single_padding_top">48dp</dimen>
   <dimen name="faq_single_padding_end">32dp</dimen>
   <dimen name="faq_single_padding_bottom">132dp</dimen>
+  <dimen name="faq_single_activity_scroll_padding_bottom">0dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_padding_bottom">124dp</dimen>
@@ -289,5 +290,9 @@
   <dimen name="coming_soon_topic_promoted_list_view_margin_top">20dp</dimen>
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
+
+  <!-- Topic Practice Footer View -->
+  <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
+  <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
 
 </resources>
