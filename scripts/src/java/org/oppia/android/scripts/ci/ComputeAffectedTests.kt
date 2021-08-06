@@ -87,9 +87,9 @@ private fun computeAffectedTargetsForNonDevelopBranch(
   val filteredFileTargets = changedFileTargets.filter { file ->
     !file.startsWith("//instrumentation/", ignoreCase = true)
   }
-  println("Changed Bazel file targets: $changedFileTargets")
+  println("Changed Bazel file targets: $filteredFileTargets")
 
-  val affectedTestTargets = bazelClient.retrieveRelatedTestTargets(changedFileTargets).toSet()
+  val affectedTestTargets = bazelClient.retrieveRelatedTestTargets(filteredFileTargets).toSet()
   println("Affected Bazel test targets: $affectedTestTargets")
 
   // Compute the list of Bazel files that were changed.
