@@ -425,7 +425,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -452,7 +453,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -546,7 +548,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_name_only_letters)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
           )
         )
@@ -574,7 +577,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_name_only_letters)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
           )
         )
@@ -678,7 +682,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -723,7 +728,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -840,7 +846,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )
@@ -906,7 +913,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )
@@ -1417,7 +1425,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -1536,7 +1545,8 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )

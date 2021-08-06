@@ -392,7 +392,8 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(
+            hasErrorText(
+              context.resources.getString(
                 R.string.admin_pin_error_pin_confirm_wrong
               )
             )
@@ -433,7 +434,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -784,7 +786,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -826,7 +829,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.advanceUntilIdle()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -961,7 +965,8 @@ class AdminPinActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )
@@ -1001,7 +1006,8 @@ class AdminPinActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          hasErrorText(context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
           )
         )
       )

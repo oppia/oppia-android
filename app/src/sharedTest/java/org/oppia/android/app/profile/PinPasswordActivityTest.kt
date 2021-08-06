@@ -330,7 +330,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(
+              context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -387,7 +388,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.reset_pin_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -643,7 +645,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(
+              context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -685,7 +688,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(
+              context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -693,7 +697,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(
+              context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -725,7 +730,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -758,7 +764,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -787,7 +794,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -817,7 +825,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -849,7 +858,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -903,7 +913,8 @@ class PinPasswordActivityTest {
       onView(withId(R.id.reset_pin_input_pin))
         .check(
           matches(
-            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
