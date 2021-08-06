@@ -189,7 +189,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgressInExp0_contentDescriptionIsCrt() {
+  fun testLessonsFragment_ratiosTopic_partialStoryProgressInExp0_contentDescriptionIsCorrect() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -201,7 +201,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRatiosTopic_partialStoryProgressInExp1_contentDescriptionIsCrt() {
+  fun testLessonsFragment_loadRatiosTopic_partialStoryProgressInExp1_contentDescriptionIsCorrect() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
@@ -478,8 +478,8 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
-      verifyPartialProgressIconIsDisplayed(itemPosition = 0)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
     }
   }
 
@@ -494,8 +494,8 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
-      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
-      verifyPartialProgressIconIsDisplayed(itemPosition = 0)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
     }
   }
 
@@ -509,8 +509,8 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
-      verifyChapterCompletedIconIsDisplayed(itemPosition = 0)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
     }
   }
 
@@ -525,8 +525,8 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
-      verifyChapterPlayStateIconIsVisible(itemPosition = 0)
-      verifyChapterCompletedIconIsDisplayed(itemPosition = 0)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
     }
   }
 
@@ -540,7 +540,7 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsNotVisible(itemPosition = 0)
+      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
     }
   }
 
@@ -554,7 +554,7 @@ class TopicLessonsFragmentTest {
       clickLessonTab()
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsNotVisible(itemPosition = 0)
+      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
     }
   }
 
@@ -642,7 +642,7 @@ class TopicLessonsFragmentTest {
     ).check(matches(withContentDescription(contentDescription)))
   }
 
-  private fun verifyChapterPlayStateIconIsVisible(itemPosition: Int) {
+  private fun verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.chapter_recycler_view,
@@ -652,7 +652,7 @@ class TopicLessonsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun verifyChapterPlayStateIconIsNotVisible(itemPosition: Int) {
+  private fun verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.chapter_recycler_view,
@@ -662,7 +662,7 @@ class TopicLessonsFragmentTest {
     ).check(matches(not(isDisplayed())))
   }
 
-  private fun verifyPartialProgressIconIsDisplayed(itemPosition: Int) {
+  private fun verifyPartialProgressIconIsDisplayedAtPosition(itemPosition: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.chapter_recycler_view,
@@ -672,7 +672,7 @@ class TopicLessonsFragmentTest {
     ).check(matches(withDrawable(R.drawable.ic_pending_24dp)))
   }
 
-  private fun verifyChapterCompletedIconIsDisplayed(itemPosition: Int) {
+  private fun verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.chapter_recycler_view,
