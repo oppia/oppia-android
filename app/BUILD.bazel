@@ -154,6 +154,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/preview/TopicPreviewViewModel.kt",
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
 ]
 
@@ -282,7 +283,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel/TopicPracticeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel/TopicPracticeSubtopicViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/practice/TopicPracticeViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/preview/TopicPreviewViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
