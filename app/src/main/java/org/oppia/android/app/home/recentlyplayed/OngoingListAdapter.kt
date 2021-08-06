@@ -27,7 +27,7 @@ class OngoingListAdapter(
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
     return when (viewType) {
-      // TODO(#216): Generalize this binding to make adding future items easier.
+      // TODO(#632): Generalize this binding to make adding future items easier.
       VIEW_TYPE_SECTION_TITLE_TEXT -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
