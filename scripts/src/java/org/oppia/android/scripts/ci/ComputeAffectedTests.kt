@@ -84,14 +84,9 @@ private fun computeAffectedTargetsForNonDevelopBranch(
   println("Changed files (per Git): $changedFiles")
 
   val changedFileTargets = bazelClient.retrieveBazelTargets(changedFiles).toSet()
+  println("Changed Bazel file targets: $changedFileTargets")
 
-  // The list of Bazel targets to be ignored in the CI.
-  val filteredFileTargets = changedFileTargets.filter { file ->
-    !file.startsWith("//instrumentation", ignoreCase = true)
-  }
-  println("Changed Bazel file targets: $filteredFileTargets")
-
-  val affectedTestTargets = bazelClient.retrieveRelatedTestTargets(filteredFileTargets).toSet()
+  val affectedTestTargets = bazelClient.retrieveRelatedTestTargets(changedFileTargets).toSet()
   println("Affected Bazel test targets: $affectedTestTargets")
 
   // Compute the list of Bazel files that were changed.
@@ -100,24 +95,26 @@ private fun computeAffectedTargetsForNonDevelopBranch(
       file.endsWith(".bazel", ignoreCase = true) ||
       file == "WORKSPACE"
   }
-
-  // The list of Bazel files to be ignored in the CI.
-  val filteredBazelFiles = changedBazelFiles.filter { file ->
-    !file.startsWith("instrumentation/", ignoreCase = true)
-  }
-
-  println("Changed Bazel-specific support files: $filteredBazelFiles")
+  println("Changed Bazel-specific support files: $changedBazelFiles")
 
   // Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
   // framed as: if a BUILD file changes, run all tests transitively connected to it.
-  val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(filteredBazelFiles)
+  val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(changedBazelFiles)
   println("Affected test targets due to transitive build deps: $transitiveTestTargets")
 
   val allAffectedTestTargets = (affectedTestTargets + transitiveTestTargets).toSet()
+
+  // Filtering out the targets to be ignored.
+  val filteredAffectedTestTargets = allAffectedTestTargets.filter { file ->
+    !file.startsWith("//instrumentation", ignoreCase = true)
+  }
+
   println()
   println(
     "Affected test targets:" +
-      "\n${allAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
+      "\n${filteredAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
   )
-  outputFile.printWriter().use { writer -> allAffectedTestTargets.forEach { writer.println(it) } }
+  outputFile.printWriter().use { writer ->
+    filteredAffectedTestTargets.forEach { writer.println(it) }
+  }
 }
