@@ -107,7 +107,7 @@ class ExceptionsControllerTest {
     assertThat(exceptionLogged).isEqualTo(exceptionThrown)
   }
 
-  // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
