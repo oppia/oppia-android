@@ -293,7 +293,7 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
-  <!--  Topic practice footer view-->
+  <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
 
