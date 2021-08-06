@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Profile Chooser Fragment -->
-  <dimen name="profile_chooser_fragment_profile_select_text_marginTop">32dp</dimen>
-  <dimen name="profile_chooser_fragment_profile_recycler_view_martinTop">12dp</dimen>
-  <dimen name="profile_chooser_profile_view_view_marginTop">32dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_select_text_margin_top">32dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">12dp</dimen>
+  <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
 </resources>
