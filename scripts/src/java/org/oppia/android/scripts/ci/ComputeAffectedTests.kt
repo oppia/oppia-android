@@ -98,7 +98,7 @@ private fun computeAffectedTargetsForNonDevelopBranch(
 
   // The list of Bazel files to be ignored in the CI.
   val filteredBazelFiles = changedBazelFiles.filter { file ->
-    !file.startsWith("//instrumentation/", ignoreCase = true)
+    !file.startsWith("instrumentation/", ignoreCase = true)
   }
 
   println("Changed Bazel-specific support files: $filteredBazelFiles")
