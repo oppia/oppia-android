@@ -81,7 +81,8 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -424,8 +425,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -452,8 +452,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -486,7 +485,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -525,7 +524,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -547,8 +546,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
           )
         )
@@ -576,8 +574,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
           )
         )
@@ -610,7 +607,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -647,7 +644,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -681,8 +678,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -727,8 +723,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -762,7 +757,7 @@ class AddProfileActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -799,7 +794,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -845,8 +840,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )
@@ -912,8 +906,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )
@@ -973,7 +966,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -1019,7 +1012,7 @@ class AddProfileActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -1424,8 +1417,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )
         )
@@ -1544,8 +1536,7 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
         )

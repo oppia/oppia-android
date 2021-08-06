@@ -68,7 +68,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -266,7 +266,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )
@@ -297,7 +297,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )
@@ -531,7 +531,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )
@@ -540,7 +540,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )
@@ -571,7 +571,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )
@@ -580,7 +580,7 @@ class AdminAuthActivityTest {
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.admin_auth_incorrect)
             )
           )

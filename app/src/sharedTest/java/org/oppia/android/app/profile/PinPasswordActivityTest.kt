@@ -70,7 +70,8 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -329,8 +330,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -344,7 +344,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -387,8 +387,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.reset_pin_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
@@ -402,7 +401,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.reset_pin_input_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -644,8 +643,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -658,7 +656,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("5"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -687,8 +685,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -696,8 +693,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_settings_incorrect)
+            hasErrorText(context.resources.getString(R.string.admin_settings_incorrect)
             )
           )
         )
@@ -729,8 +725,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -763,8 +758,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -793,8 +787,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -824,8 +817,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -857,8 +849,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.admin_settings_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.admin_auth_null)
+            hasErrorText(context.resources.getString(R.string.admin_auth_null)
             )
           )
         )
@@ -871,7 +862,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("1"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(TextInputAction.hasNoErrorText()))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -912,8 +903,7 @@ class PinPasswordActivityTest {
       onView(withId(R.id.reset_pin_input_pin))
         .check(
           matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_length)
+            hasErrorText(context.resources.getString(R.string.add_profile_error_pin_length)
             )
           )
         )
