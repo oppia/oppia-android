@@ -250,6 +250,7 @@
   <dimen name="faq_single_padding_top">48dp</dimen>
   <dimen name="faq_single_padding_end">32dp</dimen>
   <dimen name="faq_single_padding_bottom">132dp</dimen>
+  <dimen name="faq_single_activity_scroll_padding_bottom">0dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_padding_bottom">124dp</dimen>
@@ -267,17 +268,27 @@
   <dimen name="profile_edit_delete_margin_bottom">88dp</dimen>
 
   <!-- Concept Card Fragment -->
-  <dimen name="concept_card_heading_text_marginStart">176dp</dimen>
-  <dimen name="concept_card_heading_text_marginTop">36dp</dimen>
-  <dimen name="concept_card_heading_text_marginEnd">176dp</dimen>
-  <dimen name="concept_card_explanation_text_marginStart">176dp</dimen>
-  <dimen name="concept_card_explanation_text_marginTop">16dp</dimen>
-  <dimen name="concept_card_explanation_text_marginEnd">176dp</dimen>
+  <dimen name="concept_card_heading_text_margin_start">176dp</dimen>
+  <dimen name="concept_card_heading_text_margin_top">36dp</dimen>
+  <dimen name="concept_card_heading_text_margin_end">176dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_start">176dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_top">16dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_end">176dp</dimen>
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">96dp</dimen>
   <dimen name="all_topics_text_margin_top">68dp</dimen>
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">24dp</dimen>
+
+  <!-- Coming Soon Topic List -->
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_start">96dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_end">96dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_margin_top">32dp</dimen>
+  <dimen name="coming_soon_text_padding_start">0dp</dimen>
+  <dimen name="coming_soon_text_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_margin_top">20dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
+  <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
 </resources>
