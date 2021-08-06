@@ -6,7 +6,7 @@ object NetworkSettings {
   private var isDeveloperMode: Boolean = true
 
   /** DEVELOPER URL which connects to development server */
-  // TODO(#74): Move this to DI graph
+  // TODO(#3623): Move this to DI graph
   private const val DEVELOPER_URL = "https://oppia.org"
   /**  PRODUCTION URL which connects to production server */
   private const val PROD_URL = "https://oppia.org"
