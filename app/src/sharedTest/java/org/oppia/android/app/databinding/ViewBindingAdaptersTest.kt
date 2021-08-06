@@ -106,7 +106,22 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_ltrIsEnabled_rotationStartAngleForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
+    val imageViewDropDown = activityRule.scenario.runWithActivity {
+      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+      setRotationAnimation(
+        imageViewDropDown,
+        /* isClockwise= */ false,
+        /* angle= */ 180f
+      )
+      return@runWithActivity imageViewDropDown
+    }
+    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testMarginBindableAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       setRotationAnimation(
@@ -121,22 +136,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_ltrIsEnabled_rotationEndAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testMarginBindableAdapters_rtlIsEnabled_rotationStartAngleForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -147,13 +147,12 @@ class ViewBindingAdaptersTest {
       )
       return@runWithActivity imageViewDropDown
     }
-    System.out.println("x" + imageViewDropDown.rotation)
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
+    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
   }
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_rtlIsEnabled_rotationEndAngleForRtlIsCorrect() {
+  fun testMarginBindableAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -164,7 +163,7 @@ class ViewBindingAdaptersTest {
       )
       return@runWithActivity imageViewDropDown
     }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
+    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
