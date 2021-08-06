@@ -104,7 +104,7 @@ private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationProgressControllerTest.TestApplication::class)
 class ExplorationProgressControllerTest {
-  // TODO(#114): Add much more thorough tests for the integration pathway.
+  // TODO(#3646): Add much more thorough tests for the integration pathway.
 
   // TODO(#59): Once AsyncDataSubscriptionManager can be replaced with a fake, add the following
   //  tests once careful testing timing can be controlled:
