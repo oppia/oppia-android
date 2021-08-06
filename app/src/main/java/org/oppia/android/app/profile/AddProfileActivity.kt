@@ -28,7 +28,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
   }
 
   override fun onSupportNavigateUp(): Boolean {
-    // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
+    // TODO(#3641): Investigate on using finish instead of intent.
     val intent = Intent(this, ProfileChooserActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     startActivity(intent)
