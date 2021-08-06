@@ -727,7 +727,13 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_null)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
+            )
+          )
+        )
     }
   }
 
@@ -755,7 +761,13 @@ class PinPasswordActivityTest {
         .perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_null)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
+            )
+          )
+        )
     }
   }
 
@@ -779,7 +791,13 @@ class PinPasswordActivityTest {
       ).inRoot(isDialog())
         .perform(editTextInputAction.appendText(""), pressImeActionButton())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_null)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
+            )
+          )
+        )
     }
   }
 
@@ -804,7 +822,13 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText(""), pressImeActionButton())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_null)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
+            )
+          )
+        )
     }
   }
 
@@ -831,7 +855,13 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasErrorText(R.string.admin_auth_null)))
+        .check(
+          matches(
+            TextInputAction.hasErrorText(
+              context.resources.getString(R.string.admin_auth_null)
+            )
+          )
+        )
       onView(
         allOf(
           withId(R.id.admin_settings_input_pin_edit_text),
@@ -841,7 +871,7 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("1"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
-        .check(matches(hasNoErrorText()))
+        .check(matches(TextInputAction.hasNoErrorText()))
     }
   }
 
