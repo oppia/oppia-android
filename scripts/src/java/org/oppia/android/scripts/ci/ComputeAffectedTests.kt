@@ -84,8 +84,10 @@ private fun computeAffectedTargetsForNonDevelopBranch(
   println("Changed files (per Git): $changedFiles")
 
   val changedFileTargets = bazelClient.retrieveBazelTargets(changedFiles).toSet()
+
+  // The list of Bazel targets to be ignored in the CI.
   val filteredFileTargets = changedFileTargets.filter { file ->
-    !file.startsWith("//instrumentation/", ignoreCase = true)
+    !file.startsWith("//instrumentation", ignoreCase = true)
   }
   println("Changed Bazel file targets: $filteredFileTargets")
 
