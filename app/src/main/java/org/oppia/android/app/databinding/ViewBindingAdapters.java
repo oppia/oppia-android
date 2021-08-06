@@ -3,12 +3,12 @@ package org.oppia.android.app.databinding;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
-/**
- * Holds all custom binding adapters that set miscellaneous values.
- */
+/** Holds all custom binding adapters that set miscellaneous values. */
 public final class ViewBindingAdapters {
 
   /**
@@ -45,23 +45,25 @@ public final class ViewBindingAdapters {
   )
   public static void setRotationAnimation(View view, boolean isClockwise, float angle) {
     if (isClockwise) {
-      ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, angle);
-      valueAnimator.setDuration(300);
-      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-        public void onAnimationUpdate(ValueAnimator animation) {
-          view.setRotation((float) animation.getAnimatedValue());
-        }
-      });
-      valueAnimator.start();
+      startRotationAnimation(view, isRtlLayout(view) ? 360f : 0f, angle);
     } else {
-      ValueAnimator valueAnimator = ValueAnimator.ofFloat(angle, 0f);
-      valueAnimator.setDuration(300);
-      valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-        public void onAnimationUpdate(ValueAnimator animation) {
-          view.setRotation((float) animation.getAnimatedValue());
-        }
-      });
-      valueAnimator.start();
+      startRotationAnimation(view, angle, isRtlLayout(view) ? 360f : 0f);
     }
   }
+
+  private static void startRotationAnimation(View view, float fromAngle, float toAngle) {
+    ValueAnimator valueAnimator = ValueAnimator.ofFloat(fromAngle, toAngle);
+    valueAnimator.setDuration(300);
+    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+      public void onAnimationUpdate(ValueAnimator animation) {
+        view.setRotation((float) animation.getAnimatedValue());
+      }
+    });
+    valueAnimator.start();
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
+  }
 }
+

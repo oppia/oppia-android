@@ -7,8 +7,6 @@ import android.content.Intent
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.marginEnd
-import androidx.core.view.marginStart
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -32,8 +30,6 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
-import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
 import org.oppia.android.app.databinding.ViewBindingAdapters.setRotationAnimation
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
@@ -110,7 +106,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_ltrIsEnabled_port_rotationStartAngleForLtrIsCorrect() {
+  fun testMarginBindableAdapters_ltrIsEnabled_rotationStartAngleForLtrIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       setRotationAnimation(
@@ -146,11 +142,12 @@ class ViewBindingAdaptersTest {
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
       setRotationAnimation(
         imageViewDropDown,
-        /* isClockwise= */ false,
+        /* isClockwise= */ true,
         /* angle= */ 180f
       )
       return@runWithActivity imageViewDropDown
     }
+    System.out.println("x" + imageViewDropDown.rotation)
     assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
@@ -162,7 +159,7 @@ class ViewBindingAdaptersTest {
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
       setRotationAnimation(
         imageViewDropDown,
-        /* isClockwise= */ true,
+        /* isClockwise= */ false,
         /* angle= */ 180f
       )
       return@runWithActivity imageViewDropDown
