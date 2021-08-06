@@ -312,6 +312,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markStartedNotCompletedTestTopic0Story0Exp0(
     profileId: ProfileId,
@@ -331,6 +335,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markInProgressSavedTestTopic0Story0Exp0(
     profileId: ProfileId,
@@ -350,6 +358,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markInProgressNotSavedTestTopic0Story0Exp0(
     profileId: ProfileId,
