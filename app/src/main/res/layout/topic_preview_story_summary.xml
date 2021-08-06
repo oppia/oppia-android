@@ -13,18 +13,18 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.topic.info.TopicInfoStoryItemViewModel" />
+      type="org.oppia.android.app.preview.TopicPreviewStoryItemViewModel" />
   </data>
 
   <com.google.android.material.card.MaterialCardView
-    android:id="@+id/topic_info_story_container"
+    android:id="@+id/topic_preview_story_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:rippleColor="@color/transparent"
-    app:strokeColor="@color/oppiaTopicInfoStoryCardBorder"
+    app:strokeColor="@color/oppiaTopicPreviewStoryCardBorder"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -52,7 +52,7 @@
             android:orientation="vertical">
 
             <TextView
-              android:id="@+id/topic_info_story_name_text_view"
+              android:id="@+id/topic_preview_story_name_text_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:ellipsize="end"
@@ -66,7 +66,7 @@
               tools:text="Cinders: A chicken cendrella" />
 
             <TextView
-              android:id="@+id/topic_info_story_chapter_count"
+              android:id="@+id/topic_preview_story_chapter_count"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
@@ -106,14 +106,14 @@
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
         <View
-          android:id="@+id/topic_info_story_line_view"
+          android:id="@+id/topic_preview_story_line_view"
           android:layout_width="match_parent"
           android:layout_height="2dp"
           android:layout_gravity="center_horizontal"
           android:background="@drawable/divider" />
 
         <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/topic_info_chapter_recycler_view"
+          android:id="@+id/topic_preview_chapter_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"

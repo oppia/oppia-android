@@ -66,6 +66,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
+
     setUpViewPager(viewPager, topicId, isConfigChanged)
     return binding.root
   }
@@ -76,7 +77,8 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
-    val adapter = ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enablePracticeTab)
+    val adapter =
+      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enablePracticeTab)
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)

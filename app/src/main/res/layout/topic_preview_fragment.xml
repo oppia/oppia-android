@@ -9,7 +9,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.topic.preview.TopicPreviewViewModel" />
+      type="org.oppia.android.app.preview.TopicPreviewViewModel" />
   </data>
 
   <LinearLayout
@@ -18,7 +18,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
+      android:id="@+id/topic_preview_app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -28,7 +28,7 @@
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/topic_toolbar"
+        android:id="@+id/topic_preview_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -38,7 +38,7 @@
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
-          android:id="@+id/topic_toolbar_title"
+          android:id="@+id/topic_preview_toolbar_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
@@ -71,13 +71,13 @@
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-          android:id="@+id/topic_info_container"
+          android:id="@+id/topic_preview_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingBottom="24dp">
 
           <org.oppia.android.app.customview.LessonThumbnailImageView
-            android:id="@+id/topic_thumbnail_image_view"
+            android:id="@+id/topic_preview_thumbnail_image_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
@@ -102,7 +102,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
           <TextView
-            android:id="@+id/topic_name_text_view"
+            android:id="@+id/topic_preview_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -113,13 +113,13 @@
             android:textColor="@color/oppiaPrimaryText"
             android:textDirection="locale"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
+            app:layout_constraintBottom_toBottomOf="@+id/topic_preview_thumbnail_image_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Fraction" />
 
           <TextView
-            android:id="@+id/story_count_text_view"
+            android:id="@+id/topic_preview_story_count_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -132,11 +132,11 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/topic_preview_name_text_view"
             tools:text="1 Story" />
 
           <TextView
-            android:id="@+id/topic_description_text_view"
+            android:id="@+id/topic_preview_description_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -152,7 +152,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/story_count_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/topic_preview_story_count_text_view"
             tools:text="@android:string/httpErrorBadUrl" />
 
           <TextView
@@ -174,7 +174,7 @@
             android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
+            app:layout_constraintTop_toBottomOf="@+id/topic_preview_description_text_view" />
 
           <ImageView
             android:id="@+id/download_status_image_view"
@@ -183,6 +183,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="32dp"
+            android:contentDescription="@string/topic_preview_download_topic"
             android:onClick="@{viewModel::clickTopicDownload}"
             android:src="@drawable/ic_file_download_primary_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -195,7 +196,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
-            android:text="@string/topic_info_download_topic"
+            android:text="@string/topic_preview_download_topic"
             android:textColor="@color/oppiaPrimaryText"
             android:textDirection="locale"
             android:textSize="18sp"
@@ -231,7 +232,7 @@
             tools:text="Stories you can play" />
 
           <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/topic_info_story_summary_recycler_view"
+            android:id="@+id/storySummaryRecyclerView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -252,10 +253,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            android:text="@string/topic_info_skills_heading"
+            android:text="@string/topic_preview_skills_heading"
             android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE: View.GONE}"
             app:layout_constraintStart_toStartOf="@+id/download_status_image_view"
-            app:layout_constraintTop_toBottomOf="@+id/topic_info_story_summary_recycler_view" />
+            app:layout_constraintTop_toBottomOf="@+id/storySummaryRecyclerView" />
 
           <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/skills_recycler_view"

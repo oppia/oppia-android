@@ -30,6 +30,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.android.app.preview.TopicPreviewActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
@@ -60,7 +61,6 @@ import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
 import org.oppia.android.app.testing.TopicTestActivityForStory
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.topic.preview.TopicPreviewActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.topicdownloaded.TopicDownloadedActivity

@@ -7,6 +7,9 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.topic.TOPIC_FRAGMENT_TAG
 import javax.inject.Inject
 
+const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
+
 /** The presenter for [TopicDownloadedActivity]. */
 @ActivityScope
 class TopicDownloadedActivityPresenter @Inject constructor(
@@ -16,15 +19,13 @@ class TopicDownloadedActivityPresenter @Inject constructor(
   /** Shows the TopicDownloadedFragment */
   fun handleOnCreate(
     internalProfileId: Int,
-    topicId: String,
-    topicName: String
+    topicId: String
   ) {
     activity.setContentView(R.layout.topic_downloaded_activity)
     // Bundle object to put [internalProfileId] and [topicId] to pass to [TopicDownloadedFragment].
     val args = Bundle()
-    args.putInt("id", internalProfileId)
-    args.putString("topicId", topicId)
-    args.putString("topicName", topicName)
+    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+    args.putString(TOPIC_ID_ARGUMENT_KEY, topicId)
     val topicDownloadedFragment = TopicDownloadedFragment()
     topicDownloadedFragment.arguments = args
     activity.supportFragmentManager.beginTransaction().add(

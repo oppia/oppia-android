@@ -6,11 +6,15 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+private const val TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY =
+  "TopicDownloadedActivity.topic_id"
+private const val TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY =
+  "TopicDownloadedActivity.internal_profile_id"
+
 /** The activity for displaying [TopicDownloadedFragment]. */
 class TopicDownloadedActivity : InjectableAppCompatActivity() {
 
   companion object {
-
     /**
      * This function creates the intent of [TopicDownloadedActivity].
      *
@@ -23,13 +27,11 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
     fun createTopicDownloadedActivityIntent(
       context: Context,
       internalProfileId: Int,
-      topicId: String,
-      topicName: String
+      topicId: String
     ): Intent {
       val intent = Intent(context, TopicDownloadedActivity::class.java)
-      intent.putExtra("id", internalProfileId)
-      intent.putExtra("topicId", topicId)
-      intent.putExtra("topicName", topicName)
+      intent.putExtra(TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      intent.putExtra(TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       return intent
     }
   }
@@ -40,13 +42,12 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val topicId = checkNotNull(intent.getStringExtra("topicId")) {
-      "Expected extra topic ID to be included for TopicDownloadedFragment."
-    }
-    val internalProfileId = intent.getIntExtra("id", 0)
-    val topicName = checkNotNull(intent.getStringExtra("topicName")) {
-      "Expected extra topic Name to be included for TopicDownloadedFragment."
-    }
-    topicDownloadedActivityPresenter.handleOnCreate(internalProfileId, topicId, topicName)
+    val topicId =
+      checkNotNull(intent.getStringExtra(TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+        "Expected extra topic ID to be included for TopicDownloadedFragment."
+      }
+    val internalProfileId =
+      intent.getIntExtra(TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, 0)
+    topicDownloadedActivityPresenter.handleOnCreate(internalProfileId, topicId)
   }
 }

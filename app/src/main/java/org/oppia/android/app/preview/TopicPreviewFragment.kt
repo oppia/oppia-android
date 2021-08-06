@@ -1,4 +1,4 @@
-package org.oppia.android.app.topic.preview
+package org.oppia.android.app.preview
 
 import android.content.Context
 import android.os.Bundle
@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.topic.info.TopicInfoListener
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** Fragment that contains topic preview. */
-class TopicPreviewFragment : InjectableFragment(), TopicInfoListener {
+class TopicPreviewFragment : InjectableFragment(), TopicPreviewListener {
 
   @Inject
   lateinit var topicPreviewFragmentPresenter: TopicPreviewFragmentPresenter

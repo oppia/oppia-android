@@ -24,15 +24,13 @@ class TopicDownloadedFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.getInt("id", -1)!!
-    val topicId = arguments?.getString("topicId")!!
-    val topicName = arguments?.getString("topicName")!!
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
+    val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY)!!
     return topicDownloadedFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
-      topicId,
-      topicName
+      topicId
     )
   }
 }

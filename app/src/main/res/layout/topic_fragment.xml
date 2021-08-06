@@ -4,8 +4,6 @@
 
   <data>
 
-    <import type="android.view.View" />
-
     <variable
       name="viewModel"
       type="org.oppia.android.app.topic.TopicViewModel" />

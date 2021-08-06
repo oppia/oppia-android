@@ -1,4 +1,4 @@
-package org.oppia.android.app.topic.preview
+package org.oppia.android.app.preview
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

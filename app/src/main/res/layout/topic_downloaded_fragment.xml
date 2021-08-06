@@ -21,11 +21,11 @@
       android:layout_marginTop="100dp"
       android:layout_marginEnd="52dp"
       android:gravity="center"
-      android:text="@{String.format(@string/topic_info_downloaded_message, viewModel.topicName)}"
+      android:text="@{String.format(@string/topic_downloaded_message, viewModel.topicName)}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      tools:text="@string/topic_info_downloaded_message" />
+      tools:text="@string/topic_downloaded_message" />
 
     <ImageView
       android:id="@+id/topic_downloaded_check"

@@ -1,4 +1,4 @@
-package org.oppia.android.app.topic.preview
+package org.oppia.android.app.preview
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +15,12 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.topic.info.TopicInfoChapterItemViewModel
-import org.oppia.android.app.topic.info.TopicInfoSkillItemViewModel
-import org.oppia.android.app.topic.info.TopicInfoStoryItemViewModel
 import org.oppia.android.app.topicdownloaded.TopicDownloadedActivity
 import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.databinding.TopicInfoChapterListItemBinding
-import org.oppia.android.databinding.TopicInfoSkillsItemBinding
-import org.oppia.android.databinding.TopicInfoStorySummaryBinding
+import org.oppia.android.databinding.TopicPreviewChapterListItemBinding
 import org.oppia.android.databinding.TopicPreviewFragmentBinding
+import org.oppia.android.databinding.TopicPreviewSkillsItemBinding
+import org.oppia.android.databinding.TopicPreviewStorySummaryBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
@@ -68,24 +65,24 @@ class TopicPreviewFragmentPresenter @Inject constructor(
     binding.skillsRecyclerView.apply {
       adapter = createSkillRecyclerViewAdapter()
     }
-    binding.topicInfoStorySummaryRecyclerView.apply {
+    binding.storySummaryRecyclerView.apply {
       adapter = createStoryRecyclerViewAdapter()
     }
     return binding.root
   }
 
-  private fun createStoryRecyclerViewAdapter(): BindableAdapter<TopicInfoStoryItemViewModel> {
+  private fun createStoryRecyclerViewAdapter(): BindableAdapter<TopicPreviewStoryItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoStoryItemViewModel>()
+      .newBuilder<TopicPreviewStoryItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoStorySummaryBinding::inflate,
+        inflateDataBinding = TopicPreviewStorySummaryBinding::inflate,
         setViewModel = this::bindStorySummary
       ).build()
   }
 
   private fun bindStorySummary(
-    binding: TopicInfoStorySummaryBinding,
-    model: TopicInfoStoryItemViewModel
+    binding: TopicPreviewStorySummaryBinding,
+    model: TopicPreviewStoryItemViewModel
   ) {
     binding.viewModel = model
 
@@ -96,24 +93,24 @@ class TopicPreviewFragmentPresenter @Inject constructor(
       isChapterListVisible = !isChapterListVisible
       binding.isListExpanded = isChapterListVisible
     }
-    binding.topicInfoChapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
+    binding.topicPreviewChapterRecyclerView.adapter = createRecyclerViewAdapter()
   }
 
-  private fun createChapterRecyclerViewAdapter(): BindableAdapter<TopicInfoChapterItemViewModel> {
+  private fun createRecyclerViewAdapter(): BindableAdapter<TopicPreviewChapterItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoChapterItemViewModel>()
+      .newBuilder<TopicPreviewChapterItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoChapterListItemBinding::inflate,
-        setViewModel = TopicInfoChapterListItemBinding::setViewModel
+        inflateDataBinding = TopicPreviewChapterListItemBinding::inflate,
+        setViewModel = TopicPreviewChapterListItemBinding::setViewModel
       ).build()
   }
 
-  private fun createSkillRecyclerViewAdapter(): BindableAdapter<TopicInfoSkillItemViewModel> {
+  private fun createSkillRecyclerViewAdapter(): BindableAdapter<TopicPreviewSkillItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicInfoSkillItemViewModel>()
+      .newBuilder<TopicPreviewSkillItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicInfoSkillsItemBinding::inflate,
-        setViewModel = TopicInfoSkillsItemBinding::setViewModel
+        inflateDataBinding = TopicPreviewSkillsItemBinding::inflate,
+        setViewModel = TopicPreviewSkillsItemBinding::setViewModel
       ).build()
   }
 
@@ -153,11 +150,11 @@ class TopicPreviewFragmentPresenter @Inject constructor(
 
   private fun extractTopicSkillList(
     subtopicList: MutableList<Subtopic>
-  ): ArrayList<TopicInfoSkillItemViewModel> {
-    val topicSkillsList = ArrayList<TopicInfoSkillItemViewModel>()
+  ): ArrayList<TopicPreviewSkillItemViewModel> {
+    val topicSkillsList = ArrayList<TopicPreviewSkillItemViewModel>()
     topicSkillsList.addAll(
       subtopicList.map {
-        TopicInfoSkillItemViewModel(it.title)
+        TopicPreviewSkillItemViewModel(it.title)
       }
     )
     return topicSkillsList
@@ -165,20 +162,23 @@ class TopicPreviewFragmentPresenter @Inject constructor(
 
   private fun extractTopicStorySummaryList(
     storySummaryList: MutableList<StorySummary>
-  ): ArrayList<TopicInfoStoryItemViewModel> {
-    val topicStoryList = ArrayList<TopicInfoStoryItemViewModel>()
-    val topicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
+  ): ArrayList<TopicPreviewStoryItemViewModel> {
+    val topicStoryList = ArrayList<TopicPreviewStoryItemViewModel>()
+    val topicStoryChapterList = ArrayList<TopicPreviewChapterItemViewModel>()
     topicStoryList.addAll(
       storySummaryList.map { storySummary ->
         topicStoryChapterList.addAll(
           storySummary.chapterList.mapIndexed { index, chapterSummary ->
-            TopicInfoChapterItemViewModel(index, chapterSummary.name)
+            TopicPreviewChapterItemViewModel(
+              index,
+              chapterSummary.name
+            )
           }
         )
-        val newTopicStoryChapterList = ArrayList<TopicInfoChapterItemViewModel>()
+        val newTopicStoryChapterList = ArrayList<TopicPreviewChapterItemViewModel>()
         newTopicStoryChapterList.addAll(topicStoryChapterList)
         topicStoryChapterList.clear()
-        TopicInfoStoryItemViewModel(storySummary, newTopicStoryChapterList)
+        TopicPreviewStoryItemViewModel(storySummary, newTopicStoryChapterList)
       }
     )
     return topicStoryList
@@ -188,8 +188,7 @@ class TopicPreviewFragmentPresenter @Inject constructor(
     val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
       activity,
       internalProfileId,
-      topicId,
-      topicPreviewViewModel.topic.get()!!.name
+      topicId
     )
     activity.startActivity(intent)
     activity.finish()
@@ -201,8 +200,8 @@ class TopicPreviewFragmentPresenter @Inject constructor(
 
   private fun controlSeeMoreTextVisibility() {
     val minimumNumberOfLines = fragment.resources.getInteger(R.integer.topic_description_collapsed)
-    binding.topicDescriptionTextView.post {
-      if (binding.topicDescriptionTextView.lineCount > minimumNumberOfLines) {
+    binding.topicPreviewDescriptionTextView.post {
+      if (binding.topicPreviewDescriptionTextView.lineCount > minimumNumberOfLines) {
         topicPreviewViewModel.isDescriptionExpanded.set(false)
         topicPreviewViewModel.isSeeMoreVisible.set(true)
       } else {

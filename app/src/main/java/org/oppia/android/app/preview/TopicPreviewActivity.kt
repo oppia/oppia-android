@@ -1,4 +1,4 @@
-package org.oppia.android.app.topic.preview
+package org.oppia.android.app.preview
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,6 @@ private const val TOPIC_PREVIEW_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "TopicPreview
 class TopicPreviewActivity : InjectableAppCompatActivity() {
 
   companion object {
-
     /**
      * This function creates the intent of [TopicPreviewActivity].
      *

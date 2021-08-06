@@ -33,6 +33,7 @@ import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
+import org.oppia.android.app.preview.TopicPreviewFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
@@ -48,7 +49,6 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.info.TopicInfoFragment
 import org.oppia.android.app.topic.lessons.TopicLessonsFragment
 import org.oppia.android.app.topic.practice.TopicPracticeFragment
-import org.oppia.android.app.topic.preview.TopicPreviewFragment
 import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManagerFragment
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment

@@ -1,4 +1,4 @@
-package org.oppia.android.app.topic.preview
+package org.oppia.android.app.preview
 
 import android.content.Context
 import android.view.View
@@ -8,9 +8,6 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.topic.info.TopicInfoListener
-import org.oppia.android.app.topic.info.TopicInfoSkillItemViewModel
-import org.oppia.android.app.topic.info.TopicInfoStoryItemViewModel
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -19,19 +16,19 @@ import javax.inject.Inject
 @FragmentScope
 class TopicPreviewViewModel @Inject constructor(
   private val context: Context,
-  private val fragment: Fragment,
+  fragment: Fragment,
   @TopicHtmlParserEntityType val entityType: String
 ) : ObservableViewModel() {
 
-  private val topicInfoListener = fragment as TopicInfoListener
+  private val topicPreviewListener = fragment as TopicPreviewListener
 
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
   val topicSize = ObservableField<String>("")
   val topicDescription = ObservableField<CharSequence>("")
   val isDescriptionExpanded = ObservableField<Boolean>(true)
   val isSeeMoreVisible = ObservableField<Boolean>(true)
-  val skillsItemList = ObservableField<List<TopicInfoSkillItemViewModel>>()
-  val storyItemList = ObservableField<List<TopicInfoStoryItemViewModel>>()
+  val skillsItemList = ObservableField<List<TopicPreviewSkillItemViewModel>>()
+  val storyItemList = ObservableField<List<TopicPreviewStoryItemViewModel>>()
 
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
@@ -58,6 +55,6 @@ class TopicPreviewViewModel @Inject constructor(
   }
 
   fun clickTopicDownload(@Suppress("UNUSED_PARAMETER") v: View) {
-    topicInfoListener.onDownloadTopicClicked()
+    topicPreviewListener.onDownloadTopicClicked()
   }
 }

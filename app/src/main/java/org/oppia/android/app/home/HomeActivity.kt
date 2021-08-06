@@ -11,8 +11,8 @@ import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.preview.TopicPreviewActivity
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.topic.preview.TopicPreviewActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */

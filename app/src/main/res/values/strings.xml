@@ -114,11 +114,9 @@
   <string name="status_completed">Completed</string>
   <string name="show_chapter_list">Show chapter list</string>
   <string name="hide_chapter_list">Hide chapter list</string>
-  <string name="topic_info_skills_heading">Skills</string>
-  <string name="topic_info_download_to_play">DOWNLOAD TO PLAY</string>
-  <string name="topic_info_topic_downloaded">Downlaoded</string>
-  <string name="topic_info_download_topic">Download Topic</string>
-  <string name="topic_info_downloaded_message">Your download for %s is complete!</string>
+  <string name="topic_preview_skills_heading">Skills</string>
+  <string name="topic_preview_download_topic">Download Topic</string>
+  <string name="topic_downloaded_message">Your download for %s is complete!</string>
   <string name="show_hide_chapter_list">Show/Hide Chapter list of %s</string>
   <plurals name="topic_preview_story_heading">
     <item quantity="one">
