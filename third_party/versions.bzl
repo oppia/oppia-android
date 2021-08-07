@@ -106,12 +106,16 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 HTTP_DEPENDENCY_VERSIONS = {
+    "bazel_skylib": {
+        "sha": "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
+        "version": "1.0.2",
+    },
     "dagger": {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
     },
     "protobuf_tools": {
-        "version": "3.11.0",
+        "version": "3.12.0",
     },
     "rules_java": {
         "sha": "220b87d8cfabd22d1c6d8e3cdb4249abd4c93dcc152e0667db061fb1b957ee68",

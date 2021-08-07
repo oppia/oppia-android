@@ -22,6 +22,17 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
 )
 
+# Add support for Bazel Skylib: https://github.com/bazelbuild/bazel-skylib
+http_archive(
+    name = "bazel_skylib",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["bazel_skylib"]["sha"],
+    url = "https://github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["bazel_skylib"]["version"]),
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",
