@@ -106,7 +106,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
+  fun testViewBindingAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       setRotationAnimation(
@@ -121,7 +121,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
+  fun testViewBindingAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       setRotationAnimation(
@@ -136,7 +136,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
+  fun testViewBindingAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -152,7 +152,7 @@ class ViewBindingAdaptersTest {
 
   @Config(qualifiers = "port")
   @Test
-  fun testMarginBindableAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
+  fun testViewBindingAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
     val imageViewDropDown = activityRule.scenario.runWithActivity {
       val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
       ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -212,7 +212,7 @@ class ViewBindingAdaptersTest {
     interface Builder : ApplicationComponent.Builder
 
     /** Inject [ViewBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(marginBindableAdaptersTest: ViewBindingAdaptersTest)
+    fun inject(ViewBindingAdaptersTest: ViewBindingAdaptersTest)
   }
 
   /**
