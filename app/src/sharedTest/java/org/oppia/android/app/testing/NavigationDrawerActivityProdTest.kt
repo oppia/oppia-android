@@ -354,7 +354,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -466,7 +466,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -548,7 +548,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -632,7 +632,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -754,7 +754,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   @Test
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
