@@ -73,6 +73,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Default value for float comparison. */
 private const val TOLERANCE = 1e-5f
 
 /** Tests for [MarginBindingAdapters]. */
