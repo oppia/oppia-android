@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -21,6 +23,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
@@ -34,6 +37,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -45,6 +49,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
@@ -69,13 +74,15 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher,
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
   private val hasConversationView = true
 
   private lateinit var currentState: State
+  private var isCurrentStatePendingState = false
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -83,6 +90,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -173,6 +181,8 @@ class StateFragmentPresenter @Inject constructor(
   fun onNextButtonClicked() = moveToNextState()
 
   fun onPreviousButtonClicked() {
+    // Hide the hints so that they are not visible on the previous states.
+    explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
     explorationProgressController.moveToPreviousState()
   }
 
@@ -199,28 +209,6 @@ class StateFragmentPresenter @Inject constructor(
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(viewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()
-  }
-
-  fun onHintAvailable(helpIndex: HelpIndex) {
-    when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
-          viewModel.newAvailableHintIndex = helpIndex.hintIndex
-        }
-        viewModel.allHintsExhausted =
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
-        viewModel.setHintOpenedAndUnRevealedVisibility(true)
-        viewModel.setHintBulbVisibility(true)
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        viewModel.setHintBulbVisibility(true)
-      }
-      else -> {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        viewModel.setHintBulbVisibility(false)
-      }
-    }
   }
 
   fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()
@@ -269,16 +257,12 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     subscribeToHint(
-      explorationProgressController.submitHintIsRevealed(
-        currentState,
-        saveUserChoice,
-        hintIndex
-      )
+      explorationProgressController.submitHintIsRevealed(saveUserChoice, hintIndex)
     )
   }
 
   fun revealSolution() {
-    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState))
+    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -336,7 +320,12 @@ class StateFragmentPresenter @Inject constructor(
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
+    isCurrentStatePendingState =
+      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
+
     showOrHideAudioByState(ephemeralState.state)
+    scheduleShowHintAndSolution(ephemeralState.hintState)
+    showHintsAndSolutions(ephemeralState.hintState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -408,15 +397,14 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(
       fragment,
       Observer { result ->
-        // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+        // If the answer was submitted on behalf of the Continue interaction, automatically continue
+        // to the next state.
         if (result.state.interaction.id == "Continue") {
-          recyclerViewAssembler.stopHintsFromShowing()
-          viewModel.setHintBulbVisibility(false)
+          explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
-            recyclerViewAssembler.stopHintsFromShowing()
-            viewModel.setHintBulbVisibility(false)
+            explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
             recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
@@ -550,5 +538,59 @@ class StateFragmentPresenter @Inject constructor(
       explorationId,
       oppiaClock.getCurrentTimeMs()
     )
+  }
+
+  private fun scheduleShowHintAndSolution(hintState: HintState) {
+    if (hintState.delayToShowNextHintAndSolution == -1L || !isCurrentStatePendingState) {
+      // Do not start timer to show new hints and solutions if the delay is set to -1 or if the
+      // current state is not the pending top state.
+      return
+    }
+    lifecycleSafeTimerFactory.createTimer(hintState.delayToShowNextHintAndSolution).observe(
+      fragment,
+      Observer {
+        explorationProgressController.hintAndSolutionTimerCompleted(
+          hintState.hintSequenceNumber,
+          currentState
+        )
+      }
+    )
+  }
+
+  private fun showHintsAndSolutions(hintState: HintState) {
+    Log.d("123456", "showHintsAndSolutions: ${hintState.helpIndex.indexTypeCase}")
+    if (!isCurrentStatePendingState) {
+      // If current state is not the pending top state, hide the hint bulb.
+      viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      viewModel.setHintBulbVisibility(false)
+    } else {
+      when (hintState.helpIndex.indexTypeCase) {
+        HelpIndex.IndexTypeCase.HINT_INDEX -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(
+            !hintState.helpIndex.hintIndex.isHintRevealed
+          )
+          viewModel.allHintsExhausted = false
+          viewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex.index
+        }
+        HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          viewModel.allHintsExhausted = true
+        }
+        HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          viewModel.setHintBulbVisibility(true)
+          // EVERYTHING_REVEALED implies that all hints and solution have been viewed by the user.
+          viewModel.allHintsExhausted = true
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          viewModel.newAvailableHintIndex = currentState.interaction.hintCount - 1
+        }
+        else -> {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          viewModel.setHintBulbVisibility(false)
+        }
+      }
+    }
   }
 }

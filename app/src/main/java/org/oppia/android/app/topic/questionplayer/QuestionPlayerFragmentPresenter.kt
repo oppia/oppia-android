@@ -128,25 +128,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun onHintAvailable(helpIndex: HelpIndex) {
-    when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
-          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex
-        }
-        questionViewModel.allHintsExhausted =
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
-        questionViewModel.setHintBulbVisibility(true)
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        questionViewModel.setHintBulbVisibility(true)
-      }
-      else -> {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        questionViewModel.setHintBulbVisibility(false)
-      }
-    }
   }
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
@@ -290,7 +271,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       Observer<AnsweredQuestionOutcome> { result ->
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
-          recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCelebrationOnCorrectAnswer()
         } else {

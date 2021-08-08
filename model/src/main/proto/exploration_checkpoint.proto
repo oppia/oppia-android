@@ -46,6 +46,8 @@ message ExplorationCheckpoint {
 
   // The timestamp in milliseconds of when the checkpoint was saved for the first time.
   int64 timestamp_of_first_checkpoint = 9;
+
+  HelpIndex help_index = 10;
 }
 
 // Corresponds to exploration states that have been completed.

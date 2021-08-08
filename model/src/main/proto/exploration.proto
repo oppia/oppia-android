@@ -233,9 +233,10 @@ message EphemeralState {
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
   }
-
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
+  // The state of hints for the current exploration.
+  HintState hint_state = 8;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -320,7 +321,7 @@ message HelpIndex {
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
     // Indicates this help index corresponds to the index of a hint within the hint list of a state.
-    int32 hint_index = 1;
+    HintIndex hint_index = 1;
 
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
@@ -333,6 +334,19 @@ message HelpIndex {
     // importance and is always 'true'.
     bool everything_revealed = 3;
   }
+}
+
+message HintIndex {
+  int32 index = 1;
+  bool is_hint_revealed = 2;
+}
+
+message HintState {
+  HelpIndex help_index = 1;
+  int32 hint_sequence_number = 4;
+  int32 tracked_answer_count = 5;
+  bool is_hint_visible_in_latest_state = 6;
+  int64 delayToShowNextHintAndSolution = 7;
 }
 
 // Different states in which exploration checkpoint can exist.

@@ -1,4 +1,4 @@
-package org.oppia.android.app.player.state.hintsandsolution
+package org.oppia.android.domain.hintsandsolutions
 
 import dagger.Module
 import dagger.Provides
