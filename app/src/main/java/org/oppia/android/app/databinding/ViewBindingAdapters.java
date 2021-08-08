@@ -65,4 +65,3 @@ public final class ViewBindingAdapters {
     return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }
-
