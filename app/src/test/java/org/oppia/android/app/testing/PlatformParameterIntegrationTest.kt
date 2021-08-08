@@ -59,7 +59,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_VALUE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowToast
@@ -78,10 +77,12 @@ class PlatformParameterIntegrationTest {
   @Inject
   lateinit var platformParameterController: PlatformParameterController
 
+  private val SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE = true
+
   private val mockPlatformParameterList by lazy {
     val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
       .setName(SPLASH_SCREEN_WELCOME_MSG)
-      .setBoolean(SPLASH_SCREEN_WELCOME_MSG_VALUE)
+      .setBoolean(SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
       .build()
 
     listOf<PlatformParameter>(

@@ -15,4 +15,9 @@ annotation class SplashScreenWelcomeMsg
 
 val SPLASH_SCREEN_WELCOME_MSG = "splash_screen_welcome_msg"
 val SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE = false
-val SPLASH_SCREEN_WELCOME_MSG_VALUE = true
+
+@Qualifier
+annotation class SyncUpWorkerTimePeriod
+
+val SYNC_UP_WORKER_TIME_PERIOD = "sync_up_worker_time_period"
+val SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE = 12

@@ -142,7 +142,7 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsEmpty_getCorrectPlatformParameter_verifyCachedValues() {
+  fun testSyncUpWorker_databaseIsEmpty_getCorrectPlatformParameters_verifyValuesAreCached() {
     // setup versionName to get correct network response from mock platform parameter service
     setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
 
@@ -182,7 +182,7 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsEmpty_getWrongPlatformParameter_verifyWorkerCrashes() {
+  fun testSyncUpWorker_databaseIsEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
     // setup versionName to get incorrect network response from mock platform parameter service
     setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
 
@@ -214,7 +214,7 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsNotEmpty_getCorrectPlatformParameter_verifyCachedValues() {
+  fun testSyncUpWorker_databaseIsNotEmpty_getCorrectPlatformParameters_verifyValuesAreUpdated() {
     // setup versionName to get correct network response from mock platform parameter service
     setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
 
@@ -267,7 +267,7 @@ class PlatformParameterSyncUpWorkerTest {
   }
 
   @Test
-  fun testSyncUpWorker_previousDatabaseIsNotEmpty_getWrongPlatformParameter_verifyWorkerCrashes() {
+  fun testSyncUpWorker_databaseIsNotEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
     // setup versionName to get incorrect network response from mock platform parameter service
     setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
 
@@ -297,6 +297,47 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(exceptionMessage).isEqualTo(
       PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG
     )
+  }
+
+  @Test
+  fun testSyncUpWorker_databaseIsNotEmpty_getEmptyResponseForWrongVersion_verifyValuesNotUpdated() {
+    // setup versionName to get incorrect network response from mock platform parameter service
+    setUpApplicationForContext(MockPlatformParameterService.appVersionForEmptyResponse)
+
+    // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
+    // Work request that is not first
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+
+    val workManager = WorkManager.getInstance(context)
+
+    val inputData = Data.Builder().putString(
+      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+      .setInputData(inputData)
+      .build()
+
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+
+    val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
+    assertThat(exceptionMessage).isEqualTo(
+      PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG
+    )
+    // Retrieve the previously cached Platform Parameters from Cache Store
+    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
+    // Controller in the form of a Map, therefore verify the retrieved values from that Map
+    val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
+    assertThat(platformParameterMap).isNotEmpty()
   }
 
   private fun setUpTestApplicationComponent() {

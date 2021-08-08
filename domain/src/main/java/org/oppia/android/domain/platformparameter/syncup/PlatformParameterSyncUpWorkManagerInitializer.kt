@@ -1,5 +1,6 @@
 package org.oppia.android.domain.platformparameter.syncup
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.Data
@@ -8,6 +9,8 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriod
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -19,7 +22,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
-  private val context: Context
+  private val context: Context,
+  @SyncUpWorkerTimePeriod private val workRequestRepeatInterval: PlatformParameterValue<Int>
 ) : ApplicationStartupListener {
 
   private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
@@ -37,7 +41,11 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
     .build()
 
   private val workRequestForSyncingPlatformParameters = PeriodicWorkRequest
-    .Builder(PlatformParameterSyncUpWorker::class.java, 12, TimeUnit.HOURS)
+    .Builder(
+      PlatformParameterSyncUpWorker::class.java,
+      workRequestRepeatInterval.value.toLong(),
+      TimeUnit.HOURS
+    )
     .addTag(PlatformParameterSyncUpWorker.TAG)
     .setInputData(workerTypeForSyncingPlatformParameters)
     .setConstraints(platformParameterSyncUpWorkerConstraints)
@@ -60,4 +68,8 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 
   /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
   fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingPlatformParameters
+
+  @SuppressLint("RestrictedApi")
+  fun getSyncUpWorkerTimePeriod(): Long = workRequestForSyncingPlatformParameters
+    .workSpec.intervalDuration
 }

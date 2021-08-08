@@ -29,7 +29,10 @@ class PlatformParameterSyncUpWorker private constructor(
   companion object {
     /** Exception message when the type of values received in the network response are not valid. */
     const val INCORRECT_TYPE_EXCEPTION_MSG =
-      "Platform Parameter Value has incorrect data type, ie. other than String/Int/Boolean"
+      "Platform parameter value has incorrect data type, ie. other than String/Int/Boolean"
+
+    /** Exception message when there are no values received in the network response. */
+    const val EMPTY_RESPONSE_EXCEPTION_MSG = "Received an empty map in the network response"
 
     /** A Tag for the logs that are associated with PlatformParameterSyncUpWorker. */
     const val TAG = "PlatformParameterWorker.tag"
@@ -48,7 +51,8 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  // It's used to parse the Map of Platform Parameters to a List of Platform Parameter
+  // Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
+  // are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     val platformParameterList: MutableList<PlatformParameter> = mutableListOf()
     for (entry in response.entries) {
@@ -64,7 +68,7 @@ class PlatformParameterSyncUpWorker private constructor(
     return platformParameterList
   }
 
-  /** Extracts platform parameters from the remote service and store them in the cache store */
+  /** Extracts platform parameters from the remote service and stores them in the cache store */
   private fun refreshPlatformParameters(): Result {
     return try {
       val response = platformParameterService.getPlatformParametersByVersion(
@@ -72,6 +76,9 @@ class PlatformParameterSyncUpWorker private constructor(
       ).execute()
       val responseBody = checkNotNull(response.body())
       val platformParameterList = parseNetworkResponse(responseBody)
+      if (platformParameterList.isEmpty()) {
+        throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
+      }
       platformParameterController.updatePlatformParameterDatabase(platformParameterList)
       Result.success()
     } catch (e: Exception) {

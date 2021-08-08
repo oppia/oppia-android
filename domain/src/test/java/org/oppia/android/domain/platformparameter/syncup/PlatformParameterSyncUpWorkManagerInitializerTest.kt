@@ -29,7 +29,7 @@ import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -41,7 +41,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -124,6 +124,17 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     )
   }
 
+  @Test
+  fun testWorkRequest_verifyWorkRequestPeriodicity() {
+    syncUpWorkManagerInitializer.onCreate()
+    testCoroutineDispatchers.runCurrent()
+
+    val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
+    val syncUpWorkerTimePeriodInHours = syncUpWorkerTimePeriodInMs / (60 * 60 * 1000)
+
+    assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE)
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerPlatformParameterSyncUpWorkManagerInitializerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -155,11 +166,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    @Provides
-    fun providePlatformParameterSingleton(
-      platformParameterSingletonImpl: PlatformParameterSingletonImpl
-    ): PlatformParameterSingleton = platformParameterSingletonImpl
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -215,7 +221,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class
+      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent {
