@@ -69,6 +69,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
   fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingPlatformParameters
 
+  /** Returns the time interval of periodic work request enqueued to sync-up platform parameters. */
   @SuppressLint("RestrictedApi")
   fun getSyncUpWorkerTimePeriod(): Long = workRequestForSyncingPlatformParameters
     .workSpec.intervalDuration
