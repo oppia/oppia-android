@@ -464,21 +464,14 @@ class ThirdPartyDependencyListFragmentTest {
     ]
   )
 
-  /** [ApplicationComponent] for [ThirdPartyDependencyListFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
 
-    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /**
-     * Injects [TestApplicationComponent] to [ThirdPartyDependencyListFragmentTest] providing the required
-     * dagger modules.
-     */
     fun inject(thirdPartyDependencyListFragmentTest: ThirdPartyDependencyListFragmentTest)
   }
 
-  /** [Application] class for [ThirdPartyDependencyListFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerThirdPartyDependencyListFragmentTest_TestApplicationComponent.builder()
@@ -486,7 +479,6 @@ class ThirdPartyDependencyListFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    /** Called when setting up [TestApplication]. */
     fun inject(thirdPartyDependencyListFragmentTest: ThirdPartyDependencyListFragmentTest) {
       component.inject(thirdPartyDependencyListFragmentTest)
     }

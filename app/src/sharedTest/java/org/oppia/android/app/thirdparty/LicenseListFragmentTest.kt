@@ -354,21 +354,14 @@ class LicenseListFragmentTest {
     ]
   )
 
-  /** [ApplicationComponent] for [LicenseListFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
 
-    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /**
-     * Injects [TestApplicationComponent] to [LicenseListFragmentTest] providing the required
-     * dagger modules.
-     */
     fun inject(licenseListFragmentTest: LicenseListFragmentTest)
   }
 
-  /** [Application] class for [LicenseListFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLicenseListFragmentTest_TestApplicationComponent.builder()
@@ -376,7 +369,6 @@ class LicenseListFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    /** Called when setting up [TestApplication]. */
     fun inject(licenseListFragmentTest: LicenseListFragmentTest) {
       component.inject(licenseListFragmentTest)
     }
