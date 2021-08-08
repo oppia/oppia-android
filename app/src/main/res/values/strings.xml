@@ -52,7 +52,6 @@
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
-  <string name="state_submit_button">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%d)</string>
@@ -446,6 +445,22 @@
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
+  <!-- DeveloperOptionsFragment -->
+  <string name="developer_options_activity_title">Developer Options</string>
+  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label">View Logs</string>
+  <string name="developer_options_event_logs">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
+  <string name="developer_options_force_network_type">Force network type</string>
+  <string name="developer_options_force_crash">Force crash</string>
+  <!--  Help Activity-->
+  <string name="menu_help">Help</string>
+  <string name="FAQs">FAQs</string>
+  <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
