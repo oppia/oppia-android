@@ -346,7 +346,7 @@ message HintState {
   int32 hint_sequence_number = 4;
   int32 tracked_answer_count = 5;
   bool is_hint_visible_in_latest_state = 6;
-  int64 delayToShowNextHintAndSolution = 7;
+  int64 delay_to_show_next_hint_and_solution = 7;
 }
 
 // Different states in which exploration checkpoint can exist.
