@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/test_margin_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:text="@string/all_topics"
+      android:padding="10dp"
+      android:background="@color/oppiaStrokeBlue"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="18sp" />
+  </FrameLayout>
+</layout>
