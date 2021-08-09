@@ -4,6 +4,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HintIndex
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.State
+import javax.inject.Inject
 
 /**
  * Handler for showing hints to the learner after a period of time in the event they submit a
@@ -43,9 +44,10 @@ import org.oppia.android.app.model.State
  * available.
  */
 
-internal class HintHandler(
-  private val delayShowInitialHintMs: Long,
-  private val delayShowAdditionalHintsMs: Long,
+class HintHandler @Inject constructor(
+  @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
+  @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
+  @DelayShowAdditionalHintsFromWrongAnswerMillis
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long
 ) {
   private var trackedWrongAnswerCount = 0

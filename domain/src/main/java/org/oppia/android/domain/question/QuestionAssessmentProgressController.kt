@@ -13,9 +13,7 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
-import org.oppia.android.domain.hintsandsolution.DelayShowAdditionalHintsFromWrongAnswerMillis
-import org.oppia.android.domain.hintsandsolution.DelayShowAdditionalHintsMillis
-import org.oppia.android.domain.hintsandsolution.DelayShowInitialHintMillis
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -53,9 +51,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
-  @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
-  @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
-  @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long
+  private val hintHandler: HintHandler
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
@@ -167,7 +163,7 @@ class QuestionAssessmentProgressController @Inject constructor(
               // Only push the next state if the assessment isn't completed.
               progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
               // Reset the hintState if pending top state has changed.
-              progress.hintState = progress.hintHandler.reset()
+              progress.hintState = hintHandler.reset()
             } else {
               // Otherwise, push a synthetic state for the end of the session.
               progress.stateDeck.pushState(
@@ -181,7 +177,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             // submitted.
             val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
             progress.hintState =
-              progress.hintHandler.maybeScheduleShowHint(
+              hintHandler.maybeScheduleShowHint(
                 ephemeralState.state,
                 ephemeralState.pendingState.wrongAnswerCount
               )
@@ -227,11 +223,11 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
           progress.trackHintViewed()
         } finally {
-          progress.hintHandler.notifyHintIsRevealed(hintIndex)
+          hintHandler.notifyHintIsRevealed(hintIndex)
           // Schedule a new hints or solution or show a new hint or solution immediately based on
           // the current ephemeral state of the training session because the last hint was revealed.
           progress.hintState =
-            progress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -270,10 +266,10 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.stateDeck.pushStateForSolution(ephemeralState.state)
           progress.trackSolutionViewed()
         } finally {
-          progress.hintHandler.notifySolutionIsRevealed()
+          hintHandler.notifySolutionIsRevealed()
           // Update the hintState because the solution was revealed.
           progress.hintState =
-            progress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -322,7 +318,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           // state.
           val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
           progress.hintState =
-            progress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -340,14 +336,14 @@ class QuestionAssessmentProgressController @Inject constructor(
   /** Stops any new hints and solution from showing up. */
   fun stopNewHintsAndSolutionFromShowingUp() {
     progressLock.withLock {
-      progress.hintHandler.hideHintsAndSolution()
+      hintHandler.hideHintsAndSolution()
     }
   }
 
   fun hintAndSolutionTimerCompleted(trackedSequenceNumber: Int, state: State) {
     progressLock.withLock {
       progress.hintState =
-        progress.hintHandler.showNewHintAndSolution(state, trackedSequenceNumber)
+        hintHandler.showNewHintAndSolution(state, trackedSequenceNumber)
       if (
         progress.hintState.helpIndex.indexTypeCase ==
         HelpIndex.IndexTypeCase.HINT_INDEX ||
@@ -470,15 +466,10 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private fun initializeAssessment(questionsList: List<Question>) {
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
-    progress.initialize(
-      questionsList,
-      delayShowInitialHintMs,
-      delayShowAdditionalHintsMs,
-      additionalAnswerHintDelayMs
-    )
+    progress.initialize(questionsList)
     // Update hint state to schedule task to show new help.
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    progress.hintState = progress.hintHandler.maybeScheduleShowHint(
+    progress.hintState = hintHandler.maybeScheduleShowHint(
       ephemeralState.state,
       ephemeralState.pendingState.wrongAnswerCount
     )

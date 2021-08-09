@@ -16,9 +16,6 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.hintsandsolution.DelayShowAdditionalHintsFromWrongAnswerMillis
-import org.oppia.android.domain.hintsandsolution.DelayShowAdditionalHintsMillis
-import org.oppia.android.domain.hintsandsolution.DelayShowInitialHintMillis
 import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -55,9 +52,7 @@ class ExplorationProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
-  @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
-  @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
-  @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long
+  private val hintHandler: HintHandler
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -100,11 +95,6 @@ class ExplorationProgressController @Inject constructor(
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
         hintState = HintState.getDefaultInstance()
-        hintHandler = HintHandler(
-          delayShowInitialHintMs,
-          delayShowAdditionalHintsMs,
-          additionalAnswerHintDelayMs
-        )
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
@@ -195,14 +185,14 @@ class ExplorationProgressController @Inject constructor(
               prohibitSameStateName = true
             )
             // Reset the hintState if pending top state has changed.
-            explorationProgress.hintState = explorationProgress.hintHandler.reset()
+            explorationProgress.hintState = hintHandler.reset()
           } else {
             // Schedule a new hints or solution or show a new hint or solution immediately based on
             // the current ephemeral state of the exploration because a new wrong answer was
             // submitted.
             val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
             explorationProgress.hintState =
-              explorationProgress.hintHandler.maybeScheduleShowHint(
+              hintHandler.maybeScheduleShowHint(
                 ephemeralState.state,
                 ephemeralState.pendingState.wrongAnswerCount
               )
@@ -267,11 +257,11 @@ class ExplorationProgressController @Inject constructor(
           )
           explorationProgress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
         } finally {
-          explorationProgress.hintHandler.notifyHintIsRevealed(hintIndex)
+          hintHandler.notifyHintIsRevealed(hintIndex)
           // Schedule a new hints or solution or show a new hint or solution immediately based on
           // the current ephemeral state of the exploration because the last hint was revealed.
           explorationProgress.hintState =
-            explorationProgress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -319,10 +309,10 @@ class ExplorationProgressController @Inject constructor(
           solution = explorationProgress.stateGraph.computeSolutionForResult(ephemeralState.state)
           explorationProgress.stateDeck.pushStateForSolution(ephemeralState.state)
         } finally {
-          explorationProgress.hintHandler.notifySolutionIsRevealed()
+          hintHandler.notifySolutionIsRevealed()
           // Update the hintState because the solution was revealed.
           explorationProgress.hintState =
-            explorationProgress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -429,7 +419,7 @@ class ExplorationProgressController @Inject constructor(
           // state.
           val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
           explorationProgress.hintState =
-            explorationProgress.hintHandler.maybeScheduleShowHint(
+            hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
@@ -449,7 +439,7 @@ class ExplorationProgressController @Inject constructor(
   /** Stops any new hints and solution from showing up. */
   fun stopNewHintsAndSolutionFromShowingUp() {
     explorationProgressLock.withLock {
-      explorationProgress.hintHandler.hideHintsAndSolution()
+      hintHandler.hideHintsAndSolution()
     }
   }
 
@@ -462,7 +452,7 @@ class ExplorationProgressController @Inject constructor(
   fun hintAndSolutionTimerCompleted(trackedSequenceNumber: Int, state: State) {
     explorationProgressLock.withLock {
       explorationProgress.hintState =
-        explorationProgress.hintHandler.showNewHintAndSolution(state, trackedSequenceNumber)
+        hintHandler.showNewHintAndSolution(state, trackedSequenceNumber)
       if (
         explorationProgress.hintState.helpIndex.indexTypeCase ==
         HelpIndex.IndexTypeCase.HINT_INDEX ||
@@ -573,7 +563,7 @@ class ExplorationProgressController @Inject constructor(
 
     // Update hint state to schedule task to show new help.
     val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    progress.hintState = progress.hintHandler.maybeScheduleShowHint(
+    progress.hintState = hintHandler.maybeScheduleShowHint(
       ephemeralState.state,
       ephemeralState.pendingState.wrongAnswerCount
     )

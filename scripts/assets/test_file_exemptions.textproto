@@ -520,7 +520,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/E
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationCheckpointState.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/feedbackreporting/FeedbackReportingModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsFromWrongAnswerMillis.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowInitialHintMillis.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowInitialHintMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigFastShowTestModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigModule.kt"

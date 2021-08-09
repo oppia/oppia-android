@@ -5,7 +5,6 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -35,7 +34,6 @@ internal class ExplorationProgress {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)
   }
 
-  internal lateinit var hintHandler: HintHandler
   internal lateinit var hintState: HintState
 
   /**
