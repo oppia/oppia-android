@@ -1,4 +1,4 @@
-package org.oppia.android.domain.hintsandsolutions
+package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HintIndex
@@ -113,13 +113,11 @@ internal class HintHandler(
         if (!helpIndex.hintIndex.isHintRevealed) {
           // Do not schedule a new task until the last help has been revealed.
           -1
-        }
-        else if (trackedWrongAnswerCount != wrongAnswerCount) {
+        } else if (trackedWrongAnswerCount != wrongAnswerCount) {
           // If a new wrong answer is submitted, schedule a task to reveal a new hint.
           trackedWrongAnswerCount = wrongAnswerCount
           hintSequenceNumber++
           delayShowAdditionalHintsFromWrongAnswerMs
-
         } else {
           // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
           hintSequenceNumber++
@@ -137,7 +135,6 @@ internal class HintHandler(
     }
     return getLatestHintState()
   }
-
 
   /**
    * Shows a new hint and solution when the a scheduled task with the most recent trackedSequence

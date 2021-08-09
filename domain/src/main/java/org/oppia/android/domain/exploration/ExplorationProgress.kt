@@ -5,9 +5,9 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
-import org.oppia.android.domain.hintsandsolutions.HintHandler
 
 // TODO(#186): Use an interaction repository to retrieve whether a specific ID corresponds to a terminal interaction.
 private const val TERMINAL_INTERACTION_ID = "EndExploration"
@@ -37,7 +37,6 @@ internal class ExplorationProgress {
 
   internal lateinit var hintHandler: HintHandler
   internal var hintState: HintState = HintState.getDefaultInstance()
-
 
   /**
    * Advances the current play stage to the specified stage, verifying that the transition is correct.
