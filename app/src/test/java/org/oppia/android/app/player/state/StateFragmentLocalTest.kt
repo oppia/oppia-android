@@ -763,6 +763,45 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_nextState_viewHint_configChange_noNewHintAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+
+      submitWrongAnswerToState2()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_newHintAvailable_configChange_newHintIsAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewHint_prevState_wait30seconds_newHintIsAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+      clickPreviousStateNavigationButton()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_viewFourHints_wait10seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
