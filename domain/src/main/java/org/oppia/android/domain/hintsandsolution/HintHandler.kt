@@ -5,6 +5,7 @@ import org.oppia.android.app.model.HintIndex
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.State
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Handler for showing hints to the learner after a period of time in the event they submit a
@@ -43,7 +44,7 @@ import javax.inject.Inject
  * they will reach a terminal state for hints and no additional hints or solutions will be made
  * available.
  */
-
+@Singleton
 class HintHandler @Inject constructor(
   @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
   @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
@@ -142,7 +143,7 @@ class HintHandler @Inject constructor(
   }
 
   /**
-   * Shows a new hint and solution when the a scheduled task with the most recent trackedSequence
+   * Shows a new hint and solution when the scheduled task with the most recent trackedSequence
    * number completes.
    *
    * @return [HintState] with the latest values of the [HintHandler]

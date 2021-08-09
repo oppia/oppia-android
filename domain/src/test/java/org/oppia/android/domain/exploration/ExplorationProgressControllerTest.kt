@@ -93,7 +93,7 @@ import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
-private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
+internal const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 private const val INVALID_TOPIC_ID = "invalid_topic_id"
 private const val INVALID_STORY_ID = "invalid_story_id"
 private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
