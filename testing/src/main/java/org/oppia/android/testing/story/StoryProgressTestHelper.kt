@@ -1095,7 +1095,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as Started, but not yet completed. For specifics on parameters and nuances, see:
+   * Marks all lessons as started, but not yet completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsStartedNotCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {

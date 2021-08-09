@@ -62,6 +62,8 @@ class StoryProgressController @Inject constructor(
   // TODO(#21): Determine whether chapters can have missing prerequisites in the initial prototype,
   //  or if that just indicates that they can't be started due to previous chapter not yet being
   //  completed.
+  // TODO(#3662): Once checkpointing is enabled, remove the function that marks lessons as
+  //  started_not_completed and the tests that test this behaviour.
 
   /** These Statuses correspond to the exceptions above such that if the deferred contains. */
   private enum class StoryProgressActionStatus {

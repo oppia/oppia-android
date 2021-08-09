@@ -78,6 +78,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
+
+  // TODO(#3662): Once checkpointing is enabled, remove the function that marks lessons as
+  //  started_not_completed and the tests that test this behaviour.
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
