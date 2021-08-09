@@ -74,57 +74,32 @@
           android:id="@+id/topic_preview_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:paddingTop="24dp"
           android:paddingBottom="24dp">
-
-          <org.oppia.android.app.customview.LessonThumbnailImageView
-            android:id="@+id/topic_preview_thumbnail_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            app:entityId="@{viewModel.topic.topicId}"
-            app:entityType="@{viewModel.entityType}"
-            app:layout_constraintDimensionRatio="16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topic_preview_download_image_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lessonThumbnail="@{viewModel.topic.topicThumbnail}"
-            tools:src="@tools:sample/avatars" />
-
-          <FrameLayout
-            android:id="@+id/thumbnail_gradient_container"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/thumbnail_gradient"
-            app:layout_constraintDimensionRatio="16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
           <TextView
             android:id="@+id/topic_preview_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif"
             android:text="@{viewModel.topic.name}"
             android:textColor="@color/oppiaPrimaryText"
             android:textDirection="locale"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/topic_preview_thumbnail_image_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="Fraction" />
+            app:layout_constraintTop_toTopOf="parent" />
 
           <TextView
-            android:id="@+id/topic_preview_story_count_text_view"
+            android:id="@+id/story_count_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif"
             android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
             android:textColor="@color/oppiaPrimaryText"
@@ -132,16 +107,15 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topic_preview_name_text_view"
-            tools:text="1 Story" />
+            app:layout_constraintTop_toBottomOf="@+id/topic_preview_name_text_view" />
 
           <TextView
             android:id="@+id/topic_preview_description_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="72dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:gravity="start"
@@ -152,15 +126,14 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topic_preview_story_count_text_view"
-            tools:text="@android:string/httpErrorBadUrl" />
+            app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
 
           <TextView
             android:id="@+id/see_more_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif"
             android:gravity="start"
             android:minHeight="48dp"
@@ -180,10 +153,10 @@
             android:id="@+id/topic_preview_download_image_view"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="72dp"
             android:layout_marginBottom="32dp"
-            android:contentDescription="@string/topic_preview_download_topic"
             android:onClick="@{viewModel::clickTopicDownload}"
             android:src="@drawable/ic_file_download_primary_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -209,7 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="72dp"
             android:fontFamily="sans-serif"
             android:text="@{String.format(@string/topic_download_text, viewModel.topicSize)}"
             android:textColor="@color/oppiaPrimaryText"
@@ -236,14 +209,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="72dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingBottom="16dp"
             android:scrollbars="none"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+            app:layout_constraintStart_toStartOf="@id/topic_preview_download_image_view"
             app:layout_constraintTop_toBottomOf="@+id/stories_heading"
             app:list="@{viewModel.storyItemList}" />
 
@@ -263,7 +236,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="72dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingBottom="187dp"
@@ -272,8 +245,10 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/topic_preview_download_image_view"
             app:layout_constraintTop_toBottomOf="@+id/skills_heading"
+            app:layout_constraintVertical_bias="0.0"
             app:list="@{viewModel.skillsItemList}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
       </ScrollView>

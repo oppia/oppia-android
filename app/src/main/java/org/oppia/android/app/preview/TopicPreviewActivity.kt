@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+const val TOPIC_PREVIEW_FRAGMENT_TAG = "TopicPreviewFragment"
 private const val TOPIC_PREVIEW_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicPreviewActivity.topic_id"
 private const val TOPIC_PREVIEW_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "TopicPreviewActivity.profile_id"
 
@@ -15,7 +16,10 @@ class TopicPreviewActivity : InjectableAppCompatActivity() {
     /**
      * This function creates the intent of [TopicPreviewActivity].
      *
-     * @return [Intent]: Intent
+     * @param [internalProfileId]: Id of the Profile.
+     * @param [topicId]: Id of the Topic.
+     *
+     * @return [Intent]: TopicPreviewActivity Intent object.
      */
     fun createTopicPreviewActivityIntent(
       context: Context,

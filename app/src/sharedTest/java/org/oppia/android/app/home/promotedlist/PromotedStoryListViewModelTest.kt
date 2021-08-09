@@ -306,7 +306,7 @@ class PromotedStoryListViewModelTest {
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
         promotedStory = promotedStory,
-        myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+        myDownloadsFeatureFlagValue = false
       )
     }
   }

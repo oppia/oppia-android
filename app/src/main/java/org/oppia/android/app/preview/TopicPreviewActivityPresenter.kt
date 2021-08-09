@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.topic.TOPIC_FRAGMENT_TAG
 import javax.inject.Inject
 
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
@@ -27,7 +26,7 @@ class TopicPreviewActivityPresenter @Inject constructor(
     topicPreviewFragment.arguments = args
     activity.supportFragmentManager.beginTransaction().add(
       R.id.topic_preivew_fragment_placeholder,
-      topicPreviewFragment, TOPIC_FRAGMENT_TAG
+      topicPreviewFragment, TOPIC_PREVIEW_FRAGMENT_TAG
     ).commitNow()
   }
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.home.RouteToTopicListener
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 private const val TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY =
@@ -12,17 +14,25 @@ private const val TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY =
   "TopicDownloadedActivity.internal_profile_id"
 
 /** The activity for displaying [TopicDownloadedFragment]. */
-class TopicDownloadedActivity : InjectableAppCompatActivity() {
+class TopicDownloadedActivity : InjectableAppCompatActivity(), RouteToTopicListener {
 
   companion object {
+    fun getProfileIdKey(): String {
+      return TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY
+    }
+
+    fun getTopicIdKey(): String {
+      return TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
+    }
+
     /**
      * This function creates the intent of [TopicDownloadedActivity].
      *
-     * @param [content]: context of the screen from where thi activity starts.
+     * @param [context]: context of the screen from where thi activity starts.
      * @param [internalProfileId]: Id of the profile.
      * @param [topicId]: Id of the topic.
      *
-     * @return [Intent]: Intent
+     * @return [Intent]: TopicDownloadedActivity Intent object.
      */
     fun createTopicDownloadedActivityIntent(
       context: Context,
@@ -44,10 +54,21 @@ class TopicDownloadedActivity : InjectableAppCompatActivity() {
     activityComponent.inject(this)
     val topicId =
       checkNotNull(intent.getStringExtra(TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
-        "Expected extra topic ID to be included for TopicDownloadedFragment."
+        "Expected extra topic ID to be included for TopicDownloadedActivity."
       }
     val internalProfileId =
-      intent.getIntExtra(TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, 0)
+      intent.getIntExtra(TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     topicDownloadedActivityPresenter.handleOnCreate(internalProfileId, topicId)
+  }
+
+  override fun routeToTopic(internalProfileId: Int, topicId: String) {
+    startActivity(
+      TopicActivity.createTopicActivityIntent(
+        this,
+        internalProfileId,
+        topicId
+      )
+    )
+    finish()
   }
 }

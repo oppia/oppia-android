@@ -189,7 +189,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -197,7 +197,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
@@ -217,7 +217,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 2,
           entityType = "entity",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -225,7 +225,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
 
         assertThat(promotedStoryViewModelStoryCount2)
@@ -246,7 +246,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity_1",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -254,7 +254,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity_2",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
@@ -276,7 +276,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory1,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
@@ -284,7 +284,7 @@ class PromotedStoryViewModelTest {
           totalStoryCount = 3,
           entityType = "entity",
           promotedStory = promotedStory2,
-          myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+          myDownloadsFeatureFlagValue = false
         )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
@@ -338,7 +338,7 @@ class PromotedStoryViewModelTest {
       totalStoryCount = 3,
       entityType = "entity",
       promotedStory = promotedStory1,
-      myDownloadsFeatureFlagValue = myDownloadsFeatureFlagValue
+      myDownloadsFeatureFlagValue = false
     )
   }
 

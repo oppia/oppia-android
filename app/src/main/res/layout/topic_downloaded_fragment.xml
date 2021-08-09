@@ -38,7 +38,7 @@
       app:layout_constraintTop_toBottomOf="@+id/topic_downloaded_message" />
 
     <Button
-      android:id="@+id/view"
+      android:id="@+id/view_downloaded_topic"
       style="@style/StateButtonActive"
       android:layout_width="0dp"
       android:layout_height="48dp"

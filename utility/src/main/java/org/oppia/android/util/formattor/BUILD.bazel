@@ -1,0 +1,17 @@
+"""
+General purposes utilities to manage file size formatting.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "formattor_util",
+    srcs = [
+        "FileSizeConversionUtil.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//utility:resources",
+    ],
+)

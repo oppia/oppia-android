@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 
 /** Fragment that contains topic preview. */
@@ -25,8 +24,8 @@ class TopicPreviewFragment : InjectableFragment(), TopicPreviewListener {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
-    val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
+    val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY)!!
+    val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY)!!
     return topicPreviewFragmentPresenter.handleCreateView(
       inflater,
       container,

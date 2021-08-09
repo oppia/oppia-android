@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.preview.TopicPreviewViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/topic_preview_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintBottom_toTopOf="@+id/topic_tabs_viewpager_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topic_preview_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+          android:id="@+id/topic_preview_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="marquee"
+          android:fadingEdge="horizontal"
+          android:fadingEdgeLength="20dp"
+          android:focusable="false"
+          android:focusableInTouchMode="true"
+          android:fontFamily="sans-serif"
+          android:marqueeRepeatLimit="1"
+          android:requiresFadingEdge="horizontal"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:text="@{String.format(@string/topic_preview_toolbar_title, viewModel.topic.name)}"
+          android:textColor="@color/white"
+          android:textSize="20sp" />
+      </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ScrollView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="@color/white"
+          android:fillViewport="true"
+          android:overScrollMode="never"
+          android:scrollbars="none">
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topic_preview_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/topic_preview_name_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="64dp"
+              android:layout_marginTop="64dp"
+              android:layout_marginEnd="64dp"
+              android:fontFamily="sans-serif"
+              android:text="@{viewModel.topic.name}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textDirection="locale"
+              android:textSize="24sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/story_count_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="64dp"
+              android:layout_marginTop="8dp"
+              android:layout_marginEnd="64dp"
+              android:fontFamily="sans-serif"
+              android:text="@{@plurals/story_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textDirection="locale"
+              android:textSize="16sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/topic_preview_name_text_view" />
+
+            <TextView
+              android:id="@+id/topic_preview_description_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="64dp"
+              android:layout_marginTop="16dp"
+              android:layout_marginEnd="64dp"
+              android:ellipsize="end"
+              android:fontFamily="sans-serif"
+              android:gravity="start"
+              android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
+              android:text="@{viewModel.topicDescription}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textDirection="locale"
+              android:textSize="16sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
+
+            <TextView
+              android:id="@+id/see_more_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="64dp"
+              android:layout_marginEnd="64dp"
+              android:fontFamily="sans-serif"
+              android:gravity="start"
+              android:minHeight="48dp"
+              android:onClick="@{(v) -> viewModel.clickSeeMore()}"
+              android:paddingTop="8dp"
+              android:text="@{viewModel.isDescriptionExpanded() ? @string/see_less : @string/see_more}"
+              android:textColor="@color/colorPrimary"
+              android:textDirection="locale"
+              android:textSize="16sp"
+              android:textStyle="bold"
+              android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/topic_preview_description_text_view" />
+
+            <ImageView
+              android:id="@+id/topic_preview_download_image_view"
+              android:layout_width="20dp"
+              android:layout_height="20dp"
+              android:layout_marginStart="64dp"
+              android:layout_marginTop="32dp"
+              android:onClick="@{viewModel::clickTopicDownload}"
+              android:src="@drawable/ic_file_download_primary_24dp"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+
+            <TextView
+              android:id="@+id/download_story_count_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="12dp"
+              android:fontFamily="sans-serif"
+              android:gravity="center_vertical"
+              android:text="@string/topic_preview_download_topic"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="18sp"
+              app:layout_constraintBottom_toBottomOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintStart_toEndOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintTop_toTopOf="@+id/topic_preview_download_image_view" />
+
+            <TextView
+              android:id="@+id/download_size_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="8dp"
+              android:layout_marginEnd="32dp"
+              android:fontFamily="sans-serif"
+              android:text="@{String.format(@string/topic_download_text, viewModel.topicSize)}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textDirection="locale"
+              android:textSize="18sp"
+              android:textStyle="italic"
+              app:layout_constraintBottom_toBottomOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
+              app:layout_constraintTop_toTopOf="@+id/topic_preview_download_image_view" />
+
+            <TextView
+              android:id="@+id/stories_heading"
+              style="@style/Heading2"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="36dp"
+              android:text="@{@plurals/topic_preview_story_heading(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
+              app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintTop_toBottomOf="@+id/download_story_count_text_view"
+              tools:text="Stories you can play" />
+
+            <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/story_summary_recycler_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="8dp"
+              android:layout_marginEnd="32dp"
+              android:clipToPadding="false"
+              android:overScrollMode="never"
+              android:paddingBottom="16dp"
+              android:scrollbars="none"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintTop_toBottomOf="@+id/stories_heading"
+              app:list="@{viewModel.storyItemList}" />
+
+            <TextView
+              android:id="@+id/skills_heading"
+              style="@style/Heading2"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="36dp"
+              android:text="@string/topic_preview_skills_heading"
+              android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE: View.GONE}"
+              app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintTop_toBottomOf="@+id/story_summary_recycler_view" />
+
+            <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/skills_recycler_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="8dp"
+              android:layout_marginEnd="32dp"
+              android:clipToPadding="false"
+              android:overScrollMode="never"
+              android:paddingBottom="187dp"
+              android:scrollbars="none"
+              android:visibility="@{viewModel.topic.subtopicList.size() != 0 ? View.VISIBLE: View.GONE}"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintHorizontal_bias="0.0"
+              app:layout_constraintStart_toStartOf="@+id/topic_preview_download_image_view"
+              app:layout_constraintTop_toBottomOf="@+id/skills_heading"
+              app:list="@{viewModel.skillsItemList}" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="@color/topicThumbnailBackground"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="@+id/guideline6"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <org.oppia.android.app.customview.LessonThumbnailImageView
+            android:id="@+id/topic_thumbnail_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            app:entityId="@{viewModel.topic.topicId}"
+            app:entityType="@{viewModel.entityType}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lessonThumbnail="@{viewModel.topic.topicThumbnail}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </LinearLayout>
+
+      <View
+        android:id="@+id/topic_shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/toolbar_drop_shadow" />
+    </FrameLayout>
+  </LinearLayout>
+</layout>

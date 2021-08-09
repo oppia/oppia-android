@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.formattor.FileSizeConversionUtil
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
@@ -32,22 +33,11 @@ class TopicPreviewViewModel @Inject constructor(
 
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
-      val sizeInBytes: Int = topic.diskSizeBytes.toInt()
-      val sizeInKb = sizeInBytes / 1024
-      val sizeInMb = sizeInKb / 1024
-      val sizeInGb = sizeInMb / 1024
-      return@let when {
-        sizeInGb >= 1 -> context.getString(R.string.size_gb, roundUpToHundreds(sizeInGb))
-        sizeInMb >= 1 -> context.getString(R.string.size_mb, roundUpToHundreds(sizeInMb))
-        sizeInKb >= 1 -> context.getString(R.string.size_kb, roundUpToHundreds(sizeInKb))
-        else -> context.getString(R.string.size_bytes, roundUpToHundreds(sizeInBytes))
-      }
+      FileSizeConversionUtil(context).formatSizeUnits(
+        sizeInBytes = topic.diskSizeBytes.toInt()
+      )
     } ?: context.getString(R.string.unknown_size)
     topicSize.set(sizeWithUnit)
-  }
-
-  private fun roundUpToHundreds(intValue: Int): Int {
-    return ((intValue + 9) / 10) * 10
   }
 
   fun clickSeeMore() {

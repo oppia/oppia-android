@@ -92,7 +92,7 @@
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="topic_download_page">Topic Download page</string>
   <string name="topic_preview_page">Topic Preview page</string>
-  <string name="topic_not_downloaded_name">Info: %s</string>
+  <string name="topic_preview_toolbar_title">Info: %s</string>
   <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
   <string name="ongoing_story_last_week">Played within the Last Week</string>
@@ -154,10 +154,6 @@
     Ratios cannot have 0 as an element.
   </string>
   <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%d Bytes</string>
-  <string name="size_kb">%d KB</string>
-  <string name="size_mb">%d MB</string>
-  <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>

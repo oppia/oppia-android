@@ -73,8 +73,7 @@ class CompletedStoryListViewModel @Inject constructor(
           internalProfileId,
           completedStory,
           entityType,
-          intentFactoryShim,
-          myDownloadsFeatureFlag.get().value
+          intentFactoryShim
         )
       }
     )

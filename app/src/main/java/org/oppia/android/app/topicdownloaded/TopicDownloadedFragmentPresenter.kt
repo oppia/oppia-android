@@ -64,7 +64,7 @@ class TopicDownloadedFragmentPresenter @Inject constructor(
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
     if (topic.isFailure()) {
       oppiaLogger.e(
-        "WalkthroughFinalFragment",
+        "TopicDownloadedFragment",
         "Failed to retrieve topic",
         topic.getErrorOrNull()!!
       )

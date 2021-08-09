@@ -69,7 +69,7 @@ class HomeFragmentPresenter @Inject constructor(
       topicListController,
       topicEntityType,
       storyEntityType,
-      myDownloadsFeatureFlag.get().value
+      myDownloadsFeatureFlagValue = myDownloadsFeatureFlag.get().value
     )
 
     val homeAdapter = createRecyclerViewAdapter()
