@@ -200,7 +200,7 @@ NOTICE @BenHenning
 #                                  instrumentation                                  #
 #####################################################################################
 
-# UiAutomator configuration files ownership.
+# UiAutomator test suites ownership.
 /instrumentation/src/javatest/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
