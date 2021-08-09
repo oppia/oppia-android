@@ -257,7 +257,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listen
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ReplayButtonListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/RouteToHintsAndSolutionListener.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ShowHintAvailabilityListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/StateKeyboardButtonListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/SubmitNavigationButtonListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/testing/StateFragmentTestActivity.kt"
