@@ -15,7 +15,9 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="24dp">
+    android:paddingStart="@dimen/coming_soon_topic_list_constraint_layout_padding_start"
+    android:paddingEnd="@dimen/coming_soon_topic_list_constraint_layout_padding_end"
+    android:layout_marginTop="@dimen/coming_soon_topic_list_constraint_layout_margin_top">
 
     <TextView
       android:id="@+id/coming_soon_topic_text_view"
@@ -27,8 +29,8 @@
       android:text="@string/coming_soon"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="18sp"
-      android:paddingStart="24dp"
-      android:paddingEnd="24dp"
+      android:paddingStart="@dimen/coming_soon_text_padding_start"
+      android:paddingEnd="@dimen/coming_soon_text_padding_end"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,12 +38,12 @@
       android:id="@+id/coming_soon_topic_list_recycler_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
+      android:layout_marginTop="@dimen/coming_soon_topic_promoted_list_view_margin_top"
       android:clipToPadding="false"
       android:orientation="horizontal"
       android:overScrollMode="never"
-      android:paddingStart="28dp"
-      android:paddingEnd="28dp"
+      android:paddingStart="@dimen/coming_soon_topic_promoted_list_view_padding_start"
+      android:paddingEnd="@dimen/coming_soon_topic_Promoted_list_view_padding_end"
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintStart_toStartOf="@+id/coming_soon_topic_text_view"

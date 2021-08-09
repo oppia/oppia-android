@@ -15,6 +15,7 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -52,9 +53,12 @@ import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
+import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
+import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
@@ -108,6 +112,7 @@ interface ActivityComponent {
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
   fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
   fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
@@ -129,6 +134,16 @@ interface ActivityComponent {
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
+  fun inject(
+    stateAssemblerMarginBindingAdaptersTestActivity:
+      StateAssemblerMarginBindingAdaptersTestActivity
+  )
+
+  fun inject(
+    stateAssemblerPaddingBindingAdaptersTestActivity:
+      StateAssemblerPaddingBindingAdaptersTestActivity
+  )
+
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
@@ -137,5 +152,6 @@ interface ActivityComponent {
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
+  fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }

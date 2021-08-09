@@ -215,6 +215,7 @@
   <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_auth_null">Please enter Administrator PIN.</string>
   <string name="admin_auth_submit">Submit</string>
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->

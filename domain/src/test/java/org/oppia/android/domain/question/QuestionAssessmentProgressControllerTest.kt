@@ -133,8 +133,6 @@ class QuestionAssessmentProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
 
-  // TODO(#2738): Add tests for score and mastery calculations
-
   @Test
   fun testGetCurrentQuestion_noSessionStarted_returnsPendingResult() {
     setUpTestApplicationWithSeed(questionSeed = 0)
