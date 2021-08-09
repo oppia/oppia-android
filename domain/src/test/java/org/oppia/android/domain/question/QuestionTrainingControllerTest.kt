@@ -58,6 +58,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -331,7 +332,8 @@ class QuestionTrainingControllerTest {
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
+      HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
