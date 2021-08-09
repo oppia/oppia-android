@@ -74,7 +74,7 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
-        "//data/src/main/java/org/oppia/android/data/backends/gae/api:api",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
