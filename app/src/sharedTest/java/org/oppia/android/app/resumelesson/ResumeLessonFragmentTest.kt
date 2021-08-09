@@ -85,9 +85,6 @@ import javax.inject.Singleton
 class ResumeLessonFragmentTest {
 
   private val internalProfileId: Int = 1
-  private val topicId: String = FRACTIONS_TOPIC_ID
-  private val storyId: String = FRACTIONS_STORY_ID_0
-  private val explorationId: String = FRACTIONS_EXPLORATION_ID_0
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -107,7 +104,6 @@ class ResumeLessonFragmentTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -115,7 +111,6 @@ class ResumeLessonFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -146,7 +141,7 @@ class ResumeLessonFragmentTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  fun testResumeLessonFragment_onTablet_configurationChange_lessonThumbnailIsDisplayed() {
+  fun testResumeLessonFragment_onTablet_configChange_lessonThumbnailIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -167,7 +162,7 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
-  fun testResumeLessonFragment_configurationChange_lessonTitleIsDisplayed() {
+  fun testResumeLessonFragment_configChange_lessonTitleIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -189,7 +184,7 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
-  fun testResumeLessonFragment_configurationChange_lessonDescriptionIsDisplayed() {
+  fun testResumeLessonFragment_configChange_lessonDescriptionIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -204,9 +199,9 @@ class ResumeLessonFragmentTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
       backflowScreen = null
     )
   }

@@ -91,9 +91,6 @@ import javax.inject.Singleton
 class ResumeLessonActivityTest {
 
   private val internalProfileId: Int = 1
-  private val topicId: String = FRACTIONS_TOPIC_ID
-  private val storyId: String = FRACTIONS_STORY_ID_0
-  private val explorationId: String = FRACTIONS_EXPLORATION_ID_0
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -113,7 +110,6 @@ class ResumeLessonActivityTest {
 
   @Before
   fun setUp() {
-    Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -121,7 +117,6 @@ class ResumeLessonActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -152,8 +147,9 @@ class ResumeLessonActivityTest {
   }
 
   @Test
-  fun testResumeLessonActivity_configurationChange_toolbarTitleIsDisplayed() {
+  fun testResumeLessonActivity_configChange_toolbarTitleIsDisplayed() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
@@ -176,9 +172,9 @@ class ResumeLessonActivityTest {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
       backflowScreen = null
     )
   }
