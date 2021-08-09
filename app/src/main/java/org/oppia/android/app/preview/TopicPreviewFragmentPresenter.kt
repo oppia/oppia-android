@@ -184,6 +184,7 @@ class TopicPreviewFragmentPresenter @Inject constructor(
     return topicStoryList
   }
 
+  /** Starts TopicDownloadedActivity. */
   fun showDownloadedTopic() {
     val intent = TopicDownloadedActivity.createTopicDownloadedActivityIntent(
       activity,

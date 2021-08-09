@@ -23,14 +23,22 @@ class TopicPreviewViewModel @Inject constructor(
 
   private val topicPreviewListener = fragment as TopicPreviewListener
 
+  /** Topic observable instance. */
   val topic = ObservableField<Topic>(Topic.getDefaultInstance())
+  /** Size of the topic. */
   val topicSize = ObservableField<String>("")
+  /** Description of the topic. */
   val topicDescription = ObservableField<CharSequence>("")
+  /** Boolean which track is description is completely visible or not. */
   val isDescriptionExpanded = ObservableField<Boolean>(true)
+  /** Boolean which track the visibility of see more text. */
   val isSeeMoreVisible = ObservableField<Boolean>(true)
+  /** List of TopicPreviewSkillItemViewModel. */
   val skillsItemList = ObservableField<List<TopicPreviewSkillItemViewModel>>()
+  /** List of TopicPreviewStoryItemViewModel. */
   val storyItemList = ObservableField<List<TopicPreviewStoryItemViewModel>>()
 
+  /** Display the size of topic. */
   fun calculateTopicSizeWithUnit() {
     val sizeWithUnit = topic.get()?.let { topic ->
       FileSizeConversionUtil(context).formatSizeUnits(
@@ -40,10 +48,12 @@ class TopicPreviewViewModel @Inject constructor(
     topicSize.set(sizeWithUnit)
   }
 
+  /** Toggle isDescriptionExpanded to manage topic's description visibility. */
   fun clickSeeMore() {
     isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
   }
 
+  /** Download the topic. */
   fun clickTopicDownload(@Suppress("UNUSED_PARAMETER") v: View) {
     topicPreviewListener.onDownloadTopicClicked()
   }

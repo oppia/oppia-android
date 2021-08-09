@@ -151,9 +151,9 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/preview/TopicPreviewViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt",
-    "src/main/java/org/oppia/android/app/preview/TopicPreviewViewModel.kt",
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
 ]
 

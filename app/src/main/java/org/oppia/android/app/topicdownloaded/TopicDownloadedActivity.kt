@@ -17,10 +17,12 @@ private const val TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY =
 class TopicDownloadedActivity : InjectableAppCompatActivity(), RouteToTopicListener {
 
   companion object {
+    /** Returns the [TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY] key. */
     fun getProfileIdKey(): String {
       return TOPIC_DOWNLOADED_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY
     }
 
+    /** Returns the [TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY] key. */
     fun getTopicIdKey(): String {
       return TOPIC_DOWNLOADED_ACTIVITY_TOPIC_ID_ARGUMENT_KEY
     }

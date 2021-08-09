@@ -6,7 +6,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
+/** Profile id argument key helps in passing to TopicPreviewFragment. */
 const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
+/** Topic id argument key help in passing to TopicPreviewFragment. */
 const val TOPIC_ID_ARGUMENT_KEY = "topic_id"
 
 /** The presenter for [TopicPreviewActivity]. */

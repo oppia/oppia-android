@@ -6,10 +6,12 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** TopicPreviewFragment TAG. */
 const val TOPIC_PREVIEW_FRAGMENT_TAG = "TopicPreviewFragment"
 private const val TOPIC_PREVIEW_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicPreviewActivity.topic_id"
 private const val TOPIC_PREVIEW_ACTIVITY_PROFILE_ID_ARGUMENT_KEY = "TopicPreviewActivity.profile_id"
 
+/** Activity display preview of topic when topic is not downloaded. */
 class TopicPreviewActivity : InjectableAppCompatActivity() {
 
   companion object {
