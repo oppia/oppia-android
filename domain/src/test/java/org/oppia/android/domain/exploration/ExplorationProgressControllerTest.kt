@@ -56,6 +56,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -1066,7 +1067,6 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
     val result = explorationProgressController.submitHintIsRevealed(
-      state = currentState.state,
       hintIsRevealed = true,
       hintIndex = 0,
     )
@@ -1110,7 +1110,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    val result = explorationProgressController.submitSolutionIsRevealed()
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -2034,10 +2034,8 @@ class ExplorationProgressControllerTest {
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
 
     val result = explorationProgressController.submitHintIsRevealed(
-      state = currentState.state,
       hintIsRevealed = true,
       hintIndex = 0,
     )
@@ -2069,9 +2067,8 @@ class ExplorationProgressControllerTest {
       atLeastOnce()
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitSolutionIsRevealed(currentState.state)
+    val result = explorationProgressController.submitSolutionIsRevealed()
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -2756,7 +2753,7 @@ class ExplorationProgressControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class
+      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
