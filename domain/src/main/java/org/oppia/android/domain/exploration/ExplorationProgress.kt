@@ -36,7 +36,7 @@ internal class ExplorationProgress {
   }
 
   internal lateinit var hintHandler: HintHandler
-  internal var hintState: HintState = HintState.getDefaultInstance()
+  internal lateinit var hintState: HintState
 
   /**
    * Advances the current play stage to the specified stage, verifying that the transition is correct.

@@ -336,17 +336,25 @@ message HelpIndex {
   }
 }
 
+// A structure that contains details about the hint that is visible to the learner.
 message HintIndex {
+  // Index of the hint that is visible to the learner.
   int32 index = 1;
+  // Boolean to indicate if the learner has revealed the hint or not.
   bool is_hint_revealed = 2;
 }
 
+// A Structure corresponding to the state of hint and solution for the current exploration or
+// training session.
 message HintState {
+  // HelpIndex for the current state.
   HelpIndex help_index = 1;
-  int32 hint_sequence_number = 4;
-  int32 tracked_answer_count = 5;
-  bool is_hint_visible_in_latest_state = 6;
-  int64 delay_to_show_next_hint_and_solution = 7;
+  // Sequence number of the most recently scheduled task to show help to the learner.
+  int32 hint_sequence_number = 2;
+  // Count of wrong answers that the hint handler has been notified about.
+  int32 tracked_answer_count = 3;
+  // Delay for scheduling a new task to show more help to the learner.
+  int64 delay_to_show_next_hint_and_solution = 4;
 }
 
 // Different states in which exploration checkpoint can exist.

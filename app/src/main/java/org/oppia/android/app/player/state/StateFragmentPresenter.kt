@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +74,7 @@ class StateFragmentPresenter @Inject constructor(
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher,
+  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -558,7 +557,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(hintState: HintState) {
-    Log.d("123456", "showHintsAndSolutions: ${hintState.helpIndex.indexTypeCase}")
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       viewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -576,7 +574,10 @@ class StateFragmentPresenter @Inject constructor(
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           viewModel.setHintBulbVisibility(true)
           viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          // SHOW_SOLUTION implies that all hints have been viewed by the user.
           viewModel.allHintsExhausted = true
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          viewModel.newAvailableHintIndex = currentState.interaction.hintCount - 1
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
           viewModel.setHintOpenedAndUnRevealedVisibility(false)

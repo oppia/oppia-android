@@ -194,7 +194,7 @@ class ExplorationProgressController @Inject constructor(
               explorationProgress.stateGraph.getState(answerOutcome.stateName),
               prohibitSameStateName = true
             )
-            // Reset the hintState if pending top state has being changed.
+            // Reset the hintState if pending top state has changed.
             explorationProgress.hintState = explorationProgress.hintHandler.reset()
           } else {
             // Schedule a new hints or solution or show a new hint or solution immediately based on
@@ -570,6 +570,13 @@ class ExplorationProgressController @Inject constructor(
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
     progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
+
+    // Update hint state to schedule task to show new help.
+    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+    progress.hintState = progress.hintHandler.maybeScheduleShowHint(
+      ephemeralState.state,
+      ephemeralState.pendingState.wrongAnswerCount
+    )
 
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()

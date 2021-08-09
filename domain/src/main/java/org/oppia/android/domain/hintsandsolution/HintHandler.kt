@@ -51,6 +51,7 @@ internal class HintHandler(
   private var trackedWrongAnswerCount = 0
   private var helpIndex: HelpIndex = HelpIndex.getDefaultInstance()
   private var hintSequenceNumber = 0
+
   // Negative 1 implies that a new task does not have to be scheduled and so no new help should be
   // revealed. This is so that new tasks are not scheduled in cases when the result of the task is
   // guaranteed to not show a new any new help to the learner, (e.g. when an unrevealed hint or
@@ -105,7 +106,9 @@ internal class HintHandler(
           hintSequenceNumber++
           delayShowInitialHintMs
         } else {
+          // Update helpIndex with the next available help
           helpIndex = getNextHintAndSolutionToReveal(state)
+          // Set delayForNextHintAndSolution to -1 so that no new tasks are scheduled.
           -1
         }
       }
