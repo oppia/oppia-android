@@ -99,6 +99,7 @@ import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 
@@ -291,23 +292,15 @@ class HtmlParserTest {
       )
   }
 
-  @Test
+  @Test @Config(qualifiers = "ldrtl")
   fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true
-    )
-
     val parsedHtml = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      htmlParser.parseOppiaHtml(
-        "<span>Paragraph 1</span><ul><li>Item</li></ul><span>Paragraph 2.</span>",
-        textView
-      )
-      val htmlString = "<span>Paragraph 1</span><ul><oppia-li dir=\"rtl\">Item</oppia-li></ul><span>Paragraph 2.</span>"
+
+      val htmlString = "<span>You should know the following before going on:<br></span>" +
+        "<ul><oppia-li dir=\"rtl\">The counting numbers (1, 2, 3, 4, 5 ….)<br></oppia-li>" +
+        "<oppia-li dir=\"rtl\">How to tell whether one counting number is bigger or " +
+        "smaller than another<br></oppia-li></ul>"
 
       return@runWithActivity CustomHtmlContentHandler.fromHtml(
           html = htmlString,
@@ -318,8 +311,9 @@ class HtmlParserTest {
         )
     }
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
+    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(2)
   }
+
   @Test
   fun testHtmlContent_onlyWithImage_additionalSpacesAdded() {
     val htmlParser = htmlParserFactory.create(
