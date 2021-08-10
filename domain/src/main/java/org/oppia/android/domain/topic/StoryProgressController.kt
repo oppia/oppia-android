@@ -59,7 +59,6 @@ class StoryProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger
 ) {
-  
   // TODO(#3662): Once checkpointing is enabled, remove the function that marks lessons as
   //  started_not_completed and the tests that test this behaviour.
 
