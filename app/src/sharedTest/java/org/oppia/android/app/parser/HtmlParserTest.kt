@@ -4,9 +4,13 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.text.Html
 import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.BulletSpan
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
+import android.text.style.LeadingMarginSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DimenRes
@@ -85,7 +89,9 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.html.CustomBulletSpan
+import org.oppia.android.util.parser.html.BulletTagHandler
+import org.oppia.android.util.parser.html.CUSTOM_BULLET_LIST_TAG
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -105,6 +111,8 @@ class HtmlParserTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
 
   @Mock lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
   @Captor lateinit var viewCaptor: ArgumentCaptor<View>
@@ -219,33 +227,99 @@ class HtmlParserTest {
         textView
       )
     }
-
+    val spannableString = SpannableStringBuilder(htmlResult)
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans =
-      htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+    val bulletSpans = spannableString.getSpans(
+      0, spannableString.length,
+      BulletSpan::class.java
+    )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
+    val bulletSpan0 = bulletSpans[0]
     assertThat(bulletSpan0).isNotNull()
 
-    val bulletRadius = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.bullet_radius
-    )
-    val spacingBeforeBullet = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet
-    )
-    val spacingBeforeText = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_text
-    )
-    val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
+    val bulletSpan0Margin = bulletSpan0
 
-    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
-    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+    assertThat(bulletSpan0Margin.bulletRadius).isEqualTo(12)
+    assertThat(bulletSpan0Margin.gapWidth).isEqualTo(48)
+    assertThat(bulletSpan0Margin.getLeadingMargin(true)).isEqualTo(72)
 
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
+    val bulletSpan1 = bulletSpans[1]
     assertThat(bulletSpan1).isNotNull()
   }
 
+  @Test
+  fun testHtmlContent_customSpan_rtlEnabled_isAddedWithCorrectlySpacedLeadingMargin() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val htmlResult = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<span>You should know the following before going on:<br></span>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+    }
+    val spannableString = SpannableStringBuilder(htmlResult)
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans = spannableString.getSpans(
+      0, spannableString.length,
+      BulletSpan::class.java
+    )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0]
+    assertThat(bulletSpan0).isNotNull()
+
+    val bulletSpan0Margin = bulletSpan0
+    assertThat(bulletSpan0Margin.bulletRadius).isEqualTo(12)
+    assertThat(bulletSpan0Margin.gapWidth).isEqualTo(48)
+    assertThat(bulletSpan0Margin.getLeadingMargin(true)).isEqualTo(72)
+
+    val bulletSpan1 = bulletSpans[1]
+    assertThat(bulletSpan1).isNotNull()
+    assertThat(htmlResult.toString())
+      .isEqualTo(
+      "You should know the following before going on:\n\n"+"The counting numbers (1, 2, 3, 4, 5 ….)\n\n"+"How to tell whether one counting number is bigger or smaller than another"
+      )
+  }
+
+  @Test
+  fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+
+    val parsedHtml = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      htmlParser.parseOppiaHtml(
+        "<span>Paragraph 1</span><ul><li>Item</li></ul><span>Paragraph 2.</span>",
+        textView
+      )
+      val htmlString = "<span>Paragraph 1</span><ul><oppia-li dir=\"rtl\">Item</oppia-li></ul><span>Paragraph 2.</span>"
+
+      return@runWithActivity CustomHtmlContentHandler.fromHtml(
+          html = htmlString,
+          imageRetriever = mockImageRetriever,
+          customTagHandlers = mapOf(
+            CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
+          )
+        )
+    }
+    assertThat(parsedHtml.toString()).isNotEmpty()
+    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
+  }
   @Test
   fun testHtmlContent_onlyWithImage_additionalSpacesAdded() {
     val htmlParser = htmlParserFactory.create(
@@ -656,4 +730,10 @@ class HtmlParserTest {
   private interface Consumer<T> {
     fun consume(value: T)
   }
+
+  /**
+   * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
+   * [CustomHtmlContentHandler.ImageRetriever].
+   */
+  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
 }

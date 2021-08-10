@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BulletSpan
 import android.text.style.LeadingMarginSpan
+import android.widget.TextView
 import org.oppia.android.util.R
 
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.

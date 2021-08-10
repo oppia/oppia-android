@@ -1,11 +1,16 @@
 package org.oppia.android.util.parser.html
 
+import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
+import android.text.style.BulletSpan
+import android.text.style.LeadingMarginSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -53,12 +58,13 @@ class HtmlParser private constructor(
 
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
-    when (getLayoutDirection(htmlContentTextView)) {
-      ViewCompat.LAYOUT_DIRECTION_RTL -> {
-        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
-      }
-      ViewCompat.LAYOUT_DIRECTION_LTR -> {
-        htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+    // First check, whether layout direction is resolved. If it is, you may work with the value.If layout
+    // direction is not resolved, delay the check.
+    if (ViewCompat.isLayoutDirectionResolved(htmlContentTextView)) {
+      setTextDirection(htmlContentTextView)
+    } else {
+      htmlContentTextView.post {
+        setTextDirection(htmlContentTextView)
       }
     }
     htmlContentTextView.invalidate()
@@ -71,8 +77,17 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("\n\n", "")
     }
     if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+      when (htmlContentTextView.textDirection) {
+        View.TEXT_DIRECTION_ANY_RTL -> {
+          htmlContent =
+            htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG dir=\"rtl\">")
+              .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+        }
+        else -> {
+          htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+            .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+        }
+      }
     }
 
     // https://stackoverflow.com/a/8662457
@@ -87,11 +102,56 @@ class HtmlParser private constructor(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
     )
 
-    val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
+    val spannableBuilder = setBulletSpan(
       SpannableStringBuilder(htmlSpannable),
-      htmlContentTextView.context
+      htmlContentTextView
     )
+
     return ensureNonEmpty(trimSpannable(spannableBuilder))
+  }
+
+  private fun setBulletSpan(
+    spannableBuilder: SpannableStringBuilder,
+    htmlContentTextView: TextView
+  ): SpannableStringBuilder {
+    val resources = htmlContentTextView.context.resources
+    val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
+    val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+    // The space between the start of the line and the bullet.
+    val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+
+    val bulletSpans =  spannableBuilder.getSpans(
+      /* queryStart= */ 0,
+      spannableBuilder.length,
+      BulletSpan::class.java
+    )
+
+    bulletSpans.forEach {
+      val start =  spannableBuilder.getSpanStart(it)
+      val end =  spannableBuilder.getSpanEnd(it)
+
+      spannableBuilder.removeSpan(it)
+      spannableBuilder.setSpan(
+        LeadingMarginSpan.Standard(spacingBeforeBullet), start, end,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+      )
+      spannableBuilder.setSpan(
+        BulletSpan(gapWidth, Color.BLACK, bulletRadius),
+        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+      )
+    }
+    return spannableBuilder
+  }
+
+  private fun setTextDirection(htmlContentTextView: TextView) {
+    when (getLayoutDirection(htmlContentTextView)) {
+      ViewCompat.LAYOUT_DIRECTION_RTL -> {
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+      }
+      ViewCompat.LAYOUT_DIRECTION_LTR -> {
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+      }
+    }
   }
 
   private fun getLayoutDirection(view: View): Int {
