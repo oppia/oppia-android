@@ -127,6 +127,7 @@ class RetrieveLicenseTexts(
         retrieveCopyrightLicense(license)
       }
     }.toSet()
+
   }
 
   private fun retrieveDependencyList(
