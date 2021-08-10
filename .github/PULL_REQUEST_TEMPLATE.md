@@ -3,12 +3,51 @@
   - your pull request so we can review your code more easily.
   -->
 
+## What type of PR is this? (check all applicable)
+
+- [ ] Refactor
+- [ ] Feature
+- [ ] Bug Fix
+- [ ] Optimization
+- [ ] Documentation Update
+
 ## Explanation
 <!--
   - Explain what your PR does. If this PR fixes an existing bug, please include
   - "Fixes #bugnum:" in the explanation so that GitHub can auto-close the issue
   - when this PR is merged.
   -->
+
+## QA Instructions, Screenshots, Recordings
+<!--
+  - Note for images in PR description:
+  - 1. Upload your image.
+  - 2. Now use the image url received from Github inside this code `<img src="" width="250" />`
+  - This way your images would look of correct size on github.
+  -->
+
+
+_Please replace this line with instructions on how to test your changes, a note
+on the devices and API levels this has been tested on, as well as any relevant
+images for UI changes._
+
+### UI accessibility concerns?
+
+_If your PR includes UI changes, please replace this line with details on how
+accessibility is impacted and tested. For more info, check out the
+[Oppia Android Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide)._
+
+### RTL concerns?
+_If your PR includes UI changes, please replace this line with details on how
+RTL is impacted and tested. Also provide screenshots of the screen in RTL view. For more info, check out the
+[Oppia Android RTL Guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines)._
+
+## Added/updated tests?
+
+- [ ] Yes
+- [ ] No, and this is why: _please replace this line with details on why tests
+      have not been included_
+- [ ] I need help with writing tests
 
 ## Checklist
 <!-- Please tick the relevant boxes by putting an "x" in them. -->
