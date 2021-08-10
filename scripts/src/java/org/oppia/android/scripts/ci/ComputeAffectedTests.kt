@@ -105,16 +105,16 @@ private fun computeAffectedTargetsForNonDevelopBranch(
   val allAffectedTestTargets = (affectedTestTargets + transitiveTestTargets).toSet()
 
   // Filtering out the targets to be ignored.
-  val filteredAffectedTestTargets = allAffectedTestTargets.filter { targetPath ->
+  val nonInstrumentationAffectedTestTargets = allAffectedTestTargets.filter { targetPath ->
     !targetPath.startsWith("//instrumentation", ignoreCase = true)
   }
 
   println()
   println(
     "Affected test targets:" +
-      "\n${filteredAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
+      "\n${nonInstrumentationAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
   )
   outputFile.printWriter().use { writer ->
-    filteredAffectedTestTargets.forEach { writer.println(it) }
+    nonInstrumentationAffectedTestTargets.forEach { writer.println(it) }
   }
 }

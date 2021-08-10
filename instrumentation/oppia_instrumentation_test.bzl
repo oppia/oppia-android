@@ -28,12 +28,12 @@ def oppia_instrumentation_test(
         testonly = True,
         custom_package = "org.oppia.android",
         instruments = "//instrumentation:oppia_test",
-        manifest = "//instrumentation:src/javatest/AndroidManifest.xml",
+        manifest = "//instrumentation:src/javatests/AndroidManifest.xml",
         deps = [":%s_lib" % name],
     )
 
     native.android_instrumentation_test(
         name = name,
         target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
-        test_app = ":" + name + "Binary",
+        test_app = ":%sBinary" % name,
     )

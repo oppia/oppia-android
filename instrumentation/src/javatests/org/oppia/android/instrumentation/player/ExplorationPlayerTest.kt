@@ -1,12 +1,12 @@
 package org.oppia.android.instrumentation.player
 
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByText
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
@@ -31,16 +31,14 @@ class ExplorationPlayerTest {
   /** Navigates and opens the Prototype Exploration using the admin profile. */
   private fun navigateToPrototypeExploration() {
     device.findObjectByRes("skip_text_view")?.click()
-    device.waitForRes("get_started_button")
     device.findObjectByRes("get_started_button")?.click()
     device.waitForRes("profile_select_text")
-    device.findObject(By.text("Admin")).click()
+    device.findObjectByText("Admin")?.click()
     scrollRecyclerViewTextIntoView("First Test Topic")
-    device.findObject(By.text("First Test Topic")).click()
-    device.waitForRes("topic_toolbar_title")
-    device.findObject(By.text("LESSONS")).click()
-    device.findObject(By.text("First Story")).click()
+    device.findObjectByText("First Test Topic")?.click()
+    device.findObjectByText("LESSONS")?.click()
+    device.findObjectByText("First Story")?.click()
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    device.findObject(By.text("Chapter 1: Prototype Exploration")).click()
+    device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
   }
 }
