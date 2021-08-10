@@ -56,38 +56,27 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean = false
   ): Spannable {
 
+    var htmlContent = rawString
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     // First check, whether layout direction is resolved. If it is, you may work with the value.If layout
     // direction is not resolved, delay the check.
     if (ViewCompat.isLayoutDirectionResolved(htmlContentTextView)) {
-      setTextDirection(htmlContentTextView)
+     htmlContent = setTextDirection(htmlContentTextView, htmlContent)
+
     } else {
       htmlContentTextView.post {
-        setTextDirection(htmlContentTextView)
+        htmlContent =  setTextDirection(htmlContentTextView, htmlContent)
       }
     }
     htmlContentTextView.invalidate()
 
-    var htmlContent = rawString
+
     if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
     }
     if ("\n\n" in htmlContent) {
       htmlContent = htmlContent.replace("\n\n", "")
-    }
-    if ("<li>" in htmlContent) {
-      when (htmlContentTextView.textDirection) {
-        View.TEXT_DIRECTION_ANY_RTL -> {
-          htmlContent =
-            htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG dir=\"rtl\">")
-              .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
-        }
-        else -> {
-          htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-            .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
-        }
-      }
     }
 
     // https://stackoverflow.com/a/8662457
@@ -120,15 +109,15 @@ class HtmlParser private constructor(
     // The space between the start of the line and the bullet.
     val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
 
-    val bulletSpans =  spannableBuilder.getSpans(
+    val bulletSpans = spannableBuilder.getSpans(
       /* queryStart= */ 0,
       spannableBuilder.length,
       BulletSpan::class.java
     )
 
     bulletSpans.forEach {
-      val start =  spannableBuilder.getSpanStart(it)
-      val end =  spannableBuilder.getSpanEnd(it)
+      val start = spannableBuilder.getSpanStart(it)
+      val end = spannableBuilder.getSpanEnd(it)
 
       spannableBuilder.removeSpan(it)
       spannableBuilder.setSpan(
@@ -143,15 +132,24 @@ class HtmlParser private constructor(
     return spannableBuilder
   }
 
-  private fun setTextDirection(htmlContentTextView: TextView) {
+  private fun setTextDirection(htmlContentTextView: TextView, htmlContent: String): String {
     when (getLayoutDirection(htmlContentTextView)) {
       ViewCompat.LAYOUT_DIRECTION_RTL -> {
         htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+        if ("<li>" in htmlContent) {
+         return  htmlContent .replace("<li>", "<$CUSTOM_BULLET_LIST_TAG dir=\"rtl\">")
+            .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+        }
       }
       ViewCompat.LAYOUT_DIRECTION_LTR -> {
         htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+        if ("<li>" in htmlContent) {
+        return htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+            .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+        }
       }
     }
+    return htmlContent
   }
 
   private fun getLayoutDirection(view: View): Int {
