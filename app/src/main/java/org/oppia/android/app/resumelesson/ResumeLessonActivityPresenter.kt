@@ -1,18 +1,19 @@
 package org.oppia.android.app.resumelesson
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.databinding.ResumeLessonActivityBinding
 import javax.inject.Inject
 
-const val RESUME_LESSON_TAG = "ResumeLesson"
+private const val RESUME_LESSON_TAG = "ResumeLesson"
 
+/** The presenter for [ResumeLessonActivity]. */
 class ResumeLessonActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
+  /** Handles onCreate() method of the [ResumeLessonActivity] */
   fun handleOnCreate(
     internalProfileId: Int,
     topicId: String,
@@ -32,14 +33,13 @@ class ResumeLessonActivityPresenter @Inject constructor(
     }
 
     if (getResumeLessonFragment() == null) {
-      val resumeLessonFragment = ResumeLessonFragment()
-      val args = Bundle()
-      args.putInt(RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY, internalProfileId)
-      args.putString(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY, topicId)
-      args.putString(RESUME_LESSON_FRAGMENT_STORY_ID_KEY, storyId)
-      args.putString(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY, explorationId)
-      args.putInt(RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY, backflowScreen)
-      resumeLessonFragment.arguments = args
+      val resumeLessonFragment = ResumeLessonFragment.newInstance(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
+      )
       activity.supportFragmentManager.beginTransaction().add(
         R.id.resume_lesson_fragment_placeholder,
         resumeLessonFragment,

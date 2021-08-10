@@ -24,17 +24,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-const val RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
-  "ResumeExplorationFragmentPresenter.resume_exploration_fragment_internal_profile_id"
-const val RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY =
-  "ResumeExplorationFragmentPresenter.resume_exploration_fragment_topic_id"
-const val RESUME_LESSON_FRAGMENT_STORY_ID_KEY =
-  "ResumeExplorationFragmentPresenter.resume_exploration_fragment_story_id"
-const val RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY =
-  "ResumeExplorationFragmentPresenter.resume_Lesson_fragment_exploration_id"
-const val RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY =
-  "ResumeLessonFragmentPresenter.resume_lesson_fragment_backflow_screen"
-
+/** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
@@ -74,6 +64,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
 
   private val chapterSummaryLiveData: LiveData<ChapterSummary> by lazy { getChapterSummary() }
 
+  /** Handles onCreateView() method of the [ResumeLessonFragment]. */
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,

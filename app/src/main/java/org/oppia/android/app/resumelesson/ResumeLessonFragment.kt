@@ -8,10 +8,21 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that allows the user to resume a saved exploration. */
 class ResumeLessonFragment :
   InjectableFragment() {
 
   companion object {
+    private const val RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
+      "ResumeExplorationFragmentPresenter.resume_exploration_fragment_internal_profile_id"
+    private const val RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY =
+      "ResumeExplorationFragmentPresenter.resume_exploration_fragment_topic_id"
+    private const val RESUME_LESSON_FRAGMENT_STORY_ID_KEY =
+      "ResumeExplorationFragmentPresenter.resume_exploration_fragment_story_id"
+    private const val RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY =
+      "ResumeExplorationFragmentPresenter.resume_Lesson_fragment_exploration_id"
+    private const val RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY =
+      "ResumeLessonFragmentPresenter.resume_lesson_fragment_backflow_screen"
 
     /** Creates new instance of [ResumeLessonFragment].
      * @param internalProfileId is used by the ResumeLessonFragment to retrieve saved checkpoint
