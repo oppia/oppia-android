@@ -215,7 +215,6 @@
   <string name="admin_auth_admin_controls_sub">Enter the Administrator PIN in order to access Administrator Controls.</string>
   <string name="admin_auth_pin">Administrator\'s PIN</string>
   <string name="admin_auth_incorrect">Incorrect Administrator PIN. Please try again.</string>
-  <string name="admin_auth_null">Please enter Administrator PIN.</string>
   <string name="admin_auth_submit">Submit</string>
   <string name="admin_auth_close">Close</string>
   <!-- AdminPinActivity -->
@@ -486,11 +485,4 @@
   <string name="resume_lesson_activity_title">Resume Lesson</string>
   <string name="resume_lesson_button">Continue</string>
   <string name="start_over_lesson_button">Start Over</string>
-  <!-- ThirdPartyDependencyListActivity -->
-  <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
-  <string name="third_party_dependency_version_formatter">version %s</string>
-  <!-- LicenseListActivity -->
-  <string name="license_list_activity_title">Copyright Licenses</string>
-  <!-- LicenseTextViewerActivity -->
-  <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
 </resources>

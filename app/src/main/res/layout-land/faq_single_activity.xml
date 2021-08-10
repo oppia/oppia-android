@@ -43,7 +43,7 @@
         android:background="@color/oppiaGreyBackground"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="80dp"
+        android:paddingBottom="108dp"
         android:scrollbars="none">
 
         <LinearLayout

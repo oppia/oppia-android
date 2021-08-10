@@ -63,7 +63,7 @@ class ExitProfileDialogFragment : DialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#3641): Investigate on using finish instead of intent.
+        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         if (!restoreLastCheckedItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

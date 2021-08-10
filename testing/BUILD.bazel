@@ -13,7 +13,6 @@ load("//testing:testing_test.bzl", "testing_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/testing/mockito/*.kt",
-    "src/test/java/org/oppia/android/testing/platformparameter/*.kt",
     "src/main/java/org/oppia/android/testing/robolectric/*.kt",
     "src/main/java/org/oppia/android/testing/threading/*.kt",
     "src/main/java/org/oppia/android/testing/time/*.kt",
@@ -64,9 +63,6 @@ TEST_DEPS = [
     ":dagger",
     ":testing",
     "//domain",
-    "//testing/src/main/java/org/oppia/android/testing/network",
-    "//testing/src/main/java/org/oppia/android/testing/network:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",

@@ -78,11 +78,6 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
         if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
-          adminViewModel.errorMessage.set(
-            fragment.resources.getString(
-              R.string.admin_auth_null
-            )
-          )
           return@setOnClickListener
         }
         if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {

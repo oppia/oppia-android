@@ -2,7 +2,6 @@
   xmlns:aapt="http://schemas.android.com/aapt"
   android:width="360dp"
   android:height="288dp"
-  android:autoMirrored="true"
   android:viewportWidth="360"
   android:viewportHeight="288">
   <path android:pathData="M0,137.73c7.19,-2.17 14.5,-4.54 21.88,-6.91C57.31,119.44 94.36,108.06 126.71,119c61.26,20.79 83.15,82 147.11,82.05 10.69,0 22.55,-1.71 36,-5.61 21.82,-6.34 38.08,-14.21 50.2,-22.56V0H0Z">

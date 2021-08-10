@@ -90,7 +90,7 @@ class AdminAuthActivityPresenter @Inject constructor(
             activity.finish()
           }
         }
-      } else if (inputPin.length == adminPin.length) {
+      } else {
         authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
       }
     }

@@ -127,7 +127,7 @@ class SelectionInteractionViewModel(
         }
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
-        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
+        // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
         val wasSelectedItemListEmpty = isAnswerAvailable.get()

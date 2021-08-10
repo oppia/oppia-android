@@ -109,6 +109,10 @@ class TopicListControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // TODO(#15): Add tests for recommended lessons rather than promoted, and tests for the 'continue playing' LiveData
+  //  not providing any data for cases when there are no ongoing lessons. Also, add tests for other uncovered cases
+  //  (such as having and not having lessons in either of the PromotedActivityList section, or AsyncResult errors).
+
   @Test
   fun testRetrieveTopicList_isSuccessful() {
     val topicListLiveData = topicListController.getTopicList().toLiveData()

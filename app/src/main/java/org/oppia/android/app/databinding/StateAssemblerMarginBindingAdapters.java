@@ -2,7 +2,6 @@ package org.oppia.android.app.databinding;
 
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -109,26 +108,13 @@ public final class StateAssemblerMarginBindingAdapters {
   ) {
     if (isApplicable && view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      if (isRtlLayout(view)) {
-        params.setMargins(
-            (int) marginEnd,
-            (int) marginTop,
-            (int) marginStart,
-            (int) marginBottom
-        );
-      } else {
-        params.setMargins(
-            (int) marginStart,
-            (int) marginTop,
-            (int) marginEnd,
-            (int) marginBottom
-        );
-      }
+      params.setMargins(
+          (int) marginStart,
+          (int) marginTop,
+          (int) marginEnd,
+          (int) marginBottom
+      );
       view.requestLayout();
     }
-  }
-
-  private static boolean isRtlLayout(View view) {
-    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }

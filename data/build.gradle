@@ -89,8 +89,8 @@ dependencies {
       'org.robolectric:robolectric:4.4',
       project(":testing"),
   )
-  // TODO(#59): Remove this once Bazel is introduced
-  // TODO(#97): Isolate retrofit-mock dependency from production
+  // TODO (#59): Remove this once Bazel is introduced
+  // TODO (#97): Isolate retrofit-mock dependency from production
   api(
       'com.squareup.retrofit2:converter-moshi:2.5.0',
       'com.squareup.retrofit2:retrofit:2.5.0',

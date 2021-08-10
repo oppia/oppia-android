@@ -7,15 +7,10 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
-import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 
-/** The help page activity for FAQs and third-party dependencies. */
-class HelpActivity :
-  InjectableAppCompatActivity(),
-  RouteToFAQListListener,
-  RouteToThirdPartyDependencyListListener {
-
+/** The help page activity for FAQs and feedback. */
+class HelpActivity : InjectableAppCompatActivity(), RouteToFAQListListener {
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
@@ -49,11 +44,6 @@ class HelpActivity :
 
   override fun onRouteToFAQList() {
     val intent = FAQListActivity.createFAQListActivityIntent(this)
-    startActivity(intent)
-  }
-
-  override fun onRouteToThirdPartyDependencyList() {
-    val intent = ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(this)
     startActivity(intent)
   }
 }

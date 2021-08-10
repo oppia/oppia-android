@@ -17,19 +17,11 @@ class HelpListViewModel @Inject constructor(
 
   private fun getRecyclerViewItemList(): ArrayList<HelpItemViewModel> {
     for (item in HelpItems.values()) {
-      val category: String
-      val helpItemViewModel: HelpItemViewModel
-      when (item) {
-        HelpItems.FAQ -> {
-          category = activity.getString(R.string.frequently_asked_questions_FAQ)
-          helpItemViewModel = HelpItemViewModel(activity, category)
-        }
-        HelpItems.THIRD_PARTY -> {
-          category = activity.getString(R.string.third_party_dependency_list_activity_title)
-          helpItemViewModel = HelpItemViewModel(activity, category)
-        }
+      if (item == HelpItems.FAQ) {
+        val category1 = activity.getString(R.string.frequently_asked_questions_FAQ)
+        val helpViewModel = HelpItemViewModel(activity, category1)
+        arrayList.add(helpViewModel)
       }
-      arrayList.add(helpItemViewModel)
     }
     return arrayList
   }
