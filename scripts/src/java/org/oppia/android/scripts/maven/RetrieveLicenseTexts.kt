@@ -127,30 +127,21 @@ class RetrieveLicenseTexts(
         retrieveCopyrightLicense(license)
       }
     }.toSet()
-
   }
 
   private fun retrieveDependencyList(
     mavenDependencyList: List<MavenDependency>
   ): List<Dependency> {
-    val dependencyList = mutableListOf<Dependency>()
-    mavenDependencyList.forEach { mavenDependency ->
-      val licenseList = mavenDependency.licenseList
-      val copyrightLicenseList = mutableListOf<CopyrightLicense>()
-      licenseList.forEach { license ->
-        copyrightLicenseList.add(
-          retrieveCopyrightLicense(license)
-        )
+    return mavenDependencyList.map { mavenDependency ->
+      val copyrightLicenseList = mavenDependency.licenseList.map { license ->
+        retrieveCopyrightLicense(license)
       }
-      dependencyList.add(
-        Dependency(
-          mavenDependency.artifactName,
-          mavenDependency.artifactVersion,
-          copyrightLicenseList
-        )
+      Dependency(
+        mavenDependency.artifactName,
+        mavenDependency.artifactVersion,
+        copyrightLicenseList
       )
     }
-    return dependencyList
   }
 
   private fun retrieveCopyrightLicense(license: License): CopyrightLicense {
