@@ -42,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -229,6 +230,69 @@ class HelpFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_thirdPartyDependencyListTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(
+        matches(withText(R.string.third_party_dependency_list_activity_title))
+      )
+    }
+  }
+
+  @Test
+  fun testHelpFragment_configChanged_thirdPartyDependencyListTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.third_party_dependency_list_activity_title)))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_selectThirdPartyActivity_showThirdPartyDependencyListActivity() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      intended(hasComponent(ThirdPartyDependencyListActivity::class.java.name))
     }
   }
 
