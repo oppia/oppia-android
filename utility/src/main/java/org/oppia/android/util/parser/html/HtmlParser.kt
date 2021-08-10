@@ -62,15 +62,13 @@ class HtmlParser private constructor(
     // First check, whether layout direction is resolved. If it is, you may work with the value.If layout
     // direction is not resolved, delay the check.
     if (ViewCompat.isLayoutDirectionResolved(htmlContentTextView)) {
-     htmlContent = setTextDirection(htmlContentTextView, htmlContent)
-
+      htmlContent = setTextDirection(htmlContentTextView, htmlContent)
     } else {
       htmlContentTextView.post {
-        htmlContent =  setTextDirection(htmlContentTextView, htmlContent)
+        htmlContent = setTextDirection(htmlContentTextView, htmlContent)
       }
     }
     htmlContentTextView.invalidate()
-
 
     if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
@@ -137,14 +135,14 @@ class HtmlParser private constructor(
       ViewCompat.LAYOUT_DIRECTION_RTL -> {
         htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
         if ("<li>" in htmlContent) {
-         return  htmlContent .replace("<li>", "<$CUSTOM_BULLET_LIST_TAG dir=\"rtl\">")
+          return htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG dir=\"rtl\">")
             .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
         }
       }
       ViewCompat.LAYOUT_DIRECTION_LTR -> {
         htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
         if ("<li>" in htmlContent) {
-        return htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+          return htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
             .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
         }
       }

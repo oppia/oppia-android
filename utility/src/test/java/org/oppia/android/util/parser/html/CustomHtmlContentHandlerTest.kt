@@ -15,6 +15,7 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
@@ -148,9 +149,26 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.toString()).isEqualTo("some other content")
   }
 
-  @Test
+  @Test @Config(qualifiers = "ldltr")
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val htmlString = "<p>Paragraph 1</p><ul><oppia-li>Item</oppia-li></ul><p>Paragraph 2.</p>"
+    val htmlString = "<p>Paragraph 1</p><ul><oppia-li>Item<br></oppia-li></ul><p>Paragraph 2.</p>"
+
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
+        )
+      )
+
+    assertThat(parsedHtml.toString()).isNotEmpty()
+    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
+  }
+
+  @Test @Config(qualifiers = "ldrtl")
+  fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
+    val htmlString = "<p>Paragraph 1</p><ul><oppia-li dir=\"rtl\">Item<br></oppia-li></ul><p>Paragraph 2.</p>"
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(

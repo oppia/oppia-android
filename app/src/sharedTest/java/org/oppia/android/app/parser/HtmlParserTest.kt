@@ -113,11 +113,17 @@ class HtmlParserTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Mock
+  lateinit var mockImageRetriever: FakeImageRetriever
 
-  @Mock lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
-  @Captor lateinit var viewCaptor: ArgumentCaptor<View>
-  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
+  @Mock
+  lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
+
+  @Captor
+  lateinit var viewCaptor: ArgumentCaptor<View>
+
+  @Captor
+  lateinit var stringCaptor: ArgumentCaptor<String>
 
   @Inject
   lateinit var context: Context
@@ -288,11 +294,14 @@ class HtmlParserTest {
     assertThat(bulletSpan1).isNotNull()
     assertThat(htmlResult.toString())
       .isEqualTo(
-      "You should know the following before going on:\n\n"+"The counting numbers (1, 2, 3, 4, 5 ….)\n\n"+"How to tell whether one counting number is bigger or smaller than another"
+        "You should know the following before going on:\n\n" + "The counting numbers" +
+          " (1, 2, 3, 4, 5 ….)\n\n" + "How to tell whether one counting number is bigger or " +
+          "smaller than another"
       )
   }
 
-  @Test @Config(qualifiers = "ldrtl")
+  @Test
+  @Config(qualifiers = "ldrtl")
   fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
     val parsedHtml = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -303,12 +312,12 @@ class HtmlParserTest {
         "smaller than another<br></oppia-li></ul>"
 
       return@runWithActivity CustomHtmlContentHandler.fromHtml(
-          html = htmlString,
-          imageRetriever = mockImageRetriever,
-          customTagHandlers = mapOf(
-            CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
-          )
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
         )
+      )
     }
     assertThat(parsedHtml.toString()).isNotEmpty()
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(2)
