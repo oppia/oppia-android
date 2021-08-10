@@ -1,6 +1,7 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.BindingAdapter;
 
 /**
@@ -106,13 +107,26 @@ public final class StateAssemblerPaddingBindingAdapters {
       float paddingBottom
   ) {
     if (isApplicable) {
-      view.setPadding(
-          (int) paddingStart,
-          (int) paddingTop,
-          (int) paddingEnd,
-          (int) paddingBottom
-      );
+      if (isRtlLayout(view)) {
+        view.setPadding(
+            (int) paddingEnd,
+            (int) paddingTop,
+            (int) paddingStart,
+            (int) paddingBottom
+        );
+      } else {
+        view.setPadding(
+            (int) paddingStart,
+            (int) paddingTop,
+            (int) paddingEnd,
+            (int) paddingBottom
+        );
+      }
       view.requestLayout();
     }
+  }
+
+  private static boolean isRtlLayout(View view) {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }
