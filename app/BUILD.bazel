@@ -586,6 +586,7 @@ kt_android_library(
         ":dagger",
         ":listeners",
         ":resources",
+        ":view_models",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",

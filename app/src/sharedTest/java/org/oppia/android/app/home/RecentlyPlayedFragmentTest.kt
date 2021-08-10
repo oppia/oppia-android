@@ -402,13 +402,12 @@ class RecentlyPlayedFragmentTest {
       .isWithin(TOLERANCE)
       .of(8f)
 
-  assertThat(recycler.getChildAt(2).marginStart.toFloat())
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
       .isWithin(TOLERANCE)
       .of(8f)
     assertThat(recycler.getChildAt(2).marginEnd.toFloat())
       .isWithin(TOLERANCE)
       .of(28f)
-
   }
 
   @Config(qualifiers = "land")
@@ -444,7 +443,7 @@ class RecentlyPlayedFragmentTest {
       .isWithin(TOLERANCE)
       .of(0f)
 
-  assertThat(recycler.getChildAt(2).marginStart.toFloat())
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
       .isWithin(TOLERANCE)
       .of(36f)
     assertThat(recycler.getChildAt(2).marginEnd.toFloat())
@@ -492,7 +491,7 @@ class RecentlyPlayedFragmentTest {
       .isWithin(TOLERANCE)
       .of(0f)
 
-  assertThat(recycler.getChildAt(2).marginStart.toFloat())
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
       .isWithin(TOLERANCE)
       .of(60f)
     assertThat(recycler.getChildAt(2).marginEnd.toFloat())
