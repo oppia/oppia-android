@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.todo.data
+package org.oppia.android.scripts.todo.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -9,6 +9,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class Issue(
-  /** The issue number of the [Issue] */
+  /** The issue's identification number. */
   @Json(name = "number") val issueNumber: String,
 )

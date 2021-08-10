@@ -4,19 +4,19 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.oppia.android.scripts.proto.TodoExemption
-import org.oppia.android.scripts.proto.TodoExemptions
-import org.oppia.android.scripts.todo.data.Issue
-import org.oppia.android.scripts.todo.data.Todo
+import org.oppia.android.scripts.proto.TodoOpenExemption
+import org.oppia.android.scripts.proto.TodoOpenExemptions
+import org.oppia.android.scripts.todo.model.Issue
+import org.oppia.android.scripts.todo.model.Todo
 import java.io.File
 import java.io.FileInputStream
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
- * corresponds to an open issue on GitHub.
+ * corresponds to open issues on GitHub.
  *
  * Usage:
- *   bazel run //scripts:todo_check -- <path_to_directory_root> <path_to_proto_binary>
+ *   bazel run //scripts:todo_open_check -- <path_to_directory_root> <path_to_proto_binary>
  *   <path_to_json_file>
  *
  * Arguments:
@@ -25,12 +25,19 @@ import java.io.FileInputStream
  * - path_to_json_file: path to the json file containing the list of all open issues on Github
  *
  * Example:
- *   bazel run //scripts:todo_check -- $(pwd) scripts/assets/todo_exemptions.pb open_issues.json
+ *   bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
+ *   open_issues.json
  *
  * NOTE TO DEVELOPERS: The script is executed in the CI enviornment. The CI workflow creates a
  * json file from the GitHub api which contains a list of all open issues of the
- * oppia/oppia-android repository. To execute it without the CI, please create an open issues json
+ * oppia/oppia-android repository. To execute it without the CI, please create open issues json
  * file and provide its path to the script in the format as stated above.
+ *
+ * Instructions to create the open_issues.json file:
+ * 1. Setup Github CLI Tools locally.
+ * 2. cd to the oppia-android repository.
+ * 3. Run the command: gh issue list --limit 2000 --repo oppia/oppia-android
+ * --json number > $(pwd)/open_issues.json
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
@@ -41,40 +48,28 @@ fun main(vararg args: String) {
   // Path to the JSON file containing the list of open issues.
   val openIssuesJsonFile = File(repoPath, args[2])
 
+  if (!openIssuesJsonFile.exists()) {
+    throw Exception("$repoPath${args[2]}: No such file exists")
+  }
+
   val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
 
   // List of all the open issues on GitHub of this repository.
   val openIssueList = retrieveOpenIssueList(openIssuesJsonFile)
 
   val todoExemptionList =
-    loadTodoExemptionsProto(pathToProtoBinary).getTodoExemptionList()
-
-  val todoRegex = "\\bTODO\\b\\(".toRegex()
-
-  val todoStartingRegex = Regex(
-    pattern = "(//|<!--|#|\\*)[\\s]*\\bTODO\\b",
-    option = RegexOption.IGNORE_CASE
-  )
-
-  val correctTodoFormatRegex = "\\bTODO\\b\\(#(\\d+)\\): .+".toRegex()
+    loadTodoExemptionsProto(pathToProtoBinary).getTodoOpenExemptionList()
 
   val allTodos = TodoCollector.collectTodos(repoPath)
 
-  val poorlyFormattedTodos = allTodos.filter { todo ->
-    checkIfTodoIsPoorlyFormatted(
-      codeLine = todo.lineContent,
-      todoRegex = todoRegex,
-      todoStartingRegex = todoStartingRegex,
-      correctTodoFormatRegex = correctTodoFormatRegex
-    )
-  }
+  val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(allTodos)
 
-  val openIssueFailureTodos = (allTodos - poorlyFormattedTodos).filter { todo ->
-    checkIfOpenIssueFailure(
-      codeLine = todo.lineContent,
-      openIssueList = openIssueList,
-      correctTodoFormatRegex = correctTodoFormatRegex
-    )
+  val correctlyFormattedTodos = TodoCollector.collectCorrectlyFormattedTodos(
+    allTodos - poorlyFormattedTodos
+  )
+
+  val openIssueFailureTodos = correctlyFormattedTodos.filter { todo ->
+    checkIfIssueDoesNotMatchesOpenIssue(codeLine = todo.lineContent, openIssueList = openIssueList)
   }
 
   val redundantExemptions = retrieveRedundantExemptions(
@@ -106,9 +101,9 @@ fun main(vararg args: String) {
 
   logFailures(
     invalidTodos = openIssueFailureTodosAfterExemption,
-    failureMessage = "TODOs not corresponding to an open issue:",
+    failureMessage = "TODOs not corresponding to open issues on GitHub:",
     failureNote =
-      "Note that, every TODO must correspond to an open issue on GitHub"
+      "Every TODO must correspond to an open issue on GitHub"
   )
 
   if (
@@ -123,20 +118,20 @@ fun main(vararg args: String) {
 }
 
 /**
- * Retrieves the todo failures list after filtering them from the exemptions.
+ * Retrieves the Todo open check failures list after filtering them from the exemptions.
  *
- * @param todos the list of all the failure causing todos
- * @param todoExemptionList the list contating the todo exemptions
+ * @param todos the list of all the failure causing TODOs
+ * @param todoExemptionList the list contating the TODO exemptions
  * @param repoPath path of the repo to be analyzed
  * @return list obtained after filtering the exemptions
  */
 private fun retrieveTodosAfterExemption(
   todos: List<Todo>,
-  todoExemptionList: List<TodoExemption>,
+  todoExemptionList: List<TodoOpenExemption>,
   repoPath: String
 ): List<Todo> {
   return todos.filter { todo ->
-    !todoExemptionList.any { it ->
+    todoExemptionList.none { it ->
       it.exemptedFilePath == todo.filePath.removePrefix(repoPath) &&
         todo.lineNumber in it.getLineNumberList()
     }
@@ -146,24 +141,23 @@ private fun retrieveTodosAfterExemption(
 /**
  * Retrieves a list of redundant exemptions.
  *
- * @param todos the list of all the failure causing todos
- * @param todoExemptionList the list contating the todo exemptions
+ * @param todos the list of all the failure causing TODOs
+ * @param todoExemptionList the list contating the TODO exemptions
  * @param repoPath path of the repo to be analyzed
  * @return a list of all the redundant exemptions
  */
 private fun retrieveRedundantExemptions(
   todos: List<Todo>,
-  todoExemptionList: List<TodoExemption>,
+  todoExemptionList: List<TodoOpenExemption>,
   repoPath: String
 ): List<Pair<String, Int>> {
   return todoExemptionList.flatMap { exemption ->
     exemption.getLineNumberList().mapNotNull { exemptedLineNumber ->
-      if (
-        !todos.any {
-          it.filePath.removePrefix(repoPath) == exemption.exemptedFilePath &&
-            it.lineNumber == exemptedLineNumber
-        }
-      ) {
+      val isRedundantExemption = todos.none {
+        it.filePath.removePrefix(repoPath) == exemption.exemptedFilePath &&
+          it.lineNumber == exemptedLineNumber
+      }
+      if (isRedundantExemption) {
         Pair(exemption.exemptedFilePath, exemptedLineNumber)
       } else {
         null
@@ -173,65 +167,32 @@ private fun retrieveRedundantExemptions(
 }
 
 /**
- * Checks whether a line of code contains a poorly formatted todo.
- *
- * @param codeLine the line of code to be checked
- * @param todoRegex regex of todo
- * @param todoStartingRegex regex for the starting of the todo
- * @param correctTodoFormatRegex regex of the correct todo format
- * @return whether the line contains a poorly formatted TODO
- */
-private fun checkIfTodoIsPoorlyFormatted(
-  codeLine: String,
-  todoRegex: Regex,
-  todoStartingRegex: Regex,
-  correctTodoFormatRegex: Regex
-): Boolean {
-  if (todoStartingRegex.containsMatchIn(codeLine)) {
-    if (!correctTodoFormatRegex.containsMatchIn(codeLine)) {
-      return true
-    }
-    return false
-  }
-  if (todoRegex.containsMatchIn(codeLine)) {
-    return true
-  }
-  return false
-}
-
-/**
- * Checks whether a todo does not corresponds to an open issue on GitHub.
+ * Checks whether a TODO does not corresponds to open issues on GitHub.
  *
  * @param codeLine the line of code to be checked
  * @param openIssueList the list of all the open issues of this repository on GitHub
- * @param correctTodoFormatRegex regex of the correct todo format
- * @return whether the todo does not corresponds to an open issue
+ * @return whether the TODO does not corresponds to open issues on GitHub
  */
-private fun checkIfOpenIssueFailure(
+private fun checkIfIssueDoesNotMatchesOpenIssue(
   codeLine: String,
   openIssueList: List<Issue>,
-  correctTodoFormatRegex: Regex
 ): Boolean {
-  if (!correctTodoFormatRegex.containsMatchIn(codeLine)) {
-    return false
-  }
-  val match = correctTodoFormatRegex.find(codeLine)
-  val parsedIssueNumberFromTodo = match?.groupValues?.get(1)
-  return !openIssueList.any { it -> it.issueNumber == parsedIssueNumberFromTodo }
+  val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
+  return openIssueList.none { it -> it.issueNumber == parsedIssueNumberFromTodo }
 }
 
 /**
  * Logs the redundant exemptions.
  *
  * @param redundantExemptions list of redundant exemptions
- * @param todoExemptionTextProtoFilePath the location of the todo exemption textproto file
+ * @param todoExemptionTextProtoFilePath the location of the TODO exemption textproto file
  */
 private fun logRedundantExemptions(
   redundantExemptions: List<Pair<String, Int>>,
   todoExemptionTextProtoFilePath: String
 ) {
   if (redundantExemptions.isNotEmpty()) {
-    println("Redundant exemptions:")
+    println("Redundant exemptions (there are no TODOs corresponding to these lines):")
     redundantExemptions.sortedWith(compareBy({ it.first }, { it.second })).forEach { exemption ->
       println("- ${exemption.first}:${exemption.second}")
     }
@@ -243,11 +204,11 @@ private fun logRedundantExemptions(
 }
 
 /**
- * Logs the Todo check failures.
+ * Logs the Todo open check failures.
  *
  * @param invalidTodos a list of all the invalid TODOs present in the repository. A TODO is
- *     considered to be invalid if it is poorly formatted or if it does not corresponds to an open
- *     issue on GitHub.
+ *     considered to be invalid if it is poorly formatted or if it does not corresponds to open
+ *     issues on GitHub.
  * @param failureMessage the failure message to be logged
  * @param failureNote the failure note
  */
@@ -282,21 +243,21 @@ private fun retrieveOpenIssueList(openIssuesJsonFile: File): List<Issue> {
 }
 
 /**
- * Loads the todo exemptions list from a text proto file.
+ * Loads the todo open check exemptions list corresponding to a text proto file.
  *
  * @param pathToProtoBinary the location of the exemption textproto file
  * @return proto class from the parsed textproto file
  */
-private fun loadTodoExemptionsProto(pathToProtoBinary: String): TodoExemptions {
+private fun loadTodoExemptionsProto(pathToProtoBinary: String): TodoOpenExemptions {
   val protoBinaryFile = File(pathToProtoBinary)
-  val builder = TodoExemptions.getDefaultInstance().newBuilderForType()
+  val builder = TodoOpenExemptions.getDefaultInstance().newBuilderForType()
 
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
-  val protoObj: TodoExemptions =
+  val protoObj: TodoOpenExemptions =
     FileInputStream(protoBinaryFile).use {
       builder.mergeFrom(it)
-    }.build() as TodoExemptions
+    }.build() as TodoOpenExemptions
   return protoObj
 }

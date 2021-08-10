@@ -6,15 +6,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.oppia.android.scripts.proto.TodoExemption
-import org.oppia.android.scripts.proto.TodoExemptions
+import org.oppia.android.scripts.proto.TodoOpenExemption
+import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-/** Tests for [TodoCheck]. */
-class TodoCheckTest {
+/** Tests for [TodoOpenCheck]. */
+class TodoOpenCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val TODO_CHECK_PASSED_OUTPUT_INDICATOR: String = "TODO CHECK PASSED"
@@ -45,7 +45,7 @@ class TodoCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "${retrieveTestFilesDirectoryPath()}/open_issues.json (No such file or directory)"
+      "${retrieveTestFilesDirectoryPath()}/open_issues.json: No such file exists"
     )
   }
 
@@ -96,6 +96,7 @@ class TodoCheckTest {
       # TODO(102)
       <!-- TODO(#   101)-->
       // some test conent TODO(#1020000): test description.
+      some test content TODO(#100002): some description.
       """.trimIndent()
     tempFile.writeText(testContent)
 
@@ -111,6 +112,7 @@ class TodoCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:4
+      - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
       The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -142,11 +144,11 @@ class TodoCheckTest {
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
-      TODOs not corresponding to an open issue:
+      TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
-      Note that, every TODO must correspond to an open issue on GitHub
+      Every TODO must correspond to an open issue on GitHub
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -190,10 +192,10 @@ class TodoCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
       The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
       
-      TODOs not corresponding to an open issue:
+      TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:3
-      Note that, every TODO must correspond to an open issue on GitHub
+      Every TODO must correspond to an open issue on GitHub
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -245,10 +247,10 @@ class TodoCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:2
       The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
       
-      TODOs not corresponding to an open issue:
+      TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:3
       - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:1
-      Note that, every TODO must correspond to an open issue on GitHub
+      Every TODO must correspond to an open issue on GitHub
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -274,14 +276,14 @@ class TodoCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoExemptions.newBuilder().apply {
-      this.addAllTodoExemption(
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
         listOf(
-          TodoExemption.newBuilder().apply {
+          TodoOpenExemption.newBuilder().apply {
             this.exemptedFilePath = "TempFile1.kt"
             this.addAllLineNumber(listOf(1)).build()
           }.build(),
-          TodoExemption.newBuilder().apply {
+          TodoOpenExemption.newBuilder().apply {
             this.exemptedFilePath = "TempFile2.kt"
             this.addAllLineNumber(listOf(1)).build()
           }.build()
@@ -317,14 +319,14 @@ class TodoCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoExemptions.newBuilder().apply {
-      this.addAllTodoExemption(
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
         listOf(
-          TodoExemption.newBuilder().apply {
+          TodoOpenExemption.newBuilder().apply {
             this.exemptedFilePath = "TempFile1.kt"
             this.addAllLineNumber(listOf(1, 2)).build()
           }.build(),
-          TodoExemption.newBuilder().apply {
+          TodoOpenExemption.newBuilder().apply {
             this.exemptedFilePath = "TempFile2.kt"
             this.addAllLineNumber(listOf(1)).build()
           }.build()
@@ -340,7 +342,7 @@ class TodoCheckTest {
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
-      Redundant exemptions:
+      Redundant exemptions (there are no TODOs corresponding to these lines):
       - TempFile1.kt:1
       - TempFile1.kt:2
       - TempFile2.kt:1
@@ -372,10 +374,10 @@ class TodoCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoExemptions.newBuilder().apply {
-      this.addAllTodoExemption(
+    val exemptions = TodoOpenExemptions.newBuilder().apply {
+      this.addAllTodoOpenExemption(
         listOf(
-          TodoExemption.newBuilder().apply {
+          TodoOpenExemption.newBuilder().apply {
             this.exemptedFilePath = "TempFile1.kt"
             this.addAllLineNumber(listOf(1, 2)).build()
           }.build()
@@ -391,7 +393,7 @@ class TodoCheckTest {
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
-      Redundant exemptions:
+      Redundant exemptions (there are no TODOs corresponding to these lines):
       - TempFile1.kt:2
       Please remove them from scripts/assets/todo_exemptions.textproto
       
@@ -399,9 +401,9 @@ class TodoCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
       The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
       
-      TODOs not corresponding to an open issue:
+      TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:3
-      Note that, every TODO must correspond to an open issue on GitHub
+      Every TODO must correspond to an open issue on GitHub
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -411,7 +413,7 @@ class TodoCheckTest {
     return "${tempFolder.root}/testfiles"
   }
 
-  /** Runs the xml_syntax_check. */
+  /** Runs the todo_open_check. */
   private fun runScript() {
     main(
       retrieveTestFilesDirectoryPath(),

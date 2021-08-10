@@ -1,11 +1,11 @@
 """
-Libraries corresponding to parse open_issues.json file.
+Libraries corresponding to data structures for representing a parsed open_issues.json file.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "data_lib",
+    name = "issue",
     testonly = True,
     srcs = ["Issue.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],

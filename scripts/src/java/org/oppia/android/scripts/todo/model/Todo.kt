@@ -1,7 +1,8 @@
-package org.oppia.android.scripts.todo.data
+package org.oppia.android.scripts.todo.model
 
 /**
  * Represents the structure of TODO.
+ *
  * @property filePath the path of the file
  * @property lineNumber the line number of the line of code
  * @property lineContent the content of the line of code
