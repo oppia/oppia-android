@@ -5,7 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -109,69 +112,62 @@ class PinPasswordActivityPresenter @Inject constructor(
         if (previousFrag != null) {
           activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
         }
-        val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin)
+        val dialogFragment = AdminSettingsDialogFragment.newInstance(adminPin)
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
 
-    binding.pin0EditText!!.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
-      override fun afterTextChanged(confirmPin: Editable?) {
-        setPinInViewModel()
-        if (binding.pin0EditText!!.text.toString().length == 1) {
-          binding.pin1EditText!!.requestFocus()
-        }
-      }
+    binding.pin0EditText!!.addTextChangedListener(
+      GenericTextWatcher(
+        binding.pin0EditText!!,
+        binding.pin1EditText
+      )
+    )
+    binding.pin1EditText!!.addTextChangedListener(
+      GenericTextWatcher(
+        binding.pin1EditText!!,
+        binding.pin2EditText
+      )
+    )
+    binding.pin2EditText!!.addTextChangedListener(
+      GenericTextWatcher(
+        binding.pin2EditText!!,
+        binding.pin3EditText
+      )
+    )
+    binding.pin3EditText!!.addTextChangedListener(
+      GenericTextWatcher(
+        binding.pin3EditText!!,
+        binding.pin4EditText
+      )
+    )
+    binding.pin4EditText!!.addTextChangedListener(GenericTextWatcher(binding.pin4EditText!!, null))
 
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
-
-    binding.pin1EditText!!.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
-      override fun afterTextChanged(confirmPin: Editable?) {
-        setPinInViewModel()
-        if (binding.pin1EditText!!.text.toString().length == 1) {
-          binding.pin2EditText!!.requestFocus()
-        }
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
-
-    binding.pin2EditText!!.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
-      override fun afterTextChanged(confirmPin: Editable?) {
-        setPinInViewModel()
-        if (binding.pin2EditText!!.text.toString().length == 1) {
-          binding.pin3EditText!!.requestFocus()
-        }
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
-
-    binding.pin3EditText!!.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
-      override fun afterTextChanged(confirmPin: Editable?) {
-        setPinInViewModel()
-        if (binding.pin3EditText!!.text.toString().length == 1) {
-          binding.pin4EditText!!.requestFocus()
-        }
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
-
-    binding.pin4EditText!!.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(pin: CharSequence?, start: Int, before: Int, count: Int) {}
-      override fun afterTextChanged(confirmPin: Editable?) {
-        setPinInViewModel()
-        verifyPin(pinViewModel.inputPin.get().toString())
-      }
-
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
+    binding.pin0EditText!!.setOnKeyListener(GenericKeyEvent(binding.pin0EditText!!, null))
+    binding.pin1EditText!!.setOnKeyListener(
+      GenericKeyEvent(
+        binding.pin1EditText!!,
+        binding.pin0EditText!!
+      )
+    )
+    binding.pin2EditText!!.setOnKeyListener(
+      GenericKeyEvent(
+        binding.pin2EditText!!,
+        binding.pin1EditText!!
+      )
+    )
+    binding.pin3EditText!!.setOnKeyListener(
+      GenericKeyEvent(
+        binding.pin3EditText!!,
+        binding.pin2EditText!!
+      )
+    )
+    binding.pin4EditText!!.setOnKeyListener(
+      GenericKeyEvent(
+        binding.pin4EditText!!,
+        binding.pin3EditText!!
+      )
+    )
 
     if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
       showAdminForgotPin()
@@ -297,5 +293,52 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
+  }
+}
+
+class GenericKeyEvent internal constructor(
+  private val currentView: EditText,
+  private val previousView: EditText?
+) : View.OnKeyListener {
+  override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+    if (event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.pin_0_edit_text && currentView.text.isEmpty()) {
+      //If current is empty then previous EditText's number will also be deleted
+      previousView!!.text = null
+      previousView.requestFocus()
+      return true
+    }
+    return false
+  }
+}
+
+class GenericTextWatcher internal constructor(
+  private val currentView: View,
+  private val nextView: View?
+) : TextWatcher {
+  override fun afterTextChanged(editable: Editable) {
+    val text = editable.toString()
+    when (currentView.id) {
+      R.id.pin_0_edit_text -> if (text.length == 1) nextView!!.requestFocus()
+      R.id.pin_1_edit_text -> if (text.length == 1) nextView!!.requestFocus()
+      R.id.pin_2_edit_text -> if (text.length == 1) nextView!!.requestFocus()
+      R.id.pin_3_edit_text -> if (text.length == 1) nextView!!.requestFocus()
+      R.id.pin_4_edit_text -> if (text.length == 1) nextView!!.requestFocus()
+    }
+  }
+
+  override fun beforeTextChanged(
+    arg0: CharSequence,
+    arg1: Int,
+    arg2: Int,
+    arg3: Int
+  ) {
+  }
+
+  override fun onTextChanged(
+    arg0: CharSequence,
+    arg1: Int,
+    arg2: Int,
+    arg3: Int
+  ) {
   }
 }
