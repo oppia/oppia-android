@@ -258,17 +258,17 @@ class RetrieveLicenseTextsTest {
 
     assertThat(licenseTextsList).containsExactly(
       """
-        "                        Apache License
-        "License" shall mean the terms and conditions for use, reproduction,
-        and distribution as defined by Sections 1 through 9 of this document."
-        """.trimIndent(),
+      "                        Apache License
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document."
+      """.trimIndent(),
       "\"$DIRECT_LINK_ONLY\"",
       """
-        "Copyright <YEAR> <COPYRIGHT HOLDER>
+      "Copyright <YEAR> <COPYRIGHT HOLDER>
 
-        Redistribution and use in source and binary forms, with or without modification, are 
-        permitted provided that the following conditions are met:"
-        """.trimIndent()
+      Redistribution and use in source and binary forms, with or without modification, are 
+      permitted provided that the following conditions are met:"
+      """.trimIndent()
     )
 
     assertThat(licenseNamesList).containsExactly(
