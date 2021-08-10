@@ -58,7 +58,7 @@ class RetrieveLicenseTextsTest {
   }
 
   @Test
-  fun testScript_noArguments_printsUsageStringAndThrowsException() {
+  fun testScript_oneArgument_printsUsageStringAndThrowsException() {
     val exception = assertThrows(Exception::class) {
       RetrieveLicenseTexts(mockLicenseFetcher).main(arrayOf())
     }
@@ -83,10 +83,10 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_dependencyListEmpty_failsWithNotUpToDateException() {
-    val mavenDependencyList = getMavenDependencyList()
+    val mavenDependencyList = createMavenDependencyList()
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val exception = assertThrows(Exception::class) {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
@@ -101,11 +101,11 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_licenseListEmpty_failsWithNotUpToDateException() {
-    val dependencyList = listOf<MavenDependency>(getMavenDependency("artifact:name"))
-    val mavenDependencyList = getMavenDependencyList(dependencyList)
+    val dependencyList = listOf<MavenDependency>(createMavenDependency("artifact:name"))
+    val mavenDependencyList = createMavenDependencyList(dependencyList)
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val exception = assertThrows(Exception::class) {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
@@ -121,21 +121,21 @@ class RetrieveLicenseTextsTest {
   @Test
   fun testScript_verifiedLinkNotSet_failsWithNotUpToDateException() {
     val licenseList = listOf<License>(
-      getLicenseWithVerifiedLinkNotSet(
+      createLicenseWithVerifiedLinkNotSet(
         licenseName = "Apache License",
         originalLink = SCRAPABLE_LINK
       )
     )
     val dependencyList = listOf<MavenDependency>(
-      getMavenDependency(
+      createMavenDependency(
         artifactName = "artifact:name",
         licenseList = licenseList
       )
     )
-    val mavenDependencyList = getMavenDependencyList(dependencyList)
+    val mavenDependencyList = createMavenDependencyList(dependencyList)
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val exception = assertThrows(Exception::class) {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
@@ -150,36 +150,36 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_validDependencyList_executesSuccessfully() {
-    val scrapableLinkLicense = getLicenseWithScrapableLink(
+    val scrapableLinkLicense = createLicenseWithScrapableLink(
       licenseName = "Apache License",
       originalLink = SCRAPABLE_LINK,
       scrapableLinkUrl = SCRAPABLE_LINK
     )
-    val directLinkOnlyLicense = getLicenseWithDirectLinkOnlyLink(
+    val directLinkOnlyLicense = createLicenseWithDirectLinkOnlyLink(
       licenseName = "Android Terms of Service",
       originalLink = DIRECT_LINK_ONLY,
       directLinkOnlyUrl = DIRECT_LINK_ONLY
     )
     val dependencyList = listOf<MavenDependency>(
-      getMavenDependency(
-        artifactName = "artifact.name:1",
+      createMavenDependency(
+        artifactName = "artifact.name:A:1",
         artifactVersion = "2.0.1",
         licenseList = listOf(
           scrapableLinkLicense
         )
       ),
-      getMavenDependency(
-        artifactName = "artifact.name:2",
+      createMavenDependency(
+        artifactName = "artifact.name:B:1",
         artifactVersion = "2.3.1",
         licenseList = listOf(
           directLinkOnlyLicense
         )
       )
     )
-    val mavenDependencyList = getMavenDependencyList(dependencyList)
+    val mavenDependencyList = createMavenDependencyList(dependencyList)
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     RetrieveLicenseTexts(mockLicenseFetcher).main(
       arrayOf(
@@ -192,43 +192,43 @@ class RetrieveLicenseTextsTest {
 
   @Test
   fun testScript_validDependencyList_generatesResourceXmlFile() {
-    val scrapableLinkLicense = getLicenseWithScrapableLink(
+    val scrapableLinkLicense = createLicenseWithScrapableLink(
       licenseName = "Apache License",
       originalLink = SCRAPABLE_LINK,
       scrapableLinkUrl = SCRAPABLE_LINK
     )
-    val directLinkOnlyLicense = getLicenseWithDirectLinkOnlyLink(
+    val directLinkOnlyLicense = createLicenseWithDirectLinkOnlyLink(
       licenseName = "Android Terms of Service",
       originalLink = DIRECT_LINK_ONLY,
       directLinkOnlyUrl = DIRECT_LINK_ONLY
     )
-    val extractedCopyLinkLicense = getLicenseWithExtractedCopyLink(
+    val extractedCopyLinkLicense = createLicenseWithExtractedCopyLink(
       licenseName = "BSD License",
       originalLink = EXTRACTED_COPY_ORIGINAL_LINK,
       extractedCopyLinkUrl = EXTRACTED_COPY_LINK
     )
     val dependencyList = listOf<MavenDependency>(
-      getMavenDependency(
-        artifactName = "artifact.name:1",
+      createMavenDependency(
+        artifactName = "artifact.name:A:2.0.1",
         artifactVersion = "2.0.1",
         licenseList = listOf(scrapableLinkLicense)
       ),
-      getMavenDependency(
-        artifactName = "artifact.name:2",
+      createMavenDependency(
+        artifactName = "artifact.name:B:4.1.1",
         artifactVersion = "4.1.1",
         licenseList = listOf(directLinkOnlyLicense, extractedCopyLinkLicense)
       ),
-      getMavenDependency(
-        artifactName = "artifact.name:3",
+      createMavenDependency(
+        artifactName = "artifact.name:C:3.1.1",
         artifactVersion = "3.1.1",
         licenseList = listOf(scrapableLinkLicense)
       )
     )
-    val mavenDependencyList = getMavenDependencyList(dependencyList)
+    val mavenDependencyList = createMavenDependencyList(dependencyList)
 
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val xmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     RetrieveLicenseTexts(mockLicenseFetcher).main(
       arrayOf(
@@ -244,50 +244,37 @@ class RetrieveLicenseTextsTest {
     val licenseTextsList = retrieveListOfStrings(xmlContent, "license_text_")
     val licenseNamesList = retrieveListOfStrings(xmlContent, "license_name_")
 
-    verifyList(
-      itemList = dependencyNamesList,
-      expectedSize = 3,
-      expectedList = listOf(
-        "artifact.name",
-        "artifact.name",
-        "artifact.name"
-      )
+    assertThat(dependencyNamesList).containsExactly(
+      "artifact.name:A",
+      "artifact.name:B",
+      "artifact.name:C"
     )
-    verifyList(
-      itemList = dependencyVersionsList,
-      expectedSize = 3,
-      expectedList = listOf(
-        "2.0.1",
-        "4.1.1",
-        "3.1.1"
-      )
+
+    assertThat(dependencyVersionsList).containsExactly(
+      "2.0.1",
+      "4.1.1",
+      "3.1.1"
     )
-    verifyList(
-      itemList = licenseTextsList,
-      expectedSize = 3,
-      expectedList = listOf(
-        """
+
+    assertThat(licenseTextsList).containsExactly(
+      """
         "                        Apache License
         "License" shall mean the terms and conditions for use, reproduction,
         and distribution as defined by Sections 1 through 9 of this document."
         """.trimIndent(),
-        "\"$DIRECT_LINK_ONLY\"",
-        """
+      "\"$DIRECT_LINK_ONLY\"",
+      """
         "Copyright <YEAR> <COPYRIGHT HOLDER>
 
         Redistribution and use in source and binary forms, with or without modification, are 
         permitted provided that the following conditions are met:"
         """.trimIndent()
-      )
     )
-    verifyList(
-      itemList = licenseNamesList,
-      expectedSize = 3,
-      expectedList = listOf(
-        "Apache License",
-        "Android Terms of Service",
-        "BSD License"
-      )
+
+    assertThat(licenseNamesList).containsExactly(
+      "Apache License",
+      "Android Terms of Service",
+      "BSD License"
     )
 
     val dependencyNamesArray = retrieveArray(
@@ -424,15 +411,8 @@ class RetrieveLicenseTextsTest {
     }
   }
 
-  private fun verifyList(itemList: List<String>, expectedSize: Int, expectedList: List<String>) {
-    assertThat(itemList.size).isEqualTo(expectedSize)
-    itemList.forEachIndexed { index, item ->
-      assertThat(item).isEqualTo(expectedList[index])
-    }
-  }
-
   /** Returns an instance of MavenDependency proto message. */
-  private fun getMavenDependency(
+  private fun createMavenDependency(
     artifactName: String,
     artifactVersion: String = "1.0.0",
     licenseList: List<License> = listOf<License>()
@@ -445,7 +425,7 @@ class RetrieveLicenseTextsTest {
   }
 
   /** Returns an instance of MavenDependencyList proto message. */
-  private fun getMavenDependencyList(
+  private fun createMavenDependencyList(
     dependenciesList: List<MavenDependency> = listOf<MavenDependency>()
   ): MavenDependencyList {
     return MavenDependencyList
@@ -455,7 +435,7 @@ class RetrieveLicenseTextsTest {
   }
 
   /** Returns a License that has verifiedLink not set. */
-  private fun getLicenseWithVerifiedLinkNotSet(
+  private fun createLicenseWithVerifiedLinkNotSet(
     licenseName: String,
     originalLink: String,
   ): License {
@@ -466,7 +446,7 @@ class RetrieveLicenseTextsTest {
   }
 
   /** Returns a License with ScrapableLink. */
-  private fun getLicenseWithScrapableLink(
+  private fun createLicenseWithScrapableLink(
     licenseName: String,
     originalLink: String,
     scrapableLinkUrl: String
@@ -479,7 +459,7 @@ class RetrieveLicenseTextsTest {
   }
 
   /** Returns a License with ExtractedCopyLink. */
-  private fun getLicenseWithExtractedCopyLink(
+  private fun createLicenseWithExtractedCopyLink(
     licenseName: String,
     originalLink: String,
     extractedCopyLinkUrl: String
@@ -492,7 +472,7 @@ class RetrieveLicenseTextsTest {
   }
 
   /** Returns a License with DirectOnlyLink. */
-  private fun getLicenseWithDirectLinkOnlyLink(
+  private fun createLicenseWithDirectLinkOnlyLink(
     licenseName: String,
     originalLink: String,
     directLinkOnlyUrl: String
@@ -504,11 +484,11 @@ class RetrieveLicenseTextsTest {
     }.build()
   }
 
-  /** Parses the XML to return a list of values enclosed between string tags.
+  /**
+   * Parses the XML to return a list of values enclosed between string tags.
    *
    * @param xmlContent XML content to be parsed
    * @param attributePrefix the prefix of the attribute of <string> tag that needs to be parsed
-   *
    * @return list of parsed values of <string> nodes with the given attributrPrefix
    */
   private fun retrieveListOfStrings(

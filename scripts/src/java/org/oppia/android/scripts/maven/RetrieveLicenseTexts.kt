@@ -120,19 +120,13 @@ class RetrieveLicenseTexts(
   private fun retrieveAllLicensesSet(
     mavenDependencyList: List<MavenDependency>
   ): Set<CopyrightLicense> {
-    val copyrightLicensesSet = mutableSetOf<CopyrightLicense>()
-    mavenDependencyList.forEach { dependency ->
+    return mavenDependencyList.flatMap { dependency ->
       val licenseList = dependency.licenseList
-      if (licenseList.isEmpty()) {
-        throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
+      check(licenseList.isNotEmpty()) { MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE }
+      return@flatMap licenseList.map { license ->
+        retrieveCopyrightLicense(license)
       }
-      licenseList.forEach { license ->
-        copyrightLicensesSet.add(
-          retrieveCopyrightLicense(license)
-        )
-      }
-    }
-    return copyrightLicensesSet
+    }.toSet()
   }
 
   private fun retrieveDependencyList(
@@ -176,11 +170,7 @@ class RetrieveLicenseTexts(
       }
       else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
-    return CopyrightLicense(
-      license.licenseName,
-      licenseLink,
-      licenseText
-    )
+    return CopyrightLicense(license.licenseName, licenseLink, licenseText)
   }
 
   private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {
