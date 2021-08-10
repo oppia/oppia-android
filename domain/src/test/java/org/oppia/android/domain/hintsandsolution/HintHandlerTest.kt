@@ -41,7 +41,6 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
@@ -73,6 +72,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+
+private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 
 /** Tests for [HintHandler]. */
 @RunWith(AndroidJUnit4::class)
