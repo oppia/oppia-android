@@ -366,7 +366,6 @@ class TopicController @Inject constructor(
     }
   }
 
-  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
@@ -510,7 +509,7 @@ class TopicController @Inject constructor(
 
   private fun computeTopicSizeBytes(constituentFiles: List<String>): Int {
     // TODO(#169): Compute this based on protos & the combined topic package.
-    // TODO(#386): Incorporate image files in this computation.
+    // TODO(#169): Incorporate image files in this computation.
     return constituentFiles.map { file ->
       if (loadLessonProtosFromAssets) {
         assetRepository.getLocalAssetProtoSize(file)

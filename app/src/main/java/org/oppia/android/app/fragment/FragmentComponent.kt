@@ -15,6 +15,9 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
+import org.oppia.android.app.help.thirdparty.LicenseListFragment
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
@@ -98,6 +101,8 @@ interface FragmentComponent {
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(licenseListFragment: LicenseListFragment)
+  fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
@@ -118,6 +123,7 @@ interface FragmentComponent {
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
+  fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)

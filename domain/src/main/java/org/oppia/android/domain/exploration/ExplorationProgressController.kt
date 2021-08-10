@@ -53,8 +53,7 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) {
   // TODO(#179): Add support for parameters.
-  // TODO(#182): Add support for refresher explorations.
-  // TODO(#90): Update the internal locking of this controller to use something like an in-memory
+  // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
   //  blocking cache to simplify state locking. However, doing this correctly requires a fix in
   //  MediatorLiveData to avoid unexpected cancellations in chained cross-scope coroutines. Note
   //  that this is also essential to ensure post-load operations can be queued before load completes
