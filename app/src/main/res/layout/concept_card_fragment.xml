@@ -57,7 +57,6 @@
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.skillDescription}"
             android:textColor="@color/oppiaPrimaryText"
-            android:textDirection="locale"
             android:textSize="20sp" />
 
           <TextView
@@ -69,7 +68,6 @@
             android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
             android:fontFamily="sans-serif"
             android:textColor="@color/oppiaPrimaryText"
-            android:textDirection="locale"
             android:textSize="16sp" />
         </LinearLayout>
         <!--TODO(#352): Show worked examples in Concept Card.-->
