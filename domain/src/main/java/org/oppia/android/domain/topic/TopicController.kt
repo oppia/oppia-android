@@ -397,7 +397,7 @@ class TopicController @Inject constructor(
     } else createStorySummaryFromJson(topicId, storyId)
   }
 
-  internal fun retrieveChapter(
+  private fun retrieveChapter(
     topicId: String,
     storyId: String,
     explorationId: String

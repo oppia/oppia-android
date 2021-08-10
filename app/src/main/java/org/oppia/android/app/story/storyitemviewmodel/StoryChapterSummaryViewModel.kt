@@ -6,10 +6,13 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 private const val STORY_VIEWER_TAG = "StoryViewer"
 
@@ -19,6 +22,7 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   private val explorationDataController: ExplorationDataController,
+  val explorationCheckpointController: ExplorationCheckpointController,
   private val oppiaLogger: OppiaLogger,
   val internalProfileId: Int,
   val topicId: String,
@@ -43,21 +47,47 @@ class StoryChapterSummaryViewModel(
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
         else -> false
       }
-    val canExplorationBeResumed =
-      when (chapterPlayState) {
-        ChapterPlayState.IN_PROGRESS_SAVED -> true
-        else -> false
-      }
-
-    startOrResumeExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      canExplorationBeResumed,
-      backflowScreen = 1
-    )
+    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
+      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        ProfileId.getDefaultInstance(),
+        explorationId
+      ).toLiveData().observe(
+        fragment,
+        Observer {
+          if (it.isSuccess()) {
+            startOrResumeExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId,
+              shouldSavePartialProgress,
+              canExplorationBeResumed = it.getOrThrow(),
+              backflowScreen = 1
+            )
+          } else if (it.isFailure()) {
+            startOrResumeExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId,
+              shouldSavePartialProgress,
+              canExplorationBeResumed = false,
+              backflowScreen = 1
+            )
+          }
+        }
+      )
+    } else {
+      startOrResumeExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        canExplorationBeResumed = false,
+        backflowScreen = 1
+      )
+    }
   }
 
   private fun startOrResumeExploration(

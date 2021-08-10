@@ -11,6 +11,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
@@ -20,8 +21,10 @@ import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -30,7 +33,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val explorationDataController: ExplorationDataController
+  private val explorationDataController: ExplorationDataController,
+  private val explorationCheckpointController: ExplorationCheckpointController
 ) {
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
@@ -262,21 +266,66 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
         else -> false
       }
-    val canExplorationBeResumed =
-      when (chapterPlayState) {
-        ChapterPlayState.IN_PROGRESS_SAVED -> true
-        else -> false
-      }
 
-    startOrResumeExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      canExplorationBeResumed,
-      backflowScreen = 0
-    )
+    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
+      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        ProfileId.getDefaultInstance(),
+        explorationId
+      ).toLiveData().observe(
+        fragment,
+        Observer { result ->
+          when {
+            result.isPending() -> {
+              oppiaLogger.d(
+                "TopicLessonsFragment",
+                "Matching exploration version with saved checkpoint."
+              )
+            }
+            result.isFailure() -> {
+              oppiaLogger.e(
+                "TopicLessonsFragment",
+                "Saved checkpoint not compatible with the current version of exploration."
+              )
+              startOrResumeExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                shouldSavePartialProgress,
+                canExplorationBeResumed = false,
+                backflowScreen = 0
+              )
+              checkCheckpointVersionLiveData.removeObserver(this)
+            }
+            else -> {
+              oppiaLogger.d(
+                "TopicLessonsFragment",
+                "Checkpoint is compatible with current version of exploration "
+              )
+              startOrResumeExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                shouldSavePartialProgress,
+                canExplorationBeResumed = result.getOrThrow(),
+                backflowScreen = 0
+              )
+            }
+          }
+        }
+      )
+    } else {
+      startOrResumeExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        canExplorationBeResumed = false,
+        backflowScreen = 0
+      )
+    }
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {

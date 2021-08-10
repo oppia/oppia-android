@@ -21,6 +21,7 @@ import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
@@ -36,7 +37,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController,
-  @StoryHtmlParserEntityType private val entityType: String
+  @StoryHtmlParserEntityType private val entityType: String,
+  private val explorationCheckpointController: ExplorationCheckpointController
 ) {
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
@@ -225,21 +227,47 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
         else -> false
       }
-    val canExplorationBeResumed =
-      when (promotedStory.chapterPlayState) {
-        ChapterPlayState.IN_PROGRESS_SAVED -> true
-        else -> false
-      }
-
-    startOrResumeExploration(
-      internalProfileId,
-      promotedStory.topicId,
-      promotedStory.storyId,
-      promotedStory.explorationId,
-      shouldSavePartialProgress,
-      canExplorationBeResumed,
-      backflowScreen = null
-    )
+    if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
+      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        ProfileId.getDefaultInstance(),
+        promotedStory.explorationId
+      ).toLiveData().observe(
+        fragment,
+        Observer {
+          if (it.isSuccess()) {
+            startOrResumeExploration(
+              internalProfileId,
+              promotedStory.topicId,
+              promotedStory.storyId,
+              promotedStory.explorationId,
+              shouldSavePartialProgress,
+              canExplorationBeResumed = it.getOrThrow(),
+              backflowScreen = null
+            )
+          } else if (it.isFailure()) {
+            startOrResumeExploration(
+              internalProfileId,
+              promotedStory.topicId,
+              promotedStory.storyId,
+              promotedStory.explorationId,
+              shouldSavePartialProgress,
+              canExplorationBeResumed = false,
+              backflowScreen = null
+            )
+          }
+        }
+      )
+    } else {
+      startOrResumeExploration(
+        internalProfileId,
+        promotedStory.topicId,
+        promotedStory.storyId,
+        promotedStory.explorationId,
+        shouldSavePartialProgress,
+        canExplorationBeResumed = false,
+        backflowScreen = null
+      )
+    }
   }
 
   private fun startOrResumeExploration(
@@ -257,7 +285,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        backflowScreen = null
+        backflowScreen
       )
     } else {
       playExploration(
