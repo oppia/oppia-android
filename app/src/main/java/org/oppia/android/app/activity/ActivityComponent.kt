@@ -20,6 +20,9 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
@@ -107,6 +110,8 @@ interface ActivityComponent {
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
+  fun inject(licenseListActivity: LicenseListActivity)
+  fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
@@ -147,6 +152,7 @@ interface ActivityComponent {
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
+  fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)

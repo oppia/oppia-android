@@ -481,4 +481,13 @@
   <string name="developer_options_force_crash">Force crash</string>
   <string name="all">All</string>
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
+  <!-- ThirdPartyDependencyListActivity -->
+  <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
+  <string name="third_party_dependency_version_formatter">version %s</string>
+
+  <!-- LicenseListActivity -->
+  <string name="license_list_activity_title">Copyright Licenses</string>
+
+  <!-- LicenseTextViewerActivity -->
+  <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
 </resources>

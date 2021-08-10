@@ -52,6 +52,18 @@
       android:label="@string/help_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.help.thirdparty.LicenseListActivity"
+      android:label="@string/license_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.help.thirdparty.LicenseTextViewerActivity"
+      android:label="@string/license_text_viewer_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.help.thirdparty.ThirdPartyDependencyListActivity"
+      android:label="@string/third_party_dependency_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
