@@ -46,8 +46,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
       STORY_ID,
       EXPLORATION_ID,
       shouldSavePartialProgress = false,
-      // Pass an empty checkpoint if there exploration does not have to be resumed.
-      ExplorationCheckpoint.getDefaultInstance()
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->

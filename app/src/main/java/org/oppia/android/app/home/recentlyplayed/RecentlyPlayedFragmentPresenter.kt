@@ -226,8 +226,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       shouldSavePartialProgress = false,
-      // Pass an empty checkpoint if the exploration does not have to be resumed.
-      ExplorationCheckpoint.getDefaultInstance()
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

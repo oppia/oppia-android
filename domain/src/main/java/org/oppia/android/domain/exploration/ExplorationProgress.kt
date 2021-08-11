@@ -25,9 +25,8 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var shouldSavePartialProgress: Boolean = false
-  internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
-  internal lateinit var explorationCheckpoint: ExplorationCheckpoint
-  internal lateinit var hintState: HintState
+  internal lateinit var currentCheckpointState: CheckpointState
+  internal lateinit var currentExplorationCheckpoint: ExplorationCheckpoint
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
@@ -36,6 +35,8 @@ internal class ExplorationProgress {
   internal val stateDeck: StateDeck by lazy {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)
   }
+
+  internal lateinit var hintState: HintState
 
   /**
    * Advances the current play stage to the specified stage, verifying that the transition is correct.
@@ -91,7 +92,7 @@ internal class ExplorationProgress {
    *     completion of the save operation for checkpoints either successfully or unsuccessfully.
    */
   internal fun updateCheckpointState(newCheckpointState: CheckpointState) {
-    checkpointState = newCheckpointState
+    currentCheckpointState = newCheckpointState
   }
 
   companion object {

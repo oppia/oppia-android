@@ -100,7 +100,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       storyId,
       explorationId,
       shouldSavePartialProgress = false,
-      ExplorationCheckpoint.getDefaultInstance()
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
       .observe(
         activity,

@@ -30,17 +30,17 @@ message ExplorationCheckpoint {
   // The index of the current selected state from the deck of states.
   int32 state_index = 4;
 
-  // The state of the hints and solution when the checkpoint was saved.
-  HelpIndex help_index = 5;
-
   // The title of the exploration whose checkpoint is saved.
-  string exploration_title = 6;
+  string exploration_title = 5;
 
   // Stores the version of the exploration which is compatible with the saved checkpoint.
-  int32 exploration_version = 7;
+  int32 exploration_version = 6;
 
   // The timestamp in milliseconds of when the checkpoint was saved for the first time.
-  int64 timestamp_of_first_checkpoint = 8;
+  int64 timestamp_of_first_checkpoint = 7;
+
+  // The helpIndex for the current pending state.
+  HelpIndex help_index = 8;
 }
 
 // Corresponds to exploration states that have been completed.
