@@ -1179,7 +1179,11 @@ class MavenDependenciesRetrieverTest {
 
   private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
     val lastColonIndex = artifactName.lastIndexOf(':')
-    return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
+    return
+    artifactName
+      .substring(0, lastColonIndex)
+      .replace('.', '_')
+      .replace(':', '_')
       .replace('-', '_')
   }
 

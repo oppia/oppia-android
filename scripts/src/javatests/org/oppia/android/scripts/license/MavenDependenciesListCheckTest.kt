@@ -46,12 +46,6 @@ class MavenDependenciesListCheckTest {
   private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party:io_fabric_sdk_android_fabric"
 
-//  private val DATA_BINDING_DEP_WITH_UNDERSCORES = "androidx_databinding_databinding_adapters"
-//  private val PROTO_DEP_WITH_UNDERSCORES = "com_google_protobuf_protobuf_lite"
-//  private val GLIDE_DEP_WITH_UNDERSCORES = "com_github_bumptech_glide_annotations"
-//  private val FIREBASE_DEP_WITH_UNDERSCORES = "com_google_firebase_firebase_analytics"
-//  private val IO_FABRIC_DEP_WITH_UNDERSCORES = "io_fabric_sdk_android_fabric"
-
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"
   private val GLIDE_ANNOTATIONS_VERSION = "4.11.0"
