@@ -243,11 +243,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -265,11 +265,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_viewAllTextIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
@@ -288,12 +288,12 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_storiesPlayedOneWeekAgo_displaysLastPlayedStoriesText() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
     testCoroutineDispatchers.runCurrent()
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
@@ -390,7 +390,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_forPromotedActivityList_hideViewAll() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -518,11 +518,11 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story0(
+    storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -570,7 +570,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -648,15 +648,15 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1(
+    storyProgressTestHelper.markInProgressSavedTestTopic1(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -677,7 +677,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -695,7 +695,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_storyNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -713,11 +713,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
@@ -736,7 +736,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_markFullProgressForFractions_playRatios_displaysRecommendedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -770,7 +770,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -794,11 +794,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_promotedCard_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
@@ -842,7 +842,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_secondTestTopic_topicSummary_allTopics_topicNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
@@ -1204,11 +1204,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1240,11 +1240,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
+    storyProgressTestHelper.markInProgressNotSavedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
@@ -1277,11 +1277,11 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic1Story2Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
