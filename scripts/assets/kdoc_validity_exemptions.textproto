@@ -406,7 +406,6 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventB
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LogLevel.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/networking/NetworkConnectionUtil.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/ConceptCardTagHandler.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/CustomBulletSpan.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/ScalableVectorGraphic.kt"
