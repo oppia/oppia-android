@@ -2,7 +2,9 @@ package org.oppia.android.util.networking
 
 import android.content.Context
 import android.net.ConnectivityManager
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
 import javax.inject.Inject
 
 /**
@@ -28,10 +30,10 @@ class NetworkConnectionUtilProdImpl @Inject constructor(
         ConnectivityManager.TYPE_MOBILE ||
         activeNetwork.type == ConnectivityManager.TYPE_WIMAX
       return@let when {
-        isConnected && isLocal -> ConnectionStatus.LOCAL
-        isConnected && isCellular -> ConnectionStatus.CELLULAR
-        else -> ConnectionStatus.NONE
+        isConnected && isLocal -> LOCAL
+        isConnected && isCellular -> CELLULAR
+        else -> NONE
       }
-    } ?: ConnectionStatus.NONE
+    } ?: NONE
   }
 }
