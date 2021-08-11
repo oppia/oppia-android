@@ -24,7 +24,7 @@ import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
-/** Tests for [MavenDependenciesRetriever]. */
+/** Tests for [mavenDependenciesRetriever]. */
 class MavenDependenciesRetrieverTest {
 
   private val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"
@@ -33,6 +33,23 @@ class MavenDependenciesRetrieverTest {
     "com.github.bumptech.glide:annotations:4.11.0"
   private val DEP_WITH_DIRECT_LINK_ONLY_LICENSE = "com.google.firebase:firebase-analytics:17.5.0"
   private val DEP_WITH_INVALID_LINKS = "io.fabric.sdk.android:fabric:1.4.7"
+
+  private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party:androidx_databinding_databinding-adapters"
+  private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party:com_google_protobuf_protobuf-lite"
+  private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party:com_github_bumptech_glide_annotations"
+  private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party:com_google_firebase_firebase-analytics"
+  private val IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX =
+    "//third_party:io_fabric_sdk_android_fabric"
+
+  private val DATA_BINDING_DEP = "androidx_databinding_databinding_adapters"
+  private val PROTO_DEP = "com_google_protobuf_protobuf_lite"
+  private val GLIDE_DEP = "com_github_bumptech_glide_annotations"
+  private val FIREBASE_DEP = "com_google_firebase_firebase_analytics"
+  private val IO_FABRIC_DEP = "io_fabric_sdk_android_fabric"
 
   private val DATA_BINDING_VERSION = "3.4.2"
   private val PROTO_LITE_VERSION = "3.0.0"
@@ -62,7 +79,7 @@ class MavenDependenciesRetrieverTest {
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
-  private val MavenDependenciesRetriever by lazy {
+  private val mavenDependenciesRetriever by lazy {
     initializeMavenDependenciesRetriever()
   }
 
@@ -89,15 +106,13 @@ class MavenDependenciesRetrieverTest {
   fun testRetrieveThirdPartyMavenDepsList_oneDepInDepGraph_returnsCorrectDep() {
     val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      "//third_party:${omitVersionAndReplaceColonsPeriods(coordinate)}"
-    }
+    val thirdPartyPrefixCoordList = listOf(DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX)
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
-    writeThirdPartyBuildFile(coordsList)
-    val depsList = MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    assertThat(depsList).contains(
-      omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
-    )
+    writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
+
+    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+
+    assertThat(depsList).contains(DATA_BINDING_DEP)
   }
 
   @Test
@@ -108,23 +123,19 @@ class MavenDependenciesRetrieverTest {
       DEP_WITH_DIRECT_LINK_ONLY_LICENSE
     )
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      "//third_party:${omitVersionAndReplaceColonsPeriods(coordinate)}"
-    }
+    val thirdPartyPrefixCoordList = listOf(
+      DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX,
+      IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX,
+      FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
+    )
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
-    writeThirdPartyBuildFile(coordsList)
-    val depsList = MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    assertThat(depsList).contains(
-      omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE)
-    )
-    assertThat(depsList).contains(
-      omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_INVALID_LINKS)
-    )
-    assertThat(depsList).contains(
-      omitVersionAndReplaceColonsHyphensPeriods(
-        DEP_WITH_DIRECT_LINK_ONLY_LICENSE
-      )
-    )
+    writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
+
+    val depsList = mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+
+    assertThat(depsList).contains(DATA_BINDING_DEP)
+    assertThat(depsList).contains(IO_FABRIC_DEP)
+    assertThat(depsList).contains(FIREBASE_DEP)
   }
 
   @Test
@@ -172,11 +183,11 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = MavenDependenciesRetriever.addChangesFromTextProto(
+    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
-    assertThat(finalDepsList.size).isEqualTo(2)
+    assertThat(finalDepsList).hasSize(2)
     assertIsDependency(
       dependency = finalDepsList[0],
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
@@ -231,11 +242,11 @@ class MavenDependenciesRetrieverTest {
     )
     val updatedMavenDependenciesList = mavenDependenciesList
 
-    val finalDepsList = MavenDependenciesRetriever.addChangesFromTextProto(
+    val finalDepsList = mavenDependenciesRetriever.addChangesFromTextProto(
       mavenDependenciesList,
       updatedMavenDependenciesList
     )
-    assertThat(finalDepsList.size).isEqualTo(2)
+    assertThat(finalDepsList).hasSize(2)
     assertIsDependency(
       dependency = finalDepsList[0],
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
@@ -283,7 +294,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
     assertThat(licenseSet).isEmpty()
@@ -315,10 +326,10 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
-    assertThat(licenseSet.size).isEqualTo(1)
+    assertThat(licenseSet).hasSize(1)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
       licenseName = "The Apache License, Version 2.0",
@@ -368,10 +379,10 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val licenseSet = MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
+    val licenseSet = mavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(
       mavenDependenciesList
     )
-    assertThat(licenseSet.size).isEqualTo(3)
+    assertThat(licenseSet).hasSize(3)
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseSet.elementAt(0),
       licenseName = "The Apache License, Version 2.0",
@@ -418,7 +429,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = MavenDependenciesRetriever.updateMavenDependenciesList(
+    val finalDepsList = mavenDependenciesRetriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>()
     )
@@ -458,11 +469,11 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val finalDepsList = MavenDependenciesRetriever.updateMavenDependenciesList(
+    val finalDepsList = mavenDependenciesRetriever.updateMavenDependenciesList(
       mavenDependenciesList,
       setOf<License>(updatedLicense2)
     )
-    assertThat(finalDepsList.size).isEqualTo(2)
+    assertThat(finalDepsList).hasSize(2)
     assertIsDependency(
       dependency = finalDepsList[0],
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
@@ -492,12 +503,12 @@ class MavenDependenciesRetrieverTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
-    MavenDependenciesRetriever.writeTextProto(
+    mavenDependenciesRetriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
 
-    assertThat(textProtoFile.readAsJoinedString()).isEqualTo("")
+    assertThat(textProtoFile.readText()).isEmpty()
   }
 
   @Test
@@ -505,10 +516,10 @@ class MavenDependenciesRetrieverTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
 
     val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.licenseName = "Android Software Development Kit License"
+      this.originalLink = "https://developer.android.com/studio/terms.html"
+      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
+        url = "https://developer.android.com/studio/terms.html"
       }.build()
     }.build()
     val license2 = License.newBuilder().apply {
@@ -532,33 +543,40 @@ class MavenDependenciesRetrieverTest {
       )
     }.build()
 
-    MavenDependenciesRetriever.writeTextProto(
+    mavenDependenciesRetriever.writeTextProto(
       "${tempFolder.root}/scripts/assets/maven_dependencies.textproto",
       mavenDependencyList
     )
 
-    assertThat(textProtoFile.readAsJoinedString()).isEqualTo(
-      """
-      maven_dependency {
-        artifact_name: "com.google.firebase:firebase-analytics:17.5.0"
-        artifact_version: "17.5.0"
-        license {
-          license_name: "The Apache License, Version 2.0"
-          original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-          scrapable_link {
-            url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-          }
-        }
-      }
-      maven_dependency {
-        artifact_name: "com.google.protobuf:protobuf-lite:3.0.0"
-        artifact_version: "3.0.0"
-        license {
-          license_name: "Simplified BSD License"
-          original_link: "https://www.opensource.org/licenses/bsd-license"
-        }
-      }
-      """.trimIndent()
+    val outputMavenDependencyList = parseTextProto(
+      textProtoFile,
+      MavenDependencyList.getDefaultInstance()
+    )
+
+    val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
+    assertIsDependency(
+      dependency = dependency1,
+      artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
+      artifactVersion = FIREBASE_ANALYTICS_VERSION,
+    )
+    val licenseForDependency1 = dependency1.licenseList[0]
+    verifyLicenseHasDirectLinkOnlyVerifiedLink(
+      license = licenseForDependency1,
+      originalLink = "https://developer.android.com/studio/terms.html",
+      verifiedLink = "https://developer.android.com/studio/terms.html",
+      licenseName = "Android Software Development Kit License"
+    )
+    val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
+    assertIsDependency(
+      dependency = dependency2,
+      artifactName = DEP_WITH_NO_LICENSE,
+      artifactVersion = PROTO_LITE_VERSION,
+    )
+    val licenseForDependency2 = dependency2.licenseList[0]
+    verifyLicenseHasVerifiedLinkNotSet(
+      license = licenseForDependency2,
+      originalLink = "https://www.opensource.org/licenses/bsd-license",
+      licenseName = "Simplified BSD License"
     )
   }
 
@@ -591,7 +609,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).isEmpty()
   }
 
@@ -618,8 +636,8 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
-    assertThat(brokenLicenses.size).isEqualTo(2)
+    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    assertThat(brokenLicenses).hasSize(2)
     verifyLicenseHasVerifiedLinkNotSet(
       license = brokenLicenses.elementAt(0),
       licenseName = "The Apache License, Version 2.0",
@@ -659,7 +677,7 @@ class MavenDependenciesRetrieverTest {
       }.build()
     )
 
-    val brokenLicenses = MavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
+    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(mavenDependenciesList)
     assertThat(brokenLicenses).doesNotContain(license2)
   }
 
@@ -693,7 +711,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      MavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
+      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>()
       )
@@ -734,11 +752,11 @@ class MavenDependenciesRetrieverTest {
     )
 
     val licenseToDepNameMap =
-      MavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
+      mavenDependenciesRetriever.findFirstDependenciesWithBrokenLicenses(
         mavenDependenciesList,
         setOf<License>(license1, license2)
       )
-    assertThat(licenseToDepNameMap.size).isEqualTo(2)
+    assertThat(licenseToDepNameMap).hasSize(2)
     assertThat(licenseToDepNameMap).containsEntry(license1, DEP_WITH_SCRAPABLE_LICENSE)
     assertThat(licenseToDepNameMap).doesNotContainEntry(
       license1,
@@ -778,7 +796,7 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
     assertThat(depsThatNeedInterventionSet).isEmpty()
   }
 
@@ -814,8 +832,8 @@ class MavenDependenciesRetrieverTest {
     )
 
     val depsThatNeedInterventionSet =
-      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
-    assertThat(depsThatNeedInterventionSet.size).isEqualTo(2)
+      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(mavenDependenciesList)
+    assertThat(depsThatNeedInterventionSet).hasSize(2)
     assertIsDependency(
       dependency = depsThatNeedInterventionSet.elementAt(0),
       artifactName = DEP_WITH_NO_LICENSE,
@@ -833,9 +851,9 @@ class MavenDependenciesRetrieverTest {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val mavenDependencyList = MavenDependencyList.newBuilder().build()
 
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = MavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
@@ -874,13 +892,13 @@ class MavenDependenciesRetrieverTest {
       )
     }.build()
 
-    mavenDependencyList.writeTo(pbFile.outputStream())
+    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val mavenDependenciesList = MavenDependenciesRetriever.retrieveMavenDependencyList(
+    val mavenDependenciesList = mavenDependenciesRetriever.retrieveMavenDependencyList(
       "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
     )
 
-    assertThat(mavenDependenciesList.size).isEqualTo(2)
+    assertThat(mavenDependenciesList).isEqualTo(mavenDependencyList.mavenDependencyList)
     assertIsDependency(
       dependency = mavenDependenciesList[0],
       artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
@@ -910,7 +928,7 @@ class MavenDependenciesRetrieverTest {
   fun testGetDepListFromMavenInstall_emptyBazelQueryDepsList_returnsEmptyDepList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = MavenDependenciesRetriever
+    val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
@@ -922,7 +940,7 @@ class MavenDependenciesRetrieverTest {
   fun testGetDepListFromMavenInstall_commonBazelQueryDepsList_returnsCorrectDepsList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = MavenDependenciesRetriever
+    val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
@@ -930,30 +948,21 @@ class MavenDependenciesRetrieverTest {
           omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_DIRECT_LINK_ONLY_LICENSE),
         )
       )
-    assertThat(mavenListDependencies.size).isEqualTo(2)
-    assertThat(mavenListDependencies).contains(
+    assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
         coord = DEP_WITH_SCRAPABLE_LICENSE,
         url = "${DATA_BINDING_POM.dropLast(3)}aar"
-      )
-    )
-    assertThat(mavenListDependencies).contains(
+      ),
       MavenListDependency(
         coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
         url = "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
-      )
-    )
-    assertThat(mavenListDependencies).doesNotContain(
-      MavenListDependency(
-        coord = DEP_WITH_INVALID_LINKS,
-        url = "${IO_FABRIC_POM.dropLast(3)}aar"
       )
     )
   }
 
   @Test
   fun testRetrieveDepListFromPom_emptyMavenListDependencies_returnsEmptyMavenDepList() {
-    val mavenDependencyList = MavenDependenciesRetriever.retrieveDependencyListFromPom(
+    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
       listOf()
     )
     assertThat(mavenDependencyList.mavenDependencyList).isEmpty()
@@ -961,7 +970,7 @@ class MavenDependenciesRetrieverTest {
 
   @Test
   fun testRetrieveDepListFromPom_mixedDepTypes_returnsCorrectMavenDepList() {
-    val mavenDependencyList = MavenDependenciesRetriever.retrieveDependencyListFromPom(
+    val mavenDependencyList = mavenDependenciesRetriever.retrieveDependencyListFromPom(
       listOf(
         MavenListDependency(
           coord = DEP_WITH_SCRAPABLE_LICENSE,
@@ -999,7 +1008,7 @@ class MavenDependenciesRetrieverTest {
   fun testGenerateDepsListFromMavenInstall_emptyBazelQueryDeps_returnsEmptyList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = MavenDependenciesRetriever
+    val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf()
@@ -1011,7 +1020,7 @@ class MavenDependenciesRetrieverTest {
   fun testGenerateDepsListFromMavenInstall_nonEmptyBazelQueryDepNames_returnsCorrectList() {
     val mavenInstallFile = tempFolder.newFile("third_party/maven_install.json")
     writeMavenInstallJson(mavenInstallFile)
-    val mavenListDependencies = MavenDependenciesRetriever
+    val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
         listOf(
@@ -1019,23 +1028,14 @@ class MavenDependenciesRetrieverTest {
           omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_DIRECT_LINK_ONLY_LICENSE),
         )
       )
-    assertThat(mavenListDependencies.size).isEqualTo(2)
-    assertThat(mavenListDependencies).contains(
+    assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
         coord = DEP_WITH_SCRAPABLE_LICENSE,
         url = "${DATA_BINDING_POM.dropLast(3)}aar"
-      )
-    )
-    assertThat(mavenListDependencies).contains(
+      ),
       MavenListDependency(
         coord = DEP_WITH_DIRECT_LINK_ONLY_LICENSE,
         url = "${FIREBASE_ANALYTICS_POM.dropLast(3)}aar"
-      )
-    )
-    assertThat(mavenListDependencies).doesNotContain(
-      MavenListDependency(
-        coord = DEP_WITH_INVALID_LINKS,
-        url = "${IO_FABRIC_POM.dropLast(3)}aar"
       )
     )
   }
@@ -1130,44 +1130,60 @@ class MavenDependenciesRetrieverTest {
     writeMavenInstallJson(mavenInstallJson)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
     val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      "//third_party:${omitVersionAndReplaceColonsPeriods(coordinate)}"
+      when (coordinate) {
+        DEP_WITH_SCRAPABLE_LICENSE -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
+        DEP_WITH_DIRECT_LINK_ONLY_LICENSE -> FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
+        DEP_WITH_INVALID_LINKS -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
+        else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
+      }
     }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
-    writeThirdPartyBuildFile(coordsList)
+    writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
   }
 
-  private fun writeThirdPartyBuildFile(exportsList: List<String>) {
+  private fun writeThirdPartyBuildFile(
+    coordsList: List<String>,
+    thirdPartyPrefixCoordList: List<String>
+  ) {
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     thirdPartyBuild.appendText(
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
       """.trimIndent() + "\n"
     )
-    for (export in exportsList) {
-      createThirdPartyAndroidLibrary(thirdPartyBuild, export)
+    coordsList.forEachIndexed { index, coord ->
+      createThirdPartyAndroidLibrary(
+        thirdPartyBuild = thirdPartyBuild,
+        coord = coord,
+        artifactName = thirdPartyPrefixCoordList[index].substringAfter(':')
+      )
     }
   }
 
-  private fun createThirdPartyAndroidLibrary(thirdPartyBuild: File, artifactName: String) {
+  private fun createThirdPartyAndroidLibrary(
+    thirdPartyBuild: File,
+    coord: String,
+    artifactName: String
+  ) {
     thirdPartyBuild.appendText(
       """
       android_library(
-          name = "${omitVersionAndReplaceColonsPeriods(artifactName)}",
+          name = "$artifactName",
           visibility = ["//visibility:public"],
-          exports = [artifact("$artifactName")],
+          exports = [artifact("$coord")],
       )
       """.trimIndent() + "\n"
     )
   }
 
-  private fun omitVersionAndReplaceColonsPeriods(artifactName: String): String {
-    val lastColonIndex = artifactName.lastIndexOf(':')
-    return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
-  }
-
   private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
     val lastColonIndex = artifactName.lastIndexOf(':')
-    return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
+    return
+    artifactName
+      .substring(0, lastColonIndex)
+      .replace('.', '_')
+      .replace(':', '_')
       .replace('-', '_')
   }
 
@@ -1225,8 +1241,6 @@ class MavenDependenciesRetrieverTest {
       """.trimIndent()
     )
   }
-
-  private fun File.readAsJoinedString(): String = readLines().joinToString(separator = "\n")
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
     return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)

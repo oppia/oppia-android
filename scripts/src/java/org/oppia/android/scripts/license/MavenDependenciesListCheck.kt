@@ -2,6 +2,7 @@ package org.oppia.android.scripts.license
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -44,40 +45,40 @@ class MavenDependenciesListCheck(
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[2]
 
-    val MavenDependenciesRetriever = MavenDependenciesRetriever(
+    val mavenDependenciesRetriever = MavenDependenciesRetriever(
       pathToRoot,
       licenseFetcher,
       commandExecutor
     )
 
     val bazelQueryDepsList =
-      MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = MavenDependenciesRetriever.getDependencyListFromMavenInstall(
+      mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val mavenInstallDepsList = mavenDependenciesRetriever.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
     val dependenciesListFromPom =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveDependencyListFromPom(mavenInstallDepsList)
         .mavenDependencyList
 
     val dependenciesListFromTextProto =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
     val updatedDependenciesList =
-      MavenDependenciesRetriever.addChangesFromTextProto(
+      mavenDependenciesRetriever.addChangesFromTextProto(
         dependenciesListFromPom,
         dependenciesListFromTextProto
       )
 
     val manuallyUpdatedLicenses =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
     val finalDependenciesList =
-      MavenDependenciesRetriever.updateMavenDependenciesList(
+      mavenDependenciesRetriever.updateMavenDependenciesList(
         updatedDependenciesList,
         manuallyUpdatedLicenses
       )
@@ -90,34 +91,24 @@ class MavenDependenciesListCheck(
       finalDependenciesList,
       dependenciesListFromTextProto
     )
-    if (redundantDependencies.isNotEmpty()) {
+
+    if (redundantDependencies.isNotEmpty() || missindDependencies.isNotEmpty()) {
+      printErrorMessage()
+      if (redundantDependencies.isNotEmpty()) {
+        println("Redundant dependencies that need to be removed:\n")
+        printDependenciesList(redundantDependencies)
+      }
+      if (missindDependencies.isNotEmpty()) {
+        println("Missing dependencies that need to be added:\n")
+        printDependenciesList(missindDependencies)
+      }
       println(
         """
-        Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
-        running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
-        may fix this.
-        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
-        more.
-        """.trimIndent() + "\n"
+        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
+        """.trimIndent()
       )
-      redundantDependencies.forEach {
-        println(it)
-      }
     }
-    if (missindDependencies.isNotEmpty()) {
-      println(
-        """
-        Please add these missing dependencies to maven_dependencies.textproto. Note that running
-        the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
-        may fix this.
-        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
-        more.
-        """.trimIndent() + "\n"
-      )
-      missindDependencies.forEach {
-        println(it)
-      }
-    }
+
     if (redundantDependencies.isNotEmpty() && missindDependencies.isNotEmpty()) {
       throw Exception("Redundant and missing dependencies in maven_dependencies.textproto")
     } else if (redundantDependencies.isNotEmpty()) {
@@ -126,7 +117,50 @@ class MavenDependenciesListCheck(
       throw Exception("Missing dependencies in maven_dependencies.textproto")
     }
 
+    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(finalDependenciesList)
+
+    if (brokenLicenses.isNotEmpty()) {
+      val licenseToDependencyMap =
+        mavenDependenciesRetriever
+          .findFirstDependenciesWithBrokenLicenses(
+            finalDependenciesList,
+            brokenLicenses
+          )
+      printErrorMessage()
+      println("Licenses that need to be updated:\n")
+      brokenLicenses.forEach {
+        println(
+          """
+          license_name: ${it.licenseName}
+          original_link: ${it.originalLink}
+          verified_link_case: ${it.verifiedLinkCase}
+          is_original_link_invalid: ${it.isOriginalLinkInvalid}
+          First dependency that should be updated with the license: ${licenseToDependencyMap[it]}
+          """.trimIndent() + "\n\n"
+        )
+      }
+      throw Exception("Licenses details are not completed")
+    }
+
+    val dependenciesWithoutAnyLinks =
+      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(finalDependenciesList)
+
+    if (dependenciesWithoutAnyLinks.isNotEmpty()) {
+      printErrorMessage()
+      println("Dependencies with invalid or no license links:\n")
+      dependenciesWithoutAnyLinks.forEach { dependency ->
+        println(dependency)
+      }
+      throw Exception("License links are invalid or not available for some dependencies")
+    }
+
     println("\nmaven_dependencies.textproto is up-to-date.")
+  }
+
+  private fun printErrorMessage() {
+    println(
+      "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n"
+    )
   }
 
   private fun findRedundantDependencies(
@@ -141,5 +175,48 @@ class MavenDependenciesListCheck(
     updatedDependenciesList: List<MavenDependency>
   ): List<MavenDependency> {
     return dependenciesList - updatedDependenciesList
+  }
+
+  private fun printDependenciesList(dependencyList: List<MavenDependency>) {
+    dependencyList.forEach { dep ->
+      println(
+        """
+        artifact_name: "${dep.artifactName}"
+        artifact_version: "${dep.artifactVersion}"
+        """.trimIndent()
+      )
+      dep.licenseList.forEach { license ->
+        printLicense(license)
+      }
+      println()
+    }
+  }
+
+  private fun printLicense(license: License) {
+    println(
+      """
+      license {
+        license_name: "${license.licenseName}"
+        original_link: "${license.originalLink}"
+      """.trimIndent()
+    )
+    when (license.verifiedLinkCase) {
+      License.VerifiedLinkCase.SCRAPABLE_LINK -> println(
+        """
+          scrapbale_link: "${license.scrapableLink.url}"
+        """.trimIndent()
+      )
+      License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> println(
+        """
+          extracted_copy_link: "${license.extractedCopyLink.url}"
+        """.trimIndent()
+      )
+      License.VerifiedLinkCase.DIRECT_LINK_ONLY -> println(
+        """
+          direct_link_only: "${license.directLinkOnly.url}"
+        """.trimIndent()
+      )
+    }
+    println("}")
   }
 }
