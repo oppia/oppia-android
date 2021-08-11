@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -675,6 +676,147 @@ class PinPasswordActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_settings_input_pin))
         .check(matches(hasErrorText(R.string.admin_settings_incorrect)))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_errorIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_null)))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_configChange_errorIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_null)))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_imeAction_errorIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText(""), pressImeActionButton())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_null)))
+    }
+  }
+
+  @Test
+  fun testPinPassword_user_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText(""), pressImeActionButton())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_null)))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_forgot_inputNullAdminPin_configChange_wrongAdminPinError() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.input_pin))
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasErrorText(R.string.admin_auth_null)))
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText("1"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.admin_settings_input_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 

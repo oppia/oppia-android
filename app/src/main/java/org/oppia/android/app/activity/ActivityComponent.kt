@@ -8,14 +8,21 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
+import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
+import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
@@ -49,13 +56,17 @@ import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
+import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
+import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
 import org.oppia.android.app.testing.TopicTestActivityForStory
+import org.oppia.android.app.testing.ViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
@@ -87,6 +98,7 @@ interface ActivityComponent {
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
+  fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
@@ -99,9 +111,14 @@ interface ActivityComponent {
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
+  fun inject(licenseListActivity: LicenseListActivity)
+  fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
+  fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)
+  fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
+  fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
   fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
@@ -123,13 +140,26 @@ interface ActivityComponent {
   fun inject(revisionCardActivity: RevisionCardActivity)
   fun inject(splashActivity: SplashActivity)
   fun inject(splashTestActivity: SplashTestActivity)
+  fun inject(
+    stateAssemblerMarginBindingAdaptersTestActivity:
+      StateAssemblerMarginBindingAdaptersTestActivity
+  )
+
+  fun inject(
+    stateAssemblerPaddingBindingAdaptersTestActivity:
+      StateAssemblerPaddingBindingAdaptersTestActivity
+  )
+
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
+  fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
   fun inject(topicTestActivity: TopicTestActivity)
   fun inject(topicTestActivityForStory: TopicTestActivityForStory)
+  fun inject(viewBindingAdaptersTestActivity: ViewBindingAdaptersTestActivity)
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
+  fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
 }
