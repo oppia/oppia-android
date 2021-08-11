@@ -156,6 +156,6 @@ jobs:
           bazel run //scripts:generate_maven_dependencies_list -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.textproto scripts/assets/maven_dependencies.pb
 
       - name: License Texts Check
-          if: always()
-          run: |
-            bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
+        if: always()
+        run: |
+          bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
