@@ -279,7 +279,18 @@ class ComputeAffectedTestsTest {
   }
 
   @Test
-  fun testUtility_multipleTargetsChanged_committed_instrumentationTargetsAreIgnored() {
+  fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    switchToFeatureBranch()
+    createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    val reportedTargets = runScript()
+
+    assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
+  }
+
+  @Test
+  fun testUtility_developBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
     initializeEmptyGitRepository()
     createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
     createBasicTests("InstrumentationTest", subpackage = "instrumentation")

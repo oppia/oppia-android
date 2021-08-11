@@ -200,7 +200,7 @@ NOTICE @BenHenning
 #                                  instrumentation                                  #
 #####################################################################################
 
-# end-to-end test utilities and modules.
+# End-to-end test utilities and modules.
 /instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################

@@ -63,11 +63,19 @@ private fun computeAffectedTargetsForDevelopBranch(bazelClient: BazelClient, out
 
   val allTestTargets = bazelClient.retrieveAllTestTargets()
   println()
+
+  // Filtering out the targets to be ignored.
+  val nonInstrumentationAffectedTestTargets = allTestTargets.filter { targetPath ->
+    !targetPath.startsWith("//instrumentation", ignoreCase = true)
+  }
+
   println(
     "Affected test targets:" +
-      "\n${allTestTargets.joinToString(separator = "\n") { "- $it" }}"
+      "\n${nonInstrumentationAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
   )
-  outputFile.printWriter().use { writer -> allTestTargets.forEach { writer.println(it) } }
+  outputFile.printWriter().use {
+      writer -> nonInstrumentationAffectedTestTargets.forEach { writer.println(it) }
+  }
 }
 
 private fun computeAffectedTargetsForNonDevelopBranch(
