@@ -1,0 +1,54 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+This package provides the feedback reporting domain module to the rest of the application.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "FeedbackReportingModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":report_schema_version"
+    ]
+)
+
+kt_android_library(
+    name = "report_schema_version",
+    srcs = [
+        "ReportSchemaVersion.kt",
+    ],
+#    visibility = ["//:oppia_testing_visibility"],
+    deps = [":dagger"]
+)
+
+kt_android_library(
+    name = "feedbackreporting",
+    srcs = [
+        "FeedbackReportManagementController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain",
+        "//model:feedback_reporting_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/extensions:language_code_extensions",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ]
+)
+
+dagger_rules()

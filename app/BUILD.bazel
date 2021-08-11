@@ -646,6 +646,7 @@ kt_android_library(
         ":view_models",
         ":views",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:feedback_reporting",
         "//model:arguments_java_proto_lite",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
