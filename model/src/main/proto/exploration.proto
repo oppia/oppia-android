@@ -54,14 +54,17 @@ enum ObjectType {
 message State {
   // The name of the State.
   string name = 1;
+
   // Mapping from content_id to a VoiceoverMapping
   map<string, VoiceoverMapping> recorded_voiceovers = 2;
   SubtitledHtml content = 3;
+
   // Mapping from content_id to a TranslationMapping
   map<string, TranslationMapping> written_translations = 4;
   repeated ParamChange param_changes = 5;
   string classifier_model_id = 6;
   Interaction interaction = 7;
+
   // Boolean indicating whether the creator wants to ask for answer details
   // from the learner about why they picked a particular answer while
   // playing the exploration.
@@ -71,6 +74,7 @@ message State {
 // Structure for customization args for ParamChange objects.
 message ParamChangeCustomizationArgs {
   bool parse_with_jinja = 1;
+
   // If the param change has only a single value, we will populate just
   // one element in this list
   repeated string list_of_values = 3;
@@ -85,6 +89,7 @@ message Interaction {
   reserved 4;
   repeated Hint hint = 5;
   Outcome default_outcome = 6;
+
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
   map<string, SchemaObject> customization_args = 7;
@@ -138,6 +143,7 @@ message AnswerGroup {
 message Misconception {
   // Skill ID parsed from the misconception.
   string skill_id = 1;
+
   // Misconception ID parsed from the misconception.
   string misconception_id = 2;
 }
@@ -154,14 +160,15 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
+
   // correct_answer of the State.
   CorrectAnswer correct_answer = 3;
+
   // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
+
   // To check if the solution was revealed or not by the learner.
   bool solution_is_revealed = 5;
-  // To check if the un-revealed solution was visible to the learner or not.
-  bool unrevealed_solution_is_visible = 6;
 }
 
 // Structure for a Correct answer in Solution
@@ -179,12 +186,12 @@ message CorrectAnswer {
 message Hint {
   // Hint data.
   SubtitledHtml hint_content = 1;
+
   // To check if the hint was revealed or not
   bool hint_is_revealed = 2;
+
   // The current state that is display to the user.
   State state = 3;
-  // To check if hint is visible but not yet revealed by the user.
-  bool unrevealed_hint_is_visible = 4;
 }
 
 // Structure for a single outcome
@@ -250,6 +257,7 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
+
   // A list of hints.
   repeated Hint hint = 2;
 }
@@ -265,6 +273,7 @@ message CompletedState {
 message UserAnswer {
   // The submitted answer.
   InteractionObject answer = 1;
+
   // A user-friendly textual representation of the answer.
   oneof textual_answer {
     // An HTML textual representation of the answer.
@@ -274,6 +283,7 @@ message UserAnswer {
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
+
   // An accessible version of the corresponding plain answer. It will be used to read out the
   // answer when there is a screen-reader enabled. Also when this is value is not initialized and
   // if the screen-reader is enabled in that case the plain answer/html answer would be read out.
@@ -327,7 +337,7 @@ message HelpIndex {
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
     // Indicates this help index corresponds to the index of a hint within the hint list of a state.
-    HintIndex hint_index = 1;
+    int32 hint_index = 1;
 
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
@@ -340,18 +350,25 @@ message HelpIndex {
     // importance and is always 'true'.
     bool everything_revealed = 3;
   }
+
+  // Boolean to indicate if the learner has revealed the latest  help or not.
+  bool is_all_visible_help_revealed = 4;
 }
 
-message HintIndex {
-  int32 index = 1;
-  bool is_hint_revealed = 2;
-}
-
+// A Structure corresponding to the state of hint and solution for the current exploration or
+// training session.
 message HintState {
+  // HelpIndex for the current state.
   HelpIndex help_index = 1;
-  int32 hint_sequence_number = 4;
-  int32 tracked_answer_count = 5;
-  bool is_hint_visible_in_latest_state = 6;
+
+  // Sequence number of the most recently scheduled task to show help to the learner.
+  int32 hint_sequence_number = 2;
+
+  // Count of wrong answers that the hint handler has been notified about.
+  int32 tracked_answer_count = 3;
+
+  // Delay for scheduling a new task to show more help to the learner.
+  int64 delay_to_show_next_hint_and_solution = 4;
 }
 
 // Different states in which exploration checkpoint can exist.
