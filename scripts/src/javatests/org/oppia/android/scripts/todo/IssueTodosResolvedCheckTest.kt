@@ -11,12 +11,14 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-/** Tests for [ClosedIssueCheckTest]. */
-class ClosedIssueCheckTest {
+/** Tests for [IssueTodosResolvedCheck]. */
+class IssueTodosResolvedCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
-  private val CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR: String = "CLOSED ISSUE CHECK PASSED"
-  private val CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR: String = "CLOSED ISSUE CHECK FAILED"
+  private val CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR: String =
+    "ISSUE TODOS RESOLVED CHECK PASSED"
+  private val CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR: String =
+    "ISSUE TODOS RESOLVED CHECK FAILED"
 
   @Rule
   @JvmField
@@ -190,34 +192,14 @@ class ClosedIssueCheckTest {
       main(retrieveTestFilesDirectoryPath(), "169877", "abmzuyt")
     }
     val fileContentList =
-      File("${retrieveTestFilesDirectoryPath()}/todo_list.txt").useLines { it.toList() }
-
-    assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
-    val failureMessage =
-      """
-      The following TODOs are unresolved for the closed issue:
-      - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile2.bazel:3
-      - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:1
-      - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:4
-      """.trimIndent()
-    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
-    assertThat(fileContentList).hasSize(5)
-    assertThat(fileContentList.elementAt(0)).isEqualTo(
-      "The issue is reopened because of the following unresolved TODOs:"
-    )
-    assertThat(fileContentList.elementAt(1)).isEqualTo(
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile1.kt#L1"
-    )
-    assertThat(fileContentList.elementAt(2)).isEqualTo(
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile2.bazel#L3"
-    )
-    assertThat(fileContentList.elementAt(3)).isEqualTo(
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L1"
-    )
-    assertThat(fileContentList.elementAt(4)).isEqualTo(
+      File("${retrieveTestFilesDirectoryPath()}/script_failures.txt").readLines()
+    assertThat(fileContentList).containsExactly(
+      "The issue is reopened because of the following unresolved TODOs:",
+      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile1.kt#L1",
+      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile2.bazel#L3",
+      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L1",
       "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L4"
-    )
+    ).inOrder()
   }
 
   /** Retrieves the absolute path of testfiles directory. */

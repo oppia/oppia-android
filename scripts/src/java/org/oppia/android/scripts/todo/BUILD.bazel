@@ -30,20 +30,20 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "closed_issue_check_lib",
+    name = "issue_todos_resolved_check_lib",
     testonly = True,
-    srcs = ["ClosedIssueCheck.kt"],
+    srcs = ["IssueTodosResolvedCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":todo_collector",
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//scripts/src/java/org/oppia/android/scripts/todo/data:todo",
+        "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
     ],
 )
 
 kt_jvm_library(
-    name = "comment_check_lib",
+    name = "issue_todos_comment_check_lib",
     testonly = True,
-    srcs = ["CommentCheck.kt"],
+    srcs = ["IssueTodosCommentCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )

@@ -1,6 +1,6 @@
-# Contains job to check that all the todos are resolved for the closed issue.
+# Contains jobs corresponding to issue related checks.
 
-name: Closed Issue Check
+name: Issue Checks
 
 on:
   issues:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   script_check:
-    name: Script Check
+    name: Closed Issue Check
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
         id: closedIssueCheck
         if: ${{ github.event.action == 'closed' }}
         run: |
-          bazel run //scripts:closed_issue_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
+          bazel run //scripts:issue_todos_resolved_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
 
       - name: Reopen Issue
         if: failure() && steps.closedIssueCheck.outcome == 'failure'
@@ -41,11 +41,11 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue view ${{ github.event.issue.number }} --json comments --jq '.comments[-1].body' > $(pwd)/latest_comment.txt
-          bazel run //scripts:comment_check -- $(pwd) latest_comment.txt todo_list.txt
+          bazel run //scripts:issue_todos_comment_check -- $(pwd) latest_comment.txt script_failures.txt
 
       - name: Add Comment
         if: failure() && steps.duplicateCommentCheck.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment ${{ github.event.issue.number }} -F $(pwd)/todo_list.txt
+          gh issue comment ${{ github.event.issue.number }} -F $(pwd)/script_failures.txt
