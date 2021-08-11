@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -14,6 +15,7 @@ import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class QuestionPlayerFragment :
   ReplayButtonListener,
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener {
+  PreviousResponsesHeaderClickListener,
+  ShowHintAvailabilityListener {
 
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
@@ -80,4 +83,7 @@ class QuestionPlayerFragment :
   }
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
+
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 }

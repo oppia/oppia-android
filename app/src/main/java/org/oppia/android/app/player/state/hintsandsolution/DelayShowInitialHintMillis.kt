@@ -1,4 +1,5 @@
-package org.oppia.android.domain.hintsandsolution
+package org.oppia.android.app.player.state.hintsandsolution
+
 import javax.inject.Qualifier
 
 /**

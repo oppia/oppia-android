@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.maven.model
+package org.oppia.android.scripts.maven.data
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -21,23 +21,9 @@ kt_jvm_library(
     deps = [
         ":license_fetcher",
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
-        "//scripts/src/java/org/oppia/android/scripts/maven/model",
+        "//scripts/src/java/org/oppia/android/scripts/maven/data:data_lib",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
         "//third_party:com_google_protobuf_protobuf-java",
-    ],
-)
-
-kt_jvm_library(
-    name = "retrieve_license_texts_lib",
-    testonly = True,
-    srcs = ["RetrieveLicenseTexts.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        ":license_fetcher",
-        "//scripts/src/java/org/oppia/android/scripts/license/model",
-        "//scripts/src/java/org/oppia/android/scripts/maven/model",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
     ],
 )

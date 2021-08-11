@@ -21,7 +21,13 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
+import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HintIndex
+import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.PendingState
+import org.oppia.android.app.model.State
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -30,6 +36,9 @@ import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler.Build
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.hintsandsolution.DelayShowAdditionalHintsFromWrongAnswerMillis
+import org.oppia.android.app.player.state.hintsandsolution.DelayShowAdditionalHintsMillis
+import org.oppia.android.app.player.state.hintsandsolution.DelayShowInitialHintMillis
 import org.oppia.android.app.player.state.itemviewmodel.ContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
@@ -56,6 +65,7 @@ import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListe
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -131,7 +141,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val hasConversationView: Boolean
+  private val hasConversationView: Boolean,
+  delayShowInitialHintMs: Long,
+  delayShowAdditionalHintsMs: Long,
+  delayShowAdditionalHintsFromWrongAnswerMs: Long
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -150,6 +163,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val isCorrectAnswer = ObservableField<Boolean>(false)
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
+
+  private val hintHandler = HintHandler(
+    lifecycleSafeTimerFactory,
+    fragment,
+    delayShowInitialHintMs,
+    delayShowAdditionalHintsMs,
+    delayShowAdditionalHintsFromWrongAnswerMs
+  )
 
   /** The most recent content ID read by the audio system. */
   private var audioPlaybackContentId: String? = null
@@ -174,6 +195,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
     ConceptCardFragment
       .newInstance(skillId)
       .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+  }
+
+  fun createLatestHintState(): HintState {
+    return HintState.newBuilder().apply {
+      isHintVisibleInLatestState = hintHandler.isHintVisibleInLatestState
+      hintSequenceNumber = hintHandler.hintSequenceNumber
+      trackedAnswerCount = hintHandler.trackedWrongAnswerCount
+      helpIndex = hintHandler.helpIndex
+    }.build()
+  }
+
+  fun updateHintState(hintState: HintState) {
+    hintHandler.apply {
+      isHintVisibleInLatestState = hintState.isHintVisibleInLatestState
+      hintSequenceNumber = hintState.hintSequenceNumber
+      trackedWrongAnswerCount = hintState.trackedAnswerCount
+      helpIndex = hintState.helpIndex
+    }
   }
 
   /**
@@ -205,6 +244,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* isCorrectAnswer= */ false,
         gcsEntityId
       )
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        hintHandler.maybeScheduleShowHint(ephemeralState.state, ephemeralState.pendingState)
+      }
       if (playerFeatureSet.interactionSupport) {
         val interactionItemList =
           if (isSplitView) extraInteractionPendingItemList else conversationPendingItemList
@@ -226,6 +268,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* isCorrectAnswer= */ true,
         gcsEntityId
       )
+      hintHandler.hideHint()
     }
 
     val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
@@ -457,6 +500,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       createEndOfSessionConfetti(confettiView, confettiConfig)
     }
   }
+
+  /**
+   * Stops any pending hints from showing, e.g. due to the state being completed. This should only
+   * be called if hints & solutions support has been enabled.
+   */
+  fun stopHintsFromShowing() = hintHandler.reset()
 
   /**
    * Toggles whether current audio playback is enabled. This should only be called if voiceover
@@ -831,7 +880,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val fragment: Fragment,
     private val context: Context,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
-    private val backgroundCoroutineDispatcher: CoroutineDispatcher
+    private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+    private val delayShowInitialHintMs: Long,
+    private val delayShowAdditionalHintsMs: Long,
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
@@ -1289,7 +1341,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioUiManagerRetriever,
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
-        hasConversationView
+        hasConversationView,
+        delayShowInitialHintMs,
+        delayShowAdditionalHintsMs,
+        delayShowAdditionalHintsFromWrongAnswerMs
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1304,7 +1359,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val context: Context,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
-      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+      @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
+      @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
+      @DelayShowAdditionalHintsFromWrongAnswerMillis private val additionalAnswerHintDelayMs: Long
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1318,7 +1376,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           fragment,
           context,
           interactionViewModelFactoryMap,
-          backgroundCoroutineDispatcher
+          backgroundCoroutineDispatcher,
+          delayShowInitialHintMs,
+          delayShowAdditionalHintsMs,
+          additionalAnswerHintDelayMs
         )
       }
     }
@@ -1364,6 +1425,194 @@ class StatePlayerRecyclerViewAssembler private constructor(
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport
       )
+    }
+  }
+
+  /**
+   * Handler for showing hints to the learner after a period of time in the event they submit a
+   * wrong answer.
+   *
+   * # Flow chart for when hints are shown
+   *
+   *            Submit 1st              Submit wrong
+   *            wrong answer            answer
+   *              +---+                   +---+
+   *              |   |                   |   |
+   *              |   v                   |   v
+   *            +-+---+----+            +-+---+-----+           +----------+
+   *     Initial| No       | Wait 60s   |           | View hint | Hint     |
+   *     state  | hint     +----------->+ Hint      +---------->+ consumed |
+   *     +----->+ released | or, submit | available | Wait 30s  |          |
+   *            |          | 2nd wrong  |           +<----------+          |
+   *            +----------+ answer     +----+------+           +----+-----+
+   *                                         ^                       |
+   *                                         |Wait 10s               |
+   *                                         |                       |
+   *                                    +----+------+                |
+   *                               +--->+ No        | Submit wrong   |
+   *                   Submit wrong|    | hint      | answer         |
+   *                   answer      |    | available +<---------------+
+   *                               +----+           |
+   *                                    +-----------+
+   *
+   * # Logic for selecting a hint
+   *
+   * Hints are selected based on the availability of hints to show, and any previous hints that have
+   * been shown. A new hint will only be made available if its previous hint has been viewed by the
+   * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
+   * user, then the 'hint available' state in the diagram above will trigger the solution to be
+   * made available to view, if a solution is present. Once the solution is viewed by the learner,
+   * they will reach a terminal state for hints and no additional hints or solutions will be made
+   * available.
+   */
+  private class HintHandler(
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val fragment: Fragment,
+    private val delayShowInitialHintMs: Long,
+    private val delayShowAdditionalHintsMs: Long,
+    private val delayShowAdditionalHintsFromWrongAnswerMs: Long
+  ) {
+    var trackedWrongAnswerCount = 0
+    var helpIndex: HelpIndex = HelpIndex.getDefaultInstance()
+    var hintSequenceNumber = 0
+    var isHintVisibleInLatestState = false
+
+    /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
+    fun reset() {
+      trackedWrongAnswerCount = 0
+      helpIndex = HelpIndex.getDefaultInstance()
+      // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
+      // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
+      // scheduled without overlapping with past sequence numbers.
+      hintSequenceNumber++
+      isHintVisibleInLatestState = false
+    }
+
+    /** Hide hint when moving to any previous state. */
+    fun hideHint() {
+      (fragment as ShowHintAvailabilityListener).onHintAvailable(
+        HelpIndex.getDefaultInstance()
+      )
+    }
+
+    /**
+     * Handles potentially new wrong answers that were submitted, and if so schedules a hint to be
+     * shown to the user if hints are available.
+     */
+    fun maybeScheduleShowHint(state: State, pendingState: PendingState) {
+      if (state.interaction.hintList.isEmpty()) {
+        // If this state has no hints to show, do nothing.
+        return
+      }
+
+      // If hint was visible in the current state show all previous hints coming back to the current
+      // state. If any hint was revealed and user move between current and completed states, then
+      // show those revealed hints back by making icon visible else use the previous help index.
+      if (isHintVisibleInLatestState) {
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndex)
+      }
+
+      // Start showing hints after a wrong answer is submitted or if the user appears stuck (e.g.
+      // doesn't answer after some duration). Note that if there's already a timer to show a hint,
+      // it will be reset for each subsequent answer.
+      val nextUnrevealedHintIndex = getNextHintIndexToReveal(state)
+      val isFirstHint = helpIndex.indexTypeCase == INDEXTYPE_NOT_SET
+      val wrongAnswerCount = pendingState.wrongAnswerList.size
+      if (wrongAnswerCount == trackedWrongAnswerCount) {
+        // If no answers have been submitted, schedule a task to automatically help after a fixed
+        // amount of time. This will automatically reset if something changes other than answers
+        // (e.g. revealing a hint), which may trigger more help to become available.
+        if (isFirstHint) {
+          // The learner needs to wait longer for the initial hint to show since they need some time
+          // to read through and consider the question.
+          scheduleShowHint(delayShowInitialHintMs, nextUnrevealedHintIndex)
+        } else {
+          scheduleShowHint(delayShowAdditionalHintsMs, nextUnrevealedHintIndex)
+        }
+      } else {
+        // See if the learner's new wrong answer justifies showing a hint.
+        if (isFirstHint) {
+          if (wrongAnswerCount > 1) {
+            // If more than one answer has been submitted and no hint has yet been shown, show a
+            // hint immediately since the learner is probably stuck.
+            showHintImmediately(nextUnrevealedHintIndex)
+          }
+        } else {
+          // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
+          scheduleShowHint(
+            delayShowAdditionalHintsFromWrongAnswerMs,
+            nextUnrevealedHintIndex
+          )
+        }
+        trackedWrongAnswerCount = wrongAnswerCount
+      }
+    }
+
+    /**
+     * Returns the [HelpIndex] of the next hint or solution that hasn't yet been revealed, or
+     * default if there is none.
+     */
+    private fun getNextHintIndexToReveal(state: State): HelpIndex {
+      // Return the index of the first unrevealed hint, or the length of the list if all have been
+      // revealed.
+      val hintList = state.interaction.hintList
+      val solution = state.interaction.solution
+
+      val hasHelp = hintList.isNotEmpty() || solution.hasCorrectAnswer()
+      val lastUnrevealedHintIndex = hintList.indices.filterNot { idx ->
+        hintList[idx].hintIsRevealed
+      }.firstOrNull()
+
+      return if (!hasHelp) {
+        HelpIndex.getDefaultInstance()
+      } else if (lastUnrevealedHintIndex != null) {
+        HelpIndex.newBuilder()
+          .setHintIndex(
+            HintIndex.newBuilder()
+              .setIndex(lastUnrevealedHintIndex).setIsHintRevealed(false).build()
+          ).build()
+      } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
+        HelpIndex.newBuilder().setShowSolution(true).build()
+      } else {
+        HelpIndex.newBuilder().setEverythingRevealed(true).build()
+      }
+    }
+
+    /**
+     * Schedules to allow the hint of the specified index to be shown after the specified delay,
+     * cancelling any previously pending hints initiated by calls to this method.
+     */
+    private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
+      val targetSequenceNumber = ++hintSequenceNumber
+      lifecycleSafeTimerFactory.createTimer(delayMs).observe(
+        fragment,
+        Observer {
+          showHint(targetSequenceNumber, helpIndexToShow)
+        }
+      )
+    }
+
+    /**
+     * Immediately indicates the specified hint is ready to be shown, cancelling any previously
+     * pending hints initiated by calls to [scheduleShowHint].
+     */
+    private fun showHintImmediately(helpIndexToShow: HelpIndex) {
+      showHint(++hintSequenceNumber, helpIndexToShow)
+    }
+
+    private fun showHint(targetSequenceNumber: Int, helpIndexToShow: HelpIndex) {
+      // Only finish this timer if no other hints were scheduled and no cancellations occurred.
+      if (targetSequenceNumber == hintSequenceNumber) {
+        if (helpIndex != helpIndexToShow) {
+          val hintIndex = helpIndexToShow.hintIndex.toBuilder().setIsHintRevealed(true).build()
+          helpIndex = helpIndexToShow.toBuilder().setHintIndex(hintIndex).build()
+          isHintVisibleInLatestState = true
+          helpIndex = helpIndexToShow
+          // Only indicate the hint is available if its index is actually new (including if it
+          // becomes null such as in the case of the solution becoming available).
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(helpIndexToShow)
+        }
+      }
     }
   }
 }

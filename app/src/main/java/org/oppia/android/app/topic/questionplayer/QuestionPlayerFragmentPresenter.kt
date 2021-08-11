@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
@@ -20,7 +19,6 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
-import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
@@ -30,7 +28,6 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
@@ -40,7 +37,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.system.OppiaClock
-import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */
@@ -55,8 +51,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val splitScreenManager: SplitScreenManager
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -72,9 +67,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
-  private var isCurrentQuestionStatePendingState: Boolean = false
-
-  private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -113,13 +105,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
     subscribeToHint(
-      questionAssessmentProgressController.submitHintIsRevealed(saveUserChoice, hintIndex)
+      questionAssessmentProgressController.submitHintIsRevealed(
+        currentQuestionState,
+        saveUserChoice,
+        hintIndex
+      )
     )
   }
 
   fun revealSolution() {
     subscribeToSolution(
-      questionAssessmentProgressController.submitSolutionIsRevealed()
+      questionAssessmentProgressController.submitSolutionIsRevealed(currentQuestionState)
     )
   }
 
@@ -128,6 +124,28 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       CONCEPT_CARD_DIALOG_FRAGMENT_TAG
     )?.let { dialogFragment ->
       fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
+    }
+  }
+
+  fun onHintAvailable(helpIndex: HelpIndex) {
+    when (helpIndex.indexTypeCase) {
+      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
+          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex.index
+        }
+        questionViewModel.allHintsExhausted =
+          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
+        questionViewModel.setHintBulbVisibility(true)
+      }
+      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        questionViewModel.setHintBulbVisibility(true)
+      }
+      else -> {
+        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        questionViewModel.setHintBulbVisibility(false)
+      }
     }
   }
 
@@ -216,11 +234,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
-    isCurrentQuestionStatePendingState =
-      ephemeralQuestion.ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
-
-    scheduleShowHintAndSolution(ephemeralQuestion.ephemeralState.hintState)
-    showHintsAndSolutions(ephemeralQuestion.ephemeralState.hintState)
 
     val isSplitView =
       splitScreenManager.shouldSplitScreen(ephemeralQuestion.ephemeralState.state.interaction.id)
@@ -277,9 +290,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       Observer<AnsweredQuestionOutcome> { result ->
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
+          recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCelebrationOnCorrectAnswer()
-          questionAssessmentProgressController.stopNewHintsAndSolutionFromShowingUp()
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
@@ -426,61 +439,5 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         skillIds
       )
     )
-  }
-
-  private fun scheduleShowHintAndSolution(hintState: HintState) {
-    if (hintState.delayToShowNextHintAndSolution == -1L || !isCurrentQuestionStatePendingState) {
-      // Do not start timer to show new hints and solutions if the delay is set to -1 or if the
-      // current state is not the pending top state.
-      return
-    }
-    lifecycleSafeTimerFactory.createTimer(hintState.delayToShowNextHintAndSolution).observe(
-      fragment,
-      Observer {
-        questionAssessmentProgressController.hintAndSolutionTimerCompleted(
-          hintState.hintSequenceNumber,
-          currentQuestionState
-        )
-      }
-    )
-  }
-
-  private fun showHintsAndSolutions(hintState: HintState) {
-    if (!isCurrentQuestionStatePendingState) {
-      // If current question state is not the pending top question state, hide the hint bulb.
-      questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-      questionViewModel.setHintBulbVisibility(false)
-    } else {
-      when (hintState.helpIndex.indexTypeCase) {
-        HelpIndex.IndexTypeCase.HINT_INDEX -> {
-          questionViewModel.setHintBulbVisibility(true)
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(
-            !hintState.helpIndex.hintIndex.isHintRevealed
-          )
-          questionViewModel.allHintsExhausted = false
-          questionViewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex.index
-        }
-        HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-          questionViewModel.setHintBulbVisibility(true)
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
-          // SHOW_SOLUTION implies that all hints have been viewed by the user.
-          questionViewModel.allHintsExhausted = true
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          questionViewModel.newAvailableHintIndex = currentQuestionState.interaction.hintCount - 1
-        }
-        HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-          questionViewModel.setHintBulbVisibility(true)
-          // EVERYTHING_REVEALED implies that all hints and solution have been viewed by the user.
-          questionViewModel.allHintsExhausted = true
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          questionViewModel.newAvailableHintIndex = currentQuestionState.interaction.hintCount - 1
-        }
-        else -> {
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-          questionViewModel.setHintBulbVisibility(false)
-        }
-      }
-    }
   }
 }

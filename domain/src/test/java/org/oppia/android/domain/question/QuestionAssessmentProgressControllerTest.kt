@@ -43,7 +43,6 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
@@ -948,8 +947,9 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
 
     val result = questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0
+      ephemeralQuestion.ephemeralState.state,
+      /* hintIsRevealed= */ true,
+      /* hintIndex= */ 0
     )
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
@@ -987,7 +987,9 @@ class QuestionAssessmentProgressControllerTest {
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
     assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
 
-    val result = questionAssessmentProgressController.submitSolutionIsRevealed()
+    val result = questionAssessmentProgressController.submitSolutionIsRevealed(
+      currentQuestion.ephemeralState.state
+    )
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1642,13 +1644,15 @@ class QuestionAssessmentProgressControllerTest {
       assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
     }
     questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true, hintIndex = index
+      ephemeralQuestion.ephemeralState.state, true, index
     )
   }
 
   private fun viewSolutionForQuestion1() {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    questionAssessmentProgressController.submitSolutionIsRevealed()
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
   }
 
   private fun submitCorrectAnswerForQuestion2() {
@@ -1669,7 +1673,7 @@ class QuestionAssessmentProgressControllerTest {
     val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
     questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true, hintIndex = 0
+      ephemeralQuestion.ephemeralState.state, true, 0
     )
   }
 
@@ -1677,7 +1681,9 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
-    questionAssessmentProgressController.submitSolutionIsRevealed()
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
   }
 
   private fun submitCorrectAnswerForQuestion3() {
@@ -1697,7 +1703,9 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
-    questionAssessmentProgressController.submitSolutionIsRevealed()
+    questionAssessmentProgressController.submitSolutionIsRevealed(
+      ephemeralQuestion.ephemeralState.state
+    )
   }
 
   private fun submitCorrectAnswerForQuestion4() {
@@ -1803,7 +1811,7 @@ class QuestionAssessmentProgressControllerTest {
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class, HintsAndSolutionConfigModule::class
+      CachingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

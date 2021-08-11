@@ -6,8 +6,8 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.maven.model.MavenListDependency
-import org.oppia.android.scripts.maven.model.MavenListDependencyTree
+import org.oppia.android.scripts.maven.data.MavenListDependency
+import org.oppia.android.scripts.maven.data.MavenListDependencyTree
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList

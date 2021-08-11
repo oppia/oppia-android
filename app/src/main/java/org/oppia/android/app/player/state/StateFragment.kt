@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -15,6 +16,7 @@ import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 
@@ -29,7 +31,8 @@ class StateFragment :
   PreviousNavigationButtonListener,
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
-  PreviousResponsesHeaderClickListener {
+  PreviousResponsesHeaderClickListener,
+  ShowHintAvailabilityListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -99,6 +102,9 @@ class StateFragment :
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
+
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    stateFragmentPresenter.onHintAvailable(helpIndex)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
