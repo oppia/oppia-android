@@ -119,6 +119,14 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib"],
 )
 
+kt_jvm_binary(
+    name = "retrieve_license_texts",
+    testonly = True,
+    data = MAVEN_ASSETS,
+    main_class = "org.oppia.android.scripts.maven.RetrieveLicenseTextsKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib"],
+)
+
 ACCESSIBILITY_LABEL_EXEMPTION_ASSETS = generate_accessibility_label_assets_list_from_text_protos(
     name = "accessibility_label_exemption_assets",
     accessibility_label_exemptions_name = ["accessibility_label_exemptions"],
@@ -149,18 +157,18 @@ kt_jvm_binary(
     ],
 )
 
-TODO_EXEMPTION_ASSETS = generate_todo_assets_list_from_text_protos(
+TODO_OPEN_EXEMPTION_ASSETS = generate_todo_assets_list_from_text_protos(
     name = "todo_exemption_assets",
-    todo_exemptions_name = ["todo_exemptions"],
+    todo_exemptions_name = ["todo_open_exemptions"],
 )
 
 kt_jvm_binary(
-    name = "todo_check",
+    name = "todo_open_check",
     testonly = True,
-    data = TODO_EXEMPTION_ASSETS,
-    main_class = "org.oppia.android.scripts.todo.TodoCheckKt",
+    data = TODO_OPEN_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.todo.TodoOpenCheckKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/todo:todo_check_lib",
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
     ],
 )
 

@@ -39,6 +39,26 @@ class RepositoryFileTest {
   }
 
   @Test
+  fun testRepoFile_fileInDataBuild_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "data", "build")
+    val file = tempFolder.newFile("testfiles/data/build/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDotGitHubDirectory_fileShouldBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", ".github")
+    val file = tempFolder.newFile("testfiles/.github/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).contains(file)
+  }
+
+  @Test
   fun testRepoFile_dotKtExpectedExtension_onlyKtFilesShouldBePresentInCollectedFiles() {
     val xmlFile = tempFolder.newFile("testfiles/TestFile.xml")
     val kotlinFile = tempFolder.newFile("testfiles/TestFile.kt")

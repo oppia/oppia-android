@@ -52,17 +52,17 @@ message KdocValidityExemptions {
   repeated string exempted_file_path = 1;
 }
 
-// Exemptions for the TODO check.
-message TodoExemptions {
-  // List of all the TODO exemptions.
-  repeated TodoExemption todo_exemption = 1;
+// Exemptions for the TODO open check.
+message TodoOpenExemptions {
+  // List of all the TODO open exemptions.
+  repeated TodoOpenExemption todo_open_exemption = 1;
 }
 
-// A Todo exemption indicates the usage of a todo keyword which is not meant to accomplish a TODO
-// task. For example when a TODO keyword is used for documentation purpose.
-message TodoExemption {
+// A TodoOpen exemption indicates the usage of a TODO keyword which is not meant to accomplish a
+// future work item. For example when a TODO keyword is used for documentation purpose.
+message TodoOpenExemption {
   // The path of the file relative to the root repository to be exempted for the check.
   string exempted_file_path = 1;
-  // The line number of the exempted todo.
+  // The line number of the exempted TODO.
   repeated int32 line_number = 2;
 }
