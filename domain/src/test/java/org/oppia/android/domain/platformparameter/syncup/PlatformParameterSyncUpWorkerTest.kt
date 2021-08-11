@@ -143,10 +143,10 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsEmpty_getCorrectPlatformParameters_verifyValuesAreCached() {
-    // setup versionName to get correct network response from mock platform parameter service
+    // Set up versionName to get correct network response from mock platform parameter service.
     setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
 
-    // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request
+    // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request.
     platformParameterController.updatePlatformParameterDatabase(listOf())
 
     val workManager = WorkManager.getInstance(context)
@@ -160,19 +160,19 @@ class PlatformParameterSyncUpWorkerTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
     val workInfo = workManager.getWorkInfoById(request.id)
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
-    // Retrieve the previously cached Platform Parameters from Cache Store
+    // Retrieve the previously cached Platform Parameters from Cache Store.
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
     testCoroutineDispatchers.runCurrent()
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
-    // Controller in the form of a Map, therefore verify the retrieved values from that Map
+    // Controller in the form of a Map, therefore verify the retrieved values from that Map.
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
     assertThat(platformParameterMap).isNotEmpty()
     assertThat(platformParameterMap).containsEntry(
@@ -183,10 +183,10 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
-    // setup versionName to get incorrect network response from mock platform parameter service
+    // Set up versionName to get incorrect network response from mock platform parameter service.
     setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
 
-    // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request
+    // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request.
     platformParameterController.updatePlatformParameterDatabase(listOf())
 
     val workManager = WorkManager.getInstance(context)
@@ -200,7 +200,7 @@ class PlatformParameterSyncUpWorkerTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -215,11 +215,11 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getCorrectPlatformParameters_verifyValuesAreUpdated() {
-    // setup versionName to get correct network response from mock platform parameter service
+    // Set up versionName to get correct network response from mock platform parameter service.
     setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
-    // Work request that is not first
+    // Work request that is not first.
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
 
     val workManager = WorkManager.getInstance(context)
@@ -233,33 +233,33 @@ class PlatformParameterSyncUpWorkerTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
     val workInfo = workManager.getWorkInfoById(request.id)
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
-    // Retrieve the previously cached Platform Parameters from Cache Store
+    // Retrieve the previously cached Platform Parameters from Cache Store.
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
     testCoroutineDispatchers.runCurrent()
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
-    // Controller in the form of a Map, therefore verify the retrieved values from that Map
+    // Controller in the form of a Map, therefore verify the retrieved values from that Map.
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
     assertThat(platformParameterMap).isNotEmpty()
 
-    // New Boolean Platform Parameter is now present in the Database
+    // New Boolean Platform Parameter is now present in the Database.
     assertThat(platformParameterMap).containsEntry(
       TEST_BOOLEAN_PARAM_NAME,
       expectedTestBooleanParameter
     )
-    // Previous String Platform Parameter is still same in the Database
+    // Previous String Platform Parameter is still same in the Database.
     assertThat(platformParameterMap).containsEntry(
       TEST_STRING_PARAM_NAME,
       expectedTestStringParameter
     )
-    // Previous Integer Platform Parameter updated to new value in the Database
+    // Previous Integer Platform Parameter updated to new value in the Database.
     assertThat(platformParameterMap).containsEntry(
       TEST_INTEGER_PARAM_NAME,
       expectedTestIntegerParameter
@@ -268,11 +268,11 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
-    // setup versionName to get incorrect network response from mock platform parameter service
+    // Set up versionName to get incorrect network response from mock platform parameter service.
     setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
-    // Work request that is not first
+    // Work request that is not first.
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
 
     val workManager = WorkManager.getInstance(context)
@@ -286,7 +286,7 @@ class PlatformParameterSyncUpWorkerTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -301,11 +301,11 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getEmptyResponseForWrongVersion_verifyValuesNotUpdated() {
-    // setup versionName to get incorrect network response from mock platform parameter service
+    // Set up versionName to get incorrect network response from mock platform parameter service.
     setUpApplicationForContext(MockPlatformParameterService.appVersionForEmptyResponse)
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
-    // Work request that is not first
+    // Work request that is not first.
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
 
     val workManager = WorkManager.getInstance(context)
@@ -319,7 +319,7 @@ class PlatformParameterSyncUpWorkerTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -330,12 +330,12 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(exceptionMessage).isEqualTo(
       PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG
     )
-    // Retrieve the previously cached Platform Parameters from Cache Store
+    // Retrieve the previously cached Platform Parameters from Cache Store.
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
     testCoroutineDispatchers.runCurrent()
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
-    // Controller in the form of a Map, therefore verify the retrieved values from that Map
+    // Controller in the form of a Map, therefore verify the retrieved values from that Map.
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
     assertThat(platformParameterMap).isNotEmpty()
   }

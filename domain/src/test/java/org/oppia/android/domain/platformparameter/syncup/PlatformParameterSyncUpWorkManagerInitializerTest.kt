@@ -41,7 +41,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -132,7 +132,9 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
     val syncUpWorkerTimePeriodInHours = syncUpWorkerTimePeriodInMs / (60 * 60 * 1000)
 
-    assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE)
+    assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    )
   }
 
   private fun setUpTestApplicationComponent() {

@@ -55,9 +55,9 @@ class PlatformParameterSyncUpWorker private constructor(
   // are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     val platformParameterList: MutableList<PlatformParameter> = mutableListOf()
-    for (entry in response.entries) {
-      val platformParameter = PlatformParameter.newBuilder().setName(entry.key)
-      when (val value = entry.value) {
+    response.map {
+      val platformParameter = PlatformParameter.newBuilder().setName(it.key)
+      when (val value = it.value) {
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
         is Boolean -> platformParameter.boolean = value
@@ -96,7 +96,7 @@ class PlatformParameterSyncUpWorker private constructor(
     private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
-    /** A function that returns an instance of [PlatformParameterSyncUpWorker]. */
+    /** Returns new instances of [PlatformParameterSyncUpWorker]. */
     fun create(context: Context, params: WorkerParameters): CoroutineWorker {
       return PlatformParameterSyncUpWorker(
         context,

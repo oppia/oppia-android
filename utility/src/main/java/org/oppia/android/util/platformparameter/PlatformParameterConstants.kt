@@ -19,5 +19,5 @@ val SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE = false
 @Qualifier
 annotation class SyncUpWorkerTimePeriod
 
-val SYNC_UP_WORKER_TIME_PERIOD = "sync_up_worker_time_period"
-val SYNC_UP_WORKER_TIME_PERIOD_DEFAULT_VALUE = 12
+val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
+val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
