@@ -763,16 +763,31 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewHint_configChange_noNewHintAvailable() {
+  fun testStateFragment_nextState_viewFirstHint_configChange_secondHintIsNotAvailableImmediately() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()
       produceAndViewFirstHint()
 
-      submitWrongAnswerToState2()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_nextState_viewFirstHint_configChange_wait30Seconds_secondHintIsAvailable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+      produceAndViewFirstHint()
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      // Since no answer was submitted after viewing the first hint, the second hint should be
+      // revealed in 30 seconds.
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
 
@@ -790,7 +805,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewHint_prevState_wait30seconds_newHintIsAvailable() {
+  fun testStateFragment_nextState_viewFirstHint_prevState_wait30seconds_newHintIsNotAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughState1()

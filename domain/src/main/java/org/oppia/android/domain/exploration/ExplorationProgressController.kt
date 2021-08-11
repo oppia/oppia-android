@@ -188,9 +188,8 @@ class ExplorationProgressController @Inject constructor(
             // Reset the hintState if pending top state has changed.
             explorationProgress.hintState = hintHandler.reset()
           } else {
-            // Schedule a new hints or solution or show a new hint or solution immediately based on
-            // the current ephemeral state of the exploration because a new wrong answer was
-            // submitted.
+            //  Schedule, or show immediately, a new hint or solution based on the current ephemeral
+            //  state of the exploration because a new wrong answer was submitted.
             val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
             explorationProgress.hintState =
               hintHandler.maybeScheduleShowHint(
@@ -222,6 +221,16 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  /**
+   * Notifies the [StateDeck] and the [HintHandler] that the visible hint has benn revealed by the
+   * user.
+   *
+   * @param hintIsRevealed boolean to indicate if the hint was revealed or not
+   * @param hintIndex index of the hint that was revealed in the hint list of the current pending
+   *     state
+   * @return a one-time [LiveData] that indicates success/failure of the operation with the hint
+   *     that was revealed
+   */
   fun submitHintIsRevealed(hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
     try {
       explorationProgressLock.withLock {
@@ -259,8 +268,8 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
         } finally {
           hintHandler.notifyHintIsRevealed(hintIndex)
-          // Schedule a new hints or solution or show a new hint or solution immediately based on
-          // the current ephemeral state of the exploration because the last hint was revealed.
+          // Schedule, or show immediately, a new hint or solution based on the current ephemeral
+          // state of the exploration because the last hint was revealed.
           explorationProgress.hintState =
             hintHandler.maybeScheduleShowHint(
               ephemeralState.state,
@@ -282,6 +291,12 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  /**
+   *  Notifies the [StateDeck] and the [HintHandler] that the solution has been revealed by the user.
+   *
+   * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
+   *     that was revealed
+   */
   fun submitSolutionIsRevealed(): LiveData<AsyncResult<Solution>> {
     try {
       explorationProgressLock.withLock {

@@ -219,8 +219,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     isCurrentQuestionStatePendingState =
       ephemeralQuestion.ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
 
-    scheduleShowHintAndSolution(ephemeralQuestion.ephemeralState.hintState)
-    showHintsAndSolutions(ephemeralQuestion.ephemeralState.hintState)
+    if (recyclerViewAssembler.playerHasSupportForHintsAndSolution()) {
+      scheduleShowHintAndSolution(ephemeralQuestion.ephemeralState.hintState)
+      showHintsAndSolutions(ephemeralQuestion.ephemeralState.hintState)
+    }
 
     val isSplitView =
       splitScreenManager.shouldSplitScreen(ephemeralQuestion.ephemeralState.state.interaction.id)
@@ -455,10 +457,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         HelpIndex.IndexTypeCase.HINT_INDEX -> {
           questionViewModel.setHintBulbVisibility(true)
           questionViewModel.setHintOpenedAndUnRevealedVisibility(
-            !hintState.helpIndex.hintIndex.isHintRevealed
+            !hintState.helpIndex.isAllVisibleHelpRevealed
           )
           questionViewModel.allHintsExhausted = false
-          questionViewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex.index
+          questionViewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           questionViewModel.setHintBulbVisibility(true)

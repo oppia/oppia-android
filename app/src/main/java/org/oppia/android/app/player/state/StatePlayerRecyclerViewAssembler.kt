@@ -273,6 +273,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
+  fun playerHasSupportForHintsAndSolution(): Boolean = playerFeatureSet.hintsAndSolutionsSupport
+
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>,
     interaction: Interaction,

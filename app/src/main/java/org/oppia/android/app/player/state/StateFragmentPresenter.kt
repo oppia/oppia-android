@@ -323,8 +323,11 @@ class StateFragmentPresenter @Inject constructor(
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
 
     showOrHideAudioByState(ephemeralState.state)
-    scheduleShowHintAndSolution(ephemeralState.hintState)
-    showHintsAndSolutions(ephemeralState.hintState)
+
+    if (recyclerViewAssembler.playerHasSupportForHintsAndSolution()) {
+      scheduleShowHintAndSolution(ephemeralState.hintState)
+      showHintsAndSolutions(ephemeralState.hintState)
+    }
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -566,10 +569,10 @@ class StateFragmentPresenter @Inject constructor(
         HelpIndex.IndexTypeCase.HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
           viewModel.setHintOpenedAndUnRevealedVisibility(
-            !hintState.helpIndex.hintIndex.isHintRevealed
+            !hintState.helpIndex.isAllVisibleHelpRevealed
           )
           viewModel.allHintsExhausted = false
-          viewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex.index
+          viewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           viewModel.setHintBulbVisibility(true)
