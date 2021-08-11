@@ -1,11 +1,11 @@
 """
-Libraries corresponding to parse maven_install.json file.
+Data structures corresponding to parsing maven_install.json.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "data_lib",
+    name = "model",
     testonly = True,
     srcs = [
         "MavenListDependencies.kt",
