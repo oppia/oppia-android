@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /** Data class for the feedback report sent by the Android app to remote storage. */
-// TODO(#2801): Link backend domain model
+// TODO(#3016): Link backend domain model
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReport(
 

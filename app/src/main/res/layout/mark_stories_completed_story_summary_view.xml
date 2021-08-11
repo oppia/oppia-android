@@ -28,6 +28,8 @@
       android:drawablePadding="20dp"
       android:fontFamily="sans-serif"
       android:gravity="start|top"
+      android:minWidth="48dp"
+      android:minHeight="48dp"
       android:paddingBottom="26dp"
       android:text="@{viewModel.storySummary.storyName}"
       android:textAlignment="viewStart"
