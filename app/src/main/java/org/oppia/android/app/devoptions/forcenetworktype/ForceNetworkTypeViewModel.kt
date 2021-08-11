@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class ForceNetworkTypeViewModel @Inject constructor(
   private fun processNetworkTypeList(): List<NetworkTypeItemViewModel> {
     return listOf(
       NetworkTypeItemViewModel(
-        NetworkConnectionUtil.ConnectionStatus.DEFAULT,
+        NetworkConnectionDebugUtil.ConnectionStatus.DEFAULT,
         activity.getString(R.string.force_network_type_default_network)
       ),
       NetworkTypeItemViewModel(

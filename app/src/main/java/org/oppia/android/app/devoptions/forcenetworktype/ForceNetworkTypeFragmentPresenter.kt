@@ -1,5 +1,6 @@
 package org.oppia.android.app.devoptions.forcenetworktype
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,8 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ForceNetworkTypeFragmentBinding
 import org.oppia.android.databinding.ForceNetworkTypeNetworkItemViewBinding
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import java.util.Optional
 import javax.inject.Inject
 
 /** The presenter for [ForceNetworkTypeFragment]. */
@@ -19,7 +21,7 @@ import javax.inject.Inject
 class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val networkConnectionUtil: NetworkConnectionUtilDebugImpl,
+  private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
   private val viewModelProvider: ViewModelProvider<ForceNetworkTypeViewModel>
 ) {
 
@@ -73,11 +75,15 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
     model: NetworkTypeItemViewModel
   ) {
     binding.viewModel = model
-    binding.isNetworkSelected =
-      networkConnectionUtil.getForcedConnectionStatus() == model.networkType
-    binding.networkTypeLayout.setOnClickListener {
-      networkConnectionUtil.setCurrentConnectionStatus(model.networkType)
-      bindingAdapter.notifyDataSetChanged()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      networkConnectionUtil.ifPresent { connectionUtil ->
+        binding.isNetworkSelected =
+          connectionUtil.getForcedConnectionStatus() == model.networkType
+        binding.networkTypeLayout.setOnClickListener {
+          connectionUtil.setCurrentConnectionStatus(model.networkType)
+          bindingAdapter.notifyDataSetChanged()
+        }
+      }
     }
   }
 
