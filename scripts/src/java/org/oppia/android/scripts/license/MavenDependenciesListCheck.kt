@@ -2,6 +2,7 @@ package org.oppia.android.scripts.license
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -90,34 +91,26 @@ class MavenDependenciesListCheck(
       finalDependenciesList,
       dependenciesListFromTextProto
     )
-    if (redundantDependencies.isNotEmpty()) {
+
+    if (redundantDependencies.isNotEmpty() || missindDependencies.isNotEmpty()) {
+      println(
+        "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n"
+      )
+      if (redundantDependencies.isNotEmpty()) {
+        println("Redundant dependencies that need to be removed:\n")
+        printDependenciesList(redundantDependencies)
+      }
+      if (missindDependencies.isNotEmpty()) {
+        println("Missing dependencies that need to be added:\n")
+        printDependenciesList(missindDependencies)
+      }
       println(
         """
-        Please remove these redundant dependencies from maven_dependencies.textproto. Note that 
-        running the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
-        may fix this.
-        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
-        more.
-        """.trimIndent() + "\n"
+        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
+        """.trimIndent()
       )
-      redundantDependencies.forEach {
-        println(it)
-      }
     }
-    if (missindDependencies.isNotEmpty()) {
-      println(
-        """
-        Please add these missing dependencies to maven_dependencies.textproto. Note that running
-        the script scripts/src/java/org/oppia/android/scripts/maven/GenerateMavenDependenciesList.kt 
-        may fix this.
-        Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies to learn 
-        more.
-        """.trimIndent() + "\n"
-      )
-      missindDependencies.forEach {
-        println(it)
-      }
-    }
+
     if (redundantDependencies.isNotEmpty() && missindDependencies.isNotEmpty()) {
       throw Exception("Redundant and missing dependencies in maven_dependencies.textproto")
     } else if (redundantDependencies.isNotEmpty()) {
@@ -141,5 +134,48 @@ class MavenDependenciesListCheck(
     updatedDependenciesList: List<MavenDependency>
   ): List<MavenDependency> {
     return dependenciesList - updatedDependenciesList
+  }
+
+  private fun printDependenciesList(dependencyList: List<MavenDependency>) {
+    dependencyList.forEach { dep ->
+      println(
+        """
+        artifact_name: "${dep.artifactName}"
+        artifact_version: "${dep.artifactVersion}"
+        """.trimIndent()
+      )
+      dep.licenseList.forEach { license ->
+        printLicense(license)
+      }
+      println()
+    }
+  }
+
+  private fun printLicense(license: License) {
+    println(
+      """
+      license {
+        license_name: "${license.licenseName}"
+        original_link: "${license.originalLink}"
+      """.trimIndent()
+    )
+    when (license.verifiedLinkCase) {
+      License.VerifiedLinkCase.SCRAPABLE_LINK -> println(
+        """
+          scrapbale_link: "${license.scrapableLink.url}"
+        """.trimIndent()
+      )
+      License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> println(
+        """
+          extracted_copy_link: "${license.extractedCopyLink.url}"
+        """.trimIndent()
+      )
+      License.VerifiedLinkCase.DIRECT_LINK_ONLY -> println(
+        """
+          direct_link_only: "${license.directLinkOnly.url}"
+        """.trimIndent()
+      )
+    }
+    println("}")
   }
 }
