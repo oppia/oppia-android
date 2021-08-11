@@ -23,7 +23,7 @@ android_binary(
         "versionName": "0.1-test",
     },
     multidex = "native",
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
         "//app",
     ],
@@ -44,7 +44,7 @@ android_binary(
         "versionName": "0.1-test",
     },
     multidex = "native",
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
         "//app",
         "//instrumentation/src/java/org/oppia/android/instrumentation:oppia_test_application",

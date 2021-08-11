@@ -5,7 +5,7 @@ import dagger.Provides
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 
-/** Provides Fake GCS resource of local dev server. */
+/** Provides fake GCS resources for e2e tests (i.e. the local dev server). */
 @Module
 class EndToEndTestGcsResourceModule {
   @Provides

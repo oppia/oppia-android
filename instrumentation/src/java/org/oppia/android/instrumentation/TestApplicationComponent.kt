@@ -50,10 +50,6 @@ import javax.inject.Singleton
 /**
  * Root Dagger component for the test application. All application-scoped modules should be included
  * in this component.
- *
- * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
- * Add: [LogReportingModule]
  */
 @Singleton
 @Component(

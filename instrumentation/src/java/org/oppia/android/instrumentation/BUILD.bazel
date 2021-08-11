@@ -1,3 +1,8 @@
+"""
+This library contains the test application and modules used to build test app for end-to-end tests.
+"""
+
+
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
@@ -11,7 +16,7 @@ kt_android_library(
         "OppiaTestApplication.kt",
         "TestApplicationComponent.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
         ":dagger",
         "//app",

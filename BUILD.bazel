@@ -36,6 +36,13 @@ package_group(
     ],
 )
 
+package_group(
+    name = "oppia_e2e_testing_visibility",
+    packages = [
+        "//instrumentation/...",
+    ],
+)
+
 # Special visibility group specific to prod modules. This provides access to the module for both the
 # Oppia binary & tests.
 package_group(
