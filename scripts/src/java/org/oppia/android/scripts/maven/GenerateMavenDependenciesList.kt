@@ -2,9 +2,9 @@ package org.oppia.android.scripts.maven
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.LicenseFetcher
-import org.oppia.android.scripts.common.LicenseFetcherImpl
-import org.oppia.android.scripts.common.MavenDependenciesListGenerator
+import org.oppia.android.scripts.license.LicenseFetcher
+import org.oppia.android.scripts.license.LicenseFetcherImpl
+import org.oppia.android.scripts.license.MavenDependenciesRetriever
 import org.oppia.android.scripts.proto.MavenDependencyList
 
 /**
@@ -48,44 +48,45 @@ class GenerateMavenDependenciesList(
     val pathToMavenDependenciesTextProto = "$pathToRoot/${args[2]}"
     val pathToMavenDependenciesPb = args[3]
 
-    val mavenDependenciesListGenerator = MavenDependenciesListGenerator(licenseFetcher)
+    val MavenDependenciesRetriever = MavenDependenciesRetriever(pathToRoot, licenseFetcher)
 
     val bazelQueryDepsList =
-      mavenDependenciesListGenerator.retrieveThirdPartyMavenDependenciesList(pathToRoot)
-    val mavenInstallDepsList = mavenDependenciesListGenerator.getDependencyListFromMavenInstall(
+      MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val mavenInstallDepsList = MavenDependenciesRetriever.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
-    val dependenciesListFromPom = mavenDependenciesListGenerator
-      .retrieveDependencyListFromPom(mavenInstallDepsList)
-      .mavenDependencyList
+    val dependenciesListFromPom =
+      MavenDependenciesRetriever
+        .retrieveDependencyListFromPom(mavenInstallDepsList)
+        .mavenDependencyList
 
     val dependenciesListFromTextProto =
-      mavenDependenciesListGenerator.retrieveMavenDependencyList(pathToMavenDependenciesPb)
+      MavenDependenciesRetriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
-    val updatedDependneciesList = mavenDependenciesListGenerator.addChangesFromTextProto(
+    val updatedDependenciesList = MavenDependenciesRetriever.addChangesFromTextProto(
       dependenciesListFromPom,
       dependenciesListFromTextProto
     )
 
     val manuallyUpdatedLicenses =
-      mavenDependenciesListGenerator.retrieveManuallyUpdatedLicensesSet(updatedDependneciesList)
+      MavenDependenciesRetriever.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
-    val finalDependenciesList = mavenDependenciesListGenerator.updateMavenDependenciesList(
-      updatedDependneciesList,
+    val finalDependenciesList = MavenDependenciesRetriever.updateMavenDependenciesList(
+      updatedDependenciesList,
       manuallyUpdatedLicenses
     )
-    mavenDependenciesListGenerator.writeTextProto(
+    MavenDependenciesRetriever.writeTextProto(
       pathToMavenDependenciesTextProto,
       MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build()
     )
 
     val licensesToBeFixed =
-      mavenDependenciesListGenerator.getAllBrokenLicenses(finalDependenciesList)
+      MavenDependenciesRetriever.getAllBrokenLicenses(finalDependenciesList)
 
     if (licensesToBeFixed.isNotEmpty()) {
-      val licenseToDependencyMap = mavenDependenciesListGenerator
+      val licenseToDependencyMap = MavenDependenciesRetriever
         .findFirstDependenciesWithBrokenLicenses(
           finalDependenciesList,
           licensesToBeFixed
@@ -149,7 +150,7 @@ class GenerateMavenDependenciesList(
     }
 
     val dependenciesWithoutAnyLinks =
-      mavenDependenciesListGenerator.getDependenciesThatNeedIntervention(finalDependenciesList)
+      MavenDependenciesRetriever.getDependenciesThatNeedIntervention(finalDependenciesList)
     if (dependenciesWithoutAnyLinks.isNotEmpty()) {
       println(
         """

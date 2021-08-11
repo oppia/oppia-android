@@ -10,7 +10,6 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.LicenseFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -27,7 +26,6 @@ import java.util.concurrent.TimeUnit
 /** Tests for [MavenDependenciesListCheck]. */
 class MavenDependenciesListCheckTest {
 
-  private val THIRD_PARTY_PREFIX = "//third_pary:"
   private val DATA_BINDING_DEP = "androidx.databinding:databinding-adapters:3.4.2"
   private val PROTO_LITE_DEP = "com.google.protobuf:protobuf-lite:3.0.0"
   private val GLIDE_DEP =
@@ -58,9 +56,6 @@ class MavenDependenciesListCheckTest {
     "firebase-analytics/$FIREBASE_ANALYTICS_UPGRADED_VERSION/firebase-analytics-" +
     "$FIREBASE_ANALYTICS_UPGRADED_VERSION.pom"
 
-  private val LICENSE_DETAILS_INCOMPLETE_FAILURE = "Licenses details are not completed"
-  private val UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE =
-    "License links are invalid or not available for some dependencies"
   private val SCRIPT_PASSED_MESSAGE =
     "maven_dependencies.textproto is up-to-date."
   private val MISSING_DEPENDENCIES_ONLY_FAILURE =
@@ -509,109 +504,6 @@ class MavenDependenciesListCheckTest {
   }
 
   @Test
-  fun testMavenDepsListCheck_licenseLinkNotVerified_failsWithException() {
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      GLIDE_DEP
-    )
-    setUpBazelEnvironment(coordsList)
-
-    val exception = assertThrows(Exception::class) {
-      MavenDependenciesListCheck(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
-    }
-    assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
-  }
-
-  @Test
-  fun testMavenDepsListCheck_depMissingLicenses_failsWithException() {
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = PROTO_LITE_DEP
-            this.artifactVersion = PROTO_LITE_VERSION
-          }.build()
-        )
-      )
-    }.build()
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      PROTO_LITE_DEP
-    )
-    setUpBazelEnvironment(coordsList)
-
-    val exception = assertThrows(Exception::class) {
-      MavenDependenciesListCheck(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
-    }
-    assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
-  }
-
-  @Test
   fun testMavenDepsListCheck_depVersionUpgraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val license1 = License.newBuilder().apply {
@@ -773,61 +665,6 @@ class MavenDependenciesListCheckTest {
       }
       """.trimIndent() + "\n\n"
     )
-  }
-
-  @Test
-  fun testMavenDepsListCheck_depWithInvalidLicenseLink_failsWithException() {
-    val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Fabric Software and Services Agreement"
-      this.originalLink = "https://fabric.io/terms"
-      this.isOriginalLinkInvalid = true
-    }.build()
-
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = IO_FABRIC_DEP
-            this.artifactVersion = IO_FABRIC_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
-    mavenDependencyList.writeTo(pbFile.outputStream())
-
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      IO_FABRIC_DEP
-    )
-    setUpBazelEnvironment(coordsList)
-
-    val exception = assertThrows(Exception::class) {
-      MavenDependenciesListCheck(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-        )
-      )
-    }
-    assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
   }
 
   @Test

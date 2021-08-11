@@ -46,27 +46,3 @@ kt_jvm_library(
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
 )
-
-kt_jvm_library(
-    name = "license_fetcher",
-    testonly = True,
-    srcs = [
-        "LicenseFetcher.kt",
-        "LicenseFetcherImpl.kt",
-    ],
-)
-
-kt_jvm_library(
-    name = "maven_dependencies_list_generator",
-    testonly = True,
-    srcs = ["MavenDependenciesListGenerator.kt"],
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [
-        ":bazel_client",
-        ":license_fetcher",
-        "//scripts/src/java/org/oppia/android/scripts/maven/data:data_lib",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
-        "//third_party:com_google_protobuf_protobuf-java",
-    ],
-)
