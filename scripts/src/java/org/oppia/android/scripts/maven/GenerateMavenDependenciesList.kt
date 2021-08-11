@@ -2,8 +2,6 @@ package org.oppia.android.scripts.maven
 
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.proto.License
-import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.license.LicenseFetcherImpl
 import org.oppia.android.scripts.license.MavenDependenciesRetriever
