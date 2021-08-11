@@ -5,6 +5,7 @@ import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.Solution
@@ -28,9 +29,6 @@ internal class StateDeck internal constructor(
   private val hintList: MutableList<Hint> = ArrayList()
   private lateinit var solution: Solution
   private var stateIndex: Int = 0
-  // The value -1 indicates that hint has not been revealed yet.
-  private var revealedHintIndex: Int = -1
-  private var solutionIsRevealed: Boolean = false
 
   /** Resets this deck to a new, specified initial [State]. */
   internal fun resetDeck(initialState: State) {
@@ -39,10 +37,22 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     stateIndex = 0
-    // Initialize the variable revealedHintIndex with -1 to indicate that no hint has been
-    // revealed yet.
-    revealedHintIndex = -1
-    solutionIsRevealed = false
+  }
+
+  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
+  internal fun resumeDeck(
+    pendingTopState: State,
+    previousStates: List<EphemeralState>,
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int
+  ) {
+    this.pendingTopState = pendingTopState
+    this.previousStates.clear()
+    this.currentDialogInteractions.clear()
+    this.hintList.clear()
+    this.previousStates.addAll(previousStates)
+    this.currentDialogInteractions.addAll(currentDialogInteractions)
+    this.stateIndex = stateIndex
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
@@ -117,10 +127,6 @@ internal class StateDeck internal constructor(
     currentDialogInteractions.clear()
     hintList.clear()
     pendingTopState = state
-    // Re-initialize the variable revealedHintIndex with -1 to indicate that no hint has been
-    // revealed on the new pendingTopState.
-    revealedHintIndex = -1
-    solutionIsRevealed = false
   }
 
   internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
@@ -138,8 +144,6 @@ internal class StateDeck internal constructor(
       .build()
     pendingTopState = newState
     hintList.clear()
-    // Increment the value of revealHintIndex by 1 every-time a new hint is revealed.
-    revealedHintIndex++
     return ephemeralState
   }
 
@@ -154,7 +158,6 @@ internal class StateDeck internal constructor(
       )
       .build()
     pendingTopState = newState
-    solutionIsRevealed = true
     return ephemeralState
   }
 
@@ -193,6 +196,7 @@ internal class StateDeck internal constructor(
    * [StateDeck] that are used in light weight checkpointing.
    */
   internal fun createExplorationCheckpoint(
+    helpIndex: HelpIndex,
     explorationVersion: Int,
     explorationTitle: String,
     timestamp: Long
@@ -207,10 +211,9 @@ internal class StateDeck internal constructor(
         }
       )
       pendingStateName = pendingTopState.name
-      hintIndex = revealedHintIndex
       addAllPendingUserAnswers(currentDialogInteractions)
-      this.solutionIsRevealed = this@StateDeck.solutionIsRevealed
       this.stateIndex = this@StateDeck.stateIndex
+      this.helpIndex = helpIndex
       this.explorationVersion = explorationVersion
       this.explorationTitle = explorationTitle
       timestampOfFirstCheckpoint = timestamp

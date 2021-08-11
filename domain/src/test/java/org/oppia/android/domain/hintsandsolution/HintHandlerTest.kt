@@ -24,6 +24,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HintIndex
@@ -139,7 +140,8 @@ class HintHandlerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -168,7 +170,8 @@ class HintHandlerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -202,7 +205,8 @@ class HintHandlerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
@@ -247,7 +251,8 @@ class HintHandlerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     verifyOperationSucceeds(
       explorationDataController.startPlayingExploration(
@@ -255,7 +260,8 @@ class HintHandlerTest {
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress
+        shouldSavePartialProgress,
+        explorationCheckpoint
       )
     )
   }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
@@ -224,7 +225,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->

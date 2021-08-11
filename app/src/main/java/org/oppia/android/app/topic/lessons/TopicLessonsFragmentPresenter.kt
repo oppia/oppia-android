@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToStoryListener
@@ -18,6 +19,7 @@ import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
+  private val explorationCheckpointController: ExplorationCheckpointController
 ) {
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
@@ -217,7 +220,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -236,7 +240,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              isCheckpointingEnabled = false
+              isCheckpointingEnabled = true
             )
           }
         }
