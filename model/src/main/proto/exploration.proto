@@ -160,8 +160,6 @@ message Solution {
   SubtitledHtml explanation = 4;
   // To check if the solution was revealed or not by the learner.
   bool solution_is_revealed = 5;
-  // To check if the un-revealed solution was visible to the learner or not.
-  bool unrevealed_solution_is_visible = 6;
 }
 
 // Structure for a Correct answer in Solution
@@ -183,8 +181,6 @@ message Hint {
   bool hint_is_revealed = 2;
   // The current state that is display to the user.
   State state = 3;
-  // To check if hint is visible but not yet revealed by the user.
-  bool unrevealed_hint_is_visible = 4;
 }
 
 // Structure for a single outcome
@@ -237,10 +233,8 @@ message EphemeralState {
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
   }
-
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
-
   // The state of hints for the current exploration.
   HintState hint_state = 8;
 }
@@ -342,16 +336,25 @@ message HelpIndex {
   }
 }
 
+// A structure that contains details about the hint that is visible to the learner.
 message HintIndex {
+  // Index of the hint that is visible to the learner.
   int32 index = 1;
+  // Boolean to indicate if the learner has revealed the hint or not.
   bool is_hint_revealed = 2;
 }
 
+// A Structure corresponding to the state of hint and solution for the current exploration or
+// training session.
 message HintState {
+  // HelpIndex for the current state.
   HelpIndex help_index = 1;
-  int32 hint_sequence_number = 4;
-  int32 tracked_answer_count = 5;
-  bool is_hint_visible_in_latest_state = 6;
+  // Sequence number of the most recently scheduled task to show help to the learner.
+  int32 hint_sequence_number = 2;
+  // Count of wrong answers that the hint handler has been notified about.
+  int32 tracked_answer_count = 3;
+  // Delay for scheduling a new task to show more help to the learner.
+  int64 delay_to_show_next_hint_and_solution = 4;
 }
 
 // Different states in which exploration checkpoint can exist.

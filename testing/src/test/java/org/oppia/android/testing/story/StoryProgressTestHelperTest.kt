@@ -78,6 +78,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
+
+  // TODO(#3662): Once checkpointing is enabled, remove the function that marks lessons as
+  //  started_not_completed and the tests that test this behaviour.
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -1850,24 +1854,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkAllTopicsAsRecentlyPlayed_allTopicsAreCorrectlyMarked() {
-    storyProgressTestHelper.markAllTopicsAsRecentlyPlayed(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-
-    assertThat(testTopic0.isStartedNotCompleted()).isTrue()
-    assertThat(testTopic1.isInProgressSaved()).isTrue()
-    assertThat(ratiosTopic.isInProgressSaved()).isTrue()
-    assertThat(fractionsTopic.isInProgressNotSaved()).isTrue()
-  }
-
-  @Test
   fun testMarkAllTopicsDone_allTopicsAreDone() {
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId0,
@@ -2124,7 +2110,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterComplete_oneOneProfile_notCompletedOnOtherProfile() {
+  fun testMarkChapterComplete_onOneProfile_notCompletedOnOtherProfile() {
     storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -2137,7 +2123,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_oneOneProfile_notStartedOnOtherProfile() {
+  fun testMarkChapterAsStartedNotCompleted_onOneProfile_notStartedOnOtherProfile() {
     storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -2150,7 +2136,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsInProgressSaved_oneOneProfile_notStartedOnOtherProfile() {
+  fun testMarkChapterAsInProgressSaved_onOneProfile_notStartedOnOtherProfile() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -2163,7 +2149,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsInProgressNotSaved_oneOneProfile_notStartedOnOtherProfile() {
+  fun testMarkChapterAsInProgressNotSaved_onOneProfile_notStartedOnOtherProfile() {
     storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false

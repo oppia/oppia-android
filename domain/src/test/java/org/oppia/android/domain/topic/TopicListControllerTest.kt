@@ -132,7 +132,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_firstTopic_hasCrtTopicInfo() {
+  fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
@@ -140,14 +140,14 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_firstTopic_hasCrtLessonCount() {
+  fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test
-  fun testRetrieveTopicList_secondTopic_hasCrtTopicInfo() {
+  fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
@@ -155,14 +155,14 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_secondTopic_hasCrtLessonCount() {
+  fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
   }
 
   @Test
-  fun testRetrieveTopicList_fractionsTopic_hasCrtTopicInfo() {
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -170,14 +170,14 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_fractionsTopic_hasCrtLessonCount() {
+  fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
   }
 
   @Test
-  fun testRetrieveTopicList_ratiosTopic_hasCrtTopicInfo() {
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
@@ -185,7 +185,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveTopicList_ratiosTopic_hasCrtLessonCount() {
+  fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
@@ -207,7 +207,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_defaultLesson_hasCrtInfo() {
+  fun testRetrievePromotedActivityList_defaultLesson_hasCorrectInfo() {
     topicListController.getPromotedActivityList(profileId0).toLiveData()
       .observeForever(mockPromotedActivityListObserver)
     testCoroutineDispatchers.runCurrent()
@@ -216,7 +216,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markFracStory0Exp0StartedNotCompleted_ongoingStoryListIsCrt() {
+  fun testPromotedActivityList_markFracStory0Exp0StartedNotCompleted_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -231,7 +231,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markFracStory0Exp0InProgressSaved_ongoingStoryListIsCrt() {
+  fun testGetPromotedActivityList_markFracStory0Exp0InProgressSaved_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -246,7 +246,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCrt() {
+  fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -261,7 +261,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCrt() {
+  fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -276,7 +276,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1Started_ongoingStoryListCrt() {
+  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1Started_ongoingStoryListCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -295,7 +295,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1ProgSaved_ongoingStoryListCrt() {
+  fun testStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1ProgSaved_ongoingStoryListCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -333,7 +333,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCrt() {
+  fun testGetPromotedStoryList_markAllChapsDoneInFractions_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -353,7 +353,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingStoryListIsCrt() {
+  fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -375,7 +375,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markExp0DoneAndExp2InRatios_promotedStoryListIsCrt() {
+  fun testGetStoryList_markExp0DoneAndExp2InRatios_promotedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -390,7 +390,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markStoryDoneOfRatiosAndFirstTestTopic_suggestedStoryListIsCrt() {
+  fun testGetStoryList_markStoryDoneOfRatiosAndFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -410,7 +410,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_noTopicProgress_defaultSuggestedStoryListIsCrt() {
+  fun testGetStoryList_noTopicProgress_defaultSuggestedStoryListIsCorrect() {
     val promotedActivityList = retrievePromotedActivityList()
 
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
@@ -428,7 +428,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCrt() {
+  fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -452,7 +452,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCrt() {
+  fun testRetrievePromotedActivityList_markAllChapDoneInAllTopics_comingSoonTopicListIsCorrect() {
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -481,7 +481,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCrt() {
+  fun testGetStoryList_markAllChapDoneInSecondTestTopic_comingSoonTopicListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic1Story0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -500,7 +500,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCrt() {
+  fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastSevenDays_ongoingListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -529,7 +529,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingOlderListIsCrt() {
+  fun testGetStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingOlderListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
@@ -558,7 +558,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCrt() {
+  fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -573,7 +573,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCrt() {
+  fun testGetStoryList_markOneStoryDoneForFirstTestTopic_suggestedStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -589,7 +589,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markOneStoryDoneAndPlayNextStoryOfRatiosTopic_ongoingListIsCrt() {
+  fun testGetStoryList_markOneStoryDoneAndPlayNextStoryOfRatiosTopic_ongoingListIsCorrect() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -642,7 +642,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCrt() {
+  fun testRetrieveStoryList_markFirstExpOfEveryStoryDoneWithinLastMonth_ongoingListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = true
@@ -669,6 +669,35 @@ class TopicListControllerTest {
     )
     verifyOngoingStoryAsRatioStory1Exploration3(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testStoryList_markLessons_progressSaved_notSaved_startedNotDone_ongoingListCorrect() {
+    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressNotSavedRatiosStory1Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration2(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2]
     )
   }
 
