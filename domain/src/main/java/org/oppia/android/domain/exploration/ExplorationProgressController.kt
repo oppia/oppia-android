@@ -744,6 +744,10 @@ class ExplorationProgressController @Inject constructor(
     )
   }
 
+  /**
+   * Updates the hint state in [ExplorationProgrses] with the one created from the saved checkpoint
+   * or the default instance of hint state if exploration is not being resumed.
+   */
   private fun loadHintState(progress: ExplorationProgress) {
     progress.hintState =
       if (progress.currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
