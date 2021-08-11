@@ -65,8 +65,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//third_party:com_google_android_material_material",
         "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:com_google_android_material_material",
     ],
 )
 
