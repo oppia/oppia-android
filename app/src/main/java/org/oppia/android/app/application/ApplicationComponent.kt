@@ -39,6 +39,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -78,7 +79,10 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class, NetworkConnectionUtilDebugModule::class
+    DeveloperOptionsModule::class, NetworkConnectionUtilDebugModule::class,
+    // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
+    //  directly exclude debug files from the build and thus won't be requiring this module.
+    NetworkConnectionDebugUtilModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

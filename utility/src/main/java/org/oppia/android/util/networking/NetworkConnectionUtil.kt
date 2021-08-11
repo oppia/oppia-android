@@ -2,8 +2,9 @@ package org.oppia.android.util.networking
 
 /** Utility to get the current connection status of the device. */
 interface NetworkConnectionUtil {
+
   /** Enum to distinguish different connection statuses for the device. */
-  enum class ConnectionStatus {
+  enum class ConnectionStatus : org.oppia.android.util.networking.ConnectionStatus {
     /** Connected to WIFI or Ethernet. */
     LOCAL,
 
@@ -11,12 +12,9 @@ interface NetworkConnectionUtil {
     CELLULAR,
 
     /** Not connected to a network. */
-    NONE,
-
-    /** Refers to the actual connection status of the device. */
-    DEFAULT
+    NONE
   }
 
   /** Returns a [ConnectionStatus] indicating the current connection status of the device. */
-  fun getCurrentConnectionStatus(): ConnectionStatus
+  fun getCurrentConnectionStatus(): org.oppia.android.util.networking.ConnectionStatus
 }

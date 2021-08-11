@@ -38,8 +38,8 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -63,7 +63,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -87,7 +87,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionLoggerStartupListener.uncaughtException(
       Thread.currentThread(),

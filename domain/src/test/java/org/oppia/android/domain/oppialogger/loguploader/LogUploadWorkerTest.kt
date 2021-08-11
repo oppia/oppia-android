@@ -42,8 +42,8 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.LogUploader
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugImpl
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -59,7 +59,7 @@ private const val TEST_TOPIC_ID = "test_topicId"
 class LogUploadWorkerTest {
 
   @Inject
-  lateinit var networkConnectionUtilDebugImpl: NetworkConnectionUtilDebugImpl
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -117,7 +117,7 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
       eventLogTopicContext.actionName,
@@ -145,7 +145,7 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
-    networkConnectionUtilDebugImpl.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
