@@ -278,6 +278,27 @@ class ComputeAffectedTestsTest {
     assertThat(reportedTargets).containsExactly("//:FirstTest", "//:ThirdTest")
   }
 
+  @Test
+  fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    switchToFeatureBranch()
+    createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    val reportedTargets = runScript()
+
+    assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
+  }
+
+  @Test
+  fun testUtility_developBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    val reportedTargets = runScript()
+
+    assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
+  }
+
   /**
    * Runs the compute_affected_tests utility & returns all of the output lines. Note that the output
    * here is that which is saved directly to the output file, not debug lines printed to the
