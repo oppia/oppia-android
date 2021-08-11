@@ -21,11 +21,9 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
     else forcedConnectionStatus
   }
 
-  /** Forces [connectionStatus] as the current connection status of the device. */
   override fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus) {
     forcedConnectionStatus = connectionStatus
   }
 
-  /** Returns the [forcedConnectionStatus] indicating whether the connection status was forced or not. */
   override fun getForcedConnectionStatus(): ConnectionStatus = forcedConnectionStatus
 }

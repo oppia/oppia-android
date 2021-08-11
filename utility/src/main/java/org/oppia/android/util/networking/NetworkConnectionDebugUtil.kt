@@ -9,9 +9,11 @@ interface NetworkConnectionDebugUtil {
     DEFAULT
   }
 
+  /** Forces [connectionStatus] as the current connection status of the device. */
   fun setCurrentConnectionStatus(
     connectionStatus: org.oppia.android.util.networking.ConnectionStatus
   )
 
+  /** Returns the [ConnectionStatus] indicating whether the connection status was forced or not. */
   fun getForcedConnectionStatus(): org.oppia.android.util.networking.ConnectionStatus
 }
