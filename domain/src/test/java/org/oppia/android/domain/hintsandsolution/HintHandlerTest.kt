@@ -27,7 +27,6 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HintIndex
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
@@ -133,7 +132,7 @@ class HintHandlerTest {
   }
 
   @Test
-  fun testMaybeScheduleShowHint_wrongAnswer_returnsHintStateForHint1() {
+  fun testMaybeScheduleShowHint_nextState_hintStateIsCorrect() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -144,26 +143,25 @@ class HintHandlerTest {
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     navigateToPrototypeFractionInputState()
-    submitWrongAnswerForPrototypeState2()
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    val hintState = hintHandler.maybeScheduleShowHint(
-      currentState.state,
-      currentState.pendingState.wrongAnswerCount
+    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+
+    assertThat(currentHintState.hintSequenceNumber).isEqualTo(2)
+    assertThat(currentHintState.trackedAnswerCount).isEqualTo(0)
+    // HintIndex.indexTypeCase will be INDEXTYPE_NOT_SET until the first hint is visible.
+    assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
+      HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
     )
-    assertThat(hintState.hintSequenceNumber).isEqualTo(4)
-    assertThat(hintState.trackedAnswerCount).isEqualTo(1)
-    assertThat(hintState.helpIndex).isEqualTo(HelpIndex.getDefaultInstance())
-    assertThat(hintState.delayToShowNextHintAndSolution).isEqualTo(delayShowInitialHintMs.get())
+    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
+    assertThat(currentHintState.delayToShowNextHintAndSolution)
+      .isEqualTo(delayShowInitialHintMs.get())
   }
 
   @Test
-  fun testMaybeScheduleShowHint_revealHint_anotherWrongAnswer_returnsHintStateForSolution() {
+  fun testMaybeScheduleShowHint_nextState_submitOneWrongAnswers_hintStateIsCorrect() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -175,30 +173,56 @@ class HintHandlerTest {
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
-    explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0
-    )
-    submitWrongAnswerForPrototypeState2()
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    val hintState = hintHandler.maybeScheduleShowHint(
-      currentState.state,
-      currentState.pendingState.wrongAnswerCount
+    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+
+    assertThat(currentHintState.hintSequenceNumber).isEqualTo(3)
+    assertThat(currentHintState.trackedAnswerCount).isEqualTo(1)
+    // HintIndex.indexTypeCase will be INDEXTYPE_NOT_SET until the first hint is visible.
+    assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
+      HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
     )
-    assertThat(hintState.hintSequenceNumber).isEqualTo(4)
-    assertThat(hintState.trackedAnswerCount).isEqualTo(2)
-    assertThat(hintState.helpIndex).isEqualTo(HelpIndex.newBuilder().setShowSolution(true).build())
-    assertThat(hintState.delayToShowNextHintAndSolution).isEqualTo(-1)
+    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
+    assertThat(currentHintState.delayToShowNextHintAndSolution)
+      .isEqualTo(delayShowInitialHintMs.get())
   }
 
   @Test
-  fun testShowNewHintAndSolution_returnsCorrectHintState() {
+  fun testMaybeScheduleShowHint_nextState_submitTwoWrongAnswer_hintStateIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    )
+    navigateToPrototypeFractionInputState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+
+    assertThat(currentHintState.hintSequenceNumber).isEqualTo(4)
+    assertThat(currentHintState.trackedAnswerCount).isEqualTo(2)
+    // Now that the first hint is visible, the HintIndex.IndexTypeCase should be equal to HINT_INDEX.
+    assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
+      HelpIndex.IndexTypeCase.HINT_INDEX
+    )
+    assertThat(currentHintState.helpIndex.hintIndex).isEqualTo(0)
+    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
+    // The delay should now be equal to -1 because there is unrevealed help available.
+    assertThat(currentHintState.delayToShowNextHintAndSolution).isEqualTo(-1)
+  }
+
+  @Test
+  fun testMaybeScheduleShowHint_revealHint_returnsHintStateIsCorrect() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -210,28 +234,26 @@ class HintHandlerTest {
     )
     navigateToPrototypeFractionInputState()
     submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    explorationProgressController.submitHintIsRevealed(hintIsRevealed = true, hintIndex = 0)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentState = currentStateResultCaptor.value.getOrThrow()
-    val hintState = hintHandler.showNewHintAndSolution(
-      currentState.state,
-      currentState.hintState.hintSequenceNumber
+    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+
+    assertThat(currentHintState.hintSequenceNumber).isEqualTo(5)
+    assertThat(currentHintState.trackedAnswerCount).isEqualTo(2)
+    assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
+      HelpIndex.IndexTypeCase.HINT_INDEX
     )
-    assertThat(hintState.hintSequenceNumber).isEqualTo(3)
-    assertThat(hintState.trackedAnswerCount).isEqualTo(1)
-    assertThat(hintState.helpIndex).isEqualTo(
-      HelpIndex.newBuilder().setHintIndex(
-        HintIndex.newBuilder()
-          .setIsHintRevealed(false)
-          .setIndex(0)
-          .build()
-      ).build()
-    )
-    assertThat(hintState.delayToShowNextHintAndSolution).isEqualTo(delayShowInitialHintMs.get())
+    assertThat(currentHintState.helpIndex.hintIndex).isEqualTo(0)
+    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isTrue()
+    // The delay should now be equal to 30 seconds because first hint was revealed.
+    assertThat(currentHintState.delayToShowNextHintAndSolution)
+      .isEqualTo(delayShowAdditionalHintsMs.get())
   }
 
   /**

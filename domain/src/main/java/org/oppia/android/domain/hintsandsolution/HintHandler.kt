@@ -1,7 +1,6 @@
 package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HintIndex
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.State
 import javax.inject.Inject
@@ -109,6 +108,8 @@ class HintHandler @Inject constructor(
           hintSequenceNumber++
           delayShowInitialHintMs
         } else {
+          // Update the sequence number to cancel any pending tasks ans show new help immediately.
+          hintSequenceNumber++
           // Update helpIndex with the next available help
           helpIndex = getNextHintAndSolutionToReveal(state)
           // Set delayForNextHintAndSolution to -1 so that no new tasks are scheduled.
@@ -116,7 +117,7 @@ class HintHandler @Inject constructor(
         }
       }
       HelpIndex.IndexTypeCase.HINT_INDEX -> {
-        if (!helpIndex.hintIndex.isHintRevealed) {
+        if (!helpIndex.isAllVisibleHelpRevealed) {
           // Do not schedule a new task until the last help has been revealed.
           -1
         } else if (trackedWrongAnswerCount != wrongAnswerCount) {
@@ -159,18 +160,17 @@ class HintHandler @Inject constructor(
   /** Notifies the HintHandler that the visible hint has been revealed by the learner. */
   fun notifyHintIsRevealed(index: Int) {
     if (
-      helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX &&
-      helpIndex.hintIndex.index == index
+      helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX && helpIndex.hintIndex == index
     ) {
-      val updatedHintIndex = helpIndex.hintIndex.toBuilder().setIsHintRevealed(true).build()
-      helpIndex = helpIndex.toBuilder().setHintIndex(updatedHintIndex).build()
+      helpIndex = helpIndex.toBuilder().setIsAllVisibleHelpRevealed(true).build()
     }
   }
 
   /** Notifies the HintHandler that the visible solution has been revealed by the learner. */
   fun notifySolutionIsRevealed() {
     if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION) {
-      helpIndex = helpIndex.toBuilder().setEverythingRevealed(true).build()
+      helpIndex =
+        helpIndex.toBuilder().setEverythingRevealed(true).setIsAllVisibleHelpRevealed(true).build()
     }
   }
 
@@ -192,16 +192,14 @@ class HintHandler @Inject constructor(
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
     } else if (lastUnrevealedHintIndex != null) {
-      HelpIndex.newBuilder().setHintIndex(
-        HintIndex.newBuilder()
-          .setIsHintRevealed(false)
-          .setIndex(lastUnrevealedHintIndex)
-          .build()
-      ).build()
+      HelpIndex.newBuilder()
+        .setHintIndex(lastUnrevealedHintIndex)
+        .setIsAllVisibleHelpRevealed(false)
+        .build()
     } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
-      HelpIndex.newBuilder().setShowSolution(true).build()
+      HelpIndex.newBuilder().setShowSolution(true).setIsAllVisibleHelpRevealed(false).build()
     } else {
-      HelpIndex.newBuilder().setEverythingRevealed(true).build()
+      HelpIndex.newBuilder().setEverythingRevealed(true).setIsAllVisibleHelpRevealed(true).build()
     }
   }
 

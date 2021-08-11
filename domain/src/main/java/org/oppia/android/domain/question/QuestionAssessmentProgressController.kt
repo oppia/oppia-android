@@ -199,6 +199,16 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
+  /**
+   * Notifies the [StateDeck] and the [HintHandler] that the visible hint has benn revealed by the
+   * user.
+   *
+   * @param hintIsRevealed boolean to indicate if the hint was revealed or not
+   * @param hintIndex index of the hint that was revealed in the hint list of the current pending
+   *     state
+   * @return a one-time [LiveData] that indicates success/failure of the operation with the hint
+   *     that was revealed
+   */
   fun submitHintIsRevealed(hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
     try {
       progressLock.withLock {
@@ -245,6 +255,12 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
+  /**
+   *  Notifies the [StateDeck] and the [HintHandler] that the solution has been revealed by the user.
+   *
+   * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
+   *     that was revealed
+   */
   fun submitSolutionIsRevealed(): LiveData<AsyncResult<Solution>> {
     try {
       progressLock.withLock {
