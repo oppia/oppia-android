@@ -73,8 +73,8 @@ private fun computeAffectedTargetsForDevelopBranch(bazelClient: BazelClient, out
     "Affected test targets:" +
       "\n${nonInstrumentationAffectedTestTargets.joinToString(separator = "\n") { "- $it" }}"
   )
-  outputFile.printWriter().use {
-      writer -> nonInstrumentationAffectedTestTargets.forEach { writer.println(it) }
+  outputFile.printWriter().use { writer ->
+    nonInstrumentationAffectedTestTargets.forEach { writer.println(it) }
   }
 }
 
