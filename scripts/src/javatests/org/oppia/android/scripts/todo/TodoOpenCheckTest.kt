@@ -62,7 +62,7 @@ class TodoOpenCheckTest {
     val testContent1 =
       """
       // TODO(#11002): test summary 1.
-      #TODO(#11004): test summary 2.
+      # TODO(#11004): test summary 2.
       test Todo
       test TODO
       """.trimIndent()
@@ -130,7 +130,7 @@ class TodoOpenCheckTest {
     val testContent =
       """
       // TODO(#104444444): test summary 1.
-      #TODO(#10210110): test summary 2.
+      # TODO(#10210110): test summary 2.
       test todo
       some test content Todo
       <!-- TODO(#101000000): test summary 3-->
@@ -166,7 +166,7 @@ class TodoOpenCheckTest {
     val testContent1 =
       """
       // TODO(#10444444): test summary 1.
-      #TODO (#102): test summary 2.
+      #Todo(#102): test summary 2.
       <!-- TODO(#349888): test summary 3-->
 
       """.trimIndent()

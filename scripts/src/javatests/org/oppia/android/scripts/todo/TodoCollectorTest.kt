@@ -128,6 +128,7 @@ class TodoCollectorTest {
       """
       // TODO (#121): test todo.
       # TODO(    110)
+      //todo(#15444)
       <!--TODO(# 101)-->
       """.trimIndent()
     val testContent2 =
@@ -152,7 +153,7 @@ class TodoCollectorTest {
 
     val allTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
     val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(allTodos)
-    assertThat(poorlyFormattedTodos).hasSize(6)
+    assertThat(poorlyFormattedTodos).hasSize(7)
     assertThat(poorlyFormattedTodos).contains(
       Todo(
         filePath = tempFile1.toString(),
@@ -171,6 +172,13 @@ class TodoCollectorTest {
       Todo(
         filePath = tempFile1.toString(),
         lineNumber = 3,
+        lineContent = "//todo(#15444)"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 4,
         lineContent = "<!--TODO(# 101)-->"
       )
     )

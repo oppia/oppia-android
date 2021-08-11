@@ -72,7 +72,7 @@
             android:textDirection="locale"
             android:textSize="16sp" />
         </LinearLayout>
-        <!--TODO(#352): Show worked examples in Concept Card.-->
+        <!-- TODO(#352): Show worked examples in Concept Card.-->
       </ScrollView>
 
       <View

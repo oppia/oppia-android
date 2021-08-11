@@ -7,9 +7,9 @@ import org.oppia.android.scripts.todo.model.Todo
 class TodoCollector {
   companion object {
     private val todoDetectorRegex = Regex(pattern = "\\bTODO\\b", option = RegexOption.IGNORE_CASE)
-    private val todoRegex = "\\bTODO\\b\\(".toRegex()
+    private val todoRegex = Regex(pattern = "\\bTODO\\b\\s*\\(", option = RegexOption.IGNORE_CASE)
     private val todoStartingRegex = Regex(
-      pattern = "(//|<!--|#|\\*)[\\s]*\\bTODO\\b",
+      pattern = "(//|<!--|#|\\*)\\s\\bTODO\\b",
       option = RegexOption.IGNORE_CASE
     )
     private val correctTodoFormatRegex = "\\bTODO\\b\\(#(\\d+)\\): .+".toRegex()

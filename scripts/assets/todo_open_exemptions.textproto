@@ -45,43 +45,72 @@ todo_open_exemption {
 todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoCollectorTest.kt"
   line_number: 39
+  line_number: 48
+  line_number: 55
   line_number: 58
   line_number: 67
   line_number: 68
   line_number: 72
   line_number: 76
   line_number: 77
+  line_number: 89
   line_number: 92
+  line_number: 96
   line_number: 99
+  line_number: 103
   line_number: 106
+  line_number: 110
   line_number: 113
+  line_number: 117
   line_number: 120
   line_number: 129
   line_number: 130
   line_number: 131
-  line_number: 136
-  line_number: 141
-  line_number: 144
-  line_number: 160
-  line_number: 167
-  line_number: 174
-  line_number: 181
-  line_number: 188
-  line_number: 195
-  line_number: 204
-  line_number: 205
-  line_number: 206
-  line_number: 211
-  line_number: 216
+  line_number: 132
+  line_number: 137
+  line_number: 142
+  line_number: 145
+  line_number: 158
+  line_number: 161
+  line_number: 165
+  line_number: 168
+  line_number: 172
+  line_number: 175
+  line_number: 179
+  line_number: 182
+  line_number: 186
+  line_number: 189
+  line_number: 193
+  line_number: 196
+  line_number: 200
+  line_number: 203
+  line_number: 212
+  line_number: 213
+  line_number: 214
   line_number: 219
-  line_number: 235
-  line_number: 242
-  line_number: 249
-  line_number: 256
-  line_number: 263
+  line_number: 224
+  line_number: 227
+  line_number: 240
+  line_number: 243
+  line_number: 247
+  line_number: 250
+  line_number: 254
+  line_number: 257
+  line_number: 261
+  line_number: 264
+  line_number: 268
   line_number: 271
+  line_number: 279
+}
+todo_open_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
+  line_number: 82
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoOpenCheck.kt"
   line_number: 99
+}
+todo_open_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
+  line_number: 10
 }
