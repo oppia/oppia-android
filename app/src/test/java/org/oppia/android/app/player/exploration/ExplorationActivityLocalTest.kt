@@ -23,8 +23,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
-import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
@@ -42,6 +40,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -108,8 +107,7 @@ class ExplorationActivityLocalTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = false
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -136,8 +134,7 @@ class ExplorationActivityLocalTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint
+    shouldSavePartialProgress: Boolean
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -148,8 +145,7 @@ class ExplorationActivityLocalTest {
           topicId,
           storyId,
           explorationId,
-          shouldSavePartialProgress,
-          explorationCheckpoint
+          shouldSavePartialProgress
         )
       }
     }

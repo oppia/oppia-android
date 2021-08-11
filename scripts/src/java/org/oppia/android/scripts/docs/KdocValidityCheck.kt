@@ -69,7 +69,8 @@ fun main(vararg args: String) {
     "After",
     "AfterClass",
     "Inject",
-    "Provides"
+    "Provides",
+    "Binds"
   )
 
   // A list of all the files to be exempted for this check.
@@ -82,8 +83,13 @@ fun main(vararg args: String) {
     expectedExtension = ".kt"
   )
 
+  // List of files excluding the Test files.
+  val filesExcludingTestFiles = searchFiles.filter { file ->
+    !file.nameWithoutExtension.endsWith("Test")
+  }
+
   // A list of all kdoc presence failures.
-  val kdocPresenceFailures = searchFiles.flatMap { file ->
+  val kdocPresenceFailures = filesExcludingTestFiles.flatMap { file ->
     hasKdocFailure(file, kDocNotRequiredAnnotationEntryList)
   }
 

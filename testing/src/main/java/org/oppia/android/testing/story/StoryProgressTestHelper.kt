@@ -312,6 +312,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markStartedNotCompletedTestTopic0Story0Exp0(
     profileId: ProfileId,
@@ -331,6 +335,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markInProgressSavedTestTopic0Story0Exp0(
     profileId: ProfileId,
@@ -350,6 +358,10 @@ class StoryProgressTestHelper @Inject constructor(
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
   fun markInProgressNotSavedTestTopic0Story0Exp0(
     profileId: ProfileId,
@@ -365,8 +377,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of test topic 0 story 0 as started not completed. For specifics on
-   * parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the second chapter of test topic 0 story 0 as started, but yet not completed. For specifics
+   * on parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic0Story0Exp1(
     profileId: ProfileId,
@@ -422,7 +434,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the only chapter of test topic 1 story 2 as started not completed. For specifics on parameters
+   * Marks the only chapter of test topic 1 story 2 as started, but yet not completed. For specifics on parameters
    * and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic1Story2Exp0(
@@ -473,7 +485,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 0's story 0 as started not completed. For specifics on parameters and nuances, see:
+   * Marks test topic 0's story 0 as started, but yet not completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic0Story0(
@@ -506,7 +518,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 1's story 2 as started not completed. For specifics on parameters and nuances, see:
+   * Marks test topic 1's story 2 as started, but yet not completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic1Story0(
@@ -539,7 +551,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 0 as started not completed. For specifics on parameters and nuances, see:
+   * Marks test topic 0 as started, but yet not completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -563,8 +575,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 1 as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks test topic 1 as started, but yet not completed. For specifics on parameters and nuances,
+   * see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markStartedNotCompletedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
@@ -587,8 +599,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all test topics as started not completed. See [markCompletedTestTopic0Story0Exp0] for specifics
-   * on the parameters passed to this method, and any other nuances.
+   * Marks all test topics as started, but yet not completed. See [markCompletedTestTopic0Story0Exp0]
+   * for specifics on the parameters passed to this method, and any other nuances.
    */
   fun markStartedNotCompletedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markStartedNotCompletedTestTopic0(profileId, timestampOlderThanOneWeek)
@@ -613,8 +625,8 @@ class StoryProgressTestHelper @Inject constructor(
   /* Ratios partial completion methods. */
 
   /**
-   * Marks the first chapter of ratios story 0 as started not completed. For specifics on parameters and
-   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the first chapter of ratios story 0 as started, but yet not completed. For specifics on
+   * parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory0Exp0(
     profileId: ProfileId,
@@ -664,8 +676,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of ratios story 0 as started not completed. For specifics on parameters and
-   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the second chapter of ratios story 0 as started, but yet not completed. For specifics on
+   * parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory0Exp1(
     profileId: ProfileId,
@@ -721,8 +733,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the first chapter of ratios story 1 as started not completed. For specifics on parameters and
-   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the first chapter of ratios story 1 as started, but yet not completed. For specifics on
+   * parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory1Exp0(
     profileId: ProfileId,
@@ -772,8 +784,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of ratios story 1 as started not completed. For specifics on parameters and
-   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the second chapter of ratios story 1 as started, but yet not completed. For specifics on
+   * parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory1Exp1(
     profileId: ProfileId,
@@ -829,8 +841,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks ratios story 0 as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks ratios story 0 as started, but yet not completed. For specifics on parameters and nuances,
+   * see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory0(
     profileId: ProfileId,
@@ -856,8 +868,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks ratios story 1 as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks ratios story 1 as started, but yet not completed. For specifics on parameters and nuances,
+   * see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatiosStory1(
     profileId: ProfileId,
@@ -883,8 +895,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the ratios topic as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the ratios topic as started, but yet not completed. For specifics on parameters and nuances,
+   * see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markStartedNotCompletedRatiosStory0(profileId, timestampOlderThanOneWeek)
@@ -909,8 +921,8 @@ class StoryProgressTestHelper @Inject constructor(
   /* Fractions partial completion methods. */
 
   /**
-   * Marks the first chapter of fractions story 0 as started not completed. For specifics on parameters
-   * and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the first chapter of fractions story 0 as started, but yet not completed. For specifics
+   * on parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedFractionsStory0Exp0(
     profileId: ProfileId,
@@ -960,8 +972,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of fractions story 0 as started not completed. For specifics on parameters
-   * and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the second chapter of fractions story 0 as started, but yet not completed. For specifics
+   * on parameters and nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedFractionsStory0Exp1(
     profileId: ProfileId,
@@ -1017,8 +1029,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks fractions story 0 as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks fractions story 0 as started, but yet not completed. For specifics on parameters and
+   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedFractionsStory0(
     profileId: ProfileId,
@@ -1047,8 +1059,8 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the fractions topic as started not completed. For specifics on parameters and nuances, see:
-   * [markStartedNotCompletedTestTopic0Story0Exp0].
+   * Marks the fractions topic as started, but yet not completed. For specifics on parameters and
+   * nuances, see: [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markStartedNotCompletedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markStartedNotCompletedFractionsStory0(profileId, timestampOlderThanOneWeek)
@@ -1083,7 +1095,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as started, but not yet completed. For specifics on parameters and nuances, see:
    * [markStartedNotCompletedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsStartedNotCompleted(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -1094,7 +1106,7 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as in_progress_saved. For specifics on parameters and nuances, see:
    * [markInProgressSavedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsInProgressSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
@@ -1105,24 +1117,13 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
+   * Marks all lessons as in_progress_not_saved. For specifics on parameters and nuances, see:
    * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
   fun markAllTopicsAsInProgressNotSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedTestTopic1(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedRatios(profileId, timestampOlderThanOneWeek)
-    markInProgressNotSavedFractions(profileId, timestampOlderThanOneWeek)
-  }
-
-  /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
-   * [markInProgressSavedTestTopic0Story0Exp0].
-   */
-  fun markAllTopicsAsRecentlyPlayed(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markStartedNotCompletedTestTopic0(profileId, timestampOlderThanOneWeek)
-    markInProgressSavedTestTopic1(profileId, timestampOlderThanOneWeek)
-    markInProgressSavedRatios(profileId, timestampOlderThanOneWeek)
     markInProgressNotSavedFractions(profileId, timestampOlderThanOneWeek)
   }
 

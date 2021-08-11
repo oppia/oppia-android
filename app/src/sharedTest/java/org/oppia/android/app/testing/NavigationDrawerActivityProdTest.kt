@@ -65,7 +65,6 @@ import org.oppia.android.app.drawer.NavigationDrawerItem
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -83,6 +82,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -353,7 +353,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -465,7 +465,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -547,7 +547,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -631,7 +631,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   // TODO(#2535): Unable to open NavigationDrawer multiple times on Robolectric
   @RunOn(TestPlatform.ESPRESSO)
   @Test
@@ -753,7 +753,7 @@ class NavigationDrawerActivityProdTest {
     }
   }
 
-  // TODO(#1806): Enable this once lowfi implementation is done.
+  // TODO(#552): Enable this once lowfi implementation is done.
   @Test
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {

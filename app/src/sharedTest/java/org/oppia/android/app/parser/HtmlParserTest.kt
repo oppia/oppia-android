@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -49,7 +50,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -65,6 +65,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -269,6 +270,52 @@ class HtmlParserTest {
     // Verify that the image span is prefixed & suffixed with a space to work around an AOSP bug.
     assertThat(htmlResult.toString()).startsWith(" ")
     assertThat(htmlResult.toString()).endsWith(" ")
+  }
+
+  @Test
+  fun testHtmlContent_changeDeviceToLtr_textViewDirectionIsSetToLtr() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_LTR
+    )
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+  }
+
+  @Test
+  fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_RTL
+    )
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
+  }
+
+  @Test
+  fun testHtmlContent_changeDeviceToRtlAndThenToLtr_textViewDirectionIsSetToRtlThenLtr() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_LTR
+    )
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test
@@ -507,6 +554,24 @@ class HtmlParserTest {
     val loadedInlineImages = testGlideImageLoader.getLoadedTextSvgs()
     assertThat(loadedInlineImages).hasSize(1)
     assertThat(loadedInlineImages.first()).contains("math_image1.svg")
+  }
+
+  private fun arrangeTextViewWithLayoutDirection(
+    htmlParser: HtmlParser,
+    layoutDirection: Int
+  ): TextView {
+    return activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      ViewCompat.setLayoutDirection(textView, layoutDirection)
+      htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+      return@runWithActivity textView
+    }
   }
 
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(

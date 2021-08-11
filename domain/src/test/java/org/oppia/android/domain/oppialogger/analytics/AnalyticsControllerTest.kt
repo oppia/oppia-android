@@ -358,7 +358,7 @@ class AnalyticsControllerTest {
       .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
   }
 
-  // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
