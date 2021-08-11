@@ -943,10 +943,7 @@ class MavenDependenciesRetrieverTest {
     val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
-        listOf(
-          omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE),
-          omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_DIRECT_LINK_ONLY_LICENSE),
-        )
+        listOf(DATA_BINDING_DEP, FIREBASE_DEP)
       )
     assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
@@ -1023,10 +1020,7 @@ class MavenDependenciesRetrieverTest {
     val mavenListDependencies = mavenDependenciesRetriever
       .generateDependenciesListFromMavenInstall(
         "${tempFolder.root}/third_party/maven_install.json",
-        listOf(
-          omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_SCRAPABLE_LICENSE),
-          omitVersionAndReplaceColonsHyphensPeriods(DEP_WITH_DIRECT_LINK_ONLY_LICENSE),
-        )
+        listOf(DATA_BINDING_DEP, FIREBASE_DEP)
       )
     assertThat(mavenListDependencies).containsExactly(
       MavenListDependency(
@@ -1175,16 +1169,6 @@ class MavenDependenciesRetrieverTest {
       )
       """.trimIndent() + "\n"
     )
-  }
-
-  private fun omitVersionAndReplaceColonsHyphensPeriods(artifactName: String): String {
-    val lastColonIndex = artifactName.lastIndexOf(':')
-    return
-    artifactName
-      .substring(0, lastColonIndex)
-      .replace('.', '_')
-      .replace(':', '_')
-      .replace('-', '_')
   }
 
   private fun createThirdPartyAndroidBinary(
