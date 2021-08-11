@@ -162,7 +162,7 @@ class StateFragmentPresenter @Inject constructor(
     }
 
     subscribeToCurrentState()
-    markExplorationAsRecentlyPlayed()
+    markExplorationAsStartedNotCompleted()
     return binding.root
   }
 
@@ -519,8 +519,8 @@ class StateFragmentPresenter @Inject constructor(
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
 
-  private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(
+  private fun markExplorationAsStartedNotCompleted() {
+    storyProgressController.recordChapterAsStartedNotCompleted(
       profileId,
       topicId,
       storyId,

@@ -149,12 +149,20 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           it == ChapterPlayState.COMPLETED
         }
         .size
+    val inProgressChapterCount =
+      chapterSummaries.map(ChapterSummary::getChapterPlayState)
+        .filter {
+          it == ChapterPlayState.IN_PROGRESS_SAVED
+        }
+        .size
+
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
     binding.storyPercentage = storyPercentage
     binding.storyProgressView.setStoryChapterDetails(
       storySummaryViewModel.storySummary.chapterCount,
-      completedChapterCount
+      completedChapterCount,
+      inProgressChapterCount
     )
     binding.topicPlayStoryDashedLineView.setLayerType(
       View.LAYER_TYPE_SOFTWARE,

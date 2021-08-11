@@ -95,6 +95,7 @@ class ExplorationProgressController @Inject constructor(
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
         hintState = HintState.getDefaultInstance()
+        checkpointState = CheckpointState.CHECKPOINT_UNSAVED
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
