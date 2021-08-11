@@ -822,15 +822,15 @@ class ExplorationProgressController @Inject constructor(
     when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.HINT_INDEX -> {
         pendingStateHintList.forEachIndexed { index, hint ->
-          if (index < helpIndex.hintIndex.index) {
+          if (index < helpIndex.hintIndex) {
             // Mark all hints as visible and revealed which have an index less than that stored in
             // the HintState.
             updatedHintList.add(hint.toBuilder().setHintIsRevealed(true).build())
-          } else if (index == helpIndex.hintIndex.index) {
+          } else if (index == helpIndex.hintIndex) {
             // Add the currently shown hint to the updated hint list and set hintIsRevealed
             // depending upon if the current hint was revealed or not.
             updatedHintList.add(
-              hint.toBuilder().setHintIsRevealed(helpIndex.hintIndex.isHintRevealed).build()
+              hint.toBuilder().setHintIsRevealed(helpIndex.isAllVisibleHelpRevealed).build()
             )
           } else {
             // Add all the remaining hints that are not yet visible to the user to the updated hint
