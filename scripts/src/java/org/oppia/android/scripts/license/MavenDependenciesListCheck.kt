@@ -45,40 +45,40 @@ class MavenDependenciesListCheck(
     val pathToMavenInstallJson = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[2]
 
-    val MavenDependenciesRetriever = MavenDependenciesRetriever(
+    val mavenDependenciesRetriever = MavenDependenciesRetriever(
       pathToRoot,
       licenseFetcher,
       commandExecutor
     )
 
     val bazelQueryDepsList =
-      MavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
-    val mavenInstallDepsList = MavenDependenciesRetriever.getDependencyListFromMavenInstall(
+      mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
+    val mavenInstallDepsList = mavenDependenciesRetriever.getDependencyListFromMavenInstall(
       pathToMavenInstallJson,
       bazelQueryDepsList
     )
 
     val dependenciesListFromPom =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveDependencyListFromPom(mavenInstallDepsList)
         .mavenDependencyList
 
     val dependenciesListFromTextProto =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
     val updatedDependenciesList =
-      MavenDependenciesRetriever.addChangesFromTextProto(
+      mavenDependenciesRetriever.addChangesFromTextProto(
         dependenciesListFromPom,
         dependenciesListFromTextProto
       )
 
     val manuallyUpdatedLicenses =
-      MavenDependenciesRetriever
+      mavenDependenciesRetriever
         .retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
 
     val finalDependenciesList =
-      MavenDependenciesRetriever.updateMavenDependenciesList(
+      mavenDependenciesRetriever.updateMavenDependenciesList(
         updatedDependenciesList,
         manuallyUpdatedLicenses
       )
@@ -93,9 +93,7 @@ class MavenDependenciesListCheck(
     )
 
     if (redundantDependencies.isNotEmpty() || missindDependencies.isNotEmpty()) {
-      println(
-        "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n"
-      )
+      printErrorMessage()
       if (redundantDependencies.isNotEmpty()) {
         println("Redundant dependencies that need to be removed:\n")
         printDependenciesList(redundantDependencies)
@@ -119,7 +117,50 @@ class MavenDependenciesListCheck(
       throw Exception("Missing dependencies in maven_dependencies.textproto")
     }
 
+    val brokenLicenses = mavenDependenciesRetriever.getAllBrokenLicenses(finalDependenciesList)
+
+    if (brokenLicenses.isNotEmpty()) {
+      val licenseToDependencyMap =
+        mavenDependenciesRetriever
+          .findFirstDependenciesWithBrokenLicenses(
+            finalDependenciesList,
+            brokenLicenses
+          )
+      printErrorMessage()
+      println("Licenses that need to be updated:\n")
+      brokenLicenses.forEach {
+        println(
+          """
+          license_name: ${it.licenseName}
+          original_link: ${it.originalLink}
+          verified_link_case: ${it.verifiedLinkCase}
+          is_original_link_invalid: ${it.isOriginalLinkInvalid}
+          First dependency that should be updated with the license: ${licenseToDependencyMap[it]}
+          """.trimIndent() + "\n\n"
+        )
+      }
+      throw Exception("Licenses details are not completed")
+    }
+
+    val dependenciesWithoutAnyLinks =
+      mavenDependenciesRetriever.getDependenciesThatNeedIntervention(finalDependenciesList)
+
+    if (dependenciesWithoutAnyLinks.isNotEmpty()) {
+      printErrorMessage()
+      println("Dependencies with invalid or no license links:\n")
+      dependenciesWithoutAnyLinks.forEach { dependency ->
+        println(dependency)
+      }
+      throw Exception("License links are invalid or not available for some dependencies")
+    }
+
     println("\nmaven_dependencies.textproto is up-to-date.")
+  }
+
+  private fun printErrorMessage() {
+    println(
+      "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n"
+    )
   }
 
   private fun findRedundantDependencies(
