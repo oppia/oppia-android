@@ -3,6 +3,7 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -16,11 +17,16 @@ import org.oppia.android.app.help.thirdparty.RouteToLicenseListListener
 import org.oppia.android.app.help.thirdparty.RouteToLicenseTextListener
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
-private const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
-private const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
+private const val MULTIPANE_TITLE_KEY = "HelpActivity.help_options_title"
+private const val SELECTED_FRAGMENT_KEY = "HelpActivity.selected_fragment"
+private const val THIRD_PARTY_DEPENDENCY_INDEX_KEY = "HelpActivity.third_party_dependency_index"
+private const val LICENSE_INDEX_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT = "FAQListFragment"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT = "ThirdPartyDependencyListFragment"
+const val LICENSE_LIST_FRAGMENT = "LicenseListFragment"
+const val LICENSE_TEXT_FRAGMENT = "LicenseTextFragment"
 
 /** The help page activity for FAQs and third-party dependencies. */
 class HelpActivity :
@@ -31,14 +37,16 @@ class HelpActivity :
   RouteToLicenseTextListener,
   RouteToLicenseListListener,
   LoadFAQListFragmentListener,
-  LoadThirdPartyDependencyListFragmentListener {
+  LoadThirdPartyDependencyListFragmentListener,
+  LoadLicenseListFragmentListener,
+  LoadLicenseTextViewerFragmentListener {
 
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
-  // Used to initially load the suitable fragment in the case of multipane.
-  private var isFirstOpen = true
   private lateinit var selectedFragment: String
+  private var savedDependencyIndex by Delegates.notNull<Int>()
+  private var savedLicenseIndex by Delegates.notNull<Int>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -47,16 +55,17 @@ class HelpActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    selectedFragment = if (savedInstanceState == null) {
-      FAQ_LIST_FRAGMENT
-    } else {
-      savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
-    }
-    val extraHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
+    selectedFragment = savedInstanceState?.getString(SELECTED_FRAGMENT_KEY) ?: FAQ_LIST_FRAGMENT
+    savedDependencyIndex = savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY) ?: 0
+    savedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_KEY) ?: 0
+    Log.d("Help", "onCreate: $savedDependencyIndex, $savedLicenseIndex")
+    val extraHelpOptionsTitle = savedInstanceState?.getString(MULTIPANE_TITLE_KEY)
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,
       isFromNavigationDrawer,
-      selectedFragment
+      selectedFragment,
+      savedDependencyIndex,
+      savedLicenseIndex
     )
     title = getString(R.string.menu_help)
   }
@@ -98,13 +107,29 @@ class HelpActivity :
     helpActivityPresenter.handleLoadThirdPartyDependencyListFragment()
   }
 
+  override fun loadLicenseListFragment(dependencyIndex: Int) {
+    selectedFragment = LICENSE_LIST_FRAGMENT
+    savedDependencyIndex = dependencyIndex
+    helpActivityPresenter.handleLoadLicenseListFragment(dependencyIndex)
+  }
+
+  override fun loadLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
+    selectedFragment = LICENSE_TEXT_FRAGMENT
+    savedDependencyIndex = dependencyIndex
+    savedLicenseIndex = licenseIndex
+    helpActivityPresenter.handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
+  }
+
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.help_multipane_options_title_textview)
     if (titleTextView != null) {
-      outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
+      outState.putString(MULTIPANE_TITLE_KEY, titleTextView.text.toString())
     }
-    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
+    Log.d("Help", "onSavedInstanceStaete: $savedDependencyIndex, $savedLicenseIndex")
+    outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
+    outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY, savedDependencyIndex)
+    outState.putInt(LICENSE_INDEX_KEY, savedLicenseIndex)
   }
 
   override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {

@@ -14,7 +14,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
 ) {
 
   /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
-  fun handleOnCreate() {
+  fun handleOnCreate(isMultipane: Boolean) {
     val binding =
       DataBindingUtil.setContentView<ThirdPartyDependencyListActivityBinding>(
         activity,
@@ -37,7 +37,8 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
     }
 
     if (getThirdPartyDependencyListFragment() == null) {
-      val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance()
+      val thirdPartyDependencyListFragment =
+        ThirdPartyDependencyListFragment.newInstance(isMultipane)
       activity.supportFragmentManager.beginTransaction().add(
         R.id.third_party_dependency_list_fragment_placeholder,
         thirdPartyDependencyListFragment

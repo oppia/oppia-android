@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+private const val IS_MULTIPANE_KEY = "ThirdPartyDependencyListFragment.is_multipane"
+
 /** Fragment that contains third-party dependency list in the app. */
 class ThirdPartyDependencyListFragment : InjectableFragment() {
 
@@ -17,8 +19,12 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   companion object {
 
     /** Returns an instance of [ThirdPartyDependencyListFragment]. */
-    fun newInstance(): ThirdPartyDependencyListFragment {
-      return ThirdPartyDependencyListFragment()
+    fun newInstance(isMultipane: Boolean): ThirdPartyDependencyListFragment {
+      val args = Bundle()
+      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
+      val fragment = ThirdPartyDependencyListFragment()
+      fragment.arguments = args
+      return fragment
     }
   }
 
@@ -30,8 +36,16 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    return thirdPartyDependencyListFragmentPresenter.handleCreateView(inflater, container)
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to HelpFragment"
+    }
+    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY, false)
+    return thirdPartyDependencyListFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      isMultipane
+    )
   }
 }
