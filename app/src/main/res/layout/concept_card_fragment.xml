@@ -49,7 +49,7 @@
 
           <TextView
             android:id="@+id/concept_card_heading_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/concept_card_heading_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_heading_text_margin_top"
@@ -61,7 +61,7 @@
 
           <TextView
             android:id="@+id/concept_card_explanation_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
