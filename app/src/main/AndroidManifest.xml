@@ -194,6 +194,7 @@
       android:name=".app.testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
+    <activity android:name=".app.testing.ViewBindingAdaptersTestActivity"/>
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_activity_title"
