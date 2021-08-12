@@ -409,6 +409,7 @@
   <dimen name="faq_single_padding_top">22dp</dimen>
   <dimen name="faq_single_padding_end">28dp</dimen>
   <dimen name="faq_single_padding_bottom">60dp</dimen>
+  <dimen name="faq_single_activity_scroll_padding_bottom">80dp</dimen>
 
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">80dp</dimen>
@@ -427,17 +428,31 @@
   <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
 
   <!-- Concept Card Fragment -->
-  <dimen name="concept_card_heading_text_marginStart">28dp</dimen>
-  <dimen name="concept_card_heading_text_marginTop">40dp</dimen>
-  <dimen name="concept_card_heading_text_marginEnd">28dp</dimen>
-  <dimen name="concept_card_explanation_text_marginStart">40dp</dimen>
-  <dimen name="concept_card_explanation_text_marginTop">28dp</dimen>
-  <dimen name="concept_card_explanation_text_marginEnd">40dp</dimen>
+  <dimen name="concept_card_heading_text_margin_start">28dp</dimen>
+  <dimen name="concept_card_heading_text_margin_top">40dp</dimen>
+  <dimen name="concept_card_heading_text_margin_end">28dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_start">40dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_top">28dp</dimen>
+  <dimen name="concept_card_explanation_text_margin_end">40dp</dimen>
 
   <!-- All Topics -->
   <dimen name="all_topics_text_margin_start">28dp</dimen>
   <dimen name="all_topics_text_margin_top">56dp</dimen>
   <dimen name="all_topics_text_margin_end">32dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
+
+  <!-- Coming Soon Topic List -->
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_start">0dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_padding_end">0dp</dimen>
+  <dimen name="coming_soon_topic_list_constraint_layout_margin_top">24dp</dimen>
+  <dimen name="coming_soon_text_padding_start">24dp</dimen>
+  <dimen name="coming_soon_text_padding_end">24dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_margin_top">4dp</dimen>
+  <dimen name="coming_soon_topic_promoted_list_view_padding_start">28dp</dimen>
+  <dimen name="coming_soon_topic_Promoted_list_view_padding_end">28dp</dimen>
+
+  <!-- Topic Practice Footer View -->
+  <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
+  <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
 </resources>

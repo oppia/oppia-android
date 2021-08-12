@@ -98,7 +98,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)
   private fun setIfDeveloperOptionsMenuItemListener() {
-    // TODO(3383): Find a way to make this work below N
+    // TODO(#3383): Find a way to make this work below N
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       developerOptionsStarter.ifPresent { starter ->
         getFooterViewModel().isDebugMode.set(true)
