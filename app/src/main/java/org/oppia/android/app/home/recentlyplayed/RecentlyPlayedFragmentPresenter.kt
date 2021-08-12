@@ -110,17 +110,22 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val recentSectionTitleViewModel =
       SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
     itemList.add(recentSectionTitleViewModel)
-    for (promotedStory in recentlyPlayedStoryList) {
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory)
+    recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
+      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
 
-  private fun getOngoingStoryViewModel(promotedStory: PromotedStory): RecentlyPlayedItemViewModel {
+  private fun getOngoingStoryViewModel(
+    promotedStory: PromotedStory,
+    index: Int
+  ): RecentlyPlayedItemViewModel {
     return OngoingStoryViewModel(
+      activity,
       promotedStory,
       entityType,
-      fragment as OngoingStoryClickListener
+      fragment as OngoingStoryClickListener,
+      index
     )
   }
 
@@ -132,8 +137,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         showDivider
       )
     itemList.add(olderSectionTitleViewModel)
-    for (promotedStory in olderPlayedStoryList) {
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory)
+    olderPlayedStoryList.forEachIndexed { index, promotedStory ->
+      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
@@ -146,8 +151,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         showDivider
       )
     itemList.add(recommendedSectionTitleViewModel)
-    for (suggestedStory in suggestedStoryList) {
-      val ongoingStoryViewModel = getOngoingStoryViewModel(suggestedStory)
+    suggestedStoryList.forEachIndexed { index, suggestedStory ->
+      val ongoingStoryViewModel = getOngoingStoryViewModel(suggestedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
