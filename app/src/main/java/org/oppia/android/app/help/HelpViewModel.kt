@@ -4,7 +4,6 @@ import androidx.databinding.ObservableField
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** Option items view model for the recyclerView in [HelpFragment] */
-abstract class HelpListItemViewModel : ObservableViewModel() {
+abstract class HelpViewModel : ObservableViewModel() {
   val isMultipane = ObservableField<Boolean>(false)
-  val itemIndex = ObservableField<Int>()
 }
