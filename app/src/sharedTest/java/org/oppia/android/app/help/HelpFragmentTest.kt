@@ -257,6 +257,65 @@ class HelpFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_defaultConfig_displaysFAQList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectFAQs_displaysFAQList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectThirdPartyDependencies_displaysThirdPartyDependencyList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
   fun testHelpFragment_configChanged_thirdPartyDependencyListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(

@@ -61,20 +61,24 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     setMultipaneContainerTitle(
       activity.getString(R.string.third_party_dependency_list_activity_title)
     )
-    val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance()
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      thirdPartyDependencyListFragment
-    ).commitNow()
+    if (getThirdPartyDependencyListFragment() == null) {
+      val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance()
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.multipane_options_container,
+        thirdPartyDependencyListFragment
+      ).commitNow()
+    }
   }
 
   /** Loads [FAQListFragment] in tablet devices. */
   fun handleLoadFAQListFragment() {
     setMultipaneContainerTitle(activity.getString(R.string.faq_activity_title))
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      FAQListFragment()
-    ).commitNow()
+    if (getFAQListFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.multipane_options_container,
+        FAQListFragment()
+      ).commitNow()
+    }
   }
 
   private fun setUpToolbar() {
@@ -110,5 +114,17 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   private fun setMultipaneContainerTitle(title: String) {
     activity.findViewById<TextView>(R.id.help_multipane_options_title_textview).text = title
+  }
+
+  private fun getFAQListFragment(): FAQListFragment? {
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.multipane_options_container) as FAQListFragment?
+  }
+
+  private fun getThirdPartyDependencyListFragment(): ThirdPartyDependencyListFragment? {
+    return activity
+      .supportFragmentManager
+      .findFragmentById(R.id.multipane_options_container) as ThirdPartyDependencyListFragment?
   }
 }
