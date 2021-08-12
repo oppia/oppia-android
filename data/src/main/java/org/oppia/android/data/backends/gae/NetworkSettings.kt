@@ -7,7 +7,7 @@ object NetworkSettings {
 
   /** DEVELOPER URL which connects to development server */
   // TODO(#74): Move this to DI graph
-  private const val DEVELOPER_URL = "https://oppia.org"
+  private const val DEVELOPER_URL = "http://localhost:8181/"
   /**  PRODUCTION URL which connects to production server */
   private const val PROD_URL = "https://oppia.org"
   /**

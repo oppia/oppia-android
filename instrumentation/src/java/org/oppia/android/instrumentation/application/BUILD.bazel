@@ -2,7 +2,6 @@
 This library contains the test application and modules used to build test app for end-to-end tests.
 """
 
-
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
@@ -12,7 +11,6 @@ kt_android_library(
     srcs = [
         "EndToEndTestGcsResourceModule.kt",
         "EndToEndTestImageParsingModule.kt",
-        "EndToEndTestNetworkModule.kt",
         "OppiaTestApplication.kt",
         "TestApplicationComponent.kt",
     ],

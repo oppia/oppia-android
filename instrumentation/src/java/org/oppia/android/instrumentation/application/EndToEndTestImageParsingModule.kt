@@ -1,4 +1,4 @@
-package org.oppia.android.instrumentation
+package org.oppia.android.instrumentation.application
 
 import dagger.Module
 import dagger.Provides
