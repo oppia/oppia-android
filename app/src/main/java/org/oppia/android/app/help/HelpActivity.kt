@@ -8,6 +8,12 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.help.faq.FAQListActivity
+import org.oppia.android.app.help.faq.RouteToFAQSingleListener
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.help.thirdparty.RouteToLicenseListListener
+import org.oppia.android.app.help.thirdparty.RouteToLicenseTextListener
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 
@@ -20,7 +26,10 @@ const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT = "ThirdPartyDependencyListFragme
 class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
+  RouteToFAQSingleListener,
   RouteToThirdPartyDependencyListListener,
+  RouteToLicenseTextListener,
+  RouteToLicenseListListener,
   LoadFAQListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener {
 
@@ -38,9 +47,6 @@ class HelpActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    if (savedInstanceState != null) {
-      isFirstOpen = false
-    }
     selectedFragment = if (savedInstanceState == null) {
       FAQ_LIST_FRAGMENT
     } else {
@@ -50,7 +56,6 @@ class HelpActivity :
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,
       isFromNavigationDrawer,
-      isFirstOpen,
       selectedFragment
     )
     title = getString(R.string.menu_help)
@@ -100,5 +105,29 @@ class HelpActivity :
       outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
+  }
+
+  override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {
+    startActivity(
+      LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+        this,
+        dependencyIndex,
+        licenseIndex
+      )
+    )
+  }
+
+  override fun onRouteToLicenseList(dependencyIndex: Int) {
+    startActivity(
+      LicenseListActivity
+        .createLicenseListActivityIntent(
+          context = this,
+          dependencyIndex = dependencyIndex
+        )
+    )
+  }
+
+  override fun onRouteToFAQSingle(question: String, answer: String) {
+    startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 }

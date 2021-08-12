@@ -23,7 +23,6 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   fun handleOnCreate(
     extraHelpOptionsTitle: String?,
     isFromNavigationDrawer: Boolean,
-    isFirstOpen: Boolean,
     selectedFragment: String
   ) {
     if (isFromNavigationDrawer) {
