@@ -24,7 +24,8 @@ class ResumeLessonFragment :
     private const val RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY =
       "ResumeLessonFragmentPresenter.resume_lesson_fragment_backflow_screen"
 
-/** Creates new instance of [ResumeLessonFragment].
+    /**
+     * Creates new instance of [ResumeLessonFragment].
      * @param internalProfileId is used by the ResumeLessonFragment to retrieve saved checkpoint
      * @param explorationId is used by the ResumeLessonFragment to retrieve saved checkpoint
      */
@@ -61,7 +62,9 @@ class ResumeLessonFragment :
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId =
-      arguments?.getInt(RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY, -1)!!
+      checkNotNull(arguments?.getInt(RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY, -1)) {
+        "Expected profile ID to be included in arguments for ResumeLessonFragment."
+      }
     val topicId =
       checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY)) {
         "Expected topic ID to be included in arguments for ResumeLessonFragment."

@@ -145,21 +145,21 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Fetches a chapter given a topic ID, story ID and exploration ID.
+   * Retrieves a chapter given a topic ID, story ID and exploration ID.
    *
    * @param topicId the ID corresponding to the topic which contains this story
    * @param storyId the ID corresponding to the story which needs to be returned
    * @param explorationId the ID corresponding to the exploration which needs to be returned
    * @return a [DataProvider] for [ChapterSummary]
    */
-  fun getChapter(
+  fun retrieveChapter(
     topicId: String,
     storyId: String,
     explorationId: String
   ): DataProvider<ChapterSummary> {
     return dataProviders.createInMemoryDataProviderAsync(GET_CHAPTER_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync AsyncResult.success(
-        retrieveChapter(
+        fetchChapter(
           topicId,
           storyId,
           explorationId
@@ -390,7 +390,7 @@ class TopicController @Inject constructor(
     } else createTopicFromJson(topicId)
   }
 
-  internal fun retrieveChapter(
+  private fun fetchChapter(
     topicId: String,
     storyId: String,
     explorationId: String

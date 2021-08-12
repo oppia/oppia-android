@@ -8,6 +8,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
+/** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity :
   InjectableAppCompatActivity(),
   RouteToExplorationListener {

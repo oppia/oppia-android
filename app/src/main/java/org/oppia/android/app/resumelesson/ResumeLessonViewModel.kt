@@ -17,6 +17,9 @@ class ResumeLessonViewModel @Inject constructor(
   @ExplorationHtmlParserEntityType val entityType: String
 ) : ObservableViewModel() {
 
+  /** The chapter summary for the exploration that may be resumed. */
   val chapterSummary = ObservableField(ChapterSummary.getDefaultInstance())
+
+  /** The [ExplorationCheckpoint] that may be used to resume exploration. */
   val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
 }

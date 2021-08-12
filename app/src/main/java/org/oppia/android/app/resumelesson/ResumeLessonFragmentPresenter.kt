@@ -55,7 +55,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     }
 
   private val chapterSummaryResultLiveData: LiveData<AsyncResult<ChapterSummary>> by lazy {
-    topicController.getChapter(topicId, storyId, explorationId).toLiveData()
+    topicController.retrieveChapter(topicId, storyId, explorationId).toLiveData()
   }
 
   private val explorationCheckpointLiveData: LiveData<ExplorationCheckpoint> by lazy {
@@ -206,7 +206,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       storyId,
       explorationId,
       // shouldSavePartialProgress is set to true by default because stating lesson from
-      // ResumeLessonActivity implies that learner has not completed the lesson.
+      // ResumeLessonFragment implies that learner has not completed the lesson.
       shouldSavePartialProgress = true,
       explorationCheckpoint
     ).observe(
@@ -228,7 +228,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
               explorationId,
               backflowScreen,
               // Checkpointing is enabled be default because stating lesson from
-              // ResumeLessonActivity implies that learner has not completed the lesson.
+              // ResumeLessonFragment implies that learner has not completed the lesson.
               isCheckpointingEnabled = true
             )
           }
