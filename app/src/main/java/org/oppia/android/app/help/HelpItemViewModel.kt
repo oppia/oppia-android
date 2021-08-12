@@ -10,7 +10,6 @@ class HelpItemViewModel(
   val title: String,
   val isMultipane: Boolean
 ) : ObservableViewModel() {
-
   fun onClick(title: String) {
     when (title) {
       activity.getString(R.string.frequently_asked_questions_FAQ) -> {

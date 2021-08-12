@@ -109,6 +109,6 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun setMultipaneContainerTitle(title: String) {
-    activity.findViewById<TextView>(R.id.help_activity_selected_options_title).text = title
+    activity.findViewById<TextView>(R.id.help_multipane_options_title_textview).text = title
   }
 }

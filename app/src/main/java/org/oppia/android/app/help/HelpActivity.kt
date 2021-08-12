@@ -27,7 +27,7 @@ class HelpActivity :
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
-  // used to initially load the suitable fragment in the case of multipane.
+  // Used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
 
@@ -95,7 +95,7 @@ class HelpActivity :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val titleTextView = findViewById<TextView>(R.id.help_activity_selected_options_title)
+    val titleTextView = findViewById<TextView>(R.id.help_multipane_options_title_textview)
     if (titleTextView != null) {
       outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }

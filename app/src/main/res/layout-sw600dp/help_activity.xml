@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
-        android:id="@+id/help_activity_selected_options_title"
+        android:id="@+id/help_multipane_options_title_textview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/multipane_guideline"
-        app:layout_constraintTop_toBottomOf="@id/help_activity_selected_options_title" />
+        app:layout_constraintTop_toBottomOf="@id/help_multipane_options_title_textview" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/multipane_guideline"

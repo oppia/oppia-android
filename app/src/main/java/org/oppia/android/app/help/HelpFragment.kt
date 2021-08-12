@@ -16,6 +16,7 @@ class HelpFragment : InjectableFragment() {
   lateinit var helpFragmentPresenter: HelpFragmentPresenter
 
   companion object {
+    /** Returns instance of [HelpFragment]. */
     fun newInstance(isMultipane: Boolean): HelpFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
