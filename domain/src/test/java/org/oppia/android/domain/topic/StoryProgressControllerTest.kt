@@ -110,8 +110,8 @@ class StoryProgressControllerTest {
   }
 
   @Test
-  fun testStoryProgressController_recordRecentlyPlayedChapter_isSuccessful() {
-    storyProgressController.recordRecentlyPlayedChapter(
+  fun testStoryProgressController_recordChapterAsStartedNotCompleted_isSuccessful() {
+    storyProgressController.recordChapterAsStartedNotCompleted(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -191,7 +191,39 @@ class StoryProgressControllerTest {
   }
 
   @Test
-  fun testStoryProgressController_recordChapterAsInProgressNotSaved_isSuccessful() {
+  fun testStoryProgressController_markChapterAsNotSaved_markChapterAsSaved_playStateIsSaved() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_SAVED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_recordChapterAsNotSaved_isSuccessful() {
     storyProgressController.recordChapterAsInProgressNotSaved(
       profileId,
       FRACTIONS_TOPIC_ID,
@@ -238,6 +270,38 @@ class StoryProgressControllerTest {
 
   @Test
   fun testStoryProgressController_chapterNotStarted_markChapterAsSaved_playStateIsNotSaved() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_NOT_SAVED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_markChapterAsSaved_markChapterAsNotSaved_playStateIsNotSaved() {
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
     storyProgressController.recordChapterAsInProgressNotSaved(
       profileId,
       FRACTIONS_TOPIC_ID,

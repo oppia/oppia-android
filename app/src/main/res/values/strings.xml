@@ -80,7 +80,8 @@
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter is completed</string>
+  <string name="chapter_completed">Chapter %s with title %s is completed</string>
+  <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
@@ -481,4 +482,13 @@
   <string name="developer_options_force_crash">Force crash</string>
   <string name="all">All</string>
   <string name="mark_completed_uppercase">MARK COMPLETED</string>
+  <!-- ThirdPartyDependencyListActivity -->
+  <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
+  <string name="third_party_dependency_version_formatter">version %s</string>
+
+  <!-- LicenseListActivity -->
+  <string name="license_list_activity_title">Copyright Licenses</string>
+
+  <!-- LicenseTextViewerActivity -->
+  <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
 </resources>

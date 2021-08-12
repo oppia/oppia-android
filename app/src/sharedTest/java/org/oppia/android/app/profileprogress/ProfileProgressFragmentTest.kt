@@ -450,7 +450,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -470,7 +470,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -491,7 +491,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -512,7 +512,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -534,7 +534,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
