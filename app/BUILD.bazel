@@ -255,6 +255,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt",
+    "src/main/java/org/oppia/android/app/resumelesson/ResumeLessonViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfilePictureActivityViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressItemViewModel.kt",
