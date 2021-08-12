@@ -67,6 +67,8 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadFAQListFragmentListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadThirdPartyDependencyListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToThirdPartyDependencyListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
@@ -138,6 +140,7 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
+    "src/main/java/org/oppia/android/app/help/HelpViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseTextViewModel.kt",

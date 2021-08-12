@@ -23,9 +23,9 @@ class HelpItemViewModel(
       }
       activity.getString(R.string.third_party_dependency_list_activity_title) -> {
         if (isMultipane) {
-          val loadThirdPartyDependencyListListener = activity as
-            LoadThirdPartyDependencyListListener
-          loadThirdPartyDependencyListListener.loadThirdPartyDependencyListFragment()
+          val loadThirdPartyDependencyListFragmentListener = activity as
+            LoadThirdPartyDependencyListFragmentListener
+          loadThirdPartyDependencyListFragmentListener.loadThirdPartyDependencyListFragment()
         } else {
           val routeToThirdPartyDependencyListListener = activity
             as RouteToThirdPartyDependencyListListener

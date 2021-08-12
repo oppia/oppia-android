@@ -22,7 +22,7 @@ class HelpActivity :
   RouteToFAQListListener,
   RouteToThirdPartyDependencyListListener,
   LoadFAQListFragmentListener,
-  LoadThirdPartyDependencyListListener {
+  LoadThirdPartyDependencyListFragmentListener {
 
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
