@@ -6,10 +6,15 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import javax.inject.Inject
 
 /** Activity for recent stories. */
-class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
+class RecentlyPlayedActivity :
+  InjectableAppCompatActivity(),
+  RouteToExplorationListener,
+  RouteToResumeLessonListener {
 
   @Inject
   lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
@@ -54,6 +59,25 @@ class RecentlyPlayedActivity : InjectableAppCompatActivity(), RouteToExploration
         explorationId,
         backflowScreen,
         isCheckpointingEnabled
+      )
+    )
+  }
+
+  override fun routeToResumeLesson(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?
+  ) {
+    startActivity(
+      ResumeLessonActivity.createResumeLessonActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
       )
     )
   }

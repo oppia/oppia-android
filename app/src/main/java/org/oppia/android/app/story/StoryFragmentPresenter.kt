@@ -26,6 +26,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
@@ -47,6 +48,7 @@ class StoryFragmentPresenter @Inject constructor(
   @TopicHtmlParserEntityType private val entityType: String
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
+  private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
 
   private lateinit var binding: StoryFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -102,16 +104,28 @@ class StoryFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
+    canExplorationBeResumed: Boolean,
+    shouldSavePartialProgress: Boolean,
     backflowScreen: Int?
   ) {
-    routeToExplorationListener.routeToExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      backflowScreen,
-      isCheckpointingEnabled = false
-    )
+    if (canExplorationBeResumed) {
+      routeToResumeLessonListener.routeToResumeLesson(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
+      )
+    } else {
+      routeToExplorationListener.routeToExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen,
+        shouldSavePartialProgress
+      )
+    }
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {

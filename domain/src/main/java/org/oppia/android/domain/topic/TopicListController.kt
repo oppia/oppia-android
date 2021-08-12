@@ -324,7 +324,8 @@ class TopicListController @Inject constructor(
                 latestStartedChapterProgress,
                 completedChapterProgressList,
                 topic,
-                isTopicConsideredCompleted
+                isTopicConsideredCompleted,
+                storyProgress.chapterProgressMap
               )?.let { promotedStory ->
                 playedPromotedStoryList.add(promotedStory)
               }
@@ -342,7 +343,8 @@ class TopicListController @Inject constructor(
                 latestCompletedChapterProgress,
                 completedChapterProgressList,
                 topic,
-                isTopicConsideredCompleted
+                isTopicConsideredCompleted,
+                storyProgress.chapterProgressMap
               )?.let { promotedStory ->
                 playedPromotedStoryList.add(promotedStory)
               }
@@ -406,7 +408,8 @@ class TopicListController @Inject constructor(
     latestStartedChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
-    isTopicConsideredCompleted: Boolean
+    isTopicConsideredCompleted: Boolean,
+    chapterProgressMap: Map<String, ChapterProgress>
   ): PromotedStory? {
     val recentlyPlayerChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -420,7 +423,8 @@ class TopicListController @Inject constructor(
         story.chapterCount,
         recentlyPlayerChapterSummary.name,
         recentlyPlayerChapterSummary.explorationId,
-        isTopicConsideredCompleted
+        isTopicConsideredCompleted,
+        chapterProgressMap[recentlyPlayerChapterSummary.explorationId]
       )
     }
     return null
@@ -432,7 +436,8 @@ class TopicListController @Inject constructor(
     latestCompletedChapterProgress: ChapterProgress,
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
-    isTopicConsideredCompleted: Boolean
+    isTopicConsideredCompleted: Boolean,
+    chapterProgressMap: Map<String, ChapterProgress>
   ): PromotedStory? {
     val lastChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -449,7 +454,8 @@ class TopicListController @Inject constructor(
           story.chapterCount,
           nextChapterSummary.name,
           nextChapterSummary.explorationId,
-          isTopicConsideredCompleted
+          isTopicConsideredCompleted,
+          chapterProgressMap[nextChapterSummary.explorationId]
         )
       }
     }
@@ -641,6 +647,9 @@ class TopicListController @Inject constructor(
         storyRecord.chaptersList.firstOrNull()?.let {
           nextChapterName = it.title
           explorationId = it.explorationId
+          // ChapterPlayState will be NOT_STARTED because this function only recommends first story
+          // of un-started topics.
+          chapterPlayState = ChapterPlayState.NOT_STARTED
         }
       }.build()
     } else loadRecommendedStoryFromJson(topicId)
@@ -678,6 +687,7 @@ class TopicListController @Inject constructor(
       if (storySummary.chapterList.isNotEmpty()) {
         promotedStoryBuilder.nextChapterName = storySummary.chapterList[0].name
         promotedStoryBuilder.explorationId = storySummary.chapterList[0].explorationId
+        promotedStoryBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
       }
       return promotedStoryBuilder.build()
     }
@@ -690,7 +700,8 @@ class TopicListController @Inject constructor(
     totalChapterCount: Int,
     nextChapterName: String?,
     explorationId: String?,
-    isTopicConsideredCompleted: Boolean
+    isTopicConsideredCompleted: Boolean,
+    chapterProgress: ChapterProgress?
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -705,6 +716,10 @@ class TopicListController @Inject constructor(
     if (nextChapterName != null && explorationId != null) {
       promotedStoryBuilder.nextChapterName = nextChapterName
       promotedStoryBuilder.explorationId = explorationId
+      // If the chapterProgress equals null that means the chapter has no progress associated with
+      // it because it is not yet started.
+      promotedStoryBuilder.chapterPlayState =
+        chapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
     }
     return promotedStoryBuilder.build()
   }

@@ -11,8 +11,10 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
@@ -22,6 +24,7 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -36,6 +39,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
   //  implemented.
 
+  private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
 
@@ -67,6 +71,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     this.storyId = storyId
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
+
     binding = TopicLessonsFragmentBinding.inflate(
       inflater,
       container,
@@ -213,6 +218,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
+    shouldSavePartialProgress: Boolean,
     backflowScreen: Int?
   ) {
     explorationDataController.startPlayingExploration(
@@ -220,8 +226,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress,
+      // Pass an empty checkpoint if the exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
@@ -248,17 +255,108 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     )
   }
 
-  fun selectChapterSummary(storyId: String, explorationId: String) {
-    playExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      backflowScreen = 0
-    )
+  fun selectChapterSummary(
+    storyId: String,
+    explorationId: String,
+    chapterPlayState: ChapterPlayState
+  ) {
+    val shouldSavePartialProgress =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        else -> false
+      }
+
+    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
+      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        ProfileId.getDefaultInstance(),
+        explorationId
+      ).toLiveData().observe(
+        fragment,
+        Observer { result ->
+          when {
+            result.isPending() -> {
+              oppiaLogger.d(
+                "TopicLessonsFragment",
+                "Matching exploration version with saved checkpoint."
+              )
+            }
+            result.isFailure() -> {
+              oppiaLogger.e(
+                "TopicLessonsFragment",
+                "Saved checkpoint not compatible with the current version of exploration."
+              )
+              startOrResumeExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                shouldSavePartialProgress,
+                canExplorationBeResumed = false,
+                backflowScreen = 0
+              )
+            }
+            else -> {
+              oppiaLogger.d(
+                "TopicLessonsFragment",
+                "Checkpoint is compatible with current version of exploration "
+              )
+              startOrResumeExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                shouldSavePartialProgress,
+                canExplorationBeResumed = result.getOrThrow(),
+                backflowScreen = 0
+              )
+            }
+          }
+        }
+      )
+    } else {
+      startOrResumeExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        canExplorationBeResumed = false,
+        backflowScreen = 0
+      )
+    }
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
     routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+  }
+
+  private fun startOrResumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    canExplorationBeResumed: Boolean,
+    backflowScreen: Int?
+  ) {
+    if (canExplorationBeResumed) {
+      routeToResumeLessonListener.routeToResumeLesson(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen
+      )
+    } else {
+      playExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        backflowScreen = 0
+      )
+    }
   }
 }

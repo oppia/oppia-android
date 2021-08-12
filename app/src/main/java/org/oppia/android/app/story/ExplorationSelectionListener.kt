@@ -8,6 +8,8 @@ interface ExplorationSelectionListener {
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowId: Int?
+    canExplorationBeResumed: Boolean,
+    shouldSavePartialProgress: Boolean,
+    backflowId: Int?,
   )
 }
