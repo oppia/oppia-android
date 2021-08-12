@@ -3,7 +3,6 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -58,7 +57,6 @@ class HelpActivity :
     selectedFragment = savedInstanceState?.getString(SELECTED_FRAGMENT_KEY) ?: FAQ_LIST_FRAGMENT
     savedDependencyIndex = savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY) ?: 0
     savedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_KEY) ?: 0
-    Log.d("Help", "onCreate: $savedDependencyIndex, $savedLicenseIndex")
     val extraHelpOptionsTitle = savedInstanceState?.getString(MULTIPANE_TITLE_KEY)
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,
@@ -126,7 +124,6 @@ class HelpActivity :
     if (titleTextView != null) {
       outState.putString(MULTIPANE_TITLE_KEY, titleTextView.text.toString())
     }
-    Log.d("Help", "onSavedInstanceStaete: $savedDependencyIndex, $savedLicenseIndex")
     outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
     outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY, savedDependencyIndex)
     outState.putInt(LICENSE_INDEX_KEY, savedLicenseIndex)

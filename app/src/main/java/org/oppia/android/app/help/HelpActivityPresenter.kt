@@ -1,7 +1,9 @@
 package org.oppia.android.app.help
 
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -49,6 +51,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
     if (isMultipane) {
       loadMultipaneFragment(selectedFragment, dependencyIndex, licenseIndex)
+      setBackButtonClickListener()
     }
     val previousFragment = getHelpFragment()
     if (previousFragment != null) {
@@ -94,10 +97,9 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   fun handleLoadLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
     val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex, true)
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      licenseListFragment
-    ).commitNow()
+    activity.supportFragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, licenseListFragment)
+      .commitNow()
   }
 
   /** Loads [LicenseTextViewerFragment] in tablet devices. */
@@ -115,15 +117,30 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       dependencyIndex,
       licenseIndex
     )
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      licenseTextViewerFragment
-    ).commitNow()
+    activity.supportFragmentManager.beginTransaction()
+      .replace(R.id.multipane_options_container, licenseTextViewerFragment)
+      .commitNow()
   }
 
   private fun setUpToolbar() {
     toolbar = activity.findViewById<View>(R.id.help_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
+  }
+
+  private fun setBackButtonClickListener() {
+    val helpOptionsBackButton =
+      activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
+    helpOptionsBackButton.setOnClickListener {
+      val currentFragment = getMultipaneOptionsFragment()
+      if (currentFragment != null &&
+        (currentFragment is LicenseListFragment || currentFragment is LicenseTextViewerFragment)
+      ) {
+        Log.d("Help", "faaltu: Back button clicked!!")
+        activity.supportFragmentManager
+          .beginTransaction().remove(currentFragment)
+      }
+      Log.d("Help", "setBackButtonClickListener: Back button clicked!!")
+    }
   }
 
   private fun setUpNavigationDrawer() {
