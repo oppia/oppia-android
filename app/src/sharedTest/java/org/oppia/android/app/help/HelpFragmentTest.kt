@@ -257,14 +257,111 @@ class HelpFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_defaultConfig_displaysFAQList() {
+  fun testHelpFragment_phoneConfig_multipaneOptionsDoesNotExist() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
         isFromNavigationDrawer = true
       )
     ).use {
+      onView(withId(R.id.help_multipane_options_back_button)).check(doesNotExist())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_tabletConfig_multipaneBackButtonHasCorrectContentDescription() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withContentDescription(R.string.navigate_up))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_defaultTabletConfig_displaysMultipaneOptions() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.faq_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_tabletConfigChange_displaysMultipaneOptions() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.faq_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          isCompletelyDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_defaultTabletConfig_displaysFAQList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_tabletConfigChanged_displaysFAQList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
     }
   }
@@ -284,13 +381,43 @@ class HelpFragmentTest {
           position = 0
         )
       ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.faq_activity_title)
+        )
+      )
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_selectThirdPartyDependencies_displaysThirdPartyDependencyList() {
+  fun testHelpFragment_selectFAQsAndTabletConfigChanged_displaysFAQList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.faq_activity_title)
+        )
+      )
+      onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectThirdPartyDeps_displaysThirdPartyDepsList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -306,7 +433,43 @@ class HelpFragmentTest {
           position = 1
         )
       ).perform(click())
-      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectThirdPartyDepsAndTabletConfigChanged_displaysThirdPartyDepsList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(
           isDisplayed()
