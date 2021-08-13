@@ -36,8 +36,6 @@ class HelpActivity :
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
-  // Used to initially load the suitable fragment in the case of multipane.
-  private var isFirstOpen = true
   private lateinit var selectedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,11 +45,8 @@ class HelpActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    selectedFragment = if (savedInstanceState == null) {
-      FAQ_LIST_FRAGMENT
-    } else {
-      savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
-    }
+    selectedFragment =
+      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
     val extraHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,

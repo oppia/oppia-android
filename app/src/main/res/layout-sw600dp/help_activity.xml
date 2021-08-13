@@ -35,7 +35,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:background="@color/oppiaGreyBackground"
-        android:contentDescription="@string/back_button"
+        android:contentDescription="@string/navigate_up"
         android:padding="12dp"
         android:src="@drawable/ic_arrow_back_black_24_dp"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
@@ -43,17 +43,15 @@
 
       <TextView
         android:id="@+id/help_multipane_options_title_textview"
+        style="@style/Heading3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
         android:background="@color/transparent"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:minHeight="48dp"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/help_multipane_options_back_button"
         app:layout_constraintTop_toTopOf="parent" />
