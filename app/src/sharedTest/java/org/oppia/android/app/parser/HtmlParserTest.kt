@@ -112,6 +112,7 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HtmlParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HtmlParserTest {
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -282,23 +283,29 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+
+    val textView: TextView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      return@runWithActivity htmlParser.parseOppiaHtml(
+      val result = htmlParser.parseOppiaHtml(
         "<span>You should know the following before going on:<br></span>" +
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another<br></li></ul>",
         textView
       )
+      textView.setText(result)
+      return@runWithActivity textView
     }
-    val spannableString = SpannableStringBuilder(htmlResult)
+
+     val spannableString = SpannableStringBuilder(textView.text)
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans = spannableString.getSpans(
       0, spannableString.length,
       BulletSpan::class.java
     )
+
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
     val bulletSpan0 = bulletSpans[0]
@@ -311,7 +318,7 @@ class HtmlParserTest {
 
     val bulletSpan1 = bulletSpans[1]
     assertThat(bulletSpan1).isNotNull()
-    assertThat(htmlResult.toString())
+    assertThat(textView.text.toString())
       .isEqualTo(
         "You should know the following before going on:\n\nThe counting numbers" +
           " (1, 2, 3, 4, 5 ….)\n\nHow to tell whether one counting number is bigger or " +
@@ -322,9 +329,18 @@ class HtmlParserTest {
   @Test
   @Config(qualifiers = "ldrtl")
   fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val parsedHtml = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val textView = arrangeTextViewWithLayoutDirection(
+      htmlParser,
+      ViewCompat.LAYOUT_DIRECTION_RTL
+    )
 
+    val parsedHtml = activityRule.scenario.runWithActivity {
       val htmlString = "<span>You should know the following before going on:<br></span>" +
         "<ul><oppia-li dir=\"rtl\">The counting numbers (1, 2, 3, 4, 5 ….)<br></oppia-li>" +
         "<oppia-li dir=\"rtl\">How to tell whether one counting number is bigger or " +
@@ -338,6 +354,7 @@ class HtmlParserTest {
         )
       )
     }
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
     assertThat(parsedHtml.toString()).isNotEmpty()
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(2)
   }
