@@ -68,29 +68,29 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     setMultipaneContainerTitle(
       activity.getString(R.string.third_party_dependency_list_activity_title)
     )
-    getMultipaneOptionsFragment()?.let {
-      activity.supportFragmentManager.beginTransaction().remove(
-        it
-      ).commit()
-    }
+//    getMultipaneOptionsFragment()?.let {
+//      activity.supportFragmentManager.beginTransaction().remove(
+//        it
+//      ).commit()
+//    }
     val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance(true)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.multipane_options_container,
       thirdPartyDependencyListFragment
-    ).commitNow()
+    ).commit()
   }
 
   /** Loads [FAQListFragment] in tablet devices. */
   fun handleLoadFAQListFragment() {
     setMultipaneContainerTitle(activity.getString(R.string.faq_activity_title))
-    getMultipaneOptionsFragment()?.let {
-      activity.supportFragmentManager.beginTransaction().remove(it)
-        .commit()
-    }
-    activity.supportFragmentManager.beginTransaction().add(
+//    getMultipaneOptionsFragment()?.let {
+//      activity.supportFragmentManager.beginTransaction().remove(it)
+//        .commit()
+//    }
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.multipane_options_container,
       FAQListFragment()
-    ).commitNow()
+    ).commit()
   }
 
   /** Loads [LicenseListFragment] in tablet devices. */
@@ -99,7 +99,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex, true)
     activity.supportFragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, licenseListFragment)
-      .commitNow()
+      .addToBackStack("ThirdPartyDependencyListFragment")
+      .commit()
   }
 
   /** Loads [LicenseTextViewerFragment] in tablet devices. */
@@ -119,7 +120,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     )
     activity.supportFragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, licenseTextViewerFragment)
-      .commitNow()
+      .addToBackStack("LicenseListFragment")
+      .commit()
   }
 
   private fun setUpToolbar() {
@@ -136,8 +138,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
         (currentFragment is LicenseListFragment || currentFragment is LicenseTextViewerFragment)
       ) {
         Log.d("Help", "faaltu: Back button clicked!!")
-        activity.supportFragmentManager
-          .beginTransaction().remove(currentFragment)
+        activity.supportFragmentManager.popBackStackImmediate()
       }
       Log.d("Help", "setBackButtonClickListener: Back button clicked!!")
     }

@@ -33,8 +33,6 @@ class HelpActivity :
   RouteToFAQListListener,
   RouteToFAQSingleListener,
   RouteToThirdPartyDependencyListListener,
-  RouteToLicenseTextListener,
-  RouteToLicenseListListener,
   LoadFAQListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
@@ -43,7 +41,8 @@ class HelpActivity :
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
-  private lateinit var selectedFragment: String
+  private lateinit var selectedMultipaneFragment: String
+  private lateinit var selectedMultipaneFragmentTitle: String
   private var savedDependencyIndex by Delegates.notNull<Int>()
   private var savedLicenseIndex by Delegates.notNull<Int>()
 
@@ -54,14 +53,14 @@ class HelpActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    selectedFragment = savedInstanceState?.getString(SELECTED_FRAGMENT_KEY) ?: FAQ_LIST_FRAGMENT
+    selectedMultipaneFragment = savedInstanceState?.getString(SELECTED_FRAGMENT_KEY) ?: FAQ_LIST_FRAGMENT
     savedDependencyIndex = savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY) ?: 0
     savedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_KEY) ?: 0
     val extraHelpOptionsTitle = savedInstanceState?.getString(MULTIPANE_TITLE_KEY)
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,
       isFromNavigationDrawer,
-      selectedFragment,
+      selectedMultipaneFragment,
       savedDependencyIndex,
       savedLicenseIndex
     )
@@ -96,23 +95,23 @@ class HelpActivity :
   }
 
   override fun loadFAQListFragment() {
-    selectedFragment = FAQ_LIST_FRAGMENT
+    selectedMultipaneFragment = FAQ_LIST_FRAGMENT
     helpActivityPresenter.handleLoadFAQListFragment()
   }
 
   override fun loadThirdPartyDependencyListFragment() {
-    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT
+    selectedMultipaneFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT
     helpActivityPresenter.handleLoadThirdPartyDependencyListFragment()
   }
 
   override fun loadLicenseListFragment(dependencyIndex: Int) {
-    selectedFragment = LICENSE_LIST_FRAGMENT
+    selectedMultipaneFragment = LICENSE_LIST_FRAGMENT
     savedDependencyIndex = dependencyIndex
     helpActivityPresenter.handleLoadLicenseListFragment(dependencyIndex)
   }
 
   override fun loadLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
-    selectedFragment = LICENSE_TEXT_FRAGMENT
+    selectedMultipaneFragment = LICENSE_TEXT_FRAGMENT
     savedDependencyIndex = dependencyIndex
     savedLicenseIndex = licenseIndex
     helpActivityPresenter.handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
@@ -124,29 +123,17 @@ class HelpActivity :
     if (titleTextView != null) {
       outState.putString(MULTIPANE_TITLE_KEY, titleTextView.text.toString())
     }
-    outState.putString(SELECTED_FRAGMENT_KEY, selectedFragment)
+    outState.putString(SELECTED_FRAGMENT_KEY, selectedMultipaneFragment)
     outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY, savedDependencyIndex)
     outState.putInt(LICENSE_INDEX_KEY, savedLicenseIndex)
   }
 
-  override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {
-    startActivity(
-      LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
-        this,
-        dependencyIndex,
-        licenseIndex
-      )
-    )
-  }
-
-  override fun onRouteToLicenseList(dependencyIndex: Int) {
-    startActivity(
-      LicenseListActivity
-        .createLicenseListActivityIntent(
-          context = this,
-          dependencyIndex = dependencyIndex
-        )
-    )
+  override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    super.onRestoreInstanceState(savedInstanceState)
+    selectedMultipaneFragment = savedInstanceState.getString(SELECTED_FRAGMENT_KEY) ?: FAQ_LIST_FRAGMENT
+    savedDependencyIndex = savedInstanceState.getInt(THIRD_PARTY_DEPENDENCY_INDEX_KEY)
+    savedLicenseIndex = savedInstanceState.getInt(LICENSE_INDEX_KEY)
+    selectedMultipaneFragmentTitle = savedInstanceState.getString(MULTIPANE_TITLE_KEY) ?: ""
   }
 
   override fun onRouteToFAQSingle(question: String, answer: String) {
