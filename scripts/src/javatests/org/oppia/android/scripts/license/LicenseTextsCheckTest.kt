@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
-import java.io.FileNotFoundException
 import java.io.PrintStream
 
 /** Tests for [LicenseTextsCheck]. */
@@ -110,10 +109,13 @@ class LicenseTextsCheckTest {
 
   @Test
   fun testLicenseTexsCheck_xmlFileNotPresent_checkFailsWithFileNotFoundException() {
-    val exception = assertThrows(FileNotFoundException::class) {
+    val pathToThirdPartyDepsXml = "${tempFolder.root}/values/third_party_dependencies.xml"
+    val exception = assertThrows(Exception::class) {
       main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
     }
 
-    assertThat(exception).hasMessageThat().contains("No such file or directory")
+    assertThat(exception).hasMessageThat().contains(
+      "File does not exist: $pathToThirdPartyDepsXml"
+    )
   }
 }

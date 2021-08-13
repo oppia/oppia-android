@@ -25,6 +25,8 @@ fun main(args: Array<String>) {
   }
   val pathToThirdPartyDepsXml = args[0]
   val thirdPartyDepsXml = File(pathToThirdPartyDepsXml)
+  check(thirdPartyDepsXml.exists()) { "File does not exist: $thirdPartyDepsXml" }
+
   val xmlContent = thirdPartyDepsXml.readText()
 
   checkIfCommentIsPresent(xmlContent = xmlContent, comment = WARNING_COMMENT)
