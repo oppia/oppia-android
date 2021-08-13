@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.NetworkConfigModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
@@ -110,7 +111,8 @@ class MockPlatformParameterServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class, RetrofitTestModule::class
+      TestModule::class, NetworkModule::class,
+      RetrofitTestModule::class, NetworkConfigModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -24,12 +24,10 @@ import javax.inject.Singleton
 @Config(application = EndToEndTestGcsResourceModuleTest.TestApplication::class)
 class EndToEndTestGcsResourceModuleTest {
 
-  @Inject
-  @DefaultResourceBucketName
+  @field:[Inject DefaultResourceBucketName]
   lateinit var defaultResourceBucketName: String
 
-  @Inject
-  @QuestionResourceBucketName
+  @field:[Inject QuestionResourceBucketName]
   lateinit var questionResourceBucketName: String
 
   @Before

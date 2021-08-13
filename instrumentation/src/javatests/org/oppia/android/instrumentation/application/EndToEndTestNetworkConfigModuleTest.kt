@@ -24,12 +24,10 @@ import javax.inject.Singleton
 @Config(application = EndToEndTestNetworkConfigModuleTest.TestApplication::class)
 class EndToEndTestNetworkConfigModuleTest {
 
-  @Inject
-  @BaseUrl
+  @field:[Inject BaseUrl]
   lateinit var baseUrl: String
 
-  @Inject
-  @XssiPrefix
+  @field:[Inject XssiPrefix]
   lateinit var xssiPrefix: String
 
   @Before

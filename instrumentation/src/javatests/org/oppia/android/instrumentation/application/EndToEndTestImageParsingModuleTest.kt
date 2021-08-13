@@ -12,9 +12,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.util.parser.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -25,16 +22,13 @@ import javax.inject.Singleton
 @Config(application = EndToEndTestImageParsingModuleTest.TestApplication::class)
 class EndToEndTestImageParsingModuleTest {
 
-  @Inject
-  @DefaultGcsPrefix
+  @field:[Inject DefaultGcsPrefix]
   lateinit var defaultGcsPrefix: String
 
-  @Inject
-  @ImageDownloadUrlTemplate
+  @field:[Inject ImageDownloadUrlTemplate]
   lateinit var imageDownloadUrlTemplate: String
 
-  @Inject
-  @ThumbnailDownloadUrlTemplate
+  @field:[Inject ThumbnailDownloadUrlTemplate]
   lateinit var thumbnailDownloadUrlTemplate: String
 
   @Before
