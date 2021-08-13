@@ -549,7 +549,7 @@ class MavenDependenciesListCheckTest {
       DATA_BINDING_DEP,
       FIREBASE_ANALYTICS_UPGRADED_DEP
     )
-    setupBazelEnvironmentWithUpdatedFirebaseDependency(coordsList)
+    setUpBazelEnvironmentWithUpdatedFirebaseDependency(coordsList)
 
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
@@ -899,7 +899,7 @@ class MavenDependenciesListCheckTest {
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
   }
 
-  private fun setupBazelEnvironmentWithUpdatedFirebaseDependency(coordsList: List<String>) {
+  private fun setUpBazelEnvironmentWithUpdatedFirebaseDependency(coordsList: List<String>) {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(
       mavenInstallJsonFile = mavenInstallJson,

@@ -45,6 +45,7 @@ gradlew.bat @BenHenning
 # CI configuration.
 /.github/actions/ @BenHenning
 /.github/workflows/ @BenHenning
+/.github/stale.yml @BenHenning
 
 # All tests.
 *Test.kt @anandwana001
