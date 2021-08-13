@@ -19,6 +19,7 @@ class RepositoryFile() {
       "app/build/",
       "data/build/",
       "domain/build/",
+      "model/build/",
       "testing/build/",
       "utility/build/",
     )

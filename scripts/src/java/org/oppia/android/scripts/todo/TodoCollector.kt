@@ -38,11 +38,11 @@ class TodoCollector {
     /**
      * Collects all the poorly formatted TODOs in the repository.
      *
-     * @param allTodos a list of all the TODOs of the repository
+     * @param todoList a list of all the TODOs of the repository
      * @return a list of all poorly formatted Todos
      */
-    fun collectPoorlyFormattedTodos(allTodos: List<Todo>): List<Todo> {
-      return allTodos.filter { todo ->
+    fun collectPoorlyFormattedTodos(todoList: List<Todo>): List<Todo> {
+      return todoList.filter { todo ->
         checkIfTodoIsPoorlyFormatted(todo.lineContent)
       }
     }
@@ -50,11 +50,11 @@ class TodoCollector {
     /**
      * Collects all the correctly formatted TODOs in the repository.
      *
-     * @param allTodos a list of all the TODOs of the repository
+     * @param todoList a list of all the TODOs of the repository
      * @return a list of all correctly formatted Todos
      */
-    fun collectCorrectlyFormattedTodos(allTodos: List<Todo>): List<Todo> {
-      return allTodos.filter { todo ->
+    fun collectCorrectlyFormattedTodos(todoList: List<Todo>): List<Todo> {
+      return todoList.filter { todo ->
         correctTodoFormatRegex.containsMatchIn(todo.lineContent)
       }
     }

@@ -19,13 +19,13 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_emptyDirectory_noTodoShouldBeCollected() {
+  fun testTodoCollector_emptyDirectory_invokeTodoCollector_noTodoShouldBeCollected() {
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
     assertThat(collectedTodos).isEmpty()
   }
 
   @Test
-  fun testTodoCollector_multipleTodos_allShouldBeCollected() {
+  fun testTodoCollector_addTodosAcrossSingleFile_todoCollectorCollectsAll() {
     val testContent =
       """
       test line 1
@@ -61,7 +61,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_multipleTodosAcrossFiles_allShouldBeCollected() {
+  fun testTodoCollector_addTodosAcrossMultipleFiles_todoCollectorCollectsAllTodos() {
     val testContent1 =
       """
       # TODO (#121): test todo.
@@ -123,10 +123,10 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_poorlyFormattedTodosAcrossMultipleFiles_allShouldBeCollected() {
+  fun testTodoCollector_addMalformedTodos_poorlyFormattedTodoCollectorCollectsAllMalformedTodos() {
     val testContent1 =
       """
-      // TODO (#121): test todo.
+      //TODO(#1215545): test todo.
       # TODO(    110)
       //todo(#15444)
       <!--TODO(# 101)-->
@@ -158,7 +158,7 @@ class TodoCollectorTest {
       Todo(
         filePath = tempFile1.toString(),
         lineNumber = 1,
-        lineContent = "// TODO (#121): test todo."
+        lineContent = "//TODO(#1215545): test todo."
       )
     )
     assertThat(poorlyFormattedTodos).contains(
@@ -206,7 +206,120 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_correctlyFormattedTodosAcrossMultipleFiles_allShouldBeCollected() {
+  fun testTodoCollector_addTodosWithIncorrectCase_poorlyFormattedTodoCollectorCollectsAllCases() {
+    val testContent1 =
+      """
+      // Todo(#1215157): test content 1
+      # todo(#110484844): test content 2
+      // TODo(#15444): test content 3
+      <!-- todo(#101484884): test content 4 -->
+      """.trimIndent()
+    val testContent2 =
+      """
+      <!-- tODo(#10554548): test content 5 -->
+      """.trimIndent()
+    val testContent3 =
+      """
+      // ToDo(#17878788): test content 6
+      
+      
+      # some todo(#21084884): test content 7
+      """.trimIndent()
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val tempFile3 = tempFolder.newFile("testfiles/TempFile3.sh")
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+    tempFile3.writeText(testContent3)
+
+    val allTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(allTodos)
+    assertThat(poorlyFormattedTodos).hasSize(7)
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 1,
+        lineContent = "// Todo(#1215157): test content 1"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 2,
+        lineContent = "# todo(#110484844): test content 2"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 3,
+        lineContent = "// TODo(#15444): test content 3"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 4,
+        lineContent = "<!-- todo(#101484884): test content 4 -->"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile2.toString(),
+        lineNumber = 1,
+        lineContent = "<!-- tODo(#10554548): test content 5 -->"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 1,
+        lineContent = "// ToDo(#17878788): test content 6"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile3.toString(),
+        lineNumber = 4,
+        lineContent = "# some todo(#21084884): test content 7"
+      )
+    )
+  }
+
+  @Test
+  fun testTodoCollector_addNotActualTodos_poorlyFormattedTodoCollectorCollectsNone() {
+    val testContent1 =
+      """
+      // some comment involving todo.
+      # a TODO comment.
+      // Another Todo keyword containg comment.
+      <!-- Yet another todo comment.  -->
+      """.trimIndent()
+    val testContent2 =
+      """
+      <!-- test todo comment -->
+      """.trimIndent()
+    val testContent3 =
+      """
+      // Another Todo comment
+      
+      
+      # some test comment including todo
+      """.trimIndent()
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
+    val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
+    val tempFile3 = tempFolder.newFile("testfiles/TempFile3.sh")
+    tempFile1.writeText(testContent1)
+    tempFile2.writeText(testContent2)
+    tempFile3.writeText(testContent3)
+
+    val allTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(allTodos)
+    assertThat(poorlyFormattedTodos).isEmpty()
+  }
+
+  @Test
+  fun testTodoCollector_addTodos_correctlyFormattedTodoCollectorCollectsCorrectlyFormattedTodos() {
     val testContent1 =
       """
       // TODO(#12111): some description 1.

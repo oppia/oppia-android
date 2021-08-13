@@ -34,7 +34,7 @@ import java.io.FileInputStream
  * file and provide its path to the script in the format as stated above.
  *
  * Instructions to create the open_issues.json file:
- * 1. Setup Github CLI Tools locally.
+ * 1. Set up Github CLI Tools locally.
  * 2. cd to the oppia-android repository.
  * 3. Run the command: gh issue list --limit 2000 --repo oppia/oppia-android
  * --json number > $(pwd)/open_issues.json
@@ -48,9 +48,7 @@ fun main(vararg args: String) {
   // Path to the JSON file containing the list of open issues.
   val openIssuesJsonFile = File(repoPath, args[2])
 
-  if (!openIssuesJsonFile.exists()) {
-    throw Exception("$repoPath${args[2]}: No such file exists")
-  }
+  check(openIssuesJsonFile.exists()) { "$repoPath${args[2]}: No such file exists" }
 
   val todoExemptionTextProtoFilePath = "scripts/assets/todo_exemptions"
 
@@ -69,7 +67,7 @@ fun main(vararg args: String) {
   )
 
   val openIssueFailureTodos = correctlyFormattedTodos.filter { todo ->
-    checkIfIssueDoesNotMatchesOpenIssue(codeLine = todo.lineContent, openIssueList = openIssueList)
+    checkIfIssueDoesNotMatchOpenIssue(codeLine = todo.lineContent, openIssueList = openIssueList)
   }
 
   val redundantExemptions = retrieveRedundantExemptions(
@@ -118,7 +116,7 @@ fun main(vararg args: String) {
 }
 
 /**
- * Retrieves the Todo open check failures list after filtering them from the exemptions.
+ * Retrieves the TODO open check failures list after filtering them from the exemptions.
  *
  * @param todos the list of all the failure causing TODOs
  * @param todoExemptionList the list contating the TODO exemptions
@@ -173,7 +171,7 @@ private fun retrieveRedundantExemptions(
  * @param openIssueList the list of all the open issues of this repository on GitHub
  * @return whether the TODO does not corresponds to open issues on GitHub
  */
-private fun checkIfIssueDoesNotMatchesOpenIssue(
+private fun checkIfIssueDoesNotMatchOpenIssue(
   codeLine: String,
   openIssueList: List<Issue>,
 ): Boolean {
@@ -204,7 +202,7 @@ private fun logRedundantExemptions(
 }
 
 /**
- * Logs the Todo open check failures.
+ * Logs the TODO open check failures.
  *
  * @param invalidTodos a list of all the invalid TODOs present in the repository. A TODO is
  *     considered to be invalid if it is poorly formatted or if it does not corresponds to open
@@ -243,7 +241,7 @@ private fun retrieveOpenIssueList(openIssuesJsonFile: File): List<Issue> {
 }
 
 /**
- * Loads the todo open check exemptions list corresponding to a text proto file.
+ * Loads the TODO open check exemptions list corresponding to a text proto file.
  *
  * @param pathToProtoBinary the location of the exemption textproto file
  * @return proto class from the parsed textproto file
