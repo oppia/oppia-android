@@ -19,8 +19,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.*
-import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +49,8 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 

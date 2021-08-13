@@ -1,6 +1,5 @@
 package org.oppia.android.domain.platformparameter.syncup
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.Data
@@ -11,10 +10,8 @@ import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriod
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Enqueues unique periodic work requests for fetching and caching latest platform parameter values
@@ -45,10 +42,10 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
       workRequestRepeatInterval.value.toLong(),
       TimeUnit.HOURS
     )
-    .addTag(PlatformParameterSyncUpWorker.TAG)
-    .setInputData(workerTypeForSyncingPlatformParameters)
-    .setConstraints(platformParameterSyncUpWorkerConstraints)
-    .build()
+      .addTag(PlatformParameterSyncUpWorker.TAG)
+      .setInputData(workerTypeForSyncingPlatformParameters)
+      .setConstraints(platformParameterSyncUpWorkerConstraints)
+      .build()
 
   override fun onCreate() {
     val workManager = WorkManager.getInstance(context)

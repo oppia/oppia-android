@@ -11,11 +11,11 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
