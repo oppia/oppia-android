@@ -279,9 +279,7 @@ class HelpFragmentTest {
       )
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(
-          isCompletelyDisplayed()
-        )
+        matches(withContentDescription(R.string.navigate_up))
       )
     }
   }
