@@ -29,7 +29,7 @@ kt_android_library(
     srcs = [
         "NetworkConnectionDebugUtil.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_debug_visibility"],
     deps = [
         ":connection_status",
     ],
