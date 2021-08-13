@@ -75,6 +75,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
     model: NetworkTypeItemViewModel
   ) {
     binding.viewModel = model
+    // TODO(#3383): Find a way to make this work below N
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       networkConnectionUtil.ifPresent { connectionUtil ->
         binding.isNetworkSelected =
