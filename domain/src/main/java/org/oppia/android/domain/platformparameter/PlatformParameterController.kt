@@ -67,17 +67,18 @@ class PlatformParameterController @Inject constructor(
   }
 
   /**
-   * Execute and Transforms the [Deferred] task into an [AsyncResult].
+   * Executes and transforms the [Deferred] task into an [AsyncResult].
    *
    * @param deferred task which needs to be executed
    * @return async result for success or failure after the execution of deferred task
    */
   private suspend fun getDeferredResult(deferred: Deferred<Boolean>): AsyncResult<Any?> {
-    val throwable = Throwable("Failed when storing platform parameter values list")
-    return if (deferred.await())
+    val throwable = IllegalStateException("Failed when storing platform parameter values list")
+    return if (deferred.await()) {
       AsyncResult.success(true)
-    else
+    } else {
       AsyncResult.failed(throwable)
+    }
   }
 
   /**

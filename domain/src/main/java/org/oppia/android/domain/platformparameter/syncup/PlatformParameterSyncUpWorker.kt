@@ -13,7 +13,9 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
@@ -54,8 +56,7 @@ class PlatformParameterSyncUpWorker private constructor(
   // Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
   // are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
-    val platformParameterList: MutableList<PlatformParameter> = mutableListOf()
-    response.map {
+    return response.map {
       val platformParameter = PlatformParameter.newBuilder().setName(it.key)
       when (val value = it.value) {
         is String -> platformParameter.string = value
@@ -63,9 +64,8 @@ class PlatformParameterSyncUpWorker private constructor(
         is Boolean -> platformParameter.boolean = value
         else -> throw IllegalArgumentException(INCORRECT_TYPE_EXCEPTION_MSG)
       }
-      platformParameterList.add(platformParameter.build())
+      platformParameter.build()
     }
-    return platformParameterList
   }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store */
@@ -80,6 +80,9 @@ class PlatformParameterSyncUpWorker private constructor(
         throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
       }
       platformParameterController.updatePlatformParameterDatabase(platformParameterList)
+        .toLiveData().observeForever {
+          if (it.isFailure()) throw IllegalStateException(it.getErrorOrNull())
+        }
       Result.success()
     } catch (e: Exception) {
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
