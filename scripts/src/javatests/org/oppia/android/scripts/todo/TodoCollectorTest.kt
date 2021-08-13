@@ -30,32 +30,239 @@ class TodoCollectorTest {
       """
       test line 1
       test line 2
-      test line 3
+      # TODO(#457741): test description 1
+      # TODO (#457742): test description 2
+      # TODO(#457743) : test description 3
+      # TODO(457744): test description 4
+      // TODO(#457741)
+      // TODO(#457745):
+      // TODO(#457747) test description 5
+      // some comment which has a TODO(#12182992): some description
+      // TODO(test description 7)
+      // Todo(#4577413): test description 8
+      // Todo (#4577423): test description 9
+      // Todo(#4577433) : test description 10
+      // Todo(4577443): test description 11
+      // Todo(#4577413)
+      // Todo(#4577453):
+      // Todo(#4577473) test description 12
+      // some comment which has a Todo(#12182999): some description
+      // todo(#4577413): test description 14
+      // todo (#4577423): test description 15
+      // todo(#4577433) : test description 16
+      // todo(4577443): test description 17
+      // todo(#4577413)
+      // todo(#4577453):
+      // todo(#4577473) test description 18
+      // some comment which has a todo(#12182999): some description
       test line 4
       test line 5
       todo
       test line 7
       test line 8
       TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
+      //TODO(#161614): some another test description
       test line 10
       """.trimIndent()
     tempFolder.newFolder("testfiles", ".github")
     val tempFile = tempFolder.newFile("testfiles/.github/CODEOWNERS")
     tempFile.writeText(testContent)
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
-    assertThat(collectedTodos).hasSize(2)
+    assertThat(collectedTodos).hasSize(28)
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 3,
+        lineContent = "# TODO(#457741): test description 1"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 4,
+        lineContent = "# TODO (#457742): test description 2"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 5,
+        lineContent = "# TODO(#457743) : test description 3"
+      )
+    )
     assertThat(collectedTodos).contains(
       Todo(
         filePath = tempFile.toString(),
         lineNumber = 6,
-        lineContent = "todo"
+        lineContent = "# TODO(457744): test description 4"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 7,
+        lineContent = "// TODO(#457741)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 8,
+        lineContent = "// TODO(#457745):"
       )
     )
     assertThat(collectedTodos).contains(
       Todo(
         filePath = tempFile.toString(),
         lineNumber = 9,
+        lineContent = "// TODO(#457747) test description 5"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 10,
+        lineContent = "// some comment which has a TODO(#12182992): some description"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 11,
+        lineContent = "// TODO(test description 7)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 12,
+        lineContent = "// Todo(#4577413): test description 8"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 13,
+        lineContent = "// Todo (#4577423): test description 9"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 14,
+        lineContent = "// Todo(#4577433) : test description 10"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 15,
+        lineContent = "// Todo(4577443): test description 11"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 16,
+        lineContent = "// Todo(#4577413)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 17,
+        lineContent = "// Todo(#4577453):"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 18,
+        lineContent = "// Todo(#4577473) test description 12"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 19,
+        lineContent = "// some comment which has a Todo(#12182999): some description"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 20,
+        lineContent = "// todo(#4577413): test description 14"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 21,
+        lineContent = "// todo (#4577423): test description 15"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 22,
+        lineContent = "// todo(#4577433) : test description 16"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 23,
+        lineContent = "// todo(4577443): test description 17"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 24,
+        lineContent = "// todo(#4577413)"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 25,
+        lineContent = "// todo(#4577453):"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 26,
+        lineContent = "// todo(#4577473) test description 18"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 27,
+        lineContent = "// some comment which has a todo(#12182999): some description"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 30,
+        lineContent = "todo"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 33,
         lineContent = "TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD."
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile.toString(),
+        lineNumber = 34,
+        lineContent = "//TODO(#161614): some another test description"
       )
     )
   }
@@ -123,7 +330,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addMalformedTodos_poorlyFormattedTodoCollectorCollectsAllMalformedTodos() {
+  fun testTodoCollector_addTodos_poorlyFormattedTodoCollectorCollectsAllMalformedTodos() {
     val testContent1 =
       """
       //TODO(#1215545): test todo.
@@ -338,6 +545,34 @@ class TodoCollectorTest {
       
       
       # TODO(#210000): some description 6.
+      // TODO (#457742): test description 2
+      // TODO(#457743) : test description 3
+      // TODO(457744): test description 4
+      // TODO(#457741)
+      // TODO(#457745):
+      // TODO(#457747) test description 5
+      // TODO(test description 7)
+      // Todo(#4577413): test description 8
+      // Todo (#4577423): test description 9
+      // Todo(#4577433) : test description 10
+      // Todo(4577443): test description 11
+      // Todo(#4577413)
+      // Todo(#4577453):
+      // Todo(#4577473) test description 12
+      // todo(#4577413): test description 14
+      // todo (#4577423): test description 15
+      // todo(#4577433) : test description 16
+      // todo(4577443): test description 17
+      // todo(#4577413)
+      // todo(#4577453):
+      // todo(#4577473) test description 18
+      //Todo(#6336363): test description 19
+      test line 4
+      test line 5
+      todo
+      test line 7
+      test line 8
+      TODO(#ISSUE_NUMBER): Revert ownership to @USERNAME after YYYY-MM-DD.
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
@@ -393,6 +628,168 @@ class TodoCollectorTest {
     )
 
     assertThat(parsedIssueNumber).isEqualTo("1548774")
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo1_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO (#1548774): some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo2_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(#1548775) : some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo3_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(#1548779):"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo4_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(# 1548778): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo5_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(1548772): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo6_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(some description)"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo7_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo (#1548774): some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo8_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo(#1548775) : some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo9_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo(#1548779):"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo10_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo(# 1548778): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo11_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo(1548772): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo12_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "//Todo(1548772): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo13_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo (#1548774): some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo14_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo(#1548775) : some test description."
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo15_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo(#1548779):"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo16_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo(# 1548778): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo17_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo(1548772): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo18_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "//todo(1548772): some description"
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
   }
 
   /** Retrieves the absolute path of testfiles directory. */
