@@ -32,8 +32,7 @@ class StoryServiceTest {
   @Inject
   lateinit var mockRetrofit: MockRetrofit
 
-  @Inject
-  @XssiPrefix
+  @field:[Inject XssiPrefix]
   lateinit var xssiPrefix: String
 
   @Before

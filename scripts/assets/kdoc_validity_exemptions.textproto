@@ -392,6 +392,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicCo
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonAssetRetriever.kt"
 exempted_file_path: "domain/src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt"
+exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/application/TestApplicationComponent.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/ImageViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing/ExplorationCheckpointTestHelper.kt"
