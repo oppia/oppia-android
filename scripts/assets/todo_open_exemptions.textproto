@@ -87,20 +87,41 @@ todo_open_exemption {
   line_number: 212
   line_number: 213
   line_number: 214
+  line_number: 215
   line_number: 219
-  line_number: 224
-  line_number: 227
-  line_number: 240
-  line_number: 243
-  line_number: 247
-  line_number: 250
-  line_number: 254
-  line_number: 257
-  line_number: 261
-  line_number: 264
-  line_number: 268
-  line_number: 271
-  line_number: 279
+  line_number: 223
+  line_number: 226
+  line_number: 239
+  line_number: 242
+  line_number: 246
+  line_number: 249
+  line_number: 253
+  line_number: 256
+  line_number: 260
+  line_number: 263
+  line_number: 267
+  line_number: 270
+  line_number: 274
+  line_number: 277
+  line_number: 281
+  line_number: 284
+  line_number: 325
+  line_number: 326
+  line_number: 327
+  line_number: 332
+  line_number: 337
+  line_number: 340
+  line_number: 353
+  line_number: 356
+  line_number: 360
+  line_number: 363
+  line_number: 367
+  line_number: 370
+  line_number: 374
+  line_number: 377
+  line_number: 381
+  line_number: 384
+  line_number: 392
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/IssueTodosResolvedCheckTest.kt"
@@ -129,7 +150,7 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoOpenCheck.kt"
-  line_number: 99
+  line_number: 97
 }
 todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"

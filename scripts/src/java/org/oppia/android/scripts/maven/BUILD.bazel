@@ -5,26 +5,12 @@ Libraries corresponding to attributing third-party library copyright licenses in
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "license_fetcher",
-    testonly = True,
-    srcs = [
-        "LicenseFetcher.kt",
-        "LicenseFetcherImpl.kt",
-    ],
-)
-
-kt_jvm_library(
     name = "generate_maven_dependencies_list_lib",
     testonly = True,
     srcs = ["GenerateMavenDependenciesList.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":license_fetcher",
-        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
-        "//scripts/src/java/org/oppia/android/scripts/maven/model",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
-        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
-        "//third_party:com_google_protobuf_protobuf-java",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
     ],
 )
 
@@ -34,7 +20,7 @@ kt_jvm_library(
     srcs = ["RetrieveLicenseTexts.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
-        ":license_fetcher",
+        "//scripts/src/java/org/oppia/android/scripts/license:license_fetcher",
         "//scripts/src/java/org/oppia/android/scripts/license/model",
         "//scripts/src/java/org/oppia/android/scripts/maven/model",
         "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
