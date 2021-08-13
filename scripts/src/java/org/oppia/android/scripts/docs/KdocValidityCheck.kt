@@ -109,7 +109,7 @@ fun main(vararg args: String) {
 
   logKdocPresenceFailures(kdocPresenceFailuresAfterExemption)
 
-  if(kdocPresenceFailuresAfterExemption.isNotEmpty()){
+  if (kdocPresenceFailuresAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"

@@ -40,7 +40,7 @@ fun main(vararg args: String) {
       isFailing || checkFailed
     }
 
-  if(hasFilenameCheckFailure){
+  if (hasFilenameCheckFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
         "details on how to fix this.\n"
@@ -58,7 +58,7 @@ fun main(vararg args: String) {
       isFailing || checkFailed
     }
 
-  if(hasFileContentCheckFailure){
+  if (hasFileContentCheckFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"

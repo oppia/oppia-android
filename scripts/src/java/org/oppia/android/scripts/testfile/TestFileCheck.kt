@@ -50,7 +50,7 @@ fun main(vararg args: String) {
 
   logFailures(matchedFiles, testFileExemptiontextProto)
 
-  if(matchedFiles.isNotEmpty()){
+  if (matchedFiles.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"

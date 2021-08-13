@@ -95,7 +95,7 @@ fun main(vararg args: String) {
     failureMessage = "TODOs not in correct format:",
   )
 
-  if(poorlyFormattedTodosAfterExemption.isNotEmpty()){
+  if (poorlyFormattedTodosAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"
@@ -107,7 +107,7 @@ fun main(vararg args: String) {
     failureMessage = "TODOs not corresponding to open issues on GitHub:",
   )
 
-  if(openIssueFailureTodosAfterExemption.isNotEmpty()){
+  if (openIssueFailureTodosAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"

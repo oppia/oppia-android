@@ -68,7 +68,7 @@ fun main(vararg args: String) {
 
   logFailures(failureActivitiesAfterExemption)
 
-  if(failureActivitiesAfterExemption.isNotEmpty()){
+  if (failureActivitiesAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"
