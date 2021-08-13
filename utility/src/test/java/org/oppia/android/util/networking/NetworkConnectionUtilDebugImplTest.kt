@@ -21,9 +21,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

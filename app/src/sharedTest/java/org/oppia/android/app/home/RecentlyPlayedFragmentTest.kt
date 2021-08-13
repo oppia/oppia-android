@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -46,6 +49,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -101,6 +105,9 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
+private const val TOLERANCE = 1e-5f
+
 /** Tests for [RecentlyPlayedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -112,9 +119,13 @@ class RecentlyPlayedFragmentTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  private val testFragment by lazy { RecentlyPlayedFragment() }
+
   @get:Rule
   val activityTestRule: ActivityTestRule<RecentlyPlayedActivity> = ActivityTestRule(
-    RecentlyPlayedActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    RecentlyPlayedActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
   )
 
   @Inject
@@ -400,6 +411,255 @@ class RecentlyPlayedFragmentTest {
         matches(withText(containsString("Ratios and Proportional Reasoning")))
       )
     }
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(28f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(8f)
+
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(8f)
+    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(28f)
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_landscape_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(72f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(36f)
+    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(36f)
+
+    assertThat(recycler.getChildAt(3).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+    assertThat(recycler.getChildAt(3).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(72f)
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_tabletPortrait_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(120f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(60f)
+    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(60f)
+
+    assertThat(recycler.getChildAt(3).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+    assertThat(recycler.getChildAt(3).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(120f)
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInRtl_tabletLandscape_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+
+    storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(96f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+
+    assertThat(recycler.getChildAt(2).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(64f)
+    assertThat(recycler.getChildAt(2).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(32f)
+
+    assertThat(recycler.getChildAt(3).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(32f)
+    assertThat(recycler.getChildAt(3).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(64f)
+
+    assertThat(recycler.getChildAt(4).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(0f)
+    assertThat(recycler.getChildAt(4).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(96f)
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testRecentlyPlayedTestActivity_recentlyPlayedItemInLtr_ltrMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = true
+    )
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    val recycler: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+
+    assertThat(recycler.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(28f)
+    assertThat(recycler.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(8f)
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testRecentlyPlayedTestActivity_recommendedSectionItemInRtlMode_rtlMarginIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+
+    activityTestRule.launchActivity(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = profileId.internalId
+      )
+    )
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    testCoroutineDispatchers.runCurrent()
+    val recyclerView: RecyclerView =
+      activityTestRule.activity.findViewById(R.id.ongoing_story_recycler_view)
+    assertThat(recyclerView.getChildAt(1).marginStart.toFloat())
+      .isWithin(TOLERANCE)
+      .of(28f)
+    assertThat(recyclerView.getChildAt(1).marginEnd.toFloat())
+      .isWithin(TOLERANCE)
+      .of(8f)
   }
 
   @Test
@@ -1007,6 +1267,13 @@ class RecentlyPlayedFragmentTest {
         )
       )
     }
+  }
+
+  fun setUpTestFragment(activity: RecentlyPlayedActivity) {
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(testFragment, TEST_FRAGMENT_TAG)
+      .commitNow()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
