@@ -18,10 +18,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -271,7 +273,7 @@ class HelpFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_tabletConfig_multipaneBackButtonHasCorrectContentDescription() {
+  fun testHelpFragment_defaultTabletConfig_multipaneButtonIsGone() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -279,7 +281,7 @@ class HelpFragmentTest {
       )
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withContentDescription(R.string.navigate_up))
+        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
       )
     }
   }
@@ -293,11 +295,6 @@ class HelpFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-      onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(
-          isCompletelyDisplayed()
-        )
-      )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
           withText(R.string.faq_activity_title)
@@ -321,11 +318,6 @@ class HelpFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(
-          isCompletelyDisplayed()
-        )
-      )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
           withText(R.string.faq_activity_title)
