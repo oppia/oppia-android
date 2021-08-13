@@ -7,7 +7,7 @@ import java.io.File
  * latest comment of the closed issue.
  *
  * Usage:
- *   bazel run //scripts:issue_todos_comment_check -- <path_to_directory_root>
+ *   bazel run //scripts:todo_issue_comment_check -- <path_to_directory_root>
  *   <path_to_latest_comment_file> <path_to_script_failure_comment_file>
  *
  * Arguments:
@@ -16,7 +16,7 @@ import java.io.File
  * - path_to_script_failure_comment_file: file path to the script failure comment body.
  *
  * Example:
- *   bazel run //scripts:issue_todos_comment_check -- $(pwd) latest_comment.txt script_failures.txt
+ *   bazel run //scripts:todo_issue_comment_check -- $(pwd) latest_comment.txt script_failures.txt
  *
  * NOTE TO DEVELOPERS: The script is executed in the CI enviornment. The CI workflow provides the
  * file path to the latest comment body of the closed issue and the file path to the script failure
@@ -31,24 +31,31 @@ fun main(vararg args: String) {
 
   val permaLinkPrefix = "https://github.com/oppia/oppia-android/blob/"
 
-  // Here, we are adding 40 to account for the commit Sha size
+  // Here, we are adding 40 to account for the commit SHA-1 hash length (for context:
+  // https://en.wikipedia.org/wiki/SHA-1).
   val compareStartIndex = permaLinkPrefix.length + 40
 
   val latestCommentContentList = File(repoPath, latestCommentFilePath).readText().trim().lines()
 
   val failureCommentContentList = File(repoPath, failureCommentFilePath).readText().trim().lines()
 
-  if (latestCommentContentList.size != failureCommentContentList.size) return
+  if (latestCommentContentList.size != failureCommentContentList.size) {
+    throw Exception("NEW COMMENT SHOULD BE POSTED")
+  }
 
-  if (latestCommentContentList.first() != failureCommentContentList.first()) return
+  if (latestCommentContentList.first() != failureCommentContentList.first()) {
+    throw Exception("NEW COMMENT SHOULD BE POSTED")
+  }
 
   for (index in 1 until latestCommentContentList.size) {
     // The commit SHA can vary from workflow to workflow. This can make the permalinks different.
     // Hence, we are comparing by the relative file path.
     val latestCommentLineContent = latestCommentContentList[index].substring(compareStartIndex)
     val failureCommentLineContent = failureCommentContentList[index].substring(compareStartIndex)
-    if (latestCommentLineContent != failureCommentLineContent) return
+    if (latestCommentLineContent != failureCommentLineContent) {
+      throw Exception("NEW COMMENT SHOULD BE POSTED")
+    }
   }
 
-  throw Exception("LATEST COMMENT IS SAME AS THE FAILURE COMMENT")
+  println("LATEST COMMENT IS SAME AS THE FAILURE COMMENT")
 }

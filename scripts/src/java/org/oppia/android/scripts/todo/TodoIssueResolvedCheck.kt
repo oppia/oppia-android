@@ -7,7 +7,7 @@ import java.io.File
  * Script for ensuring that all TODOs of the closed issue are resolved.
  *
  * Usage:
- *   bazel run //scripts:issue_todos_resolved_check -- <path_to_directory_root>
+ *   bazel run //scripts:todo_issue_resolved_check -- <path_to_directory_root>
  *   <closed_issue_number> <github_sha>
  *
  * Arguments:
@@ -16,7 +16,7 @@ import java.io.File
  * - github_sha: sha of the latest commit on the develop branch.
  *
  * Example:
- *   bazel run //scripts:issue_todos_resolved_check -- $(pwd) 6
+ *   bazel run //scripts:todo_issue_resolved_check -- $(pwd) 6
  *   77ff8361b4bde52f695ceb91aa1aab36932a94fe
  *
  * NOTE TO DEVELOPERS: The script is executed in the CI enviornment.
@@ -34,33 +34,33 @@ fun main(vararg args: String) {
 
   val allTodos = TodoCollector.collectCorrectlyFormattedTodos(TodoCollector.collectTodos(repoPath))
 
-  val issueTodosResolvedFailures = allTodos.filter { todo ->
-    checkIfIssueTodosResolvedFailure(
+  val todoIssueResolvedFailures = allTodos.filter { todo ->
+    checkIfTodoIssueResolvedFailure(
       codeLine = todo.lineContent,
       closedIssueNumber = closedIssueNumber
     )
   }
 
   logFailures(
-    issueTodosResolvedFailures = issueTodosResolvedFailures,
+    todoIssueResolvedFailures = todoIssueResolvedFailures,
     failureMessage = "The following TODOs are unresolved for the closed issue:"
   )
 
-  if (issueTodosResolvedFailures.isNotEmpty()) {
-    generateTodoListFile(repoPath, issueTodosResolvedFailures, githubPermalinkUrl)
-    throw Exception("ISSUE TODOS RESOLVED CHECK FAILED")
+  if (todoIssueResolvedFailures.isNotEmpty()) {
+    generateTodoListFile(repoPath, todoIssueResolvedFailures, githubPermalinkUrl)
+    throw Exception("TODO ISSUE RESOLVED CHECK FAILED")
   } else {
-    println("ISSUE TODOS RESOLVED CHECK PASSED")
+    println("TODO ISSUE RESOLVED CHECK PASSED")
   }
 }
 
 /**
- * Checks whether a todo corresponds to the closed issue.
+ * Checks whether a TODO corresponds to the closed issue.
  *
  * @param codeLine line content corresponding to the todo
  * @param closedIssueNumber issue number of the closed issue
  */
-private fun checkIfIssueTodosResolvedFailure(codeLine: String, closedIssueNumber: String): Boolean {
+private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: String): Boolean {
   val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
   return parsedIssueNumberFromTodo == closedIssueNumber
 }
@@ -69,36 +69,35 @@ private fun checkIfIssueTodosResolvedFailure(codeLine: String, closedIssueNumber
  * Generates a file containing all the todos corresponding to the closed issue.
  *
  * @param repoPath path of the repo to be analyzed
- * @param issueTodosResolvedFailures list of all the unresolved todos corresponding to the closed issue
+ * @param todoIssueResolvedFailures list of all the unresolved todos corresponding to the closed
+ *     issue.
  * @param githubPermalinkUrl the GitHub url for the permalinks
  */
 private fun generateTodoListFile(
   repoPath: String,
-  issueTodosResolvedFailures: List<Todo>,
+  todoIssueResolvedFailures: List<Todo>,
   githubPermalinkUrl: String
 ) {
   val todoListFile = File(repoPath + "script_failures.txt")
-  todoListFile.appendText("The issue is reopened because of the following unresolved TODOs:")
-  todoListFile.appendText("\n")
-  issueTodosResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber }))
+  todoListFile.appendText("The issue is reopened because of the following unresolved TODOs:\n")
+  todoIssueResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber }))
     .forEach { todo ->
       todoListFile.appendText(
-        "$githubPermalinkUrl/${(todo.filePath).removePrefix(repoPath)}#L${todo.lineNumber}"
+        "$githubPermalinkUrl/${(todo.filePath).removePrefix(repoPath)}#L${todo.lineNumber}\n"
       )
-      todoListFile.appendText("\n")
     }
 }
 
 /**
- * Logs the issue todos resolved check failures.
+ * Logs the TODO issue resolved check failures.
  *
- * @param issueTodosResolvedFailures list of all the unresolved todos for the closed issue
+ * @param todoIssueResolvedFailures list of all the unresolved todos for the closed issue
  * @param failureMessage the failure message to be logged
  */
-private fun logFailures(issueTodosResolvedFailures: List<Todo>, failureMessage: String) {
-  if (issueTodosResolvedFailures.isNotEmpty()) {
+private fun logFailures(todoIssueResolvedFailures: List<Todo>, failureMessage: String) {
+  if (todoIssueResolvedFailures.isNotEmpty()) {
     println(failureMessage)
-    issueTodosResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
+    todoIssueResolvedFailures.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
       println("- ${it.filePath}:${it.lineNumber}")
     }
     println()

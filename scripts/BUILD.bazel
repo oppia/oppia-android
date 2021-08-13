@@ -181,19 +181,19 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
-    name = "issue_todos_resolved_check",
+    name = "todo_issue_resolved_check",
     testonly = True,
-    main_class = "org.oppia.android.scripts.todo.IssueTodosResolvedCheckKt",
+    main_class = "org.oppia.android.scripts.todo.TodoIssueResolvedCheckKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/todo:issue_todos_resolved_check_lib",
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_resolved_check_lib",
     ],
 )
 
 kt_jvm_binary(
-    name = "issue_todos_comment_check",
+    name = "todo_issue_comment_check",
     testonly = True,
-    main_class = "org.oppia.android.scripts.todo.IssueTodosCommentCheckKt",
+    main_class = "org.oppia.android.scripts.todo.TodoIssueCommentCheckKt",
     runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/todo:issue_todos_comment_check_lib",
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
     ],
 )

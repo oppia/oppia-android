@@ -124,7 +124,7 @@ todo_open_exemption {
   line_number: 392
 }
 todo_open_exemption {
-  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/IssueTodosResolvedCheckTest.kt"
+  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoIssueResolvedCheckTest.kt"
   line_number: 68
   line_number: 70
   line_number: 76

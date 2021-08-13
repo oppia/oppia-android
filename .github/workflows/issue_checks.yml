@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   script_check:
-    name: Closed Issue Check
+    name: Closed TODO Issue Check
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -21,14 +21,14 @@ jobs:
         with:
           version: 4.0.0
 
-      - name: Closed Issue Check
-        id: closedIssueCheck
+      - name: TODO Issue Resolved Check
+        id: todoIssueResolvedCheck
         if: ${{ github.event.action == 'closed' }}
         run: |
-          bazel run //scripts:issue_todos_resolved_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
+          bazel run //scripts:todo_issue_resolved_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
 
       - name: Reopen Issue
-        if: failure() && steps.closedIssueCheck.outcome == 'failure'
+        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -36,15 +36,15 @@ jobs:
 
       - name: Check for duplicate comment
         id: duplicateCommentCheck
-        if: failure() && steps.closedIssueCheck.outcome == 'failure'
+        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue view ${{ github.event.issue.number }} --json comments --jq '.comments[-1].body' > $(pwd)/latest_comment.txt
-          bazel run //scripts:issue_todos_comment_check -- $(pwd) latest_comment.txt script_failures.txt
+          bazel run //scripts:todo_issue_comment_check -- $(pwd) latest_comment.txt script_failures.txt
 
       - name: Add Comment
-        if: failure() && steps.duplicateCommentCheck.outcome == 'success'
+        if: failure() && steps.duplicateCommentCheck.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |

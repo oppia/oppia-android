@@ -11,14 +11,14 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-/** Tests for [IssueTodosResolvedCheck]. */
-class IssueTodosResolvedCheckTest {
+/** Tests for [TodoIssueResolvedCheck]. */
+class TodoIssueResolvedCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR: String =
-    "ISSUE TODOS RESOLVED CHECK PASSED"
+    "TODO ISSUE RESOLVED CHECK PASSED"
   private val CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR: String =
-    "ISSUE TODOS RESOLVED CHECK FAILED"
+    "TODO ISSUE RESOLVED CHECK FAILED"
 
   @Rule
   @JvmField

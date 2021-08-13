@@ -30,9 +30,9 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "issue_todos_resolved_check_lib",
+    name = "todo_issue_resolved_check_lib",
     testonly = True,
-    srcs = ["IssueTodosResolvedCheck.kt"],
+    srcs = ["TodoIssueResolvedCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         ":todo_collector",
@@ -42,8 +42,8 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "issue_todos_comment_check_lib",
+    name = "todo_issue_comment_check_lib",
     testonly = True,
-    srcs = ["IssueTodosCommentCheck.kt"],
+    srcs = ["TodoIssueCommentCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
 )
