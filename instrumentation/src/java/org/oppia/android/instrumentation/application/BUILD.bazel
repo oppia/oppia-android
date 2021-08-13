@@ -1,5 +1,5 @@
 """
-This library contains the test application and modules used to build test app for end-to-end tests.
+This library contains the test application and modules used to build the test app for end-to-end tests.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -11,6 +11,7 @@ kt_android_library(
     srcs = [
         "EndToEndTestGcsResourceModule.kt",
         "EndToEndTestImageParsingModule.kt",
+        "EndToEndTestNetworkConfigModule.kt",
         "OppiaTestApplication.kt",
         "TestApplicationComponent.kt",
     ],
@@ -18,6 +19,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//app",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:base_url",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:xssi_prefix",
         "//domain",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_module",

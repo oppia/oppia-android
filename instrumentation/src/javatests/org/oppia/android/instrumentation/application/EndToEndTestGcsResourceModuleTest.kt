@@ -38,12 +38,12 @@ class EndToEndTestGcsResourceModuleTest {
   }
 
   @Test
-  fun testModule_getDefaultGcsResource_returnsAssetsDevHandler() {
+  fun testModule_defaultGcsResource_isAssetsDevHandler() {
     assertThat(defaultResourceBucketName).isEqualTo("assetsdevhandler")
   }
 
   @Test
-  fun testModule_getQuestionResourceBucketName_returnsAssetsDevHandler() {
+  fun testModule_questionResourceBucketName_isAssetsDevHandler() {
     assertThat(questionResourceBucketName).isEqualTo("assetsdevhandler")
   }
 

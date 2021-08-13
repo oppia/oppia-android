@@ -12,9 +12,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.util.parser.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
+import org.oppia.android.data.backends.gae.BaseUrl
+import org.oppia.android.data.backends.gae.XssiPrefix
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -22,20 +21,16 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = EndToEndTestImageParsingModuleTest.TestApplication::class)
-class EndToEndTestImageParsingModuleTest {
+@Config(application = EndToEndTestNetworkConfigModuleTest.TestApplication::class)
+class EndToEndTestNetworkConfigModuleTest {
 
   @Inject
-  @DefaultGcsPrefix
-  lateinit var defaultGcsPrefix: String
+  @BaseUrl
+  lateinit var baseUrl: String
 
   @Inject
-  @ImageDownloadUrlTemplate
-  lateinit var imageDownloadUrlTemplate: String
-
-  @Inject
-  @ThumbnailDownloadUrlTemplate
-  lateinit var thumbnailDownloadUrlTemplate: String
+  @XssiPrefix
+  lateinit var xssiPrefix: String
 
   @Before
   fun setUp() {
@@ -43,18 +38,13 @@ class EndToEndTestImageParsingModuleTest {
   }
 
   @Test
-  fun testModule_defaultGcsPrefix_isLocalHost() {
-    assertThat(defaultGcsPrefix).isEqualTo("http://localhost:8181/")
+  fun testModule_baseUrl_isLocalhost() {
+    assertThat(baseUrl).isEqualTo("http://localhost:8181")
   }
 
   @Test
-  fun testModule_imageDownloadUrlTemplate_isImageTemplate() {
-    assertThat(imageDownloadUrlTemplate).isEqualTo("%s/%s/assets/image/%s")
-  }
-
-  @Test
-  fun testModule_thumbnailDownloadUrlTemplate_isThumbnailTemplate() {
-    assertThat(thumbnailDownloadUrlTemplate).isEqualTo("%s/%s/assets/thumbnail/%s")
+  fun testModule_xssiPrefix_isXssiPrefix() {
+    assertThat(xssiPrefix).isEqualTo(")]}'")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -74,7 +64,7 @@ class EndToEndTestImageParsingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestImageParsingModule::class
+      TestModule::class, EndToEndTestNetworkConfigModule::class
     ]
   )
 
@@ -86,18 +76,18 @@ class EndToEndTestImageParsingModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(endToEndTestImageParsingModuleTest: EndToEndTestImageParsingModuleTest)
+    fun inject(endTestNetworkConfigModuleTest: EndToEndTestNetworkConfigModuleTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEndToEndTestImageParsingModuleTest_TestApplicationComponent.builder()
+      DaggerEndToEndTestNetworkConfigModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(endToEndTestImageParsingModuleTest: EndToEndTestImageParsingModuleTest) {
-      component.inject(endToEndTestImageParsingModuleTest)
+    fun inject(endToEndTestNetworkConfigModuleTest: EndToEndTestNetworkConfigModuleTest) {
+      component.inject(endToEndTestNetworkConfigModuleTest)
     }
   }
 }

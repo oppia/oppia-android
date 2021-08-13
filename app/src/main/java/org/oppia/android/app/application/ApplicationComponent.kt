@@ -11,6 +11,7 @@ import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfi
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -77,7 +78,7 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    DeveloperOptionsModule::class, NetworkConfigModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

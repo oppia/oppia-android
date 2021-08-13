@@ -14,10 +14,10 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
-        "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
     ],
 )
@@ -31,10 +31,27 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
-        "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "EndToEndTestNetworkConfigModuleTest",
+    srcs = ["EndToEndTestNetworkConfigModuleTest.kt"],
+    custom_package = "org.oppia.android.instrumentation.application",
+    test_class = "org.oppia.android.instrumentation.application.EndToEndTestNetworkConfigModuleTest",
+    test_manifest = "//testing/src/test:test_manifest",
+    deps = [
+        ":dagger",
+        "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
     ],
 )

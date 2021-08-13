@@ -74,7 +74,7 @@ import javax.inject.Singleton
     HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
     NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    DeveloperOptionsModule::class, EndToEndTestNetworkConfigModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationInjector {
