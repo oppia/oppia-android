@@ -271,21 +271,6 @@ class HelpFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_tabletConfig_multipaneBackButtonHasCorrectContentDescription() {
-    launch<HelpActivity>(
-      createHelpActivityIntent(
-        internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
-    ).use {
-      onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withContentDescription(R.string.navigate_up))
-      )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
   fun testHelpFragment_defaultTabletConfig_displaysMultipaneOptions() {
     launch<HelpActivity>(
       createHelpActivityIntent(
@@ -293,11 +278,6 @@ class HelpFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-      onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(
-          isCompletelyDisplayed()
-        )
-      )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
           withText(R.string.faq_activity_title)
@@ -321,11 +301,6 @@ class HelpFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(
-          isCompletelyDisplayed()
-        )
-      )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
           withText(R.string.faq_activity_title)

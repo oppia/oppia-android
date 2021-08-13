@@ -38,6 +38,7 @@
         android:contentDescription="@string/navigate_up"
         android:padding="12dp"
         android:src="@drawable/ic_arrow_back_black_24_dp"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
