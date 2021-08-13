@@ -55,8 +55,8 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
       <TextView
         android:id="@+id/story_count_text_view"
@@ -70,20 +70,20 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
 
       <TextView
         android:id="@+id/topic_description_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="120dp"
         android:layout_marginTop="16dp"
-        android:paddingEnd="120dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
+        android:paddingStart="120dp"
+        android:paddingEnd="120dp"
         android:text="@{viewModel.topicDescription}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
@@ -108,9 +108,9 @@
         android:textStyle="bold"
         android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view"
-        app:layout_constraintHorizontal_bias="0.0"/>
+        app:layout_constraintTop_toBottomOf="@+id/topic_description_text_view" />
 
       <ImageView
         android:id="@+id/download_status_image_view"
@@ -132,9 +132,9 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/download_status_image_view"
-        app:layout_constraintTop_toTopOf="@+id/download_status_image_view"
-        app:layout_constraintHorizontal_bias="0.0"/>
+        app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
 
       <TextView
         android:id="@+id/download_size_text_view"
@@ -148,9 +148,9 @@
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/download_story_count_text_view"
-        app:layout_constraintTop_toTopOf="@+id/download_status_image_view"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/download_status_image_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
