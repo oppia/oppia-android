@@ -82,6 +82,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -110,8 +111,6 @@ class PlatformParameterIntegrationTest {
 
   lateinit var context: Context
 
-  private val SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE = true
-
   private val mockPlatformParameterList by lazy {
     val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
       .setName(SPLASH_SCREEN_WELCOME_MSG)
@@ -127,7 +126,7 @@ class PlatformParameterIntegrationTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
+    context = InstrumentationRegistry.getInstrumentation().context
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(platformParameterSyncUpWorkerFactory)
@@ -142,8 +141,12 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_readEmptyDatabase_checkWelcomeMsgIsInvisibleByDefault() {
-    launch(SplashTestActivity::class.java).use {
+    launch(SplashTestActivity::class.java).use { it ->
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
       testCoroutineDispatchers.runCurrent()
+
       assertThat(ShadowToast.getLatestToast()).isNull()
     }
   }
@@ -153,8 +156,12 @@ class PlatformParameterIntegrationTest {
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
     testCoroutineDispatchers.runCurrent()
 
-    launch(SplashTestActivity::class.java).use {
+    launch(SplashTestActivity::class.java).use { it ->
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
       testCoroutineDispatchers.runCurrent()
+
       assertThat(ShadowToast.getLatestToast()).isNotNull()
       assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SplashTestActivity.WELCOME_MSG)
     }
@@ -162,18 +169,26 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_executeSyncUpWorkerCorrectly_readDatabase_checkWelcomeMsgIsVisible() {
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
-    platformParameterController.updatePlatformParameterDatabase(listOf())
+    launch(SplashTestActivity::class.java).use { it ->
+      // Set up versionName to get correct network response from mock platform parameter service.
+      setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+      platformParameterController.updatePlatformParameterDatabase(listOf())
 
-    val workManager = WorkManager.getInstance(context)
-    val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
-    testCoroutineDispatchers.runCurrent()
-
-    val workInfo = workManager.getWorkInfoById(requestId)
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-
-    launch(SplashTestActivity::class.java).use {
+      val workManager = WorkManager.getInstance(context)
+      val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
       testCoroutineDispatchers.runCurrent()
+
+      val workInfo = workManager.getWorkInfoById(requestId)
+      // Check the work request succeeded which means the local database was updated with new values.
+      assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      testCoroutineDispatchers.runCurrent()
+
+      // As the local database was updated correctly the app will use the server values, and the
+      // server value for the splash screen welcome msg param is true.
       assertThat(ShadowToast.getLatestToast()).isNotNull()
       assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SplashTestActivity.WELCOME_MSG)
     }
@@ -181,18 +196,27 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_executeSyncUpWorkerIncorrectly_readDatabase_checkWelcomeMsgIsInvisible() {
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
-    platformParameterController.updatePlatformParameterDatabase(listOf())
+    launch(SplashTestActivity::class.java).use { it ->
+      // Set up versionName to get incorrect network response from mock platform parameter service.
+      setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+      platformParameterController.updatePlatformParameterDatabase(listOf())
 
-    val workManager = WorkManager.getInstance(context)
-    val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
-    testCoroutineDispatchers.runCurrent()
-
-    val workInfo = workManager.getWorkInfoById(requestId)
-    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-
-    launch(SplashTestActivity::class.java).use {
+      val workManager = WorkManager.getInstance(context)
+      val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
       testCoroutineDispatchers.runCurrent()
+
+      val workInfo = workManager.getWorkInfoById(requestId)
+      // Check the work request fails because of incorrect network response. This means that the
+      // local database is not updated with new values.
+      assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      testCoroutineDispatchers.runCurrent()
+
+      // As the local database was not updated due to work request failure the app will use default
+      // values, and the default value for the splash screen welcome msg param is false.
       assertThat(ShadowToast.getLatestToast()).isNull()
     }
   }
@@ -222,7 +246,7 @@ class PlatformParameterIntegrationTest {
       .setInputData(inputData)
       .build()
 
-    // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service
+    // Enqueue the work request to fetch and cache the platform parameters from backend service.
     workManager.enqueue(request)
     return request.id
   }

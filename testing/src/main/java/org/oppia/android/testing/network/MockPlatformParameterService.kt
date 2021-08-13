@@ -7,6 +7,8 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
 import retrofit2.Call
 import retrofit2.mock.BehaviorDelegate
 
@@ -40,12 +42,14 @@ class MockPlatformParameterService(
       appVersionForCorrectResponse -> mapOf(
         TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
         TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-        TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
+        TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE,
+        SPLASH_SCREEN_WELCOME_MSG to SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
       )
       appVersionForWrongResponse -> mapOf(
         TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
         TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-        TEST_BOOLEAN_PARAM_NAME to TEST_OBJECT_AS_PARAM_VALUE // unsupported value type in response
+        TEST_BOOLEAN_PARAM_NAME to TEST_OBJECT_AS_PARAM_VALUE, // unsupported value type in response
+        SPLASH_SCREEN_WELCOME_MSG to SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
       )
       // appVersionForEmptyResponse does not have a separate case as it can be handled by else
       else -> mapOf()

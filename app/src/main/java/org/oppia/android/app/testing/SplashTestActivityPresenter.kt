@@ -25,10 +25,9 @@ class SplashTestActivityPresenter @Inject constructor(
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_test_activity)
-    loadPlatformParameters()
   }
 
-  private fun loadPlatformParameters() {
+  fun loadPlatformParameters() {
     fetchPlatformParametersFromDatabase().observe(
       activity,
       Observer {
