@@ -17,8 +17,9 @@ class NetworkConnectionUtilDebugImpl @Inject constructor(
 
   override fun getCurrentConnectionStatus(): ConnectionStatus {
     val actualConnectionStatus = networkConnectionUtilProdImpl.getCurrentConnectionStatus()
-    return if (forcedConnectionStatus == DEFAULT) actualConnectionStatus
-    else forcedConnectionStatus
+    return if (forcedConnectionStatus == DEFAULT) {
+      actualConnectionStatus
+    } else forcedConnectionStatus
   }
 
   override fun setCurrentConnectionStatus(connectionStatus: ConnectionStatus) {
