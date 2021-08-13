@@ -28,19 +28,19 @@ class ForceNetworkTypeViewModel @Inject constructor(
   private fun processNetworkTypeList(): List<NetworkTypeItemViewModel> {
     return listOf(
       NetworkTypeItemViewModel(
-        NetworkConnectionDebugUtil.ConnectionStatus.DEFAULT,
+        NetworkConnectionDebugUtil.DebugConnectionStatus.DEFAULT,
         activity.getString(R.string.force_network_type_default_network)
       ),
       NetworkTypeItemViewModel(
-        NetworkConnectionUtil.ConnectionStatus.LOCAL,
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL,
         activity.getString(R.string.force_network_type_wifi_network)
       ),
       NetworkTypeItemViewModel(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR,
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR,
         activity.getString(R.string.force_network_type_cellular_network)
       ),
       NetworkTypeItemViewModel(
-        NetworkConnectionUtil.ConnectionStatus.NONE,
+        NetworkConnectionUtil.ProdConnectionStatus.NONE,
         activity.getString(R.string.force_network_type_no_network)
       )
     )
