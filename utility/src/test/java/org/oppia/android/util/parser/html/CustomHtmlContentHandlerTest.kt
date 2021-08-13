@@ -149,7 +149,9 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.toString()).isEqualTo("some other content")
   }
 
-  @Test @Config(qualifiers = "ldltr")
+
+  @Test
+  @Config(qualifiers = "ldltr")
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
     val htmlString = "<p>Paragraph 1</p><ul><oppia-li>Item<br></oppia-li></ul><p>Paragraph 2.</p>"
 
@@ -166,9 +168,11 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
   }
 
-  @Test @Config(qualifiers = "ldrtl")
+  @Test
+  @Config(qualifiers = "ldrtl")
   fun testCustomListElement_rtl_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val htmlString = "<p>Paragraph 1</p><ul><oppia-li dir=\"rtl\">Item<br></oppia-li></ul><p>Paragraph 2.</p>"
+    val htmlString = "<p>Paragraph 1</p><ul><oppia-li dir=\"rtl\">Item<br></oppia-li></ul>" +
+      "<p>Paragraph 2.</p>"
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
