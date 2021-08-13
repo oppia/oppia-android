@@ -114,7 +114,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -289,7 +289,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player))
         .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
@@ -316,7 +316,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
@@ -344,7 +344,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
@@ -502,7 +502,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.NONE)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_dialog_offline_message)))
@@ -529,7 +529,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -556,7 +556,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -584,7 +584,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -623,7 +623,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -667,7 +667,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -708,7 +708,7 @@ class ExplorationActivityTest {
         RATIOS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.CELLULAR)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -744,7 +744,7 @@ class ExplorationActivityTest {
       RATIOS_EXPLORATION_ID_0,
       shouldSavePartialProgress = false
     )
-    networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -794,7 +794,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
-      networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -847,7 +847,7 @@ class ExplorationActivityTest {
       RATIOS_EXPLORATION_ID_0,
       shouldSavePartialProgress = false
     )
-    networkConnectionUtil.setCurrentConnectionStatus(ConnectionStatus.LOCAL)
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,

@@ -2,9 +2,9 @@ package org.oppia.android.util.networking
 
 import android.content.Context
 import android.net.ConnectivityManager
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
 
 /**
