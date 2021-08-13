@@ -16,6 +16,9 @@ class TestFileCheckTest {
   private val originalOut: PrintStream = System.out
   private val TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR = "TEST FILE CHECK PASSED"
   private val TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR = "TEST FILE CHECK FAILED"
+  private val wikiReferenceNote =
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
+      "details on how to fix this."
 
   @Rule
   @JvmField
@@ -57,13 +60,7 @@ class TestFileCheckTest {
       "File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test" +
         " file."
     )
-    assertThat(outContent.toString()).contains(
-      "If this is correct, please update scripts/assets/test_file_exemptions.textproto"
-    )
-    assertThat(outContent.toString()).contains(
-      "Note that, in general, all new files should have tests. If you choose to add an" +
-        " exemption, please specifically call this out in your PR description."
-    )
+    assertThat(outContent.toString()).contains(wikiReferenceNote)
   }
 
   @Test
@@ -86,13 +83,7 @@ class TestFileCheckTest {
       "File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test" +
         " file."
     )
-    assertThat(outContent.toString()).contains(
-      "If this is correct, please update scripts/assets/test_file_exemptions.textproto"
-    )
-    assertThat(outContent.toString()).contains(
-      "Note that, in general, all new files should have tests. If you choose to add an" +
-        " exemption, please specifically call this out in your PR description."
-    )
+    assertThat(outContent.toString()).contains(wikiReferenceNote)
   }
 
   @Test
@@ -107,17 +98,15 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    val failureNote = "Note that, in general, all new files should have tests. If you choose to " +
-      "add an exemption, please specifically call this out in your PR description."
     val failureMessage =
       """
       File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
       File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test file.
-      If this is correct, please update scripts/assets/test_file_exemptions.textproto
-      $failureNote
+      
+      $wikiReferenceNote
       """.trimIndent()
-
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+    assertThat(outContent.toString()).contains(wikiReferenceNote)
   }
 
   @Test

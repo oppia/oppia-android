@@ -19,10 +19,9 @@ class AccessibilityLabelCheckTest {
   private val ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK PASSED"
   private val ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK FAILED"
   private val pathToProtoBinary = "scripts/assets/accessibility_label_exemptions.pb"
-  private val failureNotePartOne = "If this is correct, please update " +
-    "scripts/assets/accessibility_label_exemptions.textproto"
-  private val failureNotePartTwo = "Note that, in general, all Activities should have labels. " +
-    "If you choose to add an exemption, please specifically call this out in your PR description."
+  private val wikiReferenceNote =
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
+      "details on how to fix this."
 
   @Rule
   @JvmField
@@ -110,8 +109,7 @@ class AccessibilityLabelCheckTest {
       Accessibility label missing for Activities:
       - $activityRelativePath
       
-      $failureNotePartOne
-      $failureNotePartTwo
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -153,8 +151,7 @@ class AccessibilityLabelCheckTest {
       Accessibility label missing for Activities:
       - $activityRelativePath
       
-      $failureNotePartOne
-      $failureNotePartTwo
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -267,8 +264,7 @@ class AccessibilityLabelCheckTest {
       - $appActivityPath
       - $splashActivityPath
       
-      $failureNotePartOne
-      $failureNotePartTwo
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -336,8 +332,7 @@ class AccessibilityLabelCheckTest {
       - $thirdAppActivityPath
       - $splashActivityPath
       
-      $failureNotePartOne
-      $failureNotePartTwo
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -461,8 +456,7 @@ class AccessibilityLabelCheckTest {
       Accessibility label missing for Activities:
       - $activityPath
       
-      $failureNotePartOne
-      $failureNotePartTwo
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }

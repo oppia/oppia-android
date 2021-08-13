@@ -93,16 +93,26 @@ fun main(vararg args: String) {
   logFailures(
     invalidTodos = poorlyFormattedTodosAfterExemption,
     failureMessage = "TODOs not in correct format:",
-    failureNote =
-      "The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>"
   )
+
+  if(poorlyFormattedTodosAfterExemption.isNotEmpty()){
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
+        " details on how to fix this.\n"
+    )
+  }
 
   logFailures(
     invalidTodos = openIssueFailureTodosAfterExemption,
     failureMessage = "TODOs not corresponding to open issues on GitHub:",
-    failureNote =
-      "Every TODO must correspond to an open issue on GitHub"
   )
+
+  if(openIssueFailureTodosAfterExemption.isNotEmpty()){
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
+        " details on how to fix this.\n"
+    )
+  }
 
   if (
     redundantExemptions.isNotEmpty() ||
@@ -208,15 +218,13 @@ private fun logRedundantExemptions(
  *     considered to be invalid if it is poorly formatted or if it does not corresponds to open
  *     issues on GitHub.
  * @param failureMessage the failure message to be logged
- * @param failureNote the failure note
  */
-private fun logFailures(invalidTodos: List<Todo>, failureMessage: String, failureNote: String) {
+private fun logFailures(invalidTodos: List<Todo>, failureMessage: String) {
   if (invalidTodos.isNotEmpty()) {
     println(failureMessage)
     invalidTodos.sortedWith(compareBy({ it.filePath }, { it.lineNumber })).forEach {
       println("- ${it.filePath}:${it.lineNumber}")
     }
-    println(failureNote)
     println()
   }
 }

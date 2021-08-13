@@ -46,6 +46,13 @@ fun main(vararg args: String) {
     failureMessage = "The following TODOs are unresolved for the closed issue:"
   )
 
+  if(todoIssueResolvedFailures.isNotEmpty()){
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
+        " details on how to fix this.\n"
+    )
+  }
+
   if (todoIssueResolvedFailures.isNotEmpty()) {
     generateTodoListFile(repoPath, todoIssueResolvedFailures, githubPermalinkUrl)
     throw Exception("TODO ISSUE RESOLVED CHECK FAILED")

@@ -19,6 +19,9 @@ class TodoIssueResolvedCheckTest {
     "TODO ISSUE RESOLVED CHECK PASSED"
   private val CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR: String =
     "TODO ISSUE RESOLVED CHECK FAILED"
+  private val wikiReferenceNote =
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
+      "details on how to fix this."
 
   @Rule
   @JvmField
@@ -112,6 +115,8 @@ class TodoIssueResolvedCheckTest {
       The following TODOs are unresolved for the closed issue:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.bazel:3
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -156,6 +161,8 @@ class TodoIssueResolvedCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.bazel:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile3.xml:4
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }

@@ -66,7 +66,14 @@ fun main(vararg args: String) {
 
   logRedundantExemptions(redundantExemptions, accessibilityLabelExemptionTextProtoFilePath)
 
-  logFailures(failureActivitiesAfterExemption, accessibilityLabelExemptionTextProtoFilePath)
+  logFailures(failureActivitiesAfterExemption)
+
+  if(failureActivitiesAfterExemption.isNotEmpty()){
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
+        " details on how to fix this.\n"
+    )
+  }
 
   if (failureActivitiesAfterExemption.isNotEmpty() || redundantExemptions.isNotEmpty()) {
     throw Exception("ACCESSIBILITY LABEL CHECK FAILED")
@@ -133,26 +140,13 @@ private fun NodeList.toListOfNodes(): List<Node> = (0 until getLength()).map(thi
  * Logs the failures for accessibility label check.
  *
  * @param missingAccessibilityLabelActivities list of Activities missing the accessibility label
- * @param accessibilityLabelExemptionTextProtoFilePath the location of the accessibility label
- *     exemption textproto file.
  */
-private fun logFailures(
-  missingAccessibilityLabelActivities: List<String>,
-  accessibilityLabelExemptionTextProtoFilePath: String
-) {
+private fun logFailures(missingAccessibilityLabelActivities: List<String>) {
   if (missingAccessibilityLabelActivities.isNotEmpty()) {
     println("Accessibility label missing for Activities:")
     missingAccessibilityLabelActivities.sorted().forEach { activityPath ->
       println("- $activityPath")
     }
-    println()
-    println(
-      "If this is correct, please update $accessibilityLabelExemptionTextProtoFilePath.textproto"
-    )
-    println(
-      "Note that, in general, all Activities should have labels. If you choose to add an" +
-        " exemption, please specifically call this out in your PR description."
-    )
     println()
   }
 }

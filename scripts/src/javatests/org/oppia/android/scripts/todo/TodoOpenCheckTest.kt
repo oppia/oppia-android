@@ -20,6 +20,9 @@ class TodoOpenCheckTest {
   private val TODO_CHECK_PASSED_OUTPUT_INDICATOR: String = "TODO CHECK PASSED"
   private val TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "TODO CHECK FAILED"
   private val pathToProtoBinary = "scripts/assets/todo_exemptions.pb"
+  private val wikiReferenceNote =
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
+      "details on how to fix this."
 
   @Rule
   @JvmField
@@ -113,7 +116,8 @@ class TodoOpenCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:4
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
-      The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -148,7 +152,8 @@ class TodoOpenCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.txt:5
-      Every TODO must correspond to an open issue on GitHub
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -190,12 +195,14 @@ class TodoOpenCheckTest {
       TODOs not in correct format:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
-      The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
+      
+      $wikiReferenceNote
       
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:3
-      Every TODO must correspond to an open issue on GitHub
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -245,12 +252,14 @@ class TodoOpenCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/Activity.kt:2
       - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:1
       - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:2
-      The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
+      
+      $wikiReferenceNote
       
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:3
       - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:1
-      Every TODO must correspond to an open issue on GitHub
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -399,11 +408,13 @@ class TodoOpenCheckTest {
       
       TODOs not in correct format:
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
-      The TODO should be in the format: TODO(#ISSUE_NUMBER): <todo_description>
+      
+      $wikiReferenceNote
       
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:3
-      Every TODO must correspond to an open issue on GitHub
+      
+      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
