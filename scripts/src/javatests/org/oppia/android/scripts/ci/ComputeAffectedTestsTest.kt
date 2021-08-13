@@ -281,9 +281,10 @@ class ComputeAffectedTestsTest {
   @Test
   fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
     initializeEmptyGitRepository()
-    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    createAndCommitBasicTests("FirstTest", "SecondTest")
     switchToFeatureBranch()
     createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    createBasicTests("ThirdTest")
     val reportedTargets = runScript()
 
     assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
