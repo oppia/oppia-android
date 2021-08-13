@@ -1,17 +1,15 @@
 """
-Tests corresponding to the scripts that compile third-party dependencies and extract their
-license links.
+Tests corresponding to the maven dependencies and their license checks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
-    name = "GenerateMavenDependenciesListTest",
+    name = "MavenDependenciesListCheckTest",
     size = "large",
-    srcs = ["GenerateMavenDependenciesListTest.kt"],
+    srcs = ["MavenDependenciesListCheckTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
-        "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_list_check_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
@@ -21,11 +19,12 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
-    name = "RetrieveLicenseTextsTest",
-    srcs = ["RetrieveLicenseTextsTest.kt"],
+    name = "MavenDependenciesRetrieverTest",
+    size = "large",
+    srcs = ["MavenDependenciesRetrieverTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/maven:retrieve_license_texts_lib",
-        "//testing:assertion_helpers",
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
         "//third_party:org_mockito_kotlin_mockito-kotlin",
