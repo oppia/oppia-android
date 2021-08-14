@@ -45,6 +45,7 @@ gradlew.bat @BenHenning
 # CI configuration.
 /.github/actions/ @BenHenning
 /.github/workflows/ @BenHenning
+/.github/stale.yml @BenHenning
 
 # All tests.
 *Test.kt @anandwana001
@@ -206,3 +207,5 @@ WORKSPACE @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
 
+# License texts.
+/app/src/main/res/values/third_party_dependencies.xml @BenHenning
