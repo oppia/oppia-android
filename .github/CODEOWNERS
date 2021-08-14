@@ -200,8 +200,8 @@ NOTICE @BenHenning
 #                                  instrumentation                                  #
 #####################################################################################
 
-# UiAutomator test suites ownership.
-/instrumentation/src/javatest/**/*.kt @anandwana001 @BenHenning
+# End-to-end test utilities and modules.
+/instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #

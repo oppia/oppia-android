@@ -556,7 +556,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/FloatExt
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/FractionExtensions.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/util/JsonAssetRetriever.kt"
 exempted_file_path: "domain/src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt"
-exempted_file_path: "instrumentation/src/javatest/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt"
+exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt"
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandExecutor.kt"
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandResult.kt"
 exempted_file_path: "scripts/src/java/org/oppia/android/scripts/maven/data/MavenListDependency.kt"

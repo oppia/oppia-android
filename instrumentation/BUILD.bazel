@@ -6,7 +6,7 @@ Note that:
  of the test suite.
 """
 
-exports_files(["src/javatest/AndroidManifest.xml"])
+exports_files(["src/javatests/AndroidManifest.xml"])
 
 # Used for end-to-end tests
 android_binary(
