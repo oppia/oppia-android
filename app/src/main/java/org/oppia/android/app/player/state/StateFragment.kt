@@ -103,6 +103,9 @@ class StateFragment :
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
+  override fun onHintAvailable(helpIndex: HelpIndex) =
+    stateFragmentPresenter.onHintAvailable(helpIndex)
+
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
   fun handleKeyboardAction() = stateFragmentPresenter.handleKeyboardAction()
@@ -128,7 +131,4 @@ class StateFragment :
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
-
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    stateFragmentPresenter.onHintAvailable(helpIndex)
 }
