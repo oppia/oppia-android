@@ -1,8 +1,5 @@
 package org.oppia.android.app.help
 
-import org.oppia.android.app.help.thirdparty.LicenseListFragment
-import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-
 /** Listener for when a selection should result to [LicenseTextViewerFragment] in tablet devices. */
 interface LoadLicenseTextViewerFragmentListener {
   /**
