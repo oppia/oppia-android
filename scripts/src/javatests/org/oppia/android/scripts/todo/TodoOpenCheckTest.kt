@@ -196,8 +196,6 @@ class TodoOpenCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
       
-      $wikiReferenceNote
-      
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:3
@@ -252,8 +250,6 @@ class TodoOpenCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/Activity.kt:2
       - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:1
       - ${retrieveTestFilesDirectoryPath()}/Presenter.kt:2
-      
-      $wikiReferenceNote
       
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/Fragment.kt:3
@@ -408,8 +404,6 @@ class TodoOpenCheckTest {
       
       TODOs not in correct format:
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:1
-      
-      $wikiReferenceNote
       
       TODOs not corresponding to open issues on GitHub:
       - ${retrieveTestFilesDirectoryPath()}/TempFile1.kt:3

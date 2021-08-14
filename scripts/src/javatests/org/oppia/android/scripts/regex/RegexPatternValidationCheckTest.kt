@@ -123,8 +123,6 @@ class RegexPatternValidationCheckTest {
       File name/path violation: Activities cannot be placed outside the app or testing module
       - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
       
-      $wikiReferenceNote
-      
       ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
       $wikiReferenceNote
       """.trimIndent()

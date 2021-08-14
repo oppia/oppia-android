@@ -40,13 +40,6 @@ fun main(vararg args: String) {
       isFailing || checkFailed
     }
 
-  if (hasFilenameCheckFailure) {
-    println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-        "details on how to fix this.\n"
-    )
-  }
-
   // Check if the repo has any file content failure.
   val hasFileContentCheckFailure = retrieveFileContentChecks()
     .fold(initial = false) { isFailing, fileContentCheck ->
@@ -58,7 +51,7 @@ fun main(vararg args: String) {
       isFailing || checkFailed
     }
 
-  if (hasFileContentCheckFailure) {
+  if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
         " details on how to fix this.\n"
