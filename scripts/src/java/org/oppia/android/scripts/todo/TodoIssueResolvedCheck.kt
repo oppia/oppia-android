@@ -16,8 +16,8 @@ import java.io.File
  * - github_sha: sha of the latest commit on the develop branch.
  *
  * Example:
- *   bazel run //scripts:todo_issue_resolved_check -- $(pwd) 6
- *   77ff8361b4bde52f695ceb91aa1aab36932a94fe
+ *   bazel run //scripts:todo_issue_resolved_check -- $(pwd)
+ *   6 77ff8361b4bde52f695ceb91aa1aab36932a94fe
  *
  * NOTE TO DEVELOPERS: The script is executed in the CI enviornment.
  */
