@@ -124,14 +124,6 @@ class HelpActivity :
     outState.putInt(LICENSE_INDEX_SAVED_KEY, selectedLicenseIndex)
   }
 
-  override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-    super.onRestoreInstanceState(savedInstanceState)
-    selectedFragment = savedInstanceState.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
-    selectedDependencyIndex = savedInstanceState.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY)
-    selectedLicenseIndex = savedInstanceState.getInt(LICENSE_INDEX_SAVED_KEY)
-    selectedHelpOptionsTitle = savedInstanceState.getString(HELP_OPTIONS_TITLE_SAVED_KEY) ?: ""
-  }
-
   override fun onRouteToFAQSingle(question: String, answer: String) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }

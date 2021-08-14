@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -16,7 +17,6 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
@@ -68,11 +68,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     setMultipaneContainerTitle(
       activity.getString(R.string.third_party_dependency_list_activity_title)
     )
-//    getMultipaneOptionsFragment()?.let {
-//      activity.supportFragmentManager.beginTransaction().remove(
-//        it
-//      ).commit()
-//    }
+    setMultipaneBackButtonVisibility(View.GONE)
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment is ThirdPartyDependencyListFragment) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+    }
     val thirdPartyDependencyListFragment = ThirdPartyDependencyListFragment.newInstance(true)
     activity.supportFragmentManager.beginTransaction().replace(
       R.id.multipane_options_container,
@@ -83,10 +83,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   /** Loads [FAQListFragment] in tablet devices. */
   fun handleLoadFAQListFragment() {
     setMultipaneContainerTitle(activity.getString(R.string.faq_activity_title))
-//    getMultipaneOptionsFragment()?.let {
-//      activity.supportFragmentManager.beginTransaction().remove(it)
-//        .commit()
-//    }
+    setMultipaneBackButtonVisibility(View.GONE)
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment is FAQListFragment) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+    }
     activity.supportFragmentManager.beginTransaction().replace(
       R.id.multipane_options_container,
       FAQListFragment()
@@ -96,10 +97,16 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   /** Loads [LicenseListFragment] in tablet devices. */
   fun handleLoadLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
+    setMultipaneBackButtonVisibility(View.VISIBLE)
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment is LicenseListFragment) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+    }
     val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex, true)
     activity.supportFragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, licenseListFragment)
       .addToBackStack("ThirdPartyDependencyListFragment")
+      .setReorderingAllowed(true)
       .commit()
   }
 
@@ -114,6 +121,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     )
     val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
     setMultipaneContainerTitle(licenseNamesArray[licenseIndex])
+    setMultipaneBackButtonVisibility(View.VISIBLE)
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment is LicenseTextViewerFragment) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+    }
     val licenseTextViewerFragment = LicenseTextViewerFragment.newInstance(
       dependencyIndex,
       licenseIndex
@@ -121,6 +133,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     activity.supportFragmentManager.beginTransaction()
       .replace(R.id.multipane_options_container, licenseTextViewerFragment)
       .addToBackStack("LicenseListFragment")
+      .setReorderingAllowed(true)
       .commit()
   }
 
@@ -138,8 +151,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
         (currentFragment is LicenseListFragment || currentFragment is LicenseTextViewerFragment)
       ) {
         Log.d("Help", "faaltu: Back button clicked!!")
-        activity.supportFragmentManager.popBackStackImmediate()
+        if (!activity.isFinishing) {
+          activity.supportFragmentManager.popBackStackImmediate()
+        }
       }
+      activity.supportFragmentManager
       Log.d("Help", "setBackButtonClickListener: Back button clicked!!")
     }
   }
@@ -178,6 +194,11 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   private fun setMultipaneContainerTitle(title: String) {
     activity.findViewById<TextView>(R.id.help_multipane_options_title_textview).text = title
+  }
+
+  private fun setMultipaneBackButtonVisibility(visibility: Int) {
+    activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button).visibility =
+      visibility
   }
 
   private fun getMultipaneOptionsFragment(): Fragment? {
