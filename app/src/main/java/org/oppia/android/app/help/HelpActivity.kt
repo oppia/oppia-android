@@ -16,7 +16,8 @@ import kotlin.properties.Delegates
 
 private const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
-private const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY = "HelpActivity.third_party_dependency_index"
+private const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
+  "HelpActivity.third_party_dependency_index"
 private const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT = "FAQListFragment"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT = "ThirdPartyDependencyListFragment"
@@ -49,8 +50,10 @@ class HelpActivity :
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
     )
-    selectedFragment = savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
-    selectedDependencyIndex = savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
+    selectedFragment =
+      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
+    selectedDependencyIndex =
+      savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
     selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     val extraHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
     helpActivityPresenter.handleOnCreate(
