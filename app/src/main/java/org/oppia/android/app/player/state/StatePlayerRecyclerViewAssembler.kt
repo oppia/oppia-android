@@ -56,6 +56,7 @@ import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListe
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -195,6 +196,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (playerFeatureSet.contentSupport) {
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
+    if (playerFeatureSet.hintsAndSolutionsSupport) {
+      (fragment as ShowHintAvailabilityListener).onHintAvailable(ephemeralState.helpIndex)
+    }
     val interaction = ephemeralState.state.interaction
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
@@ -272,8 +276,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
-
-  fun playerHasSupportForHintsAndSolution(): Boolean = playerFeatureSet.hintsAndSolutionsSupport
 
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>,

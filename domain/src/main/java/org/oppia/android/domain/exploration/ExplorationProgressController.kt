@@ -2,6 +2,10 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -12,7 +16,6 @@ import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
-import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
@@ -25,6 +28,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,7 +56,8 @@ class ExplorationProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
-  private val hintHandler: HintHandler
+  private val hintHandler: HintHandler,
+  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -74,6 +79,7 @@ class ExplorationProgressController @Inject constructor(
     )
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
+  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExplorationAsync(
@@ -198,6 +204,12 @@ class ExplorationProgressController @Inject constructor(
                 ephemeralState.state,
                 ephemeralState.pendingState.wrongAnswerCount
               )
+            // Schedule a new task to show help if available.
+            scheduleTaskToShowHelp(
+              explorationProgress.hintState,
+              isCurrentStatePendingState = ephemeralState.stateTypeCase ==
+                EphemeralState.StateTypeCase.PENDING_STATE
+            )
           }
         } finally {
           if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
@@ -277,6 +289,12 @@ class ExplorationProgressController @Inject constructor(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
+          // Schedule a new task to show help if available.
+          scheduleTaskToShowHelp(
+            explorationProgress.hintState,
+            isCurrentStatePendingState = ephemeralState.stateTypeCase ==
+              EphemeralState.StateTypeCase.PENDING_STATE
+          )
           // Mark a checkpoint in the exploration everytime a new hint is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -334,6 +352,12 @@ class ExplorationProgressController @Inject constructor(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
+          // Schedule a new task to show help if available.
+          scheduleTaskToShowHelp(
+            explorationProgress.hintState,
+            isCurrentStatePendingState = ephemeralState.stateTypeCase ==
+              EphemeralState.StateTypeCase.PENDING_STATE
+          )
           // Mark a checkpoint in the exploration if the solution is revealed.
           saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -441,6 +465,12 @@ class ExplorationProgressController @Inject constructor(
               ephemeralState.state,
               ephemeralState.pendingState.wrongAnswerCount
             )
+          // Schedule a new task to show help if available.
+          scheduleTaskToShowHelp(
+            explorationProgress.hintState,
+            isCurrentStatePendingState = ephemeralState.stateTypeCase ==
+              EphemeralState.StateTypeCase.PENDING_STATE
+          )
           // Only mark checkpoint if current state is pending state. This ensures that checkpoints
           // will not be marked on any of the completed states.
           saveExplorationCheckpoint()
@@ -462,18 +492,41 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
+   * Schedules a future task to show help to the user that will be triggered exactly once after the
+   * specified timeout in milliseconds.
+   */
+
+  private fun scheduleTaskToShowHelp(
+    hintState: HintState,
+    isCurrentStatePendingState: Boolean
+  ) {
+    if (hintState.delayToShowNextHintAndSolution == -1L || !isCurrentStatePendingState) {
+      // Do not start timer to show new hints and solutions if the delay is set to -1 or if the
+      // current state is not the pending top state.
+      return
+    }
+    backgroundCoroutineScope.launch {
+      delay(hintState.delayToShowNextHintAndSolution)
+      hintAndSolutionTimerCompleted(hintState.hintSequenceNumber)
+    }
+  }
+
+  /**
    * Notifies the [HintHandler] that a scheduled task to show new help has finished.
    *
    * @param trackedSequenceNumber the ID used to identify each task scheduled to show help
    * @param state the state on which the hint is shown
    */
-  fun hintAndSolutionTimerCompleted(trackedSequenceNumber: Int, state: State) {
+  private fun hintAndSolutionTimerCompleted(trackedSequenceNumber: Int) {
     explorationProgressLock.withLock {
       explorationProgress.hintState =
-        hintHandler.showNewHintAndSolution(state, trackedSequenceNumber)
+        hintHandler.showNewHintAndSolution(
+          explorationProgress.stateDeck.getCurrentEphemeralState().state,
+          trackedSequenceNumber
+        )
       if (
         explorationProgress.hintState.helpIndex.indexTypeCase ==
-        HelpIndex.IndexTypeCase.HINT_INDEX ||
+        HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX ||
         explorationProgress.hintState.helpIndex.indexTypeCase ==
         HelpIndex.IndexTypeCase.SHOW_SOLUTION
       ) {
@@ -547,8 +600,8 @@ class ExplorationProgressController @Inject constructor(
             AsyncResult.success(
               explorationProgress.stateDeck.getCurrentEphemeralState()
                 .toBuilder()
-                .setHintState(explorationProgress.hintState)
-                .setCheckpointState(explorationProgress.currentCheckpointState)
+                .setHelpIndex(explorationProgress.hintState.helpIndex)
+                .setCheckpointState(explorationProgress.checkpointState)
                 .build()
             )
           } catch (e: Exception) {
@@ -560,8 +613,8 @@ class ExplorationProgressController @Inject constructor(
           AsyncResult.success(
             explorationProgress.stateDeck.getCurrentEphemeralState()
               .toBuilder()
-              .setHintState(explorationProgress.hintState)
-              .setCheckpointState(explorationProgress.currentCheckpointState)
+              .setHelpIndex(explorationProgress.hintState.helpIndex)
+              .setCheckpointState(explorationProgress.checkpointState)
               .build()
           )
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
@@ -589,6 +642,12 @@ class ExplorationProgressController @Inject constructor(
     progress.hintState = hintHandler.maybeScheduleShowHint(
       ephemeralState.state,
       ephemeralState.pendingState.wrongAnswerCount
+    )
+    // Schedule a new task to show help.
+    scheduleTaskToShowHelp(
+      explorationProgress.hintState,
+      isCurrentStatePendingState = ephemeralState.stateTypeCase ==
+        EphemeralState.StateTypeCase.PENDING_STATE
     )
 
     // Mark a checkpoint in the exploration once the exploration has loaded.

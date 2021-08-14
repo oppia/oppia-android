@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -22,7 +22,6 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
-import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
@@ -36,7 +35,6 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -48,7 +46,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
@@ -73,8 +70,7 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val oppiaClock: OppiaClock
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -89,7 +85,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
-  private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -219,6 +214,10 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  fun onHintAvailable(helpIndex: HelpIndex) {
+    showHintsAndSolutions(helpIndex)
+  }
+
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
@@ -323,11 +322,6 @@ class StateFragmentPresenter @Inject constructor(
       ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
 
     showOrHideAudioByState(ephemeralState.state)
-
-    if (recyclerViewAssembler.playerHasSupportForHintsAndSolution()) {
-      scheduleShowHintAndSolution(ephemeralState.hintState)
-      showHintsAndSolutions(ephemeralState.hintState)
-    }
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -542,37 +536,25 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun scheduleShowHintAndSolution(hintState: HintState) {
-    if (hintState.delayToShowNextHintAndSolution == -1L || !isCurrentStatePendingState) {
-      // Do not start timer to show new hints and solutions if the delay is set to -1 or if the
-      // current state is not the pending top state.
-      return
-    }
-    lifecycleSafeTimerFactory.createTimer(hintState.delayToShowNextHintAndSolution).observe(
-      fragment,
-      Observer {
-        explorationProgressController.hintAndSolutionTimerCompleted(
-          hintState.hintSequenceNumber,
-          currentState
-        )
-      }
-    )
-  }
-
-  private fun showHintsAndSolutions(hintState: HintState) {
+  private fun showHintsAndSolutions(helpIndex: HelpIndex) {
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       viewModel.setHintOpenedAndUnRevealedVisibility(false)
       viewModel.setHintBulbVisibility(false)
     } else {
-      when (hintState.helpIndex.indexTypeCase) {
-        HelpIndex.IndexTypeCase.HINT_INDEX -> {
+      Log.d("12345", "showHintsAndSolutions: ${helpIndex.indexTypeCase}")
+      when (helpIndex.indexTypeCase) {
+        HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(
-            !hintState.helpIndex.isAllVisibleHelpRevealed
-          )
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
           viewModel.allHintsExhausted = false
-          viewModel.newAvailableHintIndex = hintState.helpIndex.hintIndex
+          viewModel.newAvailableHintIndex = helpIndex.availableNextHintIndex
+        }
+        HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          viewModel.allHintsExhausted = false
+          viewModel.newAvailableHintIndex = helpIndex.latestRevealedHintIndex
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           viewModel.setHintBulbVisibility(true)
