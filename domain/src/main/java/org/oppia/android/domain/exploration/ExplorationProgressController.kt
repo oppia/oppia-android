@@ -601,7 +601,7 @@ class ExplorationProgressController @Inject constructor(
               explorationProgress.stateDeck.getCurrentEphemeralState()
                 .toBuilder()
                 .setHelpIndex(explorationProgress.hintState.helpIndex)
-                .setCheckpointState(explorationProgress.checkpointState)
+                .setCheckpointState(explorationProgress.currentCheckpointState)
                 .build()
             )
           } catch (e: Exception) {
@@ -614,7 +614,7 @@ class ExplorationProgressController @Inject constructor(
             explorationProgress.stateDeck.getCurrentEphemeralState()
               .toBuilder()
               .setHelpIndex(explorationProgress.hintState.helpIndex)
-              .setCheckpointState(explorationProgress.checkpointState)
+              .setCheckpointState(explorationProgress.currentCheckpointState)
               .build()
           )
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
@@ -628,10 +628,10 @@ class ExplorationProgressController @Inject constructor(
     progress.stateGraph.reset(exploration.statesMap)
     // Restore StateDeck with the saved checkpoint if the exploration has to be resumed otherwise,
     // reset it to play the exploration from the beginning.
-    loadStateDeck(progress, exploration)
+    progress.loadStateDeck(exploration)
     // Restore the HintState to resume showing hints or reset it if the exploration does not have
     // to be resumed.
-    loadHintState(progress)
+    progress.loadHintState()
 
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
@@ -801,165 +801,5 @@ class ExplorationProgressController @Inject constructor(
       explorationId,
       lastPlayedTimestamp
     )
-  }
-
-  /**
-   * Updates the hint state in [ExplorationProgrses] with the one created from the saved checkpoint
-   * or the default instance of hint state if exploration is not being resumed.
-   */
-  private fun loadHintState(progress: ExplorationProgress) {
-    progress.hintState =
-      if (progress.currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
-        HintState.getDefaultInstance()
-      } else {
-        HintState.newBuilder().apply {
-          helpIndex = progress.currentExplorationCheckpoint.helpIndex
-          trackedAnswerCount = progress.currentExplorationCheckpoint.pendingUserAnswersCount
-          hintSequenceNumber = 0
-          delayToShowNextHintAndSolution = -1
-        }.build()
-      }
-  }
-
-  /**
-   * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
-   * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
-   * re-initialized with the values created from the saved [ExplorationCheckpoint].
-   *
-   * This function expects explorationProgress.hintState to be initialized with the correct values,
-   * so it should only be called after the function [loadHintState] has executed.
-   */
-  private fun loadStateDeck(progress: ExplorationProgress, exploration: Exploration) {
-    if (progress.currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
-      progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
-    } else {
-      progress.stateDeck.resumeDeck(
-        createPendingTopStateFromCheckpoint(progress),
-        getPreviousStatesFromCheckpoint(progress),
-        progress.currentExplorationCheckpoint.pendingUserAnswersList,
-        progress.currentExplorationCheckpoint.stateIndex
-      )
-    }
-  }
-
-  /**
-   * Creates a pending top state for the current exploration as it was when the checkpoint was
-   * created.
-   *
-   * @return the pending [State] for the current exploration
-   */
-  private fun createPendingTopStateFromCheckpoint(progress: ExplorationProgress): State {
-    val pendingTopState =
-      progress.stateGraph.getState(progress.currentExplorationCheckpoint.pendingStateName)
-    val hintList = createHintListFromCheckpoint(
-      pendingTopState.interaction.hintList,
-      progress.currentExplorationCheckpoint.helpIndex
-    )
-    val solution = createSolutionFromCheckpoint(pendingTopState, progress.hintState.helpIndex)
-    val interactionBuilder =
-      pendingTopState.interaction.toBuilder()
-        .clearHint()
-        .addAllHint(hintList)
-        .setSolution(solution)
-        .build()
-    return pendingTopState.toBuilder().setInteraction(interactionBuilder).build()
-  }
-
-  /**
-   * Mark all hints as reveled in the pendingState that were revealed for the current state pending
-   * state before the checkpoint was saved.
-   *
-   * @param pendingStateHintList the list of hint for the current pending state
-   * @param helpIndex the state of hints for the exploration which was generated using the saved
-   *     checkpoint
-   */
-  private fun createHintListFromCheckpoint(
-    pendingStateHintList: List<Hint>,
-    helpIndex: HelpIndex
-  ): List<Hint> {
-    val updatedHintList: MutableList<Hint> = ArrayList()
-    when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.HINT_INDEX -> {
-        pendingStateHintList.forEachIndexed { index, hint ->
-          if (index < helpIndex.hintIndex) {
-            // Mark all hints as visible and revealed which have an index less than that stored in
-            // the HintState.
-            updatedHintList.add(hint.toBuilder().setHintIsRevealed(true).build())
-          } else if (index == helpIndex.hintIndex) {
-            // Add the currently shown hint to the updated hint list and set hintIsRevealed
-            // depending upon if the current hint was revealed or not.
-            updatedHintList.add(
-              hint.toBuilder().setHintIsRevealed(helpIndex.isAllVisibleHelpRevealed).build()
-            )
-          } else {
-            // Add all the remaining hints that are not yet visible to the user to the updated hint
-            // list.
-            updatedHintList.add(
-              hint.toBuilder().setHintIsRevealed(false).build()
-            )
-          }
-        }
-      }
-      HelpIndex.IndexTypeCase.SHOW_SOLUTION, HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        // All the hints are visible and revealed if helpIndex.indexTypeCase is equal to
-        // SHOW_SOLUTION or EVERYTHING_REVEALED.
-        pendingStateHintList.forEach { hint ->
-          updatedHintList.add(hint.toBuilder().setHintIsRevealed(true).build())
-        }
-      }
-      else -> updatedHintList.addAll(pendingStateHintList)
-    }
-    return updatedHintList
-  }
-
-  /**
-   * Set solution is reveled in the pendingState to true or false depending upon if solution was
-   * revealed for the current state pending state before the checkpoint was saved.
-   *
-   * @param pendingTopState the pending state created from the checkpoint
-   * @param helpIndex the state of solution for the exploration which was generated using the saved
-   *     checkpoint
-   */
-  private fun createSolutionFromCheckpoint(
-    pendingTopState: State,
-    helpIndex: HelpIndex
-  ): Solution {
-    return when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        pendingTopState.interaction.solution.toBuilder()
-          .setSolutionIsRevealed(false)
-          .build()
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        pendingTopState.interaction.solution.toBuilder()
-          .setSolutionIsRevealed(true)
-          .build()
-      }
-      else -> pendingTopState.interaction.solution
-    }
-  }
-
-  /**
-   * Creates a list of completed states from the saved [ExplorationCheckpoint].
-   *
-   * @return [List] of [EphemeralState] containing all the states that were completed before the
-   *     checkpoint was created
-   */
-  private fun getPreviousStatesFromCheckpoint(
-    progress: ExplorationProgress
-  ): List<EphemeralState> {
-    val previousStates: MutableList<EphemeralState> = ArrayList()
-    progress.currentExplorationCheckpoint.completedStatesInCheckpointList
-      .forEachIndexed { index, state ->
-        previousStates.add(
-          EphemeralState.newBuilder()
-            .setState(progress.stateGraph.getState(state.stateName))
-            .setHasPreviousState(index != 0)
-            .setCompletedState(state.completedState)
-            .setHasNextState(index != progress.currentExplorationCheckpoint.stateIndex)
-            .build()
-        )
-      }
-    return previousStates
   }
 }
