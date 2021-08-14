@@ -112,8 +112,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   private fun loadMultipaneFragment(selectedFragment: String) {
     when (selectedFragment) {
-      FAQ_LIST_FRAGMENT -> handleLoadFAQListFragment()
-      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT -> handleLoadThirdPartyDependencyListFragment()
+      FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
+      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
     }
   }
 

@@ -19,8 +19,8 @@ import javax.inject.Inject
 
 private const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 private const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
-const val FAQ_LIST_FRAGMENT = "FAQListFragment"
-const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT = "ThirdPartyDependencyListFragment"
+const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
+const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 
 /** The help page activity for FAQs and third-party dependencies. */
 class HelpActivity :
@@ -46,7 +46,7 @@ class HelpActivity :
       /* defaultValue= */ false
     )
     selectedFragment =
-      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
+      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
     val extraHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
     helpActivityPresenter.handleOnCreate(
       extraHelpOptionsTitle,
@@ -84,12 +84,12 @@ class HelpActivity :
   }
 
   override fun loadFAQListFragment() {
-    selectedFragment = FAQ_LIST_FRAGMENT
+    selectedFragment = FAQ_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadFAQListFragment()
   }
 
   override fun loadThirdPartyDependencyListFragment() {
-    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT
+    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadThirdPartyDependencyListFragment()
   }
 
