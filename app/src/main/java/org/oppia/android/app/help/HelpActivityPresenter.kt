@@ -185,8 +185,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     licenseIndex: Int
   ) {
     when (selectedFragment) {
-      FAQ_LIST_FRAGMENT -> handleLoadFAQListFragment()
-      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT -> handleLoadThirdPartyDependencyListFragment()
+      FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
+      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
       LICENSE_LIST_FRAGMENT -> handleLoadLicenseListFragment(dependencyIndex)
       LICENSE_TEXT_FRAGMENT -> handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
     }

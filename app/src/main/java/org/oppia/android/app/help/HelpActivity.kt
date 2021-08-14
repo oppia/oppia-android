@@ -19,8 +19,8 @@ private const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
 private const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
   "HelpActivity.third_party_dependency_index"
 private const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
-const val FAQ_LIST_FRAGMENT = "FAQListFragment"
-const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT = "ThirdPartyDependencyListFragment"
+const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
+const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 const val LICENSE_LIST_FRAGMENT = "LicenseListFragment"
 const val LICENSE_TEXT_FRAGMENT = "LicenseTextFragment"
 
@@ -51,7 +51,7 @@ class HelpActivity :
       /* defaultValue= */ false
     )
     selectedFragment =
-      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT
+      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
     selectedDependencyIndex =
       savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
     selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
@@ -94,12 +94,12 @@ class HelpActivity :
   }
 
   override fun loadFAQListFragment() {
-    selectedFragment = FAQ_LIST_FRAGMENT
+    selectedFragment = FAQ_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadFAQListFragment()
   }
 
   override fun loadThirdPartyDependencyListFragment() {
-    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT
+    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadThirdPartyDependencyListFragment()
   }
 
