@@ -133,6 +133,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       fragment,
       Observer<ChapterSummary> { chapterSummary ->
         resumeLessonViewModel.chapterSummary.set(chapterSummary)
+        val t = chapterSummary
         updateChapterDescription()
       }
     )

@@ -145,7 +145,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Retrieves a chapter given a topic ID, story ID and exploration ID.
+   * Retrieves a chapter given a topic ID, story ID, and exploration ID.
    *
    * @param topicId the ID corresponding to the topic which contains this story
    * @param storyId the ID corresponding to the story which needs to be returned

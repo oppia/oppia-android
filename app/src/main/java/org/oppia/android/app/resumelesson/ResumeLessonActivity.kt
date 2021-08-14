@@ -61,7 +61,7 @@ class ResumeLessonActivity :
       "ResumeLessonActivity.backflow_screen"
 
     /**
-     *  Returns a new [Intent] to route to [ResumeLessonActivity] for a specified exploration.
+     * Returns a new [Intent] to route to [ResumeLessonActivity] for a specified exploration.
      */
     fun createResumeLessonActivityIntent(
       context: Context,
