@@ -37,3 +37,10 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
     ],
 )
+
+kt_jvm_library(
+    name = "license_texts_check_lib",
+    testonly = True,
+    srcs = ["LicenseTextsCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)
