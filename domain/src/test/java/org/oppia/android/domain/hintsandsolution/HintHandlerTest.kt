@@ -147,16 +147,19 @@ class HintHandlerTest {
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+    val currentEphemeralState = currentStateResultCaptor.value.getOrThrow()
 
-    assertThat(currentHintState.hintSequenceNumber).isEqualTo(2)
-    assertThat(currentHintState.trackedAnswerCount).isEqualTo(0)
+    val hintState =
+      hintHandler.maybeScheduleShowHint(
+        currentEphemeralState.state,
+        currentEphemeralState.pendingState.wrongAnswerCount
+      )
+
     // HintIndex.indexTypeCase will be INDEXTYPE_NOT_SET until the first hint is visible.
-    assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
+    assertThat(hintState.helpIndex.indexTypeCase).isEqualTo(
       HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
     )
-    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
-    assertThat(currentHintState.delayToShowNextHintAndSolution)
+    assertThat(hintState.delayToShowNextHintAndSolution)
       .isEqualTo(delayShowInitialHintMs.get())
   }
 
@@ -177,15 +180,17 @@ class HintHandlerTest {
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+    val currentEphemeralState = currentStateResultCaptor.value.getOrThrow()
+    val currentHintState =
+      hintHandler.maybeScheduleShowHint(
+        currentEphemeralState.state,
+        currentEphemeralState.pendingState.wrongAnswerCount
+      )
 
-    assertThat(currentHintState.hintSequenceNumber).isEqualTo(3)
-    assertThat(currentHintState.trackedAnswerCount).isEqualTo(1)
     // HintIndex.indexTypeCase will be INDEXTYPE_NOT_SET until the first hint is visible.
     assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
       HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
     )
-    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
     assertThat(currentHintState.delayToShowNextHintAndSolution)
       .isEqualTo(delayShowInitialHintMs.get())
   }
@@ -208,22 +213,24 @@ class HintHandlerTest {
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+    val currentEphemeralState = currentStateResultCaptor.value.getOrThrow()
+    val currentHintState =
+      hintHandler.maybeScheduleShowHint(
+        currentEphemeralState.state,
+        currentEphemeralState.pendingState.wrongAnswerCount
+      )
 
-    assertThat(currentHintState.hintSequenceNumber).isEqualTo(4)
-    assertThat(currentHintState.trackedAnswerCount).isEqualTo(2)
     // Now that the first hint is visible, the HintIndex.IndexTypeCase should be equal to HINT_INDEX.
     assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
-      HelpIndex.IndexTypeCase.HINT_INDEX
+      HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
     )
-    assertThat(currentHintState.helpIndex.hintIndex).isEqualTo(0)
-    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isFalse()
+    assertThat(currentHintState.helpIndex.availableNextHintIndex).isEqualTo(0)
     // The delay should now be equal to -1 because there is unrevealed help available.
     assertThat(currentHintState.delayToShowNextHintAndSolution).isEqualTo(-1)
   }
 
   @Test
-  fun testMaybeScheduleShowHint_revealHint_returnsHintStateIsCorrect() {
+  fun testMaybeScheduleShowHint_revealHint_hintStateIsCorrect() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -243,15 +250,17 @@ class HintHandlerTest {
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val currentHintState = currentStateResultCaptor.value.getOrThrow().hintState
+    val currentEphemeralState = currentStateResultCaptor.value.getOrThrow()
+    val currentHintState =
+      hintHandler.maybeScheduleShowHint(
+        currentEphemeralState.state,
+        currentEphemeralState.pendingState.wrongAnswerCount
+      )
 
-    assertThat(currentHintState.hintSequenceNumber).isEqualTo(5)
-    assertThat(currentHintState.trackedAnswerCount).isEqualTo(2)
     assertThat(currentHintState.helpIndex.indexTypeCase).isEqualTo(
-      HelpIndex.IndexTypeCase.HINT_INDEX
+      HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
     )
-    assertThat(currentHintState.helpIndex.hintIndex).isEqualTo(0)
-    assertThat(currentHintState.helpIndex.isAllVisibleHelpRevealed).isTrue()
+    assertThat(currentHintState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
     // The delay should now be equal to 30 seconds because first hint was revealed.
     assertThat(currentHintState.delayToShowNextHintAndSolution)
       .isEqualTo(delayShowAdditionalHintsMs.get())

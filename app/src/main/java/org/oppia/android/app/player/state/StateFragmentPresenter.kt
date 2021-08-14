@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -542,7 +541,6 @@ class StateFragmentPresenter @Inject constructor(
       viewModel.setHintOpenedAndUnRevealedVisibility(false)
       viewModel.setHintBulbVisibility(false)
     } else {
-      Log.d("12345", "showHintsAndSolutions: ${helpIndex.indexTypeCase}")
       when (helpIndex.indexTypeCase) {
         HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
