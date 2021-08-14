@@ -130,8 +130,8 @@ class RepositoryFileTest {
 
   @Test
   fun testRepoFile_fileInDomainBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
-    tempFolder.newFolder("testfiles", "data", "build", "generated")
-    val file = tempFolder.newFile("testfiles/data/build/generated/TestFile")
+    tempFolder.newFolder("testfiles", "domain", "build", "generated")
+    val file = tempFolder.newFile("testfiles/domain/build/generated/TestFile")
 
     val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
 
