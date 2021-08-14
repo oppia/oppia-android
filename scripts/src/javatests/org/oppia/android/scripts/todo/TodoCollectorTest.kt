@@ -25,7 +25,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addTodosAcrossSingleFile_todoCollectorCollectsAll() {
+  fun testTodoCollector_addTodosAcrossSingleFile_invokeTodoCollector() {
     val testContent =
       """
       test line 1
@@ -268,7 +268,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addTodosAcrossMultipleFiles_todoCollectorCollectsAllTodos() {
+  fun testTodoCollector_addTodosAcrossMultipleFiles_invokeTodoCollector() {
     val testContent1 =
       """
       # TODO (#121): test todo.
@@ -330,7 +330,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addTodos_poorlyFormattedTodoCollectorCollectsAllMalformedTodos() {
+  fun testTodoCollector_addTodos_invokePoorlyFormattedTodoCollector() {
     val testContent1 =
       """
       //TODO(#1215545): test todo.
@@ -413,7 +413,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addTodosWithIncorrectCase_poorlyFormattedTodoCollectorCollectsAllCases() {
+  fun testTodoCollector_addTodosWithIncorrectCase_invokePoorlyFormattedTodoCollector() {
     val testContent1 =
       """
       // Todo(#1215157): test content 1
@@ -494,7 +494,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addNotActualTodos_poorlyFormattedTodoCollectorCollectsNone() {
+  fun testTodoCollector_addNotActualTodos_invokePoorlyFormattedTodoCollector() {
     val testContent1 =
       """
       // some comment involving todo.
@@ -526,7 +526,7 @@ class TodoCollectorTest {
   }
 
   @Test
-  fun testTodoCollector_addTodos_correctlyFormattedTodoCollectorCollectsCorrectlyFormattedTodos() {
+  fun testTodoCollector_addTodos_invokeCorrectlyFormattedTodoCollector() {
     val testContent1 =
       """
       // TODO(#12111): some description 1.
@@ -790,6 +790,122 @@ class TodoCollectorTest {
     )
 
     assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo19_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// TODO(#1234478 "
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo20_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// Todo(#1234478 "
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_malformedTodo21_parseIssueNumber_nullShouldBeObtained() {
+    val parsedIssueNumber = TodoCollector.parseIssueNumberFromTodo(
+      "// todo(#1234478 "
+    )
+
+    assertThat(parsedIssueNumber).isEqualTo(null)
+  }
+
+  @Test
+  fun testTodoCollector_incompleteTodos_invokeTodoCollector() {
+    val testContent1 =
+      """
+      // TODO(#1234478
+      // Todo(#1234478
+      // todo(#1234478
+      """.trimIndent()
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
+    tempFile1.writeText(testContent1)
+
+    val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    assertThat(collectedTodos).hasSize(3)
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 1,
+        lineContent = "// TODO(#1234478"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 2,
+        lineContent = "// Todo(#1234478"
+      )
+    )
+    assertThat(collectedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 3,
+        lineContent = "// todo(#1234478"
+      )
+    )
+  }
+
+  @Test
+  fun testTodoCollector_incompleteTodos_invokePoorlyFormattedTodoCollector() {
+    val testContent1 =
+      """
+      // TODO(#1234478
+      // Todo(#1234478
+      // todo(#1234478
+      """.trimIndent()
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
+    tempFile1.writeText(testContent1)
+
+    val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    val poorlyFormattedTodos = TodoCollector.collectPoorlyFormattedTodos(collectedTodos)
+    assertThat(poorlyFormattedTodos).hasSize(3)
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 1,
+        lineContent = "// TODO(#1234478"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 2,
+        lineContent = "// Todo(#1234478"
+      )
+    )
+    assertThat(poorlyFormattedTodos).contains(
+      Todo(
+        filePath = tempFile1.toString(),
+        lineNumber = 3,
+        lineContent = "// todo(#1234478"
+      )
+    )
+  }
+
+  @Test
+  fun testTodoCollector_incompleteTodos_invokeCorrectlyFormattedTodoCollector() {
+    val testContent1 =
+      """
+      // TODO(#1234478
+      // Todo(#1234478
+      // todo(#1234478
+      """.trimIndent()
+    val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
+    tempFile1.writeText(testContent1)
+
+    val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
+    val correctlyFormattedTodos = TodoCollector.collectCorrectlyFormattedTodos(collectedTodos)
+    assertThat(correctlyFormattedTodos).isEmpty()
   }
 
   /** Retrieves the absolute path of testfiles directory. */

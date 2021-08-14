@@ -38,7 +38,7 @@ class TodoCollector {
     /**
      * Collects all the poorly formatted TODOs in the repository.
      *
-     * @param todoList a list of all the TODOs of the repository
+     * @param todoList a list of TODOs of the repository
      * @return a list of all poorly formatted Todos
      */
     fun collectPoorlyFormattedTodos(todoList: List<Todo>): List<Todo> {
@@ -50,7 +50,7 @@ class TodoCollector {
     /**
      * Collects all the correctly formatted TODOs in the repository.
      *
-     * @param todoList a list of all the TODOs of the repository
+     * @param todoList a list of TODOs of the repository
      * @return a list of all correctly formatted Todos
      */
     fun collectCorrectlyFormattedTodos(todoList: List<Todo>): List<Todo> {
