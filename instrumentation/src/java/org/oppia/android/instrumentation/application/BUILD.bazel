@@ -19,8 +19,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//app",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:base_url",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:xssi_prefix",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
         "//domain",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_module",

@@ -5,7 +5,7 @@ import dagger.Provides
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.XssiPrefix
 
-/** Provides Network constants specifically related to network only. .*/
+/** Provides network-specific constants needed to configure end-to-end tests. */
 @Module
 class EndToEndTestNetworkConfigModule {
 

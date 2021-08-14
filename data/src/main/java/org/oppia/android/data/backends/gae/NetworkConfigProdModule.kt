@@ -3,9 +3,9 @@ package org.oppia.android.data.backends.gae
 import dagger.Module
 import dagger.Provides
 
-/** Provides Network constants specifically related to network only. .*/
+/** Provides network-specific constants. */
 @Module
-class NetworkConfigModule {
+class NetworkConfigProdModule {
 
   /** Provides BaseUrl that connects to production server. */
   @Provides

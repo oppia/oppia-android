@@ -19,8 +19,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = NetworkConfigModuleTest.TestApplication::class)
-class NetworkConfigModuleTest {
+@Config(application = NetworkConfigProdModuleTest.TestApplication::class)
+class NetworkConfigProdModuleTest {
 
   @field:[Inject BaseUrl]
   lateinit var baseUrl: String
@@ -60,7 +60,7 @@ class NetworkConfigModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConfigModule::class
+      TestModule::class, NetworkConfigProdModule::class
     ]
   )
 
@@ -72,7 +72,7 @@ class NetworkConfigModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkConfigModuleTest: NetworkConfigModuleTest)
+    fun inject(networkConfigModuleTest: NetworkConfigProdModuleTest)
   }
 
   class TestApplication : Application() {
@@ -82,7 +82,7 @@ class NetworkConfigModuleTest {
         .build()
     }
 
-    fun inject(networkConfigModuleTest: NetworkConfigModuleTest) {
+    fun inject(networkConfigModuleTest: NetworkConfigProdModuleTest) {
       component.inject(networkConfigModuleTest)
     }
   }

@@ -16,7 +16,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":constants",
-        ":xssi_prefix",
+        ":network_config_annotations",
         "//model:arguments_java_proto_lite",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:javax_inject_javax_inject",
@@ -25,15 +25,14 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "network_config_module",
+    name = "network_config_prod_module",
     srcs = [
-        "NetworkConfigModule.kt",
+        "NetworkConfigProdModule.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":base_url",
         ":dagger",
-        ":xssi_prefix",
+        ":network_config_annotations",
     ],
 )
 
@@ -45,24 +44,14 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "xssi_prefix",
-    srcs = [
-        "XssiPrefix.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        ":dagger",
-    ],
-)
-
-kt_android_library(
-    name = "base_url",
+    name = "network_config_annotations",
     srcs = [
         "BaseUrl.kt",
+        "XssiPrefix.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -71,9 +60,9 @@ kt_android_library(
     srcs = [
         "OppiaRetrofit.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":dagger",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
@@ -84,7 +73,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":base_url",
+        ":network_config_annotations",
         ":dagger",
         ":network_interceptors",
         ":oppia_retrofit",
