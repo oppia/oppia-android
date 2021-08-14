@@ -66,7 +66,11 @@ private fun computeAffectedTargetsForDevelopBranch(bazelClient: BazelClient, out
 
   // Filtering out the targets to be ignored.
   val nonInstrumentationAffectedTestTargets = allTestTargets.filter { targetPath ->
-    !targetPath.startsWith("//instrumentation", ignoreCase = true)
+    !targetPath
+      .startsWith(
+        "//instrumentation/src/javatests/org/oppia/android/instrumentation/player",
+        ignoreCase = true
+      )
   }
 
   println(
@@ -114,7 +118,11 @@ private fun computeAffectedTargetsForNonDevelopBranch(
 
   // Filtering out the targets to be ignored.
   val nonInstrumentationAffectedTestTargets = allAffectedTestTargets.filter { targetPath ->
-    !targetPath.startsWith("//instrumentation", ignoreCase = true)
+    !targetPath
+      .startsWith(
+        "//instrumentation/src/javatests/org/oppia/android/instrumentation/player",
+        ignoreCase = true
+      )
   }
 
   println()

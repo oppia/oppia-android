@@ -281,22 +281,41 @@ class ComputeAffectedTestsTest {
   @Test
   fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
     initializeEmptyGitRepository()
-    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    createAndCommitBasicTests("FirstTest", "SecondTest")
     switchToFeatureBranch()
-    createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    createBasicTests(
+      "InstrumentationTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+    )
+    createBasicTests("ThirdTest")
     val reportedTargets = runScript()
 
-    assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
+    assertThat(
+      reportedTargets
+    ).doesNotContain(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
   }
 
   @Test
   fun testUtility_developBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
     initializeEmptyGitRepository()
     createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
-    createBasicTests("InstrumentationTest", subpackage = "instrumentation")
+    createBasicTests(
+      "InstrumentationTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+    )
+    createBasicTests(
+      "RobolectricTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.application"
+    )
     val reportedTargets = runScript()
 
-    assertThat(reportedTargets).doesNotContain("//instrumentation:InstrumentationTest")
+    assertThat(
+      reportedTargets
+    ).doesNotContain(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
   }
 
   /**
