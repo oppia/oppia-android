@@ -828,7 +828,7 @@ class TodoCollectorTest {
       // todo(#1234478
       """.trimIndent()
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.txt")
-     tempFile1.writeText(testContent1)
+    tempFile1.writeText(testContent1)
 
     val collectedTodos = TodoCollector.collectTodos(retrieveTestFilesDirectoryPath())
     assertThat(collectedTodos).hasSize(3)
