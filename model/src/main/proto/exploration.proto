@@ -248,8 +248,8 @@ message EphemeralState {
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
 
-  // The state of hints for the current exploration.
-  HintState hint_state = 8;
+  // The help index for the current exploration.
+  HelpIndex help_index = 8;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -336,23 +336,25 @@ message HelpIndex {
   // This type is uninitialized in cases when no index is currently available (either because a hint
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
-    // Indicates this help index corresponds to the index of a hint within the hint list of a state.
-    int32 hint_index = 1;
+    // Indicates this help index corresponds to the index of the next available hint within the hint
+    // list of a state.
+    int32 available_next_hint_index = 1;
+
+    // Indicates this help index corresponds to the index of the last revealed hint within the hint
+    // list of a state.
+    int32 latest_revealed_hint_index = 2;
 
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
-    bool show_solution = 2;
+    bool show_solution = 3;
 
     // Indicates that everything available has been revealed. Note that this is different than the
     // case when there are no hints or solutions to trigger, even though the resulting behavior may
     // be different. This case specifically indicates that all hints and the solution, if present,
     // have been revealed and there's no other help to provide. The boolean value here has no
     // importance and is always 'true'.
-    bool everything_revealed = 3;
+    bool everything_revealed = 4;
   }
-
-  // Boolean to indicate if the learner has revealed the latest  help or not.
-  bool is_all_visible_help_revealed = 4;
 }
 
 // A Structure corresponding to the state of hint and solution for the current exploration or

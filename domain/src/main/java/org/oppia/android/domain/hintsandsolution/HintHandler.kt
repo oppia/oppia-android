@@ -116,11 +116,8 @@ class HintHandler @Inject constructor(
           -1
         }
       }
-      HelpIndex.IndexTypeCase.HINT_INDEX -> {
-        if (!helpIndex.isAllVisibleHelpRevealed) {
-          // Do not schedule a new task until the last help has been revealed.
-          -1
-        } else if (trackedWrongAnswerCount != wrongAnswerCount) {
+      HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
+        if (trackedWrongAnswerCount != wrongAnswerCount) {
           // If a new wrong answer is submitted, schedule a task to reveal a new hint.
           trackedWrongAnswerCount = wrongAnswerCount
           hintSequenceNumber++
@@ -130,6 +127,10 @@ class HintHandler @Inject constructor(
           hintSequenceNumber++
           delayShowAdditionalHintsMs
         }
+      }
+      HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
+        // Do not schedule a new task until the last help has been revealed.
+        -1
       }
       else -> {
         // Update with the tracked answer count if there is a new answer.
@@ -160,9 +161,10 @@ class HintHandler @Inject constructor(
   /** Notifies the HintHandler that the visible hint has been revealed by the learner. */
   fun notifyHintIsRevealed(index: Int) {
     if (
-      helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX && helpIndex.hintIndex == index
+      helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX &&
+      helpIndex.availableNextHintIndex == index
     ) {
-      helpIndex = helpIndex.toBuilder().setIsAllVisibleHelpRevealed(true).build()
+      helpIndex = helpIndex.toBuilder().setLatestRevealedHintIndex(index).build()
     }
   }
 
@@ -170,7 +172,7 @@ class HintHandler @Inject constructor(
   fun notifySolutionIsRevealed() {
     if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION) {
       helpIndex =
-        helpIndex.toBuilder().setEverythingRevealed(true).setIsAllVisibleHelpRevealed(true).build()
+        helpIndex.toBuilder().setEverythingRevealed(true).build()
     }
   }
 
@@ -192,14 +194,11 @@ class HintHandler @Inject constructor(
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
     } else if (lastUnrevealedHintIndex != null) {
-      HelpIndex.newBuilder()
-        .setHintIndex(lastUnrevealedHintIndex)
-        .setIsAllVisibleHelpRevealed(false)
-        .build()
+      HelpIndex.newBuilder().setAvailableNextHintIndex(lastUnrevealedHintIndex).build()
     } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
-      HelpIndex.newBuilder().setShowSolution(true).setIsAllVisibleHelpRevealed(false).build()
+      HelpIndex.newBuilder().setShowSolution(true).build()
     } else {
-      HelpIndex.newBuilder().setEverythingRevealed(true).setIsAllVisibleHelpRevealed(true).build()
+      HelpIndex.newBuilder().setEverythingRevealed(true).build()
     }
   }
 
