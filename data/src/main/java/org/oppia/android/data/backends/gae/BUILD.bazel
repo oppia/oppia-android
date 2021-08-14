@@ -73,8 +73,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":network_config_annotations",
         ":dagger",
+        ":network_config_annotations",
         ":network_interceptors",
         ":oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
