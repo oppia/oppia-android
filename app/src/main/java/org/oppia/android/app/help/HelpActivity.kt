@@ -127,6 +127,7 @@ class HelpActivity :
     outState.putInt(LICENSE_INDEX_SAVED_KEY, selectedLicenseIndex)
   }
 
+  // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
