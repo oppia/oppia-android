@@ -316,6 +316,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/DragAn
 exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/OnDragEndedListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/resumelesson/ResumeLessonViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditDeletionDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditDialogInterface.kt"
