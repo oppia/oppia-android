@@ -12,8 +12,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-         ":dagger",
-         ":report_schema_version",
+        ":dagger",
+        ":report_schema_version",
     ],
 )
 
