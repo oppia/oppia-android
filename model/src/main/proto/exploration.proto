@@ -366,9 +366,6 @@ message HintState {
   // Sequence number of the most recently scheduled task to show help to the learner.
   int32 hint_sequence_number = 2;
 
-  // Count of wrong answers that the hint handler has been notified about.
-  int32 tracked_answer_count = 3;
-
   // Delay for scheduling a new task to show more help to the learner.
   int64 delay_to_show_next_hint_and_solution = 4;
 }

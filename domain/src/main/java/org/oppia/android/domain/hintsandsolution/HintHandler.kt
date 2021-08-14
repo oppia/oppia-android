@@ -108,8 +108,6 @@ class HintHandler @Inject constructor(
           hintSequenceNumber++
           delayShowInitialHintMs
         } else {
-          // Update the sequence number to cancel any pending tasks ans show new help immediately.
-          hintSequenceNumber++
           // Update helpIndex with the next available help
           helpIndex = getNextHintAndSolutionToReveal(state)
           // Set delayForNextHintAndSolution to -1 so that no new tasks are scheduled.
@@ -205,7 +203,6 @@ class HintHandler @Inject constructor(
   private fun getLatestHintState(): HintState {
     return HintState.newBuilder().apply {
       hintSequenceNumber = this@HintHandler.hintSequenceNumber
-      trackedAnswerCount = this@HintHandler.trackedWrongAnswerCount
       helpIndex = this@HintHandler.helpIndex
       delayToShowNextHintAndSolution = this@HintHandler.delayForNextHintAndSolution
     }.build()

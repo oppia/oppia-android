@@ -277,7 +277,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   *  Notifies the [StateDeck] and the [HintHandler] that the solution has been revealed by the user.
+   * Notifies the [StateDeck] and the [HintHandler] that the solution has been revealed by the user.
    *
    * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
    *     that was revealed
