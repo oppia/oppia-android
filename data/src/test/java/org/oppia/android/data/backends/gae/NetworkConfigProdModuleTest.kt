@@ -77,7 +77,7 @@ class NetworkConfigProdModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerNetworkConfigModuleTest_TestApplicationComponent.builder()
+      DaggerNetworkConfigProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
