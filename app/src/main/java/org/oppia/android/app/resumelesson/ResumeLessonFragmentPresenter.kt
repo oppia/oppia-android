@@ -55,7 +55,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     }
 
   private val chapterSummaryResultLiveData: LiveData<AsyncResult<ChapterSummary>> by lazy {
-    topicController.retrieveChapter(topicId, storyId, explorationId).toLiveData()
+    topicController.retrieveChapter(topicId, storyId, explorationId)
   }
 
   private val explorationCheckpointLiveData: LiveData<ExplorationCheckpoint> by lazy {

@@ -60,6 +60,7 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val INVALID_EXPLORATION_ID_1 = "INVALID_EXPLORAITON_ID_1"
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 
@@ -105,6 +106,12 @@ class TopicControllerTest {
 
   @Captor
   lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+
+  @Mock
+  lateinit var mockChapterSummaryObserver: Observer<AsyncResult<ChapterSummary>>
+
+  @Captor
+  lateinit var chapterSummaryResultCaptor: ArgumentCaptor<AsyncResult<ChapterSummary>>
 
   @Mock
   lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
@@ -403,6 +410,39 @@ class TopicControllerTest {
 
     verifyGetStoryFailed()
     assertThat(storySummaryResultCaptor.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
+    topicController.retrieveChapter(
+      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
+    ).observeForever(mockChapterSummaryObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRetrieveChapterSucceeded()
+    val chapterSummary = chapterSummaryResultCaptor.value.getOrThrow()
+    assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
+    assertThat(chapterSummary.summary)
+      .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
+    assertThat(chapterSummary.chapterThumbnail.thumbnailGraphicValue).isEqualTo(4)
+  }
+
+  @Test
+  fun testRetrieveChapter_invalidChapter_returnsFailure() {
+    topicController.retrieveChapter(
+      INVALID_TOPIC_ID_1, INVALID_STORY_ID_1, INVALID_EXPLORATION_ID_1
+    ).observeForever(mockChapterSummaryObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRetrieveChapterFailed()
+    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      TopicController.ChapterNotFoundException::class.java
+    )
+    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).hasMessageThat()
+      .isEqualTo(
+        "Chapter for exploration $INVALID_EXPLORATION_ID_1 not found in story " +
+          "$INVALID_STORY_ID_1 and topic $INVALID_TOPIC_ID_1"
+      )
   }
 
   @Test
@@ -1169,6 +1209,16 @@ class TopicControllerTest {
   private fun verifyGetStoryFailed() {
     verify(mockStorySummaryObserver, atLeastOnce()).onChanged(storySummaryResultCaptor.capture())
     assertThat(storySummaryResultCaptor.value.isFailure()).isTrue()
+  }
+
+  private fun verifyRetrieveChapterSucceeded() {
+    verify(mockChapterSummaryObserver, atLeastOnce()).onChanged(chapterSummaryResultCaptor.capture())
+    assertThat(chapterSummaryResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyRetrieveChapterFailed() {
+    verify(mockChapterSummaryObserver, atLeastOnce()).onChanged(chapterSummaryResultCaptor.capture())
+    assertThat(chapterSummaryResultCaptor.value.isFailure()).isTrue()
   }
 
   private fun verifyGetOngoingTopicListSucceeded() {
