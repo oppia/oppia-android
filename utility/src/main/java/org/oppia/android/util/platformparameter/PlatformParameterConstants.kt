@@ -28,10 +28,10 @@ annotation class SyncUpWorkerTimePeriod
  * Name of the platform parameter that defines the time period in hours, after which the
  * [PlatformParameterSyncUpWorker] will run again.
  */
-val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
+const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
 
 /**
  * Default value of the platform parameter that defines the time period in hours, after which the
  * [PlatformParameterSyncUpWorker] will run again.
  */
-val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
+const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12

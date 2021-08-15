@@ -17,7 +17,7 @@ class MockPlatformParameterService(
   private val delegate: BehaviorDelegate<PlatformParameterService>
 ) : PlatformParameterService {
 
-  private val TEST_OBJECT_AS_PARAM_VALUE = listOf<String>()
+  private val TEST_UNSUPPORTED_OBJECT_AS_PARAM_VALUE = listOf<String>()
 
   companion object {
     /** Mock app version which is used to get right response from [MockPlatformParameterService] */
@@ -48,10 +48,9 @@ class MockPlatformParameterService(
       appVersionForWrongResponse -> mapOf(
         TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
         TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-        TEST_BOOLEAN_PARAM_NAME to TEST_OBJECT_AS_PARAM_VALUE, // unsupported value type in response
+        TEST_BOOLEAN_PARAM_NAME to TEST_UNSUPPORTED_OBJECT_AS_PARAM_VALUE,
         SPLASH_SCREEN_WELCOME_MSG to SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
       )
-      // appVersionForEmptyResponse does not have a separate case as it can be handled by else
       else -> mapOf()
     }
   }

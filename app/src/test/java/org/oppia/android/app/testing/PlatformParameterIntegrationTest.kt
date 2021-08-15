@@ -8,7 +8,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -109,6 +108,7 @@ class PlatformParameterIntegrationTest {
   @Inject
   lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
 
+  @Inject
   lateinit var context: Context
 
   private val mockPlatformParameterList by lazy {
@@ -126,7 +126,6 @@ class PlatformParameterIntegrationTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    context = InstrumentationRegistry.getInstrumentation().context
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(platformParameterSyncUpWorkerFactory)
