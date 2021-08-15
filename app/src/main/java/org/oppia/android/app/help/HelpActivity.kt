@@ -3,7 +3,6 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
@@ -14,11 +13,11 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-private const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
-private const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
-private const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
+const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
+const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
+const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
   "HelpActivity.third_party_dependency_index"
-private const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
+const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 const val LICENSE_LIST_FRAGMENT = "LicenseListFragment"
@@ -55,9 +54,10 @@ class HelpActivity :
     selectedDependencyIndex =
       savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
     selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
-    val extraHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
+    selectedHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
+      ?: getString(R.string.faq_activity_title)
     helpActivityPresenter.handleOnCreate(
-      extraHelpOptionsTitle,
+      selectedHelpOptionsTitle,
       isFromNavigationDrawer,
       selectedFragment,
       selectedDependencyIndex,
@@ -94,37 +94,24 @@ class HelpActivity :
   }
 
   override fun loadFAQListFragment() {
-    selectedFragment = FAQ_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadFAQListFragment()
   }
 
   override fun loadThirdPartyDependencyListFragment() {
-    selectedFragment = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadThirdPartyDependencyListFragment()
   }
 
   override fun loadLicenseListFragment(dependencyIndex: Int) {
-    selectedFragment = LICENSE_LIST_FRAGMENT
-    selectedDependencyIndex = dependencyIndex
     helpActivityPresenter.handleLoadLicenseListFragment(dependencyIndex)
   }
 
   override fun loadLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
-    selectedFragment = LICENSE_TEXT_FRAGMENT
-    selectedDependencyIndex = dependencyIndex
-    selectedLicenseIndex = licenseIndex
     helpActivityPresenter.handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val titleTextView = findViewById<TextView>(R.id.help_multipane_options_title_textview)
-    if (titleTextView != null) {
-      outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
-    }
-    outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragment)
-    outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, selectedDependencyIndex)
-    outState.putInt(LICENSE_INDEX_SAVED_KEY, selectedLicenseIndex)
+    helpActivityPresenter.handleOnSavedInstanceState(outState)
   }
 
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
