@@ -7,5 +7,4 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 abstract class HelpViewModel : ObservableViewModel() {
   /** Determines whether the device in use has a large screen. */
   val isMultipane = ObservableField<Boolean>(false)
-  val isHelpOptionsBackButtonVisible = ObservableField<Boolean>(false)
 }
