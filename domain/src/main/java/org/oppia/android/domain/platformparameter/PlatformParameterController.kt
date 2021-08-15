@@ -4,7 +4,6 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -13,14 +12,10 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val PLATFORM_PARAMETER_DATA_PROVIDER_ID = "platform_parameter_data_provider_id"
-private const val PLATFORM_PARAMETER_DATABASE_NAME = "platform_parameter_database"
-
 /** Controller for fetching and updating platform parameters in the database. */
 @Singleton
 class PlatformParameterController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val oppiaLogger: OppiaLogger,
   private val dataProviders: DataProviders,
   platformParameterSingleton: PlatformParameterSingleton
 ) {
@@ -28,6 +23,21 @@ class PlatformParameterController @Inject constructor(
     PLATFORM_PARAMETER_DATABASE_NAME,
     RemotePlatformParameterDatabase.getDefaultInstance()
   )
+
+  /**
+   * This status corresponds to the success in the caching process, that if the deferred contains
+   * [SUCCESS], it corresponds to a successful [AsyncResult].
+   */
+  private enum class PlatformParameterCachingStatus {
+    SUCCESS
+  }
+
+  companion object {
+    /** ID for all the data providers used in [PlatformParameterController]. */
+    private const val PLATFORM_PARAMETER_DATA_PROVIDER_ID = "platform_parameter_data_provider_id"
+    /** Name of the platform parameter database in cache store. */
+    private const val PLATFORM_PARAMETER_DATABASE_NAME = "platform_parameter_database"
+  }
 
   private val platformParameterDataProvider by lazy {
     // After this transformation the cached List of Platform Parameters gets converted into a simple
@@ -56,10 +66,10 @@ class PlatformParameterController @Inject constructor(
     val deferredTask = platformParameterDatabaseStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = false
     ) {
-      val remotePlatformParameterDatabase = it.toBuilder()
-        .addAllPlatformParameter(platformParameterList)
-        .build()
-      Pair(remotePlatformParameterDatabase, it.platformParameterCount == platformParameterList.size)
+      Pair(
+        it.toBuilder().addAllPlatformParameter(platformParameterList).build(),
+        PlatformParameterCachingStatus.SUCCESS
+      )
     }
     return dataProviders.createInMemoryDataProviderAsync(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(deferredTask)
@@ -72,12 +82,11 @@ class PlatformParameterController @Inject constructor(
    * @param deferred task which needs to be executed
    * @return async result for success or failure after the execution of deferred task
    */
-  private suspend fun getDeferredResult(deferred: Deferred<Boolean>): AsyncResult<Any?> {
-    val throwable = IllegalStateException("Failed when storing platform parameter values list")
-    return if (deferred.await()) {
-      AsyncResult.success(true)
-    } else {
-      AsyncResult.failed(throwable)
+  private suspend fun getDeferredResult(
+    deferred: Deferred<PlatformParameterCachingStatus>
+  ): AsyncResult<Any?> {
+    return when (deferred.await()) {
+      PlatformParameterCachingStatus.SUCCESS -> AsyncResult.success(null)
     }
   }
 

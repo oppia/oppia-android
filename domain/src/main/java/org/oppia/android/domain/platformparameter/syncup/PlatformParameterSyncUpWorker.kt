@@ -11,8 +11,8 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.threading.BackgroundDispatcher
+import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -68,21 +68,28 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
+  // Synchronously executes the network request to get platform parameters from the Oppia backend
+  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
+    return platformParameterService.getPlatformParametersByVersion(
+      applicationContext.getVersionName()
+    ).execute()
+  }
+
   /** Extracts platform parameters from the remote service and stores them in the cache store */
-  private fun refreshPlatformParameters(): Result {
+  private suspend fun refreshPlatformParameters(): Result {
     return try {
-      val response = platformParameterService.getPlatformParametersByVersion(
-        applicationContext.getVersionName()
-      ).execute()
+      val response = makeNetworkCallForPlatformParameters()
       val responseBody = checkNotNull(response.body())
       val platformParameterList = parseNetworkResponse(responseBody)
       if (platformParameterList.isEmpty()) {
         throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
       }
-      platformParameterController.updatePlatformParameterDatabase(platformParameterList)
-        .toLiveData().observeForever {
-          if (it.isFailure()) throw IllegalStateException(it.getErrorOrNull())
-        }
+      val cachingResult = platformParameterController
+        .updatePlatformParameterDatabase(platformParameterList)
+        .retrieveData()
+      if (cachingResult.isFailure()) {
+        throw IllegalStateException(cachingResult.getErrorOrNull())
+      }
       Result.success()
     } catch (e: Exception) {
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
