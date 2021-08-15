@@ -17,8 +17,21 @@ const val SPLASH_SCREEN_WELCOME_MSG = "splash_screen_welcome_msg"
 const val SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE = false
 const val SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE = true
 
+/**
+ * Qualifier for the platform parameter that defines the time period in hours, after which the
+ * [PlatformParameterSyncUpWorker] will run again.
+ */
 @Qualifier
 annotation class SyncUpWorkerTimePeriod
 
-const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
-const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
+/**
+ * Name of the platform parameter that defines the time period in hours, after which the
+ * [PlatformParameterSyncUpWorker] will run again.
+ */
+val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
+
+/**
+ * Default value of the platform parameter that defines the time period in hours, after which the
+ * [PlatformParameterSyncUpWorker] will run again.
+ */
+val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12

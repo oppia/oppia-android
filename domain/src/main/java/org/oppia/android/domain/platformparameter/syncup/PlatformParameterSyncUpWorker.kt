@@ -12,7 +12,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
+import retrofit2.Response
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
@@ -54,8 +56,7 @@ class PlatformParameterSyncUpWorker private constructor(
   // Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
   // are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
-    val platformParameterList: MutableList<PlatformParameter> = mutableListOf()
-    response.map {
+    return response.map {
       val platformParameter = PlatformParameter.newBuilder().setName(it.key)
       when (val value = it.value) {
         is String -> platformParameter.string = value
@@ -63,23 +64,32 @@ class PlatformParameterSyncUpWorker private constructor(
         is Boolean -> platformParameter.boolean = value
         else -> throw IllegalArgumentException(INCORRECT_TYPE_EXCEPTION_MSG)
       }
-      platformParameterList.add(platformParameter.build())
+      platformParameter.build()
     }
-    return platformParameterList
+  }
+
+  // Synchronously executes the network request to get platform parameters from the Oppia backend
+  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
+    return platformParameterService.getPlatformParametersByVersion(
+      applicationContext.getVersionName()
+    ).execute()
   }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store */
-  private fun refreshPlatformParameters(): Result {
+  private suspend fun refreshPlatformParameters(): Result {
     return try {
-      val response = platformParameterService.getPlatformParametersByVersion(
-        applicationContext.getVersionName()
-      ).execute()
+      val response = makeNetworkCallForPlatformParameters()
       val responseBody = checkNotNull(response.body())
       val platformParameterList = parseNetworkResponse(responseBody)
       if (platformParameterList.isEmpty()) {
         throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
       }
-      platformParameterController.updatePlatformParameterDatabase(platformParameterList)
+      val cachingResult = platformParameterController
+        .updatePlatformParameterDatabase(platformParameterList)
+        .retrieveData()
+      if (cachingResult.isFailure()) {
+        throw IllegalStateException(cachingResult.getErrorOrNull())
+      }
       Result.success()
     } catch (e: Exception) {
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)

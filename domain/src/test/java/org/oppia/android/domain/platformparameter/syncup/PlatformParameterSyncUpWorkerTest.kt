@@ -174,11 +174,8 @@ class PlatformParameterSyncUpWorkerTest {
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
-    assertThat(platformParameterMap).isNotEmpty()
-    assertThat(platformParameterMap).containsEntry(
-      TEST_STRING_PARAM_NAME,
-      expectedTestStringParameter
-    )
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_STRING_PARAM_NAME, expectedTestStringParameter)
   }
 
   @Test
@@ -208,9 +205,8 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
 
     val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
-    assertThat(exceptionMessage).isEqualTo(
-      PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG
-    )
+    assertThat(exceptionMessage)
+      .isEqualTo(PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG)
   }
 
   @Test
@@ -250,20 +246,16 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(platformParameterMap).isNotEmpty()
 
     // New Boolean Platform Parameter is now present in the Database.
-    assertThat(platformParameterMap).containsEntry(
-      TEST_BOOLEAN_PARAM_NAME,
-      expectedTestBooleanParameter
-    )
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_BOOLEAN_PARAM_NAME, expectedTestBooleanParameter)
+
     // Previous String Platform Parameter is still same in the Database.
-    assertThat(platformParameterMap).containsEntry(
-      TEST_STRING_PARAM_NAME,
-      expectedTestStringParameter
-    )
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_STRING_PARAM_NAME, expectedTestStringParameter)
+
     // Previous Integer Platform Parameter updated to new value in the Database.
-    assertThat(platformParameterMap).containsEntry(
-      TEST_INTEGER_PARAM_NAME,
-      expectedTestIntegerParameter
-    )
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_INTEGER_PARAM_NAME, expectedTestIntegerParameter)
   }
 
   @Test
@@ -294,9 +286,8 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
 
     val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
-    assertThat(exceptionMessage).isEqualTo(
-      PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG
-    )
+    assertThat(exceptionMessage)
+      .isEqualTo(PlatformParameterSyncUpWorker.INCORRECT_TYPE_EXCEPTION_MSG)
   }
 
   @Test
@@ -327,9 +318,9 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
 
     val exceptionMessage = fakeExceptionLogger.getMostRecentException().message
-    assertThat(exceptionMessage).isEqualTo(
-      PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG
-    )
+    assertThat(exceptionMessage)
+      .isEqualTo(PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG)
+
     // Retrieve the previously cached Platform Parameters from Cache Store.
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
     testCoroutineDispatchers.runCurrent()
@@ -337,7 +328,14 @@ class PlatformParameterSyncUpWorkerTest {
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
     val platformParameterMap = platformParameterSingleton.getPlatformParameterMap()
-    assertThat(platformParameterMap).isNotEmpty()
+
+    // Previous String Platform Parameter is still same in the Database.
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_STRING_PARAM_NAME, expectedTestStringParameter)
+
+    // Previous Integer Platform Parameter is still same in the Database.
+    assertThat(platformParameterMap)
+      .containsEntry(TEST_INTEGER_PARAM_NAME, defaultTestIntegerParameter)
   }
 
   private fun setUpTestApplicationComponent() {
