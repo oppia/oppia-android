@@ -455,7 +455,7 @@
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
-  <!-- APP VERSION FRAGMENT -->
+  <!-- App Version -->
   <dimen name="app_version_padding_start">16dp</dimen>
   <dimen name="app_version_padding_end">16dp</dimen>
   <dimen name="app_version_imageview_margin_start">24dp</dimen>
