@@ -199,7 +199,10 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
       THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
       LICENSE_LIST_FRAGMENT_TAG -> handleLoadLicenseListFragment(dependencyIndex)
-      LICENSE_TEXT_FRAGMENT_TAG -> handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
+      LICENSE_TEXT_FRAGMENT_TAG -> handleLoadLicenseTextViewerFragment(
+        dependencyIndex,
+        licenseIndex
+      )
     }
   }
 
