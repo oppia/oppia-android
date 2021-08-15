@@ -295,4 +295,7 @@
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
 
+  <!-- Pin Password -->
+  <dimen name="pin_password_margin_start">332dp</dimen>
+  <dimen name="pin_password_margin_end">332dp</dimen>
 </resources>

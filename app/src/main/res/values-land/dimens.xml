@@ -270,4 +270,7 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
+  <!-- Pin Password -->
+  <dimen name="pin_password_margin_start">72dp</dimen>
+  <dimen name="pin_password_margin_end">72dp</dimen>
 </resources>
