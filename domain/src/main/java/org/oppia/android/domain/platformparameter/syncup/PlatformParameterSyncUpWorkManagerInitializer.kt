@@ -24,11 +24,13 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 
   private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
 
+  /** [Constraints] for platform parameter sync up work request. */
   val platformParameterSyncUpWorkerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
     .setRequiresBatteryNotLow(true)
     .build()
 
+  /** [Data] for platform parameter sync up work request. */
   val workerTypeForSyncingPlatformParameters: Data = Data.Builder()
     .putString(
       PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
@@ -36,6 +38,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
     )
     .build()
 
+  /** [PeriodicWorkRequest] for platform parameter sync up worker. */
   val workRequestForSyncingPlatformParameters =
     PeriodicWorkRequest.Builder(
       PlatformParameterSyncUpWorker::class.java,

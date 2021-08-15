@@ -24,11 +24,9 @@ class PlatformParameterController @Inject constructor(
     RemotePlatformParameterDatabase.getDefaultInstance()
   )
 
-  /**
-   * This status corresponds to the success in the caching process, that if the deferred contains
-   * [SUCCESS], it corresponds to a successful [AsyncResult].
-   */
+  /** It corresponds to the state of the platform parameter caching process. */
   private enum class PlatformParameterCachingStatus {
+    /** If the deferred contains a [SUCCESS], it corresponds to a successful [AsyncResult]. */
     SUCCESS
   }
 
