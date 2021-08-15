@@ -36,8 +36,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController
 ) {
-  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
-  //  implemented.
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener

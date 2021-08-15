@@ -110,20 +110,6 @@ class StoryProgressControllerTest {
   }
 
   @Test
-  fun testStoryProgressController_recordChapterAsStartedNotCompleted_isSuccessful() {
-    storyProgressController.recordChapterAsStartedNotCompleted(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-  }
-
-  @Test
   fun testStoryProgressController_recordChapterAsInProgressSaved_isSuccessful() {
     storyProgressController.recordChapterAsInProgressSaved(
       profileId,
