@@ -96,6 +96,11 @@ class TopicController @Inject constructor(
 ) {
 
   /**
+   * Indicates that chapter for the specified exploration Id, story ID, and topicID was not found.
+   */
+  class ChapterNotFoundException(message: String) : Exception(message)
+
+  /**
    * Fetches a topic given a profile ID and a topic ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
@@ -145,7 +150,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Retrieves a chapter given a topic ID, story ID and exploration ID.
+   * Retrieves a chapter given a topic ID, story ID, and exploration ID.
    *
    * @param topicId the ID corresponding to the topic which contains this story
    * @param storyId the ID corresponding to the story which needs to be returned
@@ -156,16 +161,18 @@ class TopicController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String
-  ): DataProvider<ChapterSummary> {
-    return dataProviders.createInMemoryDataProviderAsync(GET_CHAPTER_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(
-        fetchChapter(
-          topicId,
-          storyId,
-          explorationId
+  ): LiveData<AsyncResult<ChapterSummary>> {
+    return MutableLiveData(
+      try {
+        AsyncResult.success(fetchChapter(topicId, storyId, explorationId))
+      } catch (e: Exception) {
+        AsyncResult.failed(
+          ChapterNotFoundException(
+            "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
+          )
         )
-      )
-    }
+      }
+    )
   }
 
   /**

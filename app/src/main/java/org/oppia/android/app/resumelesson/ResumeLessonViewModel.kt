@@ -9,7 +9,7 @@ import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import javax.inject.Inject
 
 /**
- * The viewModel that providers [ChapterSummary] and [ExplorationCheckpoint] for the exploration
+ * The viewModel that provides a [ChapterSummary] and [ExplorationCheckpoint] for the exploration
  * being resumed.
  */
 @FragmentScope
@@ -20,6 +20,6 @@ class ResumeLessonViewModel @Inject constructor(
   /** The chapter summary for the exploration that may be resumed. */
   val chapterSummary = ObservableField(ChapterSummary.getDefaultInstance())
 
-  /** The [ExplorationCheckpoint] that may be used to resume exploration. */
+  /** The [ExplorationCheckpoint] that may be used to resume the exploration. */
   val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
 }

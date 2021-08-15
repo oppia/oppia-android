@@ -9,8 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that allows the user to resume a saved exploration. */
-class ResumeLessonFragment :
-  InjectableFragment() {
+class ResumeLessonFragment : InjectableFragment() {
 
   companion object {
     private const val RESUME_LESSON_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
@@ -26,6 +25,7 @@ class ResumeLessonFragment :
 
     /**
      * Creates new instance of [ResumeLessonFragment].
+     *
      * @param internalProfileId is used by the ResumeLessonFragment to retrieve saved checkpoint
      * @param explorationId is used by the ResumeLessonFragment to retrieve saved checkpoint
      */

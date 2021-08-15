@@ -9,9 +9,7 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
-class ResumeLessonActivity :
-  InjectableAppCompatActivity(),
-  RouteToExplorationListener {
+class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
 
   @Inject
   lateinit var resumeLessonActivityPresenter: ResumeLessonActivityPresenter
@@ -70,7 +68,7 @@ class ResumeLessonActivity :
       "ResumeLessonActivity.backflow_screen"
 
     /**
-     *  Returns a new [Intent] to route to [ResumeLessonActivity] for a specified exploration.
+     * Returns a new [Intent] to route to [ResumeLessonActivity] for a specified exploration.
      */
     fun createResumeLessonActivityIntent(
       context: Context,
