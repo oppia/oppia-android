@@ -20,8 +20,8 @@ const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
 const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
-const val LICENSE_LIST_FRAGMENT = "LicenseListFragment"
-const val LICENSE_TEXT_FRAGMENT = "LicenseTextFragment"
+const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
+const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
 
 /** The help page activity for FAQs and third-party dependencies. */
 class HelpActivity :

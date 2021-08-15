@@ -198,8 +198,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     when (selectedFragment) {
       FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
       THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
-      LICENSE_LIST_FRAGMENT -> handleLoadLicenseListFragment(dependencyIndex)
-      LICENSE_TEXT_FRAGMENT -> handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
+      LICENSE_LIST_FRAGMENT_TAG -> handleLoadLicenseListFragment(dependencyIndex)
+      LICENSE_TEXT_FRAGMENT_TAG -> handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
     }
   }
 
@@ -222,7 +222,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    selectedFragmentTag = LICENSE_LIST_FRAGMENT
+    selectedFragmentTag = LICENSE_LIST_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
@@ -230,7 +230,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
     setMultipaneContainerTitle(retrieveLicenseName(dependencyIndex, licenseIndex))
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    selectedFragmentTag = LICENSE_TEXT_FRAGMENT
+    selectedFragmentTag = LICENSE_TEXT_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
     selectedHelpOptionTitle = getMultipaneContainerTitle()
