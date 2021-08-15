@@ -270,7 +270,7 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
-  <!-- APP VERSION FRAGMENT -->
+  <!-- App Version -->
   <dimen name="app_version_padding_start">36dp</dimen>
   <dimen name="app_version_padding_end">36dp</dimen>
   <dimen name="app_version_imageview_margin_start">36dp</dimen>
