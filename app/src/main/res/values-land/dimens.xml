@@ -270,4 +270,16 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
+  <!-- Completed Story Item -->
+  <dimen name="completed_story_item_topic_container_marginStart">16dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginEnd">16dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginTop">12dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginBottom">12dp</dimen>
+
+  <!-- Completed Story list Fragment -->
+  <dimen name="completed_story_list_fragment_recyclerview_paddingStart">56dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingTop">28dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingEnd">56dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingBottom">88dp</dimen>
+
 </resources>

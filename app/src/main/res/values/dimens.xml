@@ -458,4 +458,16 @@
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
+  <!-- Completed Story Item -->
+  <dimen name="completed_story_item_topic_container_marginStart">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginEnd">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginTop">12dp</dimen>
+  <dimen name="completed_story_item_topic_container_marginBottom">12dp</dimen>
+
+  <!-- Completed Story list Fragment -->
+  <dimen name="completed_story_list_fragment_recyclerview_paddingStart">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingTop">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingEnd">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_paddingBottom">144dp</dimen>
+
 </resources>
