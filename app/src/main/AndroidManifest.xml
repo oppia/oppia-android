@@ -52,6 +52,18 @@
       android:label="@string/help_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.help.thirdparty.LicenseListActivity"
+      android:label="@string/license_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.help.thirdparty.LicenseTextViewerActivity"
+      android:label="@string/license_text_viewer_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.help.thirdparty.ThirdPartyDependencyListActivity"
+      android:label="@string/third_party_dependency_list_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.home.HomeActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
@@ -166,12 +178,15 @@
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
+    <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
+    <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -179,6 +194,7 @@
       android:name=".app.testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
+    <activity android:name=".app.testing.ViewBindingAdaptersTestActivity"/>
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_activity_title"
@@ -227,6 +243,9 @@
     <activity
       android:name=".app.devoptions.vieweventlogs.ViewEventLogsActivity"
       android:label="@string/view_event_logs_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
