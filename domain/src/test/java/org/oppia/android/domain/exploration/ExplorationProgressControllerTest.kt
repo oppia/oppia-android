@@ -33,6 +33,7 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
@@ -1162,6 +1163,232 @@ class ExplorationProgressControllerTest {
     val updatedState = currentStateResultCaptor.value.getOrThrow()
 
     assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
+  }
+
+  @Test
+  fun testHintsAndSolution_noHintVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // Verify that the helpIndex.IndexTypeCase is equal to INDEX_TYPE_NOT_SET because no hint
+    // is visible yet.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+  }
+
+  @Test
+  fun testHintsAndSolution_wait60Seconds_unrevealedHintIsVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    // Make the first hint visible by submitting two wrong answers.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the helpIndex.IndexTypeCase is equal AVAILABLE_NEXT_HINT_HINT_INDEX because a new
+    // unrevealed hint is visible.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
+    assertThat(currentState.helpIndex.availableNextHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testHintsAndSolution_submitTwoWrongAnswers_unrevealedHintIsVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    // Make the first hint visible by submitting two wrong answers.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    // Verify that the helpIndex.IndexTypeCase is equal AVAILABLE_NEXT_HINT_HINT_INDEX because a new
+    // unrevealed hint is visible.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
+    assertThat(currentState.helpIndex.availableNextHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testHintsAndSolution_revealedHintIsVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
+    assertThat(currentState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testHintsAndSolution_allHintsVisible_wait30Seconds_solutionVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The solution should be visible after 30 seconds of the last hint being reveled.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the helpIndex.IndexTypeCase is equal SHOW_SOLUTION because unrevealed solution is
+    // visible.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testHintAndSol_hintsVisible_submitWrongAns_wait10Second_solVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    submitWrongAnswerForPrototypeState2()
+    // The solution should be visible after 10 seconds becuase one wrong answer was submitted.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the helpIndex.IndexTypeCase is equal SHOW_SOLUTION because unrevealed solution is
+    // visible.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testHintsAndSolution_revealedSolutionIsVisible_checkHelpIndexIsCorrect() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val hintResult = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    hintResult.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The solution should be visible after 30 seconds of the last hint being reveled.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    testCoroutineDispatchers.runCurrent()
+
+    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
+    solutionResult.observeForever(mockAsyncSolutionObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the helpIndex.IndexTypeCase is equal EVERYTHING_IS_REVEALED because a new the
+    // solution has been revealed.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isTrue()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
   }
 
   @Test
