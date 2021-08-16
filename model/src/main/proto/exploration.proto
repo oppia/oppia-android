@@ -333,27 +333,31 @@ message AnswerOutcome {
 // to properly account for variable numbers of hints, for cases when only a solution or no solution
 // exists, and for when there are no hints or solutions.
 message HelpIndex {
+  // Deprecating HINT_INDEX because it is now split in two, latest_revealed_hint_index and
+  // available_next_hint_index.
+  reserved 1;
+
   // This type is uninitialized in cases when no index is currently available (either because a hint
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
-    // Indicates this help index corresponds to the index of the next available hint within the hint
-    // list of a state.
-    int32 available_next_hint_index = 1;
-
-    // Indicates this help index corresponds to the index of the last revealed hint within the hint
-    // list of a state.
-    int32 latest_revealed_hint_index = 2;
-
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
-    bool show_solution = 3;
+    bool show_solution = 2;
 
     // Indicates that everything available has been revealed. Note that this is different than the
     // case when there are no hints or solutions to trigger, even though the resulting behavior may
     // be different. This case specifically indicates that all hints and the solution, if present,
     // have been revealed and there's no other help to provide. The boolean value here has no
     // importance and is always 'true'.
-    bool everything_revealed = 4;
+    bool everything_revealed = 3;
+
+    // Indicates this help index corresponds to the index of the next available hint within the hint
+    // list of a state.
+    int32 available_next_hint_index = 4;
+
+    // Indicates this help index corresponds to the index of the last revealed hint within the hint
+    // list of a state.
+    int32 latest_revealed_hint_index = 5;
   }
 }
 
@@ -367,7 +371,7 @@ message HintState {
   int32 hint_sequence_number = 2;
 
   // Delay for scheduling a new task to show more help to the learner.
-  int64 delay_to_show_next_hint_and_solution = 4;
+  int64 delay_to_show_next_hint_and_solution = 3;
 }
 
 // Different states in which exploration checkpoint can exist.
