@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [JsonPrefixNetworkInterceptorTest] */
+/** Tests for [JsonPrefixNetworkInterceptor]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class JsonPrefixNetworkInterceptorTest {
