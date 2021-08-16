@@ -11,6 +11,7 @@ kt_jvm_library(
         "LicenseFetcher.kt",
         "LicenseFetcherImpl.kt",
     ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 kt_jvm_library(
@@ -36,4 +37,11 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
     ],
+)
+
+kt_jvm_library(
+    name = "license_texts_check_lib",
+    testonly = True,
+    srcs = ["LicenseTextsCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
 )
