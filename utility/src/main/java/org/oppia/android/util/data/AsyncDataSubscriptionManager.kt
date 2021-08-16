@@ -43,10 +43,10 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * observers of the child ID.
    */
   fun associateIds(childId: Any, parentId: Any) {
-    // TODO(#6): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
+    // TODO(#3625): Ensure this graph is acyclic to avoid infinite recursion during notification. Compile-time deps should
     //  make this impossible in practice unless data provider users try to use the same key for multiple inter-dependent
     //  data providers.
-    // TODO(#6): Find a way to determine parent-child ID associations during subscription time to avoid needing to store
+    // TODO(#3625): Find a way to determine parent-child ID associations during subscription time to avoid needing to store
     //  long-lived references to IDs prior to subscriptions.
     associatedIds.enqueue(parentId, childId)
   }
