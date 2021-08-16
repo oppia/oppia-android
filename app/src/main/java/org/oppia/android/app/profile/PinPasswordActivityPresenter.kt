@@ -63,7 +63,7 @@ class PinPasswordActivityPresenter @Inject constructor(
         binding.pinPasswordInputPinEditText.transformationMethod = null
       }
     }
-
+    binding.pinPasswordInputPinEditText.requestFocus()
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
       pin?.let { inputtedPin ->
