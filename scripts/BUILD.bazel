@@ -10,6 +10,7 @@ load(
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
     "generate_test_file_assets_list_from_text_protos",
+    "generate_todo_assets_list_from_text_protos",
 )
 
 # Visibility for libraries that should be accessible to script tests.
@@ -168,5 +169,20 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.docs.KdocValidityCheckKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_validity_check_lib",
+    ],
+)
+
+TODO_OPEN_EXEMPTION_ASSETS = generate_todo_assets_list_from_text_protos(
+    name = "todo_exemption_assets",
+    todo_exemptions_name = ["todo_open_exemptions"],
+)
+
+kt_jvm_binary(
+    name = "todo_open_check",
+    testonly = True,
+    data = TODO_OPEN_EXEMPTION_ASSETS,
+    main_class = "org.oppia.android.scripts.todo.TodoOpenCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
     ],
 )
