@@ -1212,12 +1212,14 @@ class TopicControllerTest {
   }
 
   private fun verifyRetrieveChapterSucceeded() {
-    verify(mockChapterSummaryObserver, atLeastOnce()).onChanged(chapterSummaryResultCaptor.capture())
+    verify(mockChapterSummaryObserver, atLeastOnce())
+      .onChanged(chapterSummaryResultCaptor.capture())
     assertThat(chapterSummaryResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun verifyRetrieveChapterFailed() {
-    verify(mockChapterSummaryObserver, atLeastOnce()).onChanged(chapterSummaryResultCaptor.capture())
+    verify(mockChapterSummaryObserver, atLeastOnce())
+      .onChanged(chapterSummaryResultCaptor.capture())
     assertThat(chapterSummaryResultCaptor.value.isFailure()).isTrue()
   }
 
