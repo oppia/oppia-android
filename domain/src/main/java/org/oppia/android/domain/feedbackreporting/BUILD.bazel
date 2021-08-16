@@ -9,21 +9,11 @@ kt_android_library(
     name = "feedback_reporting_module",
     srcs = [
         "FeedbackReportingModule.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":dagger",
-        ":report_schema_version",
-    ],
-)
-
-kt_android_library(
-    name = "report_schema_version",
-    srcs = [
         "ReportSchemaVersion.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":dagger",
         "//third_party:javax_inject_javax_inject",
     ],
 )
