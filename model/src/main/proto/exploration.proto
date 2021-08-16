@@ -333,7 +333,7 @@ message AnswerOutcome {
 // to properly account for variable numbers of hints, for cases when only a solution or no solution
 // exists, and for when there are no hints or solutions.
 message HelpIndex {
-  // Deprecating HINT_INDEX because it is now split in two, latest_revealed_hint_index and
+  // Deprecated HINT_INDEX because it is now split in two, latest_revealed_hint_index and
   // available_next_hint_index.
   reserved 1;
 

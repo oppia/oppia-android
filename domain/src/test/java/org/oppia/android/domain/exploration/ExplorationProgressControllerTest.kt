@@ -33,6 +33,7 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
@@ -91,7 +92,6 @@ import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.HelpIndex
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -1277,7 +1277,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testHintAndSol_hintsVisible_submitWrongAns_wait10Seconds_solVisible_checkHelpIndexIsCorrect() {
+  fun testHintAndSol_hintsVisible_submitWrongAns_wait10Second_solVisible_checkHelpIndexIsCorrect() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -1313,7 +1313,6 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
   }
-
 
   @Test
   fun testHintsAndSolution_revealedSolutionIsVisible_checkHelpIndexIsCorrect() {
