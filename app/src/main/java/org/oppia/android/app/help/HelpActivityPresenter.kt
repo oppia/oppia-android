@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
+import kotlin.properties.Delegates
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -16,8 +18,6 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
@@ -225,6 +225,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
     setMultipaneBackButtonVisibility(View.VISIBLE)
+    setHelpBackArrowContentDescription(LICENSE_LIST_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_LIST_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedHelpOptionTitle = getMultipaneContainerTitle()
@@ -233,6 +234,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
     setMultipaneContainerTitle(retrieveLicenseName(dependencyIndex, licenseIndex))
     setMultipaneBackButtonVisibility(View.VISIBLE)
+    setHelpBackArrowContentDescription(LICENSE_TEXT_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_TEXT_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
@@ -256,6 +258,25 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     return activity.findViewById<TextView>(
       R.id.help_multipane_options_title_textview
     ).text.toString()
+  }
+
+  private fun setHelpBackArrowContentDescription(fragmentTag: String) {
+    when (fragmentTag) {
+      LICENSE_LIST_FRAGMENT_TAG -> {
+        activity.findViewById<TextView>(R.id.help_multipane_options_back_button)
+          .contentDescription = String().format(
+          activity.getString(R.string.help_activity_back_arrow_description),
+          "third-party dependencies list"
+        )
+      }
+      LICENSE_TEXT_FRAGMENT_TAG -> {
+        activity.findViewById<TextView>(R.id.help_multipane_options_back_button)
+          .contentDescription = String().format(
+          activity.getString(R.string.help_activity_back_arrow_description),
+          "copyright licenses list"
+        )
+      }
+    }
   }
 
   private fun setMultipaneContainerTitle(title: String) {
