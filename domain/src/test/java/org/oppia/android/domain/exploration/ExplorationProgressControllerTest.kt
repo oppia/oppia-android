@@ -88,8 +88,10 @@ import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.HelpIndex
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2552,6 +2554,225 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.hasNextState).isFalse()
   }
 
+  @Test
+  fun testCheckpointing_noHintVisible_resumeExp_notHintVisibleOnPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    // Verify that the helpIndex.IndexTypeCase is equal to INDEX_TYPE_NOT_SET because no hint
+    // is visible yet.
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
+  }
+
+  @Test
+  fun testCheckpointing_unrevealedHintIsVisible_resumeExp_unrevealedHintIsVisibleOnPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    // Make the first hint visible by submitting two wrong answers.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    // Verify that the helpIndex.IndexTypeCase is equal AVAILABLE_NEXT_HINT_HINT_INDEX because a new
+    // unrevealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
+    assertThat(currentState.helpIndex.availableNextHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testCheckpointing_revealedHintIsVisible_resumeExp_revealedHintIsVisibleOnPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
+    assertThat(currentState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
+  }
+
+  @Test
+  fun testCheckpointing_unrevealedSolIsVisible_resumeExp_unrevealedSolIsVisibleOnPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val result = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    result.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The solution should be visible after 30 seconds of the last hint being reveled.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    testCoroutineDispatchers.runCurrent()
+
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
+  }
+
+  @Test
+  fun testCheckpointing_revealedSolutionIsVisible_resumeExp_revealedSolIsVisibleOnPendingState() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val hintResult = explorationProgressController.submitHintIsRevealed(
+      hintIsRevealed = true,
+      hintIndex = 0,
+    )
+    hintResult.observeForever(mockAsyncHintObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // The solution should be visible after 30 seconds of the last hint being reveled.
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+    testCoroutineDispatchers.runCurrent()
+
+    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
+    solutionResult.observeForever(mockAsyncSolutionObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
+    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isTrue()
+    assertThat(currentState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -2951,6 +3172,41 @@ class ExplorationProgressControllerTest {
 
   private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
+  }
+
+  private fun createCheckpointForFirstHint(
+    isHintRevealed: Boolean,
+    index: Int
+  ): ExplorationCheckpoint {
+    return if (isHintRevealed) {
+      ExplorationCheckpoint.newBuilder()
+        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
+        .setPendingStateName("Practice 10")
+        .setHelpIndex(HelpIndex.newBuilder().setAvailableNextHintIndex(index).build())
+        .build()
+    } else {
+      ExplorationCheckpoint.newBuilder()
+        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
+        .setPendingStateName("Practice 10")
+        .setHelpIndex(HelpIndex.newBuilder().setLatestRevealedHintIndex(index).build())
+        .build()
+    }
+  }
+
+  private fun createCheckpointForSolution(isSolutionRevealed: Boolean): ExplorationCheckpoint {
+    return if (isSolutionRevealed) {
+      ExplorationCheckpoint.newBuilder()
+        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
+        .setPendingStateName("Practice 10")
+        .setHelpIndex(HelpIndex.newBuilder().setShowSolution(true).build())
+        .build()
+    } else {
+      ExplorationCheckpoint.newBuilder()
+        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
+        .setPendingStateName("Practice 10")
+        .setHelpIndex(HelpIndex.newBuilder().setEverythingRevealed(true).build())
+        .build()
+    }
   }
 
   private fun verifyCheckpointHasCorrectPendingStateName(
