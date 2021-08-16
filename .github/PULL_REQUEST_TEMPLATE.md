@@ -10,29 +10,39 @@
   - when this PR is merged.
   -->
 
-## QA Instructions, Screenshots, Recordings
+## How to test this PR?
+<!-- Mention steps about how reviewer can verify your work. -->
+
+## Applicable for UI specific PR
+<!-- Fill out this section if there are UI related changes in this PR. -->
+
+### Espresso Test
+<!-- Add screenshots showing that all relevant Espresso tests are passing locally. -->
+
+### Screenshots, Recordings
 <!--
+  - In this section mention the device and API this PR has been tested on with
+  - screenshots and recordings.
+  -
   - Note for images in PR description:
   - 1. Upload your image.
   - 2. Now use the image url received from Github inside this code `<img src="" width="250" />`
-  - This way your images would look of correct size on github.
+  - This way your images would look good on github.
   -->
 
-
-_Please replace this line with instructions on how to test your changes, a note
-on the devices and API levels this has been tested on, as well as any relevant
-images for UI changes._
-
 ### UI accessibility concerns?
-
-_If your PR includes UI changes, please replace this line with details on how
-accessibility is impacted and tested. For more info, check out the
-[Oppia Android Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide)._
+<!--
+  - If your PR includes UI changes, please replace this line with details on how
+  - accessibility is impacted and tested. For more info, check out the
+  - [Oppia Android Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide).
+-->
 
 ### RTL concerns?
-_If your PR includes UI changes, please replace this line with details on how
-RTL is impacted and tested. Also provide screenshots of the screen in RTL view. For more info, check out the
-[Oppia Android RTL Guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines)._
+<!--
+  - If your PR includes UI changes, please replace this line with details on how
+  - RTL is impacted and tested. Also provide screenshots of the screen in RTL view. For more info, check out the
+  - [Oppia Android RTL Guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines).
+-->
 
 ## Checklist
 <!-- Please tick the relevant boxes by putting an "x" in them. -->
