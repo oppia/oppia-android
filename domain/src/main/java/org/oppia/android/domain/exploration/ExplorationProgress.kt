@@ -7,6 +7,7 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.HintState
+import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
@@ -144,6 +145,8 @@ internal class ExplorationProgress {
    *
    * This function expects explorationProgress.hintState to be initialized with the correct values,
    * so it should only be called after the function [loadHintState] has executed.
+   *
+   * @param exploration the current [Exploration] that has to be played
    */
   internal fun loadStateDeck(exploration: Exploration) {
     if (currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
@@ -171,14 +174,11 @@ internal class ExplorationProgress {
       pendingTopState.interaction.hintList,
       currentExplorationCheckpoint.helpIndex
     )
-    val solution = createSolutionFromCheckpoint(pendingTopState, hintState.helpIndex)
-    val interactionBuilder =
-      pendingTopState.interaction.toBuilder()
-        .clearHint()
-        .addAllHint(hintList)
-        .setSolution(solution)
-        .build()
-    return pendingTopState.toBuilder().setInteraction(interactionBuilder).build()
+    val solution =
+      createSolutionFromCheckpoint(pendingTopState, currentExplorationCheckpoint.helpIndex)
+    val interactionBuilder = Interaction.newBuilder().addAllHint(hintList).setSolution(solution)
+
+    return pendingTopState.toBuilder().setInteraction(interactionBuilder.build()).build()
   }
 
   /**
@@ -188,6 +188,8 @@ internal class ExplorationProgress {
    * @param pendingStateHintList the list of hint for the current pending state
    * @param helpIndex the state of hints for the exploration which was generated using the saved
    *     checkpoint
+   *
+   * @return the updated list of [Hint]s for the pending state created from the saved checkpoint
    */
   private fun createHintListFromCheckpoint(
     pendingStateHintList: List<Hint>,
@@ -222,23 +224,22 @@ internal class ExplorationProgress {
    * @param pendingTopState the pending state created from the checkpoint
    * @param helpIndex the state of solution for the exploration which was generated using the saved
    *     checkpoint
+   *
+   * @return the updated [Solution] for the pending state created from the checkpoint
    */
   private fun createSolutionFromCheckpoint(
     pendingTopState: State,
     helpIndex: HelpIndex
   ): Solution {
+    val solutionBuilder = pendingTopState.interaction.solution.toBuilder()
     return when (helpIndex.indexTypeCase) {
       HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        pendingTopState.interaction.solution.toBuilder()
-          .setSolutionIsRevealed(false)
-          .build()
+        solutionBuilder.setSolutionIsRevealed(false).build()
       }
       HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        pendingTopState.interaction.solution.toBuilder()
-          .setSolutionIsRevealed(true)
-          .build()
+        solutionBuilder.setSolutionIsRevealed(true).build()
       }
-      else -> pendingTopState.interaction.solution
+      else -> solutionBuilder.build()
     }
   }
 
