@@ -491,4 +491,7 @@
 
   <!-- LicenseTextViewerActivity -->
   <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
+  
+  <!-- HelpActivity -->
+  <string name="help_activity_back_arrow_description">Navigate back to %s</string>
 </resources>

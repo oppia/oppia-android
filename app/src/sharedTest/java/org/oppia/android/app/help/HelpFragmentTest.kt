@@ -384,7 +384,7 @@ class HelpFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_selectFAQsAndTabletConfigChanged_displaysFAQList() {
+  fun testHelpFragment_selectFAQs_tabletConfigChanged_displaysFAQList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -440,7 +440,7 @@ class HelpFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testHelpFragment_selectThirdPartyDepsAndTabletConfigChanged_displaysThirdPartyDepsList() {
+  fun testHelpFragment_selectThirdPartyDeps_tabletConfigChanged_displaysThirdPartyDepsList() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
