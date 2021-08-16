@@ -118,9 +118,7 @@ class PlatformParameterIntegrationTest {
       .setBoolean(SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
       .build()
 
-    listOf<PlatformParameter>(
-      mockSplashScreenWelcomeMsgParam
-    )
+    listOf<PlatformParameter>(mockSplashScreenWelcomeMsgParam)
   }
 
   private val mockPlatformParameterListWithToastDisabled by lazy {
@@ -129,9 +127,7 @@ class PlatformParameterIntegrationTest {
       .setBoolean(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
       .build()
 
-    listOf<PlatformParameter>(
-      mockSplashScreenWelcomeMsgParam
-    )
+    listOf<PlatformParameter>(mockSplashScreenWelcomeMsgParam)
   }
 
   @Before
@@ -152,10 +148,12 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_readEmptyDatabase_checkWelcomeMsgIsInvisibleByDefault() {
-    launch(SplashTestActivity::class.java).use { it ->
+    launch(SplashTestActivity::class.java).use { scenario ->
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      scenario.onActivity { activity ->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
       testCoroutineDispatchers.runCurrent()
 
       assertThat(ShadowToast.getLatestToast()).isNull()
@@ -169,10 +167,12 @@ class PlatformParameterIntegrationTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    launch(SplashTestActivity::class.java).use { it ->
+    launch(SplashTestActivity::class.java).use { scenario ->
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      scenario.onActivity { activity->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
       testCoroutineDispatchers.runCurrent()
 
       assertThat(ShadowToast.getLatestToast()).isNotNull()
@@ -182,7 +182,7 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_executeSyncUpWorkerCorrectly_readDatabase_checkWelcomeMsgIsVisible() {
-    launch(SplashTestActivity::class.java).use { it ->
+    launch(SplashTestActivity::class.java).use { scenario ->
       // Set up versionName to get correct network response from mock platform parameter service.
       setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
       platformParameterController.updatePlatformParameterDatabase(
@@ -199,7 +199,9 @@ class PlatformParameterIntegrationTest {
 
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      scenario.onActivity { activity->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
       testCoroutineDispatchers.runCurrent()
 
       // As the local database was updated correctly the app will use the server values, and the
@@ -211,7 +213,7 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_executeSyncUpWorkerIncorrectly_readDatabase_checkWelcomeMsgIsInvisible() {
-    launch(SplashTestActivity::class.java).use { it ->
+    launch(SplashTestActivity::class.java).use { scenario ->
       // Set up versionName to get incorrect network response from mock platform parameter service.
       setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
       platformParameterController.updatePlatformParameterDatabase(
@@ -229,7 +231,9 @@ class PlatformParameterIntegrationTest {
 
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      it.onActivity { it.splashTestActivityPresenter.loadPlatformParameters() }
+      scenario.onActivity { activity->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
       testCoroutineDispatchers.runCurrent()
 
       // As the local database was not updated due to work request failure the app will use default
