@@ -27,6 +27,10 @@ class SplashTestActivityPresenter @Inject constructor(
     activity.setContentView(R.layout.splash_test_activity)
   }
 
+  /**
+   * Triggers the loading process for getting platform parameters from cache store to the platform
+   * parameter singleton.
+   */
   fun loadPlatformParameters() {
     fetchPlatformParametersFromDatabase().observe(
       activity,

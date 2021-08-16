@@ -81,6 +81,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -111,10 +112,21 @@ class PlatformParameterIntegrationTest {
   @Inject
   lateinit var context: Context
 
-  private val mockPlatformParameterList by lazy {
+  private val mockPlatformParameterListWithToastEnabled by lazy {
     val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
       .setName(SPLASH_SCREEN_WELCOME_MSG)
       .setBoolean(SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
+      .build()
+
+    listOf<PlatformParameter>(
+      mockSplashScreenWelcomeMsgParam
+    )
+  }
+
+  private val mockPlatformParameterListWithToastDisabled by lazy {
+    val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
+      .setName(SPLASH_SCREEN_WELCOME_MSG)
+      .setBoolean(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
       .build()
 
     listOf<PlatformParameter>(
@@ -152,7 +164,9 @@ class PlatformParameterIntegrationTest {
 
   @Test
   fun testIntegration_updateEmptyDatabase_readDatabase_checkWelcomeMsgIsVisible() {
-    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+    platformParameterController.updatePlatformParameterDatabase(
+      mockPlatformParameterListWithToastEnabled
+    )
     testCoroutineDispatchers.runCurrent()
 
     launch(SplashTestActivity::class.java).use { it ->
@@ -171,7 +185,9 @@ class PlatformParameterIntegrationTest {
     launch(SplashTestActivity::class.java).use { it ->
       // Set up versionName to get correct network response from mock platform parameter service.
       setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
-      platformParameterController.updatePlatformParameterDatabase(listOf())
+      platformParameterController.updatePlatformParameterDatabase(
+        mockPlatformParameterListWithToastDisabled
+      )
 
       val workManager = WorkManager.getInstance(context)
       val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
@@ -198,7 +214,9 @@ class PlatformParameterIntegrationTest {
     launch(SplashTestActivity::class.java).use { it ->
       // Set up versionName to get incorrect network response from mock platform parameter service.
       setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
-      platformParameterController.updatePlatformParameterDatabase(listOf())
+      platformParameterController.updatePlatformParameterDatabase(
+        mockPlatformParameterListWithToastDisabled
+      )
 
       val workManager = WorkManager.getInstance(context)
       val requestId = setUpAndEnqueueSyncUpWorkerRequest(workManager)
