@@ -267,6 +267,27 @@ todo_open_exemption {
   line_number: 901
 }
 todo_open_exemption {
+  exempted_file_path: "scripts/src/javatests/org/oppia/android/scripts/todo/TodoIssueResolvedCheckTest.kt"
+  line_number: 68
+  line_number: 70
+  line_number: 76
+  line_number: 92
+  line_number: 94
+  line_number: 100
+  line_number: 126
+  line_number: 128
+  line_number: 134
+  line_number: 138
+  line_number: 140
+  line_number: 141
+  line_number: 170
+  line_number: 172
+  line_number: 178
+  line_number: 182
+  line_number: 184
+  line_number: 185
+}
+todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
   line_number: 82
 }
