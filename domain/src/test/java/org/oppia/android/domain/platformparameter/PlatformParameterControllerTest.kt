@@ -108,60 +108,6 @@ class PlatformParameterControllerTest {
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
   }
 
-/*  @Test
-  fun testController_noPreviousDatabase_updateDatabaseWithNullList_cachingOperationFails() {
-    setUpTestApplicationComponent()
-    platformParameterController.updatePlatformParameterDatabase(null)
-      .toLiveData().observeForever(mockObserverForAny)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
-    val asyncResult = captorForAny.value
-
-    assertThat(asyncResult.isFailure()).isTrue()
-    assertThat(asyncResult.getErrorOrNull()?.message)
-      .isEqualTo(PlatformParameterController.EXCEPTION_MSG_FOR_CACHING_FAILURE)
-  }*/
-
-/*  @Test
-  fun testController_existingDatabase_updateDatabaseWithNullList_cachingOperationFails() {
-    // Simulate that previous app already has cached platform parameter values in cache store.
-    executeInPrevious { testComponent ->
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        mockPlatformParameterList
-      ).toLiveData().observeForever(mockObserverForAny)
-      testComponent.getTestCoroutineDispatchers().advanceUntilIdle()
-    }
-
-    // Create the application after previous arrangement to simulate a re-creation.
-    setUpTestApplicationComponent()
-    reset(mockObserverForAny)
-    // Update the platform parameter with a null list that should fail as per the implementation.
-    platformParameterController.updatePlatformParameterDatabase(null)
-      .toLiveData().observeForever(mockObserverForAny)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
-    val asyncResult = captorForAny.value
-
-    // Check that the operation failed and match the exception message.
-    assertThat(asyncResult.isFailure()).isTrue()
-    assertThat(asyncResult.getErrorOrNull()?.message)
-      .isEqualTo(PlatformParameterController.EXCEPTION_MSG_FOR_CACHING_FAILURE)
-
-    // Fetch the values from database to verify they are not updated.
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify the fetch operation was successful.
-    verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
-    assertThat(unitCaptor.value.isSuccess()).isTrue()
-
-    // Verify the map injected into platformParameterSingleton after successful fetch operation.
-    assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
-    verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
-  }*/
-
   @Test
   fun testController_existingDatabase_readPlatformParameters_platformParameterMapHasValues() {
     // Simulate that previous app already has cached platform parameter values in cache store.

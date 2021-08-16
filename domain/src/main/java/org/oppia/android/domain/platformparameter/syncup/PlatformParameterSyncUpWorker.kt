@@ -53,8 +53,10 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  // Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
-  // are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
+  /**
+   * Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
+   * are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
+   */
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     return response.map {
       val platformParameter = PlatformParameter.newBuilder().setName(it.key)
@@ -68,7 +70,7 @@ class PlatformParameterSyncUpWorker private constructor(
     }
   }
 
-  // Synchronously executes the network request to get platform parameters from the Oppia backend
+  /** Synchronously executes the network request to get platform parameters from the Oppia backend */
   private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
     return platformParameterService.getPlatformParametersByVersion(
       applicationContext.getVersionName()
