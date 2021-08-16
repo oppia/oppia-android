@@ -213,7 +213,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    setHelpBackArrowContentDescription(LICENSE_LIST_FRAGMENT_TAG)
+    setHelpBackButtonContentDescription(LICENSE_LIST_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_LIST_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedHelpOptionTitle = getMultipaneContainerTitle()
@@ -222,7 +222,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun selectLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
     setMultipaneContainerTitle(retrieveLicenseName(dependencyIndex, licenseIndex))
     setMultipaneBackButtonVisibility(View.VISIBLE)
-    setHelpBackArrowContentDescription(LICENSE_TEXT_FRAGMENT_TAG)
+    setHelpBackButtonContentDescription(LICENSE_TEXT_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_TEXT_FRAGMENT_TAG
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
@@ -248,20 +248,24 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     ).text.toString()
   }
 
-  private fun setHelpBackArrowContentDescription(fragmentTag: String) {
+  private fun setHelpBackButtonContentDescription(fragmentTag: String) {
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = String().format(
-          activity.getString(R.string.help_activity_back_arrow_description),
-          "third-party dependencies list"
+          .contentDescription = String.format(
+          activity.getString(
+            R.string.help_activity_back_arrow_description,
+            "third-party dependencies list"
+          )
         )
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = String().format(
-          activity.getString(R.string.help_activity_back_arrow_description),
-          "copyright licenses list"
+          .contentDescription = String.format(
+          activity.getString(
+            R.string.help_activity_back_arrow_description,
+            "copyright licenses list"
+          )
         )
       }
     }
