@@ -170,7 +170,7 @@ class PlatformParameterIntegrationTest {
     launch(SplashTestActivity::class.java).use { scenario ->
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         activity.splashTestActivityPresenter.loadPlatformParameters()
       }
       testCoroutineDispatchers.runCurrent()
@@ -199,7 +199,7 @@ class PlatformParameterIntegrationTest {
 
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         activity.splashTestActivityPresenter.loadPlatformParameters()
       }
       testCoroutineDispatchers.runCurrent()
@@ -231,7 +231,7 @@ class PlatformParameterIntegrationTest {
 
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
-      scenario.onActivity { activity->
+      scenario.onActivity { activity ->
         activity.splashTestActivityPresenter.loadPlatformParameters()
       }
       testCoroutineDispatchers.runCurrent()
