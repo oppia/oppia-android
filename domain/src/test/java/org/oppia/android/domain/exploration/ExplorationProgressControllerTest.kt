@@ -3407,41 +3407,6 @@ class ExplorationProgressControllerTest {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
-  private fun createCheckpointForFirstHint(
-    isHintRevealed: Boolean,
-    index: Int
-  ): ExplorationCheckpoint {
-    return if (isHintRevealed) {
-      ExplorationCheckpoint.newBuilder()
-        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
-        .setPendingStateName("Practice 10")
-        .setHelpIndex(HelpIndex.newBuilder().setAvailableNextHintIndex(index).build())
-        .build()
-    } else {
-      ExplorationCheckpoint.newBuilder()
-        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
-        .setPendingStateName("Practice 10")
-        .setHelpIndex(HelpIndex.newBuilder().setLatestRevealedHintIndex(index).build())
-        .build()
-    }
-  }
-
-  private fun createCheckpointForSolution(isSolutionRevealed: Boolean): ExplorationCheckpoint {
-    return if (isSolutionRevealed) {
-      ExplorationCheckpoint.newBuilder()
-        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
-        .setPendingStateName("Practice 10")
-        .setHelpIndex(HelpIndex.newBuilder().setShowSolution(true).build())
-        .build()
-    } else {
-      ExplorationCheckpoint.newBuilder()
-        // The state Practice 10 of Fractions, story 0, exp 0 has 3 hints and a solution.
-        .setPendingStateName("Practice 10")
-        .setHelpIndex(HelpIndex.newBuilder().setEverythingRevealed(true).build())
-        .build()
-    }
-  }
-
   private fun verifyCheckpointHasCorrectPendingStateName(
     profileId: ProfileId,
     explorationId: String,
