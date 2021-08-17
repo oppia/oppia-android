@@ -24,62 +24,9 @@ class ExplorationPlayerTest {
   }
 
   @Test
-  fun testExploration_prototypeExploration_toolbarTitle_isDisplayedSuccessfully() {
-    navigateToPrototypeExploration()
-    assertThat(device.findObjectByRes("exploration_toolbar_title")).isNotNull()
-  }
-
-  @Test
   fun testProtoTypeExploration_answerAllInteractionsAndCompleteExploration() {
     navigateToPrototypeExploration()
-    completePrototypeExploration()
 
-    // Assert Topic Completed.
-    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 1: Prototype Exploration"
-    )?.parent?.children?.get(2)
-    assertThat(chapterCompletedTick).isNotNull()
-  }
-
-  @Test
-  fun testImageRegionSelectionInteraction_answerAllInteractionsAndCompleteExploration() {
-    navigateToImageRegionSelectionInteraction()
-
-    // / Image Region Selection Interaction.
-    val imageSelectionView = device.findObjectByRes("interaction_container_frame_layout")
-    device.waitForRes("image_click_interaction_image_view")
-    imageSelectionView?.children?.get(2)?.click()
-    device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
-
-    // End Exploration.
-    device.findObjectByText("RETURN TO TOPIC")?.click()
-
-    // Assert Topic Completed.
-    scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 2: Image Region Selection Exploration"
-    )?.parent?.children?.get(2)
-    assertThat(chapterCompletedTick).isNotNull()
-  }
-
-  /** Navigates and opens the Prototype Exploration using the admin profile. */
-  private fun navigateToPrototypeExploration() {
-    device.findObjectByRes("skip_text_view")?.click()
-    device.findObjectByRes("get_started_button")?.click()
-    device.waitForRes("profile_select_text")
-    device.findObjectByText("Admin")?.click()
-    scrollRecyclerViewTextIntoView("First Test Topic")
-    device.findObjectByText("First Test Topic")?.click()
-    device.findObjectByText("LESSONS")?.click()
-    device.findObjectByText("First Story")?.click()
-    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
-  }
-
-  /** Answers all the interactions and ends the exploration. */
-  private fun completePrototypeExploration() {
     // Exploration description.
     device.findObjectByText("CONTINUE")?.click()
 
@@ -133,10 +80,17 @@ class ExplorationPlayerTest {
 
     // End Exploration.
     device.findObjectByText("RETURN TO TOPIC")?.click()
+
+    // Assert Topic Completed.
+    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
+    val chapterCompletedTick = device.findObjectByText(
+      "Chapter 1: Prototype Exploration"
+    )?.parent?.children?.get(2)
+    assertThat(chapterCompletedTick).isNotNull()
   }
 
-  /** Navigates and opens the Image Region Selection Exploration using the admin profile. */
-  private fun navigateToImageRegionSelectionInteraction() {
+  /** Navigates and opens the Prototype Exploration using the admin profile. */
+  private fun navigateToPrototypeExploration() {
     device.findObjectByRes("skip_text_view")?.click()
     device.findObjectByRes("get_started_button")?.click()
     device.waitForRes("profile_select_text")
@@ -147,8 +101,5 @@ class ExplorationPlayerTest {
     device.findObjectByText("First Story")?.click()
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
     device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
-    completePrototypeExploration()
-    scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
-    device.findObjectByText("Chapter 2: Image Region Selection Exploration")?.click()
   }
 }
