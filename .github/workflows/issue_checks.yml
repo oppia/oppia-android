@@ -1,0 +1,51 @@
+# Contains jobs corresponding to issue related checks.
+
+name: Issue Checks
+
+on:
+  issues:
+    types: [closed, reopened]
+
+permissions:
+  issues: write
+
+jobs:
+  script_check:
+    name: Closed TODO Issue Check
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: TODO Issue Resolved Check
+        id: todoIssueResolvedCheck
+        if: ${{ github.event.action == 'closed' }}
+        run: |
+          bazel run //scripts:todo_issue_resolved_check -- $(pwd) ${{ github.event.issue.number }} ${{ github.sha }}
+
+      - name: Reopen Issue
+        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue reopen ${{ github.event.issue.number }}
+
+      - name: Check for duplicate comment
+        id: duplicateCommentCheck
+        if: failure() && steps.todoIssueResolvedCheck.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue view ${{ github.event.issue.number }} --json comments --jq '.comments[-1].body' > $(pwd)/latest_comment.txt
+          bazel run //scripts:todo_issue_comment_check -- $(pwd) latest_comment.txt script_failures.txt
+
+      - name: Add Comment
+        if: failure() && steps.duplicateCommentCheck.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} -F $(pwd)/script_failures.txt
