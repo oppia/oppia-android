@@ -5,6 +5,7 @@ import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.junit.Ignore
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByDesc
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByText
@@ -172,7 +173,20 @@ class ExplorationPlayerTest {
     device.findObjectByText("First Story")?.click()
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
     device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
-    completePrototypeExploration()
+
+    // Complete PrototypeExploration
+    playExplorationDescription()
+    playFractionInputInteraction()
+    playMultipleChoiceIntearction1()
+    playMultipleChoiceIntearction2()
+    playItemSelectionInteraction()
+    playNumericInputInteraction()
+    playRatioInputInteraction()
+    playTextInputInteraction()
+    playDragAndDropInteraction()
+    playDragDropMergeInteraction()
+    endExploration()
+
     scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
     device.findObjectByText("Chapter 2: Image Region Selection Exploration")?.click()
   }

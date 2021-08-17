@@ -45,15 +45,13 @@ object EndToEndTestHelper {
   fun UiDevice.clearAppData() {
     val context = InstrumentationRegistry.getInstrumentation().getTargetContext()
       .getApplicationContext()
-    val cacheDir = context.filesDir
-    val filesToDelete = cacheDir.listFiles().filter { file ->
-      file.name.endsWith(".cache")
-    }
-    val filePath = "/data/data/$OPPIA_PACKAGE/files/"
-    filesToDelete.forEach { file ->
-      executeShellCommand(
-        "run-as org.oppia.android rm -f $filePath${file.name.substringAfterLast('/')}"
-      )
+    val externalDirs = context.dataDir.listFiles()
+    externalDirs.forEach { dir ->
+      dir.listFiles().forEach { file ->
+        if(file.name.endsWith(".cache")) {
+          file.delete()
+        }
+      }
     }
   }
 
