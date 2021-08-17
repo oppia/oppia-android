@@ -16,9 +16,10 @@ class TestFileCheckTest {
   private val originalOut: PrintStream = System.out
   private val TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR = "TEST FILE CHECK PASSED"
   private val TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR = "TEST FILE CHECK FAILED"
+  private val errorMessage = "does not have a corresponding test file."
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#test-file-presence-check for more details on how to fix this."
 
   @Rule
   @JvmField
@@ -56,11 +57,13 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains(
-      "File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test" +
-        " file."
-    )
-    assertThat(outContent.toString()).contains(wikiReferenceNote)
+    val failureMessage =
+      """
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt $errorMessage
+      
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
@@ -75,15 +78,14 @@ class TestFileCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains(
-      "File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test" +
-        " file."
-    )
-    assertThat(outContent.toString()).contains(
-      "File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test" +
-        " file."
-    )
-    assertThat(outContent.toString()).contains(wikiReferenceNote)
+    val failureMessage =
+      """
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile2.kt does not have a corresponding test file.
+      File ${retrieveTestFilesDirectoryPath()}/ProdFile3.kt does not have a corresponding test file.
+      
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
@@ -106,7 +108,6 @@ class TestFileCheckTest {
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
-    assertThat(outContent.toString()).contains(wikiReferenceNote)
   }
 
   @Test

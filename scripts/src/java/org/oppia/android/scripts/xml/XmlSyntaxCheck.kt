@@ -47,8 +47,8 @@ fun main(vararg args: String) {
 
   if (hasXmlSyntaxFailure) {
     println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
-        " details on how to fix this.\n"
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+        "#xml-syntax-check for more details on how to fix this.\n"
     )
   }
 

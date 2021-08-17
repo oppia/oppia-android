@@ -20,8 +20,8 @@ class AccessibilityLabelCheckTest {
   private val ACCESSIBILITY_LABEL_CHECK_FAILED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK FAILED"
   private val pathToProtoBinary = "scripts/assets/accessibility_label_exemptions.pb"
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#accessibility-label-check for more details on how to fix this."
 
   @Rule
   @JvmField

@@ -21,8 +21,8 @@ class TodoOpenCheckTest {
   private val TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "TODO CHECK FAILED"
   private val pathToProtoBinary = "scripts/assets/todo_exemptions.pb"
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#todo-open-checks for more details on how to fix this."
 
   @Rule
   @JvmField

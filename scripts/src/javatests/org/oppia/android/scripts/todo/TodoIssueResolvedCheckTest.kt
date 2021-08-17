@@ -20,8 +20,8 @@ class TodoIssueResolvedCheckTest {
   private val CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR: String =
     "TODO ISSUE RESOLVED CHECK FAILED"
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#todo-issue-resolved-check for more details on how to fix this."
 
   @Rule
   @JvmField

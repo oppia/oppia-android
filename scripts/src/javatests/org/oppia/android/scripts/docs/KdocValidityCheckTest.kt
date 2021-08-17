@@ -21,8 +21,8 @@ class KdocValidityCheckTest {
   private val originalOut: PrintStream = System.out
   private val pathToProtoBinary = "scripts/assets/kdoc_validity_exemptions.pb"
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#kdoc-validity-check for more details on how to fix this."
 
   @Rule
   @JvmField

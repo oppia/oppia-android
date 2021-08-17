@@ -21,8 +21,8 @@ import javax.xml.parsers.DocumentBuilderFactory
  * - paths to manifest files: paths leading to the manifest files.
  *
  * Example:
- *   bazel run //scripts:accessibility_label_check -- $(pwd) app/src/main/AndroidManifest.xml
- *    scripts/assets/accessibility_label_exemptions.pb
+ *   bazel run //scripts:accessibility_label_check -- $(pwd)
+ *   scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
  */
 fun main(vararg args: String) {
   val repoPath = "${args[0]}/"
@@ -70,8 +70,8 @@ fun main(vararg args: String) {
 
   if (failureActivitiesAfterExemption.isNotEmpty()) {
     println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
-        " details on how to fix this.\n"
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+        "#accessibility-label-check for more details on how to fix this.\n"
     )
   }
 

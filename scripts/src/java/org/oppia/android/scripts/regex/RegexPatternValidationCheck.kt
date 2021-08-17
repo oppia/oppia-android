@@ -53,8 +53,8 @@ fun main(vararg args: String) {
 
   if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
     println(
-      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more" +
-        " details on how to fix this.\n"
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+        "#regexpatternvalidation-check for more details on how to fix this.\n"
     )
   }
 

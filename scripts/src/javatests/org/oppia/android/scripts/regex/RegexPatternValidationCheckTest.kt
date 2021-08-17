@@ -19,8 +19,8 @@ class RegexPatternValidationCheckTest {
   private val supportLibraryUsageErrorMessage = "AndroidX should be used instead of the support " +
     "library"
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#regexpatternvalidation-check for more details on how to fix this."
 
   @Rule
   @JvmField

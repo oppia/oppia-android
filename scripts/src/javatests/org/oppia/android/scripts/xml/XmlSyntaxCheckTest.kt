@@ -16,9 +16,13 @@ class XmlSyntaxCheckTest {
   private val originalOut: PrintStream = System.out
   private val XML_SYNTAX_CHECK_PASSED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK PASSED"
   private val XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR: String = "XML SYNTAX CHECK FAILED"
+  private val syntaxFailureMessage1 =
+    "The end-tag for element type \"shape\" must end with a '>' delimiter."
+  private val syntaxFailureMessage2 =
+    "The content of elements must consist of well-formed character data or markup."
   private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks for more " +
-      "details on how to fix this."
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#xml-syntax-check for more details on how to fix this."
 
   @Rule
   @JvmField
@@ -74,8 +78,13 @@ class XmlSyntaxCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile.xml")
-    assertThat(outContent.toString()).contains(wikiReferenceNote)
+    val failureMessage =
+      """
+      ${retrieveTestFilesDirectoryPath()}/TestFile.xml:6:8: $syntaxFailureMessage1
+      
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   @Test
@@ -108,9 +117,14 @@ class XmlSyntaxCheckTest {
     }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile2.xml")
-    assertThat(outContent.toString()).contains("${retrieveTestFilesDirectoryPath()}/TestFile1.xml")
-    assertThat(outContent.toString()).contains(wikiReferenceNote)
+    val failureMessage =
+      """
+      ${retrieveTestFilesDirectoryPath()}/TestFile2.xml:6:8: $syntaxFailureMessage1
+      ${retrieveTestFilesDirectoryPath()}/TestFile1.xml:4:4: $syntaxFailureMessage2
+      
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
 
   /** Retrieves the absolute path of testfiles directory. */
