@@ -149,7 +149,6 @@ class CustomHtmlContentHandlerTest {
     assertThat(parsedHtml.toString()).isEqualTo("some other content")
   }
 
-
   @Test
   @Config(qualifiers = "ldltr")
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
