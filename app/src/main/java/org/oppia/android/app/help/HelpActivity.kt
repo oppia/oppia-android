@@ -30,7 +30,7 @@ class HelpActivity :
   RouteToThirdPartyDependencyListListener,
   RouteToLicenseTextListener,
   RouteToLicenseListListener,
-  LoadFAQListFragmentListener,
+  LoadFaqListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener {
 
   @Inject
@@ -83,7 +83,7 @@ class HelpActivity :
     startActivity(intent)
   }
 
-  override fun loadFAQListFragment() {
+  override fun loadFaqListFragment() {
     selectedFragment = FAQ_LIST_FRAGMENT_TAG
     helpActivityPresenter.handleLoadFAQListFragment()
   }

@@ -5,6 +5,6 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** Option items view model for the recyclerView in [HelpFragment] */
 abstract class HelpViewModel : ObservableViewModel() {
-  /** Determines whether the device in use has a large screen. */
+  /** Indicates whether the device in use has a large screen & should be multi-pane. */
   val isMultipane = ObservableField<Boolean>(false)
 }
