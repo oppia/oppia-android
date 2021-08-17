@@ -23,7 +23,6 @@ kt_android_library(
     srcs = [
         "ReportSchemaVersion.kt",
     ],
-#    visibility = ["//:oppia_testing_visibility"],
     deps = [":dagger"]
 )
 
