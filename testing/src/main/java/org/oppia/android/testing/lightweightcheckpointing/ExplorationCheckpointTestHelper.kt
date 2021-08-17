@@ -53,8 +53,8 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
 
   /**
-   *  Saves a fake checkpoint for explorationId [FAKE_EXPLORATION_ID_1] for the specified profileId.
-   *  The size of the checkpoint saved here is 67 bytes.
+   * Saves a fake checkpoint for explorationId [FAKE_EXPLORATION_ID_1] for the specified profileId.
+   * The size of the checkpoint saved here is 67 bytes.
    *
    * @param internalProfileId the profileID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
@@ -212,6 +212,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     return ExplorationCheckpoint.newBuilder()
       .setExplorationTitle(explorationTitle)
       .setPendingStateName("fake_state_0")
+      .setExplorationVersion(version)
       .setTimestampOfFirstCheckpoint(timestamp)
       .setStateIndex(0)
       .build()

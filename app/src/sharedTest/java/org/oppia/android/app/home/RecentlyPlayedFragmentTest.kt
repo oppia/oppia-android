@@ -29,8 +29,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.instanceOf
@@ -106,6 +104,8 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -1001,64 +1001,6 @@ class RecentlyPlayedFragmentTest {
       )
     }
   }
-
-  @Test
-  fun testRecentlyPlayedTestAct_clickStory_chapterMarkedAsCompleted_opensExplorationLessActivity() {
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = false
-    )
-    ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.ongoing_story_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.ongoing_story_recycler_view,
-          position = 1,
-          targetViewId = R.id.lesson_thumbnail
-        )
-      ).perform(click())
-      intended(
-        allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ false
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ null
-          ),
-          hasComponent(ExplorationActivity::class.java.name)
-        )
-      )
-    }
-  }
-
 
   @Test
   fun testRecentlyPlayedTestActivity_lastMonthSectionTitleIsDisplayed() {

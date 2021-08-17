@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -30,7 +32,9 @@ import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
+import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -44,6 +48,7 @@ class StoryFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String
 ) {
@@ -117,13 +122,13 @@ class StoryFragmentPresenter @Inject constructor(
         backflowScreen
       )
     } else {
-      routeToExplorationListener.routeToExploration(
+      playExploration(
         internalProfileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
-        shouldSavePartialProgress
+        shouldSavePartialProgress,
+        backflowScreen
       )
     }
   }
@@ -246,6 +251,49 @@ class StoryFragmentPresenter @Inject constructor(
       oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_STORY_ACTIVITY,
       oppiaLogger.createStoryContext(topicId, storyId)
+    )
+  }
+
+  private fun playExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    backflowScreen: Int?
+  ) {
+    explorationDataController.stopPlayingExploration()
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = shouldSavePartialProgress,
+      // Pass an empty checkpoint if the exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> oppiaLogger.d("Story Fragment", "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
+            "Story Fragment",
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
+            routeToExplorationListener.routeToExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId,
+              backflowScreen,
+              shouldSavePartialProgress
+            )
+          }
+        }
+      }
     )
   }
 

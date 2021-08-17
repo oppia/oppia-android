@@ -236,10 +236,10 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
-   *  Checks if the saved checkpoint is compatible with the current version of the exploration.
+   * Checks if the saved checkpoint is compatible with the current version of the exploration.
    *
-   *  @param profileId the profileId for which the exploration was saved
-   *  @param explorationId the Id of the exploration for which the checkpoint was saved
+   * @param profileId the profileId for which the exploration was saved
+   * @param explorationId the Id of the exploration for which the checkpoint was saved
    *
    * @return a [Boolean] that indicates if the saved checkpoint is compatible with the current
    *     exploration

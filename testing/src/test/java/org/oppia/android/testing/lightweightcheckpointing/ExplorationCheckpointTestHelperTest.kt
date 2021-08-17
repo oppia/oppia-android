@@ -27,6 +27,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -151,6 +152,30 @@ class ExplorationCheckpointTestHelperTest {
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
     assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
       .isEqualTo(FAKE_EXPLORATION_TITLE_2)
+  }
+
+  @Test
+  fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId.internalId,
+      version = 0,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        FRACTIONS_EXPLORATION_ID_0
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
   }
 
   // TODO(#89): Move this to a common test application component.

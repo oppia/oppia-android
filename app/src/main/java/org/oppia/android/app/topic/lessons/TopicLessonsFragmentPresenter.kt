@@ -247,7 +247,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              isCheckpointingEnabled = true
+              shouldSavePartialProgress
             )
           }
         }
