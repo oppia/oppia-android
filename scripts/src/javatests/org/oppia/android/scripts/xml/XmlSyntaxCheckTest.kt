@@ -119,8 +119,60 @@ class XmlSyntaxCheckTest {
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
       """
-      ${retrieveTestFilesDirectoryPath()}/TestFile2.xml:6:8: $syntaxFailureMessage1
       ${retrieveTestFilesDirectoryPath()}/TestFile1.xml:4:4: $syntaxFailureMessage2
+      ${retrieveTestFilesDirectoryPath()}/TestFile2.xml:6:8: $syntaxFailureMessage1
+      
+      $wikiReferenceNote
+      """.trimIndent()
+    assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
+  }
+
+  @Test
+  fun testXmlSyntax_multipleFilesHavingInvalidXml_logsShouldBeLexicographicallySorted() {
+    val invalidXmlForFile1 =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+        <<solid android:color="#3333334D" />
+        <size android:height="1dp" />
+      </shape>
+      """.trimIndent()
+    val invalidXmlForFile2 =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+        <solid android:color="#3333334D" />
+        <size android:height="1dp" />
+      </shapes>
+      """.trimIndent()
+    val invalidXmlForFile3 =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+        <solid android:color="#3333334D" />
+        <size android:height="1dp" />
+      </shapes>
+      """.trimIndent()
+    val tempFile3 = tempFolder.newFile("testfiles/TestFile3.xml")
+    val tempFile1 = tempFolder.newFile("testfiles/TestFile1.xml")
+    val tempFile2 = tempFolder.newFile("testfiles/TestFile2.xml")
+    tempFile1.writeText(invalidXmlForFile1)
+    tempFile2.writeText(invalidXmlForFile2)
+    tempFile3.writeText(invalidXmlForFile3)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
+    val failureMessage =
+      """
+      ${retrieveTestFilesDirectoryPath()}/TestFile1.xml:4:4: $syntaxFailureMessage2
+      ${retrieveTestFilesDirectoryPath()}/TestFile2.xml:6:8: $syntaxFailureMessage1
+      ${retrieveTestFilesDirectoryPath()}/TestFile3.xml:6:8: $syntaxFailureMessage1
       
       $wikiReferenceNote
       """.trimIndent()

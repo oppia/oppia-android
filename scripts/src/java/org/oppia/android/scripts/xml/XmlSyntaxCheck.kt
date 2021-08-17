@@ -83,7 +83,7 @@ private fun parseXml(docBuilder: DocumentBuilder, file: File) {
  */
 private fun logXmlSyntaxFailures(errorList: List<Pair<SAXParseException, File>>) {
   if (errorList.isNotEmpty()) {
-    errorList.forEach { errorPair ->
+    errorList.sortedWith(compareBy({ it.second })).forEach { errorPair ->
       val error = errorPair.first
       val errorFile = errorPair.second
       val failureMessage =
