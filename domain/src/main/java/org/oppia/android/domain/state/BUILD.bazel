@@ -25,9 +25,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "retriever",
+    name = "state_list",
     srcs = [
-        "StateRetriever.kt",
+        "StateList.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
