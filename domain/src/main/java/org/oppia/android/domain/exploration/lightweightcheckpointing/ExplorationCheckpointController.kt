@@ -8,8 +8,8 @@ import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -38,7 +38,7 @@ class ExplorationCheckpointController @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   @ExplorationStorageDatabaseSize private val explorationCheckpointDatabaseSizeLimit: Int,
-  private val jsonAssetRetriever: JsonAssetRetriever
+  private val explorationRetriever: ExplorationRetriever
 ) {
 
   /** Indicates that no checkpoint was found for the specified explorationId and profileId. */
@@ -235,6 +235,15 @@ class ExplorationCheckpointController @Inject constructor(
     }
   }
 
+  /**
+   *  Checks if the saved checkpoint is compatible with the current version of the exploration.
+   *
+   *  @param profileId the profileId for which the exploration was saved
+   *  @param explorationId the Id of the exploration for which the checkpoint was saved
+   *
+   * @return a [Boolean] that indicates if the saved checkpoint is compatible with the current
+   *     exploration
+   */
   fun isSavedCheckpointCompatibleWithExploration(
     profileId: ProfileId,
     explorationId: String
@@ -244,17 +253,17 @@ class ExplorationCheckpointController @Inject constructor(
         CHECK_IS_EXPLORATION_CHECKPOINT_COMPATIBLE_WITH_EXPLORATION_DATA_PROVIDER_ID
       ) { explorationCheckpointDatabase ->
         val checkpoint = explorationCheckpointDatabase.explorationCheckpointMap[explorationId]
-        val chapterDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$explorationId.json")
+        val exploration = explorationRetriever.loadExploration(explorationId)
 
         if (checkpoint != null) {
           AsyncResult.success(
-            chapterDataJsonObject?.getInt("version") == checkpoint.explorationVersion
+            exploration.version == checkpoint.explorationVersion
           )
         } else
           AsyncResult.failed(
             ExplorationCheckpointNotFoundException(
-              "Checkpoint with the explorationId $explorationId was not found " +
-                "for profileId ${profileId.internalId}."
+              "Checkpoint with the exploration $explorationId was not found " +
+                "for profile ${profileId.internalId}."
             )
           )
       }

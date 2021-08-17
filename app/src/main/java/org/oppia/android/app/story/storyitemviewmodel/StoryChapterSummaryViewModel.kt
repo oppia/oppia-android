@@ -48,32 +48,41 @@ class StoryChapterSummaryViewModel(
         else -> false
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
-        ProfileId.getDefaultInstance(),
-        explorationId
-      ).toLiveData().observe(
+      val isCheckpointCompatible =
+        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+          ProfileId.getDefaultInstance(),
+          explorationId
+        ).toLiveData()
+
+      isCheckpointCompatible.observe(
         fragment,
-        Observer {
-          if (it.isSuccess()) {
-            startOrResumeExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              shouldSavePartialProgress,
-              canExplorationBeResumed = it.getOrThrow(),
-              backflowScreen = 1
-            )
-          } else if (it.isFailure()) {
-            startOrResumeExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              shouldSavePartialProgress,
-              canExplorationBeResumed = false,
-              backflowScreen = 1
-            )
+        object : Observer<AsyncResult<Boolean>> {
+          override fun onChanged(it: AsyncResult<Boolean>?) {
+            if (it != null) {
+              if (it.isSuccess()) {
+                isCheckpointCompatible.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = it.getOrThrow(),
+                  backflowScreen = 1
+                )
+              } else if (it.isFailure()) {
+                isCheckpointCompatible.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = false,
+                  backflowScreen = 1
+                )
+              }
+            }
           }
         }
       )

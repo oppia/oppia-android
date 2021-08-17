@@ -233,32 +233,41 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         else -> false
       }
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
-        ProfileId.getDefaultInstance(),
-        promotedStory.explorationId
-      ).toLiveData().observe(
+      val isCheckpointCompatiableLiveData =
+        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+          ProfileId.getDefaultInstance(),
+          promotedStory.explorationId
+        ).toLiveData()
+
+      isCheckpointCompatiableLiveData.observe(
         fragment,
-        Observer {
-          if (it.isSuccess()) {
-            startOrResumeExploration(
-              internalProfileId,
-              promotedStory.topicId,
-              promotedStory.storyId,
-              promotedStory.explorationId,
-              shouldSavePartialProgress,
-              canExplorationBeResumed = it.getOrThrow(),
-              backflowScreen = null
-            )
-          } else if (it.isFailure()) {
-            startOrResumeExploration(
-              internalProfileId,
-              promotedStory.topicId,
-              promotedStory.storyId,
-              promotedStory.explorationId,
-              shouldSavePartialProgress,
-              canExplorationBeResumed = false,
-              backflowScreen = null
-            )
+        object : Observer<AsyncResult<Boolean>> {
+          override fun onChanged(it: AsyncResult<Boolean>?) {
+            if (it != null) {
+              if (it.isSuccess()) {
+                isCheckpointCompatiableLiveData.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  promotedStory.topicId,
+                  promotedStory.storyId,
+                  promotedStory.explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = it.getOrThrow(),
+                  backflowScreen = null
+                )
+              } else if (it.isFailure()) {
+                isCheckpointCompatiableLiveData.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  promotedStory.topicId,
+                  promotedStory.storyId,
+                  promotedStory.explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = false,
+                  backflowScreen = null
+                )
+              }
+            }
           }
         }
       )
