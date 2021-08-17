@@ -54,6 +54,9 @@ gradlew.bat @BenHenning
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
 
+# Strings.
+/app/src/main/res/values*/strings.xml @BenHenning
+
 # Proguard configuration.
 *.pro @BenHenning
 
