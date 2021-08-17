@@ -361,19 +361,6 @@ message HelpIndex {
   }
 }
 
-// A Structure corresponding to the state of hint and solution for the current exploration or
-// training session.
-message HintState {
-  // HelpIndex for the current state.
-  HelpIndex help_index = 1;
-
-  // Sequence number of the most recently scheduled task to show help to the learner.
-  int32 hint_sequence_number = 2;
-
-  // Delay for scheduling a new task to show more help to the learner.
-  int64 delay_to_show_next_hint_and_solution = 3;
-}
-
 // Different states in which exploration checkpoint can exist.
 enum CheckpointState {
   // The state of checkpoint is unknown.

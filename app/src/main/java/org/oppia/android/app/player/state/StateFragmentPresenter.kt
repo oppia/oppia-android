@@ -174,8 +174,6 @@ class StateFragmentPresenter @Inject constructor(
   fun onNextButtonClicked() = moveToNextState()
 
   fun onPreviousButtonClicked() {
-    // Hide the hints so that they are not visible on the previous states.
-    explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
     explorationProgressController.moveToPreviousState()
   }
 
@@ -395,11 +393,9 @@ class StateFragmentPresenter @Inject constructor(
         // If the answer was submitted on behalf of the Continue interaction, automatically continue
         // to the next state.
         if (result.state.interaction.id == "Continue") {
-          explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
-            explorationProgressController.stopNewHintsAndSolutionFromShowingUp()
             recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
