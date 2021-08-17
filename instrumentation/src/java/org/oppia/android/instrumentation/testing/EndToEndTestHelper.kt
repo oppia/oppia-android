@@ -3,6 +3,7 @@ package org.oppia.android.instrumentation.testing
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
@@ -22,6 +23,7 @@ object EndToEndTestHelper {
   fun UiDevice.startOppiaFromScratch() {
     // Start from the home screen
     pressHome()
+    clearAppData()
 
     // Wait for launcher
     val launcherPackage = launcherPackageName
@@ -37,6 +39,22 @@ object EndToEndTestHelper {
 
     // Wait for the app to appear
     wait(Until.hasObject(By.pkg(OPPIA_PACKAGE)), LAUNCH_TIMEOUT_SECONDS)
+  }
+
+  /** Clear oppia application data. */
+  fun UiDevice.clearAppData() {
+    val context = InstrumentationRegistry.getInstrumentation().getTargetContext()
+      .getApplicationContext()
+    val cacheDir = context.filesDir
+    val filesToDelete = cacheDir.listFiles().filter { file ->
+      file.name.endsWith(".cache")
+    }
+    val filePath = "/data/data/$OPPIA_PACKAGE/files/"
+    filesToDelete.forEach { file ->
+      executeShellCommand(
+        "run-as org.oppia.android rm -f $filePath${file.name.substringAfterLast('/')}"
+      )
+    }
   }
 
   /** Waits for the view with given resourceId to appear. */
