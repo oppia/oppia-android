@@ -155,16 +155,20 @@ class HtmlParserTest {
   }
 
   private val testStringWithoutBulletSpan = SpannableString("Text Without BulletSpan")
-  private val testStringWithBulletSpan = SpannableString("Text With \nBullet Point").apply {
-    val spacingBeforeBullet = context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_bullet)
-    setSpan(
-      LeadingMarginSpan.Standard(spacingBeforeBullet),
-      10,
-      22,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    setSpan(BulletSpan(), 10, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-  }
+  private val testStringWithBulletSpan =
+    SpannableString("Text With \nBullet Point").apply {
+      val spacingBeforeBullet =
+        context.resources.getDimensionPixelSize(
+          org.oppia.android.util.R.dimen.spacing_before_bullet
+        )
+      setSpan(
+        LeadingMarginSpan.Standard(spacingBeforeBullet),
+        10,
+        22,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      )
+      setSpan(BulletSpan(), 10, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
   private val testStringWithMultipleBulletSpan = SpannableString(
     "Text With \nfirst \nsecond \nthird \nfour \nfive"
   ).apply {
@@ -298,7 +302,7 @@ class HtmlParserTest {
       return@runWithActivity textView
     }
 
-     val spannableString = SpannableStringBuilder(textView.text)
+    val spannableString = SpannableStringBuilder(textView.text)
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans = spannableString.getSpans(
       0, spannableString.length,
@@ -728,7 +732,10 @@ class HtmlParserTest {
   }
 
   private fun assertSpanLocation(
-    span: Any, text: Spanned, expectedStartIndex: Int, expectedEndIndex: Int
+    span: Any,
+    text: Spanned,
+    expectedStartIndex: Int,
+    expectedEndIndex: Int
   ) {
     assertThat(text.getSpanStart(span)).isEqualTo(expectedStartIndex)
     assertThat(text.getSpanEnd(span)).isEqualTo(expectedEndIndex)
@@ -755,7 +762,6 @@ class HtmlParserTest {
   private fun getUnderlineSpanCount(spannableString: SpannableString): Int {
     return getUnderlineSpans(spannableString).size
   }
-
 
   private fun arrangeTextViewWithLayoutDirection(
     htmlParser: HtmlParser,
