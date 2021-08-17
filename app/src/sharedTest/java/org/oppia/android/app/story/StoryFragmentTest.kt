@@ -343,8 +343,7 @@ class StoryFragmentTest {
       }
     }
   }
-
-
+  
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
