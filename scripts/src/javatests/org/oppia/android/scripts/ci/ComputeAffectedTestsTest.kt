@@ -301,7 +301,7 @@ class ComputeAffectedTestsTest {
     )
     assertThat(
       reportedTargets
-    ).containsExactly(
+    ).contains(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
     )
   }
@@ -327,7 +327,7 @@ class ComputeAffectedTestsTest {
     )
     assertThat(
       reportedTargets
-    ).containsExactly(
+    ).contains(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
     )
   }
