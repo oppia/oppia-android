@@ -41,6 +41,10 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
@@ -120,10 +124,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1047,7 +1047,11 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
+      internalProfileId,
+      version = 0,
+      timestamp = 1L
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1081,7 +1085,11 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
+      internalProfileId,
+      version = 0,
+      timestamp = 1L
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1175,7 +1183,11 @@ class ExplorationActivityTest {
   @Test
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
 
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
+      internalProfileId,
+      version = 0,
+      timestamp = 1L
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1210,7 +1222,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1240,7 +1258,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1271,7 +1295,13 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1305,7 +1335,13 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1340,7 +1376,13 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1374,7 +1416,13 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1420,7 +1468,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1467,7 +1521,13 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      internalProfileId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(

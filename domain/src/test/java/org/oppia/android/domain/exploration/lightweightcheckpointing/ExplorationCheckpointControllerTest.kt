@@ -30,6 +30,9 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -63,9 +66,6 @@ private const val BASE_TEST_EXPLORATION_ID = "test_exploration_"
  */
 private const val BASE_TEST_EXPLORATION_TITLE = "Test Exploration "
 
-private const val FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION = 85
-private const val FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION = 26
-
 /**
  * Tests for [ExplorationCheckpointController].
  *
@@ -89,6 +89,9 @@ class ExplorationCheckpointControllerTest {
 
   @Inject
   lateinit var explorationCheckpointController: ExplorationCheckpointController
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @Mock
   lateinit var mockResultObserver: Observer<AsyncResult<Any?>>
@@ -262,16 +265,11 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCompatibleCheckpoint_checkCheckpointIsCompatible() {
-    val checkpoint = ExplorationCheckpoint.newBuilder().setExplorationVersion(
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
-    ).build()
-    explorationCheckpointController.recordExplorationCheckpoint(
-      firstTestProfile,
-      FRACTIONS_EXPLORATION_ID_0,
-      checkpoint
-    ).toLiveData().observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
-
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      firstTestProfile.internalId,
+      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 1L
+    )
     explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
       firstTestProfile,
       FRACTIONS_EXPLORATION_ID_0
@@ -282,16 +280,11 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveInCompatibleCheckpoint_checkpointCheckpointIsNotCompatible() {
-    val checkpoint = ExplorationCheckpoint.newBuilder().setExplorationVersion(
-      FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
-    ).build()
-    explorationCheckpointController.recordExplorationCheckpoint(
-      firstTestProfile,
-      FRACTIONS_EXPLORATION_ID_0,
-      checkpoint
-    ).toLiveData().observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
-
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      firstTestProfile.internalId,
+      FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION,
+      timestamp = 1L
+    )
     explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
       firstTestProfile,
       FRACTIONS_EXPLORATION_ID_0
@@ -406,7 +399,7 @@ class ExplorationCheckpointControllerTest {
    * created by concatenating the string [BASE_TEST_EXPLORATION_TITLE] with the the unique index
    * of that exploration.
    *
-   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".\
+   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".
    *
    * @return a unique explorationTitle for every test exploration. The explorationTitle for any
    *         test exploration is of the form "Test Exploration #".

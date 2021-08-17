@@ -89,7 +89,11 @@ class ExplorationCheckpointTestHelperTest {
 
   @Test
   fun testSaveFakeExplorationCheckpoint_checkCheckpointIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(profileId.internalId)
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
+      profileId.internalId,
+      version = 0,
+      timestamp = 0L
+    )
 
     val retrieveFakeCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -109,7 +113,13 @@ class ExplorationCheckpointTestHelperTest {
 
   @Test
   fun testSaveTwoFakeCheckpoints_checkCheckpointsAreSaved() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(profileId.internalId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      profileId.internalId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
 
     var retrieveFakeCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
