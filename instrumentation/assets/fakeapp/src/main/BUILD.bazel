@@ -1,0 +1,6 @@
+android_binary(
+    name = "fakeapp",
+    manifest = "//instrumentation/assets/fakeapp/src/main/java/com/example/bazel:AndroidManifest.xml",
+    visibility = ["//:oppia_e2e_testing_visibility"],
+    deps = ["//instrumentation/assets/fakeapp/src/main/java/com/example/bazel:greeter_activity"],
+)

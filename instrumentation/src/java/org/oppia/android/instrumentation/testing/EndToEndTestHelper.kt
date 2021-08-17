@@ -22,6 +22,7 @@ object EndToEndTestHelper {
   fun UiDevice.startOppiaFromScratch() {
     // Start from the home screen
     pressHome()
+    executeShellCommand("pm clear $OPPIA_PACKAGE")
 
     // Wait for launcher
     val launcherPackage = launcherPackageName

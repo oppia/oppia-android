@@ -27,7 +27,7 @@ def oppia_instrumentation_test(
         name = "%sBinary" % name,
         testonly = True,
         custom_package = "org.oppia.android",
-        instruments = "//instrumentation:oppia_test",
+        instruments = "//instrumentation/assets/fakeapp/src/main:fakeapp",
         manifest = "//instrumentation:src/javatests/AndroidManifest.xml",
         deps = [":%s_lib" % name],
     )
