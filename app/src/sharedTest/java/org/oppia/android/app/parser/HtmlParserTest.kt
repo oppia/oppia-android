@@ -96,6 +96,7 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.html.BulletTagHandler
 import org.oppia.android.util.parser.html.CUSTOM_BULLET_LIST_TAG
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -112,7 +113,6 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HtmlParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HtmlParserTest {
-
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -120,9 +120,7 @@ class HtmlParserTest {
   @Mock lateinit var mockImageRetriever: FakeImageRetriever
 
   @Mock lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
-
   @Captor lateinit var viewCaptor: ArgumentCaptor<View>
-
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
 
   private var context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
@@ -832,7 +830,7 @@ class HtmlParserTest {
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
