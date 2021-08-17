@@ -27,11 +27,16 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -85,7 +90,11 @@ class ExplorationCheckpointTestHelperTest {
 
   @Test
   fun testSaveFakeExplorationCheckpoint_checkCheckpointIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(profileId.internalId)
+    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
+      profileId.internalId,
+      version = 0,
+      timestamp = 0L
+    )
 
     val retrieveFakeCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -105,7 +114,13 @@ class ExplorationCheckpointTestHelperTest {
 
   @Test
   fun testSaveTwoFakeCheckpoints_checkCheckpointsAreSaved() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(profileId.internalId)
+    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
+      profileId.internalId,
+      versionOfFirstCheckpoint = 0,
+      versionOfSecondCheckpoint = 0,
+      timestampOfFirstCheckpoint = 0L,
+      timestampOfSecondCheckpoint = 0L
+    )
 
     var retrieveFakeCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -139,6 +154,30 @@ class ExplorationCheckpointTestHelperTest {
       .isEqualTo(FAKE_EXPLORATION_TITLE_2)
   }
 
+  @Test
+  fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId.internalId,
+      version = 0,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        FRACTIONS_EXPLORATION_ID_0
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -161,6 +200,19 @@ class ExplorationCheckpointTestHelperTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -245,7 +245,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              isCheckpointingEnabled = true
+              shouldSavePartialProgress
             )
           }
         }
@@ -266,48 +266,39 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
 
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
-        ProfileId.getDefaultInstance(),
-        explorationId
-      ).toLiveData().observe(
+      val isCheckpointCompatibleLiveData =
+        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+          ProfileId.getDefaultInstance(),
+          explorationId
+        ).toLiveData()
+      isCheckpointCompatibleLiveData.observe(
         fragment,
-        Observer { result ->
-          when {
-            result.isPending() -> {
-              oppiaLogger.d(
-                "TopicLessonsFragment",
-                "Matching exploration version with saved checkpoint."
-              )
-            }
-            result.isFailure() -> {
-              oppiaLogger.e(
-                "TopicLessonsFragment",
-                "Saved checkpoint not compatible with the current version of exploration."
-              )
-              startOrResumeExploration(
-                internalProfileId,
-                topicId,
-                storyId,
-                explorationId,
-                shouldSavePartialProgress,
-                canExplorationBeResumed = false,
-                backflowScreen = 0
-              )
-            }
-            else -> {
-              oppiaLogger.d(
-                "TopicLessonsFragment",
-                "Checkpoint is compatible with current version of exploration "
-              )
-              startOrResumeExploration(
-                internalProfileId,
-                topicId,
-                storyId,
-                explorationId,
-                shouldSavePartialProgress,
-                canExplorationBeResumed = result.getOrThrow(),
-                backflowScreen = 0
-              )
+        object : Observer<AsyncResult<Boolean>> {
+          override fun onChanged(it: AsyncResult<Boolean>?) {
+            if (it != null) {
+              if (it.isFailure()) {
+                isCheckpointCompatibleLiveData.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = false,
+                  backflowScreen = 0
+                )
+              } else if (it.isSuccess()) {
+                isCheckpointCompatibleLiveData.removeObserver(this)
+                startOrResumeExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  shouldSavePartialProgress,
+                  canExplorationBeResumed = it.getOrThrow(),
+                  backflowScreen = 0
+                )
+              }
             }
           }
         }

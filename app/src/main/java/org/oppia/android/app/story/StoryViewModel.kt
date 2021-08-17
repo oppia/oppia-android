@@ -11,7 +11,6 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
-import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -25,7 +24,6 @@ import javax.inject.Inject
 class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
-  private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType val entityType: String
@@ -105,7 +103,6 @@ class StoryViewModel @Inject constructor(
           index,
           fragment,
           explorationSelectionListener,
-          explorationDataController,
           explorationCheckpointController,
           oppiaLogger,
           internalProfileId,

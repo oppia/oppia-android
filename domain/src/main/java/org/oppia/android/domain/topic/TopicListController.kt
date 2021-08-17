@@ -647,8 +647,8 @@ class TopicListController @Inject constructor(
         storyRecord.chaptersList.firstOrNull()?.let {
           nextChapterName = it.title
           explorationId = it.explorationId
-          // ChapterPlayState will be NOT_STARTED because this function only recommends first story
-          // of un-started topics.
+          // ChapterPlayState will be NOT_STARTED because this function only recommends the first
+          // story of un-started topics.
           chapterPlayState = ChapterPlayState.NOT_STARTED
         }
       }.build()

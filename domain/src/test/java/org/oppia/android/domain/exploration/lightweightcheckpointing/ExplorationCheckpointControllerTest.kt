@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -26,13 +27,19 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -83,6 +90,9 @@ class ExplorationCheckpointControllerTest {
   @Inject
   lateinit var explorationCheckpointController: ExplorationCheckpointController
 
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Mock
   lateinit var mockResultObserver: Observer<AsyncResult<Any?>>
 
@@ -101,6 +111,12 @@ class ExplorationCheckpointControllerTest {
   @Captor
   lateinit var checkpointDetailsCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpointDetails>>
 
+  @Mock
+  lateinit var mockBooleanObserver: Observer<AsyncResult<Boolean>>
+
+  @Captor
+  lateinit var mockBooleanCaptor: ArgumentCaptor<AsyncResult<Boolean>>
+
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
@@ -111,10 +127,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_databaseNotFull_isSuccessfulWithDatabaseInCorrectState() {
-    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, index = 0).toLiveData()
-    saveCheckpointLiveData.observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
-
+    saveCheckpoint(firstTestProfile, index = 0)
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
       CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
@@ -123,11 +136,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_databaseFull_isSuccessfulWithDatabaseInCorrectState() {
     saveMultipleCheckpoints(firstTestProfile, numberOfCheckpoints = 2)
-
-    val saveCheckpointLiveData = saveCheckpoint(firstTestProfile, index = 3).toLiveData()
-    saveCheckpointLiveData.observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
-
+    saveCheckpoint(firstTestProfile, index = 3)
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
       CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT
     )
@@ -136,11 +145,7 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_databaseFullForFirstTestProfile_checkDatabaseNotFullForSecondTestProfile() {
     saveMultipleCheckpoints(firstTestProfile, numberOfCheckpoints = 3)
-
-    val saveCheckpointLiveData = saveCheckpoint(secondTestProfile, index = 0).toLiveData()
-    saveCheckpointLiveData.observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
-
+    saveCheckpoint(secondTestProfile, index = 0)
     assertThat(resultCaptor.value.getOrThrow()).isEqualTo(
       CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT
     )
@@ -148,8 +153,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
-
+    saveCheckpoint(firstTestProfile, index = 0)
     val retrieveCheckpointLiveData =
       retrieveExplorationCheckpoint(firstTestProfile, index = 0).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
@@ -158,7 +162,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0)
 
     val retrieveCheckpointLiveData =
       retrieveExplorationCheckpoint(firstTestProfile, index = 1).toLiveData()
@@ -168,7 +172,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0)
 
     val retrieveCheckpointLiveData =
       retrieveExplorationCheckpoint(secondTestProfile, index = 0).toLiveData()
@@ -178,11 +182,8 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
-
-    val updateCheckpointLiveData = saveUpdatedCheckpoint(firstTestProfile, index = 0).toLiveData()
-    updateCheckpointLiveData.observeForever(mockResultObserver)
-    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
+    saveCheckpoint(firstTestProfile, index = 0)
+    saveUpdatedCheckpoint(firstTestProfile, index = 0)
 
     val retrieveCheckpointLiveData =
       retrieveExplorationCheckpoint(firstTestProfile, index = 0).toLiveData()
@@ -223,7 +224,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0)
 
     val deleteCheckpointLiveData =
       deleteCheckpointWithExplorationId(firstTestProfile, index = 0).toLiveData()
@@ -238,7 +239,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_deleteUnsavedCheckpoint_isFailure() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0)
 
     val deleteCheckpointLiveData =
       deleteCheckpointWithExplorationId(firstTestProfile, index = 1).toLiveData()
@@ -251,7 +252,7 @@ class ExplorationCheckpointControllerTest {
 
   @Test
   fun testController_saveCheckpoint_deleteSavedCheckpointFromDifferentProfile_isFailure() {
-    saveCheckpoint(firstTestProfile, index = 0).toLiveData()
+    saveCheckpoint(firstTestProfile, index = 0)
 
     val deleteCheckpointLiveData =
       deleteCheckpointWithExplorationId(secondTestProfile, index = 0).toLiveData()
@@ -260,6 +261,45 @@ class ExplorationCheckpointControllerTest {
 
     assertThat(resultCaptor.value.getErrorOrNull()).hasMessageThat()
       .contains("No saved checkpoint with explorationId")
+  }
+
+  @Test
+  fun testController_saveCompatibleCheckpoint_checkCheckpointIsCompatible() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      firstTestProfile.internalId,
+      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 1L
+    )
+    explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+      firstTestProfile,
+      FRACTIONS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockBooleanObserver)
+    verifyMockObserverIsSuccessful(mockBooleanObserver, mockBooleanCaptor)
+    assertThat(mockBooleanCaptor.value.getOrThrow()).isTrue()
+  }
+
+  @Test
+  fun testController_saveInCompatibleCheckpoint_checkpointCheckpointIsNotCompatible() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      firstTestProfile.internalId,
+      FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION,
+      timestamp = 1L
+    )
+    explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+      firstTestProfile,
+      FRACTIONS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockBooleanObserver)
+    verifyMockObserverIsSuccessful(mockBooleanObserver, mockBooleanCaptor)
+    assertThat(mockBooleanCaptor.value.getOrThrow()).isFalse()
+  }
+
+  @Test
+  fun testController_checkUnsavedCheckpointIsCompatible_isFailure() {
+    explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+      firstTestProfile,
+      FRACTIONS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockBooleanObserver)
+    verifyMockObserverIsFailure(mockBooleanObserver, mockBooleanCaptor)
   }
 
   private fun <T> verifyMockObserverIsSuccessful(
@@ -283,12 +323,15 @@ class ExplorationCheckpointControllerTest {
   private fun saveCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> =
+  ) {
+    reset(mockResultObserver)
     explorationCheckpointController.recordExplorationCheckpoint(
       profileId = profileId,
       explorationId = createExplorationIdForIndex(index),
       explorationCheckpoint = createCheckpoint(index)
-    )
+    ).toLiveData().observeForever(mockResultObserver)
+    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
+  }
 
   /**
    * Updates the saved checkpoint for the test exploration specified by the [index] supplied.
@@ -301,15 +344,19 @@ class ExplorationCheckpointControllerTest {
   private fun saveUpdatedCheckpoint(
     profileId: ProfileId,
     index: Int
-  ): DataProvider<Any?> = explorationCheckpointController.recordExplorationCheckpoint(
-    profileId = profileId,
-    explorationId = createExplorationIdForIndex(index),
-    explorationCheckpoint = createUpdatedCheckpoint(index)
-  )
+  ) {
+    reset(mockResultObserver)
+    explorationCheckpointController.recordExplorationCheckpoint(
+      profileId = profileId,
+      explorationId = createExplorationIdForIndex(index),
+      explorationCheckpoint = createUpdatedCheckpoint(index)
+    ).toLiveData().observeForever(mockResultObserver)
+    verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
+  }
 
   private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
     for (index in 0 until numberOfCheckpoints) {
-      saveCheckpoint(profileId, index).toLiveData()
+      saveCheckpoint(profileId, index)
     }
   }
 
@@ -352,7 +399,7 @@ class ExplorationCheckpointControllerTest {
    * created by concatenating the string [BASE_TEST_EXPLORATION_TITLE] with the the unique index
    * of that exploration.
    *
-   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".\
+   * For example the exploration title of the exploration indexed at 0 will be "Test Exploration 0".
    *
    * @return a unique explorationTitle for every test exploration. The explorationTitle for any
    *         test exploration is of the form "Test Exploration #".
@@ -389,7 +436,7 @@ class ExplorationCheckpointControllerTest {
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    //  module in tests to avoid needing to specify these settings for tests.
+    // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
     @Provides
     fun provideEnableConsoleLog(): Boolean = true
@@ -405,6 +452,15 @@ class ExplorationCheckpointControllerTest {
     @CacheAssetsLocally
     @Provides
     fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   @Module
