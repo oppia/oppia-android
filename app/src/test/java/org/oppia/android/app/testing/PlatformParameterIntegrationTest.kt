@@ -184,7 +184,7 @@ class PlatformParameterIntegrationTest {
   fun testIntegration_executeSyncUpWorkerCorrectly_readDatabase_checkWelcomeMsgIsVisible() {
     launch(SplashTestActivity::class.java).use { scenario ->
       // Set up versionName to get correct network response from mock platform parameter service.
-      setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+      setUpApplicationForVersionName(MockPlatformParameterService.appVersionForCorrectResponse)
       platformParameterController.updatePlatformParameterDatabase(
         mockPlatformParameterListWithToastDisabled
       )
@@ -215,7 +215,7 @@ class PlatformParameterIntegrationTest {
   fun testIntegration_executeSyncUpWorkerIncorrectly_readDatabase_checkWelcomeMsgIsInvisible() {
     launch(SplashTestActivity::class.java).use { scenario ->
       // Set up versionName to get incorrect network response from mock platform parameter service.
-      setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+      setUpApplicationForVersionName(MockPlatformParameterService.appVersionForWrongResponse)
       platformParameterController.updatePlatformParameterDatabase(
         mockPlatformParameterListWithToastDisabled
       )
@@ -242,7 +242,7 @@ class PlatformParameterIntegrationTest {
     }
   }
 
-  private fun setUpApplicationForContext(testAppVersionName: String) {
+  private fun setUpApplicationForVersionName(testAppVersionName: String) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
       ApplicationInfoBuilder.newBuilder()
