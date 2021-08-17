@@ -1148,7 +1148,7 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
   }
 
@@ -1174,9 +1174,9 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.helpIndex.availableNextHintIndex).isEqualTo(0)
+    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1201,9 +1201,9 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.helpIndex.availableNextHintIndex).isEqualTo(0)
+    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1235,9 +1235,9 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
     assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
-    assertThat(currentState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
+    assertThat(currentState.pendingState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1273,7 +1273,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
     assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
   }
 
@@ -1311,7 +1311,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
     assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
   }
 
@@ -1352,7 +1352,7 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
     assertThat(currentState.state.interaction.solution.solutionIsRevealed).isTrue()
-    assertThat(currentState.helpIndex.indexTypeCase)
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
   }
 

@@ -50,12 +50,6 @@ interface HintHandler {
   // state.
   fun finishState() = reset()
 
-  fun navigateToNewState()
-
-  fun navigateToCompletedState()
-
-  fun navigateToPendingState()
-
   fun updateHintStateMachine(state: State, pendingState: PendingState)
 
   fun revealHint(hintIndex: Int)

@@ -27,7 +27,6 @@ class HintHandlerImpl private constructor(
   private var pendingHelpIndex: HelpIndex = HelpIndex.getDefaultInstance()
   private var hintSequenceNumber = 0
   private var isHintVisibleInLatestState = false
-  private var isOnCompletedState = false
   private var lastRevealedHintIndex = -1
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
@@ -40,26 +39,14 @@ class HintHandlerImpl private constructor(
   override fun reset() {
     trackedWrongAnswerCount = 0
     pendingHelpIndex = HelpIndex.getDefaultInstance()
+    // Cancel tasks rather than resetting to avoid potential cases where previous tasks can carry to
+    // the next state.
     cancelPendingTasks()
     isHintVisibleInLatestState = false
-    isOnCompletedState = false
     lastRevealedHintIndex = -1
     latestAvailableHintIndex = -1
     solutionIsAvailable = false
     solutionIsRevealed = false
-  }
-
-  override fun navigateToNewState() {
-    reset()
-  }
-
-  override fun navigateToCompletedState() {
-    isOnCompletedState = true
-    cancelPendingTasks()
-  }
-
-  override fun navigateToPendingState() {
-    isOnCompletedState = false
   }
 
   override fun updateHintStateMachine(state: State, pendingState: PendingState) {
@@ -188,9 +175,6 @@ class HintHandlerImpl private constructor(
     return when {
       // No hints or solution are available to be shown.
       !hasHelp -> HelpIndex.getDefaultInstance()
-
-      // Previously completed state.
-      isOnCompletedState -> HelpIndex.getDefaultInstance()
 
       // The solution has been revealed.
       solutionIsRevealed -> HelpIndex.newBuilder().apply {

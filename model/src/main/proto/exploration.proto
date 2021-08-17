@@ -247,9 +247,6 @@ message EphemeralState {
 
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
-
-  // The help index for the current exploration.
-  HelpIndex help_index = 8;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -260,6 +257,9 @@ message PendingState {
 
   // A list of hints.
   repeated Hint hint = 2;
+
+  // The help index for the current exploration.
+  HelpIndex help_index = 3;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.

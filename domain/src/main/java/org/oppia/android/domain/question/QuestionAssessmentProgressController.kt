@@ -28,6 +28,8 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.domain.hintsandsolution.HintHandler
 
 private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
@@ -63,6 +65,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   //  sufficient proficiency.
 
   private val progress = QuestionAssessmentProgress()
+  private val hintHandler by lazy {
+    hintHandlerFactory.create(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
+  }
   private val progressLock = ReentrantLock()
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
@@ -180,7 +185,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             // Schedule a new hints or solution or show a new hint or solution immediately based on
             // the current ephemeral state of the training session because a new wrong answer was
             // submitted.
-            val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+            val ephemeralState = computeCurrentEphemeralState()
 //            progress.hintState =
 //              hintHandler.maybeScheduleShowHint(
 //                ephemeralState.state,
@@ -233,7 +238,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
-        val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+        val ephemeralState = computeCurrentEphemeralState()
         try {
           progress.stateDeck.submitHintRevealed(ephemeralState.state, hintIsRevealed, hintIndex)
           hint = progress.stateList.computeHintForResult(
@@ -291,7 +296,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var solution: Solution
-        val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+        val ephemeralState = computeCurrentEphemeralState()
         try {
 
           progress.stateDeck.submitSolutionRevealed(ephemeralState.state)
@@ -354,7 +359,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         if (progress.isViewingMostRecentQuestion()) {
           // Update the hint state and maybe schedule new help when user moves to the pending top
           // state.
-          val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+          val ephemeralState = computeCurrentEphemeralState()
 //          progress.hintState =
 //            hintHandler.maybeScheduleShowHint(
 //              ephemeralState.state,
@@ -470,6 +475,12 @@ class QuestionAssessmentProgressController @Inject constructor(
 //    }
 //  }
 
+  private fun computeCurrentEphemeralState(): EphemeralState =
+    progress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
+
+  private fun computeCurrentHelpIndex(): HelpIndex =
+    hintHandler.getCurrentHelpIndex(progress.stateDeck.getCurrentState())
+
   private suspend fun retrieveUserAssessmentPerformanceAsync(
     skillIdList: List<String>
   ): AsyncResult<UserAssessmentPerformance> {
@@ -519,7 +530,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+    val ephemeralState = computeCurrentEphemeralState()
       .toBuilder()
 //      .setHelpIndex(progress.hintState.helpIndex)
       .build()
@@ -539,7 +550,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
     progress.initialize(questionsList)
     // Update hint state to schedule task to show new help.
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+    val ephemeralState = computeCurrentEphemeralState()
 //    progress.hintState = hintHandler.maybeScheduleShowHint(
 //      ephemeralState.state,
 //      ephemeralState.pendingState.wrongAnswerCount

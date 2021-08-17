@@ -185,7 +185,7 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
 
           // Follow the answer's outcome to another part of the graph if it's different.
-          val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
+          val ephemeralState = computeCurrentEphemeralState()
           when {
             answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
               explorationProgress.stateDeck.pushState(
@@ -197,7 +197,7 @@ class ExplorationProgressController @Inject constructor(
             ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
               // Schedule, or show immediately, a new hint or solution based on the current
               // ephemeral state of the exploration because a new wrong answer was submitted.
-              updateHintStateMachine(explorationProgress)
+              updateHintStateMachine()
             }
           }
         } finally {
@@ -256,7 +256,7 @@ class ExplorationProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var hint: Hint
-        val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
+        val ephemeralState = computeCurrentEphemeralState()
         try {
           explorationProgress.stateDeck.submitHintRevealed(
             ephemeralState.state,
@@ -270,7 +270,7 @@ class ExplorationProgressController @Inject constructor(
           )
           explorationProgress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
           hintHandler.revealHint(hintIndex)
-          updateHintStateMachine(explorationProgress)
+          updateHintStateMachine()
         } finally {
           // TODO: update HelpIndex
 //          hintHandler.notifyHintIsRevealed(hintIndex)
@@ -331,13 +331,13 @@ class ExplorationProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         lateinit var solution: Solution
-        val ephemeralState = explorationProgress.stateDeck.getCurrentEphemeralState()
+        val ephemeralState = computeCurrentEphemeralState()
         try {
           explorationProgress.stateDeck.submitSolutionRevealed(ephemeralState.state)
           solution = explorationProgress.stateGraph.computeSolutionForResult(ephemeralState.state)
           explorationProgress.stateDeck.pushStateForSolution(ephemeralState.state)
           hintHandler.revealSolution()
-          updateHintStateMachine(explorationProgress)
+          updateHintStateMachine()
         } finally {
           // TODO: update HelpIndex
 //          hintHandler.notifySolutionIsRevealed()
@@ -404,7 +404,6 @@ class ExplorationProgressController @Inject constructor(
         }
         explorationProgress.stateDeck.navigateToPreviousState()
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        hintHandler.navigateToCompletedState()
       }
       return MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
@@ -452,15 +451,11 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.navigateToNextState()
 
         if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
-          hintHandler.navigateToPendingState()
-          updateHintStateMachine(explorationProgress)
+          updateHintStateMachine()
 
           // Only mark checkpoint if current state is pending state. This ensures that checkpoints
           // will not be marked on any of the completed states.
           saveExplorationCheckpoint()
-        } else {
-          // Otherwise, the user is on a completed state.
-          hintHandler.navigateToCompletedState()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
@@ -533,9 +528,8 @@ class ExplorationProgressController @Inject constructor(
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
             AsyncResult.success(
-              explorationProgress.stateDeck.getCurrentEphemeralState()
+              computeCurrentEphemeralState()
                 .toBuilder()
-                .setHelpIndex(computeCurrentHelpIndex(explorationProgress))
                 .setCheckpointState(explorationProgress.checkpointState)
                 .build()
             )
@@ -546,9 +540,8 @@ class ExplorationProgressController @Inject constructor(
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
           AsyncResult.success(
-            explorationProgress.stateDeck.getCurrentEphemeralState()
+            computeCurrentEphemeralState()
               .toBuilder()
-              .setHelpIndex(computeCurrentHelpIndex(explorationProgress))
               .setCheckpointState(explorationProgress.checkpointState)
               .build()
           )
@@ -567,20 +560,21 @@ class ExplorationProgressController @Inject constructor(
     // immediately to the UI.
     progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
 
-    updateHintStateMachine(progress)
+    updateHintStateMachine()
 
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()
   }
 
-  private fun computeCurrentHelpIndex(progress: ExplorationProgress): HelpIndex {
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    return hintHandler.getCurrentHelpIndex(ephemeralState.state)
-  }
+  private fun computeCurrentEphemeralState(): EphemeralState =
+    explorationProgress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
 
-  private fun updateHintStateMachine(progress: ExplorationProgress) {
+  private fun computeCurrentHelpIndex(): HelpIndex =
+    hintHandler.getCurrentHelpIndex(explorationProgress.stateDeck.getCurrentState())
+
+  private fun updateHintStateMachine() {
     // Update the hint state machine based on the latest ephemeral state.
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
+    val ephemeralState = computeCurrentEphemeralState()
     hintHandler.updateHintStateMachine(ephemeralState.state, ephemeralState.pendingState)
   }
 

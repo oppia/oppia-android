@@ -5,6 +5,7 @@ import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.Solution
@@ -72,14 +73,22 @@ internal class StateDeck internal constructor(
   /** Returns the index of the current selected card of the deck. */
   internal fun getTopStateIndex(): Int = stateIndex
 
+  /** Returns the current [State] being viewed by the learner. */
+  internal fun getCurrentState(): State {
+    return when {
+      isCurrentStateTopOfDeck() -> pendingTopState
+      else -> previousStates[stateIndex].state
+    }
+  }
+
   /** Returns the current [EphemeralState] the learner is viewing. */
-  internal fun getCurrentEphemeralState(): EphemeralState {
+  internal fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
     // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
     // the second case assumes the top of the deck must be pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      stateIndex == previousStates.size -> getCurrentPendingState()
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex)
       else -> getPreviousState()
     }
   }
@@ -217,12 +226,15 @@ internal class StateDeck internal constructor(
     }.build()
   }
 
-  private fun getCurrentPendingState(): EphemeralState {
+  private fun getCurrentPendingState(helpIndex: HelpIndex): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setPendingState(
-        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+        PendingState.newBuilder()
+          .addAllWrongAnswer(currentDialogInteractions)
+          .addAllHint(hintList)
+          .setHelpIndex(helpIndex)
       )
       .build()
   }
