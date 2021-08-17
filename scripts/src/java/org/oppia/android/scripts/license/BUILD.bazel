@@ -11,6 +11,7 @@ kt_jvm_library(
         "LicenseFetcher.kt",
         "LicenseFetcherImpl.kt",
     ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
 )
 
 kt_jvm_library(
