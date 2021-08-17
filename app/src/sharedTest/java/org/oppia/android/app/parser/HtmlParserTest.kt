@@ -108,9 +108,12 @@ class HtmlParserTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
-  @Captor lateinit var viewCaptor: ArgumentCaptor<View>
-  @Captor lateinit var stringCaptor: ArgumentCaptor<String>
+  @Mock
+  lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
+  @Captor
+  lateinit var viewCaptor: ArgumentCaptor<View>
+  @Captor
+  lateinit var stringCaptor: ArgumentCaptor<String>
 
   @Inject
   lateinit var context: Context
