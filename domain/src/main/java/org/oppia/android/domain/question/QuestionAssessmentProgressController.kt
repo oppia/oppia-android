@@ -2,18 +2,21 @@ package org.oppia.android.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
-import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Question
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.hintsandsolution.HintHandlerImpl
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
@@ -23,14 +26,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
-import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
-import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.domain.hintsandsolution.HintHandler
 
 private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
   "create_current_question_data_provider_id"
@@ -56,9 +51,8 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
-  private val hintHandlerFactory: HintHandler.Factory,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
-) {
+  private val hintHandlerFactory: HintHandler.Factory
+): HintHandler.HintMonitor {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
@@ -66,10 +60,9 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val progress = QuestionAssessmentProgress()
   private val hintHandler by lazy {
-    hintHandlerFactory.create(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
+    hintHandlerFactory.create(this)
   }
   private val progressLock = ReentrantLock()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   @Inject
   internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
@@ -103,6 +96,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
       )
     }
+  }
+
+  override fun onHelpIndexChanged() {
+    asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
   }
 
   /**
@@ -168,6 +165,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
+            hintHandler.finishState()
             progress.completeCurrentQuestion()
             if (!progress.isAssessmentCompleted()) {
               // Only push the next state if the assessment isn't completed.
@@ -185,6 +183,8 @@ class QuestionAssessmentProgressController @Inject constructor(
             // Schedule a new hints or solution or show a new hint or solution immediately based on
             // the current ephemeral state of the training session because a new wrong answer was
             // submitted.
+            updateHintStateMachine()
+
             val ephemeralState = computeCurrentEphemeralState()
 //            progress.hintState =
 //              hintHandler.maybeScheduleShowHint(
@@ -216,16 +216,14 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the [StateDeck] and the [HintHandlerImpl] that the visible hint has benn revealed by the
-   * user.
+   * Notifies the controller that the user wishes to reveal a hint.
    *
-   * @param hintIsRevealed boolean to indicate if the hint was revealed or not
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the hint
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -237,17 +235,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var hint: Hint
-        val ephemeralState = computeCurrentEphemeralState()
         try {
-          progress.stateDeck.submitHintRevealed(ephemeralState.state, hintIsRevealed, hintIndex)
-          hint = progress.stateList.computeHintForResult(
-            ephemeralState.state,
-            hintIsRevealed,
-            hintIndex
-          )
-          progress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
           progress.trackHintViewed()
+          hintHandler.revealHint(progress.stateDeck.getCurrentState(), hintIndex)
+          updateHintStateMachine()
         } finally {
 //          hintHandler.notifyHintIsRevealed(hintIndex)
           // Schedule a new hints or solution or show a new hint or solution immediately based on
@@ -269,7 +260,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(hint))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -278,12 +269,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the [StateDeck] and the [HintHandlerImpl] that the solution has been revealed by the user.
+   * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -295,14 +286,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var solution: Solution
-        val ephemeralState = computeCurrentEphemeralState()
         try {
-
-          progress.stateDeck.submitSolutionRevealed(ephemeralState.state)
-          solution = progress.stateList.computeSolutionForResult(ephemeralState.state)
-          progress.stateDeck.pushStateForSolution(ephemeralState.state)
           progress.trackSolutionViewed()
+          hintHandler.revealSolution(progress.stateDeck.getCurrentState())
+          updateHintStateMachine()
         } finally {
 //          hintHandler.notifySolutionIsRevealed()
           // Update the hintState because the solution was revealed.
@@ -323,7 +310,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(solution))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -359,6 +346,8 @@ class QuestionAssessmentProgressController @Inject constructor(
         if (progress.isViewingMostRecentQuestion()) {
           // Update the hint state and maybe schedule new help when user moves to the pending top
           // state.
+          updateHintStateMachine()
+
           val ephemeralState = computeCurrentEphemeralState()
 //          progress.hintState =
 //            hintHandler.maybeScheduleShowHint(
@@ -481,6 +470,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   private fun computeCurrentHelpIndex(): HelpIndex =
     hintHandler.getCurrentHelpIndex(progress.stateDeck.getCurrentState())
 
+  private fun updateHintStateMachine() {
+    // Update the hint state machine based on the latest ephemeral state.
+    val ephemeralState = computeCurrentEphemeralState()
+    hintHandler.updateHintStateMachine(ephemeralState.state, ephemeralState.pendingState)
+  }
+
   private suspend fun retrieveUserAssessmentPerformanceAsync(
     skillIdList: List<String>
   ): AsyncResult<UserAssessmentPerformance> {
@@ -551,6 +546,8 @@ class QuestionAssessmentProgressController @Inject constructor(
     progress.initialize(questionsList)
     // Update hint state to schedule task to show new help.
     val ephemeralState = computeCurrentEphemeralState()
+    updateHintStateMachine()
+
 //    progress.hintState = hintHandler.maybeScheduleShowHint(
 //      ephemeralState.state,
 //      ephemeralState.pendingState.wrongAnswerCount

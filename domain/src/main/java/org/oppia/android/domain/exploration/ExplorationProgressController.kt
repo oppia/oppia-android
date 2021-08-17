@@ -56,7 +56,7 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory,
   @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
-) {
+): HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
   //  blocking cache to simplify state locking. However, doing this correctly requires a fix in
@@ -76,7 +76,7 @@ class ExplorationProgressController @Inject constructor(
       this::retrieveCurrentStateAsync
     )
   private val explorationProgress = ExplorationProgress()
-  private val hintHandler by lazy { hintHandlerFactory.create(CURRENT_STATE_DATA_PROVIDER_ID) }
+  private val hintHandler by lazy { hintHandlerFactory.create(this) }
   private val explorationProgressLock = ReentrantLock()
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
@@ -114,6 +114,13 @@ class ExplorationProgressController @Inject constructor(
       }
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
     }
+  }
+
+  override fun onHelpIndexChanged() {
+    explorationProgressLock.withLock {
+      saveExplorationCheckpoint()
+    }
+    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
   }
 
   /**
@@ -225,16 +232,14 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the [StateDeck] and the [HintHandlerImpl] that the visible hint has benn revealed by the
-   * user.
+   * Notifies the controller that the user wishes to reveal a hint.
    *
-   * @param hintIsRevealed boolean to indicate if the hint was revealed or not
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the hint
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -255,21 +260,8 @@ class ExplorationProgressController @Inject constructor(
         ) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var hint: Hint
-        val ephemeralState = computeCurrentEphemeralState()
         try {
-          explorationProgress.stateDeck.submitHintRevealed(
-            ephemeralState.state,
-            hintIsRevealed,
-            hintIndex
-          )
-          hint = explorationProgress.stateGraph.computeHintForResult(
-            ephemeralState.state,
-            hintIsRevealed,
-            hintIndex
-          )
-          explorationProgress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
-          hintHandler.revealHint(hintIndex)
+          hintHandler.revealHint(explorationProgress.stateDeck.getCurrentState(), hintIndex)
           updateHintStateMachine()
         } finally {
           // TODO: update HelpIndex
@@ -295,7 +287,7 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(hint))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -304,12 +296,12 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   *  Notifies the [StateDeck] and the [HintHandlerImpl] that the solution has been revealed by the user.
+   * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -330,13 +322,8 @@ class ExplorationProgressController @Inject constructor(
         ) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var solution: Solution
-        val ephemeralState = computeCurrentEphemeralState()
         try {
-          explorationProgress.stateDeck.submitSolutionRevealed(ephemeralState.state)
-          solution = explorationProgress.stateGraph.computeSolutionForResult(ephemeralState.state)
-          explorationProgress.stateDeck.pushStateForSolution(ephemeralState.state)
-          hintHandler.revealSolution()
+          hintHandler.revealSolution(explorationProgress.stateDeck.getCurrentState())
           updateHintStateMachine()
         } finally {
           // TODO: update HelpIndex
@@ -362,7 +349,7 @@ class ExplorationProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(solution))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -599,7 +586,8 @@ class ExplorationProgressController @Inject constructor(
       explorationProgress.stateDeck.createExplorationCheckpoint(
         explorationProgress.currentExploration.version,
         explorationProgress.currentExploration.title,
-        oppiaClock.getCurrentTimeMs()
+        oppiaClock.getCurrentTimeMs(),
+        computeCurrentHelpIndex()
       )
 
     val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(

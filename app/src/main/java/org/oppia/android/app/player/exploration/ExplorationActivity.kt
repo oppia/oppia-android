@@ -19,6 +19,7 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.model.HelpIndex
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -143,8 +144,8 @@ class ExplorationActivity :
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    explorationActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    explorationActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() = explorationActivityPresenter.revealSolution()
@@ -157,16 +158,14 @@ class ExplorationActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
-        newAvailableHintIndex,
-        allHintsExhausted
+        state,
+        helpIndex
       )
-      hintsAndSolutionDialogFragment.loadState(state)
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

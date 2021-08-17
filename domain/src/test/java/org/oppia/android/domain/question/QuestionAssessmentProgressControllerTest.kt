@@ -2,6 +2,7 @@ package org.oppia.android.domain.question
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -68,6 +70,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.mockito.Mockito.reset
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
+
+private const val TOLERANCE = 1e-5
 
 /** Tests for [QuestionAssessmentProgressController]. */
 @RunWith(AndroidJUnit4::class)
@@ -106,19 +114,13 @@ class QuestionAssessmentProgressControllerTest {
     Observer<AsyncResult<UserAssessmentPerformance>>
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
-
-  @Mock
   lateinit var mockAsyncNullableResultLiveDataObserver: Observer<AsyncResult<Any?>>
 
   @Mock
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
 
   @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
-
-  @Mock
-  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
 
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
@@ -664,8 +666,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = currentQuestion.ephemeralState.completedState
     assertThat(completedState.answerCount).isEqualTo(1)
-    assertThat(completedState.getAnswer(0).userAnswer.answer.real)
-      .isWithin(1e-5).of(5.0)
+    assertThat(completedState.getAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(5.0)
     assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
@@ -692,8 +693,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = currentQuestion.ephemeralState.pendingState
     assertThat(pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real)
-      .isWithin(1e-5).of(4.0)
+    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(4.0)
     assertThat(pendingState.getWrongAnswer(0).feedback.html).isEmpty()
   }
 
@@ -919,6 +919,7 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
     submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
     submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+    submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1 (again--second wrong answer)
 
     // Verify that we're on the second-to-last state of the second session.
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
@@ -941,17 +942,14 @@ class QuestionAssessmentProgressControllerTest {
 
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
+      .isEqualTo(2)
 
     val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
 
-    val result = questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
-    result.observeForever(mockAsyncHintObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. Hint revealed is true.
     verify(
@@ -960,8 +958,7 @@ class QuestionAssessmentProgressControllerTest {
     ).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val updatedState = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed)
-      .isTrue()
+    assertThat(updatedState.ephemeralState.isHintRevealed(0)).isTrue()
   }
 
   @Test
@@ -974,6 +971,12 @@ class QuestionAssessmentProgressControllerTest {
 
     startTrainingSession(TEST_SKILL_ID_LIST_01)
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
+    submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
       currentQuestionResultCaptor.capture()
@@ -981,14 +984,12 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(3)
 
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
     assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
 
-    val result = questionAssessmentProgressController.submitSolutionIsRevealed()
-    result.observeForever(mockAsyncSolutionObserver)
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
 
     // Verify that the current state updates. Hint revealed is true.
     verify(
@@ -997,7 +998,7 @@ class QuestionAssessmentProgressControllerTest {
     ).onChanged(currentQuestionResultCaptor.capture())
     assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
     val updatedState = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(updatedState.ephemeralState.state.interaction.solution.solutionIsRevealed).isTrue()
+    assertThat(updatedState.ephemeralState.isSolutionRevealed()).isTrue()
   }
 
   @Test
@@ -1009,6 +1010,10 @@ class QuestionAssessmentProgressControllerTest {
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
@@ -1038,7 +1043,10 @@ class QuestionAssessmentProgressControllerTest {
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
@@ -1135,22 +1143,29 @@ class QuestionAssessmentProgressControllerTest {
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.5
+      pointsReceived = 1.4
       totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.5
+      pointsReceived = 1.4
       totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
@@ -1173,20 +1188,39 @@ class QuestionAssessmentProgressControllerTest {
     startTrainingSession(TEST_SKILL_ID_LIST_01)
 
     // Question 1
-    // Submit question 1 wrong answer
+    // Submit question 1 wrong answer (a few extra wrong answers are added to reduce points).
     submitIncorrectAnswerForQuestion1(2)
-    viewSolutionForQuestion1()
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(index = 1)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
 
@@ -1212,7 +1246,7 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun hintViewed_for2QuestionsWithWrongAnswer_returnScore2Point6Outof3() {
+  fun hintViewed_for2QuestionsWithWrongAnswer_returnScore2Point4Outof3() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
@@ -1221,11 +1255,13 @@ class QuestionAssessmentProgressControllerTest {
     // Question 1
     // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
     // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
     submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
@@ -1235,11 +1271,11 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.6
+      pointsReceived = 2.4
       totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.6
+      pointsReceived = 1.4
       totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
@@ -1255,7 +1291,7 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun multipleHintsViewed_forQuestionsWithWrongAnswer_returnScore2Point7Outof3() {
+  fun multipleHintsViewed_forQuestionsWithWrongAnswer_returnScore2Point5Outof3() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
@@ -1264,7 +1300,10 @@ class QuestionAssessmentProgressControllerTest {
     // Question 1
     // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewHintForQuestion1(1)
     submitCorrectAnswerForQuestion1()
 
@@ -1276,11 +1315,11 @@ class QuestionAssessmentProgressControllerTest {
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
     val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.7
+      pointsReceived = 2.5
       totalPointsAvailable = 3.0
     }.build()
     val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.7
+      pointsReceived = 1.5
       totalPointsAvailable = 2.0
     }.build()
     val skill1Score = FractionGrade.newBuilder().apply {
@@ -1305,29 +1344,43 @@ class QuestionAssessmentProgressControllerTest {
     // Question 1
     // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
-    viewSolutionForQuestion1()
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(index = 1)
     submitCorrectAnswerForQuestion1()
 
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2()
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val skill0Mastery = -0.2
+    val skill0Mastery = -0.19
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
@@ -1351,9 +1404,9 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
@@ -1372,23 +1425,30 @@ class QuestionAssessmentProgressControllerTest {
     // Question 2
     // Submit question 2 wrong answer
     submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
     viewHintForQuestion2()
     submitCorrectAnswerForQuestion2()
 
     // Question 3
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewSolutionForQuestion3()
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val skill0Mastery = 0.03
+    val skill0Mastery = -0.02
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
@@ -1418,13 +1478,13 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
-  fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point11ForLinkedSkill() {
+  fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point01ForLinkedSkill() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     subscribeToCurrentQuestionToAllowSessionToLoad()
     // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
@@ -1433,7 +1493,10 @@ class QuestionAssessmentProgressControllerTest {
     // Question 1
     // Submit question 1 wrong answer
     submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
     viewHintForQuestion1(0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     viewHintForQuestion1(1)
     submitCorrectAnswerForQuestion1()
 
@@ -1444,13 +1507,13 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val skill0Mastery = 0.11
+    val skill0Mastery = 0.01
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
@@ -1477,9 +1540,9 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   @Test
@@ -1506,9 +1569,9 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isEqualTo(skill0Mastery)
+      .isWithin(TOLERANCE).of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isEqualTo(skill1Mastery)
+      .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
@@ -1611,7 +1674,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitIncorrectAnswerForQuestion0(answer: String) {
-    assertThat(answer).isNotEqualTo("1/2")
     submitTextInputAnswerAndMoveToNextQuestion(answer)
     verify(
       mockCurrentQuestionLiveDataObserver,
@@ -1624,7 +1686,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitIncorrectAnswerForQuestion1(answer: Int) {
-    assertThat(answer).isNotEqualTo(1)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(answer)
     verify(
       mockCurrentQuestionLiveDataObserver,
@@ -1640,14 +1701,9 @@ class QuestionAssessmentProgressControllerTest {
     } else if (index == 1) {
       assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
     }
-    questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true, hintIndex = index
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = index)
     )
-  }
-
-  private fun viewSolutionForQuestion1() {
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    questionAssessmentProgressController.submitSolutionIsRevealed()
   }
 
   private fun submitCorrectAnswerForQuestion2() {
@@ -1655,7 +1711,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitIncorrectAnswerForQuestion2(answer: Double) {
-    assertThat(answer).isNotEqualTo(3.0)
     submitNumericInputAnswerAndMoveToNextQuestion(answer)
     verify(
       mockCurrentQuestionLiveDataObserver,
@@ -1667,8 +1722,8 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
-    questionAssessmentProgressController.submitHintIsRevealed(
-      hintIsRevealed = true, hintIndex = 0
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
   }
 
@@ -1676,7 +1731,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
-    questionAssessmentProgressController.submitSolutionIsRevealed()
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
   private fun submitCorrectAnswerForQuestion3() {
@@ -1684,7 +1739,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitIncorrectAnswerForQuestion3(answer: String) {
-    assertThat(answer).isNotEqualTo("1/2")
     submitTextInputAnswerAndMoveToNextQuestion(answer)
     verify(
       mockCurrentQuestionLiveDataObserver,
@@ -1696,7 +1750,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
-    questionAssessmentProgressController.submitSolutionIsRevealed()
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
   private fun submitCorrectAnswerForQuestion4() {
@@ -1707,6 +1761,13 @@ class QuestionAssessmentProgressControllerTest {
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
   }
 
+  private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
+    return pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
+  }
+
+  private fun EphemeralState.isSolutionRevealed(): Boolean =
+    pendingState.helpIndex.isSolutionRevealed()
+
   private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
     subscribeToScoreAndMasteryCalculations(skillIdList)
     testCoroutineDispatchers.runCurrent()
@@ -1716,6 +1777,26 @@ class QuestionAssessmentProgressControllerTest {
     ).onChanged(performanceCalculationCaptor.capture())
     return performanceCalculationCaptor.value.getOrThrow()
   }
+
+  /**
+   * Verifies that the specified live data provides at least one successful operation. This will
+   * change test-wide mock state, and synchronizes background execution.
+   */
+  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      if (isFailure()) {
+        throw AssertionError("Operation failed", getErrorOrNull())
+      }
+      assertThat(isSuccess()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
+  }
+
 
   // TODO(#89): Move this to a common test application component.
   @Module

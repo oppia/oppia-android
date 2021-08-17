@@ -7,6 +7,9 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoSubject
+import com.google.common.truth.extensions.proto.LiteProtoTruth
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -93,6 +96,8 @@ import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -151,10 +156,10 @@ class ExplorationProgressControllerTest {
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
 
   @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
+  lateinit var mockAsyncHintObserver: Observer<AsyncResult<*>>
 
   @Mock
-  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
+  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<*>>
 
   @Captor
   lateinit var currentStateResultCaptor: ArgumentCaptor<AsyncResult<EphemeralState>>
@@ -1049,7 +1054,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
+  fun testRevealHint_forWrongAnswers_showHint_returnHintIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -1059,7 +1064,10 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
+    // Submit 2 wrong answers to trigger a hint becoming available.
     submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     verify(
@@ -1069,31 +1077,14 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
 
-    val result = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
-    result.observeForever(mockAsyncHintObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
-
     val hintAndSolution = currentState.state.interaction.getHint(0)
+    assertThat(currentState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(hintAndSolution.hintContent.html).contains("Remember that two halves")
-
-    // Verify that the current state updates. Hint revealed is true.
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-    val updatedState = currentStateResultCaptor.value.getOrThrow()
-
-    assertThat(updatedState.state.interaction.getHint(0).hintIsRevealed).isTrue()
+    assertThat(currentState.isHintRevealed(0)).isTrue()
   }
 
   @Test
-  fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
+  fun testRevealSolution_triggeredSolution_showSolution_returnSolutionIsRevealed() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -1103,7 +1094,13 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = false
     )
     navigateToPrototypeFractionInputState()
+    // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    // Reveal the hint, then submit another wrong answer to trigger the solution.
+    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     verify(
@@ -1127,7 +1124,7 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val updatedState = currentStateResultCaptor.value.getOrThrow()
 
-    assertThat(updatedState.state.interaction.solution.solutionIsRevealed).isTrue()
+    assertThat(updatedState.isSolutionRevealed()).isTrue()
   }
 
   @Test
@@ -1173,7 +1170,7 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
+    assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
     assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
@@ -1200,7 +1197,7 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isFalse()
+    assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
     assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
@@ -1220,10 +1217,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1233,8 +1227,8 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.isHintRevealed(0)).isTrue()
+    assertThat(currentState.isSolutionRevealed()).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
     assertThat(currentState.pendingState.helpIndex.latestRevealedHintIndex).isEqualTo(0)
@@ -1254,10 +1248,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1271,8 +1262,8 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.isHintRevealed(0)).isTrue()
+    assertThat(currentState.isSolutionRevealed()).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
   }
@@ -1291,10 +1282,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1309,8 +1297,8 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isFalse()
+    assertThat(currentState.isHintRevealed(0)).isTrue()
+    assertThat(currentState.isSolutionRevealed()).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
   }
@@ -1329,10 +1317,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val hintResult = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
+    val hintResult = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     hintResult.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1350,8 +1335,8 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.state.interaction.hintList[0].hintIsRevealed).isTrue()
-    assertThat(currentState.state.interaction.solution.solutionIsRevealed).isTrue()
+    assertThat(currentState.isHintRevealed(0)).isTrue()
+    assertThat(currentState.isSolutionRevealed()).isTrue()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
   }
@@ -2256,6 +2241,8 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true
     )
     navigateToPrototypeFractionInputState()
+    // Submit 2 wrong answers to trigger the hint.
+    submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
     verify(
@@ -2264,17 +2251,16 @@ class ExplorationProgressControllerTest {
     ).onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
 
-    val result = explorationProgressController.submitHintIsRevealed(
-      hintIsRevealed = true,
-      hintIndex = 0,
-    )
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyCheckpointHasCorrectHintIndex(
+    verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
-      indexOfRevealedHint = 0
+      helpIndex = HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
     )
   }
 
@@ -2289,7 +2275,13 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true
     )
     navigateToPrototypeFractionInputState()
+    // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    // Reveal the hint, then submit another wrong answer to trigger the solution.
+    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     verify(
       mockCurrentStateLiveDataObserver,
@@ -2301,10 +2293,12 @@ class ExplorationProgressControllerTest {
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
+    verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
-      isSolutionRevealed = true
+      helpIndex = HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
     )
   }
 
@@ -2770,6 +2764,13 @@ class ExplorationProgressControllerTest {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
+  private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
+    return pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
+  }
+
+  private fun EphemeralState.isSolutionRevealed(): Boolean =
+    pendingState.helpIndex.isSolutionRevealed()
+
   private fun verifyCheckpointHasCorrectPendingStateName(
     profileId: ProfileId,
     explorationId: String,
@@ -2839,10 +2840,10 @@ class ExplorationProgressControllerTest {
       .isEqualTo(stateIndex)
   }
 
-  private fun verifyCheckpointHasCorrectHintIndex(
+  private fun verifyCheckpointHasCorrectHelpIndex(
     profileId: ProfileId,
     explorationId: String,
-    indexOfRevealedHint: Int
+    helpIndex: HelpIndex
   ) {
     testCoroutineDispatchers.runCurrent()
     reset(mockExplorationCheckpointObserver)
@@ -2858,31 +2859,7 @@ class ExplorationProgressControllerTest {
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
 
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().hintIndex)
-      .isEqualTo(indexOfRevealedHint)
-  }
-
-  private fun verifyCheckpointHasCorrectValueOfIsSolutionRevealed(
-    profileId: ProfileId,
-    explorationId: String,
-    isSolutionRevealed: Boolean
-  ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().solutionIsRevealed)
-      .isEqualTo(isSolutionRevealed)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex).isEqualTo(helpIndex)
   }
 
   /**

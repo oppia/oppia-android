@@ -2,10 +2,13 @@ package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
-import javax.inject.Inject
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 
 /**
  * RecyclerView items are 2 times of (No. of Hints + Solution),
@@ -29,13 +32,13 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
+  private lateinit var helpIndex: HelpIndex
   val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
 
-  fun setHintsList(hintList: List<Hint>) {
+  /** Initializes the view model to display hints and a solution. */
+  fun initialize(helpIndex: HelpIndex, hintList: List<Hint>, solution: Solution) {
+    this.helpIndex = helpIndex
     this.hintList = hintList
-  }
-
-  fun setSolution(solution: Solution) {
     this.solution = solution
   }
 
@@ -43,7 +46,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     itemList.clear()
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
-        addHintToList(hintList[index])
+        addHintToList(index, hintList[index])
       } else if (itemList.size > 1) {
         val isLastHintRevealed =
           (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
@@ -53,7 +56,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
         if (isLastHintRevealed &&
           index <= availableHintIndex / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
         ) {
-          addHintToList(hintList[index])
+          addHintToList(index, hintList[index])
         } else {
           break
         }
@@ -76,11 +79,11 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     return itemList
   }
 
-  private fun addHintToList(hint: Hint) {
+  private fun addHintToList(hintIndex: Int, hint: Hint) {
     val hintsViewModel = HintsViewModel()
     hintsViewModel.title.set(hint.hintContent.contentId)
     hintsViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
-    hintsViewModel.isHintRevealed.set(hint.hintIsRevealed)
+    hintsViewModel.isHintRevealed.set(helpIndex.isHintRevealed(hintIndex, hintList))
     itemList.add(hintsViewModel)
     addDividerItem()
   }
@@ -94,7 +97,7 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
     solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
     solutionViewModel.solutionSummary.set(solution.explanation.html)
-    solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
+    solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
     addDividerItem()
   }

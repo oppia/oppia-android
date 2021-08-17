@@ -10,6 +10,8 @@ import javax.inject.Singleton
 import kotlin.concurrent.withLock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.threading.BackgroundDispatcher
 
@@ -20,7 +22,7 @@ class HintHandlerImpl private constructor(
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val notifyDataProviderId: String
+  private val hintMonitor: HintHandler.HintMonitor
 ) : HintHandler {
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
   private var trackedWrongAnswerCount = 0
@@ -53,11 +55,27 @@ class HintHandlerImpl private constructor(
     maybeScheduleShowHint(state, pendingState.wrongAnswerCount)
   }
 
-  override fun revealHint(hintIndex: Int) {
+  override fun revealHint(state: State, hintIndex: Int) {
+    val helpIndex = computeCurrentHelpIndex(state)
+    check(
+      helpIndex.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX
+        && helpIndex.availableNextHintIndex == hintIndex
+    ) {
+      "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
+        " $hintIndex)"
+    }
+
+    cancelPendingTasks()
     lastRevealedHintIndex = lastRevealedHintIndex.coerceAtLeast(hintIndex)
   }
 
-  override fun revealSolution() {
+  override fun revealSolution(state: State) {
+    val helpIndex = computeCurrentHelpIndex(state)
+    check(helpIndex.indexTypeCase == SHOW_SOLUTION) {
+      "Cannot reveal solution for current index: ${helpIndex.indexTypeCase}"
+    }
+
+    cancelPendingTasks()
     solutionIsRevealed = true
   }
 
@@ -143,16 +161,15 @@ class HintHandlerImpl private constructor(
     val hintList = state.interaction.hintList
     val solution = state.interaction.solution
 
-    val hasHelp = hintList.isNotEmpty() || solution.hasCorrectAnswer()
-    val lastUnrevealedHintIndex = hintList.indices.filterNot { idx ->
-      hintList[idx].hintIsRevealed
-    }.firstOrNull()
+    val hasHints = hintList.isNotEmpty()
+    val hasHelp = hasHints || solution.hasCorrectAnswer()
+    val lastUnrevealedHintIndex = lastRevealedHintIndex + 1
 
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
-    } else if (lastUnrevealedHintIndex != null) {
+    } else if (hasHints && lastUnrevealedHintIndex < hintList.size) {
       HelpIndex.newBuilder().setAvailableNextHintIndex(lastUnrevealedHintIndex).build()
-    } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
+    } else if (solution.hasCorrectAnswer() && !solutionIsRevealed) {
       HelpIndex.newBuilder().setShowSolution(true).build()
     } else {
       HelpIndex.newBuilder().setEverythingRevealed(true).build()
@@ -165,11 +182,11 @@ class HintHandlerImpl private constructor(
     val hintList = state.interaction.hintList
     val solution = state.interaction.solution
 
-    val hasHelp = hintList.isNotEmpty() || solution.hasCorrectAnswer()
+    val hasSolution = solution.hasCorrectAnswer()
+    val hasHelp = hintList.isNotEmpty() || hasSolution
     val hasAtLeastOneHintAvailable = latestAvailableHintIndex != -1
     val hasSeenAllAvailableHints = latestAvailableHintIndex == lastRevealedHintIndex
     val hasSeenAllHints = lastRevealedHintIndex == hintList.lastIndex
-    val hasSolution = solution.hasCorrectAnswer()
     val hasViewableSolution = hasSolution && solutionIsAvailable
 
     return when {
@@ -232,15 +249,15 @@ class HintHandlerImpl private constructor(
     if (targetSequenceNumber == hintSequenceNumber) {
       if (pendingHelpIndex != helpIndexToShow) {
         // TODO: make this better
-        if (helpIndexToShow.indexTypeCase == HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX) {
+        if (helpIndexToShow.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX) {
           latestAvailableHintIndex = helpIndexToShow.availableNextHintIndex
-        } else if (helpIndexToShow.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION) {
+        } else if (helpIndexToShow.indexTypeCase == SHOW_SOLUTION) {
           solutionIsAvailable = true
         }
 
         // Only indicate the hint is available if its index is actually new (including if it
         // becomes null such as in the case of the solution becoming available).
-        asyncDataSubscriptionManager.notifyChangeAsync(notifyDataProviderId)
+        hintMonitor.onHelpIndexChanged()
         pendingHelpIndex = helpIndexToShow
         isHintVisibleInLatestState = true
       }
@@ -256,14 +273,14 @@ class HintHandlerImpl private constructor(
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
   ): HintHandler.Factory {
-    override fun create(notifyDataProviderId: String): HintHandler {
+    override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
       return HintHandlerImpl(
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs,
         backgroundCoroutineDispatcher,
         asyncDataSubscriptionManager,
-        notifyDataProviderId
+        hintMonitor
       )
     }
   }

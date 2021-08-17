@@ -16,6 +16,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
+import org.oppia.android.app.model.HelpIndex
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_profile_id"
@@ -90,23 +91,21 @@ class StateFragmentTestActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
         HintsAndSolutionDialogFragment.newInstance(
           explorationId,
-          newAvailableHintIndex,
-          allHintsExhausted
+          state,
+          helpIndex
         )
-      hintsAndSolutionFragment.loadState(state)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentTestActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    stateFragmentTestActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() {

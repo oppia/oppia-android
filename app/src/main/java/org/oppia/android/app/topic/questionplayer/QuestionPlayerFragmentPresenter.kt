@@ -67,6 +67,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
+  private lateinit var helpIndex: HelpIndex
   private var isCurrentQuestionStatePendingState: Boolean = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -96,24 +97,19 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
         questionId,
-        questionViewModel.newAvailableHintIndex,
-        questionViewModel.allHintsExhausted
+        helpIndex
       )
     }
     subscribeToCurrentQuestion()
     return binding.root
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    subscribeToHint(
-      questionAssessmentProgressController.submitHintIsRevealed(saveUserChoice, hintIndex)
-    )
+  fun revealHint(hintIndex: Int) {
+    subscribeToHintSolution(questionAssessmentProgressController.submitHintIsRevealed(hintIndex))
   }
 
   fun revealSolution() {
-    subscribeToSolution(
-      questionAssessmentProgressController.submitSolutionIsRevealed()
-    )
+    subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
   fun dismissConceptCard() {
@@ -176,6 +172,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleKeyboardAction() = onSubmitButtonClicked()
 
   fun onHintAvailable(helpIndex: HelpIndex) {
+    this.helpIndex = helpIndex
     showHintsAndSolutions(helpIndex)
   }
 
@@ -281,74 +278,21 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  /**
-   * This function listens to the result of RevealHint.
-   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
-   */
-  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
-    val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(
+  /** Subscribes to the result of requesting to show a hint or solution. */
+  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
+    resultLiveData.observe(
       fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.hintIsRevealed) {
+      { result ->
+        if (result.isFailure()) {
+          oppiaLogger.e(
+            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
+          )
+        } else {
+          // If the hint/solution, was revealed remove dot and radar.
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
         }
       }
     )
-  }
-
-  /**
-   * This function listens to the result of RevealSolution.
-   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
-   */
-  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
-    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(
-      fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.solutionIsRevealed) {
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        }
-      }
-    )
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
-    return Transformations.map(hint, ::processSolution)
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
-    return Transformations.map(hint, ::processHint)
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
-    if (hintResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve Hint",
-        hintResult.getErrorOrNull()!!
-      )
-    }
-    return hintResult.getOrDefault(Hint.getDefaultInstance())
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
-    if (solutionResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve Solution",
-        solutionResult.getErrorOrNull()!!
-      )
-    }
-    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -432,30 +376,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
           questionViewModel.setHintBulbVisibility(true)
           questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
-          questionViewModel.allHintsExhausted = false
-          questionViewModel.newAvailableHintIndex = helpIndex.availableNextHintIndex
         }
         HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
           questionViewModel.setHintBulbVisibility(true)
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-          questionViewModel.allHintsExhausted = false
-          questionViewModel.newAvailableHintIndex = helpIndex.latestRevealedHintIndex
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           questionViewModel.setHintBulbVisibility(true)
           questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
-          // SHOW_SOLUTION implies that all hints have been viewed by the user.
-          questionViewModel.allHintsExhausted = true
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          questionViewModel.newAvailableHintIndex = currentQuestionState.interaction.hintCount - 1
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
           questionViewModel.setHintBulbVisibility(true)
-          // EVERYTHING_REVEALED implies that all hints and solution have been viewed by the user.
-          questionViewModel.allHintsExhausted = true
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          questionViewModel.newAvailableHintIndex = currentQuestionState.interaction.hintCount - 1
         }
         else -> {
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)

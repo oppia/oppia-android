@@ -77,8 +77,8 @@ class QuestionPlayerFragment :
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    questionPlayerFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    questionPlayerFragmentPresenter.revealHint(hintIndex)
   }
 
   fun revealSolution() {

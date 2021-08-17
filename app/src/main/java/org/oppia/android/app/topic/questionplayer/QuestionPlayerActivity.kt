@@ -17,6 +17,7 @@ import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.model.HelpIndex
 
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
@@ -81,8 +82,8 @@ class QuestionPlayerActivity :
     }
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    questionPlayerActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    questionPlayerActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() {
@@ -97,17 +98,15 @@ class QuestionPlayerActivity :
 
   override fun routeToHintsAndSolution(
     questionId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment =
         HintsAndSolutionDialogFragment.newInstance(
           questionId,
-          newAvailableHintIndex,
-          allHintsExhausted
+          state,
+          helpIndex
         )
-      hintsAndSolutionDialogFragment.loadState(state)
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

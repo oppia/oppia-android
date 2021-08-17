@@ -52,9 +52,9 @@ interface HintHandler {
 
   fun updateHintStateMachine(state: State, pendingState: PendingState)
 
-  fun revealHint(hintIndex: Int)
+  fun revealHint(state: State, hintIndex: Int)
 
-  fun revealSolution()
+  fun revealSolution(state: State)
 
   /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after
@@ -71,6 +71,10 @@ interface HintHandler {
   // TODO: replace with notification mechanism (maybe a DataProvider?)
   fun getCurrentHelpIndex(state: State): HelpIndex
 
+  interface HintMonitor {
+    fun onHelpIndexChanged()
+  }
+
   /**
    * Factory for creating new [HintHandler]s.
    *
@@ -80,10 +84,9 @@ interface HintHandler {
     /**
      * Creates a new [HintHandler].
      *
-     * @param notifyDataProviderId the ID of the data provider that should be notified whenever
-     *     available/seen hints/solution states change
+     * @param hintMonitor a [HintMonitor] to observe async changes to hints/solution
      * @return a new [HintHandler] for managing hint/solution state for a specific play session
      */
-    fun create(notifyDataProviderId: String): HintHandler
+    fun create(hintMonitor: HintMonitor): HintHandler
   }
 }
