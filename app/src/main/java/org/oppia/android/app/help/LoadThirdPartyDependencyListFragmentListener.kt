@@ -5,6 +5,6 @@ package org.oppia.android.app.help
  * devices.
  */
 interface LoadThirdPartyDependencyListFragmentListener {
-  /** Starts [ThirdPartyDependencyListFragment] in tablet devices. */
+  /**  Called when the user wants to open the list of third-party dependencies in tablet devices. */
   fun loadThirdPartyDependencyListFragment()
 }

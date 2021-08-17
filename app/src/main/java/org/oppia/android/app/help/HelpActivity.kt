@@ -29,7 +29,7 @@ class HelpActivity :
   RouteToFAQListListener,
   RouteToFAQSingleListener,
   RouteToThirdPartyDependencyListListener,
-  LoadFAQListFragmentListener,
+  LoadFaqListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
   LoadLicenseTextViewerFragmentListener {
@@ -93,7 +93,7 @@ class HelpActivity :
     startActivity(intent)
   }
 
-  override fun loadFAQListFragment() {
+  override fun loadFaqListFragment() {
     helpActivityPresenter.handleLoadFAQListFragment()
   }
 

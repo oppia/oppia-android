@@ -14,8 +14,8 @@ class HelpItemViewModel(
     when (title) {
       activity.getString(R.string.frequently_asked_questions_FAQ) -> {
         if (isMultipane) {
-          val loadFAQListFragmentListener = activity as LoadFAQListFragmentListener
-          loadFAQListFragmentListener.loadFAQListFragment()
+          val loadFaqListFragmentListener = activity as LoadFaqListFragmentListener
+          loadFaqListFragmentListener.loadFaqListFragment()
         } else {
           val routeToFAQListener = activity as RouteToFAQListListener
           routeToFAQListener.onRouteToFAQList()

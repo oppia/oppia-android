@@ -67,7 +67,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
-    "src/main/java/org/oppia/android/app/help/LoadFAQListFragmentListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadFaqListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadLicenseListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadLicenseTextViewerFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadThirdPartyDependencyListFragmentListener.kt",
