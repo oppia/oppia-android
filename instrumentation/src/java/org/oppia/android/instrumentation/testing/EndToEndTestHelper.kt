@@ -48,7 +48,7 @@ object EndToEndTestHelper {
     val externalDirs = context.dataDir.listFiles()
     externalDirs.forEach { dir ->
       dir.listFiles().forEach { file ->
-        if(file.name.endsWith(".cache")) {
+        if (file.name.endsWith(".cache")) {
           file.delete()
         }
       }

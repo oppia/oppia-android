@@ -4,8 +4,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Test
 import org.junit.Ignore
+import org.junit.Test
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByDesc
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByText
