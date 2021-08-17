@@ -48,8 +48,9 @@ class ExplorationPlayerTest {
     assertThat(chapterCompletedTick).isNotNull()
   }
 
-  @Ignore
+  // TODO(#3697): Update e2e tests when backend support is introduced.
   @Test
+  @Ignore("Need backend support to test the ImageRegionSelectionInteraction")
   fun testImageRegionSelectionInteraction_answerAllInteractionsAndCompleteExploration() {
     navigateToImageRegionSelectionInteraction()
 
