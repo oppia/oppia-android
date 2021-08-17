@@ -12,10 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.FileNotFoundException
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -94,6 +90,10 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.FileNotFoundException
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2951,7 +2951,8 @@ class ExplorationProgressControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class
+      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -2,10 +2,6 @@ package org.oppia.android.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
@@ -24,6 +20,10 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
   "create_current_question_data_provider_id"
@@ -50,7 +50,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
   private val hintHandlerFactory: HintHandler.Factory
-): HintHandler.HintMonitor {
+) : HintHandler.HintMonitor {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating

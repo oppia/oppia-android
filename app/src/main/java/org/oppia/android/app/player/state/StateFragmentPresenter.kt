@@ -20,9 +20,7 @@ import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener

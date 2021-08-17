@@ -97,9 +97,12 @@ class SplashActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
@@ -294,11 +297,11 @@ class SplashActivityTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
+      DeveloperOptionsModule::class, ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

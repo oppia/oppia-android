@@ -21,6 +21,7 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
@@ -85,7 +86,6 @@ import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.model.HelpIndex
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

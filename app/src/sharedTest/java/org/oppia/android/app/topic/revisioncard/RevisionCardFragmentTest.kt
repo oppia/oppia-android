@@ -426,9 +426,9 @@ class RevisionCardFragmentTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class

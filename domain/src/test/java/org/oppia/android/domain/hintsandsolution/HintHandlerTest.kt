@@ -2,33 +2,12 @@ package org.oppia.android.domain.hintsandsolution
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -40,26 +19,16 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.ExplorationProgressController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.android.domain.topic.TEST_STORY_ID_0
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -68,8 +37,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Provider
 import javax.inject.Singleton
 
 private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
@@ -439,7 +406,8 @@ class HintHandlerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class
+      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

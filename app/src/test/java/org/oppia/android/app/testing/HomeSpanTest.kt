@@ -161,9 +161,9 @@ class HomeSpanTest {
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class
     ]
   )

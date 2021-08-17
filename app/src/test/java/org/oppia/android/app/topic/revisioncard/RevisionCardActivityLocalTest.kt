@@ -119,11 +119,11 @@ class RevisionCardActivityLocalTest {
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
+      DeveloperOptionsModule::class, ExplorationStorageModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

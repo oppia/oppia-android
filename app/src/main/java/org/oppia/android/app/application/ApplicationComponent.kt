@@ -75,10 +75,10 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
-    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
+    FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
+    PlatformParameterModule::class, ExplorationStorageModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

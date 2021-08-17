@@ -2,10 +2,6 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -25,6 +21,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -49,7 +49,7 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory
-): HintHandler.HintMonitor {
+) : HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
   //  blocking cache to simplify state locking. However, doing this correctly requires a fix in

@@ -1,8 +1,5 @@
 package org.oppia.android.domain.hintsandsolution
 
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import kotlin.concurrent.withLock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -13,6 +10,9 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import kotlin.concurrent.withLock
 
 /** Implementation of [HintHandler]. */
 class HintHandlerImpl private constructor(
@@ -58,8 +58,8 @@ class HintHandlerImpl private constructor(
     handlerLock.withLock {
       val helpIndex = computeCurrentHelpIndex()
       check(
-        helpIndex.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX
-          && helpIndex.availableNextHintIndex == hintIndex
+        helpIndex.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX &&
+          helpIndex.availableNextHintIndex == hintIndex
       ) {
         "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
           " $hintIndex)"
@@ -197,15 +197,16 @@ class HintHandlerImpl private constructor(
       }.build()
 
       // Hints are available (though they may have already been seen).
-      hasAtLeastOneHintAvailable -> if (hasSeenAllAvailableHints) {
-        HelpIndex.newBuilder().apply {
-          latestRevealedHintIndex = lastRevealedHintIndex
-        }.build()
-      } else {
-        HelpIndex.newBuilder().apply {
-          availableNextHintIndex = latestAvailableHintIndex
-        }.build()
-      }
+      hasAtLeastOneHintAvailable ->
+        if (hasSeenAllAvailableHints) {
+          HelpIndex.newBuilder().apply {
+            latestRevealedHintIndex = lastRevealedHintIndex
+          }.build()
+        } else {
+          HelpIndex.newBuilder().apply {
+            availableNextHintIndex = latestAvailableHintIndex
+          }.build()
+        }
 
       // No hints are available to be shown yet.
       else -> HelpIndex.getDefaultInstance()
@@ -283,7 +284,7 @@ class HintHandlerImpl private constructor(
     @DelayShowAdditionalHintsFromWrongAnswerMillis
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
-  ): HintHandler.Factory {
+  ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
       return HintHandlerImpl(
         delayShowInitialHintMs,

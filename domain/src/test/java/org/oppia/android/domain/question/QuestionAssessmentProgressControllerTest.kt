@@ -11,9 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -72,6 +69,9 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5
 
@@ -1794,7 +1794,6 @@ class QuestionAssessmentProgressControllerTest {
     }
     reset(mockAsyncResultLiveDataObserver)
   }
-
 
   // TODO(#89): Move this to a common test application component.
   @Module

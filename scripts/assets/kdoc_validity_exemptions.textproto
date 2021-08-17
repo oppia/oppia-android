@@ -386,7 +386,6 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/Ques
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgressController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionConstantsProvider.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionTrainingConstantsProvider.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/state/StateDeck.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/StoryProgressController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt"
