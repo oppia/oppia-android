@@ -1,0 +1,35 @@
+"""
+build bazel for domain state
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "state_deck",
+    srcs = [
+        "StateDeck.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+    ],
+)
+
+kt_android_library(
+    name = "state_graph",
+    srcs = [
+        "StateGraph.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+    ],
+)
+
+kt_android_library(
+    name = "retriever",
+    srcs = [
+        "StateRetriever.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+    ],
+)
