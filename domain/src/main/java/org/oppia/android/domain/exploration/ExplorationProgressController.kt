@@ -2,20 +2,21 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.hintsandsolution.HintHandlerImpl
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.topic.StoryProgressController
@@ -24,13 +25,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.OppiaClock
-import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.domain.hintsandsolution.HintHandler
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -54,8 +48,7 @@ class ExplorationProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
-  private val hintHandlerFactory: HintHandler.Factory,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val hintHandlerFactory: HintHandler.Factory
 ): HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -76,9 +69,8 @@ class ExplorationProgressController @Inject constructor(
       this::retrieveCurrentStateAsync
     )
   private val explorationProgress = ExplorationProgress()
-  private val hintHandler by lazy { hintHandlerFactory.create(this) }
   private val explorationProgressLock = ReentrantLock()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
+  private lateinit var hintHandler: HintHandler
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExplorationAsync(
@@ -101,6 +93,7 @@ class ExplorationProgressController @Inject constructor(
         this.shouldSavePartialProgress = shouldSavePartialProgress
         checkpointState = CheckpointState.CHECKPOINT_UNSAVED
       }
+      hintHandler = hintHandlerFactory.create(this)
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
       asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
     }
@@ -195,16 +188,14 @@ class ExplorationProgressController @Inject constructor(
           val ephemeralState = computeCurrentEphemeralState()
           when {
             answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-              explorationProgress.stateDeck.pushState(
-                explorationProgress.stateGraph.getState(answerOutcome.stateName),
-                prohibitSameStateName = true
-              )
-              hintHandler.finishState()
+              val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+              explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
+              hintHandler.finishState(newState)
             }
             ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
               // Schedule, or show immediately, a new hint or solution based on the current
               // ephemeral state of the exploration because a new wrong answer was submitted.
-              updateHintStateMachine()
+              hintHandler.handleWrongAnswerSubmission(ephemeralState.pendingState.wrongAnswerCount)
             }
           }
         } finally {
@@ -261,26 +252,8 @@ class ExplorationProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         try {
-          hintHandler.revealHint(explorationProgress.stateDeck.getCurrentState(), hintIndex)
-          updateHintStateMachine()
+          hintHandler.viewHint(hintIndex)
         } finally {
-          // TODO: update HelpIndex
-//          hintHandler.notifyHintIsRevealed(hintIndex)
-          // Schedule, or show immediately, a new hint or solution based on the current ephemeral
-          // state of the exploration because the last hint was revealed.
-//          explorationProgress.hintState =
-//            hintHandler.maybeScheduleShowHint(
-//              ephemeralState.state,
-//              ephemeralState.pendingState.wrongAnswerCount
-//            )
-          // Schedule a new task to show help if available.
-//          scheduleTaskToShowHelp(
-//            explorationProgress.hintState,
-//            isCurrentStatePendingState = ephemeralState.stateTypeCase ==
-//              EphemeralState.StateTypeCase.PENDING_STATE
-//          )
-          // Mark a checkpoint in the exploration everytime a new hint is revealed.
-          saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
           // exception.
@@ -323,25 +296,8 @@ class ExplorationProgressController @Inject constructor(
           "Cannot submit an answer while another answer is pending."
         }
         try {
-          hintHandler.revealSolution(explorationProgress.stateDeck.getCurrentState())
-          updateHintStateMachine()
+          hintHandler.viewSolution()
         } finally {
-          // TODO: update HelpIndex
-//          hintHandler.notifySolutionIsRevealed()
-          // Update the hintState because the solution was revealed.
-//          explorationProgress.hintState =
-//            hintHandler.maybeScheduleShowHint(
-//              ephemeralState.state,
-//              ephemeralState.pendingState.wrongAnswerCount
-//            )
-          // Schedule a new task to show help if available.
-//          scheduleTaskToShowHelp(
-//            explorationProgress.hintState,
-//            isCurrentStatePendingState = ephemeralState.stateTypeCase ==
-//              EphemeralState.StateTypeCase.PENDING_STATE
-//          )
-          // Mark a checkpoint in the exploration if the solution is revealed.
-          saveExplorationCheckpoint()
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
           // throws an exception.
@@ -389,10 +345,11 @@ class ExplorationProgressController @Inject constructor(
         ) {
           "Cannot navigate to a previous state if an answer submission is pending."
         }
+        hintHandler.navigateToPreviousState()
         explorationProgress.stateDeck.navigateToPreviousState()
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success<Any?>(null))
+      return MutableLiveData(AsyncResult.success(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
@@ -438,7 +395,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.navigateToNextState()
 
         if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
-          updateHintStateMachine()
+          hintHandler.navigateBackToLatestPendingState()
 
           // Only mark checkpoint if current state is pending state. This ensures that checkpoints
           // will not be marked on any of the completed states.
@@ -446,7 +403,7 @@ class ExplorationProgressController @Inject constructor(
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success<Any?>(null))
+      return MutableLiveData(AsyncResult.success(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
@@ -547,7 +504,7 @@ class ExplorationProgressController @Inject constructor(
     // immediately to the UI.
     progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
 
-    updateHintStateMachine()
+    hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
 
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()
@@ -557,13 +514,7 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
 
   private fun computeCurrentHelpIndex(): HelpIndex =
-    hintHandler.getCurrentHelpIndex(explorationProgress.stateDeck.getCurrentState())
-
-  private fun updateHintStateMachine() {
-    // Update the hint state machine based on the latest ephemeral state.
-    val ephemeralState = computeCurrentEphemeralState()
-    hintHandler.updateHintStateMachine(ephemeralState.state, ephemeralState.pendingState)
-  }
+    hintHandler.getCurrentHelpIndex()
 
   /**
    * Checks if checkpointing is enabled, if checkpointing is enabled this function creates a

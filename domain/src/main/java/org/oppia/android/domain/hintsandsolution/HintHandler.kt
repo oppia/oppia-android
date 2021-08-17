@@ -1,7 +1,6 @@
 package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
 
 /**
@@ -40,38 +39,65 @@ import org.oppia.android.app.model.State
  * made available to view, if a solution is present. Once the solution is viewed by the learner,
  * they will reach a terminal state for hints and no additional hints or solutions will be made
  * available.
+ *
+ * Implementations of this class are safe to access across multiple threads, but care must be taken
+ * when calling back into this class from [HintMonitor] since that could cause deadlocks. Note also
+ * that this class may block the calling thread. While the operations this class performs
+ * synchronously should be quick, care should be taken about heavy usage of this class on the main
+ * thread as it may introduce janky behavior.
  */
 interface HintHandler {
-  /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
-  fun reset()
-
-  // Reset the hint state if pending top state has changed. Note that this handles
-  // several different cases of ensuring hints/solution are reset when moving to a new
-  // state.
-  fun finishState() = reset()
-
-  fun updateHintStateMachine(state: State, pendingState: PendingState)
-
-  fun revealHint(state: State, hintIndex: Int)
-
-  fun revealSolution(state: State)
 
   /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after
    * a certain amount of time). This is meant to only be called once at the beginning of a state.
    */
-//  fun startWatchingForHintsInNewState(state: State)
+  fun startWatchingForHintsInNewState(state: State)
 
   /**
-   * Handles potentially new wrong answers that were submitted, and if so schedules a hint to be
-   * shown to the user if hints are available.
+   * Indicates that the current state has ended and a new one should start being monitored. This
+   * will cancel any previously pending background operations and potentially starts new ones
+   * corresponding to the new state.
    */
-  fun checkHintsOnAnswerSubmission(state: State, wrongAnswerCount: Int)
+  fun finishState(newState: State)
 
-  // TODO: replace with notification mechanism (maybe a DataProvider?)
-  fun getCurrentHelpIndex(state: State): HelpIndex
+  /**
+   * Notifies the handler that a wrong answer was submitted.
+   *
+   * @param wrongAnswerCount the total number of wrong answers submitted to date
+   */
+  fun handleWrongAnswerSubmission(wrongAnswerCount: Int)
 
+  /** Notifies the handler that the user revealed a hint corresponding to the specified index. */
+  fun viewHint(hintIndex: Int)
+
+  /** Notifies the handler that the user revealed the the solution for the current state. */
+  fun viewSolution()
+
+  /**
+   * Notifies the handler that the user navigated to a previously completed state. This will
+   * potentially cancel any ongoing operations to avoid the hint counter continuing when navigating
+   * an earlier state.
+   */
+  fun navigateToPreviousState()
+
+  /**
+   * Notifies the handler that the user has navigated back to the latest (pending) state. Note that
+   * this may resume background operations, but it does not guarantee that those start at the same
+   * time that they left off at (counters may be reset upon returning to the latest state).
+   */
+  fun navigateBackToLatestPendingState()
+
+  /** Returns the [HelpIndex] corresponding to the current pending state. */
+  fun getCurrentHelpIndex(): HelpIndex
+
+  /** A callback interface for monitoring changes to [HintHandler]. */
   interface HintMonitor {
+    /**
+     * Called when the [HelpIndex] managed by the [HintHandler] has changed. To get the latest
+     * state, call [HintHandler.getCurrentHelpIndex]. Note that this method may be called on a
+     * background thread.
+     */
     fun onHelpIndexChanged()
   }
 
