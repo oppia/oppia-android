@@ -93,10 +93,10 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.BulletTagHandler
 import org.oppia.android.util.parser.html.CUSTOM_BULLET_LIST_TAG
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -118,7 +118,6 @@ class HtmlParserTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockImageRetriever: FakeImageRetriever
-
   @Mock lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
   @Captor lateinit var viewCaptor: ArgumentCaptor<View>
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
