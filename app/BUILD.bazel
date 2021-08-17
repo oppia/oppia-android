@@ -146,6 +146,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
@@ -207,7 +208,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/AllTopicsViewModel.kt",
@@ -673,6 +673,11 @@ kt_android_library(
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
+        # we can then directly exclude debug files from the build and thus won't be requiring this module.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )
