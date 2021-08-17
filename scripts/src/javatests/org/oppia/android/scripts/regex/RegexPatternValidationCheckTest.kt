@@ -16,6 +16,11 @@ class RegexPatternValidationCheckTest {
   private val originalOut: PrintStream = System.out
   private val REGEX_CHECK_PASSED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS PASSED"
   private val REGEX_CHECK_FAILED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS FAILED"
+  private val supportLibraryUsageErrorMessage = "AndroidX should be used instead of the support " +
+    "library"
+  private val wikiReferenceNote =
+    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+      "#regexpatternvalidation-check for more details on how to fix this."
 
   @Rule
   @JvmField
@@ -66,6 +71,8 @@ class RegexPatternValidationCheckTest {
       """
       File name/path violation: Activities cannot be placed outside the app or testing module
       - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
+      
+      $wikiReferenceNote
       """.trimIndent()
     )
   }
@@ -92,8 +99,10 @@ class RegexPatternValidationCheckTest {
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
       .isEqualTo(
-        "${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: AndroidX should be used instead of " +
-          "the support library"
+        """
+        ${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: $supportLibraryUsageErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
       )
   }
 
@@ -115,6 +124,7 @@ class RegexPatternValidationCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
       
       ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
+      $wikiReferenceNote
       """.trimIndent()
     )
   }
