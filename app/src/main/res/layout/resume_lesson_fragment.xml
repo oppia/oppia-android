@@ -85,8 +85,8 @@
         <Button
           android:id="@+id/resume_lesson_start_over_button"
           style="@style/StartOverLessonButton"
-          android:layout_marginEnd="2dp"
           android:text="@string/start_over_lesson_button"
+          android:layout_marginEnd="12dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
           app:layout_constraintHorizontal_chainStyle="spread"
@@ -95,7 +95,7 @@
         <Button
           android:id="@+id/resume_lesson_continue_button"
           style="@style/ContinueLessonButton"
-          android:layout_marginStart="2dp"
+          android:layout_marginStart="12dp"
           android:text="@string/resume_lesson_button"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"

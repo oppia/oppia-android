@@ -22,7 +22,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(RESUME_LESSON_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId = intent.getIntExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId =
       checkNotNull(intent.getStringExtra(RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
         "Expected topic ID to be included in intent for ResumeLessonActivity."
@@ -47,8 +47,8 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
   companion object {
-    private const val RESUME_LESSON_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
-      "ResumeLessonActivity.profile_id"
+    private const val RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY =
+      "ResumeLessonActivity.internal_profile_id"
     private const val RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY =
       "ResumeLessonActivity.topic_id"
     private const val RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY =
@@ -63,14 +63,14 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
      */
     fun createResumeLessonActivityIntent(
       context: Context,
-      profileId: Int,
+      internalProfileId: Int,
       topicId: String,
       storyId: String,
       explorationId: String,
       backflowScreen: Int?
     ): Intent {
       val intent = Intent(context, ResumeLessonActivity::class.java)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+      intent.putExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       intent.putExtra(RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
       intent.putExtra(RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
