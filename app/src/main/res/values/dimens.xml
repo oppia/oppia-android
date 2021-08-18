@@ -404,6 +404,15 @@
   <dimen name="audio_player_split_view_margin_start">32dp</dimen>
   <dimen name="audio_player_split_view_margin_end">32dp</dimen>
 
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">0dp</dimen>
+  <dimen name="add_profile_main_padding_top">48dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">64dp</dimen>
+  <dimen name="add_profile_main_padding_start">28dp</dimen>
+  <dimen name="add_profile_main_padding_end">28dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">24dp</dimen>
   <dimen name="faq_single_padding_top">22dp</dimen>
