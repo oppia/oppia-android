@@ -22,7 +22,8 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
+    internalProfileId =
+      intent.getIntExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId =
       checkNotNull(intent.getStringExtra(RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
         "Expected topic ID to be included in intent for ResumeLessonActivity."
