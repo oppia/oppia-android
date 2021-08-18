@@ -61,7 +61,6 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val INVALID_EXPLORATION_ID_1 = "INVALID_EXPLORAITON_ID_1"
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 
@@ -431,7 +430,7 @@ class TopicControllerTest {
   @Test
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
     topicController.retrieveChapter(
-      INVALID_TOPIC_ID_1, INVALID_STORY_ID_1, INVALID_EXPLORATION_ID_1
+      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     ).toLiveData().observeForever(mockChapterSummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
