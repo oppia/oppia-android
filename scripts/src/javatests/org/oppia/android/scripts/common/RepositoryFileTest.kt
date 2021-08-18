@@ -39,6 +39,146 @@ class RepositoryFileTest {
   }
 
   @Test
+  fun testRepoFile_fileInDotGitSecretDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", ".gitsecret")
+    val file = tempFolder.newFile("testfiles/.gitsecret/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDotIdeaDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", ".idea")
+    val file = tempFolder.newFile("testfiles/.idea/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDotAswbDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", ".aswb")
+    val file = tempFolder.newFile("testfiles/.aswb/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInBazelBinDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "bazel-bin")
+    val file = tempFolder.newFile("testfiles/bazel-bin/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInBazelOppiaAndroidDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "bazel-oppia-android")
+    val file = tempFolder.newFile("testfiles/bazel-oppia-android/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInBazelOutDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "bazel-out")
+    val file = tempFolder.newFile("testfiles/bazel-out/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInBazelTestLogsDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "bazel-testlogs")
+    val file = tempFolder.newFile("testfiles/bazel-testlogs/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInAppBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "app", "build")
+    val file = tempFolder.newFile("testfiles/app/build/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDataBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "data", "build")
+    val file = tempFolder.newFile("testfiles/data/build/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDomainBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "domain", "build", "generated")
+    val file = tempFolder.newFile("testfiles/domain/build/generated/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInModelBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "model", "build", "libs")
+    val file = tempFolder.newFile("testfiles/model/build/libs/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInTestingBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "testing", "build")
+    val file = tempFolder.newFile("testfiles/testing/build/TestFile.kt")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInUtilityBuildDirectory_fileShouldNotBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", "utility", "build")
+    val file = tempFolder.newFile("testfiles/utility/build/TestFile.kt")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).doesNotContain(file)
+  }
+
+  @Test
+  fun testRepoFile_fileInDotGitHubDirectory_fileShouldBePresentInCollectedFiles() {
+    tempFolder.newFolder("testfiles", ".github")
+    val file = tempFolder.newFile("testfiles/.github/TestFile")
+
+    val collectedFiles = RepositoryFile.collectSearchFiles("${tempFolder.root}/testfiles/")
+
+    assertThat(collectedFiles).contains(file)
+  }
+
+  @Test
   fun testRepoFile_dotKtExpectedExtension_onlyKtFilesShouldBePresentInCollectedFiles() {
     val xmlFile = tempFolder.newFile("testfiles/TestFile.xml")
     val kotlinFile = tempFolder.newFile("testfiles/TestFile.kt")

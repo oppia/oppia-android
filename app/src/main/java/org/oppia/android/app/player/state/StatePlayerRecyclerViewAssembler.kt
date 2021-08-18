@@ -21,6 +21,7 @@ import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
@@ -196,12 +197,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (playerFeatureSet.contentSupport) {
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
-    if (playerFeatureSet.hintsAndSolutionsSupport) {
-      (fragment as ShowHintAvailabilityListener).onHintAvailable(ephemeralState.helpIndex)
-    }
     val interaction = ephemeralState.state.interaction
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(
+          ephemeralState.pendingState.helpIndex
+        )
+      }
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -220,6 +223,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
+      // Ensure any lingering hints are properly cleared.
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(HelpIndex.getDefaultInstance())
+      }
+
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
       // so that the UI always has the correct answer indication, even after configuration changes.
       isCorrectAnswer.set(true)

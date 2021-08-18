@@ -1,0 +1,120 @@
+{
+  "exploration_id": "test_single_interactive_state_exp_with_one_hint_and_solution",
+  "version": 1,
+  "exploration": {
+    "init_state_name": "Text",
+    "states": {
+      "Text": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>In which language does Oppia mean 'to learn'?</p>"
+        },
+        "interaction": {
+          "id": "TextInput",
+          "customization_args": {
+            "rows": {
+              "value": 1.0
+            },
+            "placeholder": {
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter a language"
+              }
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": {
+                  "contentId": "<unknown>",
+                  "normalizedStrSet": ["finnish"]
+                }
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": false
+            }
+          }],
+          "default_outcome": {
+            "dest": "Text",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>Not quite. Try again (or maybe use a search engine).</p>"
+            },
+            "labelled_as_correct": false
+          },
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>Hint: 'Oppia' is not English.</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "Finnish",
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>'Oppia' is translated from Finnish.</p>"
+            }
+          }
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "hint_1": {},
+            "solution": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {},
+            "hint_1": {},
+            "solution": {}
+          }
+        }
+      },
+      "End": {
+        "content": {
+          "content_id": "content",
+          "html": "Congratulations, you have finished!"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "EndExploration",
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
+        },
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {}
+          }
+        }
+      }
+    },
+    "objective": "Test exploration.",
+    "language_code": "en",
+    "title": "Prototype exploration with one hint and a solution"
+  }
+}

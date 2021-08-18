@@ -2,18 +2,10 @@ package org.oppia.android.domain.question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
-import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.Question
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
@@ -28,7 +20,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
-import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,17 +49,16 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
-  private val hintHandler: HintHandler,
-  @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher
-) {
+  private val hintHandlerFactory: HintHandler.Factory
+) : HintHandler.HintMonitor {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
   //  sufficient proficiency.
 
   private val progress = QuestionAssessmentProgress()
+  private lateinit var hintHandler: HintHandler
   private val progressLock = ReentrantLock()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   @Inject
   internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
@@ -83,6 +73,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         "Cannot start a new training session until the previous one is completed."
       }
 
+      hintHandler = hintHandlerFactory.create(this)
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
       currentQuestionDataProvider.setBaseDataProvider(
         questionsListDataProvider,
@@ -102,6 +93,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
       )
     }
+  }
+
+  override fun onHelpIndexChanged() {
+    asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
   }
 
   /**
@@ -168,33 +163,21 @@ class QuestionAssessmentProgressController @Inject constructor(
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentQuestion()
-            if (!progress.isAssessmentCompleted()) {
+            val newState = if (!progress.isAssessmentCompleted()) {
               // Only push the next state if the assessment isn't completed.
-              progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
-              // Reset the hintState if pending top state has changed.
-              progress.hintState = hintHandler.reset()
+              progress.getNextState()
             } else {
               // Otherwise, push a synthetic state for the end of the session.
-              progress.stateDeck.pushState(
-                State.getDefaultInstance(),
-                prohibitSameStateName = false
-              )
+              State.getDefaultInstance()
             }
+            progress.stateDeck.pushState(newState, prohibitSameStateName = false)
+            hintHandler.finishState(newState)
           } else {
             // Schedule a new hints or solution or show a new hint or solution immediately based on
             // the current ephemeral state of the training session because a new wrong answer was
             // submitted.
-            val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-            progress.hintState =
-              hintHandler.maybeScheduleShowHint(
-                ephemeralState.state,
-                ephemeralState.pendingState.wrongAnswerCount
-              )
-            // Schedule a new task to show help if available.
-            scheduleTaskToShowHelp(
-              progress.hintState,
-              isCurrentQuestionStatePendingState = ephemeralState.stateTypeCase ==
-                EphemeralState.StateTypeCase.PENDING_STATE
+            hintHandler.handleWrongAnswerSubmission(
+              computeCurrentEphemeralState().pendingState.wrongAnswerCount
             )
           }
         } finally {
@@ -215,16 +198,14 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the [StateDeck] and the [HintHandler] that the visible hint has benn revealed by the
-   * user.
+   * Notifies the controller that the user wishes to reveal a hint.
    *
-   * @param hintIsRevealed boolean to indicate if the hint was revealed or not
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the hint
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIsRevealed: Boolean, hintIndex: Int): LiveData<AsyncResult<Hint>> {
+  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -236,39 +217,17 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var hint: Hint
-        val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
         try {
-          progress.stateDeck.submitHintRevealed(ephemeralState.state, hintIsRevealed, hintIndex)
-          hint = progress.stateList.computeHintForResult(
-            ephemeralState.state,
-            hintIsRevealed,
-            hintIndex
-          )
-          progress.stateDeck.pushStateForHint(ephemeralState.state, hintIndex)
           progress.trackHintViewed()
+          hintHandler.viewHint(hintIndex)
         } finally {
-          hintHandler.notifyHintIsRevealed(hintIndex)
-          // Schedule a new hints or solution or show a new hint or solution immediately based on
-          // the current ephemeral state of the training session because the last hint was revealed.
-          progress.hintState =
-            hintHandler.maybeScheduleShowHint(
-              ephemeralState.state,
-              ephemeralState.pendingState.wrongAnswerCount
-            )
-          // Schedule a new task to show help if available.
-          scheduleTaskToShowHelp(
-            progress.hintState,
-            isCurrentQuestionStatePendingState = ephemeralState.stateTypeCase ==
-              EphemeralState.StateTypeCase.PENDING_STATE
-          )
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(hint))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -277,12 +236,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Notifies the [StateDeck] and the [HintHandler] that the solution has been revealed by the user.
+   * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation with the solution
-   *     that was revealed
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Solution>> {
+  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -294,27 +253,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var solution: Solution
-        val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
         try {
-
-          progress.stateDeck.submitSolutionRevealed(ephemeralState.state)
-          solution = progress.stateList.computeSolutionForResult(ephemeralState.state)
-          progress.stateDeck.pushStateForSolution(ephemeralState.state)
           progress.trackSolutionViewed()
+          hintHandler.viewSolution()
         } finally {
-          hintHandler.notifySolutionIsRevealed()
-          // Update the hintState because the solution was revealed.
-          progress.hintState =
-            hintHandler.maybeScheduleShowHint(
-              ephemeralState.state,
-              ephemeralState.pendingState.wrongAnswerCount
-            )
-          scheduleTaskToShowHelp(
-            progress.hintState,
-            isCurrentQuestionStatePendingState = ephemeralState.stateTypeCase ==
-              EphemeralState.StateTypeCase.PENDING_STATE
-          )
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
           // throws an exception.
@@ -322,7 +264,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(solution))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -358,17 +300,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         if (progress.isViewingMostRecentQuestion()) {
           // Update the hint state and maybe schedule new help when user moves to the pending top
           // state.
-          val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-          progress.hintState =
-            hintHandler.maybeScheduleShowHint(
-              ephemeralState.state,
-              ephemeralState.pendingState.wrongAnswerCount
-            )
-          scheduleTaskToShowHelp(
-            progress.hintState,
-            isCurrentQuestionStatePendingState = ephemeralState.stateTypeCase ==
-              EphemeralState.StateTypeCase.PENDING_STATE
-          )
+          hintHandler.navigateBackToLatestPendingState()
           progress.processNavigationToNewQuestion()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
@@ -377,13 +309,6 @@ class QuestionAssessmentProgressController @Inject constructor(
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       return MutableLiveData(AsyncResult.failed(e))
-    }
-  }
-
-  /** Stops any new hints and solution from showing up. */
-  fun stopNewHintsAndSolutionFromShowingUp() {
-    progressLock.withLock {
-      hintHandler.hideHintsAndSolution()
     }
   }
 
@@ -429,52 +354,12 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
     }
 
-  /**
-   * Schedules a future task to show help to the user that will be triggered exactly once after the
-   * specified timeout in milliseconds.
-   */
-
-  private fun scheduleTaskToShowHelp(
-    hintState: HintState,
-    isCurrentQuestionStatePendingState: Boolean
-  ) {
-    if (hintState.delayToShowNextHintAndSolution == -1L || !isCurrentQuestionStatePendingState) {
-      // Do not start timer to show new hints and solutions if the delay is set to -1 or if the
-      // current state is not the pending top state.
-      return
-    }
-    backgroundCoroutineScope.launch {
-      delay(hintState.delayToShowNextHintAndSolution)
-      hintAndSolutionTimerCompleted(hintState.hintSequenceNumber)
-    }
+  private fun computeCurrentEphemeralState(): EphemeralState {
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+    return progress.stateDeck.getCurrentEphemeralState(helpIndex)
   }
 
-  /**
-   * Notifies the [HintHandler] that a scheduled task to show new help has finished.
-   *
-   * @param trackedSequenceNumber the ID used to identify each task scheduled to show help
-   * @param state the state on which the hint is shown
-   */
-  private fun hintAndSolutionTimerCompleted(trackedSequenceNumber: Int) {
-    progressLock.withLock {
-      progress.hintState =
-        hintHandler.showNewHintAndSolution(
-          progress.stateDeck.getCurrentEphemeralState().state,
-          trackedSequenceNumber
-        )
-      if (
-        progress.hintState.helpIndex.indexTypeCase ==
-        HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX ||
-        progress.hintState.helpIndex.indexTypeCase ==
-        HelpIndex.IndexTypeCase.SHOW_SOLUTION
-      ) {
-        // Only notify the currentState dataProvider the hint or solution is available is actually
-        // new.
-        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-      }
-    }
-  }
-
+  @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveUserAssessmentPerformanceAsync(
     skillIdList: List<String>
   ): AsyncResult<UserAssessmentPerformance> {
@@ -524,13 +409,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-      .toBuilder()
-      .setHelpIndex(progress.hintState.helpIndex)
-      .build()
     val currentQuestionIndex = progress.getCurrentQuestionIndex()
     val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
-      .setEphemeralState(ephemeralState)
+      .setEphemeralState(computeCurrentEphemeralState())
       .setCurrentQuestionIndex(currentQuestionIndex)
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())
@@ -544,11 +425,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
     progress.initialize(questionsList)
     // Update hint state to schedule task to show new help.
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
-    progress.hintState = hintHandler.maybeScheduleShowHint(
-      ephemeralState.state,
-      ephemeralState.pendingState.wrongAnswerCount
-    )
+    hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
   }
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */

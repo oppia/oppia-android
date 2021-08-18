@@ -66,6 +66,7 @@ kt_android_library(
     srcs = [
         "LogLevel.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(

@@ -1,5 +1,7 @@
 package org.oppia.android.scripts.maven
 
+import org.oppia.android.scripts.license.LicenseFetcher
+import org.oppia.android.scripts.license.LicenseFetcherImpl
 import org.oppia.android.scripts.license.model.CopyrightLicense
 import org.oppia.android.scripts.license.model.Dependency
 import org.oppia.android.scripts.proto.License
