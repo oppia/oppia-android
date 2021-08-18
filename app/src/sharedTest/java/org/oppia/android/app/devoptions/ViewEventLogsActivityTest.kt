@@ -63,6 +63,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -150,7 +151,8 @@ class ViewEventLogsActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class
+      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      NetworkConnectionDebugUtilModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

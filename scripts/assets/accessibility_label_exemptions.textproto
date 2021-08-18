@@ -1,3 +1,4 @@
+exempted_activity: "app/src/main/java/org/oppia/android/app/devoptions/forcenetworktype/testing/ForceNetworkTypeTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/testing/MarkChaptersCompletedTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/testing/MarkStoriesCompletedTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/testing/MarkTopicsCompletedTestActivity"

@@ -115,6 +115,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -1620,7 +1621,8 @@ class ExplorationActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      TestExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class
+      TestExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      NetworkConnectionDebugUtilModule::class
     ]
   )
 
