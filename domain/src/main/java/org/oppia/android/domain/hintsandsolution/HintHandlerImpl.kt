@@ -111,8 +111,8 @@ class HintHandlerImpl private constructor(
   }
 
   private fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
-    if (pendingState.interaction.hintList.isEmpty()) {
-      // If this state has no hints to show, do nothing.
+    if (!pendingState.offersHelp()) {
+      // If this state has no help to show, do nothing.
       return
     }
 
@@ -165,13 +165,8 @@ class HintHandlerImpl private constructor(
   }
 
   private fun computeCurrentHelpIndex(): HelpIndex {
-    // Return the index of the first unrevealed hint, or the length of the list if all have been
-    // revealed.
     val hintList = pendingState.interaction.hintList
-    val solution = pendingState.interaction.solution
-
-    val hasSolution = solution.hasCorrectAnswer()
-    val hasHelp = hintList.isNotEmpty() || hasSolution
+    val hasSolution = pendingState.hasSolution()
     val hasAtLeastOneHintAvailable = latestAvailableHintIndex != -1
     val hasSeenAllAvailableHints = latestAvailableHintIndex == lastRevealedHintIndex
     val hasSeenAllHints = lastRevealedHintIndex == hintList.lastIndex
@@ -179,7 +174,7 @@ class HintHandlerImpl private constructor(
 
     return when {
       // No hints or solution are available to be shown.
-      !hasHelp -> HelpIndex.getDefaultInstance()
+      !pendingState.offersHelp() -> HelpIndex.getDefaultInstance()
 
       // The solution has been revealed.
       solutionIsRevealed -> HelpIndex.newBuilder().apply {
@@ -263,6 +258,8 @@ class HintHandlerImpl private constructor(
   private fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
     if (targetSequenceNumber == hintSequenceNumber) {
+      val previousHelpIndex = computeCurrentHelpIndex()
+
       when (nextHelpIndexToShow.indexTypeCase) {
         AVAILABLE_NEXT_HINT_INDEX -> {
           latestAvailableHintIndex = nextHelpIndexToShow.availableNextHintIndex
@@ -273,7 +270,9 @@ class HintHandlerImpl private constructor(
 
       // Only indicate the hint is available if its index is actually new (including if it
       // becomes null such as in the case of the solution becoming available).
-      hintMonitor.onHelpIndexChanged()
+      if (nextHelpIndexToShow != previousHelpIndex) {
+        hintMonitor.onHelpIndexChanged()
+      }
     }
   }
 
@@ -296,3 +295,9 @@ class HintHandlerImpl private constructor(
     }
   }
 }
+
+/** Returns whether this state has a solution to show. */
+private fun State.hasSolution(): Boolean = interaction.solution.hasCorrectAnswer()
+
+/** Returns whether this state has help that the user can see. */
+private fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
