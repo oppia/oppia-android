@@ -1,10 +1,8 @@
 package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HintState
 import org.oppia.android.app.model.State
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.oppia.android.domain.hintsandsolution.HintHandler.HintMonitor
 
 /**
  * Handler for showing hints to the learner after a period of time in the event they submit a
@@ -42,169 +40,89 @@ import javax.inject.Singleton
  * made available to view, if a solution is present. Once the solution is viewed by the learner,
  * they will reach a terminal state for hints and no additional hints or solutions will be made
  * available.
+ *
+ * Implementations of this class are safe to access across multiple threads, but care must be taken
+ * when calling back into this class from [HintMonitor] since that could cause deadlocks. Note also
+ * that this class may block the calling thread. While the operations this class performs
+ * synchronously should be quick, care should be taken about heavy usage of this class on the main
+ * thread as it may introduce janky behavior.
  */
-@Singleton
-class HintHandler @Inject constructor(
-  @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
-  @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
-  @DelayShowAdditionalHintsFromWrongAnswerMillis
-  private val delayShowAdditionalHintsFromWrongAnswerMs: Long
-) {
-  private var trackedWrongAnswerCount = 0
-  private var helpIndex: HelpIndex = HelpIndex.getDefaultInstance()
-  private var hintSequenceNumber = 0
-
-  // Negative 1 implies that a new task does not have to be scheduled and so no new help should be
-  // revealed. This is so that new tasks are not scheduled in cases when the result of the task is
-  // guaranteed to not show a new any new help to the learner, (e.g. when an unrevealed hint or
-  // solution is visible).
-  private var delayForNextHintAndSolution: Long = -1
+interface HintHandler {
 
   /**
-   * Resets this handler to prepare it for a new state, cancelling any pending hints.
+   * Restores the local variables of hint handler to a specific point in the exploration.
    *
-   * @return [HintState] with the latest values of the [HintHandler]
-   */
-  fun reset(): HintState {
-    trackedWrongAnswerCount = 0
-    helpIndex = HelpIndex.getDefaultInstance()
-    // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
-    // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
-    // scheduled without overlapping with past sequence numbers.
-    ++hintSequenceNumber
-    // Set the delay for a new hint and solution so that a new task is not started unintentionally.
-    delayForNextHintAndSolution = -1
-    return getLatestHintState()
-  }
-
-  /** Hide new hint and solution when moving to any previous state. */
-  fun hideHintsAndSolution() {
-    // Cancel any potential pending hints by advancing the sequence number.
-    hintSequenceNumber++
-  }
+   * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
+   * @param helpIndex the [HelpIndex] saved in the checkpoint.
+   * @param hintCount the total number of hint available on the saved pending state
+   * */
+  fun restoreHintHandler(trackedWrongAnswerCount: Int, helpIndex: HelpIndex, hintCount: Int)
 
   /**
-   * Handles potentially new wrong answers that were submitted and cases when the user is probably
-   * stuck on a particular state, and if so schedules a hint or solution to be shown to the user if
-   * hints and solution are available.
+   * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after
+   * a certain amount of time). This is meant to only be called once at the beginning of a state.
+   */
+  fun startWatchingForHintsInNewState(state: State)
+
+  /**
+   * Indicates that the current state has ended and a new one should start being monitored. This
+   * will cancel any previously pending background operations and potentially starts new ones
+   * corresponding to the new state.
+   */
+  fun finishState(newState: State)
+
+  /**
+   * Notifies the handler that a wrong answer was submitted.
    *
-   * @return [HintState] with the latest values of the [HintHandler]
+   * @param wrongAnswerCount the total number of wrong answers submitted to date
    */
-  fun maybeScheduleShowHint(state: State, wrongAnswerCount: Int): HintState {
-    if (state.interaction.hintList.isEmpty()) {
-      // If this state has no hints and solution to show, return a default instance of HintState.
-      return HintState.getDefaultInstance()
-    }
+  fun handleWrongAnswerSubmission(wrongAnswerCount: Int)
 
-    delayForNextHintAndSolution = when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET -> {
-        trackedWrongAnswerCount = wrongAnswerCount
-        // The learner needs to wait longer for the initial hint to show since they need some time
-        // to read through and consider the question.
-        if (wrongAnswerCount == 0 || wrongAnswerCount == 1) {
-          // If less than two answers are submitted, schedule a task to automatically help after a
-          // fixed amount of time. This will automatically reset if something changes
-          // (e.g. submitting an answer).
-          hintSequenceNumber++
-          delayShowInitialHintMs
-        } else {
-          // Update helpIndex with the next available help
-          helpIndex = getNextHintAndSolutionToReveal(state)
-          // Set delayForNextHintAndSolution to -1 so that no new tasks are scheduled.
-          -1
-        }
-      }
-      HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
-        if (trackedWrongAnswerCount != wrongAnswerCount) {
-          // If a new wrong answer is submitted, schedule a task to reveal a new hint.
-          trackedWrongAnswerCount = wrongAnswerCount
-          hintSequenceNumber++
-          delayShowAdditionalHintsFromWrongAnswerMs
-        } else {
-          // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
-          hintSequenceNumber++
-          delayShowAdditionalHintsMs
-        }
-      }
-      HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
-        // Do not schedule a new task until the last help has been revealed.
-        -1
-      }
-      else -> {
-        // Update with the tracked answer count if there is a new answer.
-        trackedWrongAnswerCount = wrongAnswerCount
-        // The else branch implies that the helpIndex.indexTypeCase is either equal to SHOW_SOLUTION
-        // or EVERYTHING_IS_REVEALED, in either case do not schedule a new task because no more help
-        // is available.
-        -1
-      }
-    }
-    return getLatestHintState()
+  /** Notifies the handler that the user revealed a hint corresponding to the specified index. */
+  fun viewHint(hintIndex: Int)
+
+  /** Notifies the handler that the user revealed the the solution for the current state. */
+  fun viewSolution()
+
+  /**
+   * Notifies the handler that the user navigated to a previously completed state. This will
+   * potentially cancel any ongoing operations to avoid the hint counter continuing when navigating
+   * an earlier state.
+   */
+  fun navigateToPreviousState()
+
+  /**
+   * Notifies the handler that the user has navigated back to the latest (pending) state. Note that
+   * this may resume background operations, but it does not guarantee that those start at the same
+   * time that they left off at (counters may be reset upon returning to the latest state).
+   */
+  fun navigateBackToLatestPendingState()
+
+  /** Returns the [HelpIndex] corresponding to the current pending state. */
+  fun getCurrentHelpIndex(): HelpIndex
+
+  /** A callback interface for monitoring changes to [HintHandler]. */
+  interface HintMonitor {
+    /**
+     * Called when the [HelpIndex] managed by the [HintHandler] has changed. To get the latest
+     * state, call [HintHandler.getCurrentHelpIndex]. Note that this method may be called on a
+     * background thread.
+     */
+    fun onHelpIndexChanged()
   }
 
   /**
-   * Shows a new hint and solution when the scheduled task with the most recent trackedSequence
-   * number completes.
+   * Factory for creating new [HintHandler]s.
    *
-   * @return [HintState] with the latest values of the [HintHandler]
+   * Note that instances of this class are injectable in the application component.
    */
-  fun showNewHintAndSolution(state: State, trackedSequenceNumber: Int): HintState {
-    if (trackedSequenceNumber == hintSequenceNumber) {
-      // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-      helpIndex = getNextHintAndSolutionToReveal(state)
-    }
-    return getLatestHintState()
-  }
-
-  /** Notifies the HintHandler that the visible hint has been revealed by the learner. */
-  fun notifyHintIsRevealed(index: Int) {
-    if (
-      helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX &&
-      helpIndex.availableNextHintIndex == index
-    ) {
-      helpIndex = helpIndex.toBuilder().setLatestRevealedHintIndex(index).build()
-    }
-  }
-
-  /** Notifies the HintHandler that the visible solution has been revealed by the learner. */
-  fun notifySolutionIsRevealed() {
-    if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION) {
-      helpIndex =
-        helpIndex.toBuilder().setEverythingRevealed(true).build()
-    }
-  }
-
-  /**
-   * Returns the [HelpIndex] of the next hint or solution that hasn't yet been revealed, or
-   * default if there is none.
-   */
-  private fun getNextHintAndSolutionToReveal(state: State): HelpIndex {
-    // Return the index of the first unrevealed hint, or the length of the list if all have been
-    // revealed.
-    val hintList = state.interaction.hintList
-    val solution = state.interaction.solution
-
-    val hasHelp = hintList.isNotEmpty() || solution.hasCorrectAnswer()
-    val lastUnrevealedHintIndex = hintList.indices.filterNot { idx ->
-      hintList[idx].hintIsRevealed
-    }.firstOrNull()
-
-    return if (!hasHelp) {
-      HelpIndex.getDefaultInstance()
-    } else if (lastUnrevealedHintIndex != null) {
-      HelpIndex.newBuilder().setAvailableNextHintIndex(lastUnrevealedHintIndex).build()
-    } else if (solution.hasCorrectAnswer() && !solution.solutionIsRevealed) {
-      HelpIndex.newBuilder().setShowSolution(true).build()
-    } else {
-      HelpIndex.newBuilder().setEverythingRevealed(true).build()
-    }
-  }
-
-  private fun getLatestHintState(): HintState {
-    return HintState.newBuilder().apply {
-      hintSequenceNumber = this@HintHandler.hintSequenceNumber
-      helpIndex = this@HintHandler.helpIndex
-      delayToShowNextHintAndSolution = this@HintHandler.delayForNextHintAndSolution
-    }.build()
+  interface Factory {
+    /**
+     * Creates a new [HintHandler].
+     *
+     * @param hintMonitor a [HintMonitor] to observe async changes to hints/solution
+     * @return a new [HintHandler] for managing hint/solution state for a specific play session
+     */
+    fun create(hintMonitor: HintMonitor): HintHandler
   }
 }

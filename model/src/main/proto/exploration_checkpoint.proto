@@ -30,8 +30,13 @@ message ExplorationCheckpoint {
   // The index of the current selected state from the deck of states.
   int32 state_index = 4;
 
-  // Deprecating fields 5 and 6 because they are no longer required.
-  reserved 5,6;
+  // The last revealed hint index (deprecated). This has been functionally replaced by the HelpIndex
+  // provided below.
+  reserved 5;
+
+  // Whether the solution was revealed (deprecated). This has been functionally replaced by the
+  // HelpIndex provided below.
+  reserved 6;
 
   // The title of the exploration whose checkpoint is saved.
   string exploration_title = 7;

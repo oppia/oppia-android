@@ -8,6 +8,7 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
@@ -40,7 +41,6 @@ import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
-import org.oppia.android.app.resumelesson.ResumeLessonFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -86,21 +86,22 @@ interface FragmentComponent {
   fun inject(appLanguageFragment: AppLanguageFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
+  fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
-  fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
+  fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
-  fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(homeFragment: HomeFragment)
+  fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
   fun inject(licenseListFragment: LicenseListFragment)
   fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
@@ -116,19 +117,18 @@ interface FragmentComponent {
   fun inject(profileListFragment: ProfileListFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
+  fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)
-  fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
-  fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)
   fun inject(topicLessonsFragment: TopicLessonsFragment)
-  fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
+  fun inject(topicReviewFragment: TopicRevisionFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
   fun inject(viewEventLogsFragment: ViewEventLogsFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)

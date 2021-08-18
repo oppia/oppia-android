@@ -4,13 +4,9 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
-import org.oppia.android.app.model.HintState
-import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -30,8 +26,8 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var shouldSavePartialProgress: Boolean = false
-  internal lateinit var currentCheckpointState: CheckpointState
-  internal lateinit var currentExplorationCheckpoint: ExplorationCheckpoint
+  internal lateinit var checkpointState: CheckpointState
+  internal lateinit var explorationCheckpoint: ExplorationCheckpoint
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
@@ -40,8 +36,6 @@ internal class ExplorationProgress {
   internal val stateDeck: StateDeck by lazy {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)
   }
-
-  internal lateinit var hintState: HintState
 
   /**
    * Advances the current play stage to the specified stage, verifying that the transition is correct.
@@ -97,7 +91,7 @@ internal class ExplorationProgress {
    *     completion of the save operation for checkpoints either successfully or unsuccessfully.
    */
   internal fun updateCheckpointState(newCheckpointState: CheckpointState) {
-    currentCheckpointState = newCheckpointState
+    checkpointState = newCheckpointState
   }
 
   companion object {
@@ -122,125 +116,48 @@ internal class ExplorationProgress {
   }
 
   /**
-   * Updates the hint state with the one created from the saved checkpoint or the default instance
-   * of hint state if exploration is not being resumed.
+   * Loads [StateDeck] and [HintHandler] for the current exploration.
+   *
+   * @param exploration the current exploration that is being played
+   * @param hintHandler the [HintHandler] that will be used to show help in the current exploration
    */
-  internal fun loadHintState() {
-    hintState =
-      if (currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
-        HintState.getDefaultInstance()
-      } else {
-        HintState.newBuilder().apply {
-          helpIndex = currentExplorationCheckpoint.helpIndex
-          hintSequenceNumber = 0
-          delayToShowNextHintAndSolution = -1
-        }.build()
-      }
+  internal fun resetOrResumeExploration(exploration: Exploration, hintHandler: HintHandler) {
+    loadHintHandler(hintHandler)
+    loadStateDeckDeck(exploration)
   }
 
   /**
    * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
-   * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
+   * instance, the variables of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
    * re-initialized with the values created from the saved [ExplorationCheckpoint].
-   *
-   * This function expects explorationProgress.hintState to be initialized with the correct values,
-   * so it should only be called after the function [loadHintState] has executed.
-   *
-   * @param exploration the current [Exploration] that has to be played
    */
-  internal fun loadStateDeck(exploration: Exploration) {
-    if (currentExplorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
+  private fun loadStateDeckDeck(exploration: Exploration) {
+    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
       stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
     } else {
       stateDeck.resumeDeck(
-        createPendingTopStateFromCheckpoint(),
+        stateGraph.getState(explorationCheckpoint.pendingStateName),
         getPreviousStatesFromCheckpoint(),
-        currentExplorationCheckpoint.pendingUserAnswersList,
-        currentExplorationCheckpoint.stateIndex
+        explorationCheckpoint.pendingUserAnswersList,
+        explorationCheckpoint.stateIndex
       )
     }
   }
 
   /**
-   * Creates a pending top state for the current exploration as it was when the checkpoint was
-   * created.
-   *
-   * @return the pending [State] for the current exploration
+   * Initializes the variables of [HintHandler] if the exploration is being resumed, i.e.
+   * [ExplorationCheckpoint] is not of type default instance.
    */
-  private fun createPendingTopStateFromCheckpoint(): State {
-    val pendingTopState =
-      stateGraph.getState(currentExplorationCheckpoint.pendingStateName)
-    val hintList = createHintListFromCheckpoint(
-      pendingTopState.interaction.hintList,
-      currentExplorationCheckpoint.helpIndex
+  private fun loadHintHandler(hintHandler: HintHandler) {
+    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
+      // If exploration is not being resumed, do nothing.
+      return
+    }
+    hintHandler.restoreHintHandler(
+      explorationCheckpoint.pendingUserAnswersCount,
+      explorationCheckpoint.helpIndex,
+      stateGraph.getState(explorationCheckpoint.pendingStateName).interaction.hintCount
     )
-    val solution =
-      createSolutionFromCheckpoint(pendingTopState, currentExplorationCheckpoint.helpIndex)
-    val interactionBuilder = Interaction.newBuilder().addAllHint(hintList).setSolution(solution)
-
-    return pendingTopState.toBuilder().setInteraction(interactionBuilder.build()).build()
-  }
-
-  /**
-   * Mark all hints as reveled in the pendingState that were revealed for the current state pending
-   * state before the checkpoint was saved.
-   *
-   * @param pendingStateHintList the list of hint for the current pending state
-   * @param helpIndex the state of hints for the exploration which was generated using the saved
-   *     checkpoint
-   *
-   * @return the updated list of [Hint]s for the pending state created from the saved checkpoint
-   */
-  private fun createHintListFromCheckpoint(
-    pendingStateHintList: List<Hint>,
-    helpIndex: HelpIndex
-  ): List<Hint> {
-    return when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
-        pendingStateHintList.mapIndexed { index, hint ->
-          hint.toBuilder().setHintIsRevealed(index <= helpIndex.latestRevealedHintIndex).build()
-        }
-      }
-      HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
-        pendingStateHintList.mapIndexed { index, hint ->
-          hint.toBuilder().setHintIsRevealed(index < helpIndex.availableNextHintIndex).build()
-        }
-      }
-      HelpIndex.IndexTypeCase.SHOW_SOLUTION, HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        // All the hints are visible and revealed if helpIndex.indexTypeCase is equal to
-        // SHOW_SOLUTION or EVERYTHING_REVEALED.
-        pendingStateHintList.map { hint ->
-          hint.toBuilder().setHintIsRevealed(true).build()
-        }
-      }
-      else -> pendingStateHintList
-    }
-  }
-
-  /**
-   * Set solution is reveled in the pendingState to true or false depending upon if solution was
-   * revealed for the current state pending state before the checkpoint was saved.
-   *
-   * @param pendingTopState the pending state created from the checkpoint
-   * @param helpIndex the state of solution for the exploration which was generated using the saved
-   *     checkpoint
-   *
-   * @return the updated [Solution] for the pending state created from the checkpoint
-   */
-  private fun createSolutionFromCheckpoint(
-    pendingTopState: State,
-    helpIndex: HelpIndex
-  ): Solution {
-    val solutionBuilder = pendingTopState.interaction.solution.toBuilder()
-    return when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        solutionBuilder.setSolutionIsRevealed(false).build()
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        solutionBuilder.setSolutionIsRevealed(true).build()
-      }
-      else -> solutionBuilder.build()
-    }
   }
 
   /**
@@ -250,13 +167,13 @@ internal class ExplorationProgress {
    *     checkpoint was created
    */
   private fun getPreviousStatesFromCheckpoint(): List<EphemeralState> {
-    return currentExplorationCheckpoint.completedStatesInCheckpointList
+    return explorationCheckpoint.completedStatesInCheckpointList
       .mapIndexed { index, state ->
         EphemeralState.newBuilder()
           .setState(stateGraph.getState(state.stateName))
           .setHasPreviousState(index != 0)
           .setCompletedState(state.completedState)
-          .setHasNextState(index != currentExplorationCheckpoint.stateIndex)
+          .setHasNextState(index != explorationCheckpoint.stateIndex)
           .build()
       }
   }

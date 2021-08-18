@@ -38,7 +38,8 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.LogUploader
-import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -59,7 +60,7 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -83,7 +84,6 @@ class LogUploadWorkManagerInitializerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -206,7 +206,7 @@ class LogUploadWorkManagerInitializerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class
+      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent {
