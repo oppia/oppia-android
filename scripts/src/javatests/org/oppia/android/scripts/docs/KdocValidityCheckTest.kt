@@ -20,9 +20,6 @@ class KdocValidityCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val pathToProtoBinary = "scripts/assets/kdoc_validity_exemptions.pb"
-  private val wikiReferenceNote =
-    "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-      "#kdoc-validity-check for more details on how to fix this."
 
   @Rule
   @JvmField
@@ -290,8 +287,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -366,8 +361,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -396,8 +389,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -426,8 +417,6 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -452,8 +441,6 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -477,8 +464,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -504,8 +489,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -533,8 +516,6 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -560,8 +541,6 @@ class KdocValidityCheckTest {
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -586,8 +565,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:1
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -613,8 +590,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -644,8 +619,6 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:3
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -681,8 +654,6 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:5
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:7
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:8
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -720,8 +691,6 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:6
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:10
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -764,8 +733,6 @@ class KdocValidityCheckTest {
       """
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/TempFile.kt:4
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -813,8 +780,6 @@ class KdocValidityCheckTest {
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:2
       - ${retrieveTestFilesDirectoryPath()}/TempFile2.kt:6
       - ${retrieveTestFilesDirectoryPath()}/TempFile3.kt:1
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }
@@ -926,8 +891,6 @@ class KdocValidityCheckTest {
       
       KDoc missing for files:
       - ${retrieveTestFilesDirectoryPath()}/HomeActivity.kt:1
-      
-      $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
   }

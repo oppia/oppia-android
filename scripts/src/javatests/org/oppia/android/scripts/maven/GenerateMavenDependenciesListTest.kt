@@ -11,7 +11,6 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
 import org.oppia.android.scripts.proto.License
@@ -172,12 +171,9 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-    )
+    val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
@@ -239,7 +235,7 @@ class GenerateMavenDependenciesListTest {
   }
 
   @Test
-  fun testDependencyHasExtractedCopyLinkAndScrapableLink_scriptFails_andWritesTextProto() {
+  fun testDependencyHasLocalCopyLinkAndScrapableLink_scriptFails_andWritesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
@@ -308,7 +304,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(DEP_WITH_INVALID_LINKS)
     setUpBazelEnvironment(coordsList)
@@ -418,7 +414,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList =
       listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
@@ -512,7 +508,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE, DEP_WITH_NO_LICENSE)
     setUpBazelEnvironment(coordsList)
@@ -605,7 +601,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,
@@ -670,7 +666,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,
@@ -781,7 +777,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,
@@ -906,7 +902,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,
@@ -1019,7 +1015,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,
@@ -1139,7 +1135,7 @@ class GenerateMavenDependenciesListTest {
         )
       )
     }.build()
-    pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
+    mavenDependencyList.writeTo(pbFile.outputStream())
 
     val coordsList = listOf(
       DEP_WITH_SCRAPABLE_LICENSE,

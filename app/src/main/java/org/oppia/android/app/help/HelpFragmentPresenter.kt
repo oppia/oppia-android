@@ -22,13 +22,8 @@ class HelpFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: HelpFragmentBinding
 
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    isMultipane: Boolean
-  ): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val viewModel = getHelpListViewModel()
-    viewModel.isMultipane.set(isMultipane)
 
     binding = HelpFragmentBinding.inflate(
       inflater,

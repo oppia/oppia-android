@@ -14,7 +14,7 @@ else
     buildifier_file_path="$github_actions_path/oppia-android-tools/buildifier"
 fi
 
-$buildifier_file_path --lint=warn --mode=check --warnings=-native-android,+out-of-order-load,+unsorted-dict-items -r app data domain instrumentation model testing utility third_party tools scripts BUILD.bazel WORKSPACE oppia_android_test.bzl
+$buildifier_file_path --lint=warn --mode=check --warnings=-native-android,+out-of-order-load,+unsorted-dict-items -r app data domain model testing utility third_party tools scripts BUILD.bazel WORKSPACE oppia_android_test.bzl
 
 status=$?
 

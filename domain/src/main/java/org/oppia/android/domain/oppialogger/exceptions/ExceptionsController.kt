@@ -68,7 +68,7 @@ class ExceptionsController @Inject constructor(
     exceptionType: ExceptionType
   ) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NetworkConnectionUtil.ProdConnectionStatus.NONE ->
+      NetworkConnectionUtil.ConnectionStatus.NONE ->
         cacheExceptionLog(
           exception.toExceptionLog(
             timestampInMillis,

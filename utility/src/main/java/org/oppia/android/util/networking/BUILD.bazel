@@ -2,16 +2,7 @@
 Package for networking utilities
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-
-kt_android_library(
-    name = "connection_status",
-    srcs = [
-        "ConnectionStatus.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-)
 
 kt_android_library(
     name = "network_connection_util",
@@ -20,79 +11,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":connection_status",
-    ],
-)
-
-kt_android_library(
-    name = "network_connection_debug_util",
-    srcs = [
-        "NetworkConnectionDebugUtil.kt",
-    ],
-    visibility = ["//:oppia_debug_visibility"],
-    deps = [
-        ":connection_status",
-    ],
-)
-
-kt_android_library(
-    name = "prod_impl",
-    srcs = [
-        "NetworkConnectionUtilProdImpl.kt",
-    ],
-    deps = [
-        ":network_connection_util",
+        "//third_party:androidx_annotation_annotation",
         "//third_party:javax_inject_javax_inject",
     ],
 )
-
-kt_android_library(
-    name = "debug_impl",
-    srcs = [
-        "NetworkConnectionUtilDebugImpl.kt",
-    ],
-    deps = [
-        ":network_connection_debug_util",
-        ":prod_impl",
-    ],
-)
-
-kt_android_library(
-    name = "prod_module",
-    srcs = [
-        "NetworkConnectionUtilProdModule.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":dagger",
-        ":prod_impl",
-    ],
-)
-
-kt_android_library(
-    name = "debug_module",
-    srcs = [
-        "NetworkConnectionUtilDebugModule.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":dagger",
-        ":debug_impl",
-    ],
-)
-
-# TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
-# we can then directly exclude debug files from the build and thus won't be requiring this module.
-kt_android_library(
-    name = "debug_util_module",
-    srcs = [
-        "NetworkConnectionDebugUtilModule.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":dagger",
-        ":network_connection_debug_util",
-    ],
-)
-
-dagger_rules()

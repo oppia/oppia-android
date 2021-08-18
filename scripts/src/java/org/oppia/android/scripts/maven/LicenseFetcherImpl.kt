@@ -1,4 +1,4 @@
-package org.oppia.android.scripts.license
+package org.oppia.android.scripts.maven
 
 import java.net.URL
 

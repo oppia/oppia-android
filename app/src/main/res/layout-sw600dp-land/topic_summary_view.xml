@@ -13,11 +13,11 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="4dp"
+    app:layoutMarginTop="@{@dimen/topic_list_item_margin_top_bottom}"
     app:layoutMarginBottom="@{@dimen/topic_list_item_margin_top_bottom}"
-    app:layoutMarginEnd="@{viewModel.computeEndMargin()}"
     app:layoutMarginStart="@{viewModel.computeStartMargin()}"
-    app:layoutMarginTop="@{@dimen/topic_list_item_margin_top_bottom}">
+    app:layoutMarginEnd="@{viewModel.computeEndMargin()}"
+    app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -52,16 +52,16 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="8dp"
           android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:gravity="top"
           android:maxLines="2"
           android:minLines="2"
-          android:paddingStart="8dp"
-          android:paddingEnd="8dp"
           android:text="@{viewModel.name}"
           android:textColor="@color/white"
           android:textSize="14sp"
@@ -71,7 +71,7 @@
 
         <TextView
           android:id="@+id/lesson_count_text_view"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
           android:layout_marginTop="4dp"

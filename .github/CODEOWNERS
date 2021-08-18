@@ -45,7 +45,6 @@ gradlew.bat @BenHenning
 # CI configuration.
 /.github/actions/ @BenHenning
 /.github/workflows/ @BenHenning
-/.github/stale.yml @BenHenning
 
 # All tests.
 *Test.kt @anandwana001
@@ -53,9 +52,6 @@ gradlew.bat @BenHenning
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
-
-# App UI strings.
-/app/src/main/res/values*/strings.xml @BenHenning
 
 # Proguard configuration.
 *.pro @BenHenning
@@ -199,14 +195,6 @@ NOTICE @BenHenning
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
 
-
-#####################################################################################
-#                                  instrumentation                                  #
-#####################################################################################
-
-# End-to-end test utilities and modules.
-/instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
-
 #####################################################################################
 #                                global overrides                                   #
 #####################################################################################
@@ -218,5 +206,3 @@ WORKSPACE @BenHenning
 .bazelrc @BenHenning
 /tools/android/ @BenHenning
 
-# License texts.
-/app/src/main/res/values/third_party_dependencies.xml @BenHenning

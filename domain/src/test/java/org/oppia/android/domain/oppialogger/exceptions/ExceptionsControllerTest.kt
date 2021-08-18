@@ -39,9 +39,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -68,7 +66,7 @@ class ExceptionsControllerTest {
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  lateinit var networkConnectionUtil: NetworkConnectionUtil
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -84,6 +82,7 @@ class ExceptionsControllerTest {
 
   @Before
   fun setUp() {
+    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -112,7 +111,7 @@ class ExceptionsControllerTest {
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
@@ -143,7 +142,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testController_logFatalException_withNoNetwork_logsToCacheStore() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -173,7 +172,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testController_logExceptions_exceedLimit_checkCorrectEviction() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
@@ -219,7 +218,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testController_logExceptions_exceedLimit_cacheSizeDoesNotExceedLimit() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
@@ -250,7 +249,7 @@ class ExceptionsControllerTest {
   fun testController_logException_switchToNoNetwork_logException_verifyLoggingAndCaching() {
     val exceptionThrown = Exception("TEST", Throwable())
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
@@ -281,7 +280,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testController_logExceptions_withNoNetwork_verifyCachedInCorrectOrder() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST", Throwable())
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
@@ -301,7 +300,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -325,7 +324,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -403,8 +402,7 @@ class ExceptionsControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

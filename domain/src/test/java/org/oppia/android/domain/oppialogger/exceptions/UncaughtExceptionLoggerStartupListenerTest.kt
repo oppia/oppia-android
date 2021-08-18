@@ -38,9 +38,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -63,7 +61,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  lateinit var networkConnectionUtil: NetworkConnectionUtil
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -82,12 +80,13 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Before
   fun setUp() {
+    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionLoggerStartupListener.uncaughtException(
       Thread.currentThread(),
@@ -164,8 +163,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      TestDispatcherModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

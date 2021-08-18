@@ -55,7 +55,7 @@
 
         <TextView
           android:id="@+id/chapter_name_text_view"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
@@ -69,7 +69,7 @@
 
         <TextView
           android:id="@+id/story_name_text_view"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:layout_marginTop="4dp"
@@ -83,7 +83,7 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:layout_marginTop="4dp"

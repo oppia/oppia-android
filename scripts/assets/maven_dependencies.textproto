@@ -775,8 +775,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.5.0"
-  artifact_version: "1.5.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.10"
+  artifact_version: "1.4.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -786,8 +786,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0"
-  artifact_version: "1.5.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32"
+  artifact_version: "1.4.32"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -819,8 +819,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
-  artifact_version: "1.5.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
+  artifact_version: "1.4.32"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
