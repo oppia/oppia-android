@@ -14,7 +14,43 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
-/** Implementation of [HintHandler]. */
+/**
+ * Production implementation of [HintHandler] that implements hints & solutions in parity with the
+ * Oppia web platform.
+ *
+ * # Flow chart for when hints are shown
+ *
+ *            Submit 1st              Submit wrong
+ *            wrong answer            answer
+ *              +---+                   +---+
+ *              |   |                   |   |
+ *              |   v                   |   v
+ *            +-+---+----+            +-+---+-----+           +----------+
+ *     Initial| No       | Wait 60s   |           | View hint | Hint     |
+ *     state  | hint     +----------->+ Hint      +---------->+ consumed |
+ *     +----->+ released | or, submit | available | Wait 30s  |          |
+ *            |          | 2nd wrong  |           +<----------+          |
+ *            +----------+ answer     +----+------+           +----+-----+
+ *                                         ^                       |
+ *                                         |Wait 10s               |
+ *                                         |                       |
+ *                                    +----+------+                |
+ *                               +--->+ No        | Submit wrong   |
+ *                   Submit wrong|    | hint      | answer         |
+ *                   answer      |    | available +<---------------+
+ *                               +----+           |
+ *                                    +-----------+
+ *
+ * # Logic for selecting a hint
+ *
+ * Hints are selected based on the availability of hints to show, and any previous hints that have
+ * been shown. A new hint will only be made available if its previous hint has been viewed by the
+ * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
+ * user, then the 'hint available' state in the diagram above will trigger the solution to be
+ * made available to view, if a solution is present. Once the solution is viewed by the learner,
+ * they will reach a terminal state for hints and no additional hints or solutions will be made
+ * available.
+ */
 class HintHandlerImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,

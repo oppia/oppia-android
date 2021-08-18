@@ -74,7 +74,6 @@ class StateFragmentPresenter @Inject constructor(
   private val hasConversationView = true
 
   private lateinit var currentState: State
-  private var isCurrentStatePendingState = false
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -209,9 +208,9 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun onHintAvailable(helpIndex: HelpIndex) {
+  fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     this.helpIndex = helpIndex
-    showHintsAndSolutions(helpIndex)
+    showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
   }
 
   private fun createRecyclerViewAssembler(
@@ -312,8 +311,6 @@ class StateFragmentPresenter @Inject constructor(
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
-    isCurrentStatePendingState =
-      ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
 
     showOrHideAudioByState(ephemeralState.state)
 
@@ -473,7 +470,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun showHintsAndSolutions(helpIndex: HelpIndex) {
+  private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       viewModel.setHintOpenedAndUnRevealedVisibility(false)

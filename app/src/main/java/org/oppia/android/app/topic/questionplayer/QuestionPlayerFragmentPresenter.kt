@@ -49,7 +49,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager,
+  private val splitScreenManager: SplitScreenManager
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -66,7 +66,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
-  private var isCurrentQuestionStatePendingState: Boolean = false
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -169,9 +168,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
 
-  fun onHintAvailable(helpIndex: HelpIndex) {
+  fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     this.helpIndex = helpIndex
-    showHintsAndSolutions(helpIndex)
+    showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
   }
 
   private fun subscribeToCurrentQuestion() {
@@ -208,8 +207,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     updateEndSessionMessage(ephemeralQuestion.ephemeralState)
 
     currentQuestionState = ephemeralQuestion.ephemeralState.state
-    isCurrentQuestionStatePendingState =
-      ephemeralQuestion.ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE
 
     val isSplitView =
       splitScreenManager.shouldSplitScreen(ephemeralQuestion.ephemeralState.state.interaction.id)
@@ -363,8 +360,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun showHintsAndSolutions(helpIndex: HelpIndex) {
-    if (!isCurrentQuestionStatePendingState) {
+  private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+    if (!isCurrentStatePendingState) {
       // If current question state is not the pending top question state, hide the hint bulb.
       questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
       questionViewModel.setHintBulbVisibility(false)

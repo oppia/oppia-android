@@ -24,9 +24,7 @@ internal class QuestionAssessmentProgress {
   internal var questionSessionMetrics: MutableList<QuestionSessionMetrics> = mutableListOf()
 
   /** Initialize the assessment with the specified list of questions. */
-  internal fun initialize(
-    questionsList: List<Question>
-  ) {
+  internal fun initialize(questionsList: List<Question>) {
     advancePlayStageTo(TrainStage.VIEWING_STATE)
     this.questionsList = questionsList
     stateList.reset(questionsList)
