@@ -1,5 +1,6 @@
 package org.oppia.android.domain.state
 
+import android.util.Log
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
@@ -32,6 +33,22 @@ internal class StateDeck internal constructor(
     previousStates.clear()
     currentDialogInteractions.clear()
     stateIndex = 0
+  }
+
+  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
+  internal fun resumeDeck(
+    pendingTopState: State,
+    previousStates: List<EphemeralState>,
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int
+  ) {
+    this.pendingTopState = pendingTopState
+    Log.d("12345", "resumeDeck: ${pendingTopState.interaction.hintList.size}")
+    this.previousStates.clear()
+    this.currentDialogInteractions.clear()
+    this.previousStates.addAll(previousStates)
+    this.currentDialogInteractions.addAll(currentDialogInteractions)
+    this.stateIndex = stateIndex
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */

@@ -2,6 +2,7 @@ package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.hintsandsolution.HintHandler.HintMonitor
 
 /**
  * Handler for showing hints to the learner after a period of time in the event they submit a
@@ -47,6 +48,16 @@ import org.oppia.android.app.model.State
  * thread as it may introduce janky behavior.
  */
 interface HintHandler {
+
+  /**
+   * Restores the local variables of hint handler to the point when [ExplorationCheckpoint] was
+   * created.
+   *
+   * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
+   * @param helpIndex the [HelpIndex] saved in the checkpoint.
+   * @param hintCount the total number of hint available on the saved pending state
+   * */
+  fun restoreHintHandler(trackedWrongAnswerCount: Int, helpIndex: HelpIndex, hintCount: Int)
 
   /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after

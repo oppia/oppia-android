@@ -1,9 +1,12 @@
 package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.CheckpointState
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -23,7 +26,8 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var shouldSavePartialProgress: Boolean = false
-  internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+  internal lateinit var checkpointState: CheckpointState
+  internal lateinit var explorationCheckpoint: ExplorationCheckpoint
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
@@ -109,5 +113,67 @@ internal class ExplorationProgress {
 
     /** The controller is in the process of submitting an answer. */
     SUBMITTING_ANSWER
+  }
+
+  /** Loads [StateDeck] and [HintHandler] for the current exploration.
+   *
+   * @param exploration the current exploration
+   * @param hintHandler the [HintHandler] that will be used to show help
+   */
+  internal fun resetOrResumeExploration(exploration: Exploration, hintHandler: HintHandler) {
+    loadHintHandler(hintHandler)
+    loadStateDeckDeck(exploration)
+  }
+
+  /**
+   * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
+   * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
+   * re-initialized with the values created from the saved [ExplorationCheckpoint].
+   */
+  private fun loadStateDeckDeck(exploration: Exploration) {
+    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
+      stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
+    } else {
+      stateDeck.resumeDeck(
+        stateGraph.getState(explorationCheckpoint.pendingStateName),
+        getPreviousStatesFromCheckpoint(),
+        explorationCheckpoint.pendingUserAnswersList,
+        explorationCheckpoint.stateIndex
+      )
+    }
+  }
+
+  /**
+   * Initializes the variables of [HintHandler] if the exploration is being resumed, i.e.
+   * [ExplorationCheckpoint] is not of default instance type.
+   */
+  private fun loadHintHandler(hintHandler: HintHandler) {
+    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
+      // If exploration is not being resumed, do nothing.
+      return
+    }
+    hintHandler.restoreHintHandler(
+      explorationCheckpoint.pendingUserAnswersCount,
+      explorationCheckpoint.helpIndex,
+      stateGraph.getState(explorationCheckpoint.pendingStateName).interaction.hintCount
+    )
+  }
+
+  /**
+   * Creates a list of completed states from the saved [ExplorationCheckpoint].
+   *
+   * @return [List] of [EphemeralState]s containing all the states that were completed before the
+   *     checkpoint was created
+   */
+  private fun getPreviousStatesFromCheckpoint(): List<EphemeralState> {
+    return explorationCheckpoint.completedStatesInCheckpointList
+      .mapIndexed { index, state ->
+        EphemeralState.newBuilder()
+          .setState(stateGraph.getState(state.stateName))
+          .setHasPreviousState(index != 0)
+          .setCompletedState(state.completedState)
+          .setHasNextState(index != explorationCheckpoint.stateIndex)
+          .build()
+      }
   }
 }

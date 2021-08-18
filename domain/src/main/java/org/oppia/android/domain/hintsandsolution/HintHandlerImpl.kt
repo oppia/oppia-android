@@ -6,7 +6,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -33,11 +35,55 @@ class HintHandlerImpl private constructor(
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
 
+  override fun restoreHintHandler(
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    hintCount: Int
+  ) {
+    handlerLock.withLock {
+      this.trackedWrongAnswerCount = trackedWrongAnswerCount
+      when (helpIndex.indexTypeCase) {
+        AVAILABLE_NEXT_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.availableNextHintIndex - 1
+          latestAvailableHintIndex = helpIndex.availableNextHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        LATEST_REVEALED_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        SHOW_SOLUTION -> {
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          lastRevealedHintIndex = hintCount - 1
+          latestAvailableHintIndex = hintCount - 1
+          solutionIsAvailable = true
+          solutionIsRevealed = false
+        }
+        EVERYTHING_REVEALED -> {
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          lastRevealedHintIndex = hintCount - 1
+          latestAvailableHintIndex = hintCount - 1
+          solutionIsAvailable = true
+          solutionIsRevealed = true
+        }
+        else -> {
+          lastRevealedHintIndex = -1
+          latestAvailableHintIndex = -1
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+      }
+    }
+  }
+
   override fun startWatchingForHintsInNewState(state: State) {
     handlerLock.withLock {
       pendingState = state
       hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint(wrongAnswerCount = 0)
+      maybeScheduleShowHint(trackedWrongAnswerCount)
     }
   }
 
@@ -265,7 +311,8 @@ class HintHandlerImpl private constructor(
           latestAvailableHintIndex = nextHelpIndexToShow.availableNextHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
-        else -> {} // Nothing else to do.
+        else -> {
+        } // Nothing else to do.
       }
 
       // Only indicate the hint is available if its index is actually new (including if it

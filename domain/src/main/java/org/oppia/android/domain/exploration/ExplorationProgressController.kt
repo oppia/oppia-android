@@ -78,7 +78,8 @@ class ExplorationProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -92,6 +93,7 @@ class ExplorationProgressController @Inject constructor(
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
         checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+        this.explorationCheckpoint = explorationCheckpoint
       }
       hintHandler = hintHandlerFactory.create(this)
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
@@ -498,7 +500,7 @@ class ExplorationProgressController @Inject constructor(
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
-    progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+    progress.resetOrResumeExploration(exploration, hintHandler)
 
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
