@@ -599,7 +599,7 @@ class TopicFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      NetworkConnectionDebugUtilModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

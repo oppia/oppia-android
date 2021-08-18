@@ -1622,7 +1622,7 @@ class ExplorationActivityTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       TestExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      NetworkConnectionDebugUtilModule::class,
     ]
   )
 
