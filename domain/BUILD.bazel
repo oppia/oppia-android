@@ -142,6 +142,7 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

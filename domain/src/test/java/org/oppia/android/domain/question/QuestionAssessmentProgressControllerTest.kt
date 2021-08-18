@@ -67,6 +67,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -1880,7 +1881,8 @@ class QuestionAssessmentProgressControllerTest {
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class
+      CachingTestModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
