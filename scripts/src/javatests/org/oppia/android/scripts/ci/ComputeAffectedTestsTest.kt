@@ -278,6 +278,46 @@ class ComputeAffectedTestsTest {
     assertThat(reportedTargets).containsExactly("//:FirstTest", "//:ThirdTest")
   }
 
+  @Test
+  fun testUtility_featureBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitBasicTests("FirstTest", "SecondTest")
+    switchToFeatureBranch()
+    createBasicTests(
+      "InstrumentationTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+    )
+    createBasicTests("ThirdTest")
+    val reportedTargets = runScript()
+
+    assertThat(
+      reportedTargets
+    ).doesNotContain(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
+  }
+
+  @Test
+  fun testUtility_developBranch_instrumentationModuleChanged_instrumentationTargetsAreIgnored() {
+    initializeEmptyGitRepository()
+    createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
+    createBasicTests(
+      "InstrumentationTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+    )
+    createBasicTests(
+      "RobolectricTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.application"
+    )
+    val reportedTargets = runScript()
+
+    assertThat(
+      reportedTargets
+    ).doesNotContain(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
+  }
+
   /**
    * Runs the compute_affected_tests utility & returns all of the output lines. Note that the output
    * here is that which is saved directly to the output file, not debug lines printed to the

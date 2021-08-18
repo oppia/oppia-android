@@ -3339,6 +3339,36 @@
                 "url": "https://maven.google.com/androidx/test/ext/junit/1.1.1/junit-1.1.1-sources.jar"
             },
             {
+                "coord": "androidx.test.uiautomator:uiautomator:2.2.0",
+                "dependencies": [],
+                "directDependencies": [],
+                "file": "v1/https/maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar",
+                "mirror_urls": [
+                    "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar",
+                    "https://maven.fabric.io/public/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar",
+                    "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar"
+                ],
+                "sha256": "2838e9d961dbffefbbd229a2bd4f6f82ac4fb2462975862a9e75e9ed325a3197",
+                "url": "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0.aar"
+            },
+            {
+                "coord": "androidx.test.uiautomator:uiautomator:jar:sources:2.2.0",
+                "dependencies": [],
+                "directDependencies": [],
+                "file": "v1/https/maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar",
+                "mirror_urls": [
+                    "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar",
+                    "https://maven.fabric.io/public/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar",
+                    "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar"
+                ],
+                "sha256": "e1f438106ac0d26b80ecf4fd6ffe6d36f60e12bdcd6316903f802ed24d00be99",
+                "url": "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar"
+            },
+            {
                 "coord": "androidx.test:core:1.2.0",
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
