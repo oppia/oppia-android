@@ -69,8 +69,8 @@ class AnswerClassificationControllerTest {
     private val TEST_ITEM_SELECTION_SET_1 =
       createSetOfTranslatableHtmlContentIds("content_id_0", "content_id_2", "content_id_3")
 
-    private val TEST_MULTIPLE_CHOICE_OPTION_0 = createUnsingnedInteger(value = 0)
-    private val TEST_MULTIPLE_CHOICE_OPTION_1 = createUnsingnedInteger(value = 1)
+    private val TEST_MULTIPLE_CHOICE_OPTION_0 = createNonNegativeInteger(value = 0)
+    private val TEST_MULTIPLE_CHOICE_OPTION_1 = createNonNegativeInteger(value = 1)
 
     private val TEST_NUMBER_WITH_UNITS_0 = InteractionObject.newBuilder()
       .setNumberWithUnits(
