@@ -285,11 +285,11 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
+      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
     )
     createBasicTests("ThirdTest")
     val reportedTargets = runScript()
@@ -312,11 +312,11 @@ class ComputeAffectedTestsTest {
     createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
+      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
     )
     val reportedTargets = runScript()
 
