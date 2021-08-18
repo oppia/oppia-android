@@ -336,7 +336,7 @@ class QuestionTrainingControllerTest {
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
-      NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

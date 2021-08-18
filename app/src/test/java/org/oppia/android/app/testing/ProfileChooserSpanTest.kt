@@ -364,7 +364,7 @@ class ProfileChooserSpanTest {
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionDebugUtilModule::class
+      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -303,7 +303,7 @@ class SplashActivityTest {
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
       DeveloperOptionsModule::class, ExplorationStorageModule::class,
-      NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

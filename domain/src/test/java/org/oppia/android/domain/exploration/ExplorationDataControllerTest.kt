@@ -75,7 +75,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 
 /** Tests for [ExplorationDataController]. */
 @RunWith(AndroidJUnit4::class)
@@ -347,7 +346,7 @@ class ExplorationDataControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionModule::class, NetworkConnectionDebugUtilModule::class
+      HintsAndSolutionModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
