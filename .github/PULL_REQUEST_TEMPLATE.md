@@ -15,21 +15,10 @@
 - [ ] The PR is made from a branch that's **not** called "develop" and is up-to-date with "develop".
 - [ ] The PR is **assigned** to the appropriate reviewers ([reference](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#clarification-regarding-assignees-and-reviewers-section)).
 
-## Proof that changes are correct
-
-<!--
-Add videos/screenshots of the user-facing interface in various display sizes (mainly phone and tablet) in both LTR and RTL mode to demonstrate that the changes made in this PR work correctly.
-[Oppia Android RTL Guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines).
--->
-
 ## For UI-specific PRs only
 <!-- Delete these section if this PR does not include UI-related changes. -->
-
-### Espresso Test
-<!-- Add screenshots showing that all relevant Espresso tests are passing locally. -->
-
-### Accessibility Checks
-<!-- Explain how this PR has been tested for accessibility, or why doing so is not applicable. For more info, check out the [Oppia Android Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide). -->
-
-### How to test this PR?
-<!-- Please provide a list of the exact steps that the reviewer should perform in order to test this PR. -->
+If your change includes PR changes, then:
+- Add a video showing the full UX flow with a screen reader enabled (see [accessibility guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide))
+- Add screenshots for portrait/landscape for both a tablet & phone of the before & after UI changes (see screenshot guide)
+- For the screenshots above, include both English and pseudo-localized (RTL) screenshots (see [RTL guide](https://github.com/oppia/oppia-android/wiki/RTL-Guidelines))
+- Add a screenshot demonstrating that you ran affected Espresso tests locally & that they're passing
