@@ -19,6 +19,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -281,7 +282,7 @@ class HelpFragmentTest {
       )
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
     }
   }
@@ -825,7 +826,7 @@ class HelpFragmentTest {
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(isDisplayed())
@@ -865,7 +866,7 @@ class HelpFragmentTest {
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(isDisplayed())
@@ -917,7 +918,7 @@ class HelpFragmentTest {
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(isDisplayed())
@@ -969,7 +970,7 @@ class HelpFragmentTest {
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(isDisplayed())

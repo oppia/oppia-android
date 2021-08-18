@@ -36,10 +36,10 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?,
-  ): View? {
+    savedInstanceState: Bundle?
+  ): View {
     val args = checkNotNull(arguments) {
-      "Expected arguments to be passed to HelpFragment"
+      "Expected arguments to be passed to ThirdPartyDependencyListFragment"
     }
     val isMultipane = args.getBoolean(IS_MULTIPANE_KEY, false)
     return thirdPartyDependencyListFragmentPresenter.handleCreateView(

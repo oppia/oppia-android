@@ -20,10 +20,7 @@ class LicenseTextViewerFragment : InjectableFragment() {
       "LicenseTextViewerFragment.license_index"
 
     /** Returns an instance of [LicenseTextViewerFragment]. */
-    fun newInstance(
-      dependencyIndex: Int,
-      licenseIndex: Int,
-    ): LicenseTextViewerFragment {
+    fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
       val fragment = LicenseTextViewerFragment()
       val args = Bundle()
       args.putInt(LICENSE_TEXT_VIEWER_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)

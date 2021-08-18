@@ -252,20 +252,16 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = String.format(
-          activity.getString(
-            R.string.help_activity_back_arrow_description,
-            "third-party dependencies list"
-          )
+          .contentDescription = activity.getString(
+          R.string.help_activity_back_arrow_description,
+          "third-party dependencies list"
         )
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = String.format(
-          activity.getString(
-            R.string.help_activity_back_arrow_description,
-            "copyright licenses list"
-          )
+          .contentDescription = activity.getString(
+          R.string.help_activity_back_arrow_description,
+          "copyright licenses list"
         )
       }
     }
