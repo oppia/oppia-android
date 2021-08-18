@@ -7,7 +7,7 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionMonitor
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHandler
 import javax.inject.Inject
 
 /**
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(
   activity: AppCompatActivity,
-  private val showAllHintsAndSolutionMonitor: ShowAllHintsAndSolutionMonitor
+  private val showAllHintsAndSolutionHandler: ShowAllHintsAndSolutionHandler
 ) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
@@ -48,7 +48,7 @@ class DeveloperOptionsViewModel @Inject constructor(
       DeveloperOptionsOverrideAppBehaviorsViewModel(
         forceCrashButtonClickListener,
         routeToForceNetworkTypeListener,
-        showAllHintsAndSolutionMonitor
+        showAllHintsAndSolutionHandler
       )
     )
   }

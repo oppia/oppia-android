@@ -3,7 +3,7 @@ package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
-import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionMonitor
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHandler
 
 /**
  * [DeveloperOptionsItemViewModel] to provide features to override app wide behaviors such as
@@ -12,11 +12,11 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionMonitor
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
-  private val showAllHintsAndSolutionMonitor: ShowAllHintsAndSolutionMonitor
+  private val showAllHintsAndSolutionHandler: ShowAllHintsAndSolutionHandler
 ) : DeveloperOptionsItemViewModel() {
 
   val isShowAllHintsAndSolutionEnabled =
-    ObservableField<Boolean>(showAllHintsAndSolutionMonitor.getShowAllHintsAndSolution())
+    ObservableField<Boolean>(showAllHintsAndSolutionHandler.getShowAllHintsAndSolution())
 
   /** Called when the 'force crash' button is clicked by the user. */
   fun onForceCrashClicked() {
@@ -33,11 +33,11 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
    * Enables or disables the feature to show all hints and solution.
    */
   fun onShowAllHintsAndSolutionClicked() {
-    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(
-      !(showAllHintsAndSolutionMonitor.getShowAllHintsAndSolution())
+    showAllHintsAndSolutionHandler.setShowAllHintsAndSolution(
+      !(showAllHintsAndSolutionHandler.getShowAllHintsAndSolution())
     )
     isShowAllHintsAndSolutionEnabled.set(
-      showAllHintsAndSolutionMonitor.getShowAllHintsAndSolution()
+      showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()
     )
   }
 }
