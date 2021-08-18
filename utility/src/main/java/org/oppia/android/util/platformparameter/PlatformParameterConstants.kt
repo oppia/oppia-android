@@ -10,11 +10,29 @@ import javax.inject.Qualifier
  *  - Platform Parameter Default Value
  */
 
+/**
+ * Qualifier for the platform parameter that controls the visibility of splash screen welcome msg
+ * toast in the [SplashTestActivity].
+ */
 @Qualifier
 annotation class SplashScreenWelcomeMsg
 
+/**
+ * Name of the platform parameter that controls the visibility of splash screen welcome msg
+ * toast in the [SplashTestActivity].
+ */
 const val SPLASH_SCREEN_WELCOME_MSG = "splash_screen_welcome_msg"
+
+/**
+ * Default value of the platform parameter that controls the visibility of splash screen welcome msg
+ * toast in the [SplashTestActivity].
+ */
 const val SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE = false
+
+/**
+ * Server value of the platform parameter that controls the visibility of splash screen welcome msg
+ * toast in the [SplashTestActivity].
+ */
 const val SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE = true
 
 /**
