@@ -30,8 +30,21 @@ package_group(
         "//app/...",
         "//data/...",
         "//domain/...",
+        "//instrumentation/...",
         "//testing/...",
         "//utility/...",
+    ],
+)
+
+# Special visibility group specific to debug mode. This provides access to the target for both the
+# Oppia tests and specific debug only packages.
+package_group(
+    name = "oppia_debug_visibility",
+    includes = [
+        ":oppia_testing_visibility",
+    ],
+    packages = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/...",
     ],
 )
 
