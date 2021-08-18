@@ -38,6 +38,7 @@
       <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:scrollbars="none">
@@ -70,7 +71,7 @@
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
         </LinearLayout>
-        <!--TODO(#352): Show worked examples in Concept Card.-->
+        <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>
 
       <View
