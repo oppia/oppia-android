@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,6 +36,9 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [HintHandlerImpl]. */
 @Suppress("FunctionName")
@@ -192,9 +192,11 @@ class HintHandlerImplTest {
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   /* Tests for finishState */
@@ -284,9 +286,11 @@ class HintHandlerImplTest {
 
     // A new hint index should be revealed despite the entire previous state being completed (since
     // the handler has been reset).
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -371,9 +375,11 @@ class HintHandlerImplTest {
 
     waitFor60Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -399,9 +405,11 @@ class HintHandlerImplTest {
     hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
     hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -468,9 +476,11 @@ class HintHandlerImplTest {
 
     hintHandler.viewHint(hintIndex = 0)
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -509,9 +519,11 @@ class HintHandlerImplTest {
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 1
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -522,9 +534,11 @@ class HintHandlerImplTest {
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -536,9 +550,11 @@ class HintHandlerImplTest {
 
     triggerSolution()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -574,9 +590,11 @@ class HintHandlerImplTest {
 
     waitFor30Seconds()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -734,9 +752,11 @@ class HintHandlerImplTest {
 
     hintHandler.viewSolution()
 
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
   }
 
   @Test
@@ -925,9 +945,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -974,9 +996,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -988,9 +1012,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1002,9 +1028,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1015,9 +1043,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1029,9 +1059,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1043,9 +1075,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1057,9 +1091,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1072,9 +1108,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1088,9 +1126,11 @@ class HintHandlerImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
     // Multiple wrong answers do not force a hint to be shown except for the first hint.
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 0
+      }.build()
+    )
   }
 
   @Test
@@ -1104,9 +1144,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      availableNextHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        availableNextHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1117,9 +1159,11 @@ class HintHandlerImplTest {
     triggerAndRevealFirstHint()
 
     // All hints have been viewed for this state, so nothing remains.
-    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build())
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
   }
 
   @Test
@@ -1131,9 +1175,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1146,9 +1192,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1161,9 +1209,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1177,9 +1227,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
   }
 
   @Test
@@ -1192,9 +1244,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1208,9 +1262,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1225,9 +1281,11 @@ class HintHandlerImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
     // Multiple subsequent wrong answers only affects the first hint.
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        latestRevealedHintIndex = 1
+      }.build()
+    )
   }
 
   @Test
@@ -1242,9 +1300,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1287,9 +1347,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1336,9 +1398,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1350,9 +1414,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
   }
 
   @Test
@@ -1364,9 +1430,11 @@ class HintHandlerImplTest {
 
     val helpIndex = hintHandler.getCurrentHelpIndex()
 
-    assertThat(helpIndex).isEqualTo(HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build())
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
   }
 
   private fun Exploration.getInitialState(): State = statesMap.getValue(initStateName)
