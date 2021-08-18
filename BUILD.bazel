@@ -30,6 +30,7 @@ package_group(
         "//app/...",
         "//data/...",
         "//domain/...",
+        "//instrumentation/...",
         "//testing/...",
         "//utility/...",
     ],

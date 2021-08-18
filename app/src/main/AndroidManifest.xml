@@ -247,6 +247,13 @@
     <activity
       android:name=".app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.forcenetworktype.ForceNetworkTypeActivity"
+      android:label="@string/force_network_type_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"
