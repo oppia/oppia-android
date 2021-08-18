@@ -54,6 +54,9 @@ gradlew.bat @BenHenning
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
 
+# App UI strings.
+/app/src/main/res/values*/strings.xml @BenHenning
+
 # Proguard configuration.
 *.pro @BenHenning
 
@@ -195,6 +198,14 @@ NOTICE @BenHenning
 
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
+
+
+#####################################################################################
+#                                  instrumentation                                  #
+#####################################################################################
+
+# End-to-end test utilities and modules.
+/instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #
