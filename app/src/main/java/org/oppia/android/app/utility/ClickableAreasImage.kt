@@ -10,6 +10,8 @@ import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 /**
@@ -29,6 +31,9 @@ class ClickableAreasImage(
       return@setOnTouchListener false
     }
   }
+
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
 
   /**
    * Called when an image is clicked.
@@ -70,7 +75,7 @@ class ClickableAreasImage(
   }
 
   private fun getImageViewContentWidth(): Int {
-    return imageView.width - imageView.paddingLeft - imageView.paddingRight
+    return imageView.width - imageView.paddingStart - imageView.paddingEnd
   }
 
   private fun getImageViewContentHeight(): Int {
@@ -81,7 +86,16 @@ class ClickableAreasImage(
   fun addRegionViews() {
     parentView.let {
       if (it.childCount > 2) {
-        it.removeViews(2, it.childCount - 1) // remove all other views
+        try {
+          it.removeViews(2, it.childCount - 1) // remove all other views
+        } catch (e: IndexOutOfBoundsException) {
+          if (::oppiaLogger.isInitialized)
+            oppiaLogger.e(
+              "ClickableAreaImage",
+              "Throws exception on Index out of bound",
+              e
+            )
+        }
       }
       imageView.getClickableAreas().forEach { clickableArea ->
         val imageRect = RectF(

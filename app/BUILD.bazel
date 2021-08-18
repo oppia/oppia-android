@@ -62,11 +62,14 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
+    "src/main/java/org/oppia/android/app/devoptions/RouteToForceNetworkTypeListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkChaptersCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkStoriesCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadFaqListFragmentListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadThirdPartyDependencyListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToThirdPartyDependencyListListener.kt",
     "src/main/java/org/oppia/android/app/help/faq/RouteToFAQSingleListener.kt",
@@ -136,6 +139,7 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/FAQListViewModel.kt",
@@ -184,6 +188,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsOverrideAppBehaviorsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsViewLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/NetworkTypeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt",
@@ -200,6 +205,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItems.kt",
+    "src/main/java/org/oppia/android/app/help/HelpViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyItemViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
@@ -604,6 +610,9 @@ kt_android_library(
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
+        # we can then directly exclude debug files from the build and thus won't be requiring this module.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
     ],
 )
 
@@ -672,6 +681,8 @@ kt_android_library(
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
     ],
 )

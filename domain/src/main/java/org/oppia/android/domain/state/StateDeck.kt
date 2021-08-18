@@ -6,9 +6,7 @@ import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.PendingState
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -26,8 +24,6 @@ internal class StateDeck internal constructor(
   private var pendingTopState: State = initialState
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
-  private val hintList: MutableList<Hint> = ArrayList()
-  private lateinit var solution: Solution
   private var stateIndex: Int = 0
 
   /** Resets this deck to a new, specified initial [State]. */
@@ -35,24 +31,7 @@ internal class StateDeck internal constructor(
     pendingTopState = initialState
     previousStates.clear()
     currentDialogInteractions.clear()
-    hintList.clear()
     stateIndex = 0
-  }
-
-  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
-  internal fun resumeDeck(
-    pendingTopState: State,
-    previousStates: List<EphemeralState>,
-    currentDialogInteractions: List<AnswerAndResponse>,
-    stateIndex: Int
-  ) {
-    this.pendingTopState = pendingTopState
-    this.previousStates.clear()
-    this.currentDialogInteractions.clear()
-    this.hintList.clear()
-    this.previousStates.addAll(previousStates)
-    this.currentDialogInteractions.addAll(currentDialogInteractions)
-    this.stateIndex = stateIndex
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
@@ -82,14 +61,22 @@ internal class StateDeck internal constructor(
   /** Returns the index of the current selected card of the deck. */
   internal fun getTopStateIndex(): Int = stateIndex
 
+  /** Returns the current [State] being viewed by the learner. */
+  internal fun getCurrentState(): State {
+    return when {
+      isCurrentStateTopOfDeck() -> pendingTopState
+      else -> previousStates[stateIndex].state
+    }
+  }
+
   /** Returns the current [EphemeralState] the learner is viewing. */
-  internal fun getCurrentEphemeralState(): EphemeralState {
+  internal fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
     // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
     // the second case assumes the top of the deck must be pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      stateIndex == previousStates.size -> getCurrentPendingState()
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex)
       else -> getPreviousState()
     }
   }
@@ -125,40 +112,7 @@ internal class StateDeck internal constructor(
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
       .build()
     currentDialogInteractions.clear()
-    hintList.clear()
     pendingTopState = state
-  }
-
-  internal fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
-    val interactionBuilder = state.interaction.toBuilder().setHint(
-      hintIndex,
-      hintList.get(0)
-    )
-    val newState = state.toBuilder().setInteraction(interactionBuilder).build()
-    val ephemeralState = EphemeralState.newBuilder()
-      .setState(newState)
-      .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(
-        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
-      )
-      .build()
-    pendingTopState = newState
-    hintList.clear()
-    return ephemeralState
-  }
-
-  internal fun pushStateForSolution(state: State): EphemeralState {
-    val interactionBuilder = state.interaction.toBuilder().setSolution(solution)
-    val newState = state.toBuilder().setInteraction(interactionBuilder).build()
-    val ephemeralState = EphemeralState.newBuilder()
-      .setState(newState)
-      .setHasPreviousState(!isCurrentStateInitial())
-      .setPendingState(
-        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
-      )
-      .build()
-    pendingTopState = newState
-    return ephemeralState
   }
 
   /**
@@ -175,31 +129,15 @@ internal class StateDeck internal constructor(
       .build()
   }
 
-  internal fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
-    hintList += Hint.newBuilder()
-      .setHintIsRevealed(hintIsRevealed)
-      .setHintContent(state.interaction.getHint(hintIndex).hintContent)
-      .build()
-  }
-
-  internal fun submitSolutionRevealed(state: State) {
-    solution = Solution.newBuilder()
-      .setSolutionIsRevealed(true)
-      .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
-      .setCorrectAnswer(state.interaction.solution.correctAnswer)
-      .setExplanation(state.interaction.solution.explanation)
-      .build()
-  }
-
   /**
    * Returns an [ExplorationCheckpoint] which contains all the latest values of variables of the
    * [StateDeck] that are used in light weight checkpointing.
    */
   internal fun createExplorationCheckpoint(
-    helpIndex: HelpIndex,
     explorationVersion: Int,
     explorationTitle: String,
-    timestamp: Long
+    timestamp: Long,
+    helpIndex: HelpIndex
   ): ExplorationCheckpoint {
     return ExplorationCheckpoint.newBuilder().apply {
       addAllCompletedStatesInCheckpoint(
@@ -213,19 +151,21 @@ internal class StateDeck internal constructor(
       pendingStateName = pendingTopState.name
       addAllPendingUserAnswers(currentDialogInteractions)
       this.stateIndex = this@StateDeck.stateIndex
-      this.helpIndex = helpIndex
       this.explorationVersion = explorationVersion
       this.explorationTitle = explorationTitle
       timestampOfFirstCheckpoint = timestamp
+      this.helpIndex = helpIndex
     }.build()
   }
 
-  private fun getCurrentPendingState(): EphemeralState {
+  private fun getCurrentPendingState(helpIndex: HelpIndex): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setPendingState(
-        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+        PendingState.newBuilder()
+          .addAllWrongAnswer(currentDialogInteractions)
+          .setHelpIndex(helpIndex)
       )
       .build()
   }

@@ -122,8 +122,8 @@ class StateFragment :
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    stateFragmentPresenter.revealHint(hintIndex)
   }
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()
