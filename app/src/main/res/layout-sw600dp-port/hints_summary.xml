@@ -15,15 +15,10 @@
       type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
   </data>
 
-  <LinearLayout
-    android:id="@+id/hint_summary_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="64dp"
       android:layout_marginStart="128dp"
       android:layout_marginEnd="128dp"
       android:paddingBottom="4dp">
@@ -39,7 +34,8 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextFieldLabel"/>
 
       <Button
         android:id="@+id/reveal_hint_button"
@@ -82,26 +78,26 @@
           app:isRotationAnimationClockwise="@{isListExpanded}"
           app:rotationAnimationAngle="@{180f}" />
       </FrameLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-      android:id="@+id/hint_list_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="128dp"
-      android:layout_marginEnd="128dp"
-      android:layout_marginBottom="32dp"
-      android:orientation="vertical"
-      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
-
-      <TextView
-        android:id="@+id/hints_and_solution_summary"
-        android:layout_width="wrap_content"
+      <LinearLayout
+        android:id="@+id/hint_list_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp" />
-    </LinearLayout>
-  </LinearLayout>
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/reveal_hint_button"
+        android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+
+        <TextView
+          android:id="@+id/hints_and_solution_summary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:fontFamily="sans-serif"
+          android:textColor="@color/oppiaPrimaryText"
+          android:textSize="16sp"
+          style="@style/Body"/>
+      </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
