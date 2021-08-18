@@ -16,6 +16,12 @@ class RepositoryFile() {
       "bazel-oppia-android",
       "bazel-out",
       "bazel-testlogs",
+      "app/build/",
+      "data/build/",
+      "domain/build/",
+      "model/build/",
+      "testing/build/",
+      "utility/build/",
     )
 
     /**
@@ -51,7 +57,13 @@ class RepositoryFile() {
      * @return whether the specified path should be analyzed per allow rules
      */
     private fun checkIfProhibitedFile(pathString: String): Boolean {
-      return alwaysExcludeDirectoryList.any { pathString.startsWith(it) }
+      return alwaysExcludeDirectoryList.any {
+        if (it.endsWith("/")) {
+          pathString.startsWith("$it")
+        } else {
+          pathString.startsWith("$it/")
+        }
+      }
     }
 
     /**
