@@ -2283,7 +2283,7 @@ class StoryProgressTestHelperTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionDebugUtilModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

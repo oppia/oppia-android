@@ -336,10 +336,12 @@ message AnswerOutcome {
 
 // A structure corresponding to the index of a hint or solution in a state. This structure is set up
 // to properly account for variable numbers of hints, for cases when only a solution or no solution
-// exists, and for when there are no hints or solutions.
+// exists, and for when there are no hints or solutions. This structure represents the entire state
+// needed to determine which hints can be shown, have been seen, whether the solution can be shown,
+// and whether the solution has been seen.
 message HelpIndex {
-  // Deprecated HINT_INDEX because it is now split in two, latest_revealed_hint_index and
-  // available_next_hint_index.
+  // Deprecated hint index. This is now available via the two hint index fields below (which provide
+  // additional context on whether the hint has been revealed).
   reserved 1;
 
   // This type is uninitialized in cases when no index is currently available (either because a hint
@@ -349,13 +351,6 @@ message HelpIndex {
     // no importance and is always 'true'.
     bool show_solution = 2;
 
-    // Indicates that everything available has been revealed. Note that this is different than the
-    // case when there are no hints or solutions to trigger, even though the resulting behavior may
-    // be different. This case specifically indicates that all hints and the solution, if present,
-    // have been revealed and there's no other help to provide. The boolean value here has no
-    // importance and is always 'true'.
-    bool everything_revealed = 3;
-
     // Indicates this help index corresponds to the index of the next available hint within the hint
     // list of a state.
     int32 available_next_hint_index = 4;
@@ -363,6 +358,13 @@ message HelpIndex {
     // Indicates this help index corresponds to the index of the last revealed hint within the hint
     // list of a state.
     int32 latest_revealed_hint_index = 5;
+
+    // Indicates that everything available has been revealed. Note that this is different than the
+    // case when there are no hints or solutions to trigger, even though the resulting behavior may
+    // be different. This case specifically indicates that all hints and the solution, if present,
+    // have been revealed and there's no other help to provide. The boolean value here has no
+    // importance and is always 'true'.
+    bool everything_revealed = 3;
   }
 }
 

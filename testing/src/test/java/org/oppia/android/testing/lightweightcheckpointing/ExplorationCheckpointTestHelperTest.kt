@@ -172,7 +172,7 @@ class ExplorationCheckpointTestHelperTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionDebugUtilModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
