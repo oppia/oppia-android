@@ -35,6 +35,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -169,7 +170,7 @@ class PlatformParameterControllerTest {
   }
 
   @Test
-  fun testController_noPreviousDatabase_performUpdateOperation_checkAsyncResult() {
+  fun testController_noPreviousDatabase_performUpdateOperation_returnsSuccess() {
     setUpTestApplicationComponent()
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
       .toLiveData().observeForever(mockObserverForAny)
@@ -181,7 +182,7 @@ class PlatformParameterControllerTest {
   }
 
   @Test
-  fun testController_existingDatabase_performUpdateOperation_checkAsyncResult() {
+  fun testController_existingDatabase_performUpdateOperation_returnsSuccess() {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
@@ -265,7 +266,7 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class,
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

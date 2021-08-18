@@ -9,7 +9,7 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriod
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
 /* Dagger module that provides values for individual Platform Parameters. */
 @Module
@@ -30,7 +30,7 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @SyncUpWorkerTimePeriod
+  @SyncUpWorkerTimePeriodHours
   fun provideSyncUpWorkerTimePeriod(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
