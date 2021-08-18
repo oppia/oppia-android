@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
@@ -19,7 +20,8 @@ class DeveloperOptionsActivity :
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
-  RouteToViewEventLogsListener {
+  RouteToViewEventLogsListener,
+  RouteToForceNetworkTypeListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -57,6 +59,10 @@ class DeveloperOptionsActivity :
 
   override fun routeToViewEventLogs() {
     startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
+  }
+
+  override fun routeToForceNetworkType() {
+    startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
   }
 
   companion object {
