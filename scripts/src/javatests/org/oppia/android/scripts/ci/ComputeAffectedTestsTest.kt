@@ -316,10 +316,6 @@ class ComputeAffectedTestsTest {
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.application"
-    )
-    createBasicTests(
-      "RobolectricTest",
       subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
     )
     val reportedTargets = runScript()
