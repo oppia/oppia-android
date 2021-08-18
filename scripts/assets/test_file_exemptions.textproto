@@ -543,6 +543,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rule
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput/NumericInputRuleModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput/RatioInputModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputRuleModule.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/devoptions/ShowAllHintsAndSolutionHelper.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgress.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationCheckpointState.kt"

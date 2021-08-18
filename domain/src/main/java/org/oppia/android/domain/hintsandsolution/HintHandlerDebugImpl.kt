@@ -2,7 +2,7 @@ package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHandler
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHelper
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
@@ -10,14 +10,14 @@ import kotlin.concurrent.withLock
 /** Debug implementation of [HintHandler]. */
 class HintHandlerDebugImpl private constructor(
   private val hintHandlerProdImpl: HintHandlerProdImpl,
-  private val showAllHintsAndSolutionHandler: ShowAllHintsAndSolutionHandler,
+  private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper,
   private val hintMonitor: HintHandler.HintMonitor
 ) : HintHandler {
 
   private val handlerLock = ReentrantLock()
 
   override fun startWatchingForHintsInNewState(state: State) {
-    if (!showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()) {
+    if (!showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.startWatchingForHintsInNewState(state)
     } else {
       handlerLock.withLock {
@@ -29,7 +29,7 @@ class HintHandlerDebugImpl private constructor(
   }
 
   override fun finishState(newState: State) {
-    if (!showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()) {
+    if (!showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.finishState(newState)
     } else {
       handlerLock.withLock {
@@ -40,13 +40,13 @@ class HintHandlerDebugImpl private constructor(
   }
 
   override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {
-    if (!showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()) {
+    if (!showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.handleWrongAnswerSubmission(wrongAnswerCount)
     }
   }
 
   override fun viewHint(hintIndex: Int) {
-    if (!showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()) {
+    if (!showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.viewHint(hintIndex)
     } else {
       handlerLock.withLock {
@@ -76,7 +76,7 @@ class HintHandlerDebugImpl private constructor(
   }
 
   override fun navigateBackToLatestPendingState() {
-    if (!showAllHintsAndSolutionHandler.getShowAllHintsAndSolution()) {
+    if (!showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.navigateBackToLatestPendingState()
     }
   }
@@ -106,14 +106,14 @@ class HintHandlerDebugImpl private constructor(
   /** Debug implementation of [HintHandler.Factory]. */
   class FactoryImpl @Inject constructor(
     private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryImpl,
-    private val showAllHintsAndSolutionHandler: ShowAllHintsAndSolutionHandler
+    private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
       val hintHandlerProdImpl: HintHandlerProdImpl =
         hintHandlerProdImplFactory.create(hintMonitor) as HintHandlerProdImpl
       return HintHandlerDebugImpl(
         hintHandlerProdImpl,
-        showAllHintsAndSolutionHandler,
+        showAllHintsAndSolutionHelper,
         hintMonitor
       )
     }

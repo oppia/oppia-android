@@ -5,7 +5,7 @@ import javax.inject.Singleton
 
 /** Monitor to identify whether all hints and solution should be shown. */
 @Singleton
-class ShowAllHintsAndSolutionHandler @Inject constructor() {
+class ShowAllHintsAndSolutionHelper @Inject constructor() {
 
   private var showAllHintsAndSolution = false
 
