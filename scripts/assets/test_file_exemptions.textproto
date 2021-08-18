@@ -543,6 +543,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolut
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowInitialHintMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigFastShowTestModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigModule.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandler.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/ExpirationMetaDataRetriever.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/ExpirationMetaDataRetrieverImpl.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/ExpirationMetaDataRetrieverModule.kt"

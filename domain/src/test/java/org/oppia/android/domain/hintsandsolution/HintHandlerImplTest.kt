@@ -1,10 +1,10 @@
 package org.oppia.android.domain.hintsandsolution
 
-import com.google.common.truth.Truth.assertThat
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -26,36 +26,17 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.classify.InteractionsModule
-import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
-import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
-import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
-import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
-import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
-import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
-import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
-import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
-import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationRetriever
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
-import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -1440,28 +1421,7 @@ class HintHandlerImplTest {
   @Module
   class TestModule {
     @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    //  module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @TopicListToCache
-    fun provideTopicListToCache(): List<String> = listOf()
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @LoadLessonProtosFromAssets
@@ -1469,34 +1429,12 @@ class HintHandlerImplTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
-  @Module
-  class TestExplorationStorageModule {
-
-    /**
-     * Provides the size allocated to exploration checkpoint database.
-     *
-     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
-     *
-     * The size of checkpoint for the the first state in [TEST_EXPLORATION_ID_2] is equal to
-     * 150 Bytes, therefore the database will exceeded the allocated limit when the second
-     * checkpoint is stored for [TEST_EXPLORATION_ID_2]
-     */
-    @Provides
-    @ExplorationStorageDatabaseSize
-    fun provideExplorationStorageDatabaseSize(): Int = 150
-  }
-
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class
+      TestModule::class, HintsAndSolutionModule::class, HintsAndSolutionConfigModule::class,
+      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      LoggerModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
