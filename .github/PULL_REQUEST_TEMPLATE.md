@@ -32,3 +32,6 @@ Add videos/screenshots of the user-facing interface in various display sizes (ma
 
 ### Accessibility Checks
 <!-- Explain how this PR has been tested for accessibility, or why doing so is not applicable. For more info, check out the [Oppia Android Accessibility Guide](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide). -->
+
+### How to test this PR?
+<!-- Explain what exact steps reviewer should perform to test this PR. -->
