@@ -14,8 +14,8 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
-/** Implementation of [HintHandler]. */
-class HintHandlerImpl private constructor(
+/** Production implementation of [HintHandler]. */
+class HintHandlerProdImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
@@ -285,7 +285,7 @@ class HintHandlerImpl private constructor(
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
-      return HintHandlerImpl(
+      return HintHandlerProdImpl(
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs,

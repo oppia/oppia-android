@@ -22,12 +22,12 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [HintsAndSolutionModule]. */
+/** Tests for [HintsAndSolutionProdModule]. */
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = HintsAndSolutionModuleTest.TestApplication::class)
-class HintsAndSolutionModuleTest {
+@Config(application = HintsAndSolutionProdModuleTest.TestApplication::class)
+class HintsAndSolutionProdModuleTest {
   @Inject
   lateinit var hintHandlerFactory: HintHandler.Factory
 
@@ -42,7 +42,7 @@ class HintsAndSolutionModuleTest {
       override fun onHelpIndexChanged() {}
     })
 
-    assertThat(hintHandler).isInstanceOf(HintHandlerImpl::class.java)
+    assertThat(hintHandler).isInstanceOf(HintHandlerProdImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -59,7 +59,7 @@ class HintsAndSolutionModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionModule::class, HintsAndSolutionConfigModule::class,
+      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
     ]
   )
@@ -72,17 +72,17 @@ class HintsAndSolutionModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionModuleTest)
+    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintsAndSolutionModuleTest_TestApplicationComponent.builder()
+      DaggerHintsAndSolutionProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionModuleTest) {
+    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest) {
       component.inject(hintsAndSolutionModuleTest)
     }
 
