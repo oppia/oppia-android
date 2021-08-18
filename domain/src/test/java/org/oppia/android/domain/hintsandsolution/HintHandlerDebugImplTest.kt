@@ -4,25 +4,21 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
-import com.google.common.truth.extensions.proto.LiteProtoTruth
+import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Exploration
@@ -42,6 +38,9 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [HintHandlerDebugImpl]. */
 @Suppress("FunctionName")
@@ -118,6 +117,17 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_callsMonitor() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithNoHintsOrSolution.getInitialState()
+
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    verify(mockHintMonitor).onHelpIndexChanged()
+  }
+
+  @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
@@ -129,7 +139,18 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_wait60Seconds_monitorNotCalledAgain() {
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_helpIndexIsEmpty() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithNoHintsOrSolution.getInitialState()
+
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_wait60Seconds_monitorNotCalledAgain() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsOrSolution.getInitialState()
@@ -138,11 +159,11 @@ class HintHandlerDebugImplTest {
 
     waitFor60Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_wait60Seconds_helpIndexIsEmpty() {
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_wait60Seconds_helpIndexIsEmpty() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsOrSolution.getInitialState()
@@ -165,6 +186,19 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_callsMonitor() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    // This will be called multiple times as we are showing all helps and thus on every help
+    // revealed, this function is called.
+    verify(mockHintMonitor, atLeast(1)).onHelpIndexChanged()
+  }
+
+  @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
@@ -176,7 +210,22 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait10Seconds_doesNotCallMonitorAgain() {
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait10Seconds_doesNotCallMonitorAgain() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -185,11 +234,11 @@ class HintHandlerDebugImplTest {
 
     waitFor10Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait30Seconds_doesNotCallMonitorAgain() {
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait30Seconds_doesNotCallMonitorAgain() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -198,11 +247,11 @@ class HintHandlerDebugImplTest {
 
     waitFor30Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait60Seconds_callsMonitorAgain() {
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait60Seconds_callsMonitorAgain() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -216,7 +265,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait60Seconds_firstHintIsAvailable() {
+  fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_wait60Seconds_firstHintIsAvailable() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -248,8 +297,35 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
+  fun testFinishState_showAllHelpsEnabled_defaultState_callsMonitor() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    reset(mockHintMonitor)
+
+    // Simulate the default instance case (which can occur specifically for questions).
+    hintHandler.finishState(State.getDefaultInstance())
+
+    verify(mockHintMonitor).onHelpIndexChanged()
+  }
+
+  @Test
   fun testFinishState_showAllHelpsDisabled_defaultState_helpIndexIsEmpty() {
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    // Simulate the default instance case (which can occur specifically for questions).
+    hintHandler.finishState(State.getDefaultInstance())
+
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testFinishState_showAllHelpsEnabled_defaultState_helpIndexIsEmpty() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -271,7 +347,7 @@ class HintHandlerDebugImplTest {
 
     waitFor60Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -305,6 +381,25 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
+  fun testFinishState_showAllHelpsEnabled_newStateWithHints_allHelpsAreRevealed() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    // Note that this is slightly suspect: normally, a state would be sourced from an independent
+    // question or from the same exploration. This tactic is taken to simplify the data structure
+    // requirements for the test, and because it should be more or less functionally equivalent.
+    hintHandler.finishState(expWithOneHintAndNoSolution.getInitialState())
+
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
+  @Test
   fun testFinishState_showAllHelpsDisabled_newStateWithHints_wait60Seconds_callsMonitorAgain() {
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
@@ -320,7 +415,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testFinishState_showAllHelpsDisabled_previousStateFullyRevealed_newStateWithHints_wait60Seconds_indexHasNewHint() {
+  fun testFinishState_showAllHelpsDisabled_previousStateFullyRevealed_newStateWithHints_wait60Seconds_indexHasNewHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -340,7 +435,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testFinishState_showAllHelpsDisabled_newStateWithoutHints_wait60Seconds_doesNotCallMonitorAgain() {
+  fun testFinishState_showAllHelpsDisabled_newStateWithoutHints_wait60Seconds_doesNotCallMonitorAgain() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -352,7 +447,7 @@ class HintHandlerDebugImplTest {
     waitFor60Seconds()
 
     // Since the new state doesn't have any hints, the index will not change.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   /* Tests for handleWrongAnswerSubmission */
@@ -367,7 +462,20 @@ class HintHandlerDebugImplTest {
 
     hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
+  }
+
+  @Test
+  fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_monitorNotCalled() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    reset(mockHintMonitor)
+
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -383,7 +491,23 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait10seconds_monitorNotCalled() {
+  fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+
+    assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait10seconds_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -393,11 +517,11 @@ class HintHandlerDebugImplTest {
 
     waitFor10Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait30seconds_monitorNotCalled() {
+  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait30seconds_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -407,7 +531,7 @@ class HintHandlerDebugImplTest {
 
     waitFor30Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -426,7 +550,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait60seconds_helpIndexHasAvailableHint() {
+  fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_wait60seconds_helpIndexHasAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -459,7 +583,24 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testWrongAnswerSubmission_showAllHelpsDisabled_twice_stateWithHints_helpIndexHasAvailableHint() {
+  fun testWrongAnswerSubmission_showAllHelpsEnabled_twice_stateWithHints_monitorNotCalled() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    reset(mockHintMonitor)
+
+    // Simulate two answers being submitted subsequently.
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+
+    // The monitor here is not called because all helps are already revealed and thus there is no
+    // new interaction on submitting wrong answer.
+    verifyNoMoreInteractions(mockHintMonitor)
+  }
+
+  @Test
+  fun testWrongAnswerSubmission_showAllHelpsDisabled_twice_stateWithHints_helpIndexHasAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -489,7 +630,7 @@ class HintHandlerDebugImplTest {
     hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
 
     // No notification should happen since the state doesn't have any hints.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -521,7 +662,22 @@ class HintHandlerDebugImplTest {
     }
 
     // No hint is available to reveal.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
+  }
+
+  @Test
+  fun testViewHint_showAllHelpsEnabled_noHintAvailable_throwsException() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hintHandler.viewHint(hintIndex = 0)
+    }
+
+    // No hint is available to reveal.
+    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
   }
 
   @Test
@@ -537,6 +693,26 @@ class HintHandlerDebugImplTest {
 
     // Viewing the hint should trigger a change in the help index.
     verify(mockHintMonitor).onHelpIndexChanged()
+  }
+
+  @Test
+  fun testViewHint_showAllHelpsEnabled_hintAvailable_throwsException() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    triggerFirstHint()
+    reset(mockHintMonitor)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hintHandler.viewHint(hintIndex = 0)
+    }
+
+    // The exception is thrown because all helps are already revealed when we loaded the state and
+    // thus calling 'viewHint' on the HelpIndex state EVERYTHING_REVEALED throws exception.
+    assertThat(exception).hasMessageThat().contains(
+      "Cannot reveal hint for current index: EVERYTHING_REVEALED"
+    )
   }
 
   @Test
@@ -558,7 +734,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_wait10Seconds_monitorNotCalled() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_wait10Seconds_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -569,7 +745,7 @@ class HintHandlerDebugImplTest {
 
     waitFor10Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -589,7 +765,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_wait30Seconds_helpIndexHasNewAvailableHint() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_wait30Seconds_helpIndexHasNewAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -607,7 +783,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_allHintsRevealed_indexShowsLastRevealedHint() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_multiHintState_allHintsRevealed_indexShowsLastRevealedHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -624,7 +800,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_multiHintState_allHintsRevealed_triggerSolution_indexShowsSolution() {
+  fun testViewHint_showAllHelpsDisabled_multiHintState_allHintsRevealed_triggerSolution_indexShowsSolution() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -642,7 +818,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait10Sec_monitorNotCalled() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait10Sec_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithOneHintAndSolution.getInitialState()
@@ -652,11 +828,11 @@ class HintHandlerDebugImplTest {
 
     waitFor10Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait30Sec_monitorCalled() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait30Sec_monitorCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithOneHintAndSolution.getInitialState()
@@ -671,7 +847,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait30Sec_indexShowsSolution() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_withSolution_wait30Sec_indexShowsSolution() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithOneHintAndSolution.getInitialState()
@@ -688,7 +864,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_noSolution_wait10Sec_monitorNotCalled() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_noSolution_wait10Sec_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithOneHintAndNoSolution.getInitialState()
@@ -698,11 +874,11 @@ class HintHandlerDebugImplTest {
 
     waitFor10Seconds()
 
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_noSolution_wait30Sec_monitorNotCalled() {
+  fun testViewHint_showAllHelpsDisabled_hintAvailable_oneHintState_noSolution_wait30Sec_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithOneHintAndNoSolution.getInitialState()
@@ -713,7 +889,7 @@ class HintHandlerDebugImplTest {
     waitFor30Seconds()
 
     // The index is still unchanged since there's nothing left to see.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -729,7 +905,7 @@ class HintHandlerDebugImplTest {
     }
 
     // No hint is available to reveal since it's already been revealed.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
   }
 
   @Test
@@ -746,7 +922,7 @@ class HintHandlerDebugImplTest {
     }
 
     // No hint is available to reveal since all hints have been revealed.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
   }
 
   @Test
@@ -764,7 +940,7 @@ class HintHandlerDebugImplTest {
     }
 
     // No hint is available to reveal since everything has been revealed.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
   }
 
   /* Tests for viewSolution */
@@ -781,7 +957,40 @@ class HintHandlerDebugImplTest {
     }
 
     // The solution is not yet available to be seen (no hints have been viewed).
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+  }
+
+  @Test
+  fun testViewSolution_showAllHelpsEnabled_nothingAvailable_throwsException() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hintHandler.viewSolution()
+    }
+
+    // The solution is not yet available to be seen (no hints have been viewed).
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+  }
+
+  @Test
+  fun testViewSolution_showAllHelpsEnabled_solutionAvailable_throwsException() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      hintHandler.viewSolution()
+    }
+
+    // The exception is thrown because all helps are already revealed when we loaded the state and
+    // thus calling 'viewSolution' on the HelpIndex state EVERYTHING_REVEALED throws exception.
+    assertThat(exception).hasMessageThat().contains(
+      "Cannot reveal solution for current index: EVERYTHING_REVEALED"
+    )
   }
 
   @Test
@@ -797,7 +1006,7 @@ class HintHandlerDebugImplTest {
     }
 
     // The solution is not yet available to be seen (one hint is available, but hasn't been viewed).
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
   }
 
   @Test
@@ -814,7 +1023,7 @@ class HintHandlerDebugImplTest {
 
     // The solution is not yet available to be seen (one hint was viewed, but the solution isn't
     // available yet).
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
   }
 
   @Test
@@ -832,7 +1041,7 @@ class HintHandlerDebugImplTest {
 
     // The solution is not yet available to be seen since the user hasn't triggered the solution to
     // actually show up.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
   }
 
   @Test
@@ -886,7 +1095,7 @@ class HintHandlerDebugImplTest {
     waitFor10Seconds()
 
     // There's nothing left to be revealed.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -904,7 +1113,7 @@ class HintHandlerDebugImplTest {
     waitFor30Seconds()
 
     // There's nothing left to be revealed.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -922,7 +1131,7 @@ class HintHandlerDebugImplTest {
     waitFor60Seconds()
 
     // There's nothing left to be revealed.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
@@ -940,7 +1149,7 @@ class HintHandlerDebugImplTest {
     }
 
     // The solution has already been revealed.
-    Truth.assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
+    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
   }
 
   /* Tests for navigateToPreviousState */
@@ -957,11 +1166,26 @@ class HintHandlerDebugImplTest {
     waitFor60Seconds()
 
     // The monitor should not be called since the user navigated away from the pending state.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testNavigateToPreviousState_showAllHelpsDisabled_multipleTimes_pendingHint_wait60Sec_monitorNotCalled() {
+  fun testNavigateToPreviousState_showAllHelpsEnabled_monitorNotCalled() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    reset(mockHintMonitor)
+
+    hintHandler.navigateToPreviousState()
+
+    // The monitor should not be called since the user navigated away from the pending state and all
+    // helps are already revealed and there is nothing to monitor now.
+    verifyNoMoreInteractions(mockHintMonitor)
+  }
+
+  @Test
+  fun testNavigateToPreviousState_showAllHelpsDisabled_multipleTimes_pendingHint_wait60Sec_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -975,13 +1199,47 @@ class HintHandlerDebugImplTest {
     waitFor60Seconds()
 
     // The monitor should not be called since the pending state isn't visible.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
+  }
+
+  @Test
+  fun testNavigateToPreviousState_showAllHelpsEnabled_multipleTimes_monitorNotCalled() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    reset(mockHintMonitor)
+
+    // Simulate navigating back three states.
+    hintHandler.navigateToPreviousState()
+    hintHandler.navigateToPreviousState()
+    hintHandler.navigateToPreviousState()
+
+    // The monitor should not be called since the pending state isn't visible and all helps are
+    // already revealed and there is nothing to monitor now.
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   /* Tests for navigateBackToLatestPendingState */
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_monitorNotCalled() {
+  fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPreviousState_monitorNotCalled() { // ktlint-disable max-line-length
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
+
+    val state = expWithHintsAndSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.navigateToPreviousState()
+    reset(mockHintMonitor)
+
+    hintHandler.navigateBackToLatestPendingState()
+
+    // The monitor should not be called after returning to the pending state as all helps are
+    // already revealed and there is nothing to monitor now.
+    verifyNoMoreInteractions(mockHintMonitor)
+  }
+
+  @Test
+  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -992,11 +1250,11 @@ class HintHandlerDebugImplTest {
     hintHandler.navigateBackToLatestPendingState()
 
     // The monitor should not be called immediately after returning to the pending state.
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_wait60Sec_monitorCalled() {
+  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_wait60Sec_monitorCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1012,7 +1270,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_waitRemainingTime_monitorNotCalled() {
+  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_waitRemainingTime_monitorNotCalled() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1026,7 +1284,7 @@ class HintHandlerDebugImplTest {
 
     // Waiting half the necessary time is insufficient to show the hint (since the timer is not
     // resumed, it's reset after returning the pending state).
-    Mockito.verifyNoMoreInteractions(mockHintMonitor)
+    verifyNoMoreInteractions(mockHintMonitor)
   }
 
   /*
@@ -1034,6 +1292,23 @@ class HintHandlerDebugImplTest {
    * with earlier tests). It's suggested to reference the state machine diagram laid out in
    * HintHandler's class KDoc when inspecting the following tests.
    */
+
+  @Test
+  fun testGetCurrentHelpIndex_showAllHelpsEnabled_initialState_allHelpsAreRevealed() {
+    showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = true)
+
+    val state = expWithHintsAndSolution.getInitialState()
+
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_initialState_isEmpty() {
@@ -1169,7 +1444,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_withAvailableHint_anotherWrongAnswer_hasSameAvailableHint() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_withAvailableHint_anotherWrongAnswer_hasSameAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1222,7 +1497,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_wait30Sec_hasNewAvailableHint() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_wait30Sec_hasNewAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1240,7 +1515,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_oneWrongAnswer_hasShownHintIndex() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_oneWrongAnswer_hasShownHintIndex() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1258,7 +1533,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_oneWrongAnswer_wait10Sec_hasNewAvailableHint() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_oneWrongAnswer_wait10Sec_hasNewAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1278,7 +1553,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_twoWrongAnswers_hasShownHintIndex() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_twoWrongAnswers_hasShownHintIndex() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1298,7 +1573,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_twoWrongAnswers_wait10Sec_hasNewAvailableHint() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_viewAvailableHint_twoWrongAnswers_wait10Sec_hasNewAvailableHint() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1391,7 +1666,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_wait30Sec_revealSolution_everythingRevealed() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_wait30Sec_revealSolution_everythingRevealed() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1430,7 +1705,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_oneWrongAnswer_wait10Sec_canShowSolution() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_oneWrongAnswer_wait10Sec_canShowSolution() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1450,7 +1725,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_twoWrongAnswers_lastIndexViewed() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_twoWrongAnswers_lastIndexViewed() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1471,7 +1746,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_twoWrongAnswers_wait10Sec_canShowSolution() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_allHintsViewed_twoWrongAnswers_wait10Sec_canShowSolution() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -1588,7 +1863,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_onlySolution_oneWrongAnswer_wait60Sec_canShowSolution() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_onlySolution_oneWrongAnswer_wait60Sec_canShowSolution() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsAndOneSolution.getInitialState()
@@ -1624,7 +1899,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testGetCurrentHelpIndex_showAllHelpsDisabled_onlySolution_triggeredAndRevealed_everythingIsRevealed() {
+  fun testGetCurrentHelpIndex_showAllHelpsDisabled_onlySolution_triggeredAndRevealed_everythingIsRevealed() { // ktlint-disable max-line-length
     showAllHintsAndSolutionMonitor.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsAndOneSolution.getInitialState()
@@ -1706,7 +1981,7 @@ class HintHandlerDebugImplTest {
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class,
+      LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
