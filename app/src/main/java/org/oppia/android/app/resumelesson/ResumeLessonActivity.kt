@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
 
@@ -17,6 +18,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private lateinit var explorationCheckpoint: ExplorationCheckpoint
   private var backflowScreen: Int = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,12 +39,16 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
         "Expected exploration ID to be included in intent for ResumeLessonActivity."
       }
     backflowScreen = intent.getIntExtra(RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
+    explorationCheckpoint = ExplorationCheckpoint.parseFrom(
+      intent.getByteArrayExtra(RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY)
+    )
     resumeLessonActivityPresenter.handleOnCreate(
       internalProfileId,
       topicId,
       storyId,
       explorationId,
       backflowScreen,
+      explorationCheckpoint
     )
   }
 
@@ -58,6 +64,8 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
       "ResumeLessonActivity.exploration_id"
     private const val RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ResumeLessonActivity.backflow_screen"
+    private const val RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY =
+      "ResumeLessonActivity.exploration_checkpoint"
 
     /**
      * Returns a new [Intent] to route to [ResumeLessonActivity] for a specified exploration.
@@ -68,7 +76,8 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?
+      backflowScreen: Int?,
+      explorationCheckpoint: ExplorationCheckpoint
     ): Intent {
       val intent = Intent(context, ResumeLessonActivity::class.java)
       intent.putExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
@@ -76,6 +85,10 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
       intent.putExtra(RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       intent.putExtra(RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+      intent.putExtra(
+        RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY,
+        explorationCheckpoint.toByteArray()
+      )
       return intent
     }
   }

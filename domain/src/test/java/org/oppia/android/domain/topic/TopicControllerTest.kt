@@ -417,7 +417,7 @@ class TopicControllerTest {
   fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
     topicController.retrieveChapter(
       FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
-    ).observeForever(mockChapterSummaryObserver)
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRetrieveChapterSucceeded()
@@ -432,18 +432,10 @@ class TopicControllerTest {
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
     topicController.retrieveChapter(
       INVALID_TOPIC_ID_1, INVALID_STORY_ID_1, INVALID_EXPLORATION_ID_1
-    ).observeForever(mockChapterSummaryObserver)
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRetrieveChapterFailed()
-    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      TopicController.ChapterNotFoundException::class.java
-    )
-    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .isEqualTo(
-        "Chapter for exploration $INVALID_EXPLORATION_ID_1 not found in story " +
-          "$INVALID_STORY_ID_1 and topic $INVALID_TOPIC_ID_1"
-      )
   }
 
   @Test

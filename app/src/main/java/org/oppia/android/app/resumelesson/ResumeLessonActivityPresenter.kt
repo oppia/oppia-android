@@ -3,6 +3,7 @@ package org.oppia.android.app.resumelesson
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.databinding.ResumeLessonActivityBinding
 import javax.inject.Inject
 
@@ -20,6 +21,7 @@ class ResumeLessonActivityPresenter @Inject constructor(
     storyId: String,
     explorationId: String,
     backflowScreen: Int,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     val binding = DataBindingUtil.setContentView<ResumeLessonActivityBinding>(
       activity,
@@ -38,7 +40,8 @@ class ResumeLessonActivityPresenter @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
       activity.supportFragmentManager.beginTransaction().add(
         R.id.resume_lesson_fragment_placeholder,
