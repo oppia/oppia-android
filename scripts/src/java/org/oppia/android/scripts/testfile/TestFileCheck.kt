@@ -51,6 +51,13 @@ fun main(vararg args: String) {
   logFailures(matchedFiles, testFileExemptiontextProto)
 
   if (matchedFiles.isNotEmpty()) {
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+        "#test-file-presence-check for more details on how to fix this.\n"
+    )
+  }
+
+  if (matchedFiles.isNotEmpty()) {
     throw Exception("TEST FILE CHECK FAILED")
   } else {
     println("TEST FILE CHECK PASSED")
@@ -78,11 +85,6 @@ private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: St
     matchedFiles.sorted().forEach { file ->
       println("File $file does not have a corresponding test file.")
     }
-    println("If this is correct, please update $testFileExemptiontextProto.textproto")
-    println(
-      "Note that, in general, all new files should have tests. If you choose to add an" +
-        " exemption, please specifically call this out in your PR description."
-    )
     println()
   }
 }

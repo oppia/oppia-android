@@ -28,3 +28,22 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
     ],
 )
+
+kt_jvm_library(
+    name = "todo_issue_resolved_check_lib",
+    testonly = True,
+    srcs = ["TodoIssueResolvedCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":todo_collector",
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+        "//scripts/src/java/org/oppia/android/scripts/todo/model:todo",
+    ],
+)
+
+kt_jvm_library(
+    name = "todo_issue_comment_check_lib",
+    testonly = True,
+    srcs = ["TodoIssueCommentCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)
