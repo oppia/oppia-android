@@ -285,11 +285,7 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
-    )
-    createBasicTests(
-      "RobolectricTest",
-      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
     )
     createBasicTests("ThirdTest")
     val reportedTargets = runScript()
@@ -299,11 +295,6 @@ class ComputeAffectedTestsTest {
     ).doesNotContain(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
     )
-    assertThat(
-      reportedTargets
-    ).contains(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
-    )
   }
 
   @Test
@@ -312,11 +303,11 @@ class ComputeAffectedTestsTest {
     createAndCommitBasicTests("FirstTest", "SecondTest", "ThirdTest")
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.application"
     )
     val reportedTargets = runScript()
 
@@ -324,11 +315,6 @@ class ComputeAffectedTestsTest {
       reportedTargets
     ).doesNotContain(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
-    )
-    assertThat(
-      reportedTargets
-    ).contains(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
     )
   }
 

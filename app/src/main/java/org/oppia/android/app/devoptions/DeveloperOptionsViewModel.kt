@@ -23,6 +23,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
   private val routeToMarkTopicsCompletedListener =
     activity as RouteToMarkTopicsCompletedListener
   private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
+  private val routeToForceNetworkTypeListener = activity as RouteToForceNetworkTypeListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -40,7 +41,10 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
         routeToMarkTopicsCompletedListener
       ),
       DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
-      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
+      DeveloperOptionsOverrideAppBehaviorsViewModel(
+        forceCrashButtonClickListener,
+        routeToForceNetworkTypeListener
+      )
     )
   }
 }
