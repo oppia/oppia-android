@@ -212,21 +212,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testPromotedActivityList_markFracStory0Exp0StartedNotCompleted_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-  }
-
-  @Test
   fun testGetPromotedActivityList_markFracStory0Exp0InProgressSaved_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId0,
@@ -259,25 +244,6 @@ class TopicListControllerTest {
   @Test
   fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration1(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-  }
-
-  @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1Started_ongoingStoryListCorrect() {
-    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -669,11 +635,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testStoryList_markLessons_progressSaved_notSaved_startedNotDone_ongoingListCorrect() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
+  fun testStoryList_markLessons_inProgressSaved_InProgressNotSaved_ongoingListCorrect() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -691,9 +653,6 @@ class TopicListControllerTest {
     )
     verifyOngoingStoryAsRatioStory1Exploration2(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
-    )
-    verifyOngoingStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2]
     )
   }
 
