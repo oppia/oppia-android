@@ -170,7 +170,7 @@ class PlatformParameterControllerTest {
   }
 
   @Test
-  fun testController_noPreviousDatabase_performUpdateOperation_checkAsyncResult() {
+  fun testController_noPreviousDatabase_performUpdateOperation_returnsSuccess() {
     setUpTestApplicationComponent()
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
       .toLiveData().observeForever(mockObserverForAny)
@@ -182,7 +182,7 @@ class PlatformParameterControllerTest {
   }
 
   @Test
-  fun testController_existingDatabase_performUpdateOperation_checkAsyncResult() {
+  fun testController_existingDatabase_performUpdateOperation_returnsSuccess() {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(

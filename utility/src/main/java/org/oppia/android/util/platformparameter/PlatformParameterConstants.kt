@@ -21,7 +21,7 @@ val SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE = false
  * [PlatformParameterSyncUpWorker] will run again.
  */
 @Qualifier
-annotation class SyncUpWorkerTimePeriod
+annotation class SyncUpWorkerTimePeriodHours
 
 /**
  * Name of the platform parameter that defines the time period in hours, after which the

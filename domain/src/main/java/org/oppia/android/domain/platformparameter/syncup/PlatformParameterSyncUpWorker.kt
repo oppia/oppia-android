@@ -54,8 +54,8 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   /**
-   * Parses a map of platform parameter values into a [List<PlatformParameter>]. If the parameters
-   * are not of type String, Int or Boolean this function fails with an [IllegalArgumentException].
+   * Parses a map of platform parameter values into a [List<PlatformParameter>]. Parameters must be
+   * of type String, Int or Boolean.
    */
   private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
     return response.map {

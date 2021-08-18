@@ -1,6 +1,5 @@
 package org.oppia.android.domain.platformparameter.syncup
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -42,6 +41,8 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -49,7 +50,6 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -92,7 +92,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     syncUpWorkManagerInitializer.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedSyncUpWorkRequestId = getSyncUpWorkRequestId()
+    val enqueuedSyncUpWorkRequestId = syncUpWorkManagerInitializer.getSyncUpWorkRequestId()
 
     val workManager = WorkManager.getInstance(context)
     // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
@@ -111,7 +111,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       .setRequiresBatteryNotLow(true)
       .build()
 
-    val syncUpWorkRequestConstraints = getSyncUpWorkerConstraints()
+    val syncUpWorkRequestConstraints = syncUpWorkManagerInitializer.getSyncUpWorkerConstraints()
     assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
   }
 
@@ -122,9 +122,9 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
     ).build()
 
-    assertThat(getSyncUpWorkRequestData()).isEqualTo(
-      workerTypeForSyncingUpParameters
-    )
+    val syncUpWorkRequestData = syncUpWorkManagerInitializer.getSyncUpWorkRequestData()
+
+    assertThat(syncUpWorkRequestData).isEqualTo(workerTypeForSyncingUpParameters)
   }
 
   @Test
@@ -132,7 +132,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     syncUpWorkManagerInitializer.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val syncUpWorkerTimePeriodInMs = getSyncUpWorkerTimePeriod()
+    val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
     val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
 
     assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
@@ -161,28 +161,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     packageInfo.versionName = testVersionName
     packageInfo.versionCode = testVersionCode
     packageManager.installPackage(packageInfo)
-  }
-
-  /** Returns the Worker [Constraints] set for the platform parameter sync-up work requests. */
-  private fun getSyncUpWorkerConstraints(): Constraints {
-    return syncUpWorkManagerInitializer.platformParameterSyncUpWorkerConstraints
-  }
-
-  /** Returns the [UUID] of the work request that is enqueued to sync-up platform parameters. */
-  fun getSyncUpWorkRequestId(): UUID {
-    return syncUpWorkManagerInitializer.workRequestForSyncingPlatformParameters.id
-  }
-
-  /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
-  fun getSyncUpWorkRequestData(): Data {
-    return syncUpWorkManagerInitializer.workerTypeForSyncingPlatformParameters
-  }
-
-  /** Returns the time interval of periodic work request enqueued to sync-up platform parameters. */
-  @SuppressLint("RestrictedApi")
-  fun getSyncUpWorkerTimePeriod(): Long {
-    return syncUpWorkManagerInitializer.workRequestForSyncingPlatformParameters
-      .workSpec.intervalDuration
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -248,7 +226,8 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class
+      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
   interface TestApplicationComponent {
