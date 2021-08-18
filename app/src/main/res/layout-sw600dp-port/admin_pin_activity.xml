@@ -86,8 +86,7 @@
             android:imeOptions="actionNext"
             android:inputType="numberPassword"
             android:maxLength="5"
-            android:text="@{viewModel.savedPin}"
-            android:textCursorDrawable="@drawable/color_cursor" />
+            android:text="@{viewModel.savedPin}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -112,8 +111,7 @@
             android:imeOptions="actionDone"
             android:inputType="numberPassword"
             android:maxLength="5"
-            android:text="@{viewModel.savedConfirmPin}"
-            android:textCursorDrawable="@drawable/color_cursor" />
+            android:text="@{viewModel.savedConfirmPin}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
