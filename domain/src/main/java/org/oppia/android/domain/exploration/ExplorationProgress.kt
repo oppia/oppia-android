@@ -115,10 +115,11 @@ internal class ExplorationProgress {
     SUBMITTING_ANSWER
   }
 
-  /** Loads [StateDeck] and [HintHandler] for the current exploration.
+  /**
+   * Loads [StateDeck] and [HintHandler] for the current exploration.
    *
-   * @param exploration the current exploration
-   * @param hintHandler the [HintHandler] that will be used to show help
+   * @param exploration the current exploration that is being played
+   * @param hintHandler the [HintHandler] that will be used to show help in the current exploration
    */
   internal fun resetOrResumeExploration(exploration: Exploration, hintHandler: HintHandler) {
     loadHintHandler(hintHandler)
@@ -127,7 +128,7 @@ internal class ExplorationProgress {
 
   /**
    * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
-   * instance, the values of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
+   * instance, the variables of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
    * re-initialized with the values created from the saved [ExplorationCheckpoint].
    */
   private fun loadStateDeckDeck(exploration: Exploration) {
@@ -145,7 +146,7 @@ internal class ExplorationProgress {
 
   /**
    * Initializes the variables of [HintHandler] if the exploration is being resumed, i.e.
-   * [ExplorationCheckpoint] is not of default instance type.
+   * [ExplorationCheckpoint] is not of type default instance.
    */
   private fun loadHintHandler(hintHandler: HintHandler) {
     if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {

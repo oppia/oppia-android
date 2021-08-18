@@ -50,8 +50,7 @@ import org.oppia.android.domain.hintsandsolution.HintHandler.HintMonitor
 interface HintHandler {
 
   /**
-   * Restores the local variables of hint handler to the point when [ExplorationCheckpoint] was
-   * created.
+   * Restores the local variables of hint handler to a specific point in the exploration.
    *
    * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
    * @param helpIndex the [HelpIndex] saved in the checkpoint.

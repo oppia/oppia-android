@@ -3599,7 +3599,6 @@ class ExplorationProgressControllerTest {
     verify(mockExplorationCheckpointObserver, atLeastOnce())
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    val c = explorationCheckpointCaptor.value.getOrThrow().helpIndex
     assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex).isEqualTo(helpIndex)
   }
 
