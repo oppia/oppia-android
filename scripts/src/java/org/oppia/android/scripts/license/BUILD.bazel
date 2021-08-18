@@ -1,0 +1,47 @@
+"""
+Libraries corresponding to maven dependencies and their licenses checks.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "license_fetcher",
+    testonly = True,
+    srcs = [
+        "LicenseFetcher.kt",
+        "LicenseFetcherImpl.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "maven_dependencies_retriever",
+    testonly = True,
+    srcs = ["MavenDependenciesRetriever.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":license_fetcher",
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/maven/model",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
+        "//third_party:com_google_protobuf_protobuf-java",
+    ],
+)
+
+kt_jvm_library(
+    name = "maven_dependencies_list_check_lib",
+    testonly = True,
+    srcs = ["MavenDependenciesListCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/license:maven_dependencies_retriever",
+    ],
+)
+
+kt_jvm_library(
+    name = "license_texts_check_lib",
+    testonly = True,
+    srcs = ["LicenseTextsCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)
