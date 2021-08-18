@@ -981,6 +981,52 @@ class HelpFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseList_changeConfig_pressBack_openLicenseList_showsLicenseList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
   fun testHelpFragment_configChanged_thirdPartyDependencyListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
