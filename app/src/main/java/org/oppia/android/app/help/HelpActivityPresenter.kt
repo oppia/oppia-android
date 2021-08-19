@@ -262,7 +262,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
         val copyrightLicensesList = activity.getString(
-          R.string.help_activity_third_party_dependencies_list
+          R.string.help_activity_copyright_licenses_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
           .contentDescription = activity.getString(
