@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
@@ -94,8 +94,8 @@ class HintHandlerImpl private constructor(
     handlerLock.withLock {
       val helpIndex = computeCurrentHelpIndex()
       check(
-        helpIndex.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX &&
-          helpIndex.availableNextHintIndex == hintIndex
+        helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
+          helpIndex.nextAvailableHintIndex == hintIndex
       ) {
         "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
           " $hintIndex)"
@@ -235,7 +235,7 @@ class HintHandlerImpl private constructor(
           }.build()
         } else {
           HelpIndex.newBuilder().apply {
-            availableNextHintIndex = latestAvailableHintIndex
+            nextAvailableHintIndex = latestAvailableHintIndex
           }.build()
         }
 
@@ -261,7 +261,7 @@ class HintHandlerImpl private constructor(
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
     } else if (hasHints && lastUnrevealedHintIndex < hintList.size) {
-      HelpIndex.newBuilder().setAvailableNextHintIndex(lastUnrevealedHintIndex).build()
+      HelpIndex.newBuilder().setNextAvailableHintIndex(lastUnrevealedHintIndex).build()
     } else if (solution.hasCorrectAnswer() && !solutionIsRevealed) {
       HelpIndex.newBuilder().setShowSolution(true).build()
     } else {
@@ -297,8 +297,8 @@ class HintHandlerImpl private constructor(
       val previousHelpIndex = computeCurrentHelpIndex()
 
       when (nextHelpIndexToShow.indexTypeCase) {
-        AVAILABLE_NEXT_HINT_INDEX -> {
-          latestAvailableHintIndex = nextHelpIndexToShow.availableNextHintIndex
+        NEXT_AVAILABLE_HINT_INDEX -> {
+          latestAvailableHintIndex = nextHelpIndexToShow.nextAvailableHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
         else -> {} // Nothing else to do.

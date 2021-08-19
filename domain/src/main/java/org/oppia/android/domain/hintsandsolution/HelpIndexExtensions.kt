@@ -1,7 +1,7 @@
 package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
@@ -15,7 +15,7 @@ import org.oppia.android.app.model.Hint
 fun HelpIndex.isHintRevealed(hintIndex: Int, hintList: List<Hint>): Boolean {
   val lastShownHintIndex = when (indexTypeCase) {
     SHOW_SOLUTION, EVERYTHING_REVEALED -> hintList.lastIndex
-    AVAILABLE_NEXT_HINT_INDEX -> availableNextHintIndex - 1
+    NEXT_AVAILABLE_HINT_INDEX -> nextAvailableHintIndex - 1
     LATEST_REVEALED_HINT_INDEX -> latestRevealedHintIndex
     INDEXTYPE_NOT_SET, null -> -1
   }

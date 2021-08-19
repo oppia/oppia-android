@@ -477,7 +477,7 @@ class StateFragmentPresenter @Inject constructor(
       viewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
-        HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
+        HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
           viewModel.setHintOpenedAndUnRevealedVisibility(true)
         }

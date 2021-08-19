@@ -367,7 +367,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       questionViewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
-        HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX -> {
+        HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
           questionViewModel.setHintBulbVisibility(true)
           questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
         }

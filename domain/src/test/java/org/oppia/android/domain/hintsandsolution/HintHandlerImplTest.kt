@@ -194,7 +194,7 @@ class HintHandlerImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -288,7 +288,7 @@ class HintHandlerImplTest {
     // the handler has been reset).
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -377,7 +377,7 @@ class HintHandlerImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -407,7 +407,7 @@ class HintHandlerImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -521,7 +521,7 @@ class HintHandlerImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -947,7 +947,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -998,7 +998,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1014,7 +1014,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1030,7 +1030,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1077,7 +1077,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -1110,7 +1110,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -1146,7 +1146,7 @@ class HintHandlerImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
