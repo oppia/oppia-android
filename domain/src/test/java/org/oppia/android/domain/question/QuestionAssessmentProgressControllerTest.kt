@@ -45,7 +45,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -1881,7 +1881,7 @@ class QuestionAssessmentProgressControllerTest {
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionModule::class,
+      CachingTestModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class
     ]
   )

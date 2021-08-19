@@ -1500,7 +1500,7 @@ class HintHandlerImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionModule::class, HintsAndSolutionConfigModule::class,
+      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LoggerModule::class,
     ]
