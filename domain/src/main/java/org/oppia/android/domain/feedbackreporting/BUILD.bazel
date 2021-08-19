@@ -1,5 +1,5 @@
 """
-Utilities corresponding to feedbackreporting.
+Domain services & definitions corresponding to user feedback reporting.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "FeedbackReportingModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":report_schema_version",
@@ -22,7 +22,7 @@ kt_android_library(
     srcs = [
         "ReportSchemaVersion.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
