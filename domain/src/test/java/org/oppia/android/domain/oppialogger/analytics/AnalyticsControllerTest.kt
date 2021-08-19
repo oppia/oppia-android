@@ -47,8 +47,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -79,7 +80,7 @@ class AnalyticsControllerTest {
   lateinit var oppiaLogger: OppiaLogger
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -98,7 +99,6 @@ class AnalyticsControllerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -358,7 +358,7 @@ class AnalyticsControllerTest {
       .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
   }
 
-  // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
@@ -641,7 +641,8 @@ class AnalyticsControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class
+      TestDispatcherModule::class, TestLogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

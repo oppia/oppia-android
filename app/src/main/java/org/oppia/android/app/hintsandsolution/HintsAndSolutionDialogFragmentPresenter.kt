@@ -6,6 +6,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -16,6 +21,9 @@ import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.html.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
+import java.lang.IllegalStateException
 import java.util.Locale
 import javax.inject.Inject
 
@@ -39,6 +47,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var expandedHintListIndexListener: ExpandedHintListIndexListener
   private lateinit var binding: HintsAndSolutionFragmentBinding
   private lateinit var state: State
+  private lateinit var helpIndex: HelpIndex
   private lateinit var itemList: List<HintsAndSolutionItemViewModel>
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
 
@@ -54,17 +63,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     state: State,
+    helpIndex: HelpIndex,
     id: String?,
     currentExpandedHintListIndex: Int?,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean,
     expandedHintListIndexListener: ExpandedHintListIndexListener,
     index: Int?,
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
     isSolutionRevealed: Boolean?
   ): View? {
-
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
@@ -86,13 +93,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     this.state = state
-    // The newAvailableHintIndex received here is coming from state player but in this implementation
-    // hints/solutions are shown on every even index and on every odd index we show a divider.
-    // Therefore multiplying the original index by 2.
+    this.helpIndex = helpIndex
+    // The newAvailableHintIndex received here is coming from state player but in this
+    // implementation hints/solutions are shown on every even index and on every odd index we show a
+    // divider. The relative index therefore needs to be doubled to account for the divider.
+    val newAvailableHintIndex = computeNewAvailableHintIndex(helpIndex)
     viewModel.newAvailableHintIndex.set(
       newAvailableHintIndex * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
     )
-    viewModel.allHintsExhausted.set(allHintsExhausted)
+    viewModel.allHintsExhausted.set(computeWhetherAllHintsAreExhausted(helpIndex))
     viewModel.explorationId.set(id)
 
     loadHintsAndSolution(state)
@@ -100,11 +109,36 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  private fun computeNewAvailableHintIndex(helpIndex: HelpIndex): Int {
+    return when (helpIndex.indexTypeCase) {
+      NEXT_AVAILABLE_HINT_INDEX -> helpIndex.nextAvailableHintIndex
+      LATEST_REVEALED_HINT_INDEX -> helpIndex.latestRevealedHintIndex
+      SHOW_SOLUTION, EVERYTHING_REVEALED -> {
+        // 1 is subtracted from the hint count because hints are indexed from 0.
+        state.interaction.hintCount - 1
+      }
+      else ->
+        throw IllegalStateException(
+          "Encountered invalid type for showing hints: ${helpIndex.indexTypeCase}"
+        )
+    }
+  }
+
+  private fun computeWhetherAllHintsAreExhausted(helpIndex: HelpIndex): Boolean {
+    return when (helpIndex.indexTypeCase) {
+      NEXT_AVAILABLE_HINT_INDEX, LATEST_REVEALED_HINT_INDEX -> false
+      SHOW_SOLUTION, EVERYTHING_REVEALED -> true
+      else ->
+        throw IllegalStateException(
+          "Encountered invalid type for showing hints: ${helpIndex.indexTypeCase}"
+        )
+    }
+  }
+
   private fun loadHintsAndSolution(state: State) {
     // Check if hints are available for this state.
-    if (state.interaction.hintList.size != 0) {
-      viewModel.setHintsList(state.interaction.hintList)
-      viewModel.setSolution(state.interaction.solution)
+    if (state.interaction.hintList.isNotEmpty()) {
+      viewModel.initialize(helpIndex, state.interaction.hintList, state.interaction.solution)
 
       itemList = viewModel.processHintList()
 
@@ -203,7 +237,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         hintsViewModel.isHintRevealed.set(true)
         expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
         (fragment.requireActivity() as? RevealHintListener)?.revealHint(
-          saveUserChoice = true,
           hintIndex = position / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
         )
         val previousIndex: Int? = currentExpandedHintListIndex

@@ -46,7 +46,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -69,6 +68,8 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -96,6 +97,11 @@ import org.oppia.android.util.image.GlideImageLoaderModule
 import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -185,6 +191,34 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100%")
+    }
+  }
+
+  @Test
+  fun testLessonsFragment_ratiosTopic_partialStoryProgressInExp0_contentDescriptionIsCorrect() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+    }
+  }
+
+  @Test
+  fun testLessonsFragment_loadRatiosTopic_partialStoryProgressInExp1_contentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp1(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "50%")
     }
   }
 
@@ -406,6 +440,130 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_verifyContentDescriptionIsCorrect() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconContentDescriptionIsCorrect(
+        itemPosition = 0,
+        contentDescription = "Chapter 1 with title What is a Ratio? is in progress"
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_topicCompleted_verifyContentDescriptionIsCorrect() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconContentDescriptionIsCorrect(
+        itemPosition = 0,
+        contentDescription = "Chapter 1 with title What is a Ratio? is completed"
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_partialProgIconIsDisplayed() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_partialProg_configChange_partialProgIconIsDisplayed() {
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(isRoot()).perform(orientationLandscape())
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_completedIconIsDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_configChange_completedIconIsDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(isRoot()).perform(orientationLandscape())
+      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
+      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_startedNotCompleted_chapterPlayStateIconIsNotVisible() {
+    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
+    }
+  }
+
+  @Test
+  fun testLessonPlayFrag_loadRatiosTopic_unsavedPartialProg_chapterPlayStateIconIsNotVisible() {
+    storyProgressTestHelper.markInProgressNotSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -477,6 +635,59 @@ class TopicLessonsFragmentTest {
     ).check(matches(withContentDescription(stringToMatch)))
   }
 
+  private fun verifyChapterPlayStateIconContentDescriptionIsCorrect(
+    itemPosition: Int,
+    contentDescription: String
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withContentDescription(contentDescription)))
+  }
+
+  private fun verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  private fun verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(not(isDisplayed())))
+  }
+
+  private fun verifyPartialProgressIconIsDisplayedAtPosition(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withDrawable(R.drawable.ic_pending_24dp)))
+  }
+
+  private fun verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.chapter_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.chapter_play_state_icon
+      )
+    ).check(matches(withDrawable(R.drawable.ic_check_24dp)))
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -491,12 +702,13 @@ class TopicLessonsFragmentTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class
+      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      NetworkConnectionDebugUtilModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

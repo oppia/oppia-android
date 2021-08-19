@@ -13,6 +13,8 @@ load("//testing:testing_test.bzl", "testing_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/testing/mockito/*.kt",
+    "src/main/java/org/oppia/android/testing/networking/*.kt",
+    "src/test/java/org/oppia/android/testing/platformparameter/*.kt",
     "src/main/java/org/oppia/android/testing/robolectric/*.kt",
     "src/main/java/org/oppia/android/testing/threading/*.kt",
     "src/main/java/org/oppia/android/testing/time/*.kt",
@@ -63,7 +65,11 @@ TEST_DEPS = [
     ":assertion_helpers",
     ":dagger",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
+    "//testing/src/main/java/org/oppia/android/testing/network",
+    "//testing/src/main/java/org/oppia/android/testing/network:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -84,13 +90,16 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
-    "//utility/src/main/java/org/oppia/android/util/logging:logger_module",
+    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = glob([
+    "src/test/java/org/oppia/android/testing/networking/*.kt",
     "src/test/java/org/oppia/android/testing/threading/*.kt",
 ])
 
@@ -109,6 +118,12 @@ kt_android_library(
         "//third_party:junit_junit",
         "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     ],
+)
+
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
 )
 
 dagger_rules()

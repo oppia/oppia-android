@@ -1,0 +1,159 @@
+id: "test_single_interactive_state_exp_with_one_hint_and_solution"
+states {
+  key: "Text"
+  value {
+    name: "Text"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    content {
+      html: "<p>In which language does Oppia mean \'to learn\'?</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+      }
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    interaction {
+      id: "TextInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "End"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              translatable_set_of_normalized_string {
+                content_id: "<unknown>"
+                normalized_strings: "finnish"
+              }
+            }
+          }
+          rule_type: "Equals"
+        }
+      }
+      solution {
+        interaction_id: "TextInput"
+        correct_answer {
+          correct_answer: "Finnish"
+        }
+        explanation {
+          html: "<p>'Oppia' is translated from Finnish.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>Hint: 'Oppia' is not English.</p>"
+          content_id: "hint_1"
+        }
+      }
+      default_outcome {
+        dest_state_name: "Text"
+        feedback {
+          html: "<p>Not quite. Try again (or maybe use a search engine).</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "rows"
+        value {
+          signed_int: 1
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_html {
+              html: "Enter a language"
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "Congratulations, you have finished!"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "Text"
+objective: "Test exploration."
+title: "Prototype exploration with one hint and a solution"
+language_code: "en"

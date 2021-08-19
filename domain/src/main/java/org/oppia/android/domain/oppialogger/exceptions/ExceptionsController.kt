@@ -68,7 +68,7 @@ class ExceptionsController @Inject constructor(
     exceptionType: ExceptionType
   ) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NetworkConnectionUtil.ConnectionStatus.NONE ->
+      NetworkConnectionUtil.ProdConnectionStatus.NONE ->
         cacheExceptionLog(
           exception.toExceptionLog(
             timestampInMillis,
@@ -131,7 +131,7 @@ class ExceptionsController @Inject constructor(
             .addExceptionLog(exceptionLog)
             .build()
         } else {
-          // TODO (#1433): Refactoring for logging exceptions to both console and exception loggers.
+          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException(
               "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
