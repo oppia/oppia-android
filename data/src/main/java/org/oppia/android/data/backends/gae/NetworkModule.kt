@@ -28,7 +28,8 @@ class NetworkModule {
   @Singleton
   fun provideRetrofitInstance(
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+    @BaseUrl baseUrl: String
   ): Retrofit {
     val client = OkHttpClient.Builder()
       .addInterceptor(jsonPrefixNetworkInterceptor)
@@ -36,7 +37,7 @@ class NetworkModule {
       .build()
 
     return Retrofit.Builder()
-      .baseUrl(NetworkSettings.getBaseUrl())
+      .baseUrl(baseUrl)
       .addConverterFactory(MoshiConverterFactory.create())
       .client(client)
       .build()
