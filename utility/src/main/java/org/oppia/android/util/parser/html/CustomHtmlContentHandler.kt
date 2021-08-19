@@ -219,7 +219,7 @@ class CustomHtmlContentHandler private constructor(
       // tracking.
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
-        HtmlCompat.FROM_HTML_MODE_LEGACY,
+        HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH,
         imageRetriever,
         CustomHtmlContentHandler(customTagHandlers, imageRetriever),
       ) as Spannable
