@@ -18,7 +18,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -284,7 +284,7 @@ class HelpFragmentTest {
       )
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
     }
   }
@@ -474,6 +474,563 @@ class HelpFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicensesList_licenseListIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicensesList_tabletConfigChanged_licenseListIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicensesList_multipaneOptionsAreDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          withContentDescription(
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
+          )
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicensesList_tabletConfigChanged_multipaneOptionsAreDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          withContentDescription(
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
+          )
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_licenseTextIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_name_0)
+        )
+      )
+      onView(withId(R.id.copyright_license_text_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_tabletConfigChanged_licenseListIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_name_0)
+        )
+      )
+      onView(withId(R.id.copyright_license_text_view)).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_multipaneOptionsAreDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      val copyrightLicensesList = retrieveCopyrightLicensesListString()
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          withContentDescription(
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
+          )
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_tabletConfigChanged_multipaneOptionsAreDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      val copyrightLicensesList = retrieveCopyrightLicensesListString()
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(
+          withContentDescription(
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
+          )
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseList_backButtonWorks() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.GONE))
+      )
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseList_tabletConfigChanged_backButtonWorks() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.GONE))
+      )
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_backButtonWorks() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.GONE))
+      )
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseText_tabletConfigChanged_backButtonWorks() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.license_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.third_party_dependency_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.GONE))
+      )
+      onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_openLicenseList_changeConfig_pressBack_openLicenseList_showsLicenseList() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(1)
+      )
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 1
+        )
+      ).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_back_button)).perform(click())
+      onView(
+        atPosition(
+          recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
+          position = 0
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.license_list_activity_title)
+        )
+      )
+      onView(withId(R.id.help_multipane_options_back_button)).check(
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
+      )
+      onView(withId(R.id.license_list_fragment_recycler_view)).check(
+        matches(isDisplayed())
+      )
+    }
+  }
+
+  @Test
   fun testHelpFragment_configChanged_thirdPartyDependencyListTitleIsDisplayed() {
     launch<HelpActivity>(
       createHelpActivityIntent(
@@ -568,6 +1125,23 @@ class HelpFragmentTest {
     // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
     // stabilize the drawer layout after the previous logic completes).
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun retrieveHelpOptionTextViewContentDescription(
+    previousFragmentDescription: String
+  ): String {
+    val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
+    return res.getString(R.string.help_activity_back_arrow_description, previousFragmentDescription)
+  }
+
+  private fun retrieveThirdPartyDependenciesListString(): String {
+    val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
+    return res.getString(R.string.help_activity_third_party_dependencies_list)
+  }
+
+  private fun retrieveCopyrightLicensesListString(): String {
+    val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
+    return res.getString(R.string.help_activity_copyright_licenses_list)
   }
 
   private fun setUpTestApplicationComponent() {
