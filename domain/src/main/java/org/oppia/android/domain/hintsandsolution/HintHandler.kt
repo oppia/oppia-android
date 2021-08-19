@@ -24,6 +24,15 @@ import org.oppia.android.app.model.State
 interface HintHandler {
 
   /**
+   * Restores the local variables of hint handler to a specific point in the exploration.
+   *
+   * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
+   * @param helpIndex the [HelpIndex] saved in the checkpoint.
+   * @param hintCount the total number of hint available on the saved pending state
+   * */
+  fun restoreHintHandler(trackedWrongAnswerCount: Int, helpIndex: HelpIndex, hintCount: Int)
+
+  /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after
    * a certain amount of time). This is meant to only be called once at the beginning of a state.
    */

@@ -13,6 +13,8 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 
 /**
  * Production implementation of [HintHandler] that implements hints & solutions in parity with the
@@ -68,6 +70,50 @@ class HintHandlerImpl private constructor(
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
+
+  override fun restoreHintHandler(
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    hintCount: Int
+  ) {
+    handlerLock.withLock {
+      this.trackedWrongAnswerCount = trackedWrongAnswerCount
+      when (helpIndex.indexTypeCase) {
+        NEXT_AVAILABLE_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
+          latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        LATEST_REVEALED_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        SHOW_SOLUTION -> {
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          lastRevealedHintIndex = hintCount - 1
+          latestAvailableHintIndex = hintCount - 1
+          solutionIsAvailable = true
+          solutionIsRevealed = false
+        }
+        EVERYTHING_REVEALED -> {
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          lastRevealedHintIndex = hintCount - 1
+          latestAvailableHintIndex = hintCount - 1
+          solutionIsAvailable = true
+          solutionIsRevealed = true
+        }
+        else -> {
+          lastRevealedHintIndex = -1
+          latestAvailableHintIndex = -1
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+      }
+    }
+  }
 
   override fun startWatchingForHintsInNewState(state: State) {
     handlerLock.withLock {
