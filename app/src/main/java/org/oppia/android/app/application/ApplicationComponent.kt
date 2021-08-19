@@ -55,8 +55,9 @@ import javax.inject.Singleton
  * this component.
  *
  * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule], [NetworkConnectionUtilDebugModule]
- * Add: [LogReportingModule], [NetworkConnectionUtilProdModule]
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule],
+ * [NetworkConnectionUtilDebugModule], [HintsAndSolutionDebugModule]
+ * Add: [LogReportingModule], [NetworkConnectionUtilProdModule], [HintsAndSolutionProdModule]
  */
 @Singleton
 @Component(

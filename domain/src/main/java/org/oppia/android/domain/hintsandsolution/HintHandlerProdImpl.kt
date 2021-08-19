@@ -146,7 +146,7 @@ class HintHandlerProdImpl private constructor(
   }
 
   /**
-   * Cancel any potential pending hints by advancing the sequence number. Note that this isn't
+   * Cancels any potential pending hints by advancing the sequence number. Note that this isn't
    * reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
    * scheduled without overlapping with past sequence numbers.
    */
@@ -208,7 +208,7 @@ class HintHandlerProdImpl private constructor(
     solutionIsRevealed = false
   }
 
-  /** Computes the current [HelpIndex]. */
+  /** Returns the current [HelpIndex]. */
   internal fun computeCurrentHelpIndex(): HelpIndex {
     val hintList = pendingState.interaction.hintList
     val hasSolution = pendingState.hasSolution()
@@ -310,7 +310,8 @@ class HintHandlerProdImpl private constructor(
           latestAvailableHintIndex = nextHelpIndexToShow.nextAvailableHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
-        else -> {} // Nothing else to do.
+        else -> {
+        } // Nothing else to do.
       }
 
       // Only indicate the hint is available if its index is actually new (including if it
@@ -321,8 +322,8 @@ class HintHandlerProdImpl private constructor(
     }
   }
 
-  /** Implementation of [HintHandler.Factory]. */
-  class FactoryImpl @Inject constructor(
+  /** Production implementation of [HintHandler.Factory]. */
+  class FactoryProdImpl @Inject constructor(
     @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
     @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
     @DelayShowAdditionalHintsFromWrongAnswerMillis

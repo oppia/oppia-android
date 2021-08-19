@@ -7,7 +7,13 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
-/** Debug implementation of [HintHandler]. */
+/**
+ * Debug implementation of [HintHandler] that overrides the default mechanism of hints & solutions
+ * to show all hints and solutions based on availability, bypassing the wrong answer check and
+ * scheduling of hints, if 'Show all hints and solution' functionality is enabled in the
+ * 'Developer Options Menu'. If this functionality is disabled then it will fall back to
+ * [HintHandlerProdImpl] and provide its functionalities.
+ */
 class HintHandlerDebugImpl private constructor(
   private val hintHandlerProdImpl: HintHandlerProdImpl,
   private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper,
@@ -103,8 +109,8 @@ class HintHandlerDebugImpl private constructor(
   }
 
   /** Debug implementation of [HintHandler.Factory]. */
-  class FactoryImpl @Inject constructor(
-    private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryImpl,
+  class FactoryDebugImpl @Inject constructor(
+    private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl,
     private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {

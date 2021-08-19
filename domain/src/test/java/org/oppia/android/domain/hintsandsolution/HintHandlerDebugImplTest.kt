@@ -57,7 +57,7 @@ class HintHandlerDebugImplTest {
   lateinit var mockHintMonitor: HintHandler.HintMonitor
 
   @Inject
-  lateinit var hintHandlerDebugImplFactory: HintHandlerDebugImpl.FactoryImpl
+  lateinit var hintHandlerDebugImplFactory: HintHandlerDebugImpl.FactoryDebugImpl
 
   @Inject
   lateinit var explorationRetriever: ExplorationRetriever
