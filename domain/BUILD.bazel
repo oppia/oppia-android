@@ -97,7 +97,6 @@ kt_android_library(
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility",
-        "//utility/src/main/java/org/oppia/android/util/caching:assets",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
@@ -106,7 +105,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
 
