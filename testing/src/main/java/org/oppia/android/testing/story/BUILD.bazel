@@ -1,0 +1,30 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing test-only utilities for stories.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "story_progress_test_helper",
+    testonly = True,
+    srcs = [
+        "StoryProgressTestHelper.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//domain",
+        "//model:profile_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_mockito_mockito-core",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+    ],
+)
+
+dagger_rules()
