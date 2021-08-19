@@ -7,38 +7,13 @@ import org.oppia.android.app.model.State
  * Handler for showing hints to the learner after a period of time in the event they submit a
  * wrong answer.
  *
- * # Flow chart for when hints are shown
- *
- *            Submit 1st              Submit wrong
- *            wrong answer            answer
- *              +---+                   +---+
- *              |   |                   |   |
- *              |   v                   |   v
- *            +-+---+----+            +-+---+-----+           +----------+
- *     Initial| No       | Wait 60s   |           | View hint | Hint     |
- *     state  | hint     +----------->+ Hint      +---------->+ consumed |
- *     +----->+ released | or, submit | available | Wait 30s  |          |
- *            |          | 2nd wrong  |           +<----------+          |
- *            +----------+ answer     +----+------+           +----+-----+
- *                                         ^                       |
- *                                         |Wait 10s               |
- *                                         |                       |
- *                                    +----+------+                |
- *                               +--->+ No        | Submit wrong   |
- *                   Submit wrong|    | hint      | answer         |
- *                   answer      |    | available +<---------------+
- *                               +----+           |
- *                                    +-----------+
- *
- * # Logic for selecting a hint
- *
- * Hints are selected based on the availability of hints to show, and any previous hints that have
- * been shown. A new hint will only be made available if its previous hint has been viewed by the
- * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
- * user, then the 'hint available' state in the diagram above will trigger the solution to be
- * made available to view, if a solution is present. Once the solution is viewed by the learner,
- * they will reach a terminal state for hints and no additional hints or solutions will be made
- * available.
+ * Note that the exact behavior of when a hint or solution is made available is up to the
+ * implementation, but it's assumed that:
+ * 1. This class is the sole decision maker for whether a hint is available or revealed (and ditto
+ *    for solutions)
+ * 2. Hints must be viewed in order
+ * 3. Later hints are not available until all previous hints have been revealed
+ * 4. The solution cannot be revealed until all previous hints have been revealed
  *
  * Implementations of this class are safe to access across multiple threads, but care must be taken
  * when calling back into this class from [HintMonitor] since that could cause deadlocks. Note also
@@ -47,15 +22,6 @@ import org.oppia.android.app.model.State
  * thread as it may introduce janky behavior.
  */
 interface HintHandler {
-
-  /**
-   * Restores the local variables of hint handler to a specific point in the exploration.
-   *
-   * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
-   * @param helpIndex the [HelpIndex] saved in the checkpoint.
-   * @param hintCount the total number of hint available on the saved pending state
-   * */
-  fun restoreHintHandler(trackedWrongAnswerCount: Int, helpIndex: HelpIndex, hintCount: Int)
 
   /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after

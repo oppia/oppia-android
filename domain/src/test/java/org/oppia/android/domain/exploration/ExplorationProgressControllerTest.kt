@@ -57,7 +57,7 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -1167,8 +1167,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
 
@@ -1190,8 +1189,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     // Make the first hint visible by submitting two wrong answers.
@@ -1206,8 +1204,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1218,8 +1216,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     // Make the first hint visible by submitting two wrong answers.
@@ -1234,8 +1231,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1246,8 +1243,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
@@ -1278,8 +1274,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
@@ -1313,8 +1308,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
@@ -1325,7 +1319,7 @@ class ExplorationProgressControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     submitWrongAnswerForPrototypeState2()
-    // The solution should be visible after 10 seconds because one wrong answer was submitted.
+    // The solution should be visible after 10 seconds becuase one wrong answer was submitted.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     testCoroutineDispatchers.runCurrent()
 
@@ -1349,8 +1343,7 @@ class ExplorationProgressControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = true,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      shouldSavePartialProgress = true
     )
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
@@ -3599,6 +3592,7 @@ class ExplorationProgressControllerTest {
     verify(mockExplorationCheckpointObserver, atLeastOnce())
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
     assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex).isEqualTo(helpIndex)
   }
 
@@ -3700,7 +3694,7 @@ class ExplorationProgressControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionModule::class, NetworkConnectionUtilDebugModule::class
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

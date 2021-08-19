@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -109,7 +109,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
   private fun computeNewAvailableHintIndex(helpIndex: HelpIndex): Int {
     return when (helpIndex.indexTypeCase) {
-      AVAILABLE_NEXT_HINT_INDEX -> helpIndex.availableNextHintIndex
+      NEXT_AVAILABLE_HINT_INDEX -> helpIndex.nextAvailableHintIndex
       LATEST_REVEALED_HINT_INDEX -> helpIndex.latestRevealedHintIndex
       SHOW_SOLUTION, EVERYTHING_REVEALED -> {
         // 1 is subtracted from the hint count because hints are indexed from 0.
@@ -124,7 +124,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
   private fun computeWhetherAllHintsAreExhausted(helpIndex: HelpIndex): Boolean {
     return when (helpIndex.indexTypeCase) {
-      AVAILABLE_NEXT_HINT_INDEX, LATEST_REVEALED_HINT_INDEX -> false
+      NEXT_AVAILABLE_HINT_INDEX, LATEST_REVEALED_HINT_INDEX -> false
       SHOW_SOLUTION, EVERYTHING_REVEALED -> true
       else ->
         throw IllegalStateException(

@@ -5,10 +5,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -16,7 +14,43 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 
-/** Implementation of [HintHandler]. */
+/**
+ * Production implementation of [HintHandler] that implements hints & solutions in parity with the
+ * Oppia web platform.
+ *
+ * # Flow chart for when hints are shown
+ *
+ *            Submit 1st              Submit wrong
+ *            wrong answer            answer
+ *              +---+                   +---+
+ *              |   |                   |   |
+ *              |   v                   |   v
+ *            +-+---+----+            +-+---+-----+           +----------+
+ *     Initial| No       | Wait 60s   |           | View hint | Hint     |
+ *     state  | hint     +----------->+ Hint      +---------->+ consumed |
+ *     +----->+ released | or, submit | available | Wait 30s  |          |
+ *            |          | 2nd wrong  |           +<----------+          |
+ *            +----------+ answer     +----+------+           +----+-----+
+ *                                         ^                       |
+ *                                         |Wait 10s               |
+ *                                         |                       |
+ *                                    +----+------+                |
+ *                               +--->+ No        | Submit wrong   |
+ *                   Submit wrong|    | hint      | answer         |
+ *                   answer      |    | available +<---------------+
+ *                               +----+           |
+ *                                    +-----------+
+ *
+ * # Logic for selecting a hint
+ *
+ * Hints are selected based on the availability of hints to show, and any previous hints that have
+ * been shown. A new hint will only be made available if its previous hint has been viewed by the
+ * learner. Hints are always shown in order. If all hints have been exhausted and viewed by the
+ * user, then the 'hint available' state in the diagram above will trigger the solution to be
+ * made available to view, if a solution is present. Once the solution is viewed by the learner,
+ * they will reach a terminal state for hints and no additional hints or solutions will be made
+ * available.
+ */
 class HintHandlerImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
@@ -35,55 +69,11 @@ class HintHandlerImpl private constructor(
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
 
-  override fun restoreHintHandler(
-    trackedWrongAnswerCount: Int,
-    helpIndex: HelpIndex,
-    hintCount: Int
-  ) {
-    handlerLock.withLock {
-      this.trackedWrongAnswerCount = trackedWrongAnswerCount
-      when (helpIndex.indexTypeCase) {
-        AVAILABLE_NEXT_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.availableNextHintIndex - 1
-          latestAvailableHintIndex = helpIndex.availableNextHintIndex
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-        LATEST_REVEALED_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
-          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-        SHOW_SOLUTION -> {
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = hintCount - 1
-          latestAvailableHintIndex = hintCount - 1
-          solutionIsAvailable = true
-          solutionIsRevealed = false
-        }
-        EVERYTHING_REVEALED -> {
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = hintCount - 1
-          latestAvailableHintIndex = hintCount - 1
-          solutionIsAvailable = true
-          solutionIsRevealed = true
-        }
-        else -> {
-          lastRevealedHintIndex = -1
-          latestAvailableHintIndex = -1
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-      }
-    }
-  }
-
   override fun startWatchingForHintsInNewState(state: State) {
     handlerLock.withLock {
       pendingState = state
       hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint(trackedWrongAnswerCount)
+      maybeScheduleShowHint(wrongAnswerCount = 0)
     }
   }
 
@@ -104,8 +94,8 @@ class HintHandlerImpl private constructor(
     handlerLock.withLock {
       val helpIndex = computeCurrentHelpIndex()
       check(
-        helpIndex.indexTypeCase == AVAILABLE_NEXT_HINT_INDEX &&
-          helpIndex.availableNextHintIndex == hintIndex
+        helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
+          helpIndex.nextAvailableHintIndex == hintIndex
       ) {
         "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
           " $hintIndex)"
@@ -245,7 +235,7 @@ class HintHandlerImpl private constructor(
           }.build()
         } else {
           HelpIndex.newBuilder().apply {
-            availableNextHintIndex = latestAvailableHintIndex
+            nextAvailableHintIndex = latestAvailableHintIndex
           }.build()
         }
 
@@ -271,7 +261,7 @@ class HintHandlerImpl private constructor(
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
     } else if (hasHints && lastUnrevealedHintIndex < hintList.size) {
-      HelpIndex.newBuilder().setAvailableNextHintIndex(lastUnrevealedHintIndex).build()
+      HelpIndex.newBuilder().setNextAvailableHintIndex(lastUnrevealedHintIndex).build()
     } else if (solution.hasCorrectAnswer() && !solutionIsRevealed) {
       HelpIndex.newBuilder().setShowSolution(true).build()
     } else {
@@ -307,8 +297,8 @@ class HintHandlerImpl private constructor(
       val previousHelpIndex = computeCurrentHelpIndex()
 
       when (nextHelpIndexToShow.indexTypeCase) {
-        AVAILABLE_NEXT_HINT_INDEX -> {
-          latestAvailableHintIndex = nextHelpIndexToShow.availableNextHintIndex
+        NEXT_AVAILABLE_HINT_INDEX -> {
+          latestAvailableHintIndex = nextHelpIndexToShow.nextAvailableHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
         else -> {} // Nothing else to do.
