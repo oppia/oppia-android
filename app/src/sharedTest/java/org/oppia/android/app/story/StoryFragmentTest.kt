@@ -7,8 +7,10 @@ import android.content.res.Resources
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -62,7 +64,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
@@ -81,6 +82,8 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
@@ -291,6 +294,56 @@ class StoryFragmentTest {
           withText("This is outline/summary for What is a Fraction?")
         )
       )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterSummary_ltrEnabled_textAlignmentIsCorrect() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check { view, _ ->
+        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_LTR)
+        val chapterSummayTextview: TextView = view.findViewById<TextView>(
+          R.id.chapter_summary
+        )
+        assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterSummary_rtlEnabled_textAlignmentIsCorrect() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check { view, _ ->
+        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_RTL)
+        val chapterSummayTextview: TextView = view.findViewById<TextView>(
+          R.id.chapter_summary
+        )
+        assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
@@ -669,9 +722,9 @@ class StoryFragmentTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
