@@ -45,6 +45,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -599,7 +600,7 @@ class TopicFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )

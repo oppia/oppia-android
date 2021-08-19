@@ -53,6 +53,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -632,7 +633,7 @@ class HtmlParserTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )

@@ -45,6 +45,7 @@ import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
 import org.oppia.android.app.utility.clickPoint
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -299,7 +300,7 @@ class ImageRegionSelectionInteractionViewTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )

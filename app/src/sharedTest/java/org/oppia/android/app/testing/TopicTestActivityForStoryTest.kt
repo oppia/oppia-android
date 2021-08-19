@@ -36,6 +36,7 @@ import org.oppia.android.app.topic.EnablePracticeTab
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -176,7 +177,7 @@ class TopicTestActivityForStoryTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )

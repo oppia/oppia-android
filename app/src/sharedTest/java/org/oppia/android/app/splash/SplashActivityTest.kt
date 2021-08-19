@@ -39,6 +39,7 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -299,7 +300,7 @@ class SplashActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,

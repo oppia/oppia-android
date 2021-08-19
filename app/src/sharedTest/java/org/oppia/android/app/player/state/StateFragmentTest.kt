@@ -2012,7 +2012,7 @@ class StateFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class
+      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

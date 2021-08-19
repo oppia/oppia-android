@@ -48,6 +48,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.classify.InteractionsModule
@@ -458,7 +459,7 @@ class AudioFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )

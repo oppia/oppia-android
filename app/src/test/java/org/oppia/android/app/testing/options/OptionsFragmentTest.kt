@@ -31,6 +31,7 @@ import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -204,7 +205,7 @@ class OptionsFragmentTest {
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigModule::class,
+      RatioInputModule::class, HintsAndSolutionConfigModule::class, NetworkConfigProdModule::class,
       WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,

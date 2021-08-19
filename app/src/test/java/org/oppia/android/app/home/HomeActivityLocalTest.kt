@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITY
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -132,7 +133,8 @@ class HomeActivityLocalTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      NetworkConfigProdModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
