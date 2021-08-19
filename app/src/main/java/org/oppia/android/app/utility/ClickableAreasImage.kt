@@ -116,6 +116,7 @@ class ClickableAreasImage(
         newView.isFocusable = true
         newView.isFocusableInTouchMode = true
         newView.tag = clickableArea.label
+        newView.contentDescription = clickableArea.label
         newView.setOnTouchListener { _, event ->
           if (event.action == MotionEvent.ACTION_DOWN) {
             showOrHideRegion(newView, clickableArea)
