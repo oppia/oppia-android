@@ -7,8 +7,10 @@ import android.content.res.Resources
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -292,6 +294,56 @@ class StoryFragmentTest {
           withText("This is outline/summary for What is a Fraction?")
         )
       )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterSummary_ltrEnabled_textAlignmentIsCorrect() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check { view, _ ->
+        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_LTR)
+        val chapterSummayTextview: TextView = view.findViewById<TextView>(
+          R.id.chapter_summary
+        )
+        assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testStoryFragment_chapterSummary_rtlEnabled_textAlignmentIsCorrect() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check { view, _ ->
+        ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_RTL)
+        val chapterSummayTextview: TextView = view.findViewById<TextView>(
+          R.id.chapter_summary
+        )
+        assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
