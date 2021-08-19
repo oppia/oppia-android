@@ -3,8 +3,6 @@ package org.oppia.android.domain.topic
 import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
@@ -38,6 +36,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
