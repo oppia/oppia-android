@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -28,6 +27,8 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -51,7 +52,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -117,7 +117,7 @@ class ExplorationCheckpointTestHelperTest {
 
   @Test
   fun testUpdateCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
-    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
       timestamp = 0L
@@ -146,7 +146,6 @@ class ExplorationCheckpointTestHelperTest {
     assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
       .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME)
   }
-
 
   @Test
   fun testSaveCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
@@ -202,6 +201,62 @@ class ExplorationCheckpointTestHelperTest {
       .isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
     assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
       .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME)
+  }
+
+  @Test
+  fun testSaveCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        RATIOS_EXPLORATION_ID_0
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(RATIOS_EXPLORATION_0_TITLE)
+  }
+
+  @Test
+  fun testUpdateCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    explorationCheckpointTestHelper.updateCheckpointForRatiosStory0Exploration0(
+      profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        RATIOS_EXPLORATION_ID_0
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME)
   }
 
   // TODO(#89): Move this to a common test application component.

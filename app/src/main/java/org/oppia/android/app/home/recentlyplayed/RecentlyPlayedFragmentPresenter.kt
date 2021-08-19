@@ -28,7 +28,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.model.Exploration
 
 /** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
@@ -255,7 +254,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
                   shouldSavePartialProgress,
                   canExplorationBeResumed = true,
                   backflowScreen = null,
-                  explorationCheckpoint =  it.getOrThrow()
+                  explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
                 isCheckpointCompatiableLiveData.removeObserver(this)

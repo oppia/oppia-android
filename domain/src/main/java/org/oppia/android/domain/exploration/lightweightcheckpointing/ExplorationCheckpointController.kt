@@ -1,8 +1,6 @@
 package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import androidx.annotation.VisibleForTesting
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -16,6 +14,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CACHE_NAME = "exploration_checkpoint_database"
 private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
