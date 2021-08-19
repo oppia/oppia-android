@@ -352,11 +352,17 @@ message HelpIndex {
     bool show_solution = 2;
 
     // Indicates this help index corresponds to the index of the next available hint within the hint
-    // list of a state.
+    // list of a state (meaning the index corresponding to this value is the next hint that may be
+    // revealed by the user). This state assumes all prior hints (if any) have already been
+    // revealed.
     int32 available_next_hint_index = 4;
 
     // Indicates this help index corresponds to the index of the last revealed hint within the hint
-    // list of a state.
+    // list of a state (meaning the index corresponding to this value is the latest hint that's been
+    // revealed by the user). This state assumes all prior hints (if any) have also already been
+    // revealed. Note that this could correspond to the last hint available to view and, in that
+    // case, the solution should not yet be available to reveal until it is also unlocked (at which
+    // point the state show_solution should be used, instead).
     int32 latest_revealed_hint_index = 5;
 
     // Indicates that everything available has been revealed. Note that this is different than the
