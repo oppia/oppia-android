@@ -103,8 +103,8 @@ class StateFragment :
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    stateFragmentPresenter.onHintAvailable(helpIndex)
+  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
+    stateFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 

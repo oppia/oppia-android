@@ -150,13 +150,13 @@ class ForceNetworkTypeActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, FakeOppiaClockModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, FirebaseLogUploaderModule::class,
-      PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
+      DeveloperOptionsModule::class, ExplorationStorageModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
   /** [ApplicationComponent] for [ForceNetworkTypeActivityTest]. */

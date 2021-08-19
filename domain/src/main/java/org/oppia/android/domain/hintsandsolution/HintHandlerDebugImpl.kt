@@ -52,8 +52,8 @@ class HintHandlerDebugImpl private constructor(
       handlerLock.withLock {
         val helpIndex = hintHandlerProdImpl.computeCurrentHelpIndex()
         check(
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX &&
-            helpIndex.availableNextHintIndex == hintIndex
+          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX &&
+            helpIndex.nextAvailableHintIndex == hintIndex
         ) {
           "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} + " +
             "(trying to reveal hint: $hintIndex)"
@@ -94,10 +94,9 @@ class HintHandlerDebugImpl private constructor(
     hintHandlerProdImpl.pendingState.interaction.hintList.forEach { _ ->
       val helpIndex = hintHandlerProdImpl.getNextHelpIndexToReveal()
       hintHandlerProdImpl.showHintImmediately(helpIndex)
-      viewHint(helpIndex.availableNextHintIndex)
+      viewHint(helpIndex.nextAvailableHintIndex)
     }
-    val solutionExists = hintHandlerProdImpl.pendingState.interaction.solution.hasCorrectAnswer()
-    if (solutionExists) {
+    if (hintHandlerProdImpl.pendingState.hasSolution()) {
       hintHandlerProdImpl.showHintImmediately(hintHandlerProdImpl.getNextHelpIndexToReveal())
       viewSolution()
     }

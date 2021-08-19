@@ -202,7 +202,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
-          ephemeralState.pendingState.helpIndex
+          ephemeralState.pendingState.helpIndex,
+          isCurrentStatePendingState = true
         )
       }
       addPreviousAnswers(
@@ -225,7 +226,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
       // Ensure any lingering hints are properly cleared.
       if (playerFeatureSet.hintsAndSolutionsSupport) {
-        (fragment as ShowHintAvailabilityListener).onHintAvailable(HelpIndex.getDefaultInstance())
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(
+          HelpIndex.getDefaultInstance(),
+          isCurrentStatePendingState = false
+        )
       }
 
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)

@@ -513,8 +513,7 @@ class ExplorationProgressController @Inject constructor(
   private fun computeCurrentEphemeralState(): EphemeralState =
     explorationProgress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
 
-  private fun computeCurrentHelpIndex(): HelpIndex =
-    hintHandler.getCurrentHelpIndex()
+  private fun computeCurrentHelpIndex(): HelpIndex = hintHandler.getCurrentHelpIndex()
 
   /**
    * Checks if checkpointing is enabled, if checkpointing is enabled this function creates a

@@ -1169,8 +1169,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1196,8 +1196,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test

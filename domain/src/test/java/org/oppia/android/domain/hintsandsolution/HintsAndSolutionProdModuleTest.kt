@@ -82,8 +82,8 @@ class HintsAndSolutionProdModuleTest {
         .build()
     }
 
-    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest) {
-      component.inject(hintsAndSolutionModuleTest)
+    fun inject(hintsAndSolutionProdModuleTest: HintsAndSolutionProdModuleTest) {
+      component.inject(hintsAndSolutionProdModuleTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
