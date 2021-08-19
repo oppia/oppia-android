@@ -2105,6 +2105,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     verifyCheckpointHasCorrectPendingStateName(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2144,6 +2145,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
     playThroughPrototypeState3AndMoveToNextState()
@@ -2153,6 +2155,7 @@ class ExplorationProgressControllerTest {
       pendingStateName = "ItemSelectionMinOne",
     )
     moveToPreviousState()
+
     verifyCheckpointHasCorrectPendingStateName(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2171,12 +2174,14 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
     playThroughPrototypeState3AndMoveToNextState()
     moveToPreviousState()
     moveToPreviousState()
     moveToNextState()
+
     verifyCheckpointHasCorrectPendingStateName(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2195,9 +2200,9 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
-
     // option 2 is the correct answer to the third state.
     submitMultipleChoiceAnswer(choiceIndex = 0)
     testCoroutineDispatchers.runCurrent()
@@ -2242,17 +2247,36 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
+    // option 2 is the correct answer to the third state.
+    submitMultipleChoiceAnswer(choiceIndex = 1)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 1
+    )
 
     // option 2 is the correct answer to the third state.
     submitMultipleChoiceAnswer(choiceIndex = 1)
     testCoroutineDispatchers.runCurrent()
-    // option 2 is the correct answer to the third state.
-    submitMultipleChoiceAnswer(choiceIndex = 1)
-    testCoroutineDispatchers.runCurrent()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 2
+    )
 
     moveToPreviousState()
+
+    verifyCheckpointHasCorrectCountOfAnswers(
+      profileId,
+      TEST_EXPLORATION_ID_2,
+      countOfAnswers = 2
+    )
   }
 
   @Test
@@ -2266,6 +2290,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
     moveToPreviousState()
@@ -2288,6 +2313,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
     moveToPreviousState()
@@ -2312,6 +2338,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     navigateToPrototypeFractionInputState()
     // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
@@ -2341,19 +2368,16 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     navigateToPrototypeFractionInputState()
     // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-
     verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
-
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2374,6 +2398,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     navigateToPrototypeFractionInputState()
     // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
@@ -2383,12 +2408,9 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2409,6 +2431,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     navigateToPrototypeFractionInputState()
     // Submit 2 wrong answers to trigger the hint.
     submitWrongAnswerForPrototypeState2()
@@ -2418,14 +2441,10 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-
     verifyOperationSucceeds(explorationProgressController.submitSolutionIsRevealed())
-
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2446,7 +2465,9 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
+
     // Verify that checkpoint is saved when the exploration moves to the new pendingTopState.
     verifyCheckpointHasCorrectPendingStateName(
       profileId,
@@ -2508,10 +2529,8 @@ class ExplorationProgressControllerTest {
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
-
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
-
     testCoroutineDispatchers.runCurrent()
 
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
@@ -2533,6 +2552,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2565,6 +2585,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
     endExploration()
@@ -2598,6 +2619,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -2633,6 +2655,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -2669,6 +2692,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -2707,6 +2731,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2774,6 +2799,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2809,6 +2835,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2844,6 +2871,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2878,6 +2906,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitPrototypeState2Answer()
     endExploration()
@@ -2913,6 +2942,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     endExploration()
 
@@ -2946,6 +2976,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     // Make the first hint visible by submitting two wrong answers.
     submitWrongAnswerForPrototypeState2()
@@ -2986,6 +3017,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -3023,6 +3055,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -3037,7 +3070,6 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
     )
-
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
@@ -3062,6 +3094,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -3076,7 +3109,6 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
     )
-
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
     // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
@@ -3101,9 +3133,11 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
+
     // Reveal the hint, then submit another wrong answer to trigger the solution.
     verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
 
@@ -3118,6 +3152,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       explorationCheckpoint = retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
     )
+
     // Verify that the helpIndex.IndexTypeCase is equal EVERYTHING_IS_REVEALED because all available
     // help has been revealed.
     verify(mockCurrentStateLiveDataObserver, atLeastOnce())
@@ -3141,6 +3176,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
@@ -3187,6 +3223,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
+
     // Play through some states in the exploration.
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -3203,6 +3240,7 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
     )
+
     // Resume exploration and play through the remaining states in the exploration.
     playThroughPrototypeState6AndMoveToNextState()
     playThroughPrototypeState7AndMoveToNextState()
@@ -3211,10 +3249,8 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState10AndMoveToNextState()
 
     // Verify that the last state is terminal.
-    verify(
-      mockCurrentStateLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentStateResultCaptor.capture())
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.stateTypeCase).isEqualTo(TERMINAL_STATE)
