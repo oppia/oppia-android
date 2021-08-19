@@ -424,7 +424,6 @@ class TopicControllerTest {
     assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
     assertThat(chapterSummary.summary)
       .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
-    assertThat(chapterSummary.chapterThumbnail.thumbnailGraphicValue).isEqualTo(4)
   }
 
   @Test
@@ -435,6 +434,9 @@ class TopicControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     verifyRetrieveChapterFailed()
+    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      TopicController.ChapterNotFoundException::class.java
+    )
   }
 
   @Test

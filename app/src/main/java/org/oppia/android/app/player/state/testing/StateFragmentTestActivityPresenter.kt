@@ -36,6 +36,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private var shouldSavePartialProgress: Boolean = false
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<StateFragmentTestActivityBinding>(
@@ -55,8 +56,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationId =
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
       ?: TEST_EXPLORATION_ID_2
+    shouldSavePartialProgress =
+      activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId)
+      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
     }
 
     if (getHintsAndSolutionManagerFragment() == null) {
@@ -88,7 +91,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
@@ -98,7 +102,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false,
+      shouldSavePartialProgress,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
       .observe(

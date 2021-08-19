@@ -236,28 +236,26 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       explorationCheckpointLiveData.observe(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
-          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
-            if (it != null) {
-              if (it.isFailure()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                playExploration(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  shouldSavePartialProgress
-                )
-              } else if (it.isSuccess()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                routeToResumeLessonListener.routeToResumeLesson(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  backflowScreen = 0,
-                  explorationCheckpoint = it.getOrThrow()
-                )
-              }
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
+            if (it.isSuccess()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              routeToResumeLessonListener.routeToResumeLesson(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                backflowScreen = 0,
+                explorationCheckpoint = it.getOrThrow()
+              )
+            } else if (it.isFailure()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              playExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                shouldSavePartialProgress
+              )
             }
           }
         }

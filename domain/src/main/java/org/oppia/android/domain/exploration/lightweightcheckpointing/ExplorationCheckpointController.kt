@@ -195,19 +195,19 @@ class ExplorationCheckpointController @Inject constructor(
             it.value.timestampOfFirstCheckpoint
           }
 
-        if (oldestCheckpoint == null) {
-          AsyncResult.failed(
-            ExplorationCheckpointNotFoundException(
-              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-            )
-          )
-        } else {
+        if (oldestCheckpoint != null) {
           val explorationCheckpointDetails = ExplorationCheckpointDetails.newBuilder()
             .setExplorationId(oldestCheckpoint.key)
             .setExplorationTitle(oldestCheckpoint.value.explorationTitle)
             .setExplorationVersion(oldestCheckpoint.value.explorationVersion)
             .build()
           AsyncResult.success(explorationCheckpointDetails)
+        } else {
+          AsyncResult.failed(
+            ExplorationCheckpointNotFoundException(
+              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
+            )
+          )
         }
       }
   }
