@@ -636,7 +636,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testStoryList_markLessons_inProgressSaved_InProgressNotSaved_ongoingListCorrect() {
+  fun testStoryList_markLessonInProgressSaved_anotherLessonInProgressNotSaved_ongoingListCorrect() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
