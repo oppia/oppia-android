@@ -18,8 +18,6 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
@@ -67,6 +65,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
+  private lateinit var helpIndex: HelpIndex
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -95,28 +94,19 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
         questionId,
-        questionViewModel.newAvailableHintIndex,
-        questionViewModel.allHintsExhausted
+        helpIndex
       )
     }
     subscribeToCurrentQuestion()
     return binding.root
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    subscribeToHint(
-      questionAssessmentProgressController.submitHintIsRevealed(
-        currentQuestionState,
-        saveUserChoice,
-        hintIndex
-      )
-    )
+  fun revealHint(hintIndex: Int) {
+    subscribeToHintSolution(questionAssessmentProgressController.submitHintIsRevealed(hintIndex))
   }
 
   fun revealSolution() {
-    subscribeToSolution(
-      questionAssessmentProgressController.submitSolutionIsRevealed(currentQuestionState)
-    )
+    subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
   fun dismissConceptCard() {
@@ -124,28 +114,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       CONCEPT_CARD_DIALOG_FRAGMENT_TAG
     )?.let { dialogFragment ->
       fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
-    }
-  }
-
-  fun onHintAvailable(helpIndex: HelpIndex) {
-    when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
-          questionViewModel.newAvailableHintIndex = helpIndex.hintIndex
-        }
-        questionViewModel.allHintsExhausted =
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
-        questionViewModel.setHintBulbVisibility(true)
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        questionViewModel.setHintBulbVisibility(true)
-      }
-      else -> {
-        questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        questionViewModel.setHintBulbVisibility(false)
-      }
     }
   }
 
@@ -199,6 +167,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun handleKeyboardAction() = onSubmitButtonClicked()
+
+  fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+    this.helpIndex = helpIndex
+    showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
+  }
 
   private fun subscribeToCurrentQuestion() {
     ephemeralQuestionLiveData.observe(
@@ -290,7 +263,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       Observer<AnsweredQuestionOutcome> { result ->
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
-          recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCelebrationOnCorrectAnswer()
         } else {
@@ -300,74 +272,21 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  /**
-   * This function listens to the result of RevealHint.
-   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
-   */
-  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
-    val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(
+  /** Subscribes to the result of requesting to show a hint or solution. */
+  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
+    resultLiveData.observe(
       fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.hintIsRevealed) {
+      { result ->
+        if (result.isFailure()) {
+          oppiaLogger.e(
+            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
+          )
+        } else {
+          // If the hint/solution, was revealed remove dot and radar.
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
         }
       }
     )
-  }
-
-  /**
-   * This function listens to the result of RevealSolution.
-   * Whenever a hint is revealed using QuestionAssessmentProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to next state.
-   */
-  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
-    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(
-      fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.solutionIsRevealed) {
-          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
-        }
-      }
-    )
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
-    return Transformations.map(hint, ::processSolution)
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
-    return Transformations.map(hint, ::processHint)
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
-    if (hintResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve Hint",
-        hintResult.getErrorOrNull()!!
-      )
-    }
-    return hintResult.getOrDefault(Hint.getDefaultInstance())
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
-    if (solutionResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve Solution",
-        solutionResult.getErrorOrNull()!!
-      )
-    }
-    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -439,5 +358,36 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         skillIds
       )
     )
+  }
+
+  private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+    if (!isCurrentStatePendingState) {
+      // If current question state is not the pending top question state, hide the hint bulb.
+      questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+      questionViewModel.setHintBulbVisibility(false)
+    } else {
+      when (helpIndex.indexTypeCase) {
+        HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
+          questionViewModel.setHintBulbVisibility(true)
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
+        }
+        HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
+          questionViewModel.setHintBulbVisibility(true)
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+        HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+          questionViewModel.setHintBulbVisibility(true)
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(true)
+        }
+        HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+          questionViewModel.setHintBulbVisibility(true)
+        }
+        else -> {
+          questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
+          questionViewModel.setHintBulbVisibility(false)
+        }
+      }
+    }
   }
 }
