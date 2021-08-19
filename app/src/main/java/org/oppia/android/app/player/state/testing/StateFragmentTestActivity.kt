@@ -8,6 +8,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
@@ -90,23 +91,21 @@ class StateFragmentTestActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
         HintsAndSolutionDialogFragment.newInstance(
           explorationId,
-          newAvailableHintIndex,
-          allHintsExhausted
+          state,
+          helpIndex
         )
-      hintsAndSolutionFragment.loadState(state)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentTestActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    stateFragmentTestActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() {
