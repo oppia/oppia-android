@@ -18,7 +18,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -572,15 +571,16 @@ class HelpFragmentTest {
           position = 0
         )
       ).perform(click())
+      val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription("third-party dependencies list")
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
           )
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
       )
     }
   }
@@ -610,15 +610,16 @@ class HelpFragmentTest {
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
+      val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription("third-party dependencies list")
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
           )
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
       )
     }
   }
@@ -740,15 +741,16 @@ class HelpFragmentTest {
           position = 0
         )
       ).perform(click())
+      val copyrightLicensesList = retrieveCopyrightLicensesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription("copyright licenses list")
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
           )
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
       )
     }
   }
@@ -784,15 +786,16 @@ class HelpFragmentTest {
         )
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
+      val copyrightLicensesList = retrieveCopyrightLicensesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription("copyright licenses list")
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
           )
         )
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE))
       )
     }
   }
@@ -1128,6 +1131,16 @@ class HelpFragmentTest {
   ): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
     return res.getString(R.string.help_activity_back_arrow_description, previousFragmentDescription)
+  }
+
+  private fun retrieveThirdPartyDependenciesListString(): String {
+    val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
+    return res.getString(R.string.help_activity_third_party_dependencies_list)
+  }
+
+  private fun retrieveCopyrightLicensesListString(): String {
+    val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
+    return res.getString(R.string.help_activity_copyright_licenses_list)
   }
 
   private fun setUpTestApplicationComponent() {

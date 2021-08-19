@@ -251,17 +251,23 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun setHelpBackButtonContentDescription(fragmentTag: String) {
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
+        val thirdPartyDependenciesList = activity.getString(
+          R.string.help_activity_third_party_dependencies_list
+        )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
           .contentDescription = activity.getString(
           R.string.help_activity_back_arrow_description,
-          "third-party dependencies list"
+          thirdPartyDependenciesList
         )
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
+        val copyrightLicensesList = activity.getString(
+          R.string.help_activity_third_party_dependencies_list
+        )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
           .contentDescription = activity.getString(
           R.string.help_activity_back_arrow_description,
-          "copyright licenses list"
+          copyrightLicensesList
         )
       }
     }
