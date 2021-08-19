@@ -1,6 +1,5 @@
 package org.oppia.android.domain.state
 
-import android.util.Log
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
@@ -43,7 +42,6 @@ internal class StateDeck internal constructor(
     stateIndex: Int
   ) {
     this.pendingTopState = pendingTopState
-    Log.d("12345", "resumeDeck: ${pendingTopState.interaction.hintList.size}")
     this.previousStates.clear()
     this.currentDialogInteractions.clear()
     this.previousStates.addAll(previousStates)
