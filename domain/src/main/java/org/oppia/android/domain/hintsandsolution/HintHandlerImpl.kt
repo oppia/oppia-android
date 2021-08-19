@@ -71,13 +71,20 @@ class HintHandlerImpl private constructor(
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
 
-  override fun restoreHintHandler(
+  override fun startWatchingForHintsInNewState(state: State) {
+    handlerLock.withLock {
+      pendingState = state
+      hintMonitor.onHelpIndexChanged()
+      maybeScheduleShowHint(wrongAnswerCount = 0)
+    }
+  }
+
+  override fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
-    hintCount: Int
+    state: State
   ) {
     handlerLock.withLock {
-      this.trackedWrongAnswerCount = trackedWrongAnswerCount
       when (helpIndex.indexTypeCase) {
         NEXT_AVAILABLE_HINT_INDEX -> {
           lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
@@ -93,15 +100,15 @@ class HintHandlerImpl private constructor(
         }
         SHOW_SOLUTION -> {
           // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = hintCount - 1
-          latestAvailableHintIndex = hintCount - 1
+          lastRevealedHintIndex = state.interaction.hintCount - 1
+          latestAvailableHintIndex = state.interaction.hintCount - 1
           solutionIsAvailable = true
           solutionIsRevealed = false
         }
         EVERYTHING_REVEALED -> {
           // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = hintCount - 1
-          latestAvailableHintIndex = hintCount - 1
+          lastRevealedHintIndex = state.interaction.hintCount - 1
+          latestAvailableHintIndex = state.interaction.hintCount - 1
           solutionIsAvailable = true
           solutionIsRevealed = true
         }
@@ -112,14 +119,10 @@ class HintHandlerImpl private constructor(
           solutionIsRevealed = false
         }
       }
-    }
-  }
-
-  override fun startWatchingForHintsInNewState(state: State) {
-    handlerLock.withLock {
       pendingState = state
+      this.trackedWrongAnswerCount = trackedWrongAnswerCount
       hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint(wrongAnswerCount = 0)
+      maybeScheduleShowHint(wrongAnswerCount = trackedWrongAnswerCount)
     }
   }
 
