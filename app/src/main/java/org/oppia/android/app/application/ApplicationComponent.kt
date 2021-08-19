@@ -36,12 +36,13 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.image.GlideImageLoaderModule
+import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
-import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider

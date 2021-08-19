@@ -74,10 +74,10 @@ import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

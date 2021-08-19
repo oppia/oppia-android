@@ -30,10 +30,13 @@ import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.html.CustomHtmlContentHandler
+import org.oppia.android.util.html.CustomHtmlContentHandler.CustomTagHandler
+import org.oppia.android.util.html.tags.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.html.tags.ConceptCardTagHandler
+import org.oppia.android.util.html.tags.ConceptCardTagHandler.ConceptCardLinkClickListener
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.html.ConceptCardTagHandler.ConceptCardLinkClickListener
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

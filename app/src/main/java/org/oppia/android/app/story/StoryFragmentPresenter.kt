@@ -31,8 +31,8 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.HtmlParser
-import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.html.HtmlParser
+import org.oppia.android.util.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 

@@ -559,8 +559,13 @@ kt_android_library(
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
         "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/image:drawable",
+        "//utility/src/main/java/org/oppia/android/util/image:parser",
+        "//utility/src/main/java/org/oppia/android/util/image:targets",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 
@@ -586,15 +591,18 @@ kt_android_library(
         ":dagger",
         ":listeners",
         ":resources",
+        "//app:crashlytics",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//domain",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
-        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
 
@@ -626,7 +634,7 @@ android_library(
         "//third_party:circularimageview_circular_image_view",
         "//third_party:com_google_android_material_material",
         "//third_party:io_github_chaosleung_pinview",
-        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
 
@@ -660,7 +668,6 @@ kt_android_library(
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_google_android_flexbox_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
@@ -695,12 +702,15 @@ kt_android_library(
         ":app",
         "//testing",
         "//third_party:org_mockito_mockito-core",
+        "//utility/src/main/java/org/oppia/android/util/image:drawable",
+        "//utility/src/main/java/org/oppia/android/util/image:parser",
     ],
 )
 
 # keep sorted
 TEST_DEPS = [
     ":app",
+    ":crashlytics",
     ":dagger",
     ":resources",
     ":test_deps",
@@ -736,10 +746,16 @@ TEST_DEPS = [
     "//third_party:org_mockito_mockito-core",
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
-    "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
+    "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/html:parser",
+    "//utility/src/main/java/org/oppia/android/util/image:drawable",
+    "//utility/src/main/java/org/oppia/android/util/image:parser",
+    "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
+    "//utility/src/main/java/org/oppia/android/util/image:targets",
+    "//utility/src/main/java/org/oppia/android/util/image:test_glide_image_loader",
 ]
 
 # App module tests. Note that all tests are assumed to be tests with resources (even though not all

@@ -27,8 +27,8 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.html.StoryHtmlParserEntityType
+import org.oppia.android.util.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =

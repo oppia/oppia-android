@@ -1,0 +1,17 @@
+"""
+General purpose utilities for bitmap images.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "bitmap",
+    srcs = [
+        "BitmapBlurTransformation.kt",
+        "BitmapBlurrer.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/image:__pkg__"],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)

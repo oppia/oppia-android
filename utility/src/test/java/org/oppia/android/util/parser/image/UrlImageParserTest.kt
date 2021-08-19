@@ -21,8 +21,11 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.image.ImageParsingModule
+import org.oppia.android.util.image.TestGlideImageLoader
+import org.oppia.android.util.image.UrlImageParser
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
