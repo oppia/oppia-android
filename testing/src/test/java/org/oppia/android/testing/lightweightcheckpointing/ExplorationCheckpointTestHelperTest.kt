@@ -34,6 +34,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -66,6 +67,9 @@ class ExplorationCheckpointTestHelperTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @Inject
@@ -85,6 +89,7 @@ class ExplorationCheckpointTestHelperTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {

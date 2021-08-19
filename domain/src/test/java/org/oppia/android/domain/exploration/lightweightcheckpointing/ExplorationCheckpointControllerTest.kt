@@ -40,6 +40,7 @@ import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPL
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
@@ -93,6 +94,9 @@ class ExplorationCheckpointControllerTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
   lateinit var explorationCheckpointController: ExplorationCheckpointController
 
   @Inject
@@ -116,18 +120,13 @@ class ExplorationCheckpointControllerTest {
   @Captor
   lateinit var checkpointDetailsCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpointDetails>>
 
-  @Mock
-  lateinit var mockBooleanObserver: Observer<AsyncResult<Boolean>>
-
-  @Captor
-  lateinit var mockBooleanCaptor: ArgumentCaptor<AsyncResult<Boolean>>
-
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @Test
