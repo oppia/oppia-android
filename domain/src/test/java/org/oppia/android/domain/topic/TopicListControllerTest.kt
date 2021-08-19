@@ -648,7 +648,7 @@ class TopicListControllerTest {
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(3)
+      .isEqualTo(2)
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
