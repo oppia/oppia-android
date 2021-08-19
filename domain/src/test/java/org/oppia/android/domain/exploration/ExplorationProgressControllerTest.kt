@@ -57,7 +57,7 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -1206,8 +1206,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1234,8 +1234,8 @@ class ExplorationProgressControllerTest {
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -1325,7 +1325,7 @@ class ExplorationProgressControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     submitWrongAnswerForPrototypeState2()
-    // The solution should be visible after 10 seconds because one wrong answer was submitted.
+    // The solution should be visible after 10 seconds becuase one wrong answer was submitted.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
     testCoroutineDispatchers.runCurrent()
 
@@ -2325,7 +2325,7 @@ class ExplorationProgressControllerTest {
       profileId,
       TEST_EXPLORATION_ID_2,
       helpIndex = HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -2456,7 +2456,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsCorrect() {
+  fun testCheckpointing_noCheckpointSaved_checkCheckpointStateIsUnsaved() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2472,12 +2472,11 @@ class ExplorationProgressControllerTest {
       .onChanged(currentStateResultCaptor.capture())
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
-    assertThat(currentState.checkpointState)
-      .isEqualTo(CheckpointState.CHECKPOINT_UNSAVED)
+    assertThat(currentState.checkpointState).isEqualTo(CheckpointState.CHECKPOINT_UNSAVED)
   }
 
   @Test
-  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsCorrect() {
+  fun testCheckpointing_saveCheckpoint_checkCheckpointStateIsSavedDatabaseNotExceededLimit() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2498,7 +2497,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_saveCheckpoint_databaseFull_checkCheckpointStateIsCorrect() {
+  fun testCheckpointing_saveCheckpoint_databaseFull_checkpointStateIsSavedDatabaseExceededLimit() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2524,7 +2523,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_resumeExploration_expResumedFromCorrectPendingState() {
+  fun testCheckpointing_onSecondState_resumeExploration_expResumedFromCorrectPendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2556,7 +2555,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_navigateBack_resumeExploration_checkResumedFromSecondState() {
+  fun testCheckpointing_onSecondState_navigateBack_resumeExploration_checkResumedFromSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2589,7 +2588,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_submitWrongAns_resumeExploration_checkWrongAnswersVisible() {
+  fun testCheckpointing_onSecondState_submitWrongAns_resumeExploration_checkWrongAnswersVisible() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2624,7 +2623,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_submitRightAns_resumeExploration_expResumedFromCompState() {
+  fun testCheckpointing_onSecondState_submitRightAns_resumeExploration_expResumedFromCompState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2742,7 +2741,6 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = true,
       ExplorationCheckpoint.getDefaultInstance()
     )
-
     endExploration()
 
     playExploration(
@@ -2952,7 +2950,6 @@ class ExplorationProgressControllerTest {
     // Make the first hint visible by submitting two wrong answers.
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-
     endExploration()
 
     playExploration(
@@ -2971,11 +2968,11 @@ class ExplorationProgressControllerTest {
     assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     val currentState = currentStateResultCaptor.value.getOrThrow()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
     assertThat(currentState.isHintRevealed(0)).isFalse()
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.AVAILABLE_NEXT_HINT_INDEX)
-    assertThat(currentState.pendingState.helpIndex.availableNextHintIndex).isEqualTo(0)
+      .isEqualTo(HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX)
+    assertThat(currentState.pendingState.helpIndex.nextAvailableHintIndex).isEqualTo(0)
   }
 
   @Test
@@ -2993,7 +2990,6 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
     verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
-
     endExploration()
 
     playExploration(
@@ -3017,6 +3013,84 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testCheckpointing_revealedHintIsVisible_resumeExp_Wait10Seconds_solutionIsNotVisible() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
+    assertThat(currentState.isHintRevealed(0)).isTrue()
+  }
+
+  @Test
+  fun testCheckpointing_revealedHintIsVisible_resumeExp_Wait30Seconds_solutionIsNotVisible() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    playThroughPrototypeState1AndMoveToNextState()
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+
+    // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
+    // revealed hint is visible
+    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
+      .onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.pendingState.helpIndex.indexTypeCase)
+      .isEqualTo(HelpIndex.IndexTypeCase.SHOW_SOLUTION)
+    assertThat(currentState.isSolutionRevealed()).isFalse()
+  }
+
+  @Test
   fun testCheckpointing_SolutionIsVisible_resumeExp_unrevealedSolutionIsVisibleOnPendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
@@ -3034,7 +3108,6 @@ class ExplorationProgressControllerTest {
     verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-
     endExploration()
 
     playExploration(
@@ -3080,7 +3153,6 @@ class ExplorationProgressControllerTest {
     val solutionResult = explorationProgressController.submitSolutionIsRevealed()
     solutionResult.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
-
     endExploration()
 
     playExploration(
@@ -3102,6 +3174,50 @@ class ExplorationProgressControllerTest {
       .isEqualTo(HelpIndex.IndexTypeCase.EVERYTHING_REVEALED)
     assertThat(currentState.isHintRevealed(0)).isTrue()
     assertThat(currentState.isSolutionRevealed()).isTrue()
+  }
+
+  @Test
+  fun testCheckpointing_playSomeStates_resumeExp_playRemainingState_verifyTerminalStateReached() {
+    subscribeToCurrentStateToAllowExplorationToLoad()
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    // Play through some states in the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    endExploration()
+
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      retrieveExplorationCheckpoint(profileId, TEST_EXPLORATION_ID_2)
+    )
+    // Resume exploration and play through the remaining states in the exploration.
+    playThroughPrototypeState6AndMoveToNextState()
+    playThroughPrototypeState7AndMoveToNextState()
+    playThroughPrototypeState8AndMoveToNextState()
+    playThroughPrototypeState9AndMoveToNextState()
+    playThroughPrototypeState10AndMoveToNextState()
+
+    // Verify that the last state is terminal.
+    verify(
+      mockCurrentStateLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(currentStateResultCaptor.capture())
+    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
+    val currentState = currentStateResultCaptor.value.getOrThrow()
+    assertThat(currentState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -3599,6 +3715,7 @@ class ExplorationProgressControllerTest {
     verify(mockExplorationCheckpointObserver, atLeastOnce())
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+
     assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex).isEqualTo(helpIndex)
   }
 
@@ -3700,7 +3817,7 @@ class ExplorationProgressControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionModule::class, NetworkConnectionUtilDebugModule::class
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -72,8 +72,8 @@ class QuestionPlayerFragment :
   ) =
     questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
+  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
+    questionPlayerFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 

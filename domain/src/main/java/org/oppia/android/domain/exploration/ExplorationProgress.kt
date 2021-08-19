@@ -6,7 +6,6 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
 
@@ -116,47 +115,16 @@ internal class ExplorationProgress {
   }
 
   /**
-   * Loads [StateDeck] and [HintHandler] for the current exploration.
-   *
-   * @param exploration the current exploration that is being played
-   * @param hintHandler the [HintHandler] that will be used to show help in the current exploration
-   */
-  internal fun resetOrResumeExploration(exploration: Exploration, hintHandler: HintHandler) {
-    loadHintHandler(hintHandler)
-    loadStateDeckDeck(exploration)
-  }
-
-  /**
    * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
    * instance, the variables of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
    * re-initialized with the values created from the saved [ExplorationCheckpoint].
    */
-  private fun loadStateDeckDeck(exploration: Exploration) {
-    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
-      stateDeck.resetDeck(stateGraph.getState(exploration.initStateName))
-    } else {
-      stateDeck.resumeDeck(
-        stateGraph.getState(explorationCheckpoint.pendingStateName),
-        getPreviousStatesFromCheckpoint(),
-        explorationCheckpoint.pendingUserAnswersList,
-        explorationCheckpoint.stateIndex
-      )
-    }
-  }
-
-  /**
-   * Initializes the variables of [HintHandler] if the exploration is being resumed, i.e.
-   * [ExplorationCheckpoint] is not of type default instance.
-   */
-  private fun loadHintHandler(hintHandler: HintHandler) {
-    if (explorationCheckpoint == ExplorationCheckpoint.getDefaultInstance()) {
-      // If exploration is not being resumed, do nothing.
-      return
-    }
-    hintHandler.restoreHintHandler(
-      explorationCheckpoint.pendingUserAnswersCount,
-      explorationCheckpoint.helpIndex,
-      stateGraph.getState(explorationCheckpoint.pendingStateName).interaction.hintCount
+  fun resumeStateDeckForSavedState(exploration: Exploration) {
+    stateDeck.resumeDeck(
+      stateGraph.getState(explorationCheckpoint.pendingStateName),
+      getPreviousStatesFromCheckpoint(),
+      explorationCheckpoint.pendingUserAnswersList,
+      explorationCheckpoint.stateIndex
     )
   }
 

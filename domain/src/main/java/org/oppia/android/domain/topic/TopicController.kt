@@ -166,14 +166,15 @@ class TopicController @Inject constructor(
       return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
     }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
       val chapterSummary = fetchChapter(storySummary, explorationId)
-      if (chapterSummary == null)
+      if (chapterSummary != null) {
+        AsyncResult.success(chapterSummary)
+      } else {
         AsyncResult.failed(
           ChapterNotFoundException(
             "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
           )
         )
-      else
-        AsyncResult.success(chapterSummary)
+      }
     }
   }
 
