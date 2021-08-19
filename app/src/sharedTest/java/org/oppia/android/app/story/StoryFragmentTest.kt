@@ -235,7 +235,7 @@ class StoryFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_completed_tick
         )
-      ).check(matches(withContentDescription(R.string.chapter_completed)))
+      ).check(matches(withText("Chapter 1 with title What is a Fraction? is completed")))
     }
   }
 
