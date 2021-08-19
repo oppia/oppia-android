@@ -1,6 +1,7 @@
 package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.app.help.LoadLicenseListFragmentListener
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
@@ -11,12 +12,18 @@ class ThirdPartyDependencyItemViewModel(
   private val activity: AppCompatActivity,
   val dependencyName: String,
   val dependencyVersion: String,
-  val dependencyIndex: Int
+  val dependencyIndex: Int,
+  val isMultipane: Boolean
 ) : ObservableViewModel() {
 
   /** Starts [LicenseListActivity] upon clicking on an item of the third-party dependency list. */
   fun clickOnThirdPartyDependencyItem() {
-    val routeToLicenseListListener = activity as RouteToLicenseListListener
-    routeToLicenseListListener.onRouteToLicenseList(dependencyIndex)
+    if (isMultipane) {
+      val loadLicenseListFragmentListener = activity as LoadLicenseListFragmentListener
+      loadLicenseListFragmentListener.loadLicenseListFragment(dependencyIndex)
+    } else {
+      val routeToLicenseListListener = activity as RouteToLicenseListListener
+      routeToLicenseListListener.onRouteToLicenseList(dependencyIndex)
+    }
   }
 }
