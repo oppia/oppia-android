@@ -25,21 +25,9 @@ class ExplorationPlayerTest {
   }
 
   @Test
-  fun testProtoTypeExploration_answerAllInteractionsAndCompleteExploration() {
+  fun testPlayExploration_prototypeExploration_playedFullyThrough_finishesSuccessfully() {
     navigateToPrototypeExploration()
-
-    // Play through all interactions in PrototypeExploration
-    playExplorationDescription()
-    playFractionInputInteraction()
-    playMultipleChoiceIntearction1()
-    playMultipleChoiceIntearction2()
-    playItemSelectionInteraction()
-    playNumericInputInteraction()
-    playRatioInputInteraction()
-    playTextInputInteraction()
-    playDragAndDropInteraction()
-    playDragDropMergeInteraction()
-    endExploration()
+    completePrototypeExploration()
 
     // Assert Topic Completed.
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
@@ -51,8 +39,8 @@ class ExplorationPlayerTest {
 
   // TODO(#3697): Update e2e tests when backend support is introduced.
   @Test
-  @Ignore("Need backend support to test the ImageRegionSelectionInteraction")
-  fun testImageRegionSelectionInteraction_answerAllInteractionsAndCompleteExploration() {
+  @Ignore("Need backend connection support to test the ImageRegionSelectionInteraction")
+  fun testPlayExploration_imageRegionInteraction_playedFullyThrough_finishesSuccessfully() {
     navigateToImageRegionSelectionInteraction()
 
     // / Image Region Selection Interaction.
@@ -63,13 +51,16 @@ class ExplorationPlayerTest {
     device.findObjectByText("CONTINUE")?.click()
 
     // End Exploration.
-    device.findObjectByText("RETURN TO TOPIC")?.click()
+    playEndExplorationInteraction()
 
     // Assert Topic Completed.
     scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
     val chapterCompletedTick = device.findObjectByText(
       "Chapter 2: Image Region Selection Exploration"
     )?.parent?.children?.get(2)
+    val chapterCompletedTick = device.findObjectByDesc(
+      "Chapter 1 with title Prototype Exploration is completed"
+    )
     assertThat(chapterCompletedTick).isNotNull()
   }
 
@@ -87,77 +78,82 @@ class ExplorationPlayerTest {
     device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
   }
 
-  /** Continue Description of ProtoTypeExploration. */
-  private fun playExplorationDescription() {
+  private fun completePrototypeExploration() {
+    playContinueInteraction()
+    playFractionInputInteraction()
+    playMultipleChoiceIntearction1()
+    playMultipleChoiceIntearction2()
+    playItemSelectionInteraction()
+    playNumericInputInteraction()
+    playRatioInputInteraction()
+    playTextInputInteraction()
+    playDragAndDropInteraction()
+    playDragDropMergeInteraction()
+    playEndExplorationInteraction()
+  }
+
+  private fun playContinueInteraction() {
     device.findObjectByText("CONTINUE")?.click()
   }
 
-  /** Play FractionInputInteraction for PrototypeExporation. */
   private fun playFractionInputInteraction() {
     device.findObjectByRes("fraction_input_interaction_view")?.text = "1/2"
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
-  }
-  /** Play first MultipleChoiceInteraction for PrototypeExporation. */
-  private fun playMultipleChoiceIntearction1() {
-    device.findObjectByText("Eagle")?.click()
-    device.findObjectByText("CONTINUE")?.click()
-  }
-  /** Play second MultipleChoiceInteraction for PrototypeExporation. */
-  private fun playMultipleChoiceIntearction2() {
-    device.findObjectByText("Green")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second ItemSelectionInteraction for PrototypeExporation. */
+  private fun playMultipleChoiceIntearction1() {
+    device.findObjectByText("Eagle")?.click()
+    playContinueInteraction()
+  }
+
+  private fun playMultipleChoiceIntearction2() {
+    device.findObjectByText("Green")?.click()
+    playContinueInteraction()
+  }
+
   private fun playItemSelectionInteraction() {
     device.findObjectByText("Red")?.click()
     device.findObjectByText("Green")?.click()
     device.findObjectByText("Blue")?.click()
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second NumericInputInteraction for PrototypeExporation. */
   private fun playNumericInputInteraction() {
     device.findObjectByRes("numeric_input_interaction_view")?.text = "121"
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second RatioInputInteraction for PrototypeExporation. */
   private fun playRatioInputInteraction() {
     device.findObjectByRes("ratio_input_interaction_view")?.text = "4:5"
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second TextInputInteraction for PrototypeExporation. */
   private fun playTextInputInteraction() {
     device.findObjectByRes("text_input_interaction_view")?.text = "Finnish"
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second DragAndDropInteraction for PrototypeExporation. */
   private fun playDragAndDropInteraction() {
     device.findObjectByDesc("Move item down to 2")?.click()
     device.findObjectByDesc("Move item down to 3")?.click()
     device.findObjectByDesc("Move item down to 4")?.click()
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** Play second DragDropMergeInteraction for PrototypeExporation. */
   private fun playDragDropMergeInteraction() {
     device.findObjectByDesc("Link to item 2")?.click()
     device.findObjectByDesc("Move item down to 3")?.click()
     device.findObjectByText("SUBMIT")?.click()
-    device.findObjectByText("CONTINUE")?.click()
+    playContinueInteraction()
   }
 
-  /** End exploration for PrototypeExploration. */
-  private fun endExploration() {
+  private fun playEndExplorationInteraction() {
     device.findObjectByText("RETURN TO TOPIC")?.click()
   }
 
@@ -173,20 +169,7 @@ class ExplorationPlayerTest {
     device.findObjectByText("First Story")?.click()
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
     device.findObjectByText("Chapter 1: Prototype Exploration")?.click()
-
-    // Complete PrototypeExploration
-    playExplorationDescription()
-    playFractionInputInteraction()
-    playMultipleChoiceIntearction1()
-    playMultipleChoiceIntearction2()
-    playItemSelectionInteraction()
-    playNumericInputInteraction()
-    playRatioInputInteraction()
-    playTextInputInteraction()
-    playDragAndDropInteraction()
-    playDragDropMergeInteraction()
-    endExploration()
-
+    completePrototypeExploration()
     scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
     device.findObjectByText("Chapter 2: Image Region Selection Exploration")?.click()
   }
