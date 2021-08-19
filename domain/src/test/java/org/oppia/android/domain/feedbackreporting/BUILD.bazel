@@ -12,7 +12,7 @@ oppia_android_test(
     srcs = ["FeedbackReportManagementControllerTest.kt"],
     custom_package = "org.oppia.android.domain.feedbackreporting.testing",
     test_class = "org.oppia.android.domain.feedbackreporting.FeedbackReportManagementControllerTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/feedbackreporting",
@@ -37,7 +37,7 @@ oppia_android_test(
     srcs = ["ReportSchemaVersionTest.kt"],
     custom_package = "org.oppia.android.domain.feedbackreporting.testing",
     test_class = "org.oppia.android.domain.feedbackreporting.ReportSchemaVersionTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
