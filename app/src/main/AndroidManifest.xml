@@ -194,6 +194,7 @@
       android:name=".app.testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
+    <activity android:name=".app.testing.ViewBindingAdaptersTestActivity"/>
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_activity_title"
@@ -245,6 +246,13 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.forcenetworktype.ForceNetworkTypeActivity"
+      android:label="@string/force_network_type_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
