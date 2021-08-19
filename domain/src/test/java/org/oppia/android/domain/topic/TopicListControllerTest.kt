@@ -48,6 +48,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
@@ -108,10 +109,6 @@ class TopicListControllerTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
-  // TODO(#15): Add tests for recommended lessons rather than promoted, and tests for the 'continue playing' LiveData
-  //  not providing any data for cases when there are no ongoing lessons. Also, add tests for other uncovered cases
-  //  (such as having and not having lessons in either of the PromotedActivityList section, or AsyncResult errors).
 
   @Test
   fun testRetrieveTopicList_isSuccessful() {
@@ -216,8 +213,38 @@ class TopicListControllerTest {
   }
 
   @Test
+  fun testPromotedActivityList_markFracStory0Exp0StartedNotCompleted_ongoingStoryListIsCorrect() {
+    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testGetPromotedActivityList_markFracStory0Exp0InProgressSaved_ongoingStoryListIsCorrect() {
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
   fun testGetPromotedActivityList_markRecentlyPlayedFracStory0Exp0_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -246,12 +273,50 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_playedFracStory0Exp1_ongoingStoryListCorrect() {
+  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1Started_ongoingStoryListCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp1(
+    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp1(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1ProgSaved_ongoingStoryListCorrect() {
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp1(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(1)
+    verifyOngoingStoryAsFractionStory0Exploration1(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testGetStoryList_markChapDoneFracStory0Exp0_FracStory0Exp1ProgNotSaved_ongoingStoryListCrt() {
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -286,11 +351,11 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentPlayedFirstChapInAllStoriesInRatios_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
+    storyProgressTestHelper.markInProgressNotSavedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -361,7 +426,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedFirstTestTopic_suggestedStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -491,7 +556,7 @@ class TopicListControllerTest {
 
   @Test
   fun testGetStoryList_markRecentlyPlayedForFirstTestTopic_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp0(
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -526,7 +591,7 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -548,11 +613,11 @@ class TopicListControllerTest {
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedRatiosStory1Exp0(
+    storyProgressTestHelper.markInProgressSavedRatiosStory1Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -601,6 +666,35 @@ class TopicListControllerTest {
     )
     verifyOngoingStoryAsRatioStory1Exploration3(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+  }
+
+  @Test
+  fun testStoryList_markLessons_progressSaved_notSaved_startedNotDone_ongoingListCorrect() {
+    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressNotSavedRatiosStory1Exp0(
+      profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val promotedActivityList = retrievePromotedActivityList()
+    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
+      .isEqualTo(3)
+    verifyOngoingStoryAsRatioStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
+    )
+    verifyOngoingStoryAsRatioStory1Exploration2(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
+    )
+    verifyOngoingStoryAsFractionStory0Exploration0(
+      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2]
     )
   }
 
@@ -818,7 +912,8 @@ class TopicListControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

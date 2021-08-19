@@ -11,6 +11,10 @@ Note that each of the dependencies will have all ':'s & '.'s replaced with under
 the dependency "android.arch.core:core-testing": "1.1.1" will be referencable with the following:
 //third_party:android_arch_core_core-testing (no version is included so that versions can be easily
 updated here).
+
+Note that for making any change in 'MAVEN_PRODUCTION_DEPENDENCY_VERSIONS' or
+'MAVEN_TEST_DEPENDENCY_VERSIONS' dicts please refer to:
+https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 """
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
@@ -38,6 +42,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.navigation:navigation-ui-ktx": "2.0.0",
     "androidx.recyclerview:recyclerview": "1.0.0",
     "androidx.room:room-runtime": "2.2.5",
+    "androidx.test.uiautomator:uiautomator": "2.2.0",
     "androidx.viewpager2:viewpager2": "1.0.0",
     "androidx.viewpager:viewpager": "1.0.0",
     "androidx.work:work-runtime": "2.4.0",
@@ -86,10 +91,12 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.work:work-testing": "2.4.0",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
+    "com.google.truth.extensions:truth-liteproto-extension": "0.43",
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
+    "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",

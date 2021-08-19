@@ -46,6 +46,13 @@ fun main(vararg args: String) {
   logXmlSyntaxFailures(allErrorsList)
 
   if (hasXmlSyntaxFailure) {
+    println(
+      "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+        "#xml-syntax-check for more details on how to fix this.\n"
+    )
+  }
+
+  if (hasXmlSyntaxFailure) {
     throw Exception("XML SYNTAX CHECK FAILED")
   } else {
     println("XML SYNTAX CHECK PASSED")
@@ -76,7 +83,7 @@ private fun parseXml(docBuilder: DocumentBuilder, file: File) {
  */
 private fun logXmlSyntaxFailures(errorList: List<Pair<SAXParseException, File>>) {
   if (errorList.isNotEmpty()) {
-    errorList.forEach { errorPair ->
+    errorList.sortedWith(compareBy({ it.second })).forEach { errorPair ->
       val error = errorPair.first
       val errorFile = errorPair.second
       val failureMessage =

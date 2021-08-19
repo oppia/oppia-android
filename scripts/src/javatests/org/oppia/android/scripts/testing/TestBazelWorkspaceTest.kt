@@ -451,6 +451,24 @@ class TestBazelWorkspaceTest {
   }
 
   @Test
+  fun testAddTestToBuildFile_unusedTestName_withMultipleSubpackages_returnsNewBuildAndTestFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    testBazelWorkspace.initEmptyWorkspace()
+    val subpackage = "subpackage.first.second"
+    tempFolder.newFolder(*(subpackage.split(".")).toTypedArray())
+    val files = testBazelWorkspace.addTestToBuildFile(
+      testName = "FirstTest",
+      testFile = tempFolder.newFile("subpackage/first/second/FirstTest.kt"),
+      subpackage = subpackage
+    )
+
+    assertThat(files.getRelativeFileNames(tempFolder.root))
+      .containsExactly(
+        "WORKSPACE", "subpackage/first/second/BUILD.bazel", "subpackage/first/second/FirstTest.kt"
+      )
+  }
+
+  @Test
   fun testAddTestToBuildFile_unusedTestName_withGeneratedAndExtraDeps_includesBothInTestDeps() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.initEmptyWorkspace()
@@ -659,6 +677,22 @@ class TestBazelWorkspaceTest {
 
     assertThat(files.getRelativeFileNames(tempFolder.root))
       .containsExactly("WORKSPACE", "subpackage/BUILD.bazel", "subpackage/FirstTest.kt")
+  }
+
+  @Test
+  fun testCreateTest_unusedTestName_withMultipleSubpackages_returnsNewBuildAndTestFiles() {
+    val testBazelWorkspace = TestBazelWorkspace(tempFolder)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val files = testBazelWorkspace.createTest(
+      testName = "FirstTest",
+      subpackage = "subpackage.first.second"
+    )
+
+    assertThat(files.getRelativeFileNames(tempFolder.root))
+      .containsExactly(
+        "WORKSPACE", "subpackage/first/second/BUILD.bazel", "subpackage/first/second/FirstTest.kt"
+      )
   }
 
   @Test

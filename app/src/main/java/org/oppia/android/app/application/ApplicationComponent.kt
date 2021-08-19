@@ -7,10 +7,10 @@ import dagger.Component
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -24,6 +24,8 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -39,6 +41,8 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -52,8 +56,8 @@ import javax.inject.Singleton
  * this component.
  *
  * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule]
- * Add: [LogReportingModule]
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule], [NetworkConnectionUtilDebugModule]
+ * Add: [LogReportingModule], [NetworkConnectionUtilProdModule]
  */
 @Singleton
 @Component(
@@ -74,10 +78,14 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-    NetworkModule::class, PracticeTabModule::class, PlatformParameterModule::class,
-    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
-    DeveloperOptionsModule::class
+    HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+    FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
+    PlatformParameterModule::class, ExplorationStorageModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+    NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class,
+    // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
+    //  directly exclude debug files from the build and thus won't be requiring this module.
+    NetworkConnectionDebugUtilModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

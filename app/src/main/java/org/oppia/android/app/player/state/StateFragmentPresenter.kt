@@ -20,9 +20,7 @@ import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -83,6 +81,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
+  private lateinit var helpIndex: HelpIndex
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -149,13 +148,12 @@ class StateFragmentPresenter @Inject constructor(
     binding.hintsAndSolutionFragmentContainer.setOnClickListener {
       routeToHintsAndSolutionListener.routeToHintsAndSolution(
         this.explorationId,
-        viewModel.newAvailableHintIndex,
-        viewModel.allHintsExhausted
+        helpIndex
       )
     }
 
     subscribeToCurrentState()
-    markExplorationAsRecentlyPlayed()
+    markExplorationAsStartedNotCompleted()
     return binding.root
   }
 
@@ -201,28 +199,6 @@ class StateFragmentPresenter @Inject constructor(
     recyclerViewAssembler.adapter.notifyDataSetChanged()
   }
 
-  fun onHintAvailable(helpIndex: HelpIndex) {
-    when (helpIndex.indexTypeCase) {
-      HelpIndex.IndexTypeCase.HINT_INDEX, HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
-        if (helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.HINT_INDEX) {
-          viewModel.newAvailableHintIndex = helpIndex.hintIndex
-        }
-        viewModel.allHintsExhausted =
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.SHOW_SOLUTION
-        viewModel.setHintOpenedAndUnRevealedVisibility(true)
-        viewModel.setHintBulbVisibility(true)
-      }
-      HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        viewModel.setHintBulbVisibility(true)
-      }
-      else -> {
-        viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        viewModel.setHintBulbVisibility(false)
-      }
-    }
-  }
-
   fun handleAudioClick() = recyclerViewAssembler.toggleAudioPlaybackState()
 
   fun handleKeyboardAction() {
@@ -230,6 +206,11 @@ class StateFragmentPresenter @Inject constructor(
     if (viewModel.getCanSubmitAnswer().get() == true) {
       handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
     }
+  }
+
+  fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+    this.helpIndex = helpIndex
+    showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
   }
 
   private fun createRecyclerViewAssembler(
@@ -267,18 +248,12 @@ class StateFragmentPresenter @Inject constructor(
       .build()
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    subscribeToHint(
-      explorationProgressController.submitHintIsRevealed(
-        currentState,
-        saveUserChoice,
-        hintIndex
-      )
-    )
+  fun revealHint(hintIndex: Int) {
+    subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
   }
 
   fun revealSolution() {
-    subscribeToSolution(explorationProgressController.submitSolutionIsRevealed(currentState))
+    subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -336,6 +311,7 @@ class StateFragmentPresenter @Inject constructor(
 
     currentState = ephemeralState.state
     currentStateName = ephemeralState.state.name
+
     showOrHideAudioByState(ephemeralState.state)
 
     val dataPair = recyclerViewAssembler.compute(
@@ -357,38 +333,17 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  /**
-   * This function listens to the result of RevealHint.
-   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to
-   * next state.
-   */
-  private fun subscribeToHint(hintResultLiveData: LiveData<AsyncResult<Hint>>) {
-    val hintLiveData = getHintIsRevealed(hintResultLiveData)
-    hintLiveData.observe(
+  /** Subscribes to the result of requesting to show a hint or solution. */
+  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
+    resultLiveData.observe(
       fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.hintIsRevealed) {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
-        }
-      }
-    )
-  }
-
-  /**
-   * This function listens to the result of RevealSolution.
-   * Whenever a hint is revealed using ExplorationProgressController.submitHintIsRevealed function,
-   * this function will wait for the response from that function and based on which we can move to
-   * next state.
-   */
-  private fun subscribeToSolution(solutionResultLiveData: LiveData<AsyncResult<Solution>>) {
-    val solutionLiveData = getSolutionIsRevealed(solutionResultLiveData)
-    solutionLiveData.observe(
-      fragment,
-      Observer { result ->
-        // If the hint was revealed remove dot and radar.
-        if (result.solutionIsRevealed) {
+      { result ->
+        if (result.isFailure()) {
+          oppiaLogger.e(
+            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
+          )
+        } else {
+          // If the hint/solution, was revealed remove dot and radar.
           viewModel.setHintOpenedAndUnRevealedVisibility(false)
         }
       }
@@ -408,15 +363,12 @@ class StateFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(
       fragment,
       Observer { result ->
-        // If the answer was submitted on behalf of the Continue interaction, automatically continue to the next state.
+        // If the answer was submitted on behalf of the Continue interaction, automatically continue
+        // to the next state.
         if (result.state.interaction.id == "Continue") {
-          recyclerViewAssembler.stopHintsFromShowing()
-          viewModel.setHintBulbVisibility(false)
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
-            recyclerViewAssembler.stopHintsFromShowing()
-            viewModel.setHintBulbVisibility(false)
             recyclerViewAssembler.showCelebrationOnCorrectAnswer()
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
@@ -425,16 +377,6 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     )
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun getSolutionIsRevealed(hint: LiveData<AsyncResult<Solution>>): LiveData<Solution> {
-    return Transformations.map(hint, ::processSolution)
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun getHintIsRevealed(hint: LiveData<AsyncResult<Hint>>): LiveData<Hint> {
-    return Transformations.map(hint, ::processHint)
   }
 
   /** Helper for subscribeToAnswerOutcome. */
@@ -456,30 +398,6 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
     return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
-  }
-
-  /** Helper for [subscribeToHint]. */
-  private fun processHint(hintResult: AsyncResult<Hint>): Hint {
-    if (hintResult.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve Hint",
-        hintResult.getErrorOrNull()!!
-      )
-    }
-    return hintResult.getOrDefault(Hint.getDefaultInstance())
-  }
-
-  /** Helper for [subscribeToSolution]. */
-  private fun processSolution(solutionResult: AsyncResult<Solution>): Solution {
-    if (solutionResult.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve Solution",
-        solutionResult.getErrorOrNull()!!
-      )
-    }
-    return solutionResult.getOrDefault(Solution.getDefaultInstance())
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
@@ -532,8 +450,8 @@ class StateFragmentPresenter @Inject constructor(
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
 
-  private fun markExplorationAsRecentlyPlayed() {
-    storyProgressController.recordRecentlyPlayedChapter(
+  private fun markExplorationAsStartedNotCompleted() {
+    storyProgressController.recordChapterAsStartedNotCompleted(
       profileId,
       topicId,
       storyId,
@@ -550,5 +468,36 @@ class StateFragmentPresenter @Inject constructor(
       explorationId,
       oppiaClock.getCurrentTimeMs()
     )
+  }
+
+  private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+    if (!isCurrentStatePendingState) {
+      // If current state is not the pending top state, hide the hint bulb.
+      viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      viewModel.setHintBulbVisibility(false)
+    } else {
+      when (helpIndex.indexTypeCase) {
+        HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        }
+        HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+        }
+        HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
+          viewModel.setHintBulbVisibility(true)
+          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+        }
+        HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          viewModel.setHintBulbVisibility(true)
+        }
+        else -> {
+          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          viewModel.setHintBulbVisibility(false)
+        }
+      }
+    }
   }
 }
