@@ -129,6 +129,7 @@ TEST_DEPS = [
     ":interaction_object_test_builder",
     ":testing",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network:network",
