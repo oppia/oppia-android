@@ -11,6 +11,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -143,8 +144,8 @@ class ExplorationActivity :
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    explorationActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    explorationActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() = explorationActivityPresenter.revealSolution()
@@ -157,16 +158,14 @@ class ExplorationActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
-        newAvailableHintIndex,
-        allHintsExhausted
+        state,
+        helpIndex
       )
-      hintsAndSolutionDialogFragment.loadState(state)
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }

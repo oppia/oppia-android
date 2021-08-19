@@ -4,11 +4,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
@@ -18,7 +18,6 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
-  private val oppiaLogger: OppiaLogger,
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
@@ -41,38 +40,40 @@ class StoryChapterSummaryViewModel(
         else -> false
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val isCheckpointCompatible =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+      val explorationCheckpointLiveData =
+        explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           explorationId
         ).toLiveData()
 
-      isCheckpointCompatible.observe(
+      explorationCheckpointLiveData.observe(
         fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isSuccess()) {
-                isCheckpointCompatible.removeObserver(this)
-                startOrResumeExploration(
+                explorationCheckpointLiveData.removeObserver(this)
+                explorationSelectionListener.selectExploration(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
+                  canExplorationBeResumed = true,
                   shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = 1
+                  backflowId = 1,
+                  explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
-                isCheckpointCompatible.removeObserver(this)
-                startOrResumeExploration(
+                explorationCheckpointLiveData.removeObserver(this)
+                explorationSelectionListener.selectExploration(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
-                  shouldSavePartialProgress,
                   canExplorationBeResumed = false,
-                  backflowScreen = 1
+                  shouldSavePartialProgress,
+                  backflowId = 1,
+                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               }
             }
@@ -80,35 +81,16 @@ class StoryChapterSummaryViewModel(
         }
       )
     } else {
-      startOrResumeExploration(
+      explorationSelectionListener.selectExploration(
         internalProfileId,
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress,
         canExplorationBeResumed = false,
-        backflowScreen = 1
+        shouldSavePartialProgress,
+        backflowId = 1,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
-  ) {
-    explorationSelectionListener.selectExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      canExplorationBeResumed,
-      shouldSavePartialProgress,
-      backflowScreen
-    )
   }
 }

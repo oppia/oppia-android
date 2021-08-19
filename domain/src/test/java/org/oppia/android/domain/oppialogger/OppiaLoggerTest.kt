@@ -22,6 +22,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
@@ -294,7 +295,7 @@ class OppiaLoggerTest {
       TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent {

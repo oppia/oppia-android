@@ -53,6 +53,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
@@ -60,7 +61,6 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val INVALID_EXPLORATION_ID_1 = "INVALID_EXPLORAITON_ID_1"
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 
@@ -416,7 +416,7 @@ class TopicControllerTest {
   fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
     topicController.retrieveChapter(
       FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
-    ).observeForever(mockChapterSummaryObserver)
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRetrieveChapterSucceeded()
@@ -430,19 +430,11 @@ class TopicControllerTest {
   @Test
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
     topicController.retrieveChapter(
-      INVALID_TOPIC_ID_1, INVALID_STORY_ID_1, INVALID_EXPLORATION_ID_1
-    ).observeForever(mockChapterSummaryObserver)
+      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
     testCoroutineDispatchers.runCurrent()
 
     verifyRetrieveChapterFailed()
-    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      TopicController.ChapterNotFoundException::class.java
-    )
-    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .isEqualTo(
-        "Chapter for exploration $INVALID_EXPLORATION_ID_1 not found in story " +
-          "$INVALID_STORY_ID_1 and topic $INVALID_TOPIC_ID_1"
-      )
   }
 
   @Test
@@ -1285,7 +1277,8 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

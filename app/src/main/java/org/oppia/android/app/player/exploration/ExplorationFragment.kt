@@ -100,8 +100,8 @@ class ExplorationFragment : InjectableFragment() {
 
   fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    explorationFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    explorationFragmentPresenter.revealHint(hintIndex)
   }
 
   fun revealSolution() {

@@ -14,26 +14,36 @@ import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val FAKE_EXPLORATION_ID_1 = "fake_exploration_id_1"
-const val FAKE_EXPLORATION_TITLE_1 = "Fake exploration title_1"
-const val FAKE_EXPLORATION_ID_2 = "fake_exploration_id_2"
-const val FAKE_EXPLORATION_TITLE_2 = "Fake exploration title_2"
-const val FRACTIONS_EXPLORATION_0_TITLE = "What is a fraction?"
+const val FRACTIONS_EXPLORATION_0_TITLE = "What is a Fraction?"
+const val FRACTIONS_EXPLORATION_1_TITLE = "The meaning of Equal Parts"
+const val RATIOS_EXPLORATION_0_TITLE = "What is a Ratio?"
 const val FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION = 85
-const val FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION = 26
+const val FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION = 25
+const val FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION = 86
+const val FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME = "Introduction"
+const val FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME = "A Problem"
+const val FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME = "Into the Bakery"
+const val FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME = "Matthew gets conned"
+const val RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME = "Introduction"
+const val RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME = "A Problem"
+const val RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION = 123
 
 /** This helper class allows storing are retrieving exploration checkpoints for testing. */
 @Singleton
 class ExplorationCheckpointTestHelper @Inject constructor(
   private val explorationCheckpointController: ExplorationCheckpointController,
-  private val testCoroutineDispatchers: TestCoroutineDispatchers
+  private val testCoroutineDispatchers: TestCoroutineDispatchers,
+  private val fakeOppiaClock: FakeOppiaClock
 ) {
 
   init {
@@ -53,87 +63,126 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
 
   /**
-   * Saves a fake checkpoint for explorationId [FAKE_EXPLORATION_ID_1] for the specified profileId.
-   * The size of the checkpoint saved here is 67 bytes.
-   *
-   * @param internalProfileId the profileID for which the checkpoint has to be saved
-   * @param version the version of the exploration for which the checkpoint has to be created
-   * @param timestamp the time in milliseconds at which the checkpoint was created
-   */
-  fun saveFakeExplorationCheckpoint(internalProfileId: Int, version: Int, timestamp: Long) {
-    val checkpoint = createExplorationCheckpoint(FAKE_EXPLORATION_TITLE_1, version, timestamp)
-    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      FAKE_EXPLORATION_ID_1,
-      checkpoint
-    )
-    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
-  }
-
-  /**
-   * Saves two fake checkpoints, one for [FAKE_EXPLORATION_ID_1] and the other for
-   * [FAKE_EXPLORATION_ID_2]. Together both the exploration take up 137 bytes of storage space.
-   *
-   * @param internalProfileId the profile ID for which the checkpoints have to be saved
-   * @param versionOfFirstCheckpoint the version of the first checkpoint that has to be saved
-   * @param versionOfSecondCheckpoint the version of the second checkpoint that has to be saved
-   * @param timestampOfFirstCheckpoint the time in milliseconds at which the first checkpoint was
-   *     created
-   * @param timestampOfSecondCheckpoint the time in milliseconds at which the second checkpoint was
-   *     created
-   */
-  fun saveTwoFakeExplorationCheckpoint(
-    internalProfileId: Int,
-    versionOfFirstCheckpoint: Int,
-    versionOfSecondCheckpoint: Int,
-    timestampOfFirstCheckpoint: Long,
-    timestampOfSecondCheckpoint: Long
-  ) {
-    var checkpoint = createExplorationCheckpoint(
-      FAKE_EXPLORATION_TITLE_1,
-      versionOfFirstCheckpoint,
-      timestampOfFirstCheckpoint
-    )
-    var saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      FAKE_EXPLORATION_ID_1,
-      checkpoint
-    )
-    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
-
-    checkpoint = createExplorationCheckpoint(
-      FAKE_EXPLORATION_TITLE_2,
-      versionOfSecondCheckpoint,
-      timestampOfSecondCheckpoint
-    )
-    saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      FAKE_EXPLORATION_ID_2,
-      checkpoint
-    )
-    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
-  }
-
-  /**
    * Saves a checkpoint for topic Fractions, story 0, exploration 0.
    *
-   * @param internalProfileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profileID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
-   * @param timestamp the time in milliseconds at which the checkpoint was created
    */
-  fun saveCheckpointForFractionsStory0Exploration0(
-    internalProfileId: Int,
-    version: Int,
-    timestamp: Long
-  ) {
+  fun saveCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
     val checkpoint = createExplorationCheckpoint(
-      FRACTIONS_EXPLORATION_0_TITLE,
-      version,
-      timestamp
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME,
+      version = version
     )
     val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      profileId,
       FRACTIONS_EXPLORATION_ID_0,
+      checkpoint
+    )
+    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
+  }
+
+  /**
+   * Saves a checkpoint for topic Fractions, story 0, exploration 1.
+   *
+   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun saveCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
+    val checkpoint = createExplorationCheckpoint(
+      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME,
+      version = version
+    )
+    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      FRACTIONS_EXPLORATION_ID_1,
+      checkpoint
+    )
+    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
+  }
+
+  /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
+   * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
+   *
+   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
+    val checkpoint = createUpdatedExplorationCheckpoint(
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME,
+      version = version
+    )
+    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      FRACTIONS_EXPLORATION_ID_0,
+      checkpoint
+    )
+    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
+  }
+
+  /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 1. For this function to work
+   * correctly it should be called after [saveCheckpointForFractionsStory0Exploration1].
+   *
+   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
+    val checkpoint = createUpdatedExplorationCheckpoint(
+      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME,
+      version = version
+    )
+    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      FRACTIONS_EXPLORATION_ID_1,
+      checkpoint
+    )
+    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
+  }
+
+  /**
+   * Saves a checkpoint for topic Ratios, story 0, exploration 0.
+   *
+   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun saveCheckpointForRatiosStory0Exploration0(
+    profileId: ProfileId,
+    version: Int,
+  ) {
+    val checkpoint = createExplorationCheckpoint(
+      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
+      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME,
+      version = version
+    )
+    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      RATIOS_EXPLORATION_ID_0,
+      checkpoint
+    )
+    verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
+  }
+
+  /**
+   * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
+   * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
+   *
+   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param version the version of the exploration for which the checkpoint has to be created
+   */
+  fun updateCheckpointForRatiosStory0Exploration0(profileId: ProfileId, version: Int) {
+    val checkpoint = createUpdatedExplorationCheckpoint(
+      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
+      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME,
+      version = version
+    )
+    val saveCheckpointDataProvider = explorationCheckpointController.recordExplorationCheckpoint(
+      profileId,
+      RATIOS_EXPLORATION_ID_0,
       checkpoint
     )
     verifyProviderFinishesWithSuccess(saveCheckpointDataProvider)
@@ -143,14 +192,14 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Function to verify progress for the exploration specified by the explorationId exists in the
    * checkpoint database of the specified profileId.
    *
-   * @param internalProfileId the profile ID for which the save operation has to be verified
+   * @param profileId the profile ID for which the save operation has to be verified
    * @param explorationId the ID of the exploration for which checkpoint was saved
    */
-  fun verifyExplorationProgressIsSaved(internalProfileId: Int, explorationId: String) {
+  fun verifyExplorationProgressIsSaved(profileId: ProfileId, explorationId: String) {
 
     val retrieveCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         explorationId
       )
 
@@ -174,13 +223,13 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Function to verify no progress for the exploration specified by the explorationId exists in the
    * checkpoint database of the specified profileId.
    *
-   * @param internalProfileId the profile ID for which the delete operation has to be verified
+   * @param profileId the profile ID for which the delete operation has to be verified
    * @param explorationId the ID of the exploration for which checkpoint should be deleted
    */
-  fun verifyExplorationProgressIsDeleted(internalProfileId: Int, explorationId: String) {
+  fun verifyExplorationProgressIsDeleted(profileId: ProfileId, explorationId: String) {
     val retrieveCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        profileId,
         explorationId
       )
 
@@ -206,15 +255,31 @@ class ExplorationCheckpointTestHelper @Inject constructor(
 
   private fun createExplorationCheckpoint(
     explorationTitle: String,
-    version: Int,
-    timestamp: Long
+    pendingStateName: String,
+    version: Int
   ): ExplorationCheckpoint {
+    primeClockForRecordingCheckpoint()
     return ExplorationCheckpoint.newBuilder()
       .setExplorationTitle(explorationTitle)
-      .setPendingStateName("fake_state_0")
+      .setPendingStateName(pendingStateName)
       .setExplorationVersion(version)
-      .setTimestampOfFirstCheckpoint(timestamp)
+      .setTimestampOfFirstCheckpoint(fakeOppiaClock.getCurrentTimeMs())
       .setStateIndex(0)
+      .build()
+  }
+
+  private fun createUpdatedExplorationCheckpoint(
+    explorationTitle: String,
+    pendingStateName: String,
+    version: Int
+  ): ExplorationCheckpoint {
+    primeClockForRecordingCheckpoint()
+    return ExplorationCheckpoint.newBuilder()
+      .setExplorationTitle(explorationTitle)
+      .setPendingStateName(pendingStateName)
+      .setExplorationVersion(version)
+      .setTimestampOfFirstCheckpoint(fakeOppiaClock.getCurrentTimeMs())
+      .setStateIndex(1)
       .build()
   }
 
@@ -233,6 +298,21 @@ class ExplorationCheckpointTestHelper @Inject constructor(
       verify(mockLiveDataObserver, atLeastOnce())
         .onChanged(liveDataResultCaptor.capture())
       assertThat(liveDataResultCaptor.value.isSuccess()).isTrue()
+    }
+  }
+
+  private fun primeClockForRecordingCheckpoint() {
+    verifyClockMode()
+
+    // Advancing time by 1 millisecond ensures that each recording has a different timestamp so that
+    // functionality depending on recording order can operate properly in Robolectric tests.
+    testCoroutineDispatchers.advanceTimeBy(delayTimeMillis = 1)
+  }
+
+  private fun verifyClockMode() {
+    check(fakeOppiaClock.getFakeTimeMode() == FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS) {
+      "Proper usage of ExplorationCheckpointTestHelper requires using uptime millis otherwise " +
+        "it's highly likely tests depending on this utility will be flaky."
     }
   }
 }

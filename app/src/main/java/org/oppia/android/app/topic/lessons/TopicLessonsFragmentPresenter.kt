@@ -211,13 +211,74 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ).build()
   }
 
+  fun storySummaryClicked(storySummary: StorySummary) {
+    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
+  }
+
+  fun selectChapterSummary(
+    storyId: String,
+    explorationId: String,
+    chapterPlayState: ChapterPlayState
+  ) {
+    val shouldSavePartialProgress =
+      when (chapterPlayState) {
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        else -> false
+      }
+
+    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
+      val explorationCheckpointLiveData =
+        explorationCheckpointController.retrieveExplorationCheckpoint(
+          ProfileId.getDefaultInstance(),
+          explorationId
+        ).toLiveData()
+      explorationCheckpointLiveData.observe(
+        fragment,
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
+            if (it != null) {
+              if (it.isFailure()) {
+                explorationCheckpointLiveData.removeObserver(this)
+                playExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  shouldSavePartialProgress
+                )
+              } else if (it.isSuccess()) {
+                explorationCheckpointLiveData.removeObserver(this)
+                routeToResumeLessonListener.routeToResumeLesson(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  backflowScreen = 0,
+                  explorationCheckpoint = it.getOrThrow()
+                )
+              }
+            }
+          }
+        }
+      )
+    } else {
+      playExploration(
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress
+      )
+    }
+  }
+
   private fun playExploration(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    backflowScreen: Int?
+    shouldSavePartialProgress: Boolean
   ) {
     explorationDataController.startPlayingExploration(
       internalProfileId,
@@ -244,108 +305,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               topicId,
               storyId,
               explorationId,
-              backflowScreen,
+              backflowScreen = 0,
               shouldSavePartialProgress
             )
           }
         }
       }
     )
-  }
-
-  fun selectChapterSummary(
-    storyId: String,
-    explorationId: String,
-    chapterPlayState: ChapterPlayState
-  ) {
-    val shouldSavePartialProgress =
-      when (chapterPlayState) {
-        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
-        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
-        else -> false
-      }
-
-    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val isCheckpointCompatibleLiveData =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
-          ProfileId.getDefaultInstance(),
-          explorationId
-        ).toLiveData()
-      isCheckpointCompatibleLiveData.observe(
-        fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
-            if (it != null) {
-              if (it.isFailure()) {
-                isCheckpointCompatibleLiveData.removeObserver(this)
-                startOrResumeExploration(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = false,
-                  backflowScreen = 0
-                )
-              } else if (it.isSuccess()) {
-                isCheckpointCompatibleLiveData.removeObserver(this)
-                startOrResumeExploration(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = 0
-                )
-              }
-            }
-          }
-        }
-      )
-    } else {
-      startOrResumeExploration(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        canExplorationBeResumed = false,
-        backflowScreen = 0
-      )
-    }
-  }
-
-  fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
-  ) {
-    if (canExplorationBeResumed) {
-      routeToResumeLessonListener.routeToResumeLesson(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen
-      )
-    } else {
-      playExploration(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        backflowScreen = 0
-      )
-    }
   }
 }

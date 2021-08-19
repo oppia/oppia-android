@@ -15,7 +15,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
@@ -31,7 +30,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ResumeLessonViewModel>,
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
-  private val explorationCheckpointController: ExplorationCheckpointController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val oppiaLogger: OppiaLogger
@@ -46,20 +44,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private lateinit var storyId: String
   private lateinit var explorationId: String
 
-  private val explorationCheckpointResultLiveData:
-    LiveData<AsyncResult<ExplorationCheckpoint>> by lazy {
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    }
-
   private val chapterSummaryResultLiveData: LiveData<AsyncResult<ChapterSummary>> by lazy {
-    topicController.retrieveChapter(topicId, storyId, explorationId)
-  }
-
-  private val explorationCheckpointLiveData: LiveData<ExplorationCheckpoint> by lazy {
-    getExplorationCheckpoint()
+    topicController.retrieveChapter(topicId, storyId, explorationId).toLiveData()
   }
 
   private val chapterSummaryLiveData: LiveData<ChapterSummary> by lazy { getChapterSummary() }
@@ -72,7 +58,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ): View? {
 
     binding = ResumeLessonFragmentBinding.inflate(
@@ -91,8 +78,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       it.viewModel = resumeLessonViewModel
     }
 
+    resumeLessonViewModel.explorationCheckpoint.set(explorationCheckpoint)
     subscribeToChapterSummary()
-    subscribeToExplorationCheckpoint()
 
     binding.resumeLessonContinueButton.setOnClickListener {
       playExploration(
@@ -119,21 +106,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun subscribeToExplorationCheckpoint() {
-    explorationCheckpointLiveData.observe(
-      fragment,
-      Observer<ExplorationCheckpoint> { checkpoint ->
-        resumeLessonViewModel.explorationCheckpoint.set(checkpoint)
-      }
-    )
-  }
-
   private fun subscribeToChapterSummary() {
     chapterSummaryLiveData.observe(
       fragment,
       Observer<ChapterSummary> { chapterSummary ->
         resumeLessonViewModel.chapterSummary.set(chapterSummary)
-        val t = chapterSummary
         updateChapterDescription()
       }
     )
@@ -155,29 +132,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     return viewModelProvider.getForFragment(fragment, ResumeLessonViewModel::class.java)
   }
 
-  private fun getExplorationCheckpoint(): LiveData<ExplorationCheckpoint> {
-    return Transformations.map(
-      explorationCheckpointResultLiveData,
-      ::processExplorationCheckpointResult
-    )
-  }
-
   private fun getChapterSummary(): LiveData<ChapterSummary> {
     return Transformations.map(chapterSummaryResultLiveData, ::processChapterSummaryResult)
-  }
-
-  private fun processExplorationCheckpointResult(
-    explorationCheckpointResult: AsyncResult<ExplorationCheckpoint>
-  ): ExplorationCheckpoint {
-    if (explorationCheckpointResult.isFailure()) {
-      oppiaLogger.e(
-        "ResumeLessonFragment",
-        "Failed to retrieve exploration checkpoint for the profileId ${profileId.internalId}" +
-          "and explorationId $explorationId",
-        explorationCheckpointResult.getErrorOrNull()
-      )
-    }
-    return explorationCheckpointResult.getOrDefault(ExplorationCheckpoint.getDefaultInstance())
   }
 
   private fun processChapterSummaryResult(

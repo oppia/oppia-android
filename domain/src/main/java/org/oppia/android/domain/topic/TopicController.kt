@@ -96,7 +96,7 @@ class TopicController @Inject constructor(
 ) {
 
   /**
-   * Indicates that chapter for the specified exploration Id, story ID, and topicID was not found.
+   * Indicates that the chapter for the specified exploration, story, and topic ID was not found.
    */
   class ChapterNotFoundException(message: String) : Exception(message)
 
@@ -161,18 +161,20 @@ class TopicController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String
-  ): LiveData<AsyncResult<ChapterSummary>> {
-    return MutableLiveData(
-      try {
-        AsyncResult.success(fetchChapter(topicId, storyId, explorationId))
-      } catch (e: Exception) {
+  ): DataProvider<ChapterSummary> {
+    return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+    }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
+      val chapterSummary = fetchChapter(storySummary, explorationId)
+      if (chapterSummary == null)
         AsyncResult.failed(
           ChapterNotFoundException(
             "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
           )
         )
-      }
-    )
+      else
+        AsyncResult.success(chapterSummary)
+    }
   }
 
   /**
@@ -398,14 +400,12 @@ class TopicController @Inject constructor(
   }
 
   private fun fetchChapter(
-    topicId: String,
-    storyId: String,
+    storySummary: StorySummary,
     explorationId: String
-  ): ChapterSummary {
-    val chapterSummary: ChapterSummary? = retrieveStory(topicId, storyId).chapterList.firstOrNull {
+  ): ChapterSummary? {
+    return storySummary.chapterList.firstOrNull {
       it.explorationId == explorationId
     }
-    return chapterSummary ?: ChapterSummary.getDefaultInstance()
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {

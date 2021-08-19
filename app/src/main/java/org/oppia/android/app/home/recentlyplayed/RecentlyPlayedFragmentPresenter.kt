@@ -231,38 +231,34 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         else -> false
       }
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val isCheckpointCompatiableLiveData =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+      val explorationCheckpointLiveData =
+        explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           promotedStory.explorationId
         ).toLiveData()
 
-      isCheckpointCompatiableLiveData.observe(
+      explorationCheckpointLiveData.observe(
         fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isSuccess()) {
-                isCheckpointCompatiableLiveData.removeObserver(this)
-                startOrResumeExploration(
+                explorationCheckpointLiveData.removeObserver(this)
+                routeToResumeLessonListener.routeToResumeLesson(
                   internalProfileId,
                   promotedStory.topicId,
                   promotedStory.storyId,
                   promotedStory.explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = null
+                  backflowScreen = null,
+                  explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
-                isCheckpointCompatiableLiveData.removeObserver(this)
-                startOrResumeExploration(
-                  internalProfileId,
+                explorationCheckpointLiveData.removeObserver(this)
+                playExploration(
                   promotedStory.topicId,
                   promotedStory.storyId,
                   promotedStory.explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = false,
-                  backflowScreen = null
+                  shouldSavePartialProgress
                 )
               }
             }
@@ -270,40 +266,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         }
       )
     } else {
-      startOrResumeExploration(
-        internalProfileId,
+      playExploration(
         promotedStory.topicId,
         promotedStory.storyId,
         promotedStory.explorationId,
-        shouldSavePartialProgress,
-        canExplorationBeResumed = false,
-        backflowScreen = null
-      )
-    }
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
-  ) {
-    if (canExplorationBeResumed) {
-      routeToResumeLessonListener.routeToResumeLesson(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen
-      )
-    } else {
-      playExploration(
-        topicId,
-        storyId,
-        explorationId,
         shouldSavePartialProgress
       )
     }

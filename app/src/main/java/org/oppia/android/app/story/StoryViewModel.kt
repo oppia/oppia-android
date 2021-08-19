@@ -104,7 +104,6 @@ class StoryViewModel @Inject constructor(
           fragment,
           explorationSelectionListener,
           explorationCheckpointController,
-          oppiaLogger,
           internalProfileId,
           topicId,
           storyId,

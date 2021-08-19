@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment that allows the user to resume a saved exploration. */
@@ -22,6 +25,8 @@ class ResumeLessonFragment : InjectableFragment() {
       "ResumeExplorationFragmentPresenter.resume_Lesson_fragment_exploration_id"
     private const val RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY =
       "ResumeLessonFragmentPresenter.resume_lesson_fragment_backflow_screen"
+    private const val RESUME_LESSON_FRAGMENT_EXPLORATION_CHECKPOINT_KEY =
+      "ResumeExplorationFragmentPresenter.resume_Lesson_fragment_exploration_checkpoint"
 
     /**
      * Creates new instance of [ResumeLessonFragment].
@@ -34,7 +39,8 @@ class ResumeLessonFragment : InjectableFragment() {
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int
+      backflowScreen: Int,
+      explorationCheckpoint: ExplorationCheckpoint
     ): ResumeLessonFragment {
       val resumeLessonFragment = ResumeLessonFragment()
       val args = Bundle()
@@ -43,6 +49,7 @@ class ResumeLessonFragment : InjectableFragment() {
       args.putString(RESUME_LESSON_FRAGMENT_STORY_ID_KEY, storyId)
       args.putString(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY, explorationId)
       args.putInt(RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY, backflowScreen)
+      args.putProto(RESUME_LESSON_FRAGMENT_EXPLORATION_CHECKPOINT_KEY, explorationCheckpoint)
       resumeLessonFragment.arguments = args
       return resumeLessonFragment
     }
@@ -78,6 +85,16 @@ class ResumeLessonFragment : InjectableFragment() {
         "Expected exploration ID to be included in arguments for ResumeLessonFragment."
       }
     val backflowScreen = arguments?.getInt(RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY, -1)
+    val explorationCheckpoint =
+      checkNotNull(
+        arguments?.getProto(
+          RESUME_LESSON_FRAGMENT_EXPLORATION_CHECKPOINT_KEY,
+          ExplorationCheckpoint.getDefaultInstance()
+        )
+      ) {
+        "Expected exploration checkpoint to be included in arguments for ResumeLessonFragment."
+      }
+
     return resumeLessonFragmentPresenter.handleOnCreate(
       inflater,
       container,
@@ -85,7 +102,8 @@ class ResumeLessonFragment : InjectableFragment() {
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      explorationCheckpoint
     )
   }
 }
