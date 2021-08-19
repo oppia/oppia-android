@@ -1,10 +1,10 @@
 package org.oppia.android.app.hintsandsolution
 
-/** Interface to check the preference regarding alert for [HintsAndSolutionDialogFragment]. */
+/** Callback listener for when the user wishes to reveal a hint. */
 interface RevealHintListener {
   /**
-   * If saveUserChoice is true, show solution and save preference do not show dialog again.
-   * If saveUserChoice is false, show solution and do not save preference and show this dialog next time too.
+   * Called when the user indicates they want to reveal the hint corresponding to the specified
+   * index.
    */
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int)
+  fun revealHint(hintIndex: Int)
 }
