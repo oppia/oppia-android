@@ -44,19 +44,19 @@ class StoryChapterSummaryViewModel(
         else -> false
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val isCheckpointCompatible =
+      val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           explorationId
         ).toLiveData()
 
-      isCheckpointCompatible.observe(
+      explorationCheckpointLiveData.observe(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isSuccess()) {
-                isCheckpointCompatible.removeObserver(this)
+                explorationCheckpointLiveData.removeObserver(this)
                 startOrResumeExploration(
                   internalProfileId,
                   topicId,
@@ -68,7 +68,7 @@ class StoryChapterSummaryViewModel(
                   explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
-                isCheckpointCompatible.removeObserver(this)
+                explorationCheckpointLiveData.removeObserver(this)
                 startOrResumeExploration(
                   internalProfileId,
                   topicId,

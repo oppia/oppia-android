@@ -268,18 +268,18 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
 
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val isCheckpointCompatibleLiveData =
+      val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           explorationId
         ).toLiveData()
-      isCheckpointCompatibleLiveData.observe(
+      explorationCheckpointLiveData.observe(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isFailure()) {
-                isCheckpointCompatibleLiveData.removeObserver(this)
+                explorationCheckpointLiveData.removeObserver(this)
                 startOrResumeExploration(
                   internalProfileId,
                   topicId,
@@ -291,7 +291,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                   explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               } else if (it.isSuccess()) {
-                isCheckpointCompatibleLiveData.removeObserver(this)
+                explorationCheckpointLiveData.removeObserver(this)
                 startOrResumeExploration(
                   internalProfileId,
                   topicId,
