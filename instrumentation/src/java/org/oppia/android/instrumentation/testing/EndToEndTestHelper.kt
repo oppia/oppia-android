@@ -66,6 +66,11 @@ object EndToEndTestHelper {
     return findObject(By.res("$OPPIA_PACKAGE:id/$resourceId"))
   }
 
+  /** Returns the UiObject for the given resourceId. */
+  fun UiObject2.findObjectByRes(resourceId: String): UiObject2? {
+    return findObject(By.res("$OPPIA_PACKAGE:id/$resourceId"))
+  }
+
   /** Returns the UiObject for the given content description. */
   fun UiDevice.findObjectByDesc(text: String): UiObject2? {
     waitForDesc(text)
