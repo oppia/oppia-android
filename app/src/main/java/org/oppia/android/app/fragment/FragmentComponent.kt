@@ -121,7 +121,7 @@ interface FragmentComponent {
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
-  fun inject(resumeLessonsFragment: ResumeLessonFragment)
+  fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(storyFragment: StoryFragment)

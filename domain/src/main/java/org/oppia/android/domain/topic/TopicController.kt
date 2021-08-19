@@ -96,7 +96,7 @@ class TopicController @Inject constructor(
 ) {
 
   /**
-   * Indicates that chapter for the specified exploration Id, story ID, and topicID was not found.
+   * Indicates that the chapter for the specified exploration, story, and topic ID was not found.
    */
   class ChapterNotFoundException(message: String) : Exception(message)
 
