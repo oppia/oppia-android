@@ -28,6 +28,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.model.Exploration
 
 /** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
@@ -234,15 +235,15 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       }
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val isCheckpointCompatiableLiveData =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           promotedStory.explorationId
         ).toLiveData()
 
       isCheckpointCompatiableLiveData.observe(
         fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isSuccess()) {
                 isCheckpointCompatiableLiveData.removeObserver(this)
@@ -252,8 +253,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
                   promotedStory.storyId,
                   promotedStory.explorationId,
                   shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = null
+                  canExplorationBeResumed = true,
+                  backflowScreen = null,
+                  explorationCheckpoint =  it.getOrThrow()
                 )
               } else if (it.isFailure()) {
                 isCheckpointCompatiableLiveData.removeObserver(this)
@@ -264,7 +266,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
                   promotedStory.explorationId,
                   shouldSavePartialProgress,
                   canExplorationBeResumed = false,
-                  backflowScreen = null
+                  backflowScreen = null,
+                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               }
             }
@@ -279,7 +282,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         promotedStory.explorationId,
         shouldSavePartialProgress,
         canExplorationBeResumed = false,
-        backflowScreen = null
+        backflowScreen = null,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
   }
@@ -291,7 +295,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
@@ -299,7 +304,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
     } else {
       playExploration(

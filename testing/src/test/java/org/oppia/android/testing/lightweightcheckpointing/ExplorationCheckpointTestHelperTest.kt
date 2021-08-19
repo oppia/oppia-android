@@ -51,6 +51,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -91,76 +92,10 @@ class ExplorationCheckpointTestHelperTest {
   }
 
   @Test
-  fun testSaveFakeExplorationCheckpoint_checkCheckpointIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(
-      profileId.internalId,
-      version = 0,
-      timestamp = 0L
-    )
-
-    val retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        FAKE_EXPLORATION_ID_1
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify exploration checkpoint was saved with correct exploration title.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_1)
-  }
-
-  @Test
-  fun testSaveTwoFakeCheckpoints_checkCheckpointsAreSaved() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(
-      profileId.internalId,
-      versionOfFirstCheckpoint = 0,
-      versionOfSecondCheckpoint = 0,
-      timestampOfFirstCheckpoint = 0L,
-      timestampOfSecondCheckpoint = 0L
-    )
-
-    var retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        FAKE_EXPLORATION_ID_1
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify the first exploration checkpoint was saved with correct exploration title.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_1)
-
-    reset(mockExplorationCheckpointObserver)
-    retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        FAKE_EXPLORATION_ID_2
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify the second exploration checkpoint was saved with correct exploration title.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_2)
-  }
-
-  @Test
   fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId.internalId,
-      version = 0,
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
       timestamp = 0L
     )
 
@@ -178,6 +113,95 @@ class ExplorationCheckpointTestHelperTest {
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
     assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
       .isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+  }
+
+  @Test
+  fun testUpdateCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        FRACTIONS_EXPLORATION_ID_0
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME)
+  }
+
+
+  @Test
+  fun testSaveCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        FRACTIONS_EXPLORATION_ID_1
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
+  }
+
+  @Test
+  fun testUpdateCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
+      timestamp = 0L
+    )
+
+    val retrieveFakeCheckpointLiveData =
+      explorationCheckpointController.retrieveExplorationCheckpoint(
+        profileId,
+        FRACTIONS_EXPLORATION_ID_1
+      ).toLiveData()
+    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify exploration checkpoint was saved with correct exploration title.
+    verify(mockExplorationCheckpointObserver, atLeastOnce())
+      .onChanged(explorationCheckpointCaptor.capture())
+    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
+      .isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME)
   }
 
   // TODO(#89): Move this to a common test application component.

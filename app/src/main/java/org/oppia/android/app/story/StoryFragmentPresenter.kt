@@ -111,7 +111,8 @@ class StoryFragmentPresenter @Inject constructor(
     explorationId: String,
     canExplorationBeResumed: Boolean,
     shouldSavePartialProgress: Boolean,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
@@ -119,7 +120,8 @@ class StoryFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
     } else {
       playExploration(
@@ -289,7 +291,7 @@ class StoryFragmentPresenter @Inject constructor(
               storyId,
               explorationId,
               backflowScreen,
-              shouldSavePartialProgress
+              shouldSavePartialProgress,
             )
           }
         }

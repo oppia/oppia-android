@@ -780,7 +780,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId.internalId,
+      profileId,
       FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
       timestamp = 1L
     )
@@ -839,7 +839,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId.internalId,
+      profileId,
       FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION,
       timestamp = 1L
     )

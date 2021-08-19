@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
@@ -44,15 +45,15 @@ class StoryChapterSummaryViewModel(
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val isCheckpointCompatible =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           explorationId
         ).toLiveData()
 
       isCheckpointCompatible.observe(
         fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isSuccess()) {
                 isCheckpointCompatible.removeObserver(this)
@@ -62,8 +63,9 @@ class StoryChapterSummaryViewModel(
                   storyId,
                   explorationId,
                   shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = 1
+                  canExplorationBeResumed = true,
+                  backflowScreen = 1,
+                  explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
                 isCheckpointCompatible.removeObserver(this)
@@ -74,7 +76,8 @@ class StoryChapterSummaryViewModel(
                   explorationId,
                   shouldSavePartialProgress,
                   canExplorationBeResumed = false,
-                  backflowScreen = 1
+                  backflowScreen = 1,
+                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               }
             }
@@ -89,7 +92,8 @@ class StoryChapterSummaryViewModel(
         explorationId,
         shouldSavePartialProgress,
         canExplorationBeResumed = false,
-        backflowScreen = 1
+        backflowScreen = 1,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
   }
@@ -101,7 +105,8 @@ class StoryChapterSummaryViewModel(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     explorationSelectionListener.selectExploration(
       internalProfileId,
@@ -110,7 +115,8 @@ class StoryChapterSummaryViewModel(
       explorationId,
       canExplorationBeResumed,
       shouldSavePartialProgress,
-      backflowScreen
+      backflowScreen,
+      explorationCheckpoint
     )
   }
 }

@@ -26,6 +26,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Exploration
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
@@ -269,14 +270,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val isCheckpointCompatibleLiveData =
-        explorationCheckpointController.isSavedCheckpointCompatibleWithExploration(
+        explorationCheckpointController.retrieveExplorationCheckpoint(
           ProfileId.getDefaultInstance(),
           explorationId
         ).toLiveData()
       isCheckpointCompatibleLiveData.observe(
         fragment,
-        object : Observer<AsyncResult<Boolean>> {
-          override fun onChanged(it: AsyncResult<Boolean>?) {
+        object : Observer<AsyncResult<ExplorationCheckpoint>> {
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
             if (it != null) {
               if (it.isFailure()) {
                 isCheckpointCompatibleLiveData.removeObserver(this)
@@ -287,7 +288,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                   explorationId,
                   shouldSavePartialProgress,
                   canExplorationBeResumed = false,
-                  backflowScreen = 0
+                  backflowScreen = 0,
+                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               } else if (it.isSuccess()) {
                 isCheckpointCompatibleLiveData.removeObserver(this)
@@ -297,8 +299,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                   storyId,
                   explorationId,
                   shouldSavePartialProgress,
-                  canExplorationBeResumed = it.getOrThrow(),
-                  backflowScreen = 0
+                  canExplorationBeResumed = true,
+                  backflowScreen = 0,
+                  explorationCheckpoint = it.getOrThrow()
                 )
               }
             }
@@ -313,7 +316,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         explorationId,
         shouldSavePartialProgress,
         canExplorationBeResumed = false,
-        backflowScreen = 0
+        backflowScreen = 0,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
   }
@@ -329,7 +333,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     canExplorationBeResumed: Boolean,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
@@ -337,7 +342,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
     } else {
       playExploration(

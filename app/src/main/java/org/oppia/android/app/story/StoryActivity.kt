@@ -9,6 +9,7 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** Activity for stories. */
 class StoryActivity :
@@ -60,7 +61,8 @@ class StoryActivity :
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
@@ -69,7 +71,8 @@ class StoryActivity :
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
     )
   }

@@ -12,6 +12,7 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -100,7 +101,8 @@ class TopicActivity :
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
@@ -109,7 +111,8 @@ class TopicActivity :
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        explorationCheckpoint
       )
     )
   }

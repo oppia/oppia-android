@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
@@ -68,7 +69,8 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     explorationId: String,
     canExplorationBeResumed: Boolean,
     shouldSavePartialProgress: Boolean,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     storyFragmentPresenter.handleSelectExploration(
       internalProfileId,
@@ -77,7 +79,8 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       explorationId,
       canExplorationBeResumed,
       shouldSavePartialProgress,
-      backflowScreen
+      backflowScreen,
+      explorationCheckpoint
     )
   }
 
