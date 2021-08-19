@@ -454,12 +454,12 @@ class TestBazelWorkspaceTest {
   fun testAddTestToBuildFile_unusedTestName_withMultipleSubpackages_returnsNewBuildAndTestFiles() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.initEmptyWorkspace()
-
-    tempFolder.newFolder("subpackage")
+    val subpackage = "subpackage.first.second"
+    tempFolder.newFolder(*(subpackage.split(".")).toTypedArray())
     val files = testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
       testFile = tempFolder.newFile("subpackage/first/second/FirstTest.kt"),
-      subpackage = "subpackage.first.second"
+      subpackage = subpackage
     )
 
     assertThat(files.getRelativeFileNames(tempFolder.root))
