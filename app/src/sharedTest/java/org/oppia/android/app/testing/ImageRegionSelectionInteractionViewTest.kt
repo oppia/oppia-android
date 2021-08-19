@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -125,6 +127,26 @@ class ImageRegionSelectionInteractionViewTest {
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
       )
+
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
+  fun testImageRegionSelectionInteractionView_clickDescRegion3_region3Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withContentDescription("Region 3")).perform(click())
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
