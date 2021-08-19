@@ -35,7 +35,6 @@ kt_android_library(
         "//utility:resources",
         "//utility/src/main/java/org/oppia/android/util/html/tags:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/image:parser",
-        "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )

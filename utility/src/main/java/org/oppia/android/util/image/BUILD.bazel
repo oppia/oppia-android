@@ -76,18 +76,6 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "tag_handler",
-    srcs = [
-        "ImageTagHandler.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//utility/src/main/java/org/oppia/android/util/html:custom",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-    ],
-)
-
-kt_android_library(
     name = "targets",
     srcs = [
         "ImageTargets.kt",

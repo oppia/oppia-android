@@ -109,7 +109,6 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
     "//utility/src/main/java/org/oppia/android/util/html/tags:tag_handler",
     "//utility/src/main/java/org/oppia/android/util/image:asset",
-    "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
     "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",

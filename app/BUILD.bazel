@@ -778,9 +778,9 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/html:parser",
+    "//utility/src/main/java/org/oppia/android/util/html/tags:tag_handler",
     "//utility/src/main/java/org/oppia/android/util/image:drawable",
     "//utility/src/main/java/org/oppia/android/util/image:parser",
-    "//utility/src/main/java/org/oppia/android/util/image:tag_handler",
     "//utility/src/main/java/org/oppia/android/util/image:targets",
     "//utility/src/main/java/org/oppia/android/util/image:test_glide_image_loader",
 ]

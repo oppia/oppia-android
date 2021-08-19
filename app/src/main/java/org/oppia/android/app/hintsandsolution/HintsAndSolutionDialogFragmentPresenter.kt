@@ -21,8 +21,6 @@ import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.html.HtmlParser
-import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
 import java.util.Locale
 import javax.inject.Inject

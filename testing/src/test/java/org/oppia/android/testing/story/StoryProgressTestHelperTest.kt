@@ -68,7 +68,6 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.image.ImageParsingModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit

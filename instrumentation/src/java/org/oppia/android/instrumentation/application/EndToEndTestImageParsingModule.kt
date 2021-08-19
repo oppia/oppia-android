@@ -2,9 +2,9 @@ package org.oppia.android.instrumentation.application
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.parser.image.DefaultGcsPrefix
-import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
+import org.oppia.android.util.image.DefaultGcsPrefix
+import org.oppia.android.util.image.ImageDownloadUrlTemplate
+import org.oppia.android.util.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Singleton
 
 /** Provides image-extraction URL dependencies from local dev server. */

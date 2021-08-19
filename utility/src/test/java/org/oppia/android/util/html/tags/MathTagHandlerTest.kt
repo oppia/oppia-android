@@ -30,8 +30,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.html.CustomHtmlContentHandler
 import org.oppia.android.util.html.CustomHtmlContentHandler.CustomTagHandler
 import org.oppia.android.util.html.CustomHtmlContentHandler.ImageRetriever
-import org.oppia.android.util.html.tags.CUSTOM_MATH_TAG
-import org.oppia.android.util.html.tags.MathTagHandler
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
