@@ -36,8 +36,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController
 ) {
-  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
-  //  implemented.
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -213,46 +211,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ).build()
   }
 
-  private fun playExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    backflowScreen: Int?
-  ) {
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      // Pass an empty checkpoint if the exploration does not have to be resumed.
-      ExplorationCheckpoint.getDefaultInstance()
-    ).observe(
-      fragment,
-      Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "TopicLessonsFragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
-            oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
-            routeToExplorationListener.routeToExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              backflowScreen,
-              shouldSavePartialProgress
-            )
-          }
-        }
-      }
-    )
+  fun storySummaryClicked(storySummary: StorySummary) {
+    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
   }
 
   fun selectChapterSummary(
@@ -280,25 +240,20 @@ class TopicLessonsFragmentPresenter @Inject constructor(
             if (it != null) {
               if (it.isFailure()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
+                playExploration(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = false,
-                  backflowScreen = 0,
-                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+                  shouldSavePartialProgress
                 )
               } else if (it.isSuccess()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
+                routeToResumeLessonListener.routeToResumeLesson(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = true,
                   backflowScreen = 0,
                   explorationCheckpoint = it.getOrThrow()
                 )
@@ -308,51 +263,54 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         }
       )
     } else {
-      startOrResumeExploration(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        canExplorationBeResumed = false,
-        backflowScreen = 0,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-      )
-    }
-  }
-
-  fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, topicId, storySummary.storyId)
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?,
-    explorationCheckpoint: ExplorationCheckpoint
-  ) {
-    if (canExplorationBeResumed) {
-      routeToResumeLessonListener.routeToResumeLesson(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen,
-        explorationCheckpoint
-      )
-    } else {
       playExploration(
         internalProfileId,
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress,
-        backflowScreen = 0
+        shouldSavePartialProgress
       )
     }
+  }
+
+  private fun playExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
+  ) {
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      // Pass an empty checkpoint if the exploration does not have to be resumed.
+      ExplorationCheckpoint.getDefaultInstance()
+    ).observe(
+      fragment,
+      Observer<AsyncResult<Any?>> { result ->
+        when {
+          result.isPending() -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
+          result.isFailure() -> oppiaLogger.e(
+            "TopicLessonsFragment",
+            "Failed to load exploration",
+            result.getErrorOrNull()!!
+          )
+          else -> {
+            oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
+            routeToExplorationListener.routeToExploration(
+              internalProfileId,
+              topicId,
+              storyId,
+              explorationId,
+              backflowScreen = 0,
+              shouldSavePartialProgress
+            )
+          }
+        }
+      }
+    )
   }
 }

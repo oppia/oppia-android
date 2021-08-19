@@ -9,7 +9,6 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
@@ -19,15 +18,12 @@ class StoryChapterSummaryViewModel(
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
-  private val oppiaLogger: OppiaLogger,
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
   val chapterSummary: ChapterSummary,
   val entityType: String
 ) : StoryItemViewModel() {
-  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
-  //  implemented.
 
   val explorationId: String = chapterSummary.explorationId
   val name: String = chapterSummary.name
@@ -57,26 +53,26 @@ class StoryChapterSummaryViewModel(
             if (it != null) {
               if (it.isSuccess()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
+                explorationSelectionListener.selectExploration(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
-                  shouldSavePartialProgress,
                   canExplorationBeResumed = true,
-                  backflowScreen = 1,
+                  shouldSavePartialProgress,
+                  backflowId = 1,
                   explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
+                explorationSelectionListener.selectExploration(
                   internalProfileId,
                   topicId,
                   storyId,
                   explorationId,
-                  shouldSavePartialProgress,
                   canExplorationBeResumed = false,
-                  backflowScreen = 1,
+                  shouldSavePartialProgress,
+                  backflowId = 1,
                   explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
                 )
               }
@@ -85,38 +81,16 @@ class StoryChapterSummaryViewModel(
         }
       )
     } else {
-      startOrResumeExploration(
+      explorationSelectionListener.selectExploration(
         internalProfileId,
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress,
         canExplorationBeResumed = false,
-        backflowScreen = 1,
+        shouldSavePartialProgress,
+        backflowId = 1,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?,
-    explorationCheckpoint: ExplorationCheckpoint
-  ) {
-    explorationSelectionListener.selectExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      canExplorationBeResumed,
-      shouldSavePartialProgress,
-      backflowScreen,
-      explorationCheckpoint
-    )
   }
 }

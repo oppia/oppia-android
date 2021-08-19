@@ -94,9 +94,8 @@ class ExplorationCheckpointTestHelperTest {
   @Test
   fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveFakeCheckpointLiveData =
@@ -118,15 +117,13 @@ class ExplorationCheckpointTestHelperTest {
   @Test
   fun testUpdateCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
-      profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveFakeCheckpointLiveData =
@@ -151,8 +148,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testSaveCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
-      timestamp = 0L
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
     )
 
     val retrieveFakeCheckpointLiveData =
@@ -174,15 +170,13 @@ class ExplorationCheckpointTestHelperTest {
   @Test
   fun testUpdateCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
     )
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
-      profileId,
+      profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
-      timestamp = 0L
     )
 
     val retrieveFakeCheckpointLiveData =
@@ -206,9 +200,8 @@ class ExplorationCheckpointTestHelperTest {
   @Test
   fun testSaveCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveFakeCheckpointLiveData =
@@ -230,15 +223,13 @@ class ExplorationCheckpointTestHelperTest {
   @Test
   fun testUpdateCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
-      profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     explorationCheckpointTestHelper.updateCheckpointForRatiosStory0Exploration0(
-      profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveFakeCheckpointLiveData =

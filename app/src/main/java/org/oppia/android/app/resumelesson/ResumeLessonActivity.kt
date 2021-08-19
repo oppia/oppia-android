@@ -73,7 +73,9 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
     /** Argument key for backflow screen in [ResumeLessonActivity] */
     const val RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ResumeLessonActivity.backflow_screen"
-    private const val RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY =
+
+    /** Argument key for exploration checkpoint in [ResumeLessonActivity] */
+    const val RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY =
       "ResumeLessonActivity.exploration_checkpoint"
 
     /**

@@ -159,9 +159,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -174,9 +173,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -189,9 +187,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -205,14 +202,12 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 1L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -231,15 +226,13 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 1L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION,
-      timestamp = 2L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
     )
 
     val oldestCheckpointDetailsLiveData =
@@ -265,9 +258,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 0L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
 
     val deleteCheckpointLiveData =
@@ -320,9 +312,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveCompatibleCheckpoint_checkCheckpointIsCompatible() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 1L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
     )
     explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -334,9 +325,8 @@ class ExplorationCheckpointControllerTest {
   @Test
   fun testController_saveInCompatibleCheckpoint_checkpointCheckpointIsNotCompatible() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      firstTestProfile,
-      FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION,
-      timestamp = 1L
+      profileId = firstTestProfile,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
     )
     explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,

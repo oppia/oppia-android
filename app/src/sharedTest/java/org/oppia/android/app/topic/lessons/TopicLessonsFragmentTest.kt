@@ -338,9 +338,8 @@ class TopicLessonsFragmentTest {
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
-      timestamp = 1L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
     )
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
@@ -391,9 +390,8 @@ class TopicLessonsFragmentTest {
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
-      profileId,
-      FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION,
-      timestamp = 1L
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()

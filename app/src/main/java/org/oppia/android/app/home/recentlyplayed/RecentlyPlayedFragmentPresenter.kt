@@ -40,8 +40,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val explorationCheckpointController: ExplorationCheckpointController,
   @StoryHtmlParserEntityType private val entityType: String
 ) {
-  // TODO(#3479): Enable checkpointing once mechanism to resume exploration with checkpoints is
-  //  implemented.
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -246,27 +244,21 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             if (it != null) {
               if (it.isSuccess()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
+                routeToResumeLessonListener.routeToResumeLesson(
                   internalProfileId,
                   promotedStory.topicId,
                   promotedStory.storyId,
                   promotedStory.explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = true,
                   backflowScreen = null,
                   explorationCheckpoint = it.getOrThrow()
                 )
               } else if (it.isFailure()) {
                 explorationCheckpointLiveData.removeObserver(this)
-                startOrResumeExploration(
-                  internalProfileId,
+                playExploration(
                   promotedStory.topicId,
                   promotedStory.storyId,
                   promotedStory.explorationId,
-                  shouldSavePartialProgress,
-                  canExplorationBeResumed = false,
-                  backflowScreen = null,
-                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+                  shouldSavePartialProgress
                 )
               }
             }
@@ -274,43 +266,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         }
       )
     } else {
-      startOrResumeExploration(
-        internalProfileId,
+      playExploration(
         promotedStory.topicId,
         promotedStory.storyId,
         promotedStory.explorationId,
-        shouldSavePartialProgress,
-        canExplorationBeResumed = false,
-        backflowScreen = null,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-      )
-    }
-  }
-
-  private fun startOrResumeExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    canExplorationBeResumed: Boolean,
-    backflowScreen: Int?,
-    explorationCheckpoint: ExplorationCheckpoint
-  ) {
-    if (canExplorationBeResumed) {
-      routeToResumeLessonListener.routeToResumeLesson(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        backflowScreen,
-        explorationCheckpoint
-      )
-    } else {
-      playExploration(
-        topicId,
-        storyId,
-        explorationId,
         shouldSavePartialProgress
       )
     }
