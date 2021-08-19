@@ -15,6 +15,7 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper
 ) : DeveloperOptionsItemViewModel() {
 
+  /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionHelper.getShowAllHintsAndSolution())
 

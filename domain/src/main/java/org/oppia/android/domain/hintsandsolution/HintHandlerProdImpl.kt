@@ -62,9 +62,15 @@ class HintHandlerProdImpl private constructor(
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   private var trackedWrongAnswerCount = 0
+
+  /** Refers to the current pending state. */
   internal lateinit var pendingState: State
+
   private var hintSequenceNumber = 0
+
+  /** Refers to last revealed hint index. */
   internal var lastRevealedHintIndex = -1
+
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
@@ -139,10 +145,12 @@ class HintHandlerProdImpl private constructor(
     computeCurrentHelpIndex()
   }
 
+  /**
+   * Cancel any potential pending hints by advancing the sequence number. Note that this isn't
+   * reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
+   * scheduled without overlapping with past sequence numbers.
+   */
   internal fun cancelPendingTasks() {
-    // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
-    // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
-    // scheduled without overlapping with past sequence numbers.
     hintSequenceNumber++
   }
 
@@ -200,6 +208,7 @@ class HintHandlerProdImpl private constructor(
     solutionIsRevealed = false
   }
 
+  /** Computes the current [HelpIndex]. */
   internal fun computeCurrentHelpIndex(): HelpIndex {
     val hintList = pendingState.interaction.hintList
     val hasSolution = pendingState.hasSolution()
