@@ -32,6 +32,8 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_1
@@ -333,6 +335,7 @@ class QuestionTrainingControllerTest {
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class
     ]
   )

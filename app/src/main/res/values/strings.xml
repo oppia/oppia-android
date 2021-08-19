@@ -498,7 +498,8 @@
   <string name="license_list_activity_title">Copyright Licenses</string>
   <!-- LicenseTextViewerActivity -->
   <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
-  
   <!-- HelpActivity -->
   <string name="help_activity_back_arrow_description">Navigate back to %s</string>
+  <string name="help_activity_third_party_dependencies_list">third-party dependencies list</string>
+  <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
 </resources>
