@@ -2,7 +2,6 @@ package org.oppia.android.domain.hintsandsolution
 
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.hintsandsolution.HintHandler.HintMonitor
 
 /**
  * Handler for showing hints to the learner after a period of time in the event they submit a

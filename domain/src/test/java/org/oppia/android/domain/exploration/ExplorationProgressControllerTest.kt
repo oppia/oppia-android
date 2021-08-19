@@ -2524,7 +2524,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_resumeExploration_expResumedFromCorrectPendingState() {
+  fun testCheckpointing_onSecondState_resumeExploration_expResumedFromCorrectPendingState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2556,7 +2556,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_navigateBack_resumeExploration_checkResumedFromSecondState() {
+  fun testCheckpointing_onSecondState_navigateBack_resumeExploration_checkResumedFromSecondState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2589,7 +2589,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_submitWrongAns_resumeExploration_checkWrongAnswersVisible() {
+  fun testCheckpointing_onSecondState_submitWrongAns_resumeExploration_checkWrongAnswersVisible() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -2624,7 +2624,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_OnSecondState_submitRightAns_resumeExploration_expResumedFromCompState() {
+  fun testCheckpointing_onSecondState_submitRightAns_resumeExploration_expResumedFromCompState() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
