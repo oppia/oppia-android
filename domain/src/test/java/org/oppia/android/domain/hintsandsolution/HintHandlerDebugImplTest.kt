@@ -275,7 +275,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -429,7 +429,7 @@ class HintHandlerDebugImplTest {
     // the handler has been reset).
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -561,7 +561,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -612,7 +612,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -777,7 +777,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(hintHandler.getCurrentHelpIndex()).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -1361,7 +1361,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1420,7 +1420,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1438,7 +1438,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1456,7 +1456,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 0
+        nextAvailableHintIndex = 0
       }.build()
     )
   }
@@ -1509,7 +1509,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -1547,7 +1547,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
@@ -1587,7 +1587,7 @@ class HintHandlerDebugImplTest {
 
     assertThat(helpIndex).isEqualTo(
       HelpIndex.newBuilder().apply {
-        availableNextHintIndex = 1
+        nextAvailableHintIndex = 1
       }.build()
     )
   }
