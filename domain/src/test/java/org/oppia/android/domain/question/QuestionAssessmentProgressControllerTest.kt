@@ -1881,8 +1881,8 @@ class QuestionAssessmentProgressControllerTest {
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class
+      CachingTestModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

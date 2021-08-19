@@ -226,10 +226,10 @@ class CustomBulletSpanTest {
       ViewBindingShimModule::class, RatioInputModule::class, PlatformParameterModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      HintsAndSolutionProdModule::class, FirebaseLogUploaderModule::class,
+      FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
+      DeveloperOptionsModule::class, ExplorationStorageModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
 

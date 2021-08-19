@@ -286,10 +286,10 @@ class ReadingTextSizeFragmentTest {
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      RatioInputModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class, LogUploadWorkerModule::class, FakeOppiaClockModule::class,
+      PracticeTabModule::class, DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
       NetworkConnectionDebugUtilModule::class
     ]
