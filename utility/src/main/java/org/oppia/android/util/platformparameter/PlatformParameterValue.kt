@@ -1,5 +1,6 @@
 package org.oppia.android.util.platformparameter
 
+import org.oppia.android.app.model.PlatformParameter
 
 /**
  * Generic interface that is used to provide platform parameter values corresponding to the

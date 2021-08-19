@@ -1,4 +1,4 @@
-package org.oppia.android.util.parser.html
+package org.oppia.android.util.html.tags
 
 import android.app.Application
 import android.content.Context

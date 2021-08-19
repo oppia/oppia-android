@@ -1,4 +1,4 @@
-package org.oppia.android.util.image
+package org.oppia.android.util.html.tags
 
 import android.text.Editable
 import android.text.Spannable
