@@ -1502,7 +1502,7 @@ class HintHandlerProdImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class,
+      LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

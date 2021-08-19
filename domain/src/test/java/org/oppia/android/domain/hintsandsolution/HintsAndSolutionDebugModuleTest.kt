@@ -60,7 +60,7 @@ class HintsAndSolutionDebugModuleTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
