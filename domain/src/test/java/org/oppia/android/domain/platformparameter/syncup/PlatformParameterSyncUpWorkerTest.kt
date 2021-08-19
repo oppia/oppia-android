@@ -31,6 +31,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkApiKey
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
@@ -427,7 +428,7 @@ class PlatformParameterSyncUpWorkerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class,
+      RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
