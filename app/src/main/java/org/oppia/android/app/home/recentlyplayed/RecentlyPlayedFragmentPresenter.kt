@@ -240,27 +240,25 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       explorationCheckpointLiveData.observe(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
-          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
-            if (it != null) {
-              if (it.isSuccess()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                routeToResumeLessonListener.routeToResumeLesson(
-                  internalProfileId,
-                  promotedStory.topicId,
-                  promotedStory.storyId,
-                  promotedStory.explorationId,
-                  backflowScreen = null,
-                  explorationCheckpoint = it.getOrThrow()
-                )
-              } else if (it.isFailure()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                playExploration(
-                  promotedStory.topicId,
-                  promotedStory.storyId,
-                  promotedStory.explorationId,
-                  shouldSavePartialProgress
-                )
-              }
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
+            if (it.isSuccess()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              routeToResumeLessonListener.routeToResumeLesson(
+                internalProfileId,
+                promotedStory.topicId,
+                promotedStory.storyId,
+                promotedStory.explorationId,
+                backflowScreen = null,
+                explorationCheckpoint = it.getOrThrow()
+              )
+            } else if (it.isFailure()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              playExploration(
+                promotedStory.topicId,
+                promotedStory.storyId,
+                promotedStory.explorationId,
+                shouldSavePartialProgress
+              )
             }
           }
         }

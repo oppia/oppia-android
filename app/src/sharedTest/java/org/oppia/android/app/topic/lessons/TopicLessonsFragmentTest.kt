@@ -86,8 +86,8 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -339,7 +339,7 @@ class TopicLessonsFragmentTest {
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
@@ -391,7 +391,7 @@ class TopicLessonsFragmentTest {
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()

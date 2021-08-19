@@ -105,8 +105,8 @@ import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
-import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -1042,7 +1042,7 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
@@ -1079,11 +1079,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
@@ -1179,7 +1179,7 @@ class ExplorationActivityTest {
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
@@ -1217,11 +1217,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1254,11 +1254,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1292,11 +1292,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1333,11 +1333,11 @@ class ExplorationActivityTest {
   fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1375,11 +1375,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1416,11 +1416,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1469,11 +1469,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -1522,11 +1522,11 @@ class ExplorationActivityTest {
   fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(

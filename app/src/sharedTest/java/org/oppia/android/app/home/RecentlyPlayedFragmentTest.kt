@@ -87,8 +87,8 @@ import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -781,7 +781,7 @@ class RecentlyPlayedFragmentTest {
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId,
-      FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -839,7 +839,7 @@ class RecentlyPlayedFragmentTest {
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(

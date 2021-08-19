@@ -24,19 +24,44 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** The exploration title of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_EXPLORATION_0_TITLE = "What is a Fraction?"
+
+/** The exploration title of Fractions topic, story 0, exploration 1. */
 const val FRACTIONS_EXPLORATION_1_TITLE = "The meaning of Equal Parts"
+
+/** The exploration title of Ratios topic, story 0, exploration 1. */
 const val RATIOS_EXPLORATION_0_TITLE = "What is a Ratio?"
-const val FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION = 85
-const val FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION = 25
-const val FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION = 86
+
+/** The current exploration version of Fractions topic, story 0, exploration 0. */
+const val FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION = 85
+
+/** The old exploration version of Fractions topic, story 0, exploration 0. */
+const val FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION = 25
+
+/** The current exploration version of Fractions topic, story 0, exploration 1. */
+const val FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION = 86
+
+/** The current exploration version of Ratios topic, story 0, exploration 0. */
+const val RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION = 123
+
+/** The name of the first state of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME = "Introduction"
+
+/** The name of the second state of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME = "A Problem"
+
+/** The name of the first state of Fractions topic, story 0, exploration 1. */
 const val FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME = "Into the Bakery"
+
+/** The name of the second state of Fractions topic, story 0, exploration 1. */
 const val FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME = "Matthew gets conned"
+
+/** The name of the first state of Ratios topic, story 0, exploration 0. */
 const val RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME = "Introduction"
+
+/** The name of the first state of Ratios topic, story 0, exploration 0. */
 const val RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME = "A Problem"
-const val RATIOS_STORY_0_EXPLORATION_0_CORRECT_VERSION = 123
 
 /** This helper class allows storing are retrieving exploration checkpoints for testing. */
 @Singleton
@@ -65,7 +90,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   /**
    * Saves a checkpoint for topic Fractions, story 0, exploration 0.
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
@@ -85,7 +110,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   /**
    * Saves a checkpoint for topic Fractions, story 0, exploration 1.
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
@@ -106,7 +131,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForFractionsStory0Exploration0(profileId: ProfileId, version: Int) {
@@ -127,7 +152,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Updates the saved checkpoint for Fractions, story 0, exploration 1. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration1].
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForFractionsStory0Exploration1(profileId: ProfileId, version: Int) {
@@ -147,7 +172,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
   /**
    * Saves a checkpoint for topic Ratios, story 0, exploration 0.
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun saveCheckpointForRatiosStory0Exploration0(
@@ -171,7 +196,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
    * Updates the saved checkpoint for Fractions, story 0, exploration 0. For this function to work
    * correctly it should be called after [saveCheckpointForFractionsStory0Exploration0].
    *
-   * @param profileId the profileID for which the checkpoint has to be saved
+   * @param profileId the profile ID for which the checkpoint has to be saved
    * @param version the version of the exploration for which the checkpoint has to be created
    */
   fun updateCheckpointForRatiosStory0Exploration0(profileId: ProfileId, version: Int) {

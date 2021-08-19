@@ -49,33 +49,31 @@ class StoryChapterSummaryViewModel(
       explorationCheckpointLiveData.observe(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
-          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>?) {
-            if (it != null) {
-              if (it.isSuccess()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                explorationSelectionListener.selectExploration(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  canExplorationBeResumed = true,
-                  shouldSavePartialProgress,
-                  backflowId = 1,
-                  explorationCheckpoint = it.getOrThrow()
-                )
-              } else if (it.isFailure()) {
-                explorationCheckpointLiveData.removeObserver(this)
-                explorationSelectionListener.selectExploration(
-                  internalProfileId,
-                  topicId,
-                  storyId,
-                  explorationId,
-                  canExplorationBeResumed = false,
-                  shouldSavePartialProgress,
-                  backflowId = 1,
-                  explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-                )
-              }
+          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
+            if (it.isSuccess()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              explorationSelectionListener.selectExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                canExplorationBeResumed = true,
+                shouldSavePartialProgress,
+                backflowId = 1,
+                explorationCheckpoint = it.getOrThrow()
+              )
+            } else if (it.isFailure()) {
+              explorationCheckpointLiveData.removeObserver(this)
+              explorationSelectionListener.selectExploration(
+                internalProfileId,
+                topicId,
+                storyId,
+                explorationId,
+                canExplorationBeResumed = false,
+                shouldSavePartialProgress,
+                backflowId = 1,
+                explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+              )
             }
           }
         }

@@ -33,10 +33,10 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_EXPLORATION_0_TITLE
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -159,7 +159,7 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -173,7 +173,7 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -181,13 +181,17 @@ class ExplorationCheckpointControllerTest {
     ).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
+
+    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
   }
 
   @Test
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -196,17 +200,21 @@ class ExplorationCheckpointControllerTest {
     ).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
+
+    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
   }
 
   @Test
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
     val retrieveCheckpointLiveData = explorationCheckpointController.retrieveExplorationCheckpoint(
@@ -226,12 +234,12 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
 
     val oldestCheckpointDetailsLiveData =
@@ -252,13 +260,17 @@ class ExplorationCheckpointControllerTest {
         .retrieveOldestSavedExplorationCheckpointDetails(firstTestProfile).toLiveData()
     oldestCheckpointDetailsLiveData.observeForever(mockCheckpointDetailsObserver)
     verifyMockObserverIsFailure(mockCheckpointDetailsObserver, checkpointDetailsCaptor)
+
+    assertThat(checkpointDetailsCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
   }
 
   @Test
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
     val deleteCheckpointLiveData =
@@ -269,6 +281,7 @@ class ExplorationCheckpointControllerTest {
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsSuccessful(mockResultObserver, resultCaptor)
 
+    // Verify that the checkpoint was deleted.
     val retrieveCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
@@ -276,6 +289,10 @@ class ExplorationCheckpointControllerTest {
       ).toLiveData()
     retrieveCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
+
+    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
   }
 
   @Test
@@ -289,6 +306,9 @@ class ExplorationCheckpointControllerTest {
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsFailure(mockResultObserver, resultCaptor)
 
+    assertThat(resultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
     assertThat(resultCaptor.value.getErrorOrNull()).hasMessageThat()
       .contains("No saved checkpoint with explorationId")
   }
@@ -304,15 +324,18 @@ class ExplorationCheckpointControllerTest {
     deleteCheckpointLiveData.observeForever(mockResultObserver)
     verifyMockObserverIsFailure(mockResultObserver, resultCaptor)
 
+    assertThat(resultCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
+    )
     assertThat(resultCaptor.value.getErrorOrNull()).hasMessageThat()
       .contains("No saved checkpoint with explorationId")
   }
 
   @Test
-  fun testController_saveCompatibleCheckpoint_checkCheckpointIsCompatible() {
+  fun testController_saveCompatibleCheckpoint_retrieveCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
@@ -322,16 +345,20 @@ class ExplorationCheckpointControllerTest {
   }
 
   @Test
-  fun testController_saveInCompatibleCheckpoint_checkpointCheckpointIsNotCompatible() {
+  fun testController_saveInCompatibleCheckpoint_retrieveCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_INCORRECT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
     )
     explorationCheckpointController.retrieveExplorationCheckpoint(
       firstTestProfile,
       FRACTIONS_EXPLORATION_ID_0
     ).toLiveData().observeForever(mockExplorationCheckpointObserver)
     verifyMockObserverIsFailure(mockExplorationCheckpointObserver, explorationCheckpointCaptor)
+
+    assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
+      ExplorationCheckpointController.OutdatedExplorationCheckpointException::class.java
+    )
   }
 
   private fun <T> verifyMockObserverIsSuccessful(

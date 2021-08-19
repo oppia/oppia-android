@@ -647,10 +647,10 @@ class TopicListController @Inject constructor(
         storyRecord.chaptersList.firstOrNull()?.let {
           nextChapterName = it.title
           explorationId = it.explorationId
-          // ChapterPlayState will be NOT_STARTED because this function only recommends the first
-          // story of un-started topics.
-          chapterPlayState = ChapterPlayState.NOT_STARTED
         }
+        // ChapterPlayState will be NOT_STARTED because this function only recommends the first
+        // story of un-started topics.
+        chapterPlayState = ChapterPlayState.NOT_STARTED
       }.build()
     } else loadRecommendedStoryFromJson(topicId)
   }
@@ -701,7 +701,7 @@ class TopicListController @Inject constructor(
     nextChapterName: String?,
     explorationId: String?,
     isTopicConsideredCompleted: Boolean,
-    chapterProgress: ChapterProgress?
+    nextChapterProgress: ChapterProgress?
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
     val promotedStoryBuilder = PromotedStory.newBuilder()
@@ -719,7 +719,7 @@ class TopicListController @Inject constructor(
       // If the chapterProgress equals null that means the chapter has no progress associated with
       // it because it is not yet started.
       promotedStoryBuilder.chapterPlayState =
-        chapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
+        nextChapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
     }
     return promotedStoryBuilder.build()
   }
