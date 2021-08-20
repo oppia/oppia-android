@@ -55,26 +55,26 @@ object EndToEndTestHelper {
   }
 
   /** Return the UiObject with the given text. */
-  fun UiDevice.findObjectByText(text: String): UiObject2? {
+  fun UiDevice.findObjectByText(text: String): UiObject2 {
     waitForText(text)
-    return findObject(By.text(text))
+    return checkNotNull(findObject(By.text(text)))
   }
 
   /** Returns the UiObject for the given resourceId. */
-  fun UiDevice.findObjectByRes(resourceId: String): UiObject2? {
+  fun UiDevice.findObjectByRes(resourceId: String): UiObject2 {
     waitForRes(resourceId)
-    return findObject(By.res("$OPPIA_PACKAGE:id/$resourceId"))
+    return checkNotNull(findObject(By.res("$OPPIA_PACKAGE:id/$resourceId")))
   }
 
   /** Returns the UiObject for the given resourceId. */
-  fun UiObject2.findObjectByRes(resourceId: String): UiObject2? {
-    return findObject(By.res("$OPPIA_PACKAGE:id/$resourceId"))
+  fun UiObject2.findObjectByRes(resourceId: String): UiObject2 {
+    return checkNotNull(findObject(By.res("$OPPIA_PACKAGE:id/$resourceId")))
   }
 
   /** Returns the UiObject for the given content description. */
-  fun UiDevice.findObjectByDesc(text: String): UiObject2? {
+  fun UiDevice.findObjectByDesc(text: String): UiObject2 {
     waitForDesc(text)
-    return findObject(By.desc(text))
+    return checkNotNull(findObject(By.desc(text)))
   }
 
   /** Performs a scroll until the view with the give text is visible. */

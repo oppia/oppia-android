@@ -8,7 +8,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -133,19 +132,6 @@ class ImageRegionSelectionInteractionViewTest {
         )
       assertThat(regionClickedEvent.value)
         .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
-    }
-  }
-
-  @Test
-  fun testImageRegionSelectionInteractionView_region3_region3HasCorrectContentDescription() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
-      }
-      onView(withTagValue(`is`("Region 3"))).check(
-        matches(withContentDescription("Region 3"))
-      )
     }
   }
 
