@@ -2,7 +2,7 @@ package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.help.HelpViewModel
 import javax.inject.Inject
 
 /**
@@ -11,7 +11,7 @@ import javax.inject.Inject
  */
 class ThirdPartyDependencyListViewModel @Inject constructor(
   val activity: AppCompatActivity
-) : ObservableViewModel() {
+) : HelpViewModel() {
 
   /** Stores the list of third-party dependencies. */
   val thirdPartyDependencyItemList: List<ThirdPartyDependencyItemViewModel> by lazy {
@@ -33,7 +33,8 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
           R.string.third_party_dependency_version_formatter,
           thirdPartyDependencyVersions[index]
         ),
-        dependencyIndex = index
+        dependencyIndex = index,
+        isMultipane = isMultipane.get()!!
       )
     }
   }

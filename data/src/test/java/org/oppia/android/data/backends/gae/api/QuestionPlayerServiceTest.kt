@@ -12,7 +12,9 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.XssiPrefix
 import org.oppia.android.testing.network.MockQuestionPlayerService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.robolectric.annotation.LooperMode
@@ -30,6 +32,9 @@ class QuestionPlayerServiceTest {
   @Inject
   lateinit var mockRetrofit: MockRetrofit
 
+  @field:[Inject XssiPrefix]
+  lateinit var xssiPrefix: String
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -38,7 +43,7 @@ class QuestionPlayerServiceTest {
   @Test
   fun testQuestionPlayerService_usingFakeJson_deserializationSuccessful() {
     val delegate = mockRetrofit.create(QuestionPlayerService::class.java)
-    val mockQuestionPlayerService = MockQuestionPlayerService(delegate)
+    val mockQuestionPlayerService = MockQuestionPlayerService(delegate, xssiPrefix)
 
     val skillIdList = ArrayList<String>()
     skillIdList.add("1")
@@ -70,7 +75,12 @@ class QuestionPlayerServiceTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, NetworkModule::class, RetrofitTestModule::class])
+  @Component(
+    modules = [
+      TestModule::class, NetworkModule::class,
+      RetrofitTestModule::class, NetworkConfigProdModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

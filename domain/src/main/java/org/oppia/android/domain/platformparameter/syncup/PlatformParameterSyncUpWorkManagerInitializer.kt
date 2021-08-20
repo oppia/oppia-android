@@ -73,8 +73,9 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   fun getSyncUpWorkRequestData(): Data {
     return workerTypeForSyncingPlatformParameters
   }
+
   /** Returns the time interval of periodic work request enqueued to sync-up platform parameters. */
-  @SuppressLint("RestrictedApi") /** Needed because getWorkSpec is restricted to library group but we can suppress for testing purpose. */
+  @SuppressLint("RestrictedApi") // getWorkSpec is restricted; suppression is fine for tests.
   @VisibleForTesting
   fun getSyncUpWorkerTimePeriod(): Long {
     return workRequestForSyncingPlatformParameters.workSpec.intervalDuration
