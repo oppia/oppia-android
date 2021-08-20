@@ -29,10 +29,10 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
@@ -397,7 +397,8 @@ class PlatformParameterSyncUpWorkerTest {
     @Singleton
     fun provideRetrofitInstance(
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+      @BaseUrl baseUrl: String
     ): Retrofit {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
@@ -405,7 +406,7 @@ class PlatformParameterSyncUpWorkerTest {
         .build()
 
       return Retrofit.Builder()
-        .baseUrl(NetworkSettings.getBaseUrl())
+        .baseUrl(baseUrl)
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client)
         .build()
