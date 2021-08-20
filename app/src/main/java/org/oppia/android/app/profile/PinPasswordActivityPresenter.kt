@@ -18,7 +18,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
