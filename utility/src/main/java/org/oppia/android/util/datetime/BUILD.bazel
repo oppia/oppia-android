@@ -12,7 +12,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
-        "//utility:resources",
+        "//utility/src/main:resources",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

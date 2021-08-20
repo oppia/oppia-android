@@ -1,0 +1,12 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Top-level utility definitions.
+"""
+
+android_library(
+    name = "resources",
+    custom_package = "org.oppia.android.util",
+    manifest = "AndroidManifest.xml",
+    resource_files = glob(["res/**/*.xml"]),
+    visibility = ["//utility:utility_visibility"],
+)

@@ -15,7 +15,7 @@ kt_android_library(
     deps = [
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
-        "//utility:resources",
+        "//utility/src/main:resources",
     ],
 )
 
@@ -32,7 +32,7 @@ kt_android_library(
         ":dagger",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
-        "//utility:resources",
+        "//utility/src/main:resources",
         "//utility/src/main/java/org/oppia/android/util/html/tags:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/image:parser",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",

@@ -55,7 +55,7 @@ kt_android_library(
         ":drawable",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
-        "//utility:resources",
+        "//utility/src/main:resources",
         "//utility/src/main/java/org/oppia/android/util/html:custom",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
