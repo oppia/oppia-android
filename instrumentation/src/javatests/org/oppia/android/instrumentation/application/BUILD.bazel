@@ -10,7 +10,7 @@ oppia_android_test(
     srcs = ["EndToEndTestGcsResourceModuleTest.kt"],
     custom_package = "org.oppia.android.instrumentation.application",
     test_class = "org.oppia.android.instrumentation.application.EndToEndTestGcsResourceModuleTest",
-    test_manifest = "//testing:test_manifest",
+    test_manifest = "AndroidManifest.xml",
     deps = [
         ":dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
@@ -27,7 +27,7 @@ oppia_android_test(
     srcs = ["EndToEndTestImageParsingModuleTest.kt"],
     custom_package = "org.oppia.android.instrumentation.application",
     test_class = "org.oppia.android.instrumentation.application.EndToEndTestImageParsingModuleTest",
-    test_manifest = "//testing:test_manifest",
+    test_manifest = "AndroidManifest.xml",
     deps = [
         ":dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
@@ -44,7 +44,7 @@ oppia_android_test(
     srcs = ["EndToEndTestNetworkConfigModuleTest.kt"],
     custom_package = "org.oppia.android.instrumentation.application",
     test_class = "org.oppia.android.instrumentation.application.EndToEndTestNetworkConfigModuleTest",
-    test_manifest = "//testing:test_manifest",
+    test_manifest = "AndroidManifest.xml",
     deps = [
         ":dagger",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
