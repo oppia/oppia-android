@@ -298,4 +298,6 @@
   <!-- Pin Password -->
   <dimen name="pin_password_margin_start">332dp</dimen>
   <dimen name="pin_password_margin_end">332dp</dimen>
+  <dimen name="pin_password_text_input_layout_width">304dp</dimen>
+  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
 </resources>

@@ -38,7 +38,6 @@ class PinPasswordActivityPresenter @Inject constructor(
   private lateinit var alertDialog: AlertDialog
 
   fun handleOnCreate() {
-    StatusBarColor.statusBarColorUpdate(R.color.pinInputStatusBar, activity, true)
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
     profileId = activity.intent.getIntExtra(PIN_PASSWORD_PROFILE_ID_EXTRA_KEY, -1)
     val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
@@ -59,8 +58,14 @@ class PinPasswordActivityPresenter @Inject constructor(
       pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
       if (!pinViewModel.showPassword.get()!!) {
         binding.pinPasswordInputPinEditText.transformationMethod = PasswordTransformationMethod()
+        binding.pinPasswordInputPinEditText.setSelection(
+          binding.pinPasswordInputPinEditText.text.toString().length
+        )
       } else {
         binding.pinPasswordInputPinEditText.transformationMethod = null
+        binding.pinPasswordInputPinEditText.setSelection(
+          binding.pinPasswordInputPinEditText.text.toString().length
+        )
       }
     }
     binding.pinPasswordInputPinEditText.requestFocus()
