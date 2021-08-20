@@ -32,9 +32,10 @@ def oppia_instrumentation_test(
         deps = [":%s_lib" % name],
     )
 
-    # TODO(#3617): Target isn't supported yet.
+    # TODO(#3617): Target isn't supported yet. Remove the manual tag once fixed.
     native.android_instrumentation_test(
         name = name,
         target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
         test_app = ":%sBinary" % name,
+        tags = ["manual"],
     )

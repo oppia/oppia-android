@@ -295,9 +295,16 @@
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">16dp</dimen>
+  <dimen name="app_version_text_view_padding_end">16dp</dimen>
+  <dimen name="app_version_image_view_margin_start">24dp</dimen>
+  <dimen name="app_version_text_view_margin_end">28dp</dimen>
+
   <!-- Pin Password -->
   <dimen name="pin_password_margin_start">332dp</dimen>
   <dimen name="pin_password_margin_end">332dp</dimen>
   <dimen name="pin_password_text_input_layout_width">304dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
+
 </resources>
