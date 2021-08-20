@@ -36,6 +36,13 @@ package_group(
     ],
 )
 
+package_group(
+    name = "oppia_e2e_testing_visibility",
+    packages = [
+        "//instrumentation/...",
+    ],
+)
+
 # Special visibility group specific to debug mode. This provides access to the target for both the
 # Oppia tests and specific debug only packages.
 package_group(
