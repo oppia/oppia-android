@@ -16,7 +16,7 @@ import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
 import org.oppia.android.scripts.proto.ScrapableLink
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.assertion.assertThrows
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.xml.sax.InputSource

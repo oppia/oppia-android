@@ -63,10 +63,10 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.image.TestImageLoaderModule
+import org.oppia.android.testing.junit.AccessibilityTestRule
+import org.oppia.android.testing.junit.DisableAccessibilityChecks
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule

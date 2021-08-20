@@ -24,9 +24,9 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.ExplorationRetriever
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.assertion.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule

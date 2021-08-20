@@ -12,6 +12,9 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.assertion.assertThrows
+import org.oppia.android.testing.logging.FakeExceptionLogger
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.util.logging.ExceptionLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

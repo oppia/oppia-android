@@ -15,7 +15,7 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//model:test_models",
-    "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/logging:test_module",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
@@ -29,8 +29,11 @@ TEST_DEPS = [
     "//third_party:com_squareup_retrofit2_retrofit-mock",
     "//third_party:junit_junit",
     "//third_party:moshi",
+    "//third_party:org_mockito_mockito-core",
     "//third_party:org_robolectric_annotations",
+    "//third_party:org_robolectric_shadows-framework",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/data:data_providers",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

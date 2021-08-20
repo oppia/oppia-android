@@ -9,7 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.scripts.testing.TestGitRepository
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.assertion.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream

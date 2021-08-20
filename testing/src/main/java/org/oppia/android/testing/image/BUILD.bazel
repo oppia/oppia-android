@@ -1,0 +1,23 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing test-only & generic utilities for image loading in tests.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "test_image_loader_module",
+    testonly = True,
+    srcs = [
+        "TestImageLoaderModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/image:drawable",
+        "//utility/src/main/java/org/oppia/android/util/image:test_glide_image_loader",
+    ],
+)
+
+dagger_rules()

@@ -14,6 +14,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.testing.assertion.assertThrows
+import org.oppia.android.testing.logging.FakeEventLogger
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.util.logging.EventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

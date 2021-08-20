@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.junit
 
 /**
  * Test class or method annotation for disabling the espresso-accessibility tests of the

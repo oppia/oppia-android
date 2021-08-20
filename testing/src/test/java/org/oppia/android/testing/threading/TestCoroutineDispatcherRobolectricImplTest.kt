@@ -22,7 +22,7 @@ import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.Mockito.verifyZeroInteractions
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProvidersInjector

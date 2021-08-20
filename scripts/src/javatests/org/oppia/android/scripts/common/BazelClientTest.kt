@@ -10,7 +10,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.scripts.testing.TestBazelWorkspace
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.assertion.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
 import java.util.concurrent.TimeUnit

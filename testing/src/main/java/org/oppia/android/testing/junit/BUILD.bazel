@@ -1,0 +1,56 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing test-only JUnit scaffolding infrastructure.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "annotations",
+    testonly = True,
+    srcs = [
+        "DisableAccessibilityChecks.kt",
+        "OppiaTestAnnotations.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
+kt_android_library(
+    name = "accessibility_test_rule",
+    testonly = True,
+    srcs = [
+        "AccessibilityTestRule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":annotations",
+        "//third_party:androidx_test_espresso_espresso-accessibility",
+        "//third_party:junit_junit",
+        "//third_party:org_hamcrest_hamcrest-core",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_test_rule",
+    testonly = True,
+    srcs = [
+        "OppiaTestRule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":annotations",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_test_runner",
+    testonly = True,
+    srcs = [
+        "OppiaTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_runner",
+    ],
+)

@@ -92,11 +92,11 @@ import org.oppia.android.domain.question.WrongAnswerMasteryPenalty
 import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.AccessibilityTestRule
+import org.oppia.android.testing.junit.OppiaTestRule
+import org.oppia.android.testing.junit.RunOn
+import org.oppia.android.testing.junit.TestPlatform
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService

@@ -1,0 +1,52 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing test-only utilities for configuring app logging behavior in tests.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_event_logger",
+    testonly = True,
+    srcs = [
+        "FakeEventLogger.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//model:event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+    ],
+)
+
+kt_android_library(
+    name = "fake_exception_logger",
+    testonly = True,
+    srcs = [
+        "FakeExceptionLogger.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "TestLogReportingModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":fake_event_logger",
+        ":fake_exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+    ],
+)
+
+dagger_rules()

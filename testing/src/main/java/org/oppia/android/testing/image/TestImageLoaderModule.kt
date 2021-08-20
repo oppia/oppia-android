@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.image
 
 import dagger.Binds
 import dagger.Module

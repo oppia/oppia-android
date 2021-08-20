@@ -57,4 +57,17 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "rich_text_view_matcher",
+    testonly = True,
+    srcs = [
+        "RichTextViewMatcher.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
 dagger_rules()

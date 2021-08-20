@@ -20,7 +20,7 @@ kt_jvm_test(
     srcs = ["TodoOpenCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/assertion:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
@@ -31,7 +31,7 @@ kt_jvm_test(
     srcs = ["TodoIssueResolvedCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_resolved_check_lib",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/assertion:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
@@ -42,7 +42,7 @@ kt_jvm_test(
     srcs = ["TodoIssueCommentCheckTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
-        "//testing:assertion_helpers",
+        "//testing/src/main/java/org/oppia/android/testing/assertion:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],

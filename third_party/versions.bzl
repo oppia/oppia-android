@@ -96,6 +96,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.squareup.okhttp3:mockwebserver": "4.1.0",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
+    "org.hamcrest:hamcrest-core": "1.3",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
@@ -104,6 +105,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.4",
     "org.robolectric:robolectric": "4.4",
+    "org.robolectric:shadows-framework": "4.4",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.

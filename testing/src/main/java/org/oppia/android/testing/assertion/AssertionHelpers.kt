@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.assertion
 
 import org.junit.Assert.fail
 import kotlin.reflect.KClass

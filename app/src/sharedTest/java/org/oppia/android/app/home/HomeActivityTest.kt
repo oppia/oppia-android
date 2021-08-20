@@ -84,10 +84,10 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.AccessibilityTestRule
+import org.oppia.android.testing.junit.RunOn
+import org.oppia.android.testing.junit.TestPlatform
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper

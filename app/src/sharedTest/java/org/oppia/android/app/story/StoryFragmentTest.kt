@@ -95,9 +95,9 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.DisableAccessibilityChecks
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.AccessibilityTestRule
+import org.oppia.android.testing.junit.DisableAccessibilityChecks
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.profile.ProfileTestHelper

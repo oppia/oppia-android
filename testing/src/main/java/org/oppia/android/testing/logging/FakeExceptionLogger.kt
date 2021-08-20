@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.logging
 
 import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Inject

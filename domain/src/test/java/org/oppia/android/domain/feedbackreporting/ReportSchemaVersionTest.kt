@@ -18,7 +18,7 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingDeviceConte
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingEntryPoint
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemContext
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.LooperMode

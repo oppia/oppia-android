@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.espresso
 
 import android.text.style.CharacterStyle
 import android.view.View

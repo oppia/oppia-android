@@ -1,4 +1,4 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.junit
 
 import android.app.Application
 import android.content.Context

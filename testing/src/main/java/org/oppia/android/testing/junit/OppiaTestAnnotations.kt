@@ -1,7 +1,7 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.junit
 
-import org.oppia.android.testing.TestPlatform.ESPRESSO
-import org.oppia.android.testing.TestPlatform.ROBOLECTRIC
+import org.oppia.android.testing.junit.TestPlatform.ESPRESSO
+import org.oppia.android.testing.junit.TestPlatform.ROBOLECTRIC
 
 /** Specifies a test platform to target in conjunction with [RunOn]. */
 enum class TestPlatform {

@@ -13,7 +13,7 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createList
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
 import org.oppia.android.domain.classify.RuleClassifier
-import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.assertion.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

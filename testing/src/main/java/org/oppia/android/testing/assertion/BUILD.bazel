@@ -1,0 +1,20 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing test-only & generic utilities for asserting state in tests. Note that, in most
+cases, assertion helpers should stay in the test suite that needs them. Only broadly generic
+assertion helpers should go in this package.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "assertion_helpers",
+    testonly = True,
+    srcs = [
+        "AssertionHelpers.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:junit_junit",
+    ],
+)

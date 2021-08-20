@@ -15,7 +15,7 @@ android {
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
-    testInstrumentationRunner "org.oppia.android.testing.OppiaTestRunner"
+    testInstrumentationRunner "org.oppia.android.testing.junit.OppiaTestRunner"
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
     testInstrumentationRunnerArguments clearPackageData: 'true'
     javaCompileOptions {
