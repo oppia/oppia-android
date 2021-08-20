@@ -536,7 +536,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testNavigateToPreviousState_showAllHelpsDisabled_multipleTimes_pendingHint_wait60Sec_monitorNotCalled() { // ktlint-disable max-line-length
+  fun testNavToPrevState_multipleTimes_showAllHelpsDisabled_pendingHint_wait60s_monitorNotCalled() {
     showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -574,7 +574,7 @@ class HintHandlerDebugImplTest {
   /* Tests for navigateBackToLatestPendingState */
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPreviousState_monitorNotCalled() { // ktlint-disable max-line-length
+  fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPrevState_monitorNotCalled() {
     showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
@@ -590,14 +590,16 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_monitorNotCalled() { // ktlint-disable max-line-length
+  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_monitorNotCalled() {
     showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
-    hintHandler.navigateToPreviousState()
-    reset(mockHintMonitor)
 
+    // Navigating to previous state so that we can navigate back to the latest pending state.
+    hintHandler.navigateToPreviousState()
+
+    reset(mockHintMonitor)
     hintHandler.navigateBackToLatestPendingState()
 
     // The monitor should not be called immediately after returning to the pending state.
@@ -605,12 +607,15 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_fromPreviousState_pendingHint_wait60Sec_monitorCalled() { // ktlint-disable max-line-length
+  fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_wait_monitorCalled() {
     showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
+
+    // Navigating to previous state so that we can navigate back to the latest pending state.
     hintHandler.navigateToPreviousState()
+
     hintHandler.navigateBackToLatestPendingState()
     reset(mockHintMonitor)
 
