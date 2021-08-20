@@ -16,7 +16,7 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     val dependencyIndex = intent.getIntExtra(THIRD_PARTY_DEPENDENCY_INDEX, 0)
-    licenseListActivityPresenter.handleOnCreate(dependencyIndex)
+    licenseListActivityPresenter.handleOnCreate(dependencyIndex, false)
   }
 
   companion object {

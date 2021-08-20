@@ -18,7 +18,7 @@ class ThirdPartyDependencyListActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    thirdPartyDependencyListActivityPresenter.handleOnCreate()
+    thirdPartyDependencyListActivityPresenter.handleOnCreate(false)
   }
 
   companion object {

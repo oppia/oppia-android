@@ -467,4 +467,10 @@
   <dimen name="add_profile_main_padding_end">28dp</dimen>
   <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">16dp</dimen>
+  <dimen name="app_version_text_view_padding_end">16dp</dimen>
+  <dimen name="app_version_image_view_margin_start">24dp</dimen>
+  <dimen name="app_version_text_view_margin_end">28dp</dimen>
+
 </resources>

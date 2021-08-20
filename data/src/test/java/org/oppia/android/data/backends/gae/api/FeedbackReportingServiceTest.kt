@@ -14,6 +14,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
 import org.oppia.android.testing.network.ApiMockLoader
@@ -76,7 +77,12 @@ class FeedbackReportingServiceTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, NetworkModule::class, RetrofitTestModule::class])
+  @Component(
+    modules = [
+      TestModule::class, NetworkModule::class,
+      RetrofitTestModule::class, NetworkConfigProdModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

@@ -10,7 +10,7 @@ oppia_android_test(
     srcs = ["NetworkConnectionTestUtilTest.kt"],
     custom_package = "org.oppia.android.testing.networking",
     test_class = "org.oppia.android.testing.networking.NetworkConnectionTestUtilTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/networking:network_connection_test_util",

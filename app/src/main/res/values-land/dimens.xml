@@ -279,4 +279,10 @@
   <dimen name="add_profile_main_padding_end">136dp</dimen>
   <dimen name="add_profile_pin_checkbox_margin_top">36dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">36dp</dimen>
+  <dimen name="app_version_text_view_padding_end">36dp</dimen>
+  <dimen name="app_version_image_view_margin_start">36dp</dimen>
+  <dimen name="app_version_text_view_margin_end">36dp</dimen>
+
 </resources>
