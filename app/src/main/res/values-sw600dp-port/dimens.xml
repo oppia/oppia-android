@@ -296,5 +296,11 @@
   <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">24dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
+  
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">16dp</dimen>
+  <dimen name="app_version_text_view_padding_end">16dp</dimen>
+  <dimen name="app_version_image_view_margin_start">24dp</dimen>
+  <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
 </resources>
