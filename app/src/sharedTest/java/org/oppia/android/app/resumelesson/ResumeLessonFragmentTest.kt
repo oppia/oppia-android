@@ -16,6 +16,7 @@ import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -78,7 +79,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
