@@ -36,7 +36,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [RemoteAuthNetworkInterceptor] */
+/** Tests for [RemoteAuthNetworkInterceptor]. */
 @RunWith(AndroidJUnit4::class)
 @Config(application = RemoteAuthNetworkInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)

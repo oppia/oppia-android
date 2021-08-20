@@ -421,6 +421,9 @@
   <dimen name="faq_item_header_margin_end">24dp</dimen>
   <dimen name="faq_item_header_margin_bottom">8dp</dimen>
 
+  <!-- NavigationDrawer -->
+  <dimen name="navigation_drawer_width">304dp</dimen>
+  
   <!-- General Bottom Padding -->
   <dimen name="general_screen_padding_bottom">128dp</dimen>
 
