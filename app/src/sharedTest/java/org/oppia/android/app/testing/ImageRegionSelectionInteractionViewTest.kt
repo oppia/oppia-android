@@ -137,8 +137,6 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
   fun testImageRegionSelectionInteractionView_region3_region3HasCorrectContentDescription() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
