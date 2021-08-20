@@ -78,7 +78,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Ignore
 
+/** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -119,7 +121,7 @@ class ResumeLessonFragmentTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
+  @Ignore
   @Config(qualifiers = "port")
   @Test
   fun testResumeLessonFragment_lessonThumbnailIsDisplayed() {
