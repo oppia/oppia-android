@@ -16,5 +16,6 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//third_party:junit_junit",
+        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     ],
 )

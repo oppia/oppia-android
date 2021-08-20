@@ -2,6 +2,7 @@ package org.oppia.android.testing.threading
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.robolectric.annotation.Config
 
 /**
  * Tests for [CoroutineExecutorService]. NOTE: significant care should be taken when modifying these
@@ -65,6 +67,7 @@ import javax.inject.Singleton
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.P])
 class CoroutineExecutorServiceTest {
   @Rule
   @JvmField
