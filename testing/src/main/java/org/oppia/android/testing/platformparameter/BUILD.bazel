@@ -34,7 +34,8 @@ kt_android_library(
     deps = [
         ":dagger",
         ":test_constants",
-        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter:platformparameter",
+        "//utility/src/main/java/org/oppia/android/util/platformparameter:singleton",
     ],
 )
 

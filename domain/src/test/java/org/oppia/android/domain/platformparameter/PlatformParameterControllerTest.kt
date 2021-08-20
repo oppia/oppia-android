@@ -201,12 +201,6 @@ class PlatformParameterControllerTest {
       return application
     }
 
-    @Provides
-    @Singleton
-    fun providePlatformParameterSingleton(
-      platformParameterSingletonImpl: PlatformParameterSingletonImpl
-    ): PlatformParameterSingleton = platformParameterSingletonImpl
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -227,7 +221,8 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
+      PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

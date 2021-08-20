@@ -1,0 +1,32 @@
+"""
+General purposes utilities to manage platform parameters.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "platformparameter",
+    srcs = [
+        "PlatformParameterConstants.kt",
+        "PlatformParameterValue.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:platform_parameter_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "singleton",
+    srcs = [
+        "PlatformParameterSingleton.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:__pkg__",
+    ],
+    deps = [
+        ":platformparameter",
+    ],
+)
