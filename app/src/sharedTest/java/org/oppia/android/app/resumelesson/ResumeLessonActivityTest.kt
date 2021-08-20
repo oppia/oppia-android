@@ -85,6 +85,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Test for [ResumeLessonActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -144,8 +145,7 @@ class ResumeLessonActivityTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.resume_lesson_activity_toolbar))
         )
-      )
-        .check(matches(withText("Resume Lesson")))
+      ).check(matches(withText("Resume Lesson")))
     }
   }
 
@@ -159,8 +159,7 @@ class ResumeLessonActivityTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.resume_lesson_activity_toolbar))
         )
-      )
-        .check(matches(withText("Resume Lesson")))
+      ).check(matches(withText("Resume Lesson")))
     }
   }
 
