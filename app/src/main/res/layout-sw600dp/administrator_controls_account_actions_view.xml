@@ -21,7 +21,7 @@
       android:paddingStart="16dp"
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
-      android:paddingBottom="20dp"
+      android:paddingBottom="8dp"
       android:text="@string/administrator_controls_account_actions_label"
       android:textColor="@color/colorPrimary"
       app:layout_constraintBottom_toTopOf="@id/log_out_text_view"

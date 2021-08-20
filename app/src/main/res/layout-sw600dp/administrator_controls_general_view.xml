@@ -21,7 +21,7 @@
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
-      android:paddingBottom="20dp"
+      android:paddingBottom="8dp"
       android:text="@string/administrator_controls_general_label"
       android:textColor="@color/colorPrimary"
       app:layout_constraintBottom_toTopOf="@id/edit_account_text_view"

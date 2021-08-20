@@ -26,7 +26,7 @@
         android:fontFamily="sans-serif"
         android:paddingStart="16dp"
         android:paddingTop="20dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="332dp"
         android:paddingBottom="20dp"
         android:text="@{@string/app_version_name(viewModel.versionName)}"
         android:textColor="@color/oppiaPrimaryTextDark"
