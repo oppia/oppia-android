@@ -64,6 +64,7 @@ TEST_DEPS = [
     ":assertion_helpers",
     ":dagger",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
@@ -88,7 +89,9 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
-    "//utility/src/main/java/org/oppia/android/util/logging:logger_module",
+    "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
@@ -114,6 +117,12 @@ kt_android_library(
         "//third_party:junit_junit",
         "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     ],
+)
+
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
 )
 
 dagger_rules()
