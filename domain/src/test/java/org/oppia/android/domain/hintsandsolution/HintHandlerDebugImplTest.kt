@@ -68,8 +68,6 @@ class HintHandlerDebugImplTest {
   @Inject
   lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 
-  private lateinit var hintHandler: HintHandler
-
   private val expWithNoHintsOrSolution by lazy {
     explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
   }
@@ -89,8 +87,6 @@ class HintHandlerDebugImplTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    // Use the direct HintHandler factory to avoid testing the module setup.
-    hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
   }
 
   /* Tests for startWatchingForHintsInNewState */
@@ -98,6 +94,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -110,6 +109,9 @@ class HintHandlerDebugImplTest {
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithNoHintsOrSolution.getInitialState()
 
     hintHandler.startWatchingForHintsInNewState(state)
@@ -120,6 +122,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -132,6 +137,9 @@ class HintHandlerDebugImplTest {
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithNoHintsOrSolution.getInitialState()
 
     hintHandler.startWatchingForHintsInNewState(state)
@@ -143,6 +151,9 @@ class HintHandlerDebugImplTest {
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
 
     hintHandler.startWatchingForHintsInNewState(state)
@@ -153,6 +164,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -167,6 +181,9 @@ class HintHandlerDebugImplTest {
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
 
     hintHandler.startWatchingForHintsInNewState(state)
@@ -177,6 +194,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -195,6 +215,9 @@ class HintHandlerDebugImplTest {
   fun testFinishState_showAllHelpsDisabled_defaultState_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     reset(mockHintMonitor)
@@ -208,6 +231,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testFinishState_showAllHelpsEnabled_defaultState_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -223,6 +249,9 @@ class HintHandlerDebugImplTest {
   fun testFinishState_showAllHelpsDisabled_defaultState_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
 
@@ -236,6 +265,9 @@ class HintHandlerDebugImplTest {
   fun testFinishState_showAllHelpsEnabled_defaultState_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
 
@@ -248,6 +280,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testFinishState_showAllHelpsDisabled_newStateWithHints_helpIndexIsEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -264,6 +299,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testFinishState_showAllHelpsEnabled_newStateWithHints_allHelpsAreRevealed() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -286,6 +324,9 @@ class HintHandlerDebugImplTest {
   fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     reset(mockHintMonitor)
@@ -298,6 +339,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -312,6 +356,9 @@ class HintHandlerDebugImplTest {
   fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_helpIndexStaysEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
 
@@ -323,6 +370,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -340,6 +390,9 @@ class HintHandlerDebugImplTest {
   fun testWrongAnswerSubmission_showAllHelpsDisabled_twice_stateWithHints_monitorCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     reset(mockHintMonitor)
@@ -355,6 +408,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_twice_stateWithHints_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -375,20 +431,8 @@ class HintHandlerDebugImplTest {
   fun testViewHint_showAllHelpsDisabled_noHintAvailable_throwsException() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
-    val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
-    }
-
-    // No hint is available to reveal.
-    assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
-  }
-
-  @Test
-  fun testViewHint_showAllHelpsEnabled_noHintAvailable_throwsException() {
-    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -405,6 +449,9 @@ class HintHandlerDebugImplTest {
   fun testViewHint_showAllHelpsDisabled_hintAvailable_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     triggerFirstHint()
@@ -416,46 +463,14 @@ class HintHandlerDebugImplTest {
     verify(mockHintMonitor).onHelpIndexChanged()
   }
 
-  @Test
-  fun testViewHint_showAllHelpsEnabled_hintAvailable_throwsException() {
-    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
-
-    val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-    triggerFirstHint()
-    reset(mockHintMonitor)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewHint(hintIndex = 0)
-    }
-
-    // The exception is thrown because all helps are already revealed when we loaded the state and
-    // thus calling 'viewHint' on the HelpIndex state EVERYTHING_REVEALED throws exception.
-    assertThat(exception).hasMessageThat().contains(
-      "Cannot reveal hint for current index: EVERYTHING_REVEALED"
-    )
-  }
-
   /* Tests for viewSolution */
 
   @Test
   fun testViewSolution_showAllHelpsDisabled_nothingAvailable_throwsException() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
-    val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
-    }
-
-    // The solution is not yet available to be seen (no hints have been viewed).
-    assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
-  }
-
-  @Test
-  fun testViewSolution_showAllHelpsEnabled_nothingAvailable_throwsException() {
-    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -472,10 +487,15 @@ class HintHandlerDebugImplTest {
   fun testViewSolution_showAllHelpsDisabled_solutionAvailable_callsMonitor() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
-    triggerAndRevealFirstHint()
-    triggerAndRevealSecondHint()
+    triggerFirstHint()
+    hintHandler.viewHint(hintIndex = 0)
+    triggerSecondHint()
+    hintHandler.viewHint(hintIndex = 1)
     triggerSolution()
     reset(mockHintMonitor)
 
@@ -485,29 +505,14 @@ class HintHandlerDebugImplTest {
     verify(mockHintMonitor).onHelpIndexChanged()
   }
 
-  @Test
-  fun testViewSolution_showAllHelpsEnabled_solutionAvailable_throwsException() {
-    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
-
-    val state = expWithHintsAndSolution.getInitialState()
-    hintHandler.startWatchingForHintsInNewState(state)
-
-    val exception = assertThrows(IllegalStateException::class) {
-      hintHandler.viewSolution()
-    }
-
-    // The exception is thrown because all helps are already revealed when we loaded the state and
-    // thus calling 'viewSolution' on the HelpIndex state EVERYTHING_REVEALED throws exception.
-    assertThat(exception).hasMessageThat().contains(
-      "Cannot reveal solution for current index: EVERYTHING_REVEALED"
-    )
-  }
-
   /* Tests for navigateToPreviousState */
 
   @Test
   fun testNavigateToPreviousState_showAllHelpsDisabled_pendingHint_wait60Sec_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -524,6 +529,9 @@ class HintHandlerDebugImplTest {
   fun testNavigateToPreviousState_showAllHelpsEnabled_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     reset(mockHintMonitor)
@@ -538,6 +546,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testNavToPrevState_multipleTimes_showAllHelpsDisabled_pendingHint_wait60s_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -556,6 +567,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testNavigateToPreviousState_showAllHelpsEnabled_multipleTimes_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -577,6 +591,9 @@ class HintHandlerDebugImplTest {
   fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPrevState_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     hintHandler.navigateToPreviousState()
@@ -592,6 +609,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_monitorNotCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -609,6 +629,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_wait_monitorCalled() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -635,6 +658,9 @@ class HintHandlerDebugImplTest {
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_initialState_isEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
 
     hintHandler.startWatchingForHintsInNewState(state)
@@ -647,6 +673,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait10Sec_isEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -661,6 +690,9 @@ class HintHandlerDebugImplTest {
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait30Sec_isEmpty() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
+
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     waitFor30Seconds()
@@ -673,6 +705,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait60Sec_hasAvailableHint() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -690,6 +725,9 @@ class HintHandlerDebugImplTest {
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsEnabled_initialState_allHelpsAreRevealed() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
+
+    // Use the direct HintHandler factory to avoid testing the module setup.
+    val hintHandler = hintHandlerDebugImplFactory.create(mockHintMonitor)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -711,27 +749,6 @@ class HintHandlerDebugImplTest {
   private fun triggerSecondHint() = waitFor30Seconds()
 
   private fun triggerSolution() = waitFor30Seconds()
-
-  private fun triggerAndRevealFirstHint() {
-    triggerFirstHint()
-    hintHandler.viewHint(hintIndex = 0)
-  }
-
-  private fun triggerAndRevealSecondHint() {
-    triggerSecondHint()
-    hintHandler.viewHint(hintIndex = 1)
-  }
-
-  private fun triggerAndRevealSolution() {
-    triggerSolution()
-    hintHandler.viewSolution()
-  }
-
-  private fun triggerAndRevealEverythingInMultiHintState() {
-    triggerAndRevealFirstHint()
-    triggerAndRevealSecondHint()
-    triggerAndRevealSolution()
-  }
 
   private fun waitFor10Seconds() = waitFor(seconds = 10)
 
