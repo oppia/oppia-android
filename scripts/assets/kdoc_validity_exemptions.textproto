@@ -406,6 +406,5 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/Cu
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/ScalableVectorGraphic.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterConstants.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterValue.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/OppiaDateTimeFormatter.kt"
