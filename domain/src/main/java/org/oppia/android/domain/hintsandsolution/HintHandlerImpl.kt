@@ -86,31 +86,23 @@ class HintHandlerImpl private constructor(
   ) {
     handlerLock.withLock {
       when (helpIndex.indexTypeCase) {
-        NEXT_AVAILABLE_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
-          latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+        NEXT_AVAILABLE_HINT_INDEX, LATEST_REVEALED_HINT_INDEX -> {
+          if (helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX) {
+            lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
+            latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+          } else {
+            lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+            latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
+          }
           solutionIsAvailable = false
           solutionIsRevealed = false
         }
-        LATEST_REVEALED_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
-          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-        SHOW_SOLUTION -> {
+        SHOW_SOLUTION, EVERYTHING_REVEALED -> {
           // 1 is subtracted from the hint count because hints are indexed from 0.
           lastRevealedHintIndex = state.interaction.hintCount - 1
           latestAvailableHintIndex = state.interaction.hintCount - 1
           solutionIsAvailable = true
-          solutionIsRevealed = false
-        }
-        EVERYTHING_REVEALED -> {
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = state.interaction.hintCount - 1
-          latestAvailableHintIndex = state.interaction.hintCount - 1
-          solutionIsAvailable = true
-          solutionIsRevealed = true
+          solutionIsRevealed = helpIndex.indexTypeCase == EVERYTHING_REVEALED
         }
         else -> {
           lastRevealedHintIndex = -1
