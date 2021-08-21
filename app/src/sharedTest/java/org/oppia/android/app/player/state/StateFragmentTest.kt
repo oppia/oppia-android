@@ -132,6 +132,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -186,6 +187,9 @@ class StateFragmentTest {
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   private val internalProfileId: Int = 1
 
@@ -252,7 +256,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       // Due to the exploration activity loading, the play button should no longer be visible.
@@ -262,7 +266,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       rotateToLandscape()
@@ -274,7 +278,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       scrollToViewType(CONTINUE_INTERACTION)
@@ -285,7 +289,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       rotateToLandscape()
@@ -297,7 +301,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       clickContinueInteractionButton()
@@ -312,7 +316,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
 
@@ -327,7 +331,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -340,7 +344,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_continueButtonIsVisible() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
       typeFractionText("1/2")
@@ -356,7 +360,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -370,7 +374,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -387,7 +391,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -404,7 +408,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -422,7 +426,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -436,7 +440,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
       typeFractionText("1/")
@@ -453,7 +457,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -468,7 +472,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -486,7 +490,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -507,7 +511,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -528,7 +532,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       onView(withId(R.id.previous_state_navigation_button)).check(matches(not(isDisplayed())))
@@ -538,7 +542,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
@@ -556,7 +560,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
@@ -576,7 +580,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
@@ -595,7 +599,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -627,7 +631,7 @@ class StateFragmentTest {
     // Note to self: current setup allows the user to drag the view without issues (now that
     // event interception isn't a problem), however the view is going partly offscreen which
     // is triggering an infinite animation loop in ItemTouchHelper).
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
@@ -646,7 +650,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
-    launchForExploration(TEST_EXPLORATION_ID_4).use {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
@@ -667,7 +671,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -682,7 +686,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -702,7 +706,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -716,7 +720,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -731,7 +735,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -746,7 +750,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -766,7 +770,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -786,7 +790,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -802,7 +806,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5).use {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -821,7 +825,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfiguration_firstState_prevAndNextButtonIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       rotateToLandscape()
@@ -833,7 +837,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       clickContinueInteractionButton()
@@ -844,7 +848,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
 
@@ -856,7 +860,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -871,7 +875,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -887,7 +891,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -905,7 +909,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       clickContinueInteractionButton()
@@ -925,7 +929,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       playThroughPrototypeExploration()
@@ -941,7 +945,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
 
@@ -958,7 +962,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeExploration()
 
@@ -972,7 +976,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
       playThroughPrototypeExploration()
@@ -986,7 +990,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forPrototypeExploration_withCustomOppiaTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       scrollToViewType(CONTENT)
@@ -997,7 +1001,7 @@ class StateFragmentTest {
 
   @Test
   fun testContentCard_forPrototypeExploration_changeConfig_withCustomTags_displaysParsedHtml() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       scrollToViewType(CONTENT)
@@ -1008,7 +1012,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1027,7 +1031,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
@@ -1048,7 +1052,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_showHintsAndSolutionBulb_dotHasCorrectContentDescription() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
@@ -1073,7 +1077,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
@@ -1098,7 +1102,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
@@ -1121,7 +1125,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
       selectMultipleChoiceOption(
@@ -1145,7 +1149,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
@@ -1167,7 +1171,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
       selectMultipleChoiceOption(
@@ -1190,7 +1194,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       // Verify that the initial state is the continue interaction.
@@ -1201,7 +1205,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       // Continue interaction.
@@ -1215,7 +1219,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
 
@@ -1230,7 +1234,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1246,7 +1250,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1262,7 +1266,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1279,7 +1283,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1294,7 +1298,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1312,7 +1316,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1331,7 +1335,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1348,7 +1352,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1368,7 +1372,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1390,7 +1394,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1413,7 +1417,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1435,7 +1439,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_fractionInput_textViewHasTextInputType() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
 
       // Play to state 2 to access the fraction input interaction.
@@ -1451,7 +1455,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1468,6 +1472,19 @@ class StateFragmentTest {
         assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
       }
     }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadExp_saveProg_continueToEndExp_clickReturnToTopic_partialProgDeleted() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeExploration()
+
+      clickReturnToTopicButton()
+    }
+    explorationCheckpointTestHelper
+      .verifyExplorationProgressIsDeleted(internalProfileId, TEST_EXPLORATION_ID_2)
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
@@ -1498,7 +1515,8 @@ class StateFragmentTest {
   }
 
   private fun launchForExploration(
-    explorationId: String
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
   ): ActivityScenario<StateFragmentTestActivity> {
     return launch(
       StateFragmentTestActivity.createTestActivityIntent(
@@ -1506,7 +1524,8 @@ class StateFragmentTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        explorationId
+        explorationId,
+        shouldSavePartialProgress
       )
     )
   }
