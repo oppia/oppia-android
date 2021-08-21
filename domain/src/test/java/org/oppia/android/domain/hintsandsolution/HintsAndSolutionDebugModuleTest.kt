@@ -12,6 +12,7 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.hintsandsolution.HintHandlerDebugImpl.FactoryDebugImpl
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -37,12 +38,8 @@ class HintsAndSolutionDebugModuleTest {
   }
 
   @Test
-  fun testHintHandlerFactoryInjection_constructNewHandler_providesFactoryForDebugImplHandler() {
-    val hintHandler = hintHandlerFactory.create(object : HintHandler.HintMonitor {
-      override fun onHelpIndexChanged() {}
-    })
-
-    assertThat(hintHandler).isInstanceOf(HintHandlerDebugImpl::class.java)
+  fun testHintHandlerFactoryInjection_providesFactoryDebugImpl() {
+    assertThat(hintHandlerFactory).isInstanceOf(FactoryDebugImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {

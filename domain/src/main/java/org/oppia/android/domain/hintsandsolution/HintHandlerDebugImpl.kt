@@ -35,8 +35,10 @@ class HintHandlerDebugImpl private constructor(
 
   override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {}
 
+  // This is never called as everything is already revealed when the state is loaded.
   override fun viewHint(hintIndex: Int) {}
 
+  // This is never called as everything is already revealed when the state is loaded.
   override fun viewSolution() {}
 
   override fun navigateToPreviousState() {}

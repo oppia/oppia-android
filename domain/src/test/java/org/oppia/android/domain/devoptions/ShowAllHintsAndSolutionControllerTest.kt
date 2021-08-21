@@ -33,13 +33,13 @@ class ShowAllHintsAndSolutionControllerTest {
   }
 
   @Test
-  fun testGetShowAllHintsAndSolution_returnsFalse() {
+  fun testGetShowAllHintsAndSolution_initialState_returnsFalse() {
     val showAllHintsAndSolution = showAllHintsAndSolutionController.getShowAllHintsAndSolution()
     assertThat(showAllHintsAndSolution).isFalse()
   }
 
   @Test
-  fun testSetShowAllHintsAndSolution_true_returnsTrue() {
+  fun testGetShowAllHintsAndSolution_setToShowAll_returnsTrue() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
     val showAllHintsAndSolution = showAllHintsAndSolutionController.getShowAllHintsAndSolution()
     assertThat(showAllHintsAndSolution).isTrue()
