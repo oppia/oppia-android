@@ -27,6 +27,12 @@ class HintHandlerDebugImpl private constructor(
     }
   }
 
+  override fun resumeHintsForSavedState(
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    state: State
+  ) {}
+
   override fun finishState(newState: State) {
     handlerLock.withLock {
       startWatchingForHintsInNewState(newState)
@@ -63,7 +69,7 @@ class HintHandlerDebugImpl private constructor(
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
       return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-        hintHandlerProdImplFactory.create(hintMonitor) as HintHandlerProdImpl
+        hintHandlerProdImplFactory.create(hintMonitor)
       } else {
         HintHandlerDebugImpl(hintMonitor)
       }
