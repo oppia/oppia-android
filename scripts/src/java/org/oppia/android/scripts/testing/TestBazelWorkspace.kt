@@ -67,10 +67,10 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       createLibrary("${testName}Dependency")
     } else null to listOf()
     val buildFile = if (subpackage != null) {
-      if (!File(temporaryRootFolder.root, subpackage).exists()) {
-        temporaryRootFolder.newFolder(subpackage)
+      if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
+        temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
       }
-      val newBuildFile = temporaryRootFolder.newFile("$subpackage/BUILD.bazel")
+      val newBuildFile = temporaryRootFolder.newFile("${subpackage.replace(".", "/")}/BUILD.bazel")
       newBuildFile
     } else rootBuildFile
     prepareBuildFileForTests(buildFile)
@@ -108,10 +108,10 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   ): Iterable<File> {
     check(testName !in testFileMap) { "Test '$testName' already exists" }
     val testFile = if (subpackage != null) {
-      if (!File(temporaryRootFolder.root, subpackage).exists()) {
-        temporaryRootFolder.newFolder(subpackage)
+      if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
+        temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
       }
-      temporaryRootFolder.newFile("$subpackage/$testName.kt")
+      temporaryRootFolder.newFile("${subpackage.replace(".", "/")}/$testName.kt")
     } else temporaryRootFolder.newFile("$testName.kt")
     return addTestToBuildFile(
       testName,

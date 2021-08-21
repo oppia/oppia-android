@@ -79,6 +79,7 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
@@ -91,6 +92,7 @@ kt_android_library(
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
@@ -126,9 +128,12 @@ TEST_DEPS = [
     ":domain",
     ":interaction_object_test_builder",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/network:network",
+    "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -142,7 +147,9 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
