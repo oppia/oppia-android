@@ -304,8 +304,6 @@
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
   <!-- Pin Password -->
-  <dimen name="pin_password_margin_start">204dp</dimen>
-  <dimen name="pin_password_margin_end">204dp</dimen>
   <dimen name="pin_password_text_input_layout_width">304dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
 </resources>

@@ -174,8 +174,6 @@
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
 
-  <dimen name="pin_password_margin_start">28dp</dimen>
-  <dimen name="pin_password_margin_end">28dp</dimen>
   <dimen name="pin_password_text_input_layout_width">244dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
 
