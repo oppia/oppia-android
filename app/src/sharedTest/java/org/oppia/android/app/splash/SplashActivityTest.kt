@@ -39,6 +39,8 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -58,10 +60,10 @@ import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTe
 import org.oppia.android.domain.onboarding.testing.FakeExpirationMetaDataRetriever
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -298,12 +300,12 @@ class SplashActivityTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, PracticeTabModule::class, DeveloperOptionsStarterModule::class,
-      DeveloperOptionsModule::class, ExplorationStorageModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
