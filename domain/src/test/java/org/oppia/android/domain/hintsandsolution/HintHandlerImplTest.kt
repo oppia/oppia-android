@@ -1040,7 +1040,7 @@ class HintHandlerImplTest {
   @Test
   fun testViewHint_hintAvailable_oneHintState_withSolution_wait30Sec_monitorCalled() {
     val state = expWithOneHintAndSolution.getInitialState()
-    hintHandler.startWatchingFor  HintsInNewState(state)
+    hintHandler.startWatchingForHintsInNewState(state)
     triggerAndRevealFirstHint()
     reset(mockHintMonitor)
 
