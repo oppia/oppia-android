@@ -3,7 +3,7 @@ package org.oppia.android.domain.hintsandsolution
 import dagger.Binds
 import dagger.Module
 
-/** Module for providing hints & solution related dependencies in debug build of the app. */
+/** Module for providing debug-only hints & solution related dependencies. */
 @Module
 interface HintsAndSolutionDebugModule {
   @Binds

@@ -8,11 +8,9 @@ import javax.inject.Inject
 import kotlin.concurrent.withLock
 
 /**
- * Debug implementation of [HintHandler] that overrides the default mechanism of hints & solutions
- * to show all hints and solutions based on availability, bypassing the wrong answer check and
- * scheduling of hints, if 'Show all hints and solution' functionality is enabled in the
- * 'Developer Options Menu'. If this functionality is disabled then it will fall back to
- * [HintHandlerProdImpl] and provide its functionalities.
+ * Debug implementation of [HintHandler] that conditionally always shows hints & solutions if
+ * 'Show all hints and solution' functionality is enabled in the developer options menu.
+ * If this functionality is disabled then it will fall back to [HintHandlerProdImpl].
  */
 class HintHandlerDebugImpl private constructor(
   private val hintHandlerProdImpl: HintHandlerProdImpl,

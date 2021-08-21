@@ -310,8 +310,7 @@ class HintHandlerProdImpl private constructor(
           latestAvailableHintIndex = nextHelpIndexToShow.nextAvailableHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
-        else -> {
-        } // Nothing else to do.
+        else -> {} // Nothing else to do.
       }
 
       // Only indicate the hint is available if its index is actually new (including if it
