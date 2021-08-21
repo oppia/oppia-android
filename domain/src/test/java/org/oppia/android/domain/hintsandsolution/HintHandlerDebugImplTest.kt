@@ -15,7 +15,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -172,9 +171,7 @@ class HintHandlerDebugImplTest {
 
     hintHandler.startWatchingForHintsInNewState(state)
 
-    // This will be called multiple times as we are showing all helps and thus on every help
-    // revealed, this function is called.
-    verify(mockHintMonitor, atLeast(1)).onHelpIndexChanged()
+    verify(mockHintMonitor).onHelpIndexChanged()
   }
 
   @Test
