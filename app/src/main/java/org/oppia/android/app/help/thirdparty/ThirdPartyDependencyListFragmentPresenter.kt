@@ -23,9 +23,13 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
   private lateinit var binding: ThirdPartyDependencyListFragmentBinding
 
   /** Handles onCreateView() method of the [ThirdPartyDependencyListFragment]. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    isMultipane: Boolean
+  ): View {
     val viewModel = getThirdPartyDependencyListViewModel()
-
+    viewModel.isMultipane.set(isMultipane)
     binding = ThirdPartyDependencyListFragmentBinding.inflate(
       inflater,
       container,

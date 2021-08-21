@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [JsonPrefixNetworkInterceptorTest] */
+/** Tests for [JsonPrefixNetworkInterceptor]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class JsonPrefixNetworkInterceptorTest {
@@ -95,7 +95,7 @@ class JsonPrefixNetworkInterceptorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkModule::class])
+  @Component(modules = [TestNetworkModule::class, NetworkConfigProdModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

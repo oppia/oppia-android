@@ -1,0 +1,59 @@
+"""
+This library contains the Robolectric tests for the e2e test modules.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "EndToEndTestGcsResourceModuleTest",
+    srcs = ["EndToEndTestGcsResourceModuleTest.kt"],
+    custom_package = "org.oppia.android.instrumentation.application",
+    test_class = "org.oppia.android.instrumentation.application.EndToEndTestGcsResourceModuleTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        ":dagger",
+        "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "EndToEndTestImageParsingModuleTest",
+    srcs = ["EndToEndTestImageParsingModuleTest.kt"],
+    custom_package = "org.oppia.android.instrumentation.application",
+    test_class = "org.oppia.android.instrumentation.application.EndToEndTestImageParsingModuleTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        ":dagger",
+        "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "EndToEndTestNetworkConfigModuleTest",
+    srcs = ["EndToEndTestNetworkConfigModuleTest.kt"],
+    custom_package = "org.oppia.android.instrumentation.application",
+    test_class = "org.oppia.android.instrumentation.application.EndToEndTestNetworkConfigModuleTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        ":dagger",
+        "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_runner",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+dagger_rules()

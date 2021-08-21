@@ -13,7 +13,9 @@ import javax.inject.Singleton
  * The Interceptor removes XSSI_PREFIX from every response to produce valid Json.
  */
 @Singleton
-class JsonPrefixNetworkInterceptor @Inject constructor() : Interceptor {
+class JsonPrefixNetworkInterceptor @Inject constructor(
+  @XssiPrefix private val xssiPrefix: String
+) : Interceptor {
 
   @Throws(IOException::class)
   override fun intercept(chain: Interceptor.Chain): Response {
@@ -34,6 +36,6 @@ class JsonPrefixNetworkInterceptor @Inject constructor() : Interceptor {
 
   /** Removes the XSSI prefix from the specified raw JSON & returns the result. */
   fun removeXssiPrefix(rawJson: String): String {
-    return rawJson.removePrefix(NetworkSettings.XSSI_PREFIX).trimStart()
+    return rawJson.removePrefix(xssiPrefix).trimStart()
   }
 }
