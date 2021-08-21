@@ -76,8 +76,6 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:feedback_reporting_module",
-        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
