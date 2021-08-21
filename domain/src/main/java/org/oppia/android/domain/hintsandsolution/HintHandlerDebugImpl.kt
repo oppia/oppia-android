@@ -13,8 +13,6 @@ import kotlin.concurrent.withLock
  * If this functionality is disabled then it will fall back to [HintHandlerProdImpl].
  */
 class HintHandlerDebugImpl private constructor(
-  private val hintHandlerProdImpl: HintHandlerProdImpl,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
   private val hintMonitor: HintHandler.HintMonitor
 ) : HintHandler {
 
@@ -23,68 +21,36 @@ class HintHandlerDebugImpl private constructor(
   private lateinit var pendingState: State
 
   override fun startWatchingForHintsInNewState(state: State) {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.startWatchingForHintsInNewState(state)
-    } else {
-      handlerLock.withLock {
-        pendingState = state
-        hintMonitor.onHelpIndexChanged()
-      }
+    handlerLock.withLock {
+      pendingState = state
+      hintMonitor.onHelpIndexChanged()
     }
   }
 
   override fun finishState(newState: State) {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.finishState(newState)
-    } else {
-      handlerLock.withLock {
-        startWatchingForHintsInNewState(newState)
-      }
+    handlerLock.withLock {
+      startWatchingForHintsInNewState(newState)
     }
   }
 
-  override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.handleWrongAnswerSubmission(wrongAnswerCount)
-    }
-  }
+  override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {}
 
-  override fun viewHint(hintIndex: Int) {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.viewHint(hintIndex)
-    }
-  }
+  override fun viewHint(hintIndex: Int) {}
 
-  override fun viewSolution() {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.viewSolution()
-    }
-  }
+  override fun viewSolution() {}
 
-  override fun navigateToPreviousState() {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.navigateToPreviousState()
-    }
-  }
+  override fun navigateToPreviousState() {}
 
-  override fun navigateBackToLatestPendingState() {
-    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.navigateBackToLatestPendingState()
-    }
-  }
+  override fun navigateBackToLatestPendingState() {}
 
   override fun getCurrentHelpIndex(): HelpIndex {
-    return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-      hintHandlerProdImpl.getCurrentHelpIndex()
+    return if (!pendingState.offersHelp()) {
+      // If this state has no help to show, do nothing.
+      HelpIndex.getDefaultInstance()
     } else {
-      if (!pendingState.offersHelp()) {
-        // If this state has no help to show, do nothing.
-        HelpIndex.getDefaultInstance()
-      } else {
-        HelpIndex.newBuilder().apply {
-          everythingRevealed = true
-        }.build()
-      }
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
     }
   }
 
@@ -94,13 +60,11 @@ class HintHandlerDebugImpl private constructor(
     private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
-      val hintHandlerProdImpl: HintHandlerProdImpl =
+      return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
         hintHandlerProdImplFactory.create(hintMonitor) as HintHandlerProdImpl
-      return HintHandlerDebugImpl(
-        hintHandlerProdImpl,
-        showAllHintsAndSolutionController,
-        hintMonitor
-      )
+      } else {
+        HintHandlerDebugImpl(hintMonitor)
+      }
     }
   }
 }
