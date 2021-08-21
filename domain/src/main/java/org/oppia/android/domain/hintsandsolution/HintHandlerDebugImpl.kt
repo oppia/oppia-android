@@ -20,14 +20,15 @@ class HintHandlerDebugImpl private constructor(
 
   private val handlerLock = ReentrantLock()
 
+  private lateinit var pendingState: State
+
   override fun startWatchingForHintsInNewState(state: State) {
     if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.startWatchingForHintsInNewState(state)
     } else {
       handlerLock.withLock {
-        hintHandlerProdImpl.pendingState = state
+        pendingState = state
         hintMonitor.onHelpIndexChanged()
-        showAllHintsAndSolution()
       }
     }
   }
@@ -37,7 +38,6 @@ class HintHandlerDebugImpl private constructor(
       hintHandlerProdImpl.finishState(newState)
     } else {
       handlerLock.withLock {
-        hintHandlerProdImpl.reset()
         startWatchingForHintsInNewState(newState)
       }
     }
@@ -52,31 +52,19 @@ class HintHandlerDebugImpl private constructor(
   override fun viewHint(hintIndex: Int) {
     if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
       hintHandlerProdImpl.viewHint(hintIndex)
-    } else {
-      handlerLock.withLock {
-        val helpIndex = hintHandlerProdImpl.computeCurrentHelpIndex()
-        check(
-          helpIndex.indexTypeCase == HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX &&
-            helpIndex.nextAvailableHintIndex == hintIndex
-        ) {
-          "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} + " +
-            "(trying to reveal hint: $hintIndex)"
-        }
-
-        hintHandlerProdImpl.cancelPendingTasks()
-        hintHandlerProdImpl.lastRevealedHintIndex =
-          hintHandlerProdImpl.lastRevealedHintIndex.coerceAtLeast(hintIndex)
-        hintMonitor.onHelpIndexChanged()
-      }
     }
   }
 
   override fun viewSolution() {
-    hintHandlerProdImpl.viewSolution()
+    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
+      hintHandlerProdImpl.viewSolution()
+    }
   }
 
   override fun navigateToPreviousState() {
-    hintHandlerProdImpl.navigateToPreviousState()
+    if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
+      hintHandlerProdImpl.navigateToPreviousState()
+    }
   }
 
   override fun navigateBackToLatestPendingState() {
@@ -86,23 +74,17 @@ class HintHandlerDebugImpl private constructor(
   }
 
   override fun getCurrentHelpIndex(): HelpIndex {
-    return hintHandlerProdImpl.getCurrentHelpIndex()
-  }
-
-  private fun showAllHintsAndSolution() {
-    if (!hintHandlerProdImpl.pendingState.offersHelp()) {
-      // If this state has no help to show, do nothing.
-      return
-    }
-
-    hintHandlerProdImpl.pendingState.interaction.hintList.forEach { _ ->
-      val helpIndex = hintHandlerProdImpl.getNextHelpIndexToReveal()
-      hintHandlerProdImpl.showHintImmediately(helpIndex)
-      viewHint(helpIndex.nextAvailableHintIndex)
-    }
-    if (hintHandlerProdImpl.pendingState.hasSolution()) {
-      hintHandlerProdImpl.showHintImmediately(hintHandlerProdImpl.getNextHelpIndexToReveal())
-      viewSolution()
+    return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
+      hintHandlerProdImpl.getCurrentHelpIndex()
+    } else {
+      if (!pendingState.offersHelp()) {
+        // If this state has no help to show, do nothing.
+        HelpIndex.getDefaultInstance()
+      } else {
+        HelpIndex.newBuilder().apply {
+          everythingRevealed = true
+        }.build()
+      }
     }
   }
 

@@ -62,14 +62,9 @@ class HintHandlerProdImpl private constructor(
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 
   private var trackedWrongAnswerCount = 0
-
-  /** Refers to the current pending state. */
-  internal lateinit var pendingState: State
-
+  private lateinit var pendingState: State
   private var hintSequenceNumber = 0
-
-  /** Refers to last revealed hint index. */
-  internal var lastRevealedHintIndex = -1
+  private var lastRevealedHintIndex = -1
 
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
@@ -145,12 +140,10 @@ class HintHandlerProdImpl private constructor(
     computeCurrentHelpIndex()
   }
 
-  /**
-   * Cancels any potential pending hints by advancing the sequence number. Note that this isn't
-   * reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
-   * scheduled without overlapping with past sequence numbers.
-   */
-  internal fun cancelPendingTasks() {
+  private fun cancelPendingTasks() {
+    // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
+    // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
+    // scheduled without overlapping with past sequence numbers.
     hintSequenceNumber++
   }
 
@@ -197,7 +190,7 @@ class HintHandlerProdImpl private constructor(
   }
 
   /** Resets this handler to prepare it for a new state, cancelling any pending hints. */
-  internal fun reset() {
+  private fun reset() {
     trackedWrongAnswerCount = 0
     // Cancel tasks rather than resetting to avoid potential cases where previous tasks can carry to
     // the next state.
@@ -208,8 +201,7 @@ class HintHandlerProdImpl private constructor(
     solutionIsRevealed = false
   }
 
-  /** Returns the current [HelpIndex]. */
-  internal fun computeCurrentHelpIndex(): HelpIndex {
+  private fun computeCurrentHelpIndex(): HelpIndex {
     val hintList = pendingState.interaction.hintList
     val hasSolution = pendingState.hasSolution()
     val hasAtLeastOneHintAvailable = latestAvailableHintIndex != -1
@@ -257,7 +249,7 @@ class HintHandlerProdImpl private constructor(
    * Returns the [HelpIndex] of the next hint or solution that hasn't yet been revealed, or
    * default if there is none.
    */
-  internal fun getNextHelpIndexToReveal(): HelpIndex {
+  private fun getNextHelpIndexToReveal(): HelpIndex {
     // Return the index of the first unrevealed hint, or the length of the list if all have been
     // revealed.
     val hintList = pendingState.interaction.hintList
@@ -296,7 +288,7 @@ class HintHandlerProdImpl private constructor(
    * Immediately indicates the specified hint is ready to be shown, cancelling any previously
    * pending hints initiated by calls to [scheduleShowHint].
    */
-  internal fun showHintImmediately(helpIndexToShow: HelpIndex) {
+  private fun showHintImmediately(helpIndexToShow: HelpIndex) {
     showHint(++hintSequenceNumber, helpIndexToShow)
   }
 
@@ -310,7 +302,8 @@ class HintHandlerProdImpl private constructor(
           latestAvailableHintIndex = nextHelpIndexToShow.nextAvailableHintIndex
         }
         SHOW_SOLUTION -> solutionIsAvailable = true
-        else -> {} // Nothing else to do.
+        else -> {
+        } // Nothing else to do.
       }
 
       // Only indicate the hint is available if its index is actually new (including if it
@@ -342,7 +335,7 @@ class HintHandlerProdImpl private constructor(
 }
 
 /** Returns whether this state has a solution to show. */
-internal fun State.hasSolution(): Boolean = interaction.solution.hasCorrectAnswer()
+private fun State.hasSolution(): Boolean = interaction.solution.hasCorrectAnswer()
 
 /** Returns whether this state has help that the user can see. */
 internal fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
