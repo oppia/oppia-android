@@ -60,6 +60,8 @@ import javax.inject.Singleton
  * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule],
  * [NetworkConnectionUtilDebugModule], [HintsAndSolutionDebugModule]
  * Add: [LogReportingModule], [NetworkConnectionUtilProdModule], [HintsAndSolutionProdModule]
+ *
+ * When building with Bazel, please also refer to instructions in app/BUILD.bazel.
  */
 @Singleton
 @Component(
