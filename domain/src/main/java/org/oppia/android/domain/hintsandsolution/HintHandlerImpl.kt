@@ -5,7 +5,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
@@ -74,6 +76,46 @@ class HintHandlerImpl private constructor(
       pendingState = state
       hintMonitor.onHelpIndexChanged()
       maybeScheduleShowHint(wrongAnswerCount = 0)
+    }
+  }
+
+  override fun resumeHintsForSavedState(
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    state: State
+  ) {
+    handlerLock.withLock {
+      when (helpIndex.indexTypeCase) {
+        NEXT_AVAILABLE_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
+          latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        LATEST_REVEALED_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        SHOW_SOLUTION, EVERYTHING_REVEALED -> {
+          // 1 is subtracted from the hint count because hints are indexed from 0.
+          lastRevealedHintIndex = state.interaction.hintCount - 1
+          latestAvailableHintIndex = state.interaction.hintCount - 1
+          solutionIsAvailable = true
+          solutionIsRevealed = helpIndex.indexTypeCase == EVERYTHING_REVEALED
+        }
+        else -> {
+          lastRevealedHintIndex = -1
+          latestAvailableHintIndex = -1
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+      }
+      pendingState = state
+      this.trackedWrongAnswerCount = trackedWrongAnswerCount
+      hintMonitor.onHelpIndexChanged()
+      maybeScheduleShowHint(wrongAnswerCount = trackedWrongAnswerCount)
     }
   }
 
