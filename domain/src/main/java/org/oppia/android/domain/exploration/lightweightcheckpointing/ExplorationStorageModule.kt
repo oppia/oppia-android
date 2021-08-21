@@ -2,10 +2,6 @@ package org.oppia.android.domain.exploration.lightweightcheckpointing
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
-
-@Qualifier
-annotation class ExplorationStorageDatabaseSize
 
 /** Provider to return any constants required during the storage of exploration checkpoints. */
 @Module

@@ -1,0 +1,157 @@
+"""
+Domain services & definitions corresponding to topics, subtopics, and skills.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "embedded_ids",
+    srcs = [
+        "EmbeddedExplorationIds.kt",
+        "EmbeddedStoryIds.kt",
+        "EmbeddedTopicIds.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "prime_topic_assets_controller",
+    srcs = [
+        "PrimeTopicAssetsController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+    ],
+)
+
+kt_android_library(
+    name = "story_progress_controller",
+    srcs = [
+        "StoryProgressController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model:profile_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+kt_android_library(
+    name = "topic_controller",
+    srcs = [
+        "TopicController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":retrievers",
+        ":story_progress_controller",
+        ":thumbnail_factory",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/question:retriever",
+        "//model:profile_java_proto_lite",
+        "//model:question_java_proto_lite",
+        "//model:thumbnail_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+kt_android_library(
+    name = "topic_list_controller",
+    srcs = [
+        "TopicListController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":thumbnail_factory",
+        ":topic_controller",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//model:profile_java_proto_lite",
+        "//model:thumbnail_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "PrimeTopicAssetsControllerImpl.kt",
+    ],
+    deps = [
+        ":dagger",
+        ":prime_topic_assets_controller",
+        ":retrievers",
+        "//domain/src/main/java/org/oppia/android/domain/exploration:retriever",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/question:retriever",
+        "//model:exploration_java_proto_lite",
+        "//model:question_java_proto_lite",
+        "//model:subtitled_html_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+        "//utility/src/main/java/org/oppia/android/util/html:parser",
+    ],
+)
+
+kt_android_library(
+    name = "retrievers",
+    srcs = [
+        "ConceptCardRetriever.kt",
+        "RevisionCardRetriever.kt",
+        "StoryRetriever.kt",
+        "TopicRetriever.kt",
+    ],
+    deps = [
+        ":dagger",
+        ":thumbnail_factory",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//model:subtitled_html_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//model:translation_java_proto_lite",
+        "//model:voiceover_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+    ],
+)
+
+kt_android_library(
+    name = "thumbnail_factory",
+    srcs = [
+        "ThumbnailFactory.kt",
+    ],
+    deps = [
+        ":embedded_ids",
+        "//model:thumbnail_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "PrimeTopicAssetsControllerModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":impl",
+        ":prime_topic_assets_controller",
+    ],
+)
+
+dagger_rules()

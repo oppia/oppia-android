@@ -1,0 +1,21 @@
+"""
+Domain services & definitions corresponding to testing log upload functionality.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_log_uploader",
+    srcs = [
+        "FakeLogUploader.kt",
+    ],
+    visibility = ["//domain:domain_test_visibility"],
+    deps = [
+        ":dagger",
+        "//third_party:androidx_work_work-runtime",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+dagger_rules()

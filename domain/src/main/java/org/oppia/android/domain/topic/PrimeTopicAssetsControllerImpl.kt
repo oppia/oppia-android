@@ -75,12 +75,12 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val context: Context,
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
-  private val topicController: TopicController,
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val explorationRetriever: ExplorationRetriever,
   private val questionRetriever: QuestionRetriever,
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
+  private val topicRetriever: TopicRetriever,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultResourceBucketName private val gcsResource: String,
   @QuestionResourceBucketName private val questionGcsResource: String,
@@ -120,7 +120,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     for (i in 0 until topicIdJsonArray.length()) {
-      allFiles.addAll(topicController.getJsonAssetFileNameList(topicIdJsonArray.optString(i)))
+      allFiles.addAll(topicRetriever.computeJsonAssetFileNameList(topicIdJsonArray.optString(i)))
     }
 
     val primeAssetJobs = allFiles.map {
@@ -276,7 +276,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun loadTopics(topicIds: Collection<String>): Collection<Topic> {
-    return topicIds.map(topicController::retrieveTopic)
+    return topicIds.map(topicRetriever::loadTopic)
   }
 
   private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {

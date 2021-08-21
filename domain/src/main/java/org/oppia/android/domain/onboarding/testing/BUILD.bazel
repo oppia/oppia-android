@@ -1,0 +1,34 @@
+"""
+Testing utilities for the user onboarding domain services.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_expiration_meta_data_retriever",
+    srcs = [
+        "FakeExpirationMetaDataRetriever.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:expiration_meta_data_retriever",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "ExpirationMetaDataRetrieverTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":fake_expiration_meta_data_retriever",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:expiration_meta_data_retriever",
+    ],
+)
+
+dagger_rules()

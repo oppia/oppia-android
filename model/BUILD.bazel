@@ -114,6 +114,7 @@ proto_library(
 java_lite_proto_library(
     name = "subtitled_html_java_proto_lite",
     deps = [":subtitled_html_proto"],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 proto_library(
@@ -166,6 +167,7 @@ proto_library(
 java_lite_proto_library(
     name = "voiceover_java_proto_lite",
     deps = [":voiceover_proto"],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 format_import_proto_library(

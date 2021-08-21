@@ -33,7 +33,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "topic",
         proto_type_name = "TopicIdList",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
@@ -42,7 +42,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "topic",
         proto_type_name = "TopicRecord",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
@@ -51,7 +51,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "topic",
         proto_type_name = "SubtopicRecord",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
@@ -60,7 +60,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "topic",
         proto_type_name = "StoryRecord",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
@@ -69,7 +69,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "topic",
         proto_type_name = "ConceptCardList",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     ) + generate_proto_binary_assets(
@@ -78,7 +78,7 @@ def generate_assets_list_from_text_protos(
         proto_dep_name = "exploration",
         proto_type_name = "Exploration",
         name_prefix = name,
-        asset_dir = "src/main/assets",
+        asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//model",
         proto_package = "model",
     )

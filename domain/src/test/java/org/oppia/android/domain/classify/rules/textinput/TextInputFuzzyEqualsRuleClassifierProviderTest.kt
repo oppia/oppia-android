@@ -9,9 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.classify.testing.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.testing.InteractionObjectTestBuilder.createString
+import org.oppia.android.domain.classify.testing.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.testing.assertion.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

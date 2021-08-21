@@ -1,7 +1,7 @@
 package org.oppia.android.domain.classify
 
 /** A general-purpose [InteractionClassifier] that utilizes a Dagger-bound [RuleClassifier] map. */
-internal class GenericInteractionClassifier(
+class GenericInteractionClassifier(
   private val ruleClassifiers: Map<String, RuleClassifier>
 ) : InteractionClassifier {
   override fun getRuleTypes(): Set<String> {

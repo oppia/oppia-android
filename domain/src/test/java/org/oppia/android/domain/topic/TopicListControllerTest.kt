@@ -200,7 +200,7 @@ class TopicListControllerTest {
     verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
     val topicList = topicListResultCaptor.value.getOrThrow()
     val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
-    assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
+    assertThat(topicIds).doesNotContain(UPCOMING_TOPIC_ID_1)
   }
 
   @Test

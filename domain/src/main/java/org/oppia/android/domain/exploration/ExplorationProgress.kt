@@ -15,21 +15,19 @@ private const val TERMINAL_INTERACTION_ID = "EndExploration"
  * thread-safe, so owning classes should ensure synchronized access. This class can exist across multiple exploration
  * instances, but calling code is responsible for ensuring it is properly reset.
  */
-internal class ExplorationProgress {
-  internal lateinit var currentProfileId: ProfileId
-  internal lateinit var currentTopicId: String
-  internal lateinit var currentStoryId: String
-  internal lateinit var currentExplorationId: String
-  internal lateinit var currentExploration: Exploration
+class ExplorationProgress {
+  lateinit var currentProfileId: ProfileId
+  lateinit var currentTopicId: String
+  lateinit var currentStoryId: String
+  lateinit var currentExplorationId: String
+  lateinit var currentExploration: Exploration
 
-  internal var shouldSavePartialProgress: Boolean = false
-  internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+  var shouldSavePartialProgress: Boolean = false
+  var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
 
-  internal var playStage = PlayStage.NOT_PLAYING
-  internal val stateGraph: StateGraph by lazy {
-    StateGraph(currentExploration.statesMap)
-  }
-  internal val stateDeck: StateDeck by lazy {
+  var playStage = PlayStage.NOT_PLAYING
+  val stateGraph: StateGraph by lazy { StateGraph(currentExploration.statesMap) }
+  val stateDeck: StateDeck by lazy {
     StateDeck(stateGraph.getState(currentExploration.initStateName), ::isTopStateTerminal)
   }
 
@@ -41,7 +39,7 @@ internal class ExplorationProgress {
    * ensure the internal state of the controller remains correct. This method is not meant to be covered in unit tests
    * since none of the failures here should ever be exposed to controller callers.
    */
-  internal fun advancePlayStageTo(nextPlayStage: PlayStage) {
+  fun advancePlayStageTo(nextPlayStage: PlayStage) {
     when (nextPlayStage) {
       PlayStage.NOT_PLAYING -> {
         // All transitions to NOT_PLAYING are valid except itself. Stopping playing can happen at any time.
@@ -86,12 +84,12 @@ internal class ExplorationProgress {
    * @param newCheckpointState is the latest checkpoint state that is returned upon
    *     completion of the save operation for checkpoints either successfully or unsuccessfully.
    */
-  internal fun updateCheckpointState(newCheckpointState: CheckpointState) {
+  fun updateCheckpointState(newCheckpointState: CheckpointState) {
     checkpointState = newCheckpointState
   }
 
-  companion object {
-    internal fun isTopStateTerminal(state: State): Boolean {
+  private companion object {
+    fun isTopStateTerminal(state: State): Boolean {
       return state.interaction.id == TERMINAL_INTERACTION_ID
     }
   }

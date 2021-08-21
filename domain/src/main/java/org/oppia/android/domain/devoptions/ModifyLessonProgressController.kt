@@ -1,5 +1,6 @@
 package org.oppia.android.domain.devoptions
 
+import java.util.concurrent.locks.ReentrantLock
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
@@ -10,14 +11,13 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
-private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
 private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 
 // TODO(#3423): Remove ModifyLessonProgressController from prod build of the app.
@@ -29,6 +29,8 @@ class ModifyLessonProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock
 ) {
+  private val cacheLock = ReentrantLock()
+  private val cachedTopics = mutableSetOf<Topic>()
 
   /**
    * Fetches a list of topics given a profile ID.
@@ -37,22 +39,18 @@ class ModifyLessonProgressController @Inject constructor(
    * @return a [DataProvider] for [List] of [Topic] combined with [TopicProgress].
    */
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<Topic>> {
-    val allTopicsDataProvider = topicListController.getTopicList()
+    return topicListController.getTopicList()
       .transformAsync(GET_ALL_TOPICS_PROVIDER_ID) { topicList ->
-        val listOfTopics = mutableListOf<Topic>()
-        topicList.topicSummaryList.forEach { topicSummary ->
+        val topics = topicList.topicSummaryList.map { topicSummary ->
           val topicId = topicSummary.topicId
-          listOfTopics.add(topicController.retrieveTopic(topicId))
+          topicController.getTopic(profileId, topicId).retrieveData().getOrThrow()
         }
-        AsyncResult.success(listOfTopics.toList())
+        cacheLock.withLock {
+          cachedTopics.clear()
+          cachedTopics += topics
+        }
+        AsyncResult.success(topics)
       }
-    val topicProgressListDataProvider =
-      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-    return allTopicsDataProvider.combineWith(
-      topicProgressListDataProvider,
-      GET_ALL_TOPICS_COMBINED_PROVIDER_ID,
-      ::combineTopicListAndTopicProgressList
-    )
   }
 
   /**
@@ -111,7 +109,7 @@ class ModifyLessonProgressController @Inject constructor(
    */
   fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
-      val topic = topicController.retrieveTopic(topicId)
+      val topic = retrieveTopic(topicId)
       topic.storyList.forEach { storySummary ->
         storySummary.chapterList.forEach { chapterSummary ->
           storyProgressController.recordCompletedChapter(
@@ -135,7 +133,7 @@ class ModifyLessonProgressController @Inject constructor(
    */
   fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
     storyMap.forEach {
-      val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
+      val storySummary = retrieveStory(topicId = it.value, storyId = it.key)
       storySummary.chapterList.forEach { chapterSummary ->
         storyProgressController.recordCompletedChapter(
           profileId = profileId,
@@ -170,21 +168,14 @@ class ModifyLessonProgressController @Inject constructor(
     }
   }
 
-  /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */
-  private fun combineTopicListAndTopicProgressList(
-    allTopics: List<Topic>,
-    topicProgressList: List<TopicProgress>
-  ): List<Topic> {
-    val topicProgressMap = topicProgressList.associateBy({ it.topicId }, { it })
-    val allTopicsWithProgress = mutableListOf<Topic>()
-    allTopics.forEach { topic ->
-      allTopicsWithProgress.add(
-        topicController.combineTopicAndTopicProgress(
-          topic = topic,
-          topicProgress = topicProgressMap[topic.topicId] ?: TopicProgress.getDefaultInstance()
-        )
-      )
-    }
-    return allTopicsWithProgress
+  private fun retrieveTopic(topicId: String): Topic = cacheLock.withLock {
+    cachedTopics.find { it.topicId == topicId }
+      ?: error("ID corresponds to unloaded topic: $topicId")
+  }
+
+  private fun retrieveStory(topicId: String, storyId: String): StorySummary {
+    val stories = retrieveTopic(topicId).storyList
+    return stories.find { it.storyId == storyId }
+      ?: error("Cannot find story corresponding to ID: $storyId in topic: $topicId")
   }
 }

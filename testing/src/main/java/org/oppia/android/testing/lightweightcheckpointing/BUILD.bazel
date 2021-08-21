@@ -15,7 +15,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
-        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
         "//model:exploration_checkpoint_java_proto_lite",
         "//model:profile_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",

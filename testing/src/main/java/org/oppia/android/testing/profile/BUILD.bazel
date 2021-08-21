@@ -15,7 +15,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
-        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//model:profile_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",

@@ -19,7 +19,6 @@ package_group(
 TEST_DEPS = [
     ":dagger",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
-    "//domain",
     "//testing/src/main/java/org/oppia/android/testing/assertion:assertion_helpers",
     "//testing/src/main/java/org/oppia/android/testing/environment:test_environment_config",
     "//testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing:exploration_checkpoint_test_helper",

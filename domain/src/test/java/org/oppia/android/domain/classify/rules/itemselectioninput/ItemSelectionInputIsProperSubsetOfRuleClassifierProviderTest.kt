@@ -9,8 +9,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
+import org.oppia.android.domain.classify.testing.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
+import org.oppia.android.domain.classify.testing.InteractionObjectTestBuilder.createString
 import org.oppia.android.testing.assertion.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

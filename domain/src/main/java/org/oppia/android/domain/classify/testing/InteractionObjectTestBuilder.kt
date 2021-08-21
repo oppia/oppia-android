@@ -1,4 +1,4 @@
-package org.oppia.android.domain.classify
+package org.oppia.android.domain.classify.testing
 
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject

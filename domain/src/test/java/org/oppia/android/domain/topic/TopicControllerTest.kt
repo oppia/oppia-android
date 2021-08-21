@@ -233,7 +233,7 @@ class TopicControllerTest {
   @Test
   fun testRetrieveTopic_testTopic_unpublished_returnsAsAvailableInFuture() {
     topicController.getTopic(
-      profileId1, TEST_TOPIC_ID_2
+      profileId1, UPCOMING_TOPIC_ID_1
     ).toLiveData().observeForever(mockTopicObserver)
     testCoroutineDispatchers.runCurrent()
 

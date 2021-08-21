@@ -4,7 +4,7 @@ import org.oppia.android.app.model.Question
 /**
  * Mutable data class for tracking a user's interactions with a specific question.
  */
-internal data class QuestionSessionMetrics(val question: Question) {
+data class QuestionSessionMetrics(val question: Question) {
   /** Tracks the number of answers the user submitted for this question. */
   var numberOfAnswersSubmitted: Int = 0
 

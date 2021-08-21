@@ -25,7 +25,7 @@ kt_android_library(
         "RatioExtensions.kt",
         "StringExtensions.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model:question_java_proto_lite",
     ],

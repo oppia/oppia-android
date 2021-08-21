@@ -1,0 +1,51 @@
+"""
+Domain services & definitions corresponding to lightweight checkpointing, a feature which provides
+per-state level saving of exploration progress.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "exploration_checkpoint_controller",
+    srcs = [
+        "ExplorationCheckpointController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":qualifiers",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model:exploration_checkpoint_java_proto_lite",
+        "//model:profile_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+kt_android_library(
+    name = "qualifiers",
+    srcs = [
+        "ExplorationStorageDatabaseSize.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "ExplorationStorageModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":qualifiers",
+    ],
+)
+
+dagger_rules()

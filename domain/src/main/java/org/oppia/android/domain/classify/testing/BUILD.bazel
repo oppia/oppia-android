@@ -1,0 +1,16 @@
+"""
+Test utilities for classifier domain controllers & managers.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "answer_classification_controller",
+    srcs = [
+        "InteractionObjectTestBuilder.kt",
+    ],
+    visibility = ["//domain:domain_test_visibility"],
+    deps = [
+        "//model:interaction_object_java_proto_lite",
+    ],
+)

@@ -4,145 +4,112 @@ This library contains the frontend controller and business service logic for the
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
 
-# Source files that have been migrated to their own package-based libraries. Files added to this
-# list will be excluded automatically from the top-level utility library. It is recommended to use
-# globs here to ensure that new files added to migrated packages don't accidentally get included in the
-# top-level module library.
-MIGRATED_PROD_FILES = glob([
-    "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
-    "src/main/java/org/oppia/android/domain/oppialogger/*.kt",
-    "src/main/java/org/oppia/android/domain/platformparameter/*.kt",
-    "src/main/java/org/oppia/android/domain/util/*.kt",
-])
-
-DOMAIN_ASSETS = generate_assets_list_from_text_protos(
-    name = "domain_assets",
-    exploration_file_names = [
-        "test_exp_id_2",
-        "13",
-        "test_exp_id_4",
-        "umPkwp0L1M0-",
-        "MjZzEVOG47_1",
-        "2mzzFVDLuAj8",
-        "5NWuolNcwH6e",
-        "k2bQ7z5XHNbK",
-        "tIoSb3HZFN6e",
-        "test_single_interactive_state_exp_no_hints_no_solution",
-        "test_single_interactive_state_exp_with_hints_and_solution",
-        "test_single_interactive_state_exp_with_one_hint_and_solution",
-        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
-        "test_single_interactive_state_exp_with_only_solution",
-    ],
-    skills_file_names = [
-        "skills",
-    ],
-    story_file_names = [
-        "test_story_id_0",
-        "test_story_id_2",
-        "wANbh4oOClga",
-        "wAMdg4oOClga",
-        "xBSdg4oOClga",
-    ],
-    subtopic_file_names = [
-        "GJ2rLXRKD5hw_1",
-        "GJ2rLXRKD5hw_2",
-        "GJ2rLXRKD5hw_3",
-        "GJ2rLXRKD5hw_4",
-        "omzF4oqgeTXd_1",
-    ],
-    topic_file_names = [
-        "test_topic_id_0",
-        "test_topic_id_1",
-        "test_topic_id_2",
-        "GJ2rLXRKD5hw",
-        "omzF4oqgeTXd",
-    ],
-    topic_list_file_names = [
-        "topics",
+# Corresponds to being accessible to all domain targets. This should be used for internal domain
+# resources that shouldn't be exported as part of domain's public API consumed by the rest of the
+# app stack.
+package_group(
+    name = "domain_visibility",
+    packages = [
+        "//domain/...",
     ],
 )
 
-kt_android_library(
-    name = "domain",
-    srcs = glob(
-        ["src/main/java/org/oppia/android/domain/**/*.kt"],
-        exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
-    ),
-    assets = glob(
-        ["src/main/assets/**"],
-        exclude = ["src/main/assets/**/*.textproto"],
-    ) + DOMAIN_ASSETS,
-    assets_dir = "src/main/assets/",
-    custom_package = "org.oppia.android.domain",
-    manifest = "src/main/AndroidManifest.xml",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":dagger",
-        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:feedback_reporting_module",
-        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
-        "//domain/src/main/java/org/oppia/android/domain/util:asset",
-        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
-        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
-        "//model:exploration_checkpoint_java_proto_lite",
-        "//model:onboarding_java_proto_lite",
-        "//model:platform_parameter_java_proto_lite",
-        "//model:question_java_proto_lite",
-        "//model:topic_java_proto_lite",
-        "//third_party:androidx_appcompat_appcompat",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
-        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
-        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
-        "//utility/src/main/java/org/oppia/android/util/html:parser",
-        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
-        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
-        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
-        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
+# Corresponds to being accessible to all domain test targets. This should be used for domain-only
+# testing helpers.
+package_group(
+    name = "domain_test_visibility",
+    packages = [
+        "//domain/...",
     ],
 )
 
-kt_android_library(
-    name = "testing",
-    testonly = True,
-    srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
-    deps = [
-        ":domain",
-        "//third_party:androidx_work_work-runtime-ktx",
-    ],
-)
-
-# TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
-kt_android_library(
-    name = "interaction_object_test_builder",
-    testonly = True,
-    srcs = [
-        "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
-    ],
-    deps = [
-        "//model:question_java_proto_lite",
-    ],
-)
+#kt_android_library(
+#    name = "domain",
+#    srcs = glob(
+#        ["src/main/java/org/oppia/android/domain/**/*.kt"],
+#        exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
+#    ),
+#    assets = glob(
+#        ["src/main/assets/**"],
+#        exclude = ["src/main/assets/**/*.textproto"],
+#    ) + DOMAIN_ASSETS,
+#    assets_dir = "src/main/assets/",
+#    custom_package = "org.oppia.android.domain",
+#    manifest = "src/main/AndroidManifest.xml",
+#    visibility = ["//visibility:public"],
+#    deps = [
+#        ":dagger",
+#        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+#        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:feedback_reporting_module",
+#        "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+#        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+#        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+#        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
+#        "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
+#        "//domain/src/main/java/org/oppia/android/domain/state:state_list",
+#        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+#        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+#        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+#        "//model:exploration_checkpoint_java_proto_lite",
+#        "//model:onboarding_java_proto_lite",
+#        "//model:platform_parameter_java_proto_lite",
+#        "//model:question_java_proto_lite",
+#        "//model:topic_java_proto_lite",
+#        "//third_party:androidx_appcompat_appcompat",
+#        "//third_party:androidx_work_work-runtime-ktx",
+#        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
+#        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+#        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+#        "//utility/src/main/java/org/oppia/android/util/html:parser",
+#        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+#        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+#        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+#        "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
+#    ],
+#)
 
 # keep sorted
 TEST_DEPS = [
     ":dagger",
-    ":domain",
-    ":interaction_object_test_builder",
-    ":testing",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+    "//domain/src/main:resources",
+    "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+    "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
+    "//domain/src/main/java/org/oppia/android/domain/classify:classification_result",
+    "//domain/src/main/java/org/oppia/android/domain/classify:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/testing:answer_classification_controller",
+    "//domain/src/main/java/org/oppia/android/domain/devoptions:modify_lesson_progress_controller",
+    "//domain/src/main/java/org/oppia/android/domain/exploration:controllers",
+    "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
+    "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:qualifiers",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:feedback_reporting_module",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+    "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:help_index_extension",
+    "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:hint_handler",
+    "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:prod_config_module",
+    "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding:app_startup_state_controller",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_expiration_meta_data_retriever",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:test_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
     "//domain/src/main/java/org/oppia/android/domain/platformparameter",
     "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+    "//domain/src/main/java/org/oppia/android/domain/question:controllers",
+    "//domain/src/main/java/org/oppia/android/domain/question:internal_qualifiers",
+    "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
+    "//domain/src/main/java/org/oppia/android/domain/topic:embedded_ids",
+    "//domain/src/main/java/org/oppia/android/domain/topic:prime_topic_assets_controller",
+    "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+    "//domain/src/main/java/org/oppia/android/domain/topic:topic_controller",
+    "//domain/src/main/java/org/oppia/android/domain/topic:topic_list_controller",
     "//testing/src/main/java/org/oppia/android/testing/assertion:assertion_helpers",
     "//testing/src/main/java/org/oppia/android/testing/environment:test_environment_config",
     "//testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing:exploration_checkpoint_test_helper",
@@ -165,6 +132,8 @@ TEST_DEPS = [
     "//third_party:org_robolectric_shadows-framework",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
+    "//utility/src/main/java/org/oppia/android/util/image:parser",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
 ]
