@@ -424,7 +424,7 @@ class HintHandlerImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_firstHintReveled_wait30Seconds_callsMonitorAgain() {
+  fun testResumeHints_stateWithOneHint_hintRevealed_wait30Seconds_callsMonitorAgain() {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedState(
       trackedWrongAnswerCount = 0,
@@ -442,7 +442,7 @@ class HintHandlerImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_firstHintReveled_wait30Seconds_helpIndexHasSolution() {
+  fun testResumeHints_stateWithOneHint_hintRevealed_wait30Seconds_helpIndexHasSolution() {
     val state = expWithOneHintAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedState(
       trackedWrongAnswerCount = 0,
@@ -463,7 +463,7 @@ class HintHandlerImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_secondHintReveled_wait30Seconds_callsMonitorAgain() {
+  fun testResumeHints_stateWithTwoHints_secondHintRevealed_wait30Seconds_callsMonitorAgain() {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedState(
       trackedWrongAnswerCount = 0,
@@ -481,7 +481,7 @@ class HintHandlerImplTest {
   }
 
   @Test
-  fun testResumeHints_stateWithHints_secondHintReveled_wait30Seconds_helpIndexHasSolution() {
+  fun testResumeHints_stateWithTwoHints_secondHintRevealed_wait30Seconds_helpIndexHasSolution() {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedState(
       trackedWrongAnswerCount = 0,
