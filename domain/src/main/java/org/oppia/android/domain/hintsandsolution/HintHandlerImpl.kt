@@ -86,14 +86,15 @@ class HintHandlerImpl private constructor(
   ) {
     handlerLock.withLock {
       when (helpIndex.indexTypeCase) {
-        NEXT_AVAILABLE_HINT_INDEX, LATEST_REVEALED_HINT_INDEX -> {
-          if (helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX) {
-            lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
-            latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
-          } else {
-            lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
-            latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
-          }
+        NEXT_AVAILABLE_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
+          latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+          solutionIsAvailable = false
+          solutionIsRevealed = false
+        }
+        LATEST_REVEALED_HINT_INDEX -> {
+          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
           solutionIsAvailable = false
           solutionIsRevealed = false
         }
