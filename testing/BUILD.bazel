@@ -64,6 +64,7 @@ TEST_DEPS = [
     ":assertion_helpers",
     ":dagger",
     ":testing",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
