@@ -24,7 +24,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
-import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHelper
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -66,7 +66,7 @@ class HintHandlerDebugImplTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper
+  lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 
   private lateinit var hintHandler: HintHandler
 
@@ -97,7 +97,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -108,7 +108,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -119,7 +119,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithoutHints_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -130,7 +130,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithNoHintsOrSolution.getInitialState()
 
@@ -141,7 +141,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -152,7 +152,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -165,7 +165,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsDisabled_stateWithHints_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -176,7 +176,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -193,7 +193,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsDisabled_defaultState_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -207,7 +207,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsEnabled_defaultState_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -221,7 +221,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsDisabled_defaultState_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -234,7 +234,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsEnabled_defaultState_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -247,7 +247,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsDisabled_newStateWithHints_helpIndexIsEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -263,7 +263,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testFinishState_showAllHelpsEnabled_newStateWithHints_allHelpsAreRevealed() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -284,7 +284,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -297,7 +297,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -310,7 +310,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsDisabled_stateWithHints_helpIndexStaysEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -322,7 +322,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_allHelpsAreRevealed() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -338,7 +338,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsDisabled_twice_stateWithHints_monitorCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -354,7 +354,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_twice_stateWithHints_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -373,7 +373,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewHint_showAllHelpsDisabled_noHintAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -388,7 +388,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewHint_showAllHelpsEnabled_noHintAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -403,7 +403,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewHint_showAllHelpsDisabled_hintAvailable_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -418,7 +418,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewHint_showAllHelpsEnabled_hintAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -440,7 +440,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewSolution_showAllHelpsDisabled_nothingAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -455,7 +455,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewSolution_showAllHelpsEnabled_nothingAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -470,7 +470,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewSolution_showAllHelpsDisabled_solutionAvailable_callsMonitor() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -487,7 +487,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testViewSolution_showAllHelpsEnabled_solutionAvailable_throwsException() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -507,7 +507,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateToPreviousState_showAllHelpsDisabled_pendingHint_wait60Sec_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -522,7 +522,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateToPreviousState_showAllHelpsEnabled_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -537,7 +537,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavToPrevState_multipleTimes_showAllHelpsDisabled_pendingHint_wait60s_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -555,7 +555,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateToPreviousState_showAllHelpsEnabled_multipleTimes_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -575,7 +575,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPrevState_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -591,7 +591,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_monitorNotCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -608,7 +608,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsDisabled_pendingHint_wait_monitorCalled() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -633,7 +633,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_initialState_isEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
 
@@ -646,7 +646,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait10Sec_isEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -659,7 +659,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait30Sec_isEmpty() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -672,7 +672,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsDisabled_wait60Sec_hasAvailableHint() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = false)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
@@ -689,7 +689,7 @@ class HintHandlerDebugImplTest {
 
   @Test
   fun testGetCurrentHelpIndex_showAllHelpsEnabled_initialState_allHelpsAreRevealed() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(isEnabled = true)
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     val state = expWithHintsAndSolution.getInitialState()
 

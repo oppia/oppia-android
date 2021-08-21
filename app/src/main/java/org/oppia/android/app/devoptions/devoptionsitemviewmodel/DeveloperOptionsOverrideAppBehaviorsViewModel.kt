@@ -3,7 +3,7 @@ package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
-import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHelper
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 
 /**
  * [DeveloperOptionsItemViewModel] to provide features to override app wide behaviors such as
@@ -12,12 +12,12 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionHelper
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
-  private val showAllHintsAndSolutionHelper: ShowAllHintsAndSolutionHelper
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 ) : DeveloperOptionsItemViewModel() {
 
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
-    ObservableField<Boolean>(showAllHintsAndSolutionHelper.getShowAllHintsAndSolution())
+    ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
 
   /** Called when the 'force crash' button is clicked by the user. */
   fun onForceCrashClicked() {
@@ -34,11 +34,11 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
    * Enables or disables the feature to show all hints and solution.
    */
   fun onShowAllHintsAndSolutionClicked() {
-    showAllHintsAndSolutionHelper.setShowAllHintsAndSolution(
-      !(showAllHintsAndSolutionHelper.getShowAllHintsAndSolution())
+    showAllHintsAndSolutionController.setShowAllHintsAndSolution(
+      !(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
     )
     isShowAllHintsAndSolutionEnabled.set(
-      showAllHintsAndSolutionHelper.getShowAllHintsAndSolution()
+      showAllHintsAndSolutionController.getShowAllHintsAndSolution()
     )
   }
 }
