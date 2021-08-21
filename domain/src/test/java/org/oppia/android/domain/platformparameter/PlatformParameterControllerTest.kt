@@ -80,6 +80,12 @@ class PlatformParameterControllerTest {
   @Captor
   lateinit var unitCaptor: ArgumentCaptor<AsyncResult<Unit>>
 
+  @Mock
+  lateinit var mockObserverForAny: Observer <AsyncResult<Any?>>
+
+  @Captor
+  lateinit var captorForAny: ArgumentCaptor<AsyncResult<Any?>>
+
   private val mockPlatformParameterList by lazy {
     listOf<PlatformParameter>(
       PlatformParameter.newBuilder().setName(STRING_PLATFORM_PARAMETER_NAME)
@@ -161,6 +167,39 @@ class PlatformParameterControllerTest {
     verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
     assertThat(unitCaptor.value.isSuccess()).isTrue()
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
+  }
+
+  @Test
+  fun testController_noPreviousDatabase_performUpdateOperation_returnsSuccess() {
+    setUpTestApplicationComponent()
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+      .toLiveData().observeForever(mockObserverForAny)
+    testCoroutineDispatchers.runCurrent()
+
+    // After a successful update operation we should receive a async result for success
+    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
+    assertThat(captorForAny.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testController_existingDatabase_performUpdateOperation_returnsSuccess() {
+    // Simulate that previous app already has cached platform parameter values in cache store.
+    executeInPrevious { testComponent ->
+      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
+        mockPlatformParameterList
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    // Create the application after previous arrangement to simulate a re-creation.
+    setUpTestApplicationComponent()
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+      .toLiveData().observeForever(mockObserverForAny)
+    testCoroutineDispatchers.runCurrent()
+
+    // After a successful update operation we should receive a async result for success
+    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
+    assertThat(captorForAny.value.isSuccess()).isTrue()
   }
 
   /**
