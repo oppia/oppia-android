@@ -17,7 +17,7 @@ In order to release these types of features in a smooth manner, we need to be ab
          * [PlatformParameterSyncUpWorker] will run again.
          */
         @Qualifier
-        annotation class SyncUpWorkerTimePeriod
+        annotation class SyncUpWorkerTimePeriodInHours
         ```
 
         2. The name of the Platform Parameter in String format 
@@ -32,7 +32,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
         ```
 
-        3. The default value for the Platform Parameter. For eg - here we define a **SyncUpTimePeriod** platform parameter and its constants.
+        3. The default value for the Platform Parameter. For eg - here we define a `SyncUpTimePeriodInHours` platform parameter and its constants.
 
         <br>
 
@@ -45,8 +45,8 @@ In order to release these types of features in a smooth manner, we need to be ab
         ```
 
 2. Provide your Platform Parameter
-    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the PlatformParameterModule (domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)
-    - The return type for this @Provides annotated method will be equal to either PlatformPrameterValue\<String\>, PlatformPrameterValue\<Integer\> Or PlatformPrameterValue\<Boolean\> depending on the data type of the Platform Parameter you intend to create. Any other type will cause the platform parameter sync to fail. For eg- here we provide **SyncUpTimePeriod** platform parameter, which is actually of integer type.
+    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - The return type for this @Provides annotated method will be equal to either `PlatformPrameterValue\<String\>`, `PlatformPrameterValue\<Integer\>` Or `PlatformPrameterValue\<Boolean\>` depending on the data type of the Platform Parameter you intend to create. Any other type will cause the platform parameter sync to fail. For eg- here we provide `SyncUpTimePeriodInHours` platform parameter, which is actually of integer type.
 
     <br>
 
@@ -56,7 +56,7 @@ In order to release these types of features in a smooth manner, we need to be ab
     class PlatformParameterModule {
     ...
     @Provides
-    @SyncUpWorkerTimePeriod
+    @SyncUpWorkerTimePeriodInHours
     fun provideSyncUpWorkerTimePeriod(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> {
         return platformParameterSingleton.getIntegerPlatformParameter(
         SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
@@ -75,12 +75,12 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
 
 
 ## How to consume a Platform Parameter
-To consume a Platform Parameter in any file, we need to inject the specific PlatformParameterValue\<T\> instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the **SyncUpTimePeriod** platform parameter in **PlatformParameterSyncUpWorkManagerInitializer**
+To consume a Platform Parameter in any file, we need to inject the specific `PlatformParameterValue\<T\>` instance along with the Qualifier Annotation defined for that Parameter. For eg - we are injecting the `SyncUpTimePeriodInHours` platform parameter in `PlatformParameterSyncUpWorkManagerInitializer`
 
 ```
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   private val context: Context,
-  @SyncUpWorkerTimePeriod private val syncUpWorkerTimePeriod : PlatformParameterValue<Int>
+  @SyncUpWorkerTimePeriodInHours private val syncUpWorkerTimePeriod : PlatformParameterValue<Int>
 ) : ApplicationStartupListener {
   ...
   fun exampleFunction(){
@@ -94,13 +94,13 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
 Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups - 
 
 ### 1. We actually don't test for platform parameter(s)
-We just need specific platform parameter(s) in the dagger graph because our class needs it, but our test cases are not actually verifying the behaviour of class based on different values of the platform parameter. These are the simplest cases to write tests for. We will only need to create a TestModule inside the Test class and then include this into the @Component for the TestApplicationComponent. For eg - 
+We just need specific platform parameter(s) in the dagger graph because our class needs it, but our test cases are not actually verifying the behaviour of class based on different values of the platform parameter. These are the simplest cases to write tests for. We will only need to create a `TestModule` inside the Test class and then include this into the @Component for the `TestApplicationComponent`. For eg - 
 
 ```
 @Module
 class TestModule {
   @Provides
-  @SyncUpWorkerTimePeriod
+  @SyncUpWorkerTimePeriodInHours
   fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
     return PlatformParameterValue.createDefaultParameter(
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
