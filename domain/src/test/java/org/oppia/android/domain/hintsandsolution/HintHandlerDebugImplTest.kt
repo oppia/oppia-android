@@ -87,7 +87,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun showAllHelpsDisabled_constructNewHandler_factoryReturnsProdImplHandler() {
+  fun testFactory_showAllHelpsDisabled_constructNewHandler_returnsProdImplHandler() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = false)
 
     // Use the direct HintHandler factory to avoid testing the module setup.
@@ -97,7 +97,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun showAllHelpsEnabled_constructNewHandler_factoryReturnsDebugImplHandler() {
+  fun testFactory_showAllHelpsEnabled_constructNewHandler_returnsDebugImplHandler() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
 
     // Use the direct HintHandler factory to avoid testing the module setup.
