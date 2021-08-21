@@ -36,7 +36,7 @@ const val RATIOS_EXPLORATION_0_TITLE = "What is a Ratio?"
 /** The current exploration version of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION = 85
 
-/** The old exploration version of Fractions topic, story 0, exploration 0. */
+/** An old, not up-to-date version of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION = 25
 
 /** The current exploration version of Fractions topic, story 0, exploration 1. */
