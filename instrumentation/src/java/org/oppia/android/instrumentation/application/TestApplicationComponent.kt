@@ -33,10 +33,11 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.logging.LoggerModule
@@ -78,7 +79,8 @@ import javax.inject.Singleton
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
     PlatformParameterModule::class, ExplorationStorageModule::class,
     DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-    NetworkConnectionUtilDebugModule::class, EndToEndTestNetworkConfigModule::class,
+    PlatformParameterSyncUpWorkerModule::class, NetworkConnectionUtilDebugModule::class,
+    EndToEndTestNetworkConfigModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class
