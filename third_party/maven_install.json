@@ -7112,37 +7112,6 @@
                 "url": "https://maven.google.com/io/fabric/sdk/android/fabric/1.4.7/fabric-1.4.7.aar"
             },
             {
-                "coord": "io.github.chaosleung:pinview:1.4.4",
-                "dependencies": [
-                    "androidx.interpolator:interpolator:aar:1.0.0",
-                    "androidx.annotation:annotation:1.1.0",
-                    "androidx.collection:collection:1.1.0",
-                    "androidx.core:core:aar:1.3.0",
-                    "androidx.vectordrawable:vectordrawable:aar:1.1.0",
-                    "androidx.cursoradapter:cursoradapter:aar:1.0.0",
-                    "androidx.fragment:fragment:aar:1.2.0",
-                    "androidx.drawerlayout:drawerlayout:aar:1.1.0",
-                    "androidx.appcompat:appcompat-resources:aar:1.2.0",
-                    "androidx.lifecycle:lifecycle-runtime:aar:2.2.0",
-                    "androidx.vectordrawable:vectordrawable-animated:aar:1.1.0",
-                    "androidx.versionedparcelable:versionedparcelable:aar:1.1.0",
-                    "androidx.appcompat:appcompat:1.2.0"
-                ],
-                "directDependencies": [
-                    "androidx.appcompat:appcompat:1.2.0"
-                ],
-                "file": "v1/https/repo1.maven.org/maven2/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar",
-                "mirror_urls": [
-                    "https://maven.google.com/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar",
-                    "https://repo1.maven.org/maven2/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar",
-                    "https://maven.fabric.io/public/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar",
-                    "https://maven.google.com/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar",
-                    "https://repo1.maven.org/maven2/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar"
-                ],
-                "sha256": "036cd95d771210aae47974d17a4a61feec6a9466cd00491db038d0858357b6fd",
-                "url": "https://repo1.maven.org/maven2/io/github/chaosleung/pinview/1.4.4/pinview-1.4.4.aar"
-            },
-            {
                 "coord": "io.github.chaosleung:pinview:jar:sources:1.4.4",
                 "dependencies": [
                     "androidx.versionedparcelable:versionedparcelable:aar:sources:1.1.0",
