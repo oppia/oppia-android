@@ -2344,10 +2344,6 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
-
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2374,9 +2370,6 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
@@ -2408,9 +2401,6 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2441,9 +2431,6 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    verify(mockCurrentStateLiveDataObserver, atLeastOnce())
-      .onChanged(currentStateResultCaptor.capture())
-    assertThat(currentStateResultCaptor.value.isSuccess()).isTrue()
     verifyOperationSucceeds(explorationProgressController.submitSolutionIsRevealed())
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
@@ -2529,6 +2516,8 @@ class ExplorationProgressControllerTest {
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
+    // For testing, size limit of checkpoint database is set to 150 Bytes, this makes the database
+    // exceed the allocated limit when checkpoint is saved on completing prototypeState 2.
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
     testCoroutineDispatchers.runCurrent()
@@ -3045,7 +3034,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_revealedHintIsVisible_resumeExp_Wait10Seconds_solutionIsNotVisible() {
+  fun testCheckpointing_revealedHintIsVisible_resumeExp_wait10Seconds_solutionIsNotVisible() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
@@ -3081,10 +3070,11 @@ class ExplorationProgressControllerTest {
     assertThat(currentState.pendingState.helpIndex.indexTypeCase)
       .isEqualTo(HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX)
     assertThat(currentState.isHintRevealed(0)).isTrue()
+    assertThat(currentState.isSolutionRevealed()).isFalse()
   }
 
   @Test
-  fun testCheckpointing_revealedHintIsVisible_resumeExp_Wait30Seconds_solutionIsNotVisible() {
+  fun testCheckpointing_revealedHintIsVisible_resumeExp_wait30Seconds_solutionIsNotVisible() {
     subscribeToCurrentStateToAllowExplorationToLoad()
     playExploration(
       profileId.internalId,
