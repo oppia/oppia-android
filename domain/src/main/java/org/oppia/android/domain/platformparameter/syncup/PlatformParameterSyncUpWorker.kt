@@ -1,10 +1,14 @@
 package org.oppia.android.domain.platformparameter.syncup
 
 import android.content.Context
-import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
@@ -26,7 +30,7 @@ class PlatformParameterSyncUpWorker private constructor(
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-) : CoroutineWorker(context, params) {
+) : ListenableWorker(context, params) {
 
   companion object {
     /** Exception message when the type of values received in the network response are not valid. */
@@ -46,11 +50,26 @@ class PlatformParameterSyncUpWorker private constructor(
     const val WORKER_TYPE_KEY = "worker_type_key"
   }
 
-  override suspend fun doWork(): Result {
-    return when (inputData.getString(WORKER_TYPE_KEY)) {
-      PLATFORM_PARAMETER_WORKER -> withContext(backgroundDispatcher) { refreshPlatformParameters() }
-      else -> Result.failure()
+  @ExperimentalCoroutinesApi
+  override fun startWork(): ListenableFuture<Result> {
+    val backgroundScope = CoroutineScope(backgroundDispatcher)
+    val result = backgroundScope.async {
+      when (inputData.getString(WORKER_TYPE_KEY)) {
+        PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
+        else -> Result.failure()
+      }
     }
+
+    val future = SettableFuture.create<Result>()
+    result.invokeOnCompletion { failure ->
+      if (failure != null) {
+        future.setException(failure)
+      } else {
+        future.set(result.getCompleted())
+      }
+    }
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    return future
   }
 
   /**
@@ -109,7 +128,7 @@ class PlatformParameterSyncUpWorker private constructor(
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     /** Returns new instances of [PlatformParameterSyncUpWorker]. */
-    fun create(context: Context, params: WorkerParameters): CoroutineWorker {
+    fun create(context: Context, params: WorkerParameters): ListenableWorker {
       return PlatformParameterSyncUpWorker(
         context,
         params,
