@@ -35,7 +35,7 @@ The android_binary of a test suite generates a test apk with the same name as th
 ### How to run an End-to-End test
 
 #### Prerequisites:
-1. [Setup Bazel for Oppia](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions#installation)
+1. [Set up Bazel for Oppia](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions#installation)
 2. Add adb to the environment (platform-tools) i.e, add the following line to the .bashrc or the file path (note that this is platform dependent):
     ```
     export PATH=/home/<username>/Android/Sdk/platform-tools:$PATH
