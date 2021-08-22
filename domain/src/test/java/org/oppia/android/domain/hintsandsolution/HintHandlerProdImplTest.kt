@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [HintHandlerImpl]. */
+/** Tests for [HintHandlerProdImpl]. */
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = HintHandlerImplTest.TestApplication::class)
-class HintHandlerImplTest {
+@Config(application = HintHandlerProdImplTest.TestApplication::class)
+class HintHandlerProdImplTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -54,7 +54,7 @@ class HintHandlerImplTest {
   lateinit var mockHintMonitor: HintHandler.HintMonitor
 
   @Inject
-  lateinit var hintHandlerImplFactory: HintHandlerImpl.FactoryImpl
+  lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
 
   @Inject
   lateinit var explorationRetriever: ExplorationRetriever
@@ -89,7 +89,7 @@ class HintHandlerImplTest {
   fun setUp() {
     setUpTestApplicationComponent()
     // Use the direct HintHandler factory to avoid testing the module setup.
-    hintHandler = hintHandlerImplFactory.create(mockHintMonitor)
+    hintHandler = hintHandlerProdImplFactory.create(mockHintMonitor)
   }
 
   /* Tests for startWatchingForHintsInNewState */
@@ -1970,7 +1970,7 @@ class HintHandlerImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class,
+      LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -1982,18 +1982,18 @@ class HintHandlerImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(hintHandlerImplTest: HintHandlerImplTest)
+    fun inject(hintHandlerProdImplTest: HintHandlerProdImplTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintHandlerImplTest_TestApplicationComponent.builder()
+      DaggerHintHandlerProdImplTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(hintHandlerImplTest: HintHandlerImplTest) {
-      component.inject(hintHandlerImplTest)
+    fun inject(hintHandlerProdImplTest: HintHandlerProdImplTest) {
+      component.inject(hintHandlerProdImplTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component

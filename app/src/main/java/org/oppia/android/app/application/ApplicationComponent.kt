@@ -25,7 +25,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionDebugModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -57,8 +57,11 @@ import javax.inject.Singleton
  * this component.
  *
  * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule], [NetworkConnectionUtilDebugModule]
- * Add: [LogReportingModule], [NetworkConnectionUtilProdModule]
+ * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule],
+ * [NetworkConnectionUtilDebugModule], [HintsAndSolutionDebugModule]
+ * Add: [LogReportingModule], [NetworkConnectionUtilProdModule], [HintsAndSolutionProdModule]
+ *
+ * When building with Bazel, please also refer to instructions in app/BUILD.bazel.
  */
 @Singleton
 @Component(
@@ -79,7 +82,7 @@ import javax.inject.Singleton
     ExpirationMetaDataRetrieverModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-    HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+    HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
     PlatformParameterModule::class, ExplorationStorageModule::class,
     DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,

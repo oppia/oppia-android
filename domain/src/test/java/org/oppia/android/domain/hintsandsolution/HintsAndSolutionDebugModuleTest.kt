@@ -12,6 +12,7 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.hintsandsolution.HintHandlerDebugImpl.FactoryDebugImpl
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -22,12 +23,12 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [HintsAndSolutionProdModule]. */
+/** Tests for [HintsAndSolutionDebugModule]. */
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = HintsAndSolutionProdModuleTest.TestApplication::class)
-class HintsAndSolutionProdModuleTest {
+@Config(application = HintsAndSolutionDebugModuleTest.TestApplication::class)
+class HintsAndSolutionDebugModuleTest {
   @Inject
   lateinit var hintHandlerFactory: HintHandler.Factory
 
@@ -37,12 +38,8 @@ class HintsAndSolutionProdModuleTest {
   }
 
   @Test
-  fun testHintHandlerFactoryInjection_constructNewHandler_providesFactoryForProdImplHandler() {
-    val hintHandler = hintHandlerFactory.create(object : HintHandler.HintMonitor {
-      override fun onHelpIndexChanged() {}
-    })
-
-    assertThat(hintHandler).isInstanceOf(HintHandlerProdImpl::class.java)
+  fun testHintHandlerFactoryInjection_providesFactoryDebugImpl() {
+    assertThat(hintHandlerFactory).isInstanceOf(FactoryDebugImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -59,7 +56,7 @@ class HintsAndSolutionProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
+      TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class
     ]
   )
@@ -72,18 +69,18 @@ class HintsAndSolutionProdModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest)
+    fun inject(hintsAndSolutionDebugModuleTest: HintsAndSolutionDebugModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintsAndSolutionProdModuleTest_TestApplicationComponent.builder()
+      DaggerHintsAndSolutionDebugModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(hintsAndSolutionProdModuleTest: HintsAndSolutionProdModuleTest) {
-      component.inject(hintsAndSolutionProdModuleTest)
+    fun inject(hintsAndSolutionDebugModuleTest: HintsAndSolutionDebugModuleTest) {
+      component.inject(hintsAndSolutionDebugModuleTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component

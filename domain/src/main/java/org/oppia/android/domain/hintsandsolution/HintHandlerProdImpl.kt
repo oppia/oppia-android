@@ -53,7 +53,7 @@ import kotlin.concurrent.withLock
  * they will reach a terminal state for hints and no additional hints or solutions will be made
  * available.
  */
-class HintHandlerImpl private constructor(
+class HintHandlerProdImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
@@ -67,6 +67,7 @@ class HintHandlerImpl private constructor(
   private lateinit var pendingState: State
   private var hintSequenceNumber = 0
   private var lastRevealedHintIndex = -1
+
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
@@ -354,8 +355,8 @@ class HintHandlerImpl private constructor(
     }
   }
 
-  /** Implementation of [HintHandler.Factory]. */
-  class FactoryImpl @Inject constructor(
+  /** Production implementation of [HintHandler.Factory]. */
+  class FactoryProdImpl @Inject constructor(
     @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
     @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
     @DelayShowAdditionalHintsFromWrongAnswerMillis
@@ -363,7 +364,7 @@ class HintHandlerImpl private constructor(
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) : HintHandler.Factory {
     override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
-      return HintHandlerImpl(
+      return HintHandlerProdImpl(
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs,
@@ -378,4 +379,4 @@ class HintHandlerImpl private constructor(
 private fun State.hasSolution(): Boolean = interaction.solution.hasCorrectAnswer()
 
 /** Returns whether this state has help that the user can see. */
-private fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
+internal fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()
