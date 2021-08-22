@@ -30,8 +30,16 @@ package_group(
         "//app/...",
         "//data/...",
         "//domain/...",
+        "//instrumentation/...",
         "//testing/...",
         "//utility/...",
+    ],
+)
+
+package_group(
+    name = "oppia_e2e_testing_visibility",
+    packages = [
+        "//instrumentation/...",
     ],
 )
 

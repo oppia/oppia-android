@@ -1,9 +1,7 @@
 package org.oppia.android.domain.state
 
 import org.oppia.android.app.model.AnswerOutcome
-import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Outcome
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 
 /**

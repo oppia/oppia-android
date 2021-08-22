@@ -25,8 +25,6 @@ class QuestionPlayerViewModel @Inject constructor() : ObservableViewModel() {
   val isAtEndOfSession = ObservableBoolean(false)
   private val canSubmitAnswer = ObservableField(false)
 
-  var newAvailableHintIndex = -1
-  var allHintsExhausted = false
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 

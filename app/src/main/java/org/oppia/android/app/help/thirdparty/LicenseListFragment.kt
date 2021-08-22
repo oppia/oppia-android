@@ -16,12 +16,14 @@ class LicenseListFragment : InjectableFragment() {
   companion object {
     private const val LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX =
       "LicenseListFragment.dependency_index"
+    private const val IS_MULTIPANE_KEY = "LicenseListFragment.is_multipane"
 
     /** Returns an instance of [LicenseListFragment]. */
-    fun newInstance(dependencyIndex: Int): LicenseListFragment {
+    fun newInstance(dependencyIndex: Int, isMultipane: Boolean): LicenseListFragment {
       val fragment = LicenseListFragment()
       val args = Bundle()
       args.putInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)
+      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
       fragment.arguments = args
       return fragment
     }
@@ -41,6 +43,12 @@ class LicenseListFragment : InjectableFragment() {
       "Expected arguments to be passed to LicenseListFragment"
     }
     val dependencyIndex = args.getInt(LICENSE_LIST_FRAGMENT_DEPENDENCY_INDEX)
-    return licenseListFragmentPresenter.handleCreateView(inflater, container, dependencyIndex)
+    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    return licenseListFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      dependencyIndex,
+      isMultipane
+    )
   }
 }

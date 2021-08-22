@@ -5,9 +5,8 @@ import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.PendingState
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -25,24 +24,29 @@ import org.oppia.android.app.model.UserAnswer
   private var pendingTopState: State = initialState
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
-  private val hintList: MutableList<Hint> = ArrayList()
-  private lateinit var solution: Solution
   private var stateIndex: Int = 0
-  // The value -1 indicates that hint has not been revealed yet.
-  private var revealedHintIndex: Int = -1
-  private var solutionIsRevealed: Boolean = false
 
   /** Resets this deck to a new, specified initial [State]. */
    fun resetDeck(initialState: State) {
     pendingTopState = initialState
     previousStates.clear()
     currentDialogInteractions.clear()
-    hintList.clear()
     stateIndex = 0
-    // Initialize the variable revealedHintIndex with -1 to indicate that no hint has been
-    // revealed yet.
-    revealedHintIndex = -1
-    solutionIsRevealed = false
+  }
+
+  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
+  internal fun resumeDeck(
+    pendingTopState: State,
+    previousStates: List<EphemeralState>,
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int
+  ) {
+    this.pendingTopState = pendingTopState
+    this.previousStates.clear()
+    this.currentDialogInteractions.clear()
+    this.previousStates.addAll(previousStates)
+    this.currentDialogInteractions.addAll(currentDialogInteractions)
+    this.stateIndex = stateIndex
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
@@ -72,6 +76,14 @@ import org.oppia.android.app.model.UserAnswer
   /** Returns the index of the current selected card of the deck. */
    fun getTopStateIndex(): Int = stateIndex
 
+  /** Returns the current [State] being viewed by the learner. */
+  internal fun getCurrentState(): State {
+    return when {
+      isCurrentStateTopOfDeck() -> pendingTopState
+      else -> previousStates[stateIndex].state
+    }
+  }
+
   /** Returns the current [EphemeralState] the learner is viewing. */
    fun getCurrentEphemeralState(): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
@@ -79,7 +91,7 @@ import org.oppia.android.app.model.UserAnswer
     // the second case assumes the top of the deck must be pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      stateIndex == previousStates.size -> getCurrentPendingState()
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex)
       else -> getPreviousState()
     }
   }
@@ -115,7 +127,6 @@ import org.oppia.android.app.model.UserAnswer
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
       .build()
     currentDialogInteractions.clear()
-    hintList.clear()
     pendingTopState = state
     // Re-initialize the variable revealedHintIndex with -1 to indicate that no hint has been
     // revealed on the new pendingTopState.
@@ -195,7 +206,8 @@ import org.oppia.android.app.model.UserAnswer
    fun createExplorationCheckpoint(
     explorationVersion: Int,
     explorationTitle: String,
-    timestamp: Long
+    timestamp: Long,
+    helpIndex: HelpIndex
   ): ExplorationCheckpoint {
     return ExplorationCheckpoint.newBuilder().apply {
       addAllCompletedStatesInCheckpoint(
@@ -207,22 +219,23 @@ import org.oppia.android.app.model.UserAnswer
         }
       )
       pendingStateName = pendingTopState.name
-      hintIndex = revealedHintIndex
       addAllPendingUserAnswers(currentDialogInteractions)
-      this.solutionIsRevealed = this@StateDeck.solutionIsRevealed
       this.stateIndex = this@StateDeck.stateIndex
       this.explorationVersion = explorationVersion
       this.explorationTitle = explorationTitle
       timestampOfFirstCheckpoint = timestamp
+      this.helpIndex = helpIndex
     }.build()
   }
 
-  private fun getCurrentPendingState(): EphemeralState {
+  private fun getCurrentPendingState(helpIndex: HelpIndex): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setPendingState(
-        PendingState.newBuilder().addAllWrongAnswer(currentDialogInteractions).addAllHint(hintList)
+        PendingState.newBuilder()
+          .addAllWrongAnswer(currentDialogInteractions)
+          .setHelpIndex(helpIndex)
       )
       .build()
   }
