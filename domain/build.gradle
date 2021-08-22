@@ -71,6 +71,7 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
+      'com.google.guava:guava:28.1-android',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   )
   compileOnly(
