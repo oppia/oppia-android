@@ -11,8 +11,14 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_java_proto_lite"
-    ]
+        "//model:exploration_java_proto_lite",
+        "//model:feedback_reporting_java_proto_lite",
+        "//model:interaction_object_java_proto_lite",
+        "//model:onboarding_java_proto_lite",
+        "//model:question_java_proto_lite",
+        "//model:subtitled_html_java_proto_lite",
+        "//model:topic_java_proto_lite",
+    ],
 )
 
 kt_android_library(
@@ -22,8 +28,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_java_proto_lite"
-    ]
+        "//model:exploration_java_proto_lite",
+        "//model:interaction_object_java_proto_lite",
+        "//model:onboarding_java_proto_lite",
+        "//model:question_java_proto_lite",
+        "//model:topic_java_proto_lite",
+    ],
 )
 
 kt_android_library(
@@ -33,6 +43,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_java_proto_lite"
-    ]
+        "//model:event_logger_java_proto_lite",
+        "//model:exploration_java_proto_lite",
+        "//model:feedback_reporting_java_proto_lite",
+        "//model:interaction_object_java_proto_lite",
+        "//model:onboarding_java_proto_lite",
+        "//model:question_java_proto_lite",
+        "//model:topic_java_proto_lite",
+    ],
 )

@@ -14,7 +14,7 @@ load("//domain:domain_test.bzl", "domain_test")
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/util/*.kt",
-    "src/main/java/org/oppia/android/domain/state/*.kt"
+    "src/main/java/org/oppia/android/domain/state/*.kt",
 ])
 
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
@@ -76,6 +76,9 @@ kt_android_library(
     deps = [
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_list",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
@@ -91,9 +94,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
-        "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
-        "//domain/src/main/java/org/oppia/android/domain/state:state_list",
     ],
 )
 
