@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
@@ -43,12 +42,8 @@ class LogUploadWorker private constructor(
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
       when (inputData.getString(WORKER_CASE_KEY)) {
-        EVENT_WORKER -> {
-          withContext(backgroundDispatcher) { uploadEvents() }
-        }
-        EXCEPTION_WORKER -> {
-          withContext(backgroundDispatcher) { uploadExceptions() }
-        }
+        EVENT_WORKER -> uploadEvents()
+        EXCEPTION_WORKER -> uploadExceptions()
         else -> Result.failure()
       }
     }
