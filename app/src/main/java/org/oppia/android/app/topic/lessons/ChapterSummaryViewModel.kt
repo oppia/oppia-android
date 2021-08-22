@@ -15,6 +15,6 @@ class ChapterSummaryViewModel(
 ) : ObservableViewModel() {
 
   fun onClick(explorationId: String) {
-    chapterSummarySelector.selectChapterSummary(storyId, explorationId)
+    chapterSummarySelector.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 }

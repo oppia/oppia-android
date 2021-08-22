@@ -71,6 +71,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
@@ -1484,7 +1485,10 @@ class StateFragmentTest {
       clickReturnToTopicButton()
     }
     explorationCheckpointTestHelper
-      .verifyExplorationProgressIsDeleted(internalProfileId, TEST_EXPLORATION_ID_2)
+      .verifyExplorationProgressIsDeleted(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        TEST_EXPLORATION_ID_2
+      )
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {

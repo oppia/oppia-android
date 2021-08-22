@@ -393,7 +393,6 @@ exempted_file_path: "domain/src/test/java/org/oppia/android/domain/classify/Inte
 exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/application/TestApplicationComponent.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/ImageViewMatcher.kt"
-exempted_file_path: "testing/src/main/java/org/oppia/android/testing/lightweightcheckpointing/ExplorationCheckpointTestHelper.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatcherRobolectricImpl.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersEspressoImpl.kt"
