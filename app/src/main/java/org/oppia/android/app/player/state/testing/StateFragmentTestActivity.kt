@@ -8,6 +8,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
@@ -25,6 +26,8 @@ internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_story_id"
 internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_exploration_id"
+internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
@@ -61,13 +64,18 @@ class StateFragmentTestActivity :
       profileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String
+      explorationId: String,
+      shouldSavePartialProgress: Boolean
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
       intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
       intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
       intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
+      intent.putExtra(
+        TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY,
+        shouldSavePartialProgress
+      )
       return intent
     }
   }
@@ -90,23 +98,21 @@ class StateFragmentTestActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
         HintsAndSolutionDialogFragment.newInstance(
           explorationId,
-          newAvailableHintIndex,
-          allHintsExhausted
+          state,
+          helpIndex
         )
-      hintsAndSolutionFragment.loadState(state)
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentTestActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    stateFragmentTestActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() {

@@ -308,16 +308,20 @@ class StoryProgressTestHelper @Inject constructor(
   /* Test topic partial completion methods. */
 
   /**
-   * Marks the first chapter of test topic 0 story 0 as recently played. Note that this may require
+   * Marks the first chapter of test topic 0 story 0 as in progress saved. Note that this may require
    * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
    * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
    * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
-  fun markRecentlyPlayedTestTopic0Story0Exp0(
+  fun markInProgressSavedTestTopic0Story0Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -327,16 +331,39 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of test topic 0 story 0 as recently played. For specifics on
-   * parameters and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of test topic 0 story 0 as in progress not saved. Note that this may require
+   * completing prerequisite chapters before the chapter can be marked as a prerequisite. See
+   * [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method, and
+   * any other nuances.
+   *
+   * @param profileId the ID corresponding to the profile for which the exploration will be marked
+   * @param timestampOlderThanOneWeek if the timestamp for this topic progress is more than one week
+   *     ago
    */
-  fun markRecentlyPlayedTestTopic0Story0Exp1(
+  fun markInProgressNotSavedTestTopic0Story0Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of test topic 0 story 0 as in progress saved. For specifics on
+   * parameters and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic0Story0Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapter first.
     markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
@@ -346,14 +373,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the only chapter of test topic 1 story 2 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the second chapter of test topic 0 story 0 as in progress not saved. For specifics on
+   * parameters and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic1Story2Exp0(
+  fun markInProgressNotSavedTestTopic0Story0Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
-    recordRecentlyPlayedChapter(
+    // Must complete the previous chapter first.
+    markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the only chapter of test topic 1 story 2 as in progress saved. For specifics on parameters
+   * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic1Story2Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressSaved(
       profileId,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
@@ -363,53 +409,125 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks test topic 0's story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the only chapter of test topic 1 story 2 as in progress not saved. For specifics on parameters
+   * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressNotSavedTestTopic1Story2Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      TEST_TOPIC_ID_1,
+      TEST_STORY_ID_2,
+      TEST_EXPLORATION_ID_4,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks test topic 1's story 2 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks test topic 0's story 0 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic1Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressSavedTestTopic0Story0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    markInProgressSavedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks test topic 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks test topic 0's story 0 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressNotSavedTestTopic0Story0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    markInProgressNotSavedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks test topic 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks test topic 1's story 2 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressSavedTestTopic1Story0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    markInProgressSavedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks all test topics as recently played. See [markCompletedTestTopic0Story0Exp0] for specifics
+   * Marks test topic 1's story 2 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedTestTopic1Story0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    markInProgressNotSavedTestTopic1Story2Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks test topic 0 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks test topic 0 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedTestTopic0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedTestTopic0Story0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks test topic 1 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks test topic 1 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedTestTopic1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedTestTopic1Story0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all test topics as in progress saved. See [markCompletedTestTopic0Story0Exp0] for specifics
    * on the parameters passed to this method, and any other nuances.
    */
-  fun markRecentlyPlayedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressSavedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedTestTopic0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all test topics as in progress not saved. See [markCompletedTestTopic0Story0Exp0] for specifics
+   * on the parameters passed to this method, and any other nuances.
+   */
+  fun markInProgressNotSavedTestTopics(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
   }
 
   /* Ratios partial completion methods. */
 
   /**
-   * Marks the first chapter of ratios story 0 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of ratios story 0 as in progress saved. For specifics on parameters and
+   * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory0Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordRecentlyPlayedChapter(
+  fun markInProgressSavedRatiosStory0Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressSaved(
       profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
@@ -419,13 +537,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of ratios story 0 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of ratios story 0 as in progress not saved. For specifics on parameters and
+   * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory0Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedRatiosStory0Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of ratios story 0 as in progress saved. For specifics on parameters and
+   * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedRatiosStory0Exp1(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete the previous chapters first.
     markCompletedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
@@ -435,11 +573,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the first chapter of ratios story 1 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the second chapter of ratios story 0 as in progress not saved. For specifics on parameters and
+   * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory1Exp0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    recordRecentlyPlayedChapter(
+  fun markInProgressNotSavedRatiosStory0Exp1(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapters first.
+    markCompletedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_1,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the first chapter of ratios story 1 as in progress saved. For specifics on parameters and
+   * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedRatiosStory1Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressSaved(
       profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
@@ -449,13 +609,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of ratios story 1 as recently played. For specifics on parameters and
-   * nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of ratios story 1 as in progress not saved. For specifics on parameters and
+   * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory1Exp1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+  fun markInProgressNotSavedRatiosStory1Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_2,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of ratios story 1 as in progress saved. For specifics on parameters and
+   * nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedRatiosStory1Exp1(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
     // Must complete the previous chapters first.
     markCompletedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_1,
@@ -465,40 +645,83 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks ratios story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the second chapter of ratios story 1 as in progress not saved. For specifics on parameters and
+   * nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressNotSavedRatiosStory1Exp1(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapters first.
+    markCompletedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_1,
+      RATIOS_EXPLORATION_ID_3,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks ratios story 1 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks ratios story 0 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressSavedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
   }
 
   /**
-   * Marks the ratios topic as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks ratios story 0 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedRatiosStory0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressNotSavedRatiosStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedRatiosStory0Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks ratios story 1 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks ratios story 1 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedRatiosStory1(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedRatiosStory1Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks the ratios topic as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedRatiosStory0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks the ratios topic as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedRatios(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedRatiosStory0(profileId, timestampOlderThanOneWeek)
   }
 
   /* Fractions partial completion methods. */
 
   /**
-   * Marks the first chapter of fractions story 0 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of fractions story 0 as in progress saved. For specifics on parameters
+   * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedFractionsStory0Exp0(
+  fun markInProgressSavedFractionsStory0Exp0(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -508,16 +731,33 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks the second chapter of fractions story 0 as recently played. For specifics on parameters
-   * and nuances, see: [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the first chapter of fractions story 0 as in progress not saved. For specifics on parameters
+   * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedFractionsStory0Exp1(
+  fun markInProgressNotSavedFractionsStory0Exp0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the second chapter of fractions story 0 as in progress saved. For specifics on parameters
+   * and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedFractionsStory0Exp1(
     profileId: ProfileId,
     timestampOlderThanOneWeek: Boolean
   ) {
     // Must complete the previous chapters first.
     markCompletedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
-    recordRecentlyPlayedChapter(
+    recordChapterAsInProgressSaved(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -527,19 +767,57 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks fractions story 0 as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks the second chapter of fractions story 0 as in progress not saved. For specifics on parameters
+   * and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressNotSavedFractionsStory0Exp1(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapters first.
+    markCompletedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_1,
+      timestampOlderThanOneWeek
+    )
   }
 
   /**
-   * Marks the fractions topic as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks fractions story 0 as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markRecentlyPlayedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedFractionsStory0(profileId, timestampOlderThanOneWeek)
+  fun markInProgressSavedFractionsStory0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks fractions story 0 as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedFractionsStory0(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    markInProgressNotSavedFractionsStory0Exp0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks the fractions topic as in progress saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedFractionsStory0(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks the fractions topic as in progress not saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedFractions(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedFractionsStory0(profileId, timestampOlderThanOneWeek)
   }
 
   /* Cross-topics functions. */
@@ -555,14 +833,25 @@ class StoryProgressTestHelper @Inject constructor(
   }
 
   /**
-   * Marks all lessons as recently played. For specifics on parameters and nuances, see:
-   * [markRecentlyPlayedTestTopic0Story0Exp0].
+   * Marks all lessons as in_progress_saved. For specifics on parameters and nuances, see:
+   * [markInProgressSavedTestTopic0Story0Exp0].
    */
-  fun markAllTopicsAsRecentlyPlayed(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
-    markRecentlyPlayedTestTopic0(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedTestTopic1(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedRatios(profileId, timestampOlderThanOneWeek)
-    markRecentlyPlayedFractions(profileId, timestampOlderThanOneWeek)
+  fun markAllTopicsAsInProgressSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressSavedTestTopic0(profileId, timestampOlderThanOneWeek)
+    markInProgressSavedTestTopic1(profileId, timestampOlderThanOneWeek)
+    markInProgressSavedRatios(profileId, timestampOlderThanOneWeek)
+    markInProgressSavedFractions(profileId, timestampOlderThanOneWeek)
+  }
+
+  /**
+   * Marks all lessons as in_progress_not_saved. For specifics on parameters and nuances, see:
+   * [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markAllTopicsAsInProgressNotSaved(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    markInProgressNotSavedTestTopic0(profileId, timestampOlderThanOneWeek)
+    markInProgressNotSavedTestTopic1(profileId, timestampOlderThanOneWeek)
+    markInProgressNotSavedRatios(profileId, timestampOlderThanOneWeek)
+    markInProgressNotSavedFractions(profileId, timestampOlderThanOneWeek)
   }
 
   private fun recordCompletedChapter(
@@ -583,7 +872,7 @@ class StoryProgressTestHelper @Inject constructor(
     verifyProviderFinishesWithSuccess(resultProvider)
   }
 
-  private fun recordRecentlyPlayedChapter(
+  private fun recordChapterAsInProgressNotSaved(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -591,7 +880,25 @@ class StoryProgressTestHelper @Inject constructor(
     timestampOlderThanOneWeek: Boolean
   ) {
     primeClockForRecordingProgress()
-    val resultProvider = storyProgressController.recordRecentlyPlayedChapter(
+    val resultProvider = storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      lastPlayedTimestamp = computeTimestamp(timestampOlderThanOneWeek)
+    )
+    verifyProviderFinishesWithSuccess(resultProvider)
+  }
+
+  private fun recordChapterAsInProgressSaved(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    primeClockForRecordingProgress()
+    val resultProvider = storyProgressController.recordChapterAsInProgressSaved(
       profileId,
       topicId,
       storyId,
