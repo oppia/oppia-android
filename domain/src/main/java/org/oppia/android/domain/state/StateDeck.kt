@@ -17,7 +17,7 @@ import org.oppia.android.app.model.UserAnswer
  * Tracks the progress of a dynamic playing session through a graph of State cards. This class treats the learner's
  * progress like a deck of cards to simplify forward/backward navigation.
  */
- class StateDeck  constructor(
+class StateDeck constructor(
   initialState: State,
   private val isTopOfDeckTerminalChecker: (State) -> Boolean
 ) {
@@ -27,7 +27,7 @@ import org.oppia.android.app.model.UserAnswer
   private var stateIndex: Int = 0
 
   /** Resets this deck to a new, specified initial [State]. */
-   fun resetDeck(initialState: State) {
+  fun resetDeck(initialState: State) {
     pendingTopState = initialState
     previousStates.clear()
     currentDialogInteractions.clear()
@@ -50,13 +50,13 @@ import org.oppia.android.app.model.UserAnswer
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
-   fun navigateToPreviousState() {
+  fun navigateToPreviousState() {
     check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }
     stateIndex--
   }
 
   /** Navigates to the next State in the deck, or fails if this isn't possible. */
-   fun navigateToNextState() {
+  fun navigateToNextState() {
     check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
     val previousState = previousStates[stateIndex]
     stateIndex++
@@ -71,10 +71,10 @@ import org.oppia.android.app.model.UserAnswer
    * Returns the [State] corresponding to the latest card in the deck, regardless of whichever State the learner is
    * currently viewing.
    */
-   fun getPendingTopState(): State = pendingTopState
+  fun getPendingTopState(): State = pendingTopState
 
   /** Returns the index of the current selected card of the deck. */
-   fun getTopStateIndex(): Int = stateIndex
+  fun getTopStateIndex(): Int = stateIndex
 
   /** Returns the current [State] being viewed by the learner. */
   internal fun getCurrentState(): State {
@@ -85,7 +85,7 @@ import org.oppia.android.app.model.UserAnswer
   }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-   fun getCurrentEphemeralState(): EphemeralState {
+  fun getCurrentEphemeralState(): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
     // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
     // the second case assumes the top of the deck must be pending.
@@ -104,7 +104,7 @@ import org.oppia.android.app.model.UserAnswer
    *
    * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't routed to twice
    */
-   fun pushState(state: State, prohibitSameStateName: Boolean) {
+  fun pushState(state: State, prohibitSameStateName: Boolean) {
     check(isCurrentStateTopOfDeck()) {
       "Cannot push a new state unless the learner is at the most recent state."
     }
@@ -134,7 +134,7 @@ import org.oppia.android.app.model.UserAnswer
     solutionIsRevealed = false
   }
 
-   fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
+  fun pushStateForHint(state: State, hintIndex: Int): EphemeralState {
     val interactionBuilder = state.interaction.toBuilder().setHint(
       hintIndex,
       hintList.get(0)
@@ -154,7 +154,7 @@ import org.oppia.android.app.model.UserAnswer
     return ephemeralState
   }
 
-   fun pushStateForSolution(state: State): EphemeralState {
+  fun pushStateForSolution(state: State): EphemeralState {
     val interactionBuilder = state.interaction.toBuilder().setSolution(solution)
     val newState = state.toBuilder().setInteraction(interactionBuilder).build()
     val ephemeralState = EphemeralState.newBuilder()
@@ -174,7 +174,7 @@ import org.oppia.android.app.model.UserAnswer
    * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
    * terminal interaction).
    */
-   fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
+  fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
     check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
     currentDialogInteractions += AnswerAndResponse.newBuilder()
@@ -183,14 +183,14 @@ import org.oppia.android.app.model.UserAnswer
       .build()
   }
 
-   fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
+  fun submitHintRevealed(state: State, hintIsRevealed: Boolean, hintIndex: Int) {
     hintList += Hint.newBuilder()
       .setHintIsRevealed(hintIsRevealed)
       .setHintContent(state.interaction.getHint(hintIndex).hintContent)
       .build()
   }
 
-   fun submitSolutionRevealed(state: State) {
+  fun submitSolutionRevealed(state: State) {
     solution = Solution.newBuilder()
       .setSolutionIsRevealed(true)
       .setAnswerIsExclusive(state.interaction.solution.answerIsExclusive)
@@ -203,7 +203,7 @@ import org.oppia.android.app.model.UserAnswer
    * Returns an [ExplorationCheckpoint] which contains all the latest values of variables of the
    * [StateDeck] that are used in light weight checkpointing.
    */
-   fun createExplorationCheckpoint(
+  fun createExplorationCheckpoint(
     explorationVersion: Int,
     explorationTitle: String,
     timestamp: Long,

@@ -8,21 +8,21 @@ import org.oppia.android.app.model.State
  * Graph that provides lookup access for [State]s and functionality for processing the outcome of a submitted learner
  * answer.
  */
- class StateGraph  constructor(
+class StateGraph constructor(
   private var stateGraph: Map<String, State>
 ) {
   /** Resets this graph to the new graph represented by the specified [Map]. */
-   fun reset(stateGraph: Map<String, State>) {
+  fun reset(stateGraph: Map<String, State>) {
     this.stateGraph = stateGraph
   }
 
   /** Returns the [State] corresponding to the specified name. */
-   fun getState(stateName: String): State {
+  fun getState(stateName: String): State {
     return stateGraph.getValue(stateName)
   }
 
   /** Returns an [AnswerOutcome] based on the current state and resulting [Outcome] from the learner's answer. */
-   fun computeAnswerOutcomeForResult(currentState: State, outcome: Outcome): AnswerOutcome {
+  fun computeAnswerOutcomeForResult(currentState: State, outcome: Outcome): AnswerOutcome {
     val answerOutcomeBuilder = AnswerOutcome.newBuilder()
       .setFeedback(outcome.feedback)
       .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
@@ -39,7 +39,7 @@ import org.oppia.android.app.model.State
   }
 
   /** Returns an [Hint] based on the current state and revealed [Hint] from the learner's answer. */
-   fun computeHintForResult(
+  fun computeHintForResult(
     currentState: State,
     hintIsRevealed: Boolean,
     hintIndex: Int
@@ -52,7 +52,7 @@ import org.oppia.android.app.model.State
   }
 
   /** Returns an [Solution] based on the current state and revealed [Solution] from the learner's answer. */
-   fun computeSolutionForResult(
+  fun computeSolutionForResult(
     currentState: State
   ): Solution {
     return Solution.newBuilder()
