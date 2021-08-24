@@ -6,13 +6,13 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
-import javax.inject.Inject
-import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 /** Activity for recent stories. */
 class RecentlyPlayedActivity :

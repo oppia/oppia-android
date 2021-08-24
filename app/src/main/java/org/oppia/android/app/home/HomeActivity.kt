@@ -9,12 +9,12 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
-import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */

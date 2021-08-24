@@ -3,16 +3,15 @@ package org.oppia.android.app.profileprogress
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityRouter
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
-import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityRouter
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
+import javax.inject.Inject
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
