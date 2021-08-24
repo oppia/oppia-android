@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -112,6 +113,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.util.extensions.putProto
 
 /** Tests for [ProfileProgressFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -554,10 +557,25 @@ class ProfileProgressFragmentTest {
       intended(
         hasExtra(
           RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY,
-          internalProfileId
+          createRecentlyPlayedActivityBundle()
         )
       )
     }
+  }
+
+  private fun createRecentlyPlayedActivityBundle(): Bundle{
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+    
+    val bundle = Bundle()
+    bundle.putProto(
+      RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+      recentlyPlayedActivityIntentExtras
+    )
+    return bundle
   }
 
   @Test
