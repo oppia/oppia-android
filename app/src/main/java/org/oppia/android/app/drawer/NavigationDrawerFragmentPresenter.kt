@@ -40,7 +40,6 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
-import java.util.Optional
 import javax.inject.Inject
 
 const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
@@ -57,7 +56,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val headerViewModelProvider: ViewModelProvider<NavigationDrawerHeaderViewModel>,
   private val footerViewModelProvider: ViewModelProvider<NavigationDrawerFooterViewModel>,
-  private val developerOptionsStarter: Optional<DeveloperOptionsStarter>
+  private val developerOptionsStarter: DeveloperOptionsStarter
 ) : NavigationView.OnNavigationItemSelectedListener {
   private lateinit var drawerToggle: ActionBarDrawerToggle
   private lateinit var drawerLayout: DrawerLayout
@@ -100,27 +99,25 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun setIfDeveloperOptionsMenuItemListener() {
     // TODO(#3383): Find a way to make this work below N
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      developerOptionsStarter.ifPresent { starter ->
-        getFooterViewModel().isDebugMode.set(true)
-        binding.developerOptionsLinearLayout.setOnClickListener {
-          if (getFooterViewModel().isDeveloperOptionsSelected.get() == true) {
-            drawerLayout.closeDrawers()
-            return@setOnClickListener
-          }
-          uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+      getFooterViewModel().isDebugMode.set(true)
+      binding.developerOptionsLinearLayout.setOnClickListener {
+        if (getFooterViewModel().isDeveloperOptionsSelected.get() == true) {
           drawerLayout.closeDrawers()
-          getFooterViewModel().isDeveloperOptionsSelected.set(true)
-          val intent = starter.createIntent(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
-          if (previousMenuItemId == 0) fragment.activity!!.finish()
-          else if (previousMenuItemId != null &&
-            NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
-            NavigationDrawerItem.HOME
-          ) {
-            fragment.activity!!.finish()
-          }
-          drawerLayout.closeDrawers()
+          return@setOnClickListener
         }
+        uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
+        drawerLayout.closeDrawers()
+        getFooterViewModel().isDeveloperOptionsSelected.set(true)
+        val intent = developerOptionsStarter.createIntent(activity, internalProfileId)
+        fragment.activity!!.startActivity(intent)
+        if (previousMenuItemId == 0) fragment.activity!!.finish()
+        else if (previousMenuItemId != null &&
+          NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
+          NavigationDrawerItem.HOME
+        ) {
+          fragment.activity!!.finish()
+        }
+        drawerLayout.closeDrawers()
       }
     }
   }

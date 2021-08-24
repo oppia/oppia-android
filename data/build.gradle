@@ -68,7 +68,7 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.protobuf:protobuf-lite:3.0.0',
       'com.squareup.moshi:moshi-kotlin:1.11.0',
-      'com.squareup.okhttp3:okhttp:4.1.0',
+      'com.squareup.okhttp3:okhttp:3.12.12',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
   )
   compileOnly(
@@ -81,8 +81,8 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
-      'com.squareup.okhttp3:mockwebserver:4.1.0',
-      'com.squareup.okhttp3:okhttp:4.1.0',
+      'com.squareup.okhttp3:mockwebserver:3.12.12',
+      'com.squareup.okhttp3:okhttp:3.12.12',
       'junit:junit:4.12',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:2.19.0',

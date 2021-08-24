@@ -22,8 +22,8 @@ class JsonPrefixNetworkInterceptor @Inject constructor(
     val request = chain.request()
     val response = chain.proceed(request)
 
-    if (response.code == Constants.HTTP_OK) {
-      response.body?.let { responseBody ->
+    if (response.code() == Constants.HTTP_OK) {
+      response.body()?.let { responseBody ->
         var rawJson = responseBody.string()
         rawJson = removeXssiPrefix(rawJson)
         val contentType = responseBody.contentType()
