@@ -71,6 +71,7 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
+      'com.google.guava:guava:28.1-android',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
   )
   compileOnly(
@@ -84,6 +85,7 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'androidx.work:work-testing:2.4.0',
       'com.google.dagger:dagger:2.24',
+      'com.google.truth.extensions:truth-liteproto-extension:0.43',
       'com.google.truth:truth:0.43',
       'com.squareup.okhttp3:mockwebserver:4.1.0',
       'junit:junit:4.12',

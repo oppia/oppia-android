@@ -2,7 +2,7 @@ package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.help.HelpViewModel
 import javax.inject.Inject
 
 /**
@@ -12,7 +12,7 @@ import javax.inject.Inject
 class LicenseListViewModel @Inject constructor(
   val activity: AppCompatActivity,
   val dependencyIndex: Int
-) : ObservableViewModel() {
+) : HelpViewModel() {
 
   /** Stores the list of licenses of the third-party dependency. */
   val licenseItemList: List<LicenseItemViewModel> by lazy {
@@ -29,7 +29,7 @@ class LicenseListViewModel @Inject constructor(
     )
     val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
     val itemList = licenseNamesArray.mapIndexed { licenseIndex, name ->
-      LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex)
+      LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex, isMultipane.get()!!)
     }
     thirdPartyDependencyLicenseNamesArray.recycle()
     return itemList

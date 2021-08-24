@@ -282,4 +282,10 @@
   <dimen name="completed_story_list_fragment_recyclerview_paddingEnd">56dp</dimen>
   <dimen name="completed_story_list_fragment_recyclerview_paddingBottom">88dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">36dp</dimen>
+  <dimen name="app_version_text_view_padding_end">36dp</dimen>
+  <dimen name="app_version_image_view_margin_start">36dp</dimen>
+  <dimen name="app_version_text_view_margin_end">36dp</dimen>
+
 </resources>

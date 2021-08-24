@@ -24,7 +24,7 @@ oppia_android_test(
     srcs = ["CoroutineExecutorServiceTest.kt"],
     custom_package = "org.oppia.android.data.testing",
     test_class = "org.oppia.android.testing.threading.CoroutineExecutorServiceTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//testing",
@@ -41,7 +41,7 @@ oppia_android_test(
     srcs = ["TestCoroutineDispatcherEspressoImplTest.kt"],
     custom_package = "org.oppia.android.data.testing",
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherEspressoImplTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         ":test_coroutine_dispatcher_test_base",
@@ -57,7 +57,7 @@ oppia_android_test(
     srcs = ["TestCoroutineDispatcherRobolectricImplTest.kt"],
     custom_package = "org.oppia.android.data.testing",
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherRobolectricImplTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         ":test_coroutine_dispatcher_test_base",
@@ -73,7 +73,7 @@ oppia_android_test(
     srcs = ["TestCoroutineDispatcherTest.kt"],
     custom_package = "org.oppia.android.data.testing",
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherTest",
-    test_manifest = "//testing/src/test:test_manifest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//testing",

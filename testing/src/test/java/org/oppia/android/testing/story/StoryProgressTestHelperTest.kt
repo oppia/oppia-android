@@ -66,6 +66,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -78,9 +79,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
-
-  // TODO(#3662): Once checkpointing is enabled, remove the function that marks lessons as
-  //  started_not_completed and the tests that test this behaviour.
 
   @Rule
   @JvmField
@@ -553,19 +551,6 @@ class StoryProgressTestHelperTest {
   /* Test topic chapter started tests. */
 
   @Test
-  fun testMarkAsStartedNotCompleted_testTopic0_story0_exp2_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp2 = story0.getChapter(TEST_EXPLORATION_ID_2)
-    assertThat(exp2.isStartedNotCompleted()).isTrue()
-  }
-
-  @Test
   fun testMarkAsInProgressSaved_testTopic0_story0_exp2_chapterIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
@@ -592,18 +577,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_testTopic0_story0_exp2_story0IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_testTopic0_story0_exp2_story0IsNotDone() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
@@ -625,19 +598,6 @@ class StoryProgressTestHelperTest {
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_testTopic0_story0_exp5_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp5 = story0.getChapter(TEST_EXPLORATION_ID_5)
-    assertThat(exp5.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -667,18 +627,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun markStartedNotCompletedForTestTopic0Story0Exp5() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun markInProgressSavedForTestTopic0Story0Exp5() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
@@ -700,19 +648,6 @@ class StoryProgressTestHelperTest {
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_testTopic1_story2_exp4_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic1Story2Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    val story2 = testTopic1.getStory(TEST_STORY_ID_2)
-    val exp4 = story2.getChapter(TEST_EXPLORATION_ID_4)
-    assertThat(exp4.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -742,18 +677,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_testTopic1_story2_exp4_story2IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic1Story2Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    val story2 = testTopic1.getStory(TEST_STORY_ID_2)
-    assertThat(story2.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_testTopic1_story2_exp4_story2IsNotDone() {
     storyProgressTestHelper.markInProgressSavedTestTopic1Story2Exp0(
       profileId = profileId0,
@@ -780,18 +703,6 @@ class StoryProgressTestHelperTest {
   /* Test topic/story started tests. */
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_testTopic0_story0_storyIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    assertThat(story0.isStartedNotCompleted()).isTrue()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_testTopic0_story0_storyIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
       profileId = profileId0,
@@ -816,17 +727,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_testTopic0_story0_topicIsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    assertThat(testTopic0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_testTopic0_story0_topicIsNotDone() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
       profileId = profileId0,
@@ -846,18 +746,6 @@ class StoryProgressTestHelperTest {
 
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     assertThat(testTopic0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkStoryAsStartedNotCompleted_testTopic1_story2_storyIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic1Story0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    val story2 = testTopic1.getStory(TEST_STORY_ID_2)
-    assertThat(story2.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -885,17 +773,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_testTopic1_story2_topicIsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic1Story0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    assertThat(testTopic1.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_testTopic1_story2_topicIsNotDone() {
     storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
       profileId = profileId0,
@@ -915,19 +792,6 @@ class StoryProgressTestHelperTest {
 
     val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
     assertThat(testTopic1.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkTopicAsStartedNotCompleted_testTopic0_topicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    assertThat(testTopic0.isStartedNotCompleted()).isTrue()
-    assertThat(testTopic1.isStartedNotCompleted()).isFalse()
   }
 
   @Test
@@ -957,19 +821,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkTopicAsStartedNotCompleted_testTopic1_topicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    assertThat(testTopic0.isStartedNotCompleted()).isFalse()
-    assertThat(testTopic1.isStartedNotCompleted()).isTrue()
-  }
-
-  @Test
   fun testMarkTopicAsStartedNotCompleted_testTopic1_topicIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedTestTopic1(
       profileId = profileId0,
@@ -993,22 +844,6 @@ class StoryProgressTestHelperTest {
     val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
     assertThat(testTopic0.isInProgressNotSaved()).isFalse()
     assertThat(testTopic1.isInProgressNotSaved()).isTrue()
-  }
-
-  @Test
-  fun testMarkTopicsAsStartedNotCompleted_testTopics_oneTopicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopics(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    // At least one of the topics is started.
-    assertThat(listOf(testTopic0, testTopic1).any { it.isStartedNotCompleted() }).isTrue()
-    // But neither is completed.
-    assertThat(testTopic0.isCompleted()).isFalse()
-    assertThat(testTopic1.isCompleted()).isFalse()
   }
 
   @Test
@@ -1044,20 +879,6 @@ class StoryProgressTestHelperTest {
   }
 
   /* Ratios chapter started tests. */
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story0_exp0_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    val exp0 = story0.getChapter(RATIOS_EXPLORATION_ID_0)
-    assertThat(exp0.isStartedNotCompleted()).isTrue()
-  }
-
   @Test
   fun testMarkChapterAsInProgressSaved_ratiosTopic_story0_exp0_chapterIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
@@ -1085,18 +906,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story0_exp0_story0IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_ratiosTopic_story0_exp0_story0IsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId0,
@@ -1118,19 +927,6 @@ class StoryProgressTestHelperTest {
     val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
     val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story0_exp1_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    val exp1 = story0.getChapter(RATIOS_EXPLORATION_ID_1)
-    assertThat(exp1.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1160,18 +956,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story0_exp1_story0IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_ratiosTopic_story0_exp1_story0IsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp1(
       profileId = profileId0,
@@ -1193,19 +977,6 @@ class StoryProgressTestHelperTest {
     val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
     val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story1_exp2_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    val exp2 = story1.getChapter(RATIOS_EXPLORATION_ID_2)
-    assertThat(exp2.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1235,18 +1006,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story1_exp2_story1IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    assertThat(story1.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_ratiosTopic_story1_exp2_story1IsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory1Exp0(
       profileId = profileId0,
@@ -1268,19 +1027,6 @@ class StoryProgressTestHelperTest {
     val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
     val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
     assertThat(story1.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story1_exp3_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    val exp3 = story1.getChapter(RATIOS_EXPLORATION_ID_3)
-    assertThat(exp3.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1310,18 +1056,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_ratiosTopic_story1_exp3_story1IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    assertThat(story1.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_ratiosTopic_story1_exp3_story1IsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory1Exp1(
       profileId = profileId0,
@@ -1346,21 +1080,6 @@ class StoryProgressTestHelperTest {
   }
 
   /* Ratios topic/story started tests. */
-
-  @Test
-  fun testMarkStoryAsStartedNotCompleted_ratiosTopic_story0_storyIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    assertThat(story0.isStartedNotCompleted()).isTrue()
-    assertThat(story1.isStartedNotCompleted()).isFalse()
-  }
-
   @Test
   fun testMarkStoryAsInProgressSaved_ratiosTopic_story0_storyIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0(
@@ -1390,17 +1109,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_ratiosTopic_story0_topicIsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_ratiosTopic_story0_topicIsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0(
       profileId = profileId0,
@@ -1420,20 +1128,6 @@ class StoryProgressTestHelperTest {
 
     val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkStoryAsStartedNotCompleted_ratiosTopic_story1_storyIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val story0 = ratiosTopic.getStory(RATIOS_STORY_ID_0)
-    val story1 = ratiosTopic.getStory(RATIOS_STORY_ID_1)
-    assertThat(story0.isStartedNotCompleted()).isFalse()
-    assertThat(story1.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1465,17 +1159,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_ratiosTopic_story1_topicIsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedRatiosStory1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_ratiosTopic_story1_topicIsNotDone() {
     storyProgressTestHelper.markInProgressSavedRatiosStory1(
       profileId = profileId0,
@@ -1495,17 +1178,6 @@ class StoryProgressTestHelperTest {
 
     val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkTopicAsStartedNotCompleted_ratiosTopic_topicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedRatios(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1531,19 +1203,6 @@ class StoryProgressTestHelperTest {
   }
 
   /* Fractions topic/story/chapter started tests. */
-
-  @Test
-  fun testMarkChapterStartedNotCompleted_fractionsTopic_story0_exp0_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
-    val exp0 = story0.getChapter(FRACTIONS_EXPLORATION_ID_0)
-    assertThat(exp0.isStartedNotCompleted()).isTrue()
-  }
 
   @Test
   fun testMarkChapterAsInProgressSaved_fractionsTopic_story0_exp0_chapterIsInProgressSaved() {
@@ -1572,18 +1231,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_fractionsTopic_story0_exp0_story0IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_fractionsTopic_story0_exp0_story0IsNotDone() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId0,
@@ -1605,19 +1252,6 @@ class StoryProgressTestHelperTest {
     val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
     val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterStartedNotCompleted_fractionsTopic_story0_exp1_chapterIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
-    val exp1 = story0.getChapter(FRACTIONS_EXPLORATION_ID_1)
-    assertThat(exp1.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1647,18 +1281,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_fractionsTopic_story0_exp1_story0IsNotDone() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp1(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
-    assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_fractionsTopic_story0_exp1_story0IsNotDone() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp1(
       profileId = profileId0,
@@ -1680,18 +1302,6 @@ class StoryProgressTestHelperTest {
     val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
     val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
     assertThat(story0.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkStoryAsStartedNotCompleted_fractionsTopic_story0_storyIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    val story0 = fractionsTopic.getStory(FRACTIONS_STORY_ID_0)
-    assertThat(story0.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1719,17 +1329,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkStoryAsStartedNotCompleted_fractionsTopic_story0_topicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.isStartedNotCompleted()).isTrue()
-  }
-
-  @Test
   fun testMarkStoryAsInProgressSaved_fractionsTopic_story0_topicIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0(
       profileId = profileId0,
@@ -1749,17 +1348,6 @@ class StoryProgressTestHelperTest {
 
     val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
     assertThat(fractionsTopic.isInProgressNotSaved()).isTrue()
-  }
-
-  @Test
-  fun testMarkTopicAsStartedNotCompleted_fractionsTopic_topicIsStartedNotCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedFractions(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1797,24 +1385,6 @@ class StoryProgressTestHelperTest {
     assertThat(testTopic1.isNotStarted()).isTrue()
     assertThat(ratiosTopic.isNotStarted()).isTrue()
     assertThat(fractionsTopic.isNotStarted()).isTrue()
-  }
-
-  @Test
-  fun testMarkAllTopicsAsStartedNotCompleted_allTopicsAreStarted() {
-    storyProgressTestHelper.markAllTopicsAsStartedNotCompleted(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val testTopic1 = getTopic(profileId0, TEST_TOPIC_ID_1)
-    val ratiosTopic = getTopic(profileId0, RATIOS_TOPIC_ID)
-    val fractionsTopic = getTopic(profileId0, FRACTIONS_TOPIC_ID)
-
-    assertThat(testTopic0.isStartedNotCompleted()).isTrue()
-    assertThat(testTopic1.isStartedNotCompleted()).isTrue()
-    assertThat(ratiosTopic.isStartedNotCompleted()).isTrue()
-    assertThat(fractionsTopic.isStartedNotCompleted()).isTrue()
   }
 
   @Test
@@ -1872,23 +1442,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testStartedNotCompletedChapter_thenMarkedDone_chapterIsCompleted() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp2 = story0.getChapter(TEST_EXPLORATION_ID_2)
-    assertThat(exp2.isCompleted()).isTrue()
-  }
-
-  @Test
   fun testInProgressSavedChapter_thenMarkedDone_chapterIsCompleted() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
@@ -1912,23 +1465,6 @@ class StoryProgressTestHelperTest {
       timestampOlderThanOneWeek = false
     )
     storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp2 = story0.getChapter(TEST_EXPLORATION_ID_2)
-    assertThat(exp2.isCompleted()).isTrue()
-  }
-
-  @Test
-  fun testMarkChapterDone_thenStartedNotCompleted_chapterIsCompleted() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -2008,23 +1544,6 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterAsStartedNotCompleted_newerThanWeek_timestampNewerThanWeek() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val progressDatabase = getTopicProgressDatabase(profileId0)
-    val testTopic0Progress = progressDatabase.getTopicProgress(TEST_TOPIC_ID_0)
-    val story0Progress = testTopic0Progress.getStoryProgress(TEST_STORY_ID_0)
-    val exp2Progress = story0Progress.getChapterProgress(TEST_EXPLORATION_ID_2)
-
-    val currentTime = fakeOppiaClock.getCurrentTimeMs()
-    val timeSincePlayed = currentTime - exp2Progress.lastPlayedTimestamp
-    assertThat(timeSincePlayed).isAtMost(TimeUnit.DAYS.toMillis(7))
-  }
-
-  @Test
   fun testMarkChapterAsInProgressSaved_newerThanWeek_timestampNewerThanWeek() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
@@ -2056,23 +1575,6 @@ class StoryProgressTestHelperTest {
     val currentTime = fakeOppiaClock.getCurrentTimeMs()
     val timeSincePlayed = currentTime - exp2Progress.lastPlayedTimestamp
     assertThat(timeSincePlayed).isAtMost(TimeUnit.DAYS.toMillis(7))
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_olderThanWeek_timestampOlderThanWeek() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = true
-    )
-
-    val progressDatabase = getTopicProgressDatabase(profileId0)
-    val testTopic0Progress = progressDatabase.getTopicProgress(TEST_TOPIC_ID_0)
-    val story0Progress = testTopic0Progress.getStoryProgress(TEST_STORY_ID_0)
-    val exp2Progress = story0Progress.getChapterProgress(TEST_EXPLORATION_ID_2)
-
-    val currentTime = fakeOppiaClock.getCurrentTimeMs()
-    val timeSincePlayed = currentTime - exp2Progress.lastPlayedTimestamp
-    assertThat(timeSincePlayed).isAtLeast(TimeUnit.DAYS.toMillis(7))
   }
 
   @Test
@@ -2120,19 +1622,6 @@ class StoryProgressTestHelperTest {
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
     val exp2 = story0.getChapter(TEST_EXPLORATION_ID_2)
     assertThat(exp2.isCompleted()).isFalse()
-  }
-
-  @Test
-  fun testMarkChapterAsStartedNotCompleted_onOneProfile_notStartedOnOtherProfile() {
-    storyProgressTestHelper.markStartedNotCompletedTestTopic0Story0Exp0(
-      profileId = profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val testTopic0 = getTopic(profileId1, TEST_TOPIC_ID_0)
-    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp2 = story0.getChapter(TEST_EXPLORATION_ID_2)
-    assertThat(exp2.isStartedNotCompleted()).isFalse()
   }
 
   @Test
@@ -2280,7 +1769,7 @@ class StoryProgressTestHelperTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, LoggerModule::class
+      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

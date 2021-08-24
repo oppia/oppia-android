@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
@@ -35,6 +36,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
+  private var shouldSavePartialProgress: Boolean = false
 
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<StateFragmentTestActivityBinding>(
@@ -54,8 +56,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     explorationId =
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
       ?: TEST_EXPLORATION_ID_2
+    shouldSavePartialProgress =
+      activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId)
+      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
     }
 
     if (getHintsAndSolutionManagerFragment() == null) {
@@ -71,8 +75,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) =
-    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) = getStateFragment()?.revealHint(hintIndex)
 
   fun revealSolution() = getStateFragment()?.revealSolution()
 
@@ -88,7 +91,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
@@ -98,7 +102,8 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       topicId,
       storyId,
       explorationId,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
       .observe(
         activity,

@@ -8,10 +8,23 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+private const val IS_MULTIPANE_KEY = "HelpFragment.bool_is_multipane"
+
 /** Fragment that contains help in the app. */
 class HelpFragment : InjectableFragment() {
   @Inject
   lateinit var helpFragmentPresenter: HelpFragmentPresenter
+
+  companion object {
+    /** Returns instance of [HelpFragment]. */
+    fun newInstance(isMultipane: Boolean): HelpFragment {
+      val args = Bundle()
+      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
+      val fragment = HelpFragment()
+      fragment.arguments = args
+      return fragment
+    }
+  }
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -23,6 +36,10 @@ class HelpFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return helpFragmentPresenter.handleCreateView(inflater, container)
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to HelpFragment"
+    }
+    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    return helpFragmentPresenter.handleCreateView(inflater, container, isMultipane)
   }
 }

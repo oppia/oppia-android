@@ -3,9 +3,12 @@ package org.oppia.android.app.testing
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.app.topic.TopicActivityPresenter
@@ -21,6 +24,7 @@ class TopicTestActivityForStory :
   InjectableAppCompatActivity(),
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
+  RouteToResumeLessonListener,
   RouteToExplorationListener,
   RouteToRevisionCardListener {
 
@@ -52,6 +56,27 @@ class TopicTestActivityForStory :
         internalProfileId,
         topicId,
         storyId
+      )
+    )
+  }
+
+  override fun routeToResumeLesson(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
+    startActivity(
+      ResumeLessonActivity.createResumeLessonActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen,
+        explorationCheckpoint
       )
     )
   }
