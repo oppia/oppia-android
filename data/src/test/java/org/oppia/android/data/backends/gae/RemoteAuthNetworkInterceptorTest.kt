@@ -89,8 +89,8 @@ class RemoteAuthNetworkInterceptorTest {
 
     call.execute()
     val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
+      testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+      testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
 
     verifyRequestHeaders(interceptedRequest?.headers)
@@ -113,8 +113,8 @@ class RemoteAuthNetworkInterceptorTest {
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     client.newCall(request).execute()
     val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
+      testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+      testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
     )
 
     verifyRequestHeaders(interceptedRequest?.headers)
