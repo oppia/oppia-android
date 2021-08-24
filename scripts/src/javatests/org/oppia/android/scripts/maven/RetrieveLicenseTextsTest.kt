@@ -30,7 +30,7 @@ class RetrieveLicenseTextsTest {
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"
   private val SCRIPT_PASSED_INDICATOR = "Script execution completed successfully."
-  private val LONG_LICENSE_TEXT_LENGTH = 16384
+  private val LONG_LICENSE_TEXT_LENGTH = MAX_CHARS_LIMIT + 1
 
   private val SCRAPABLE_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
   private val DIRECT_LINK_ONLY = "https://developer.android.com/studio/terms.html"
@@ -550,7 +550,7 @@ class RetrieveLicenseTextsTest {
   }
 
   private fun retrieveLongLicenseText(): String {
-    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') + ' '
+    val charPool: List<Char> = (' '..'z').toList() // Inlcude all chars from ASCII value 32 to 122.
     return (1..LONG_LICENSE_TEXT_LENGTH)
       .map { kotlin.random.Random.nextInt(0, charPool.size) }
       .map(charPool::get)

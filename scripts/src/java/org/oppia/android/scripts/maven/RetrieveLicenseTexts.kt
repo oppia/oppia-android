@@ -20,7 +20,7 @@ import javax.xml.transform.stream.StreamResult
 
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
-private const val MAX_CHARS_LIMIT = 16383
+const val MAX_CHARS_LIMIT = 16383
 
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
