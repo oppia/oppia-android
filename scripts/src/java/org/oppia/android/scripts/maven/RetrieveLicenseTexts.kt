@@ -20,6 +20,7 @@ import javax.xml.transform.stream.StreamResult
 
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
+private const val MAX_CHARS_LIMIT = 16383
 
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
@@ -147,16 +148,22 @@ class RetrieveLicenseTexts(
   }
 
   private fun retrieveCopyrightLicense(license: License): CopyrightLicense {
-    val licenseText: String
+    var licenseText: String
     val licenseLink: String
     when (license.verifiedLinkCase) {
       License.VerifiedLinkCase.SCRAPABLE_LINK -> {
         licenseText = fetchLicenseText(license.scrapableLink.url)
         licenseLink = license.scrapableLink.url
+        if (licenseText.length > MAX_CHARS_LIMIT) {
+          licenseText = licenseLink
+        }
       }
       License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
         licenseText = fetchLicenseText(license.extractedCopyLink.url)
         licenseLink = license.extractedCopyLink.url
+        if (licenseText.length > MAX_CHARS_LIMIT) {
+          licenseText = licenseLink
+        }
       }
       License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
         licenseText = license.directLinkOnly.url

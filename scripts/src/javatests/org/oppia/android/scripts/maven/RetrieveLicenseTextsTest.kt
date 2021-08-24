@@ -30,12 +30,15 @@ class RetrieveLicenseTextsTest {
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"
   private val SCRIPT_PASSED_INDICATOR = "Script execution completed successfully."
+  private val LONG_LICENSE_TEXT_LENGTH = 16384
 
   private val SCRAPABLE_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
   private val DIRECT_LINK_ONLY = "https://developer.android.com/studio/terms.html"
   private val EXTRACTED_COPY_ORIGINAL_LINK = "https://www.opensource.org/licenses/bsd-license"
   private val EXTRACTED_COPY_LINK = "https://raw.githubusercontent.com/oppia/oppia-android-" +
     "licenses/develop/simplified-bsd-license.txt"
+  private val LONG_LICENSE_TEXT_LINK = "https://raw.githubusercontent.com/javaee/javax." +
+    "annotation/83417807ad402ee1022c0307208d4510c80c68b6/LICENSE"
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
 
@@ -208,11 +211,16 @@ class RetrieveLicenseTextsTest {
       originalLink = EXTRACTED_COPY_ORIGINAL_LINK,
       extractedCopyLinkUrl = EXTRACTED_COPY_LINK
     )
+    val longTextLicense = createLicenseWithScrapableLink(
+      licenseName = "Long License Text",
+      originalLink = LONG_LICENSE_TEXT_LINK,
+      scrapableLinkUrl = LONG_LICENSE_TEXT_LINK
+    )
     val dependencyList = listOf<MavenDependency>(
       createMavenDependency(
         artifactName = "artifact.name:A:2.0.1",
         artifactVersion = "2.0.1",
-        licenseList = listOf(scrapableLinkLicense)
+        licenseList = listOf(scrapableLinkLicense, longTextLicense)
       ),
       createMavenDependency(
         artifactName = "artifact.name:B:4.1.1",
@@ -263,6 +271,7 @@ class RetrieveLicenseTextsTest {
       "License" shall mean the terms and conditions for use, reproduction,
       and distribution as defined by Sections 1 through 9 of this document."
       """.trimIndent(),
+      "\"$LONG_LICENSE_TEXT_LINK\"",
       "\"$DIRECT_LINK_ONLY\"",
       """
       "Copyright <YEAR> <COPYRIGHT HOLDER>
@@ -274,6 +283,7 @@ class RetrieveLicenseTextsTest {
 
     assertThat(licenseNamesList).containsExactly(
       "Apache License",
+      "Long License Text",
       "Android Terms of Service",
       "BSD License"
     )
@@ -342,13 +352,13 @@ class RetrieveLicenseTextsTest {
     )
     verifyArray(
       itemList = licenseTextsArray0,
-      indicesList = listOf(0),
-      expectedSize = 1,
+      indicesList = listOf(0, 1),
+      expectedSize = 2,
       prefix = "@string/license_text_"
     )
     verifyArray(
       itemList = licenseTextsArray1,
-      indicesList = listOf(1, 2),
+      indicesList = listOf(2, 3),
       expectedSize = 2,
       prefix = "@string/license_text_"
     )
@@ -360,13 +370,13 @@ class RetrieveLicenseTextsTest {
     )
     verifyArray(
       itemList = licenseNamesArray0,
-      indicesList = listOf(0),
-      expectedSize = 1,
+      indicesList = listOf(0, 1),
+      expectedSize = 2,
       prefix = "@string/license_name_"
     )
     verifyArray(
       itemList = licenseNamesArray1,
-      indicesList = listOf(1, 2),
+      indicesList = listOf(2, 3),
       expectedSize = 2,
       prefix = "@string/license_name_"
     )
@@ -539,6 +549,14 @@ class RetrieveLicenseTextsTest {
     return itemList
   }
 
+  private fun retrieveLongLicenseText(): String {
+    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') + ' '
+    return (1..LONG_LICENSE_TEXT_LENGTH)
+      .map { kotlin.random.Random.nextInt(0, charPool.size) }
+      .map(charPool::get)
+      .joinToString("")
+  }
+
   /** Returns a mock for the [LicenseFetcher]. */
   private fun initializeLicenseFetcher(): LicenseFetcher {
     return mock<LicenseFetcher> {
@@ -552,6 +570,8 @@ class RetrieveLicenseTextsTest {
         )
       on { scrapeText(eq(DIRECT_LINK_ONLY)) }
         .doReturn(DIRECT_LINK_ONLY)
+      on { scrapeText(eq(LONG_LICENSE_TEXT_LINK)) }
+        .doReturn(retrieveLongLicenseText())
       on { scrapeText(eq(EXTRACTED_COPY_LINK)) }
         .doReturn(
           """
