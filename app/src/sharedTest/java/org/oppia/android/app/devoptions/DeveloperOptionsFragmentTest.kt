@@ -61,6 +61,7 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -106,6 +107,9 @@ class DeveloperOptionsFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 
   @Inject
   lateinit var context: Context
@@ -294,11 +298,8 @@ class DeveloperOptionsFragmentTest {
     }
   }
 
-  // TODO(#3397): When the logic to show all hints and solutions is implemented, write a test to
-  //  check for click operation of the 'Show all hints/solution' switch and the configChange
-  //  versions of all these tests including the below one.
   @Test
-  fun testDeveloperOptionsFragment_hintsAndSolutionSwitchIsUncheck() {
+  fun testDeveloperOptionsFragment_hintsSwitchIsUnchecked() {
     launch<DeveloperOptionsTestActivity>(
       createDeveloperOptionsTestActivityIntent(internalProfileId)
     ).use {
@@ -311,6 +312,82 @@ class DeveloperOptionsFragmentTest {
           targetViewId = R.id.show_all_hints_solution_switch
         )
       ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickShowAllHints_hintsSwitchIsChecked() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickShowAllHints_configChange_hintsSwitchIsChecked() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_hintsSwitchIsDisabled_showAllHintsAndSolutionIsFalse() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(not(isChecked())))
+      assertThat(showAllHintsAndSolutionController.getShowAllHintsAndSolution()).isFalse()
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_hintsSwitchIsEnabled_showAllHintsAndSolutionIsTrue() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      onView(withId(R.id.show_all_hints_solution_constraint_layout)).perform(click())
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.show_all_hints_solution_switch
+        )
+      ).check(matches(isChecked()))
+      assertThat(showAllHintsAndSolutionController.getShowAllHintsAndSolution()).isTrue()
     }
   }
 

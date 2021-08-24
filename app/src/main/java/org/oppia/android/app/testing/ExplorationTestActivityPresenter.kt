@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -44,7 +45,8 @@ class ExplorationTestActivityPresenter @Inject constructor(
       TOPIC_ID,
       STORY_ID,
       EXPLORATION_ID,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     ).observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->

@@ -42,7 +42,7 @@ class HintsAndSolutionProdModuleTest {
       override fun onHelpIndexChanged() {}
     })
 
-    assertThat(hintHandler).isInstanceOf(HintHandlerImpl::class.java)
+    assertThat(hintHandler).isInstanceOf(HintHandlerProdImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -60,7 +60,7 @@ class HintsAndSolutionProdModuleTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -72,7 +72,7 @@ class HintsAndSolutionProdModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(HintsAndSolutionProdModuleTest: HintsAndSolutionProdModuleTest)
+    fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -82,8 +82,8 @@ class HintsAndSolutionProdModuleTest {
         .build()
     }
 
-    fun inject(HintsAndSolutionProdModuleTest: HintsAndSolutionProdModuleTest) {
-      component.inject(HintsAndSolutionProdModuleTest)
+    fun inject(hintsAndSolutionProdModuleTest: HintsAndSolutionProdModuleTest) {
+      component.inject(hintsAndSolutionProdModuleTest)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
