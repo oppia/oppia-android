@@ -20,6 +20,8 @@ import javax.xml.transform.stream.StreamResult
 
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
+
+/** Maximum number of chars that can be displayed in a textview. */
 const val MAX_CHARS_LIMIT = 16383
 
 /**
