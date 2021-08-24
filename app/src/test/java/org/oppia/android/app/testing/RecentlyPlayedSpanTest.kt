@@ -74,6 +74,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -260,10 +261,16 @@ class RecentlyPlayedSpanTest {
     }
   }
 
-  private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context,
-      profileId
+      context = context,
+      recentlyPlayedActivityIntentExtras = recentlyPlayedActivityIntentExtras
     )
   }
 

@@ -553,7 +553,7 @@ class ProfileProgressFragmentTest {
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
         hasExtra(
-          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
+          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY,
           internalProfileId
         )
       )

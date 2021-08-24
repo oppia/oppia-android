@@ -9,6 +9,10 @@ import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
@@ -17,6 +21,9 @@ class ProfileProgressActivity :
   RouteToOngoingTopicListListener,
   RouteToRecentlyPlayedListener,
   ProfilePictureDialogInterface {
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   @Inject
   lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
@@ -30,11 +37,17 @@ class ProfileProgressActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityIntentExtras(recentlyPlayedActivityIntentExtras)
+        .build()
     )
   }
 
