@@ -124,6 +124,7 @@ TEST_DEPS = [
     ":testing",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
