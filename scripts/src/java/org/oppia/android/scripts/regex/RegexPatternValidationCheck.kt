@@ -14,7 +14,7 @@ import java.io.FileInputStream
  * codebase.
  *
  * Usage:
- *   bazel run //scripts:pattern_validation_check  -- <path_to_directory_root>
+ *   bazel run //scripts:pattern_validation_check -- <path_to_directory_root>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
@@ -165,7 +165,7 @@ private fun checkProhibitedContent(
       File(file.toString())
         .bufferedReader()
         .lineSequence().foldIndexed(initial = false) { lineIndex, isFailing, lineContent ->
-          val matches = prohibitedContentRegex.matches(lineContent)
+          val matches = prohibitedContentRegex.containsMatchIn(lineContent)
           if (matches) {
             logProhibitedContentFailure(
               // Since, the line number starts from 1 and index starts from 0, therefore we have

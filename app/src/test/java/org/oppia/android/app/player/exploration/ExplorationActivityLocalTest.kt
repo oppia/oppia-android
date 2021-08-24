@@ -23,6 +23,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
@@ -112,7 +113,8 @@ class ExplorationActivityLocalTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -139,7 +141,8 @@ class ExplorationActivityLocalTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -150,7 +153,8 @@ class ExplorationActivityLocalTest {
           topicId,
           storyId,
           explorationId,
-          shouldSavePartialProgress
+          shouldSavePartialProgress,
+          explorationCheckpoint
         )
       }
     }

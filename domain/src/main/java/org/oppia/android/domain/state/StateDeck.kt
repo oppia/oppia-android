@@ -34,6 +34,21 @@ internal class StateDeck internal constructor(
     stateIndex = 0
   }
 
+  /** Resumes this deck to continue the exploration from the last marked checkpoint. */
+  internal fun resumeDeck(
+    pendingTopState: State,
+    previousStates: List<EphemeralState>,
+    currentDialogInteractions: List<AnswerAndResponse>,
+    stateIndex: Int
+  ) {
+    this.pendingTopState = pendingTopState
+    this.previousStates.clear()
+    this.currentDialogInteractions.clear()
+    this.previousStates.addAll(previousStates)
+    this.currentDialogInteractions.addAll(currentDialogInteractions)
+    this.stateIndex = stateIndex
+  }
+
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
   internal fun navigateToPreviousState() {
     check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }

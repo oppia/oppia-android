@@ -3,3 +3,17 @@ file_content_checks {
   prohibited_content_regex: "^import .+?support.+?$"
   failure_message: "AndroidX should be used instead of the support library"
 }
+file_content_checks {
+  filename_regex: ".+?.kt"
+  prohibited_content_regex: "CoroutineWorker"
+  failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  filename_regex: ".+?.kt"
+  prohibited_content_regex: "SettableFuture"
+  failure_message: "SettableFuture should only be used in pre-approved locations since it's easy to potentially mess up & lead to a hanging ListenableFuture."
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
