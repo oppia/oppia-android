@@ -320,12 +320,12 @@ class RetrieveLicenseTextsTest {
     )
     val arrayOfLicenseNamesArrays = retrieveArray(
       xmlContent = xmlContent,
-      attributeName = "third_party_dependency_license_names_arrays",
+      attributeName = "third_party_dependency_license_names_array",
       arrayTag = "array"
     )
     val arrayOfLicenseTextsArrays = retrieveArray(
       xmlContent = xmlContent,
-      attributeName = "third_party_dependency_license_texts_arrays",
+      attributeName = "third_party_dependency_license_texts_array",
       arrayTag = "array"
     )
     verifyArray(

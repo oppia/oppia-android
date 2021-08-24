@@ -329,7 +329,7 @@ class RetrieveLicenseTexts(
 
     val arrayOfLicenseNamesArrays = createArray(
       arrayTag = "array",
-      arrayName = "third_party_dependency_license_names_arrays",
+      arrayName = "third_party_dependency_license_names_array",
       itemListSize = dependenciesList.size,
       textNodePrefix = "@array/third_party_dependency_license_names_",
       doc = doc
@@ -339,7 +339,7 @@ class RetrieveLicenseTexts(
 
     val arrayOfLicenseTextsArrays = createArray(
       arrayTag = "array",
-      arrayName = "third_party_dependency_license_texts_arrays",
+      arrayName = "third_party_dependency_license_texts_array",
       itemListSize = dependenciesList.size,
       textNodePrefix = "@array/third_party_dependency_license_texts_",
       doc = doc
