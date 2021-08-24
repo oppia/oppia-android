@@ -113,7 +113,6 @@ proto_library(
 
 java_lite_proto_library(
     name = "subtitled_html_java_proto_lite",
-    visibility = ["//:oppia_api_visibility"],
     deps = [":subtitled_html_proto"],
 )
 
@@ -179,7 +178,6 @@ format_import_proto_library(
 
 java_lite_proto_library(
     name = "feedback_reporting_java_proto_lite",
-    visibility = ["//:oppia_api_visibility"],
     deps = [":feedback_reporting_proto"],
 )
 
