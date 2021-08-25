@@ -23,6 +23,28 @@ class RegexPatternValidationCheckTest {
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially" +
       " mess up & lead to a hanging ListenableFuture."
+  private val androidGravityLeftErrorMessage =
+    "Use android:gravity=\"start\", instead, for proper RTL support"
+  private val androidGravityRightErrorMessage =
+    "Use android:gravity=\"end\", instead, for proper RTL support"
+  private val androidLayoutGravityLeftErrorMessage =
+    "Use android:layout_gravity=\"start\", instead, for proper RTL support"
+  private val androidLayoutGravityRightErrorMessage =
+    "Use android:layout_gravity=\"end\", instead, for proper RTL support"
+  private val androidGenericStartEndRtlErrorMessage =
+  "Use start/end versions of layout properties, instead, for proper RTL support"
+  private val androidBarrierDirectionLeftErrorMessage =
+    "Use app:barrierDirection=\"start\", instead, for proper RTL support"
+  private val androidBarrierDirectionRightErrorMessage =
+    "Use app:barrierDirection=\"end\", instead, for proper RTL support"
+  private val androidDragDirectionLeftErrorMessage =
+    "Use motion:dragDirection=\"start\", instead, for proper RTL support"
+  private val androidDragDirectionRightErrorMessage =
+    "Use motion:dragDirection=\"end\", instead, for proper RTL support"
+  private val androidTouchAnchorSideLeftErrorMessage =
+    "Use motion:touchAnchorSide=\"start\", instead, for proper RTL support"
+  private val androidTouchAnchorSideRightErrorMessage =
+    "Use motion:touchAnchorSide=\"end\", instead, for proper RTL support"
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -75,7 +97,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(
       """
       File name/path violation: Activities cannot be placed outside the app or testing module
-      - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
+      - ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt
       
       $wikiReferenceNote
       """.trimIndent()
@@ -105,7 +127,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: $supportLibraryUsageErrorMessage
+        ${retrieveTestFilesPath()}/TestFile.kt:1: $supportLibraryUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -125,7 +147,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: $coroutineWorkerUsageErrorMessage
+        ${retrieveTestFilesPath()}/TestFile.kt:1: $coroutineWorkerUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -145,7 +167,567 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesDirectoryPath()}/TestFile.kt:1: $settableFutureUsageErrorMessage
+        ${retrieveTestFilesPath()}/TestFile.kt:1: $settableFutureUsageErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidGravityLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:gravity=\"left\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGravityLeftErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidGravityRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:gravity=\"right\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGravityRightErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutGravityLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_gravity=\"left\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidLayoutGravityLeftErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutGravityRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_gravity=\"right\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidLayoutGravityRightErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidPaddingLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:paddingLeft=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidPaddingRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:paddingRight=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidDrawableLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:drawableLeft=\"@android:color/transparent\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidDrawableRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:drawableRight=\"@android:color/transparent\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutAlignLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_alignLeft=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutAlignRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_alignRight=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutMarginLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_marginLeft=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutMarginRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_marginRight=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutAlignParentLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_alignParentLeft=\"true\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutAlignParentRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_alignParentRight=\"true\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutToLeftOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_toLeftOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutToRightOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_toRightOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutConstraintLeftToLeftOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_constraintLeft_toLeftOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutConstraintLeftToRightOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_constraintLeft_toRightOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutConstraintRightToLeftOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_constraintRight_toLeftOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutConstraintRightToRightOf_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_constraintRight_toRightOf=\"@+id/another_view\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutGoneMarginLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_goneMarginLeft=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutGoneMarginRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "android:layout_goneMarginRight=\"16dp\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appBarrierDirectionLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "app:barrierDirection=\"left\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidBarrierDirectionLeftErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appBarrierDirectionRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "app:barrierDirection=\"right\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidBarrierDirectionRightErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appDragDirectionLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "motion:dragDirection=\"left\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidDragDirectionLeftErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appDragDirectionRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "motion:dragDirection=\"right\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidDragDirectionRightErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appTouchAnchorSideLeft_fileContentIsNotCorrect() {
+    val prohibitedContent = "motion:touchAnchorSide=\"left\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidTouchAnchorSideLeftErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_appTouchAnchorSideRight_fileContentIsNotCorrect() {
+    val prohibitedContent = "motion:touchAnchorSide=\"right\""
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidTouchAnchorSideRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -166,21 +748,21 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim()).isEqualTo(
       """
       File name/path violation: Activities cannot be placed outside the app or testing module
-      - ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt
+      - ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt
       
-      ${retrieveTestFilesDirectoryPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
+      ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
       $wikiReferenceNote
       """.trimIndent()
     )
   }
 
   /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
+  private fun retrieveTestFilesPath(): String {
     return "${tempFolder.root}/testfiles"
   }
 
   /** Runs the regex_pattern_validation_check. */
   private fun runScript() {
-    main(retrieveTestFilesDirectoryPath())
+    main(retrieveTestFilesPath())
   }
 }
