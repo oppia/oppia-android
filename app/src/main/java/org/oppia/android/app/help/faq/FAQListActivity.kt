@@ -21,11 +21,6 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
     faqListActivityPresenter.handleOnCreate()
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_faq_list_activity, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
   companion object {
     fun createFAQListActivityIntent(context: Context): Intent {
       return Intent(context, FAQListActivity::class.java)
