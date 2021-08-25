@@ -464,4 +464,7 @@
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
+  <dimen name="home_fragment_padding_top">36dp</dimen>
+  <dimen name="home_fragment_padding_bottom">148</dimen>
+
 </resources>
