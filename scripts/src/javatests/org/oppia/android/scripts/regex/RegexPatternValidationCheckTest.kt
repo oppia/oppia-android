@@ -32,7 +32,7 @@ class RegexPatternValidationCheckTest {
   private val androidLayoutGravityRightErrorMessage =
     "Use android:layout_gravity=\"end\", instead, for proper RTL support"
   private val androidGenericStartEndRtlErrorMessage =
-  "Use start/end versions of layout properties, instead, for proper RTL support"
+    "Use start/end versions of layout properties, instead, for proper RTL support"
   private val androidBarrierDirectionLeftErrorMessage =
     "Use app:barrierDirection=\"start\", instead, for proper RTL support"
   private val androidBarrierDirectionRightErrorMessage =
