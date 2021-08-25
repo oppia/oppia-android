@@ -10,6 +10,7 @@ kt_android_library(
     srcs = [
         "FeedbackReportingModule.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
         ":report_schema_version",
