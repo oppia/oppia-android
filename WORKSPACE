@@ -12,7 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
-    build_tools_version = "29.0.2"
+    build_tools_version = "29.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
