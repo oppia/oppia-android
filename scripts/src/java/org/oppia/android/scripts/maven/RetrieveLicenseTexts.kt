@@ -156,6 +156,8 @@ class RetrieveLicenseTexts(
       License.VerifiedLinkCase.SCRAPABLE_LINK -> {
         licenseText = fetchLicenseText(license.scrapableLink.url)
         licenseLink = license.scrapableLink.url
+
+        // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
         if (licenseText.length > MAX_CHARS_LIMIT) {
           licenseText = licenseLink
         }
@@ -163,6 +165,8 @@ class RetrieveLicenseTexts(
       License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
         licenseText = fetchLicenseText(license.extractedCopyLink.url)
         licenseLink = license.extractedCopyLink.url
+
+        // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
         if (licenseText.length > MAX_CHARS_LIMIT) {
           licenseText = licenseLink
         }

@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.license
 
+import com.google.protobuf.TextFormat
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.proto.MavenDependency
@@ -178,7 +179,8 @@ class MavenDependenciesListCheck(
 
   private fun printDependenciesList(dependencyList: List<MavenDependency>) {
     dependencyList.forEach { dep ->
-      println(dep)
+      TextFormat.printer().print(dep, System.out)
+      println()
     }
   }
 }
