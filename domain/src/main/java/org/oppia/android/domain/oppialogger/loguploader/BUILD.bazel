@@ -14,7 +14,7 @@ kt_android_library(
     deps = [
         ":dagger",
         ":worker_factory",
-        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:androidx_work_work-runtime",
         "//third_party:javax_inject_javax_inject",
     ],
 )
