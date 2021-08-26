@@ -26,6 +26,8 @@ internal const val TEST_ACTIVITY_STORY_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_story_id"
 internal const val TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_exploration_id"
+internal const val TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY =
+  "StateFragmentTestActivity.test_activity_should_save_partial_progress"
 
 /** Test Activity used for testing StateFragment */
 class StateFragmentTestActivity :
@@ -62,13 +64,18 @@ class StateFragmentTestActivity :
       profileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String
+      explorationId: String,
+      shouldSavePartialProgress: Boolean
     ): Intent {
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, profileId)
       intent.putExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY, topicId)
       intent.putExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY, storyId)
       intent.putExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY, explorationId)
+      intent.putExtra(
+        TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY,
+        shouldSavePartialProgress
+      )
       return intent
     }
   }
