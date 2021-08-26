@@ -8,6 +8,7 @@ import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -25,6 +26,8 @@ private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
+private const val CHECK_IS_EXPLORATION_CHECKPOINT_COMPATIBLE_WITH_EXPLORATION_DATA_PROVIDER_ID =
+  "check_is_exploration_checkpoint_compatible_with_exploration_provider_id"
 
 /**
  * Controller for saving, retrieving, updating, and deleting exploration checkpoints.
@@ -34,11 +37,15 @@ class ExplorationCheckpointController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
-  @ExplorationStorageDatabaseSize private val explorationCheckpointDatabaseSizeLimit: Int
+  @ExplorationStorageDatabaseSize private val explorationCheckpointDatabaseSizeLimit: Int,
+  private val explorationRetriever: ExplorationRetriever
 ) {
 
   /** Indicates that no checkpoint was found for the specified explorationId and profileId. */
   class ExplorationCheckpointNotFoundException(message: String) : Exception(message)
+
+  /** Indicates that no checkpoint was found for the specified explorationId and profileId. */
+  class OutdatedExplorationCheckpointException(message: String) : Exception(message)
 
   /**
    * These Statuses correspond to the result of the deferred such that if the deferred contains
@@ -142,16 +149,29 @@ class ExplorationCheckpointController @Inject constructor(
       ) { explorationCheckpointDatabase ->
 
         val checkpoint = explorationCheckpointDatabase.explorationCheckpointMap[explorationId]
+        val exploration = explorationRetriever.loadExploration(explorationId)
 
-        if (checkpoint != null) {
-          AsyncResult.success(checkpoint)
-        } else
-          AsyncResult.failed(
-            ExplorationCheckpointNotFoundException(
-              "Checkpoint with the explorationId $explorationId was not found " +
-                "for profileId ${profileId.internalId}."
+        when {
+          checkpoint != null && exploration.version == checkpoint.explorationVersion -> {
+            AsyncResult.success(checkpoint)
+          }
+          checkpoint != null && exploration.version != checkpoint.explorationVersion -> {
+            AsyncResult.failed(
+              OutdatedExplorationCheckpointException(
+                "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
+                  "resume exploration $explorationId with version: ${exploration.version}"
+              )
             )
-          )
+          }
+          else -> {
+            AsyncResult.failed(
+              ExplorationCheckpointNotFoundException(
+                "Checkpoint with the explorationId $explorationId was not found " +
+                  "for profileId ${profileId.internalId}."
+              )
+            )
+          }
+        }
       }
   }
 
@@ -170,23 +190,24 @@ class ExplorationCheckpointController @Inject constructor(
       ) { explorationCheckpointDatabase ->
 
         // Find the oldest checkpoint by timestamp or null if no checkpoints is saved.
-        val oldestCheckpoint = explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
-          it.value.timestampOfFirstCheckpoint
-        }
+        val oldestCheckpoint =
+          explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
+            it.value.timestampOfFirstCheckpoint
+          }
 
-        if (oldestCheckpoint == null) {
-          AsyncResult.failed(
-            ExplorationCheckpointNotFoundException(
-              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-            )
-          )
-        } else {
+        if (oldestCheckpoint != null) {
           val explorationCheckpointDetails = ExplorationCheckpointDetails.newBuilder()
             .setExplorationId(oldestCheckpoint.key)
             .setExplorationTitle(oldestCheckpoint.value.explorationTitle)
             .setExplorationVersion(oldestCheckpoint.value.explorationVersion)
             .build()
           AsyncResult.success(explorationCheckpointDetails)
+        } else {
+          AsyncResult.failed(
+            ExplorationCheckpointNotFoundException(
+              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
+            )
+          )
         }
       }
   }

@@ -27,11 +27,19 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -59,6 +67,9 @@ class ExplorationCheckpointTestHelperTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @Inject
@@ -78,6 +89,7 @@ class ExplorationCheckpointTestHelperTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -85,59 +97,154 @@ class ExplorationCheckpointTestHelperTest {
   }
 
   @Test
-  fun testSaveFakeExplorationCheckpoint_checkCheckpointIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(profileId.internalId)
+  fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
 
-    val retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        FAKE_EXPLORATION_ID_1
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify exploration checkpoint was saved with correct exploration title.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_1)
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_0,
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
+    )
   }
 
   @Test
-  fun testSaveTwoFakeCheckpoints_checkCheckpointsAreSaved() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(profileId.internalId)
+  fun testUpdateCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
 
-    var retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        FAKE_EXPLORATION_ID_1
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_0,
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
+    )
 
-    // Verify the first exploration checkpoint was saved with correct exploration title.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_1)
+    explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
 
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_0,
+      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME
+    )
+  }
+
+  @Test
+  fun testSaveCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_1,
+      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
+    )
+  }
+
+  @Test
+  fun testUpdateCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_1,
+      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
+    )
+
+    explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION,
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = FRACTIONS_EXPLORATION_ID_1,
+      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
+      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME
+    )
+  }
+
+  @Test
+  fun testSaveCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
+      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
+    )
+  }
+
+  @Test
+  fun testUpdateCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
+      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
+    )
+
+    explorationCheckpointTestHelper.updateCheckpointForRatiosStory0Exploration0(
+      profileId = profileId,
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+
+    verifySavedCheckpointHasCorrectExplorationDetails(
+      profileId = profileId,
+      explorationId = RATIOS_EXPLORATION_ID_0,
+      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
+      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME
+    )
+  }
+
+  private fun verifySavedCheckpointHasCorrectExplorationDetails(
+    profileId: ProfileId,
+    explorationId: String,
+    explorationTitle: String,
+    pendingStateName: String
+  ) {
     reset(mockExplorationCheckpointObserver)
-    retrieveFakeCheckpointLiveData =
+    val retrieveFakeCheckpointLiveData =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         profileId,
-        FAKE_EXPLORATION_ID_2
+        explorationId
       ).toLiveData()
     retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
     testCoroutineDispatchers.runCurrent()
 
-    // Verify the second exploration checkpoint was saved with correct exploration title.
+    // Verify saved checkpoint has correct exploration title and pending state name.
     verify(mockExplorationCheckpointObserver, atLeastOnce())
       .onChanged(explorationCheckpointCaptor.capture())
     assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
     assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(FAKE_EXPLORATION_TITLE_2)
+      .isEqualTo(explorationTitle)
+    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
+      .isEqualTo(pendingStateName)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -162,6 +269,19 @@ class ExplorationCheckpointTestHelperTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @CacheAssetsLocally
+    @Provides
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.

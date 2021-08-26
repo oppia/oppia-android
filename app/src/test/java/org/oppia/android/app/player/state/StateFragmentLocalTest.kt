@@ -1268,7 +1268,12 @@ class StateFragmentLocalTest {
   ): ActivityScenario<StateFragmentTestActivity> {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
-        context, internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, explorationId
+        context,
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        explorationId,
+        shouldSavePartialProgress = false
       )
     )
   }

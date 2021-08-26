@@ -77,6 +77,7 @@ private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
+private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
 private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
 private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
 
@@ -93,6 +94,11 @@ class TopicController @Inject constructor(
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
+
+  /**
+   * Indicates that the chapter for the specified exploration, story, and topic ID was not found.
+   */
+  class ChapterNotFoundException(message: String) : Exception(message)
 
   /**
    * Fetches a topic given a profile ID and a topic ID.
@@ -141,6 +147,35 @@ class TopicController @Inject constructor(
       GET_STORY_COMBINED_PROVIDER_ID,
       ::combineStorySummaryAndStoryProgress
     )
+  }
+
+  /**
+   * Retrieves a chapter given a topic ID, story ID, and exploration ID.
+   *
+   * @param topicId the ID corresponding to the topic which contains this story
+   * @param storyId the ID corresponding to the story which needs to be returned
+   * @param explorationId the ID corresponding to the exploration which needs to be returned
+   * @return a [DataProvider] for [ChapterSummary]
+   */
+  fun retrieveChapter(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterSummary> {
+    return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+    }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
+      val chapterSummary = fetchChapter(storySummary, explorationId)
+      if (chapterSummary != null) {
+        AsyncResult.success(chapterSummary)
+      } else {
+        AsyncResult.failed(
+          ChapterNotFoundException(
+            "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
+          )
+        )
+      }
+    }
   }
 
   /**
@@ -363,6 +398,15 @@ class TopicController @Inject constructor(
         }.build()
       }.build()
     } else createTopicFromJson(topicId)
+  }
+
+  private fun fetchChapter(
+    storySummary: StorySummary,
+    explorationId: String
+  ): ChapterSummary? {
+    return storySummary.chapterList.firstOrNull {
+      it.explorationId == explorationId
+    }
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
