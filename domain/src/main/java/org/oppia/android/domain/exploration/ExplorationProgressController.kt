@@ -78,7 +78,8 @@ class ExplorationProgressController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
@@ -92,6 +93,7 @@ class ExplorationProgressController @Inject constructor(
         currentExplorationId = explorationId
         this.shouldSavePartialProgress = shouldSavePartialProgress
         checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+        this.explorationCheckpoint = explorationCheckpoint
       }
       hintHandler = hintHandlerFactory.create(this)
       explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
@@ -498,13 +500,24 @@ class ExplorationProgressController @Inject constructor(
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
-    progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+
+    if (progress.explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance()) {
+      // Restore the StateDeck and the HintHandler if the exploration is being resumed.
+      progress.resumeStateDeckForSavedState(exploration)
+      hintHandler.resumeHintsForSavedState(
+        progress.explorationCheckpoint.pendingUserAnswersCount,
+        progress.explorationCheckpoint.helpIndex,
+        progress.stateDeck.getCurrentState()
+      )
+    } else {
+      // If the exploration is not being resumed, reset the StateDeck and the HintHandler.
+      progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
+      hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
+    }
 
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
     progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
-
-    hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
 
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()

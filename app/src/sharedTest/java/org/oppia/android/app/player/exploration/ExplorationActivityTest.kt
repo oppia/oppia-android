@@ -61,12 +61,16 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -85,10 +89,10 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -98,16 +102,18 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
-import org.oppia.android.testing.lightweightcheckpointing.FAKE_EXPLORATION_ID_1
-import org.oppia.android.testing.lightweightcheckpointing.FAKE_EXPLORATION_ID_2
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -157,6 +163,9 @@ class ExplorationActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   private val internalProfileId: Int = 0
 
   @Before
@@ -164,6 +173,7 @@ class ExplorationActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -181,7 +191,8 @@ class ExplorationActivityTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -191,7 +202,8 @@ class ExplorationActivityTest {
           topicId,
           storyId,
           explorationId,
-          shouldSavePartialProgress
+          shouldSavePartialProgress,
+          explorationCheckpoint
         )
       }
     }
@@ -237,7 +249,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
@@ -262,7 +275,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -289,7 +303,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -316,7 +331,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -344,7 +360,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -372,7 +389,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
@@ -397,7 +415,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_help))).perform(click())
@@ -423,7 +442,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
@@ -454,7 +474,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
@@ -477,7 +498,8 @@ class ExplorationActivityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
@@ -502,7 +524,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
@@ -529,7 +552,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -556,7 +580,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -584,7 +609,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -623,7 +649,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -667,7 +694,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -708,7 +736,8 @@ class ExplorationActivityTest {
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
         RATIOS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
@@ -744,7 +773,8 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -794,7 +824,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
@@ -847,7 +878,8 @@ class ExplorationActivityTest {
       RATIOS_TOPIC_ID,
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
@@ -911,7 +943,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       pressBack()
@@ -940,7 +973,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = false
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
@@ -970,7 +1004,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
     pressBack()
@@ -999,7 +1034,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1011,7 +1047,10 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1027,7 +1066,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1036,15 +1076,22 @@ class ExplorationActivityTest {
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
-      FAKE_EXPLORATION_ID_1
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
     )
   }
 
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1060,7 +1107,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = false
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1069,8 +1117,8 @@ class ExplorationActivityTest {
       .perform(click())
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
-      FAKE_EXPLORATION_ID_1
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
     )
   }
 
@@ -1093,7 +1141,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1120,7 +1169,8 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1134,8 +1184,10 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
-
-    explorationCheckpointTestHelper.saveFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1151,25 +1203,33 @@ class ExplorationActivityTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      shouldSavePartialProgress = true
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
     testCoroutineDispatchers.runCurrent()
 
     pressBack()
 
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
-      FAKE_EXPLORATION_ID_1
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
     )
     explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-      internalProfileId,
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       FRACTIONS_EXPLORATION_ID_0
     )
   }
 
   @Test
   fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1185,7 +1245,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1198,7 +1259,14 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1214,7 +1282,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1228,7 +1297,14 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1244,7 +1320,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1261,7 +1338,14 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1277,7 +1361,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1295,7 +1380,14 @@ class ExplorationActivityTest {
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1311,7 +1403,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1328,7 +1421,14 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1344,7 +1444,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1356,15 +1457,15 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
-        FAKE_EXPLORATION_ID_1
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        RATIOS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
-        FAKE_EXPLORATION_ID_2
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
     }
@@ -1373,7 +1474,14 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1389,7 +1497,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1401,25 +1510,31 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
-        FAKE_EXPLORATION_ID_2
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
       )
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-      internalProfileId,
-      FAKE_EXPLORATION_ID_1
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
     )
-
     explorationDataController.stopPlayingExploration()
   }
 
   @Test
   fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
-    explorationCheckpointTestHelper.saveTwoFakeExplorationCheckpoint(internalProfileId)
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1435,7 +1550,8 @@ class ExplorationActivityTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        shouldSavePartialProgress = true
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -1445,18 +1561,18 @@ class ExplorationActivityTest {
         .inRoot(isDialog()).perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         FRACTIONS_EXPLORATION_ID_0
       )
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
-        FAKE_EXPLORATION_ID_1
-      )
-      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
-        internalProfileId,
-        FAKE_EXPLORATION_ID_2
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
       )
     }
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
     explorationDataController.stopPlayingExploration()
   }
 
@@ -1621,8 +1737,8 @@ class ExplorationActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      TestExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      TestExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
     ]
   )
 

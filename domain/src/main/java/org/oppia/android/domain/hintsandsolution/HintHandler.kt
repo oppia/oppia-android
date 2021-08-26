@@ -30,6 +30,17 @@ interface HintHandler {
   fun startWatchingForHintsInNewState(state: State)
 
   /**
+   * Starts watching for potential hints to be shown when the exploration is resumed (e.g. if a
+   * user doesn't submit an answer after a certain amount of time). This is meant to only be called
+   * once when the the exploration is resumed.
+   *
+   * @param trackedWrongAnswerCount the count of wrong answers saved in the checkpoint
+   * @param helpIndex the cached state of hints/solution from the checkpoint
+   * @param state the restored pending state
+   * */
+  fun resumeHintsForSavedState(trackedWrongAnswerCount: Int, helpIndex: HelpIndex, state: State)
+
+  /**
    * Indicates that the current state has ended and a new one should start being monitored. This
    * will cancel any previously pending background operations and potentially starts new ones
    * corresponding to the new state.

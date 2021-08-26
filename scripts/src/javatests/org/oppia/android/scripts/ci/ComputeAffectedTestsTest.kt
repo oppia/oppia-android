@@ -287,6 +287,10 @@ class ComputeAffectedTestsTest {
       "InstrumentationTest",
       subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
     )
+    createBasicTests(
+      "RobolectricTest",
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
+    )
     createBasicTests("ThirdTest")
     val reportedTargets = runScript()
 
@@ -294,6 +298,11 @@ class ComputeAffectedTestsTest {
       reportedTargets
     ).doesNotContain(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
+    assertThat(
+      reportedTargets
+    ).contains(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
     )
   }
 
@@ -307,7 +316,7 @@ class ComputeAffectedTestsTest {
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.application"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
     )
     val reportedTargets = runScript()
 
@@ -315,6 +324,11 @@ class ComputeAffectedTestsTest {
       reportedTargets
     ).doesNotContain(
       "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+    )
+    assertThat(
+      reportedTargets
+    ).contains(
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
     )
   }
 

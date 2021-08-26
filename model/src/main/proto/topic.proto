@@ -209,6 +209,9 @@ message PromotedStory {
   // Indicates whether the topic containing this story is 'learned'
   // (meaning at least one story was completed).
   bool is_topic_learned = 10;
+
+  // The ChapterPlayState of the promoted lesson.
+  ChapterPlayState chapter_play_state = 11;
 }
 
 // A homescreen summary of a topic.
