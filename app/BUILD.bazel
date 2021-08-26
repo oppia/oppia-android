@@ -571,7 +571,6 @@ kt_android_library(
         ":view_models",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:configuration_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_core_core-ktx",
