@@ -48,6 +48,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
@@ -212,21 +213,6 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testPromotedActivityList_markFracStory0Exp0StartedNotCompleted_ongoingStoryListIsCorrect() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-  }
-
-  @Test
   fun testGetPromotedActivityList_markFracStory0Exp0InProgressSaved_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId0,
@@ -259,25 +245,6 @@ class TopicListControllerTest {
   @Test
   fun testGetPromotedStoryList_markChapDoneFracStory0Exp0_ongoingStoryListIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-
-    val promotedActivityList = retrievePromotedActivityList()
-    assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(1)
-    verifyOngoingStoryAsFractionStory0Exploration1(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
-    )
-  }
-
-  @Test
-  fun testGetStoryList_markChapDoneFracStory0Exp0_fracStory0Exp1Started_ongoingStoryListCorrect() {
-    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0Exp1(
       profileId0,
       timestampOlderThanOneWeek = false
     )
@@ -669,11 +636,7 @@ class TopicListControllerTest {
   }
 
   @Test
-  fun testStoryList_markLessons_progressSaved_notSaved_startedNotDone_ongoingListCorrect() {
-    storyProgressTestHelper.markStartedNotCompletedFractionsStory0(
-      profileId0,
-      timestampOlderThanOneWeek = false
-    )
+  fun testStoryList_markLessonInProgressSaved_anotherLessonInProgressNotSaved_ongoingListCorrect() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId0,
       timestampOlderThanOneWeek = false
@@ -685,15 +648,12 @@ class TopicListControllerTest {
 
     val promotedActivityList = retrievePromotedActivityList()
     assertThat(promotedActivityList.promotedStoryList.recentlyPlayedStoryCount)
-      .isEqualTo(3)
+      .isEqualTo(2)
     verifyOngoingStoryAsRatioStory0Exploration0(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[0]
     )
     verifyOngoingStoryAsRatioStory1Exploration2(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
-    )
-    verifyOngoingStoryAsFractionStory0Exploration0(
-      promotedActivityList.promotedStoryList.recentlyPlayedStoryList[2]
     )
   }
 
@@ -911,7 +871,8 @@ class TopicListControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

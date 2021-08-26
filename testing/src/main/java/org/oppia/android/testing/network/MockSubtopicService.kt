@@ -3,7 +3,6 @@ package org.oppia.android.testing.network
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.SubtopicService
 import org.oppia.android.data.backends.gae.model.GaeSubtopic
 import retrofit2.Call
@@ -12,8 +11,10 @@ import retrofit2.mock.BehaviorDelegate
 /**
  * Mock SubtopicService with dummy data from [subtopic.json]
  */
-class MockSubtopicService(private val delegate: BehaviorDelegate<SubtopicService>) :
-  SubtopicService {
+class MockSubtopicService(
+  private val delegate: BehaviorDelegate<SubtopicService>,
+  private val xssiPrefix: String
+) : SubtopicService {
   override fun getSubtopic(topicName: String, subtopicId: String): Call<GaeSubtopic> {
     val subtopic = createMockGaeSubtopic()
     return delegate.returningResponse(subtopic).getSubtopic(topicName, subtopicId)
@@ -24,9 +25,9 @@ class MockSubtopicService(private val delegate: BehaviorDelegate<SubtopicService
    * @return GaeSubtopic: GaeSubtopic with mock data
    */
   private fun createMockGaeSubtopic(): GaeSubtopic {
-    val networkInterceptor = JsonPrefixNetworkInterceptor()
+    val networkInterceptor = JsonPrefixNetworkInterceptor(xssiPrefix)
     var subtopicResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("subtopic.json")
+      xssiPrefix + ApiMockLoader.getFakeJson("subtopic.json")
 
     subtopicResponseWithXssiPrefix =
       networkInterceptor.removeXssiPrefix(subtopicResponseWithXssiPrefix)

@@ -72,10 +72,13 @@ class QuestionPlayerFragment :
   ) =
     questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
+  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
+    questionPlayerFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
+
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    questionPlayerFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    questionPlayerFragmentPresenter.revealHint(hintIndex)
   }
 
   fun revealSolution() {
@@ -83,7 +86,4 @@ class QuestionPlayerFragment :
   }
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
-
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    questionPlayerFragmentPresenter.onHintAvailable(helpIndex)
 }

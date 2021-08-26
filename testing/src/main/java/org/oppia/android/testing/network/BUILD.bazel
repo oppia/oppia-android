@@ -24,11 +24,11 @@ kt_android_library(
     deps = [
         ":impl",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_interceptors",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:network_settings",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/backends/gae/model",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
         "//third_party:com_squareup_retrofit2_retrofit-mock",
+        "//utility",
     ],
 )
 

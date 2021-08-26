@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
-import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Question
-import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
+import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
@@ -48,16 +48,20 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
-  private val exceptionsController: ExceptionsController
-) {
+  private val exceptionsController: ExceptionsController,
+  private val hintHandlerFactory: HintHandler.Factory
+) : HintHandler.HintMonitor {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
   //  sufficient proficiency.
 
   private val progress = QuestionAssessmentProgress()
+  private lateinit var hintHandler: HintHandler
   private val progressLock = ReentrantLock()
-  @Inject internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
+
+  @Inject
+  internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
   private val currentQuestionDataProvider: NestedTransformedDataProvider<EphemeralQuestion> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
@@ -69,6 +73,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         "Cannot start a new training session until the previous one is completed."
       }
 
+      hintHandler = hintHandlerFactory.create(this)
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
       currentQuestionDataProvider.setBaseDataProvider(
         questionsListDataProvider,
@@ -88,6 +93,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
       )
     }
+  }
+
+  override fun onHelpIndexChanged() {
+    asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
   }
 
   /**
@@ -154,16 +163,22 @@ class QuestionAssessmentProgressController @Inject constructor(
           // Do not proceed unless the user submitted the correct answer.
           if (answeredQuestionOutcome.isCorrectAnswer) {
             progress.completeCurrentQuestion()
-            if (!progress.isAssessmentCompleted()) {
+            val newState = if (!progress.isAssessmentCompleted()) {
               // Only push the next state if the assessment isn't completed.
-              progress.stateDeck.pushState(progress.getNextState(), prohibitSameStateName = false)
+              progress.getNextState()
             } else {
               // Otherwise, push a synthetic state for the end of the session.
-              progress.stateDeck.pushState(
-                State.getDefaultInstance(),
-                prohibitSameStateName = false
-              )
+              State.getDefaultInstance()
             }
+            progress.stateDeck.pushState(newState, prohibitSameStateName = false)
+            hintHandler.finishState(newState)
+          } else {
+            // Schedule a new hints or solution or show a new hint or solution immediately based on
+            // the current ephemeral state of the training session because a new wrong answer was
+            // submitted.
+            hintHandler.handleWrongAnswerSubmission(
+              computeCurrentEphemeralState().pendingState.wrongAnswerCount
+            )
           }
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
@@ -182,11 +197,15 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  fun submitHintIsRevealed(
-    state: State,
-    hintIsRevealed: Boolean,
-    hintIndex: Int
-  ): LiveData<AsyncResult<Hint>> {
+  /**
+   * Notifies the controller that the user wishes to reveal a hint.
+   *
+   * @param hintIndex index of the hint that was revealed in the hint list of the current pending
+   *     state
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
+   */
+  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -198,16 +217,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var hint: Hint
         try {
-          progress.stateDeck.submitHintRevealed(state, hintIsRevealed, hintIndex)
-          hint = progress.stateList.computeHintForResult(
-            state,
-            hintIsRevealed,
-            hintIndex
-          )
-          progress.stateDeck.pushStateForHint(state, hintIndex)
           progress.trackHintViewed()
+          hintHandler.viewHint(hintIndex)
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing hint' situation. This can specifically happen if hint throws an
@@ -215,7 +227,7 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(hint))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -223,7 +235,13 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  fun submitSolutionIsRevealed(state: State): LiveData<AsyncResult<Solution>> {
+  /**
+   * Notifies the controller that the user has revealed the solution to the current state.
+   *
+   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   *     payload of the result isn't relevant)
+   */
+  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -235,13 +253,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
           "Cannot submit an answer while another answer is pending."
         }
-        lateinit var solution: Solution
         try {
-
-          progress.stateDeck.submitSolutionRevealed(state)
-          solution = progress.stateList.computeSolutionForResult(state)
-          progress.stateDeck.pushStateForSolution(state)
           progress.trackSolutionViewed()
+          hintHandler.viewSolution()
         } finally {
           // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
           // in an 'always showing solution' situation. This can specifically happen if solution
@@ -250,7 +264,7 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(solution))
+        return MutableLiveData(AsyncResult.success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -284,6 +298,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         progress.stateDeck.navigateToNextState()
         // Track whether the learner has moved to a new card.
         if (progress.isViewingMostRecentQuestion()) {
+          // Update the hint state and maybe schedule new help when user moves to the pending top
+          // state.
+          hintHandler.navigateBackToLatestPendingState()
           progress.processNavigationToNewQuestion()
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
@@ -337,14 +354,21 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
     }
 
-  private suspend fun retrieveUserAssessmentPerformanceAsync(skillIdList: List<String>):
-    AsyncResult<UserAssessmentPerformance> {
-      progressLock.withLock {
-        val scoreCalculator =
-          scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
-        return AsyncResult.success(scoreCalculator.computeAll())
-      }
+  private fun computeCurrentEphemeralState(): EphemeralState {
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+    return progress.stateDeck.getCurrentEphemeralState(helpIndex)
+  }
+
+  @Suppress("RedundantSuspendModifier")
+  private suspend fun retrieveUserAssessmentPerformanceAsync(
+    skillIdList: List<String>
+  ): AsyncResult<UserAssessmentPerformance> {
+    progressLock.withLock {
+      val scoreCalculator =
+        scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
+      return AsyncResult.success(scoreCalculator.computeAll())
     }
+  }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
@@ -385,10 +409,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
-    val ephemeralState = progress.stateDeck.getCurrentEphemeralState()
     val currentQuestionIndex = progress.getCurrentQuestionIndex()
     val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
-      .setEphemeralState(ephemeralState)
+      .setEphemeralState(computeCurrentEphemeralState())
       .setCurrentQuestionIndex(currentQuestionIndex)
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())
@@ -401,6 +424,8 @@ class QuestionAssessmentProgressController @Inject constructor(
   private fun initializeAssessment(questionsList: List<Question>) {
     check(questionsList.isNotEmpty()) { "Cannot start a training session with zero questions." }
     progress.initialize(questionsList)
+    // Update hint state to schedule task to show new help.
+    hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
   }
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */

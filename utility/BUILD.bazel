@@ -73,6 +73,12 @@ kt_android_library(
     ],
 )
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
@@ -100,6 +106,10 @@ TEST_DEPS = [
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = [
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugImplTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
 ]
 
 [utility_test(

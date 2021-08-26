@@ -129,6 +129,14 @@ jobs:
         run: |
           bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
 
+      - name: Todo Check
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --limit 2000 --repo oppia/oppia-android --json number > $(pwd)/open_issues.json
+          bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb open_issues.json
+
   third_party_dependencies_check:
     name: Maven Dependencies Checks
     runs-on: ubuntu-18.04
@@ -149,3 +157,8 @@ jobs:
         if: always()
         run: |
           bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
+
+      - name: License Texts Check
+        if: always()
+        run: |
+          bazel run //scripts:license_texts_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
