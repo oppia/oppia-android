@@ -15,6 +15,7 @@ kt_android_library(
         ":dagger",
         ":worker_factory",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
