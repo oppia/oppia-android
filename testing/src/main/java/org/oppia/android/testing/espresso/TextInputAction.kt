@@ -4,7 +4,6 @@ import android.view.View
 import androidx.test.espresso.matcher.BoundedMatcher
 import com.google.android.material.textfield.TextInputLayout
 import org.hamcrest.Description
-import org.hamcrest.Matcher
 
 /**
  * Action for matching error text and performing other actions on TextInputLayout
@@ -14,32 +13,44 @@ class TextInputAction {
 
   companion object {
     /**
-     * Returns a [Matcher] that matches the string corresponding to the specified
-     * [expectedErrorText] with the textInputLayout's error text.
+     * Check that the TextInputLayout view has the [expectedErrorText] error text.
+     *
+     * @returns a [BoundedMatcher] that matches the [expectedErrorText] with the
+     * TextInputLayout's error text
      */
-    fun hasErrorText(expectedErrorText: String) =
-      object : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-        override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
-          return (textInputLayout).error == expectedErrorText
-        }
-
-        override fun describeTo(description: Description) {
-          description.appendText("TextInputLayout's error")
-        }
-      }
+    fun hasErrorText(expectedErrorText: String): BoundedMatcher<View, TextInputLayout> {
+      return ErrorTextExisted(expectedErrorText)
+    }
 
     /**
-     *Returns a [Matcher] that matches if the textInputLayout has no error text available.
+     * Check that the TextInputLayout view has an empty error text.
+     *
+     * @returns a [BoundedMatcher] that matches if error text is null or empty.
      */
-    fun hasNoErrorText() =
-      object : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-        override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
-          return (textInputLayout).error.isNullOrEmpty()
-        }
+    fun hasNoErrorText(): BoundedMatcher<View, TextInputLayout> {
+      return ErrorTextNotExisted()
+    }
 
-        override fun describeTo(description: Description) {
-          description.appendText("")
-        }
+    private class ErrorTextExisted(private val expectedErrorText: String) :
+      BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+      override fun describeTo(description: Description) {
+        description.appendText("The expected error text is '$expectedErrorText'")
       }
+
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
+        return (textInputLayout).error == expectedErrorText
+      }
+    }
+
+    private class ErrorTextNotExisted :
+      BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
+        return (textInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("There is no error text")
+      }
+    }
   }
 }
