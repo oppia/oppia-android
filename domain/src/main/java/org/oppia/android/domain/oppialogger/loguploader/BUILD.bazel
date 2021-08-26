@@ -1,5 +1,5 @@
 """
-Library for providing log uploading functionality to the Oppia android app.
+Library for providing log uploading functionality to the Oppia Android app.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -52,7 +52,7 @@ kt_android_library(
     srcs = [
         "LogUploadWorkerFactory.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:__pkg__"],
     deps = [
         ":worker",
         "//third_party:androidx_work_work-runtime-ktx",

@@ -1,5 +1,5 @@
 """
-Library for providing logging analytics to the Oppia android app.
+Library for providing logging analytics to the Oppia Android app.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")

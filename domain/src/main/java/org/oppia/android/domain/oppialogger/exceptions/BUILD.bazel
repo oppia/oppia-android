@@ -1,5 +1,5 @@
 """
-Library for providing logging exceptions to the Oppia android app.
+Library for providing logging exceptions to the Oppia Android app.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -41,7 +41,7 @@ kt_android_library(
     srcs = [
         "UncaughtExceptionLoggerStartupListener.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:__pkg__"],
     deps = [
         ":controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
