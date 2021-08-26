@@ -22,6 +22,14 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
 )
 
+http_archive(
+    name = "rules_android",
+    urls = ["https://github.com/bazelbuild/rules_android/archive/5c8bdd44193894594fa01fd527c5cf3af17e7652.zip"],
+    strip_prefix = "rules_android-5c8bdd44193894594fa01fd527c5cf3af17e7652",
+)
+load("@rules_android//:defs.bzl", "rules_android_workspace")
+rules_android_workspace("rules_android")
+
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
     name = "io_bazel_rules_kotlin",

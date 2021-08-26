@@ -449,6 +449,13 @@ BINDING_ADAPTERS = [
 # keep sorted
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
+EXCLUDE_OPPIA_APPLICTATION = [
+    "src/main/java/org/oppia/android/app/application/OppiaApplication.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationComponent.kt"
+]
+
 # Files to be excluded from the source list for the app library. This list includes all the files
 # built by the following libraries:
 # - view_models
@@ -457,7 +464,7 @@ SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper
 # - annotations
 # - binding_adapters
 
-EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + MIGRATED_SOURCE_FILES
+EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + MIGRATED_SOURCE_FILES + EXCLUDE_OPPIA_APPLICTATION
 
 # Files to be built by the app library. All of these files are assumed to have resource imports and
 # will be processed by the app library genrule regardless in order to avoid any import issues.
@@ -668,6 +675,43 @@ kt_android_library(
         ":views",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//model:arguments_java_proto_lite",
+        "//third_party:androidx_databinding_databinding-adapters",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:androidx_multidex_multidex",
+        "//third_party:androidx_viewpager2_viewpager2",
+        "//third_party:androidx_viewpager_viewpager",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg",
+        "//third_party:com_google_android_flexbox_flexbox",
+        "//third_party:javax_annotation_javax_annotation-api_jar",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
+    ],
+)
+
+kt_android_library(
+    name = "app_kitkat",
+    srcs = APP_FILES,
+    custom_package = "org.oppia.android.app.ui",
+    enable_data_binding = 1,
+    manifest = "src/main/AppAndroidManifest.xml",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":binding_adapters",
+        ":dagger",
+        ":databinding_resources",
+        ":resources",
+        ":view_models",
+        ":views",
         "//model:arguments_java_proto_lite",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",

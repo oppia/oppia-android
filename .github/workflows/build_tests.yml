@@ -128,7 +128,7 @@ jobs:
       - name: Build Oppia binary (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
         run: |
-          bazel build -- //:oppia
+          bazel build -- //:oppia_kitkat
 
       - name: Copy Oppia APK for uploading
         run: cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
