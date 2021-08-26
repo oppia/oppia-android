@@ -131,9 +131,9 @@ jobs:
           bazel build -- //:oppia_kitkat
 
       - name: Copy Oppia APK for uploading
-        run: cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+        run: cp $GITHUB_WORKSPACE/bazel-bin/oppia_kitkat.apk /home/runner/work/oppia-android/oppia-android/
 
       - uses: actions/upload-artifact@v2
         with:
           name: oppia-bazel.apk
-          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia_kitkat.apk
