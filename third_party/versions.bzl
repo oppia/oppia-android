@@ -65,6 +65,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
+    "io.github.chaosleung:pinview": "1.4.4",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
