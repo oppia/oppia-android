@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "WorkManagerConfigurationModule.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         ":worker_factory",
@@ -64,7 +64,7 @@ kt_android_library(
     srcs = [
         "LogUploadWorkerModule.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         ":initializer",

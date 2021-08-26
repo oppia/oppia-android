@@ -23,7 +23,7 @@ kt_android_library(
     srcs = [
         "ApplicationStartupListener.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(

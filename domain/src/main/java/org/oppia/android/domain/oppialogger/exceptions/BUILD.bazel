@@ -28,7 +28,7 @@ kt_android_library(
     srcs = [
         "UncaughtExceptionLoggerModule.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         ":startup_listener",
