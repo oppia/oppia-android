@@ -22,8 +22,8 @@ private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
 
 /** Maximum number of chars that can be displayed in a textview. */
-// Reference: https://stackoverflow.com/a/51733275
-const val MAX_CHARS_LIMIT = 16383
+// Reference: https://issuetracker.google.com/issues/110853846#comment5
+const val MAX_LICENSE_LENGTH = 16383
 
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
@@ -155,22 +155,12 @@ class RetrieveLicenseTexts(
     val licenseLink: String
     when (license.verifiedLinkCase) {
       License.VerifiedLinkCase.SCRAPABLE_LINK -> {
-        licenseText = fetchLicenseText(license.scrapableLink.url)
+        licenseText = fetchViewableLicenseText(license.scrapableLink.url)
         licenseLink = license.scrapableLink.url
-
-        // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
-        if (licenseText.length > MAX_CHARS_LIMIT) {
-          licenseText = licenseLink
-        }
       }
       License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
-        licenseText = fetchLicenseText(license.extractedCopyLink.url)
+        licenseText = fetchViewableLicenseText(license.extractedCopyLink.url)
         licenseLink = license.extractedCopyLink.url
-
-        // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
-        if (licenseText.length > MAX_CHARS_LIMIT) {
-          licenseText = licenseLink
-        }
       }
       License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
         licenseText = license.directLinkOnly.url
@@ -179,6 +169,16 @@ class RetrieveLicenseTexts(
       else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
     return CopyrightLicense(license.licenseName, licenseLink, licenseText)
+  }
+
+  private fun fetchViewableLicenseText(licenseLink: String): String {
+    val licenseText = fetchLicenseText(licenseLink)
+    // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
+    return if (licenseText.length <= MAX_LICENSE_LENGTH) {
+      licenseText
+    } else {
+      licenseLink
+    }
   }
 
   private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {

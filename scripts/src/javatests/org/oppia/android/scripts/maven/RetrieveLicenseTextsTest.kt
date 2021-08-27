@@ -23,6 +23,7 @@ import org.xml.sax.InputSource
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.random.Random
 
 /** Tests for [RetrieveLicenseTexts]. */
 class RetrieveLicenseTextsTest {
@@ -30,15 +31,14 @@ class RetrieveLicenseTextsTest {
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"
   private val SCRIPT_PASSED_INDICATOR = "Script execution completed successfully."
-  private val LONG_LICENSE_TEXT_LENGTH = MAX_CHARS_LIMIT + 1
+  private val LONG_LICENSE_TEXT_LENGTH = MAX_LICENSE_LENGTH + 1
 
   private val SCRAPABLE_LINK = "https://www.apache.org/licenses/LICENSE-2.0.txt"
   private val DIRECT_LINK_ONLY = "https://developer.android.com/studio/terms.html"
   private val EXTRACTED_COPY_ORIGINAL_LINK = "https://www.opensource.org/licenses/bsd-license"
   private val EXTRACTED_COPY_LINK = "https://raw.githubusercontent.com/oppia/oppia-android-" +
     "licenses/develop/simplified-bsd-license.txt"
-  private val LONG_LICENSE_TEXT_LINK = "https://raw.githubusercontent.com/javaee/javax." +
-    "annotation/83417807ad402ee1022c0307208d4510c80c68b6/LICENSE"
+  private val LONG_LICENSE_TEXT_LINK = "https://verylonglicense.txt"
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
 
@@ -552,7 +552,7 @@ class RetrieveLicenseTextsTest {
   private fun retrieveLongLicenseText(): String {
     val charPool: List<Char> = (' '..'z').toList() // Inlcude all chars from ASCII value 32 to 122.
     return (1..LONG_LICENSE_TEXT_LENGTH)
-      .map { kotlin.random.Random.nextInt(0, charPool.size) }
+      .map { Random.nextInt(0, charPool.size) }
       .map(charPool::get)
       .joinToString("")
   }
