@@ -75,6 +75,7 @@ dependencies {
   testImplementation(
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.test.ext:junit:1.1.1',
+      'com.google.android.material:material:1.2.0-alpha02',
       'com.google.truth:truth:0.43',
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
