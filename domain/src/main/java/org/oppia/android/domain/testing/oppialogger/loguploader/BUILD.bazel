@@ -1,0 +1,19 @@
+"""
+build bazel file for tesing oppia logger loguploader
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_log_uploader",
+    srcs = [
+        "FakeLogUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
