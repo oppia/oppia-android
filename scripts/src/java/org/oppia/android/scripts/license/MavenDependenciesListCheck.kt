@@ -1,8 +1,8 @@
 package org.oppia.android.scripts.license
 
+import com.google.protobuf.TextFormat
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 
 /**
@@ -179,44 +179,8 @@ class MavenDependenciesListCheck(
 
   private fun printDependenciesList(dependencyList: List<MavenDependency>) {
     dependencyList.forEach { dep ->
-      println(
-        """
-        artifact_name: "${dep.artifactName}"
-        artifact_version: "${dep.artifactVersion}"
-        """.trimIndent()
-      )
-      dep.licenseList.forEach { license ->
-        printLicense(license)
-      }
+      TextFormat.printer().print(dep, System.out)
       println()
     }
-  }
-
-  private fun printLicense(license: License) {
-    println(
-      """
-      license {
-        license_name: "${license.licenseName}"
-        original_link: "${license.originalLink}"
-      """.trimIndent()
-    )
-    when (license.verifiedLinkCase) {
-      License.VerifiedLinkCase.SCRAPABLE_LINK -> println(
-        """
-          scrapbale_link: "${license.scrapableLink.url}"
-        """.trimIndent()
-      )
-      License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> println(
-        """
-          extracted_copy_link: "${license.extractedCopyLink.url}"
-        """.trimIndent()
-      )
-      License.VerifiedLinkCase.DIRECT_LINK_ONLY -> println(
-        """
-          direct_link_only: "${license.directLinkOnly.url}"
-        """.trimIndent()
-      )
-    }
-    println("}")
   }
 }
