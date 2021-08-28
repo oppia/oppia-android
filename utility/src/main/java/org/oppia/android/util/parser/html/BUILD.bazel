@@ -34,8 +34,8 @@ kt_android_library(
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/andorid/util/parser/image:url_image_parser",  #this is not currently available
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:parser",
     ],
 )
 

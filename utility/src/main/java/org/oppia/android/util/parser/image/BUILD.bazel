@@ -1,0 +1,96 @@
+"""
+bazel file fofr image in parser
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "targets",
+    srcs = [
+        "ImageTargets.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "bitmap",
+    srcs = [
+        "BitmapBlurTransformation.kt",
+        "BitmapBlurrer.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "drawable",
+    srcs = [
+        "TextPictureDrawable.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:vector",
+    ],
+)
+
+kt_android_library(
+    name = "assets",
+    srcs = [
+        "ImageAssetFetcher.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+    ],
+)
+
+kt_android_library(
+    name = "loader",
+    srcs = [
+        "GlideImageLoader.kt",
+        "GlideImageLoaderModule.kt",
+        "ImageLoader.kt",
+        "RepositoryGlideModule.kt",
+        "RepositoryModelLoader.kt",
+        "TestGlideImageLoader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//third_party:glide_compiler",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:decoder",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:transformation",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:vector",
+    ],
+    "//third_party:androidx_annotation_annotation",
+)
+
+kt_android_library(
+    name = "parser",
+    srcs = [
+        "ImageParsingAnnotations.kt",
+        "ImageParsingModule.kt",
+        "UrlImageParser.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//third_party:glide_compiler",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:parser",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handler",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
+    ],
+)
+
+dagger_rules()
