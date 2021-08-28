@@ -65,6 +65,8 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:parser",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",

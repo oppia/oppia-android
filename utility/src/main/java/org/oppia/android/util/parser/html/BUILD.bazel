@@ -1,0 +1,42 @@
+"""
+Build bazel file for html directory
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "tag_handler",
+    srcs = [
+        "BulletTagHandler.kt",
+        "ConceptCardTagHandler.kt",
+        "CustomBulletSpan.kt",
+        "CustomHtmlContentHandler.kt",
+        "ImageTagHandler.kt",
+        "MathTagHandler.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "parser",
+    srcs = [
+        "ExplorationHtmlParserEntityType.kt",
+        "HtmlParser.kt",
+        "HtmlParserEntityTypeModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//third_party:androidx_core_core",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/andorid/util/parser/image:url_image_parser",  #this is not currently available
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+dagger_rules()
