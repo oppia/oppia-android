@@ -304,6 +304,4 @@
   <dimen name="home_fragment_padding_top">48dp</dimen>
   <dimen name="home_fragment_padding_bottom">100dp</dimen>
 
-
-
 </resources>
