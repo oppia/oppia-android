@@ -244,8 +244,8 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  @Ignore("Flaky test") // TODO(#3413): Test is failing unexpectedly.
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
+    testCoroutineDispatchers.unregisterIdlingResource()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
     clickPracticeTab()
     clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
