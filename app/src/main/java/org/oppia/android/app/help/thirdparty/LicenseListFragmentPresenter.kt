@@ -24,9 +24,11 @@ class LicenseListFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    dependencyIndex: Int
+    dependencyIndex: Int,
+    isMultipane: Boolean
   ): View? {
     val viewModel = LicenseListViewModel(activity, dependencyIndex)
+    viewModel.isMultipane.set(isMultipane)
 
     binding = LicenseListFragmentBinding.inflate(
       inflater,

@@ -14,7 +14,7 @@ class LicenseListActivityPresenter @Inject constructor(
 ) {
 
   /** Handles onCreate() method of the [LicenseListActivity]. */
-  fun handleOnCreate(dependencyIndex: Int) {
+  fun handleOnCreate(dependencyIndex: Int, isMultipane: Boolean) {
     val binding =
       DataBindingUtil.setContentView<LicenseListActivityBinding>(
         activity,
@@ -34,7 +34,7 @@ class LicenseListActivityPresenter @Inject constructor(
       (activity as LicenseListActivity).finish()
     }
     if (getLicenseListFragment() == null) {
-      val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex)
+      val licenseListFragment = LicenseListFragment.newInstance(dependencyIndex, isMultipane)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.license_list_fragment_placeholder, licenseListFragment).commitNow()
     }

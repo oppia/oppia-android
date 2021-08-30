@@ -275,4 +275,10 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">36dp</dimen>
+  <dimen name="app_version_text_view_padding_end">36dp</dimen>
+  <dimen name="app_version_image_view_margin_start">36dp</dimen>
+  <dimen name="app_version_text_view_margin_end">36dp</dimen>
+
 </resources>

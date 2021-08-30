@@ -3,7 +3,6 @@ package org.oppia.android.testing.network
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkSettings
 import org.oppia.android.data.backends.gae.api.ExplorationService
 import org.oppia.android.data.backends.gae.model.GaeExplorationContainer
 import retrofit2.Call
@@ -12,8 +11,10 @@ import retrofit2.mock.BehaviorDelegate
 /**
  * Mock ExplorationService with dummy data from [exploration.json]
  */
-class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationService>) :
-  ExplorationService {
+class MockExplorationService(
+  private val delegate: BehaviorDelegate<ExplorationService>,
+  private val xssiPrefix: String
+) : ExplorationService {
   override fun getExplorationById(explorationId: String): Call<GaeExplorationContainer> {
     val explorationContainer = createMockGaeExplorationContainer()
     return delegate.returningResponse(explorationContainer).getExplorationById(explorationId)
@@ -24,9 +25,9 @@ class MockExplorationService(private val delegate: BehaviorDelegate<ExplorationS
    * @return GaeExplorationContainer: GaeExplorationContainer with mock data
    */
   private fun createMockGaeExplorationContainer(): GaeExplorationContainer {
-    val networkInterceptor = JsonPrefixNetworkInterceptor()
+    val networkInterceptor = JsonPrefixNetworkInterceptor(xssiPrefix)
     var explorationResponseWithXssiPrefix =
-      NetworkSettings.XSSI_PREFIX + ApiMockLoader.getFakeJson("exploration.json")
+      xssiPrefix + ApiMockLoader.getFakeJson("exploration.json")
     explorationResponseWithXssiPrefix =
       networkInterceptor.removeXssiPrefix(explorationResponseWithXssiPrefix)
 

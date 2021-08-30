@@ -12,6 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
+    build_tools_version = "29.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -140,6 +141,21 @@ http_archive(
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
+
+ATS_SHA256 = "dcd1ff76aef1a26329d77863972780c8fe1fc8ff625747342239f0489c2837ec"
+
+http_archive(
+    name = "android_test_support",
+    sha256 = ATS_SHA256,
+    strip_prefix = "android-test-%s" % ATS_TAG,
+    urls = ["https://github.com/android/android-test/archive/%s.tar.gz" % ATS_TAG],
+)
+
+load("@android_test_support//:repo.bzl", "android_test_repositories")
+
+android_test_repositories()
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(

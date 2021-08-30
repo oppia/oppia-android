@@ -54,14 +54,17 @@ enum ObjectType {
 message State {
   // The name of the State.
   string name = 1;
+
   // Mapping from content_id to a VoiceoverMapping
   map<string, VoiceoverMapping> recorded_voiceovers = 2;
   SubtitledHtml content = 3;
+
   // Mapping from content_id to a TranslationMapping
   map<string, TranslationMapping> written_translations = 4;
   repeated ParamChange param_changes = 5;
   string classifier_model_id = 6;
   Interaction interaction = 7;
+
   // Boolean indicating whether the creator wants to ask for answer details
   // from the learner about why they picked a particular answer while
   // playing the exploration.
@@ -71,6 +74,7 @@ message State {
 // Structure for customization args for ParamChange objects.
 message ParamChangeCustomizationArgs {
   bool parse_with_jinja = 1;
+
   // If the param change has only a single value, we will populate just
   // one element in this list
   repeated string list_of_values = 3;
@@ -85,6 +89,7 @@ message Interaction {
   reserved 4;
   repeated Hint hint = 5;
   Outcome default_outcome = 6;
+
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
   map<string, SchemaObject> customization_args = 7;
@@ -138,6 +143,7 @@ message AnswerGroup {
 message Misconception {
   // Skill ID parsed from the misconception.
   string skill_id = 1;
+
   // Misconception ID parsed from the misconception.
   string misconception_id = 2;
 }
@@ -154,12 +160,16 @@ message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
+
   // correct_answer of the State.
   CorrectAnswer correct_answer = 3;
+
   // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
-  // To check if the solution was revealed or not by the learner.
-  bool solution_is_revealed = 5;
+
+  // Whether the solution was revealed (deprecated). This information is now available through the
+  // HelpIndex message passed with EphemeralState.
+  reserved 5;
 }
 
 // Structure for a Correct answer in Solution
@@ -177,8 +187,11 @@ message CorrectAnswer {
 message Hint {
   // Hint data.
   SubtitledHtml hint_content = 1;
-  // To check if the hint was revealed or not
-  bool hint_is_revealed = 2;
+
+  // Whether the hint was revealed (deprecated). This information is now available through
+  // the HelpIndex message passed through EphemeralState.
+  reserved 2;
+
   // The current state that is display to the user.
   State state = 3;
 }
@@ -243,12 +256,19 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
-  // A list of hints.
-  repeated Hint hint = 2;
+
+  // A list of hints (deprecated). To get the list of hints, retrieve them from the State message
+  // stored within the top-level EphemeralState & cross reference it with the HelpIndex provided
+  // below to get information about the current state of hints/solution.
+  reserved 2;
+
+  // The help index for the current exploration.
+  HelpIndex help_index = 3;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.
 message CompletedState {
+  // The list of answers and responses that were used to finish this state. These answers are in the order that the
   // The list of answers and responses that were used to finish this state. These answers are in the order that the
   // learner submitted them, so the last answer is guaranteed to be the correct answer.
   repeated AnswerAndResponse answer = 1;
@@ -258,6 +278,7 @@ message CompletedState {
 message UserAnswer {
   // The submitted answer.
   InteractionObject answer = 1;
+
   // A user-friendly textual representation of the answer.
   oneof textual_answer {
     // An HTML textual representation of the answer.
@@ -267,6 +288,7 @@ message UserAnswer {
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
+
   // An accessible version of the corresponding plain answer. It will be used to read out the
   // answer when there is a screen-reader enabled. Also when this is value is not initialized and
   // if the screen-reader is enabled in that case the plain answer/html answer would be read out.
@@ -314,17 +336,34 @@ message AnswerOutcome {
 
 // A structure corresponding to the index of a hint or solution in a state. This structure is set up
 // to properly account for variable numbers of hints, for cases when only a solution or no solution
-// exists, and for when there are no hints or solutions.
+// exists, and for when there are no hints or solutions. This structure represents the entire state
+// needed to determine which hints can be shown, have been seen, whether the solution can be shown,
+// and whether the solution has been seen.
 message HelpIndex {
+  // Deprecated hint index. This is now available via the two hint index fields below (which provide
+  // additional context on whether the hint has been revealed).
+  reserved 1;
+
   // This type is uninitialized in cases when no index is currently available (either because a hint
   // or solution hasn't yet been triggered, or because there are none to trigger).
   oneof index_type {
-    // Indicates this help index corresponds to the index of a hint within the hint list of a state.
-    int32 hint_index = 1;
-
     // Indicates this help index corresponds to the solution of a state. The boolean value here has
     // no importance and is always 'true'.
     bool show_solution = 2;
+
+    // Indicates this help index corresponds to the index of the next available hint within the hint
+    // list of a state (meaning the index corresponding to this value is the next hint that may be
+    // revealed by the user). This state assumes all prior hints (if any) have already been
+    // revealed.
+    int32 next_available_hint_index = 4;
+
+    // Indicates this help index corresponds to the index of the last revealed hint within the hint
+    // list of a state (meaning the index corresponding to this value is the latest hint that's been
+    // revealed by the user). This state assumes all prior hints (if any) have also already been
+    // revealed. Note that this could correspond to the last hint available to view and, in that
+    // case, the solution should not yet be available to reveal until it is also unlocked (at which
+    // point the state show_solution should be used, instead).
+    int32 latest_revealed_hint_index = 5;
 
     // Indicates that everything available has been revealed. Note that this is different than the
     // case when there are no hints or solutions to trigger, even though the resulting behavior may

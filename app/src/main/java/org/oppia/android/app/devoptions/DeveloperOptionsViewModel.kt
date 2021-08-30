@@ -7,6 +7,7 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsOverrideAppBehaviorsViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import javax.inject.Inject
 
 /**
@@ -14,7 +15,10 @@ import javax.inject.Inject
  * [DeveloperOptionsItemViewModel] which in turn implement corresponding functionalities.
  */
 @FragmentScope
-class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity) {
+class DeveloperOptionsViewModel @Inject constructor(
+  activity: AppCompatActivity,
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
@@ -23,6 +27,7 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
   private val routeToMarkTopicsCompletedListener =
     activity as RouteToMarkTopicsCompletedListener
   private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
+  private val routeToForceNetworkTypeListener = activity as RouteToForceNetworkTypeListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -40,7 +45,11 @@ class DeveloperOptionsViewModel @Inject constructor(activity: AppCompatActivity)
         routeToMarkTopicsCompletedListener
       ),
       DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
-      DeveloperOptionsOverrideAppBehaviorsViewModel(forceCrashButtonClickListener)
+      DeveloperOptionsOverrideAppBehaviorsViewModel(
+        forceCrashButtonClickListener,
+        routeToForceNetworkTypeListener,
+        showAllHintsAndSolutionController
+      )
     )
   }
 }

@@ -8,6 +8,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
@@ -81,8 +82,8 @@ class QuestionPlayerActivity :
     }
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    questionPlayerActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    questionPlayerActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() {
@@ -97,17 +98,15 @@ class QuestionPlayerActivity :
 
   override fun routeToHintsAndSolution(
     questionId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment =
         HintsAndSolutionDialogFragment.newInstance(
           questionId,
-          newAvailableHintIndex,
-          allHintsExhausted
+          state,
+          helpIndex
         )
-      hintsAndSolutionDialogFragment.loadState(state)
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
