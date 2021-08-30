@@ -309,4 +309,7 @@
   <dimen name="add_profile_main_padding_bottom">224dp</dimen>
   <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
   <dimen name="add_profile_confirm_pin_margin_top">8dp</dimen>
+
+  <dimen name="home_fragment_padding_top">48dp</dimen>
+  <dimen name="home_fragment_padding_bottom">100dp</dimen>
 </resources>
