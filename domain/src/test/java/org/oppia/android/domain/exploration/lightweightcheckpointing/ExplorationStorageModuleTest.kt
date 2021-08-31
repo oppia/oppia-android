@@ -17,16 +17,19 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -76,7 +79,7 @@ class ExplorationStorageModuleTest {
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    //  module in tests to avoid needing to specify these settings for tests.
+    // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
     @Provides
     fun provideEnableConsoleLog(): Boolean = true
@@ -92,6 +95,11 @@ class ExplorationStorageModuleTest {
     @CacheAssetsLocally
     @Provides
     fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -100,7 +108,7 @@ class ExplorationStorageModuleTest {
     modules = [
       TestModule::class, TestLogReportingModule::class,
       ExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LogStorageModule::class,
+      LogStorageModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

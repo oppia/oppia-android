@@ -80,7 +80,8 @@
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
   <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter is completed</string>
+  <string name="chapter_completed">Chapter %s with title %s is completed</string>
+  <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
@@ -469,6 +470,7 @@
   <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
   <string name="view_event_logs_activity_title">View Event Logs</string>
+  <string name="force_network_type_activity_title">Force Network Type</string>
   <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
   <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
   <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
@@ -479,6 +481,26 @@
   <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
   <string name="developer_options_force_network_type">Force network type</string>
   <string name="developer_options_force_crash">Force crash</string>
-  <string name="all">All</string>
-  <string name="mark_completed_uppercase">MARK COMPLETED</string>
+  <string name="modify_lesson_progress_all">All</string>
+  <string name="modify_lesson_progress_mark_completed_uppercase">MARK COMPLETED</string>
+  <string name="force_network_type_network_selected">Network is selected</string>
+  <string name="force_network_type_default_network">Default</string>
+  <string name="force_network_type_wifi_network">Wifi</string>
+  <string name="force_network_type_cellular_network">Cellular</string>
+  <string name="force_network_type_no_network">No network</string>
+  <!-- ThirdPartyDependencyListActivity -->
+  <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
+  <string name="third_party_dependency_version_formatter">version %s</string>
+  <!-- LicenseListActivity -->
+  <string name="license_list_activity_title">Copyright Licenses</string>
+  <!-- LicenseTextViewerActivity -->
+  <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
+  <!-- HelpActivity -->
+  <string name="help_activity_back_arrow_description">Navigate back to %s</string>
+  <string name="help_activity_third_party_dependencies_list">third-party dependencies list</string>
+  <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
+  <!-- ResumeLessonActivity -->
+  <string name="resume_lesson_activity_title">Resume Lesson</string>
+  <string name="resume_lesson_button">Continue</string>
+  <string name="start_over_lesson_button">Start Over</string>
 </resources>

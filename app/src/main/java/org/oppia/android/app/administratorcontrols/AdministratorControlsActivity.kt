@@ -3,7 +3,6 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
@@ -41,11 +40,6 @@ class AdministratorControlsActivity :
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
     title = getString(R.string.administrator_controls)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_administrator_controls_activity, menu)
-    return super.onCreateOptionsMenu(menu)
   }
 
   override fun routeToAppVersion() {

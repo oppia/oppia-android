@@ -3,6 +3,7 @@ package org.oppia.android.domain.exploration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -53,6 +54,7 @@ class ExplorationDataController @Inject constructor(
    * @param explorationId the ID of the exploration which has to be played
    * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
    *     for the current exploration
+   * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
    * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
    *     The exploration may still fail to load, but this provides early-failure detection.
    */
@@ -61,7 +63,8 @@ class ExplorationDataController @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
   ): LiveData<AsyncResult<Any?>> {
     return try {
       explorationProgressController.beginExplorationAsync(
@@ -69,7 +72,8 @@ class ExplorationDataController @Inject constructor(
         topicId,
         storyId,
         explorationId,
-        shouldSavePartialProgress
+        shouldSavePartialProgress,
+        explorationCheckpoint
       )
       MutableLiveData(AsyncResult.success<Any?>(null))
     } catch (e: Exception) {
