@@ -499,8 +499,6 @@
   <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
-
-
   <!-- ResumeLessonActivity -->
   <string name="resume_lesson_activity_title">Resume Lesson</string>
   <string name="resume_lesson_button">Continue</string>
