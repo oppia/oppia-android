@@ -1,0 +1,49 @@
+"""
+Tests corresponding to todo-related checks to ensure all TODOs are correctly formatted
+and correspond to open issues on GitHub
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "TodoCollectorTest",
+    srcs = ["TodoCollectorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_collector",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "TodoOpenCheckTest",
+    srcs = ["TodoOpenCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_open_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "TodoIssueResolvedCheckTest",
+    srcs = ["TodoIssueResolvedCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_resolved_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "TodoIssueCommentCheckTest",
+    srcs = ["TodoIssueCommentCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)

@@ -3,8 +3,6 @@ package org.oppia.android.app.help.faq
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import javax.inject.Inject
@@ -19,11 +17,6 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
     faqListActivityPresenter.handleOnCreate()
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_faq_list_activity, menu)
-    return super.onCreateOptionsMenu(menu)
   }
 
   companion object {

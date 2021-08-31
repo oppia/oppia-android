@@ -23,8 +23,6 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
 
   val isAudioBarVisible = ObservableField(false)
 
-  var newAvailableHintIndex = -1
-  var allHintsExhausted = false
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 

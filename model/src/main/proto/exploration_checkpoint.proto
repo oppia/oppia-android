@@ -30,13 +30,13 @@ message ExplorationCheckpoint {
   // The index of the current selected state from the deck of states.
   int32 state_index = 4;
 
-  // Stores -1 if no hint for the pending top state has been revealed otherwise it stores the index
-  // of the hint that the learner has revealed.
-  int32 hint_index = 5;
+  // The last revealed hint index (deprecated). This has been functionally replaced by the HelpIndex
+  // provided below.
+  reserved 5;
 
-  // Stores true if the solution to the pending top state has been revealed by the learner otherwise
-  // it stores false.
-  bool solution_is_revealed = 6;
+  // Whether the solution was revealed (deprecated). This has been functionally replaced by the
+  // HelpIndex provided below.
+  reserved 6;
 
   // The title of the exploration whose checkpoint is saved.
   string exploration_title = 7;
@@ -46,6 +46,9 @@ message ExplorationCheckpoint {
 
   // The timestamp in milliseconds of when the checkpoint was saved for the first time.
   int64 timestamp_of_first_checkpoint = 9;
+
+  // The saved help index for the exploration.
+  HelpIndex help_index = 10;
 }
 
 // Corresponds to exploration states that have been completed.

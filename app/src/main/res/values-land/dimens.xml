@@ -275,4 +275,19 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
+  <!-- App Version -->
+  <dimen name="app_version_text_view_padding_start">36dp</dimen>
+  <dimen name="app_version_text_view_padding_end">36dp</dimen>
+  <dimen name="app_version_image_view_margin_start">36dp</dimen>
+  <dimen name="app_version_text_view_margin_end">36dp</dimen>
+
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">304dp</dimen>
+  <dimen name="add_profile_main_padding_top">52dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">224dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">36dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">8dp</dimen>
+
+  <dimen name="home_fragment_padding_top">40dp</dimen>
+  <dimen name="home_fragment_padding_bottom">96dp</dimen>
 </resources>

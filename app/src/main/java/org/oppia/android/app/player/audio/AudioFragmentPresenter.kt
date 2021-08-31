@@ -212,8 +212,8 @@ class AudioFragmentPresenter @Inject constructor(
     this.feedbackId = feedbackId
     if (shouldEnableAudioPlayback) {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        NetworkConnectionUtil.ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR -> {
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
           if (showCellularDataDialog) {
             setAudioFragmentVisible(false)
             showCellularDataDialogFragment()
@@ -225,7 +225,7 @@ class AudioFragmentPresenter @Inject constructor(
             }
           }
         }
-        NetworkConnectionUtil.ConnectionStatus.NONE -> {
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
           showOfflineDialog()
           setAudioFragmentVisible(false)
         }

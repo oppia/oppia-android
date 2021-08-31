@@ -53,6 +53,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.FileNotFoundException
@@ -105,6 +106,12 @@ class TopicControllerTest {
 
   @Captor
   lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
+
+  @Mock
+  lateinit var mockChapterSummaryObserver: Observer<AsyncResult<ChapterSummary>>
+
+  @Captor
+  lateinit var chapterSummaryResultCaptor: ArgumentCaptor<AsyncResult<ChapterSummary>>
 
   @Mock
   lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
@@ -403,6 +410,33 @@ class TopicControllerTest {
 
     verifyGetStoryFailed()
     assertThat(storySummaryResultCaptor.value!!.isFailure()).isTrue()
+  }
+
+  @Test
+  fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
+    topicController.retrieveChapter(
+      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRetrieveChapterSucceeded()
+    val chapterSummary = chapterSummaryResultCaptor.value.getOrThrow()
+    assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
+    assertThat(chapterSummary.summary)
+      .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
+  }
+
+  @Test
+  fun testRetrieveChapter_invalidChapter_returnsFailure() {
+    topicController.retrieveChapter(
+      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+    ).toLiveData().observeForever(mockChapterSummaryObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRetrieveChapterFailed()
+    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
+      TopicController.ChapterNotFoundException::class.java
+    )
   }
 
   @Test
@@ -1171,6 +1205,18 @@ class TopicControllerTest {
     assertThat(storySummaryResultCaptor.value.isFailure()).isTrue()
   }
 
+  private fun verifyRetrieveChapterSucceeded() {
+    verify(mockChapterSummaryObserver, atLeastOnce())
+      .onChanged(chapterSummaryResultCaptor.capture())
+    assertThat(chapterSummaryResultCaptor.value.isSuccess()).isTrue()
+  }
+
+  private fun verifyRetrieveChapterFailed() {
+    verify(mockChapterSummaryObserver, atLeastOnce())
+      .onChanged(chapterSummaryResultCaptor.capture())
+    assertThat(chapterSummaryResultCaptor.value.isFailure()).isTrue()
+  }
+
   private fun verifyGetOngoingTopicListSucceeded() {
     verify(
       mockOngoingTopicListObserver,
@@ -1233,7 +1279,8 @@ class TopicControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

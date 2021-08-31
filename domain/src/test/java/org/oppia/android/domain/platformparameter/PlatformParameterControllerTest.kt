@@ -35,6 +35,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -78,6 +79,12 @@ class PlatformParameterControllerTest {
 
   @Captor
   lateinit var unitCaptor: ArgumentCaptor<AsyncResult<Unit>>
+
+  @Mock
+  lateinit var mockObserverForAny: Observer <AsyncResult<Any?>>
+
+  @Captor
+  lateinit var captorForAny: ArgumentCaptor<AsyncResult<Any?>>
 
   private val mockPlatformParameterList by lazy {
     listOf<PlatformParameter>(
@@ -162,6 +169,39 @@ class PlatformParameterControllerTest {
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
   }
 
+  @Test
+  fun testController_noPreviousDatabase_performUpdateOperation_returnsSuccess() {
+    setUpTestApplicationComponent()
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+      .toLiveData().observeForever(mockObserverForAny)
+    testCoroutineDispatchers.runCurrent()
+
+    // After a successful update operation we should receive a async result for success
+    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
+    assertThat(captorForAny.value.isSuccess()).isTrue()
+  }
+
+  @Test
+  fun testController_existingDatabase_performUpdateOperation_returnsSuccess() {
+    // Simulate that previous app already has cached platform parameter values in cache store.
+    executeInPrevious { testComponent ->
+      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
+        mockPlatformParameterList
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    // Create the application after previous arrangement to simulate a re-creation.
+    setUpTestApplicationComponent()
+    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
+      .toLiveData().observeForever(mockObserverForAny)
+    testCoroutineDispatchers.runCurrent()
+
+    // After a successful update operation we should receive a async result for success
+    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
+    assertThat(captorForAny.value.isSuccess()).isTrue()
+  }
+
   /**
    * This function checks does all the entries inside the [mockPlatformParameterList] exist inside
    * [platformParameterMap] that was retrieved from cache store.
@@ -226,7 +266,7 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class,
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
