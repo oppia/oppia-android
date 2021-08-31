@@ -173,7 +173,8 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
-
+  
+  <!-- Pin Password -->
   <dimen name="pin_password_text_input_layout_width">244dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
 
@@ -467,4 +468,13 @@
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">304dp</dimen>
+  <dimen name="add_profile_main_padding_top">48dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">64dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
+
+  <dimen name="home_fragment_padding_top">36dp</dimen>
+  <dimen name="home_fragment_padding_bottom">148dp</dimen>
 </resources>
