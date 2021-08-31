@@ -296,15 +296,16 @@
   <dimen name="topic_practice_footer_view_margin_bottom">0dp</dimen>
 
   <!-- Completed Story Item -->
-  <dimen name="completed_story_item_topic_container_marginStart">32dp</dimen>
-  <dimen name="completed_story_item_topic_container_marginEnd">24dp</dimen>
-  <dimen name="completed_story_item_topic_container_marginTop">32dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_start">32dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_end">24dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_top">32dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_bottom">0dp</dimen>
 
   <!-- Completed Story list Fragment -->
-  <dimen name="completed_story_list_fragment_recyclerview_paddingStart">64dp</dimen>
-  <dimen name="completed_story_list_fragment_recyclerview_paddingTop">24dp</dimen>
-  <dimen name="completed_story_list_fragment_recyclerview_paddingEnd">64dp</dimen>
-  <dimen name="completed_story_list_fragment_recyclerview_paddingBottom">112dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_start">64dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_top">24dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_end">64dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">112dp</dimen>
   
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">16dp</dimen>
