@@ -58,6 +58,7 @@ def _transform_android_manifest_impl(ctx):
     major_version = ctx.attr.major_version
     minor_version = ctx.attr.minor_version
     version_code = ctx.attr.version_code
+    base_develop_branch_reference = ctx.build_setting_value
 
     # See corresponding transformation script for details on the passed arguments.
     arguments = [
@@ -68,7 +69,7 @@ def _transform_android_manifest_impl(ctx):
         "%s" % major_version,
         "%s" % minor_version,
         "%s" % version_code,
-        "origin/develop",  # The base branch for computing the version name.
+        base_develop_branch_reference,
     ]
 
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
@@ -110,6 +111,7 @@ _transform_android_manifest = rule(
         ),
     },
     implementation = _transform_android_manifest_impl,
+    build_setting = config.string(flag = True),
 )
 
 def define_oppia_binary_flavor(flavor):
@@ -136,6 +138,7 @@ def define_oppia_binary_flavor(flavor):
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
         version_code = VERSION_CODE,
+        build_setting_default = "origin/develop",
     )
     oppia_android_application(
         name = "oppia_%s" % flavor,

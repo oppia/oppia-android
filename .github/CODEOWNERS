@@ -86,7 +86,7 @@ buf.yaml @anandwana001
 *.png @BenHenning
 
 # Configurations for Bazel-built Android App Bundles.
-bundle_config.pb.json
+bundle_config.pb.json @BenHenning
 
 # Important codebase files.
 LICENSE @BenHenning
