@@ -84,3 +84,10 @@ java_library(
         "//third_party:com_github_bumptech_glide_compiler",
     ],
 )
+
+java_binary(
+    name = "android_bundletool",
+    main_class = "com.android.tools.build.bundletool.BundleToolMain",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@android_bundletool//jar"],
+)

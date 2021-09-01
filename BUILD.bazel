@@ -1,5 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 
+load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_binary_flavor")
+
 # Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
 # modules that may be used both in production targets and in tests.
 package_group(
@@ -78,8 +80,16 @@ android_binary(
         "versionCode": "0",
         "versionName": "0.1-alpha",
     },
-    multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
+    multidex = "native",
     deps = [
         "//app",
     ],
 )
+
+# Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be
+# be installed on a local device or emulator using a 'bazel run' command like so:
+#  bazel run //:install_oppia_dev
+[
+    define_oppia_binary_flavor(flavor)
+    for flavor in AVAILABLE_FLAVORS
+]
