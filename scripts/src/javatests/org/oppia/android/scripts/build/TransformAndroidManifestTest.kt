@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.build
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -9,6 +8,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
+import java.io.File
 
 /**
  * Tests for the transform_android_manifest utility.
@@ -30,7 +30,8 @@ class TransformAndroidManifestTest {
 
   private val TEST_MANIFEST_FILE_NAME = "AndroidManifest.xml"
   private val TRANSFORMED_MANIFEST_FILE_NAME = "TransformedAndroidManifest.xml"
-  private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS = """
+  private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS =
+    """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
@@ -300,8 +301,10 @@ class TransformAndroidManifestTest {
     val transformedManifest = File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).readText()
     assertThat(transformedManifest).containsMatch("android:versionCode=\"$VERSION_CODE\"")
     assertThat(transformedManifest)
-      .containsMatch("android:versionName=\"$MAJOR_VERSION\\.$MINOR_VERSION" +
-        "-$BUILD_FLAVOR-[a-f0-9]{10}\"")
+      .containsMatch(
+        "android:versionName=\"$MAJOR_VERSION\\.$MINOR_VERSION" +
+          "-$BUILD_FLAVOR-[a-f0-9]{10}\""
+      )
   }
 
   /** Runs the transform_android_manifest utility. */

@@ -1,13 +1,13 @@
 package org.oppia.android.scripts.build
 
+import org.oppia.android.scripts.common.GitClient
+import org.w3c.dom.Document
 import java.io.File
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import org.oppia.android.scripts.common.GitClient
-import org.w3c.dom.Document
 
 private const val USAGE_STRING =
   "Usage: bazel run //scripts:transform_android_manifest -- </absolute/path/to/repo/root:Path> " +
