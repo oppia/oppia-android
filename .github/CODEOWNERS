@@ -220,6 +220,7 @@ WORKSPACE @BenHenning
 *.bzl @BenHenning
 *.bazel @BenHenning
 .bazelrc @BenHenning
+.bazelversion @BenHenning
 /tools/android/ @BenHenning
 
 # License texts.
