@@ -1,7 +1,9 @@
 package org.oppia.android.domain.exploration
 
 import org.oppia.android.app.model.CheckpointState
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.state.StateDeck
@@ -23,7 +25,8 @@ internal class ExplorationProgress {
   internal lateinit var currentExploration: Exploration
 
   internal var shouldSavePartialProgress: Boolean = false
-  internal var checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+  internal lateinit var checkpointState: CheckpointState
+  internal lateinit var explorationCheckpoint: ExplorationCheckpoint
 
   internal var playStage = PlayStage.NOT_PLAYING
   internal val stateGraph: StateGraph by lazy {
@@ -109,5 +112,37 @@ internal class ExplorationProgress {
 
     /** The controller is in the process of submitting an answer. */
     SUBMITTING_ANSWER
+  }
+
+  /**
+   * Initializes the variables of [StateDeck]. If the [ExplorationCheckpoint] is of type default
+   * instance, the variables of [StateDeck] are reset. Otherwise, the variables of [StateDeck] are
+   * re-initialized with the values created from the saved [ExplorationCheckpoint].
+   */
+  fun resumeStateDeckForSavedState(exploration: Exploration) {
+    stateDeck.resumeDeck(
+      stateGraph.getState(explorationCheckpoint.pendingStateName),
+      getPreviousStatesFromCheckpoint(),
+      explorationCheckpoint.pendingUserAnswersList,
+      explorationCheckpoint.stateIndex
+    )
+  }
+
+  /**
+   * Creates a list of completed states from the saved [ExplorationCheckpoint].
+   *
+   * @return [List] of [EphemeralState]s containing all the states that were completed before the
+   *     checkpoint was created
+   */
+  private fun getPreviousStatesFromCheckpoint(): List<EphemeralState> {
+    return explorationCheckpoint.completedStatesInCheckpointList
+      .mapIndexed { index, state ->
+        EphemeralState.newBuilder()
+          .setState(stateGraph.getState(state.stateName))
+          .setHasPreviousState(index != 0)
+          .setCompletedState(state.completedState)
+          .setHasNextState(index != explorationCheckpoint.stateIndex)
+          .build()
+      }
   }
 }

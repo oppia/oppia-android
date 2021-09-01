@@ -54,6 +54,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
@@ -87,6 +88,9 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -145,6 +149,9 @@ class RecentlyPlayedFragmentTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   private val internalProfileId = 0
 
@@ -768,15 +775,15 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestActivity_clickStory_opensExplorationActivity() {
+  fun testRecentlyPlayedTestActivity_clickStory_correctCheckpointSaved_opensResumeLessonActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
-    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
-      profileId = profileId,
-      timestampOlderThanOneWeek = true
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId,
+      FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -796,6 +803,65 @@ class RecentlyPlayedFragmentTest {
           targetViewId = R.id.lesson_thumbnail
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(
+        allOf(
+          hasExtra(
+            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+            FRACTIONS_EXPLORATION_ID_0
+          ),
+          hasExtra(
+            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY,
+            FRACTIONS_STORY_ID_0
+          ),
+          hasExtra(
+            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
+            FRACTIONS_TOPIC_ID
+          ),
+          hasExtra(
+            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY,
+            internalProfileId
+          ),
+          hasExtra(
+            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY,
+            /* backflowScreen = */ null
+          ),
+          hasComponent(ResumeLessonActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestAct_clickStory_outdatedCheckpointSaved_opensExplorationLessonAct() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
+      profileId = profileId,
+      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
           hasExtra(
@@ -813,6 +879,125 @@ class RecentlyPlayedFragmentTest {
           hasExtra(
             ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
             internalProfileId
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
+            /* isCheckpointEnabled = */ true
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
+            /* backflowScreen = */ null
+          ),
+          hasComponent(ExplorationActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestAct_clickStory_chapterAsNotStarted_opensExplorationLessonActivity() {
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(
+        allOf(
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+            FRACTIONS_EXPLORATION_ID_0
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
+            FRACTIONS_STORY_ID_0
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
+            FRACTIONS_TOPIC_ID
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+            internalProfileId
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
+            /* isCheckpointEnabled = */ true
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
+            /* backflowScreen = */ null
+          ),
+          hasComponent(ExplorationActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testRecentlyPlayedTestAct_clickStory_chapterMarkedAsInProgNotSaved_opensExplorationLessAct() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    ActivityScenario.launch<RecentlyPlayedActivity>(
+      createRecentlyPlayedActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.ongoing_story_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          1
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.ongoing_story_recycler_view,
+          position = 1,
+          targetViewId = R.id.lesson_thumbnail
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(
+        allOf(
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
+            FRACTIONS_EXPLORATION_ID_0
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
+            FRACTIONS_STORY_ID_0
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
+            FRACTIONS_TOPIC_ID
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+            internalProfileId
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
+            /* isCheckpointEnabled = */ true
+          ),
+          hasExtra(
+            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
+            /* backflowScreen = */ null
           ),
           hasComponent(ExplorationActivity::class.java.name)
         )
