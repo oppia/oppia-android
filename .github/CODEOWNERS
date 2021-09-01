@@ -186,6 +186,9 @@ NOTICE @BenHenning
 # Shell file ownership.
 /scripts/**/*.sh @anandwana001 @BenHenning
 
+# Script proto ownership.
+/scripts/**/*.proto @BenHenning
+
 # Static analysis check configuration files ownership.
 /scripts/assets/ @BenHenning
 
@@ -193,8 +196,8 @@ NOTICE @BenHenning
 #                                      model                                        #
 #####################################################################################
 
-# Global proto file ownership (for protos outside the model directory since all protos should belong in models).
-*.proto @vinitamurthi @BenHenning
+# Global proto file ownership for model/.
+/model/**/*.proto @vinitamurthi @BenHenning
 
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
