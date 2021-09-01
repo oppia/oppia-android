@@ -21,6 +21,10 @@ import javax.xml.transform.stream.StreamResult
 private const val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE =
   "maven_dependencies.textproto is not up-to-date"
 
+/** Maximum number of chars that can be displayed in a textview. */
+// Reference: https://issuetracker.google.com/issues/110853846#comment5
+const val MAX_LICENSE_LENGTH = 16383
+
 /**
  * Script to extract the licenses for the third-party Maven dependencies (direct and indirect both)
  * on which Oppia Android depends.
@@ -147,15 +151,15 @@ class RetrieveLicenseTexts(
   }
 
   private fun retrieveCopyrightLicense(license: License): CopyrightLicense {
-    val licenseText: String
+    var licenseText: String
     val licenseLink: String
     when (license.verifiedLinkCase) {
       License.VerifiedLinkCase.SCRAPABLE_LINK -> {
-        licenseText = fetchLicenseText(license.scrapableLink.url)
+        licenseText = fetchViewableLicenseText(license.scrapableLink.url)
         licenseLink = license.scrapableLink.url
       }
       License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
-        licenseText = fetchLicenseText(license.extractedCopyLink.url)
+        licenseText = fetchViewableLicenseText(license.extractedCopyLink.url)
         licenseLink = license.extractedCopyLink.url
       }
       License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
@@ -165,6 +169,16 @@ class RetrieveLicenseTexts(
       else -> throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
     return CopyrightLicense(license.licenseName, licenseLink, licenseText)
+  }
+
+  private fun fetchViewableLicenseText(licenseLink: String): String {
+    val licenseText = fetchLicenseText(licenseLink)
+    // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
+    return if (licenseText.length <= MAX_LICENSE_LENGTH) {
+      licenseText
+    } else {
+      licenseLink
+    }
   }
 
   private fun retrieveArtifactsNamesList(dependencyList: List<Dependency>): List<String> {
@@ -329,7 +343,7 @@ class RetrieveLicenseTexts(
 
     val arrayOfLicenseNamesArrays = createArray(
       arrayTag = "array",
-      arrayName = "third_party_dependency_license_names_arrays",
+      arrayName = "third_party_dependency_license_names_array",
       itemListSize = dependenciesList.size,
       textNodePrefix = "@array/third_party_dependency_license_names_",
       doc = doc
@@ -339,7 +353,7 @@ class RetrieveLicenseTexts(
 
     val arrayOfLicenseTextsArrays = createArray(
       arrayTag = "array",
-      arrayName = "third_party_dependency_license_texts_arrays",
+      arrayName = "third_party_dependency_license_texts_array",
       itemListSize = dependenciesList.size,
       textNodePrefix = "@array/third_party_dependency_license_texts_",
       doc = doc
