@@ -1,0 +1,33 @@
+"""
+General purposes utilities to manage date and time in user-facing strings.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+# Resource shim needed so that DateTimeUtil can build in both Gradle & Bazel.
+genrule(
+    name = "update_DateTimeUtil",
+    srcs = ["DateTimeUtil.kt"],
+    outs = ["DateTimeUtil_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
+    """,
+)
+
+kt_android_library(
+    name = "date_time_util",
+    srcs = [
+        "DateTimeUtil_updated.kt",
+    ],
+    visibility = ["//app:__subpackages__"],
+    deps = [
+        ":dagger",
+        "//app:resources",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+dagger_rules()

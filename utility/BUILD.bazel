@@ -31,7 +31,6 @@ android_library(
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
-    visibility = ["//visibility:public"],
 )
 
 # Library for general-purpose utilities.
@@ -59,7 +58,6 @@ kt_android_library(
         "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
