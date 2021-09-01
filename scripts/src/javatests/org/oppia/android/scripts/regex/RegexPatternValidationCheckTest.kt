@@ -50,7 +50,7 @@ class RegexPatternValidationCheckTest {
     "Oppia should never used directly in a string (since it shouldn't be translated). Instead," +
       " use a parameter & insert the string retrieved from app_name."
   private val untranslatableStringsGoInSpecificFileErrorMessage =
-    "Untranslatable strings should go in untranslatable_strings.xml, instead."
+    "Untranslatable strings should go in untranslated_strings.xml, instead."
   private val translatableStringsGoInMainFileErrorMessage =
     "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
   private val wikiReferenceNote =
@@ -787,7 +787,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_untranslatableString_inUntranslatedStringsFile_fileContentIsCorrect() {
     val prohibitedContent = "<string name=\"test\" translatable=\"false\">Something</string>"
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
-    val stringFilePath = "app/src/main/res/values/untranslatable_strings.xml"
+    val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     runScript()
@@ -799,7 +799,7 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_translatableString_outsidePrimaryStringsFile_fileContentIsNotCorrect() {
     val prohibitedContent = "<string name=\"test\">Translatable</string>"
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
-    val stringFilePath = "app/src/main/res/values/untranslatable_strings.xml"
+    val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
