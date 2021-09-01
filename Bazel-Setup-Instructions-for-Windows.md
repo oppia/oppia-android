@@ -111,7 +111,11 @@ When the commands above are finished running, the Android SDK should now be inst
 
 ### 4. Installing Bazel
 
-Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions).
+Follow [these instructions](https://docs.bazel.build/versions/main/install-ubuntu.html#install-on-ubuntu) to install Bazel using ``apt`` rather than Bazelisk (Bazelisk might work, but it's untested with these instructions). Note that Oppia requires Bazel 4.0.0, so you'll likely need to run the following command:
+
+```sh
+sudo apt install bazel-4.0.0
+```
 
 ### 5. Preparing build environment for Oppia Android
 
