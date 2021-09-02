@@ -290,6 +290,7 @@
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <!-- HomeActivityBackDialog -->
+  <string name="home_activity_title">Home</string>
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
