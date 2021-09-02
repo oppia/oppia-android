@@ -127,15 +127,24 @@ jobs:
       - name: Set up build environment
         uses: ./.github/actions/set-up-android-bazel-build-environment
 
+      - name: Configure Bazel to use a local cache (for scripts)
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
       - name: Extract test caching bucket & targets
         env:
           AFFECTED_TESTS_BUCKET_BASE64: ${{ matrix.affected-tests-bucket-base64 }}
         run: |
           bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64 $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
-          TEST_CATRGORY=$(cat ./test_bucket_name)
+          TEST_CATEGORY=$(cat ./test_bucket_name)
           BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
           echo "Test category: $TEST_CATEGORY"
-          echo "Bazel test targets: BAZEL_TEST_TARGETS"
+          echo "Bazel test targets: $BAZEL_TEST_TARGETS"
           echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
           echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
 
@@ -179,7 +188,7 @@ jobs:
             rm -rf $EXPANDED_BAZEL_CACHE_PATH
           fi
 
-      - name: Configure Bazel to use a local cache
+      - name: Configure Bazel to use a local cache (for tests)
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -213,18 +222,45 @@ jobs:
           cd $GITHUB_WORKSPACE
           git secret reveal
 
-      - name: Run Oppia Test (with caching, non-fork only)
+      # See https://www.cyberciti.biz/faq/unix-for-loop-1-to-10/ for for-loop reference.
+      - name: Build Oppia Tests (with caching, non-fork only)
         if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: bazel test --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
+        run: |
+          # Attempt to build 5 times in case there are flaky builds.
+          # TODO(#3759): Remove this once there are no longer app test build failures.
+          i=0
+          while [ $i -ne 5 ]; do
+            i=$(( $i+1 ))
+            bazel build --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
+          done
 
-      - name: Run Oppia Test (without caching, or on a fork)
+      - name: Build Oppia Tests (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: bazel test -- $BAZEL_TEST_TARGETS
+        run: |
+          # Attempt to build 5 times in case there are flaky builds.
+          # TODO(#3759): Remove this once there are no longer app test build failures.
+          i=0
+          while [ $i -ne 5 ]; do
+            i=$(( $i+1 ))
+            bazel build --keep_going -- $BAZEL_TEST_TARGETS
+          done
+      - name: Run Oppia Tests (with caching, non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && ((github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event.pull_request.head.repo.full_name == 'oppia/oppia-android')) }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
+        run: bazel test --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
+
+      - name: Run Oppia Tests (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
+        env:
+          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
+        run: bazel test --keep_going -- $BAZEL_TEST_TARGETS
 
   # Reference: https://github.community/t/127354/7.
   check_test_results:
