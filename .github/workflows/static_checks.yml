@@ -98,6 +98,8 @@ jobs:
     name: Script Checks
     if: ${{ false }}
     runs-on: ubuntu-18.04
+    env:
+      CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
 
@@ -105,6 +107,47 @@ jobs:
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 4.0.0
+
+      - uses: actions/cache@v2
+        id: scripts_cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-scripts-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
 
       - name: Regex Patterns Validation Check
         if: always()
