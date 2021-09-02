@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.bazel_compute_affected_targets.outputs.matrix) }}
     env:
       ENABLE_CACHING: false
