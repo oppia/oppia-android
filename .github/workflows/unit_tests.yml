@@ -82,7 +82,7 @@ jobs:
           bazel run //scripts:compute_affected_tests -- $(pwd) $(pwd)/affected_targets.log origin/develop compute_all_tests=$compute_all_targets
           TEST_BUCKET_LIST=$(cat ./affected_targets.log | sed 's/^\|$/"/g' | paste -sd, -)
           echo "Affected tests (note that this might be all tests if configured to run all or on the develop branch): $TEST_BUCKET_LIST"
-          echo "::set-output name=matrix::{\"affected-tests-bucket-base64\":[$TEST_BUCKET_LIST]}"
+          echo "::set-output name=matrix::{\"affected-tests-bucket-base64-encoded-shard\":[$TEST_BUCKET_LIST]}"
           if [[ ! -z "$TEST_BUCKET_LIST" ]]; then
             echo "::set-output name=have_tests_to_run::true"
           else
@@ -138,9 +138,12 @@ jobs:
 
       - name: Extract test caching bucket & targets
         env:
-          AFFECTED_TESTS_BUCKET_BASE64: ${{ matrix.affected-tests-bucket-base64 }}
+          AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD: ${{ matrix.affected-tests-bucket-base64-encoded-shard }}
         run: |
-          bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64 $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
+          # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
+          # user-friendly shard prefix from the matrix value.
+          AFFECTED_TESTS_BUCKET_BASE64=$(echo "$AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
           TEST_CATEGORY=$(cat ./test_bucket_name)
           BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
           echo "Test category: $TEST_CATEGORY"

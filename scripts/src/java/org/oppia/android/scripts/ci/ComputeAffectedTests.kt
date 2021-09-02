@@ -33,21 +33,7 @@ fun main(args: Array<String>) {
 private class ComputeAffectedTests {
   companion object {
     private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
-
-    private val VALID_TEST_BUCKET_NAMES = listOf(
-      "app",
-      "data",
-      "domain",
-      "instrumentation",
-      "scripts",
-      "testing",
-      "utility"
-    )
-
-    private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
-
-    /** Corresponds to the maximum number of tests that can be part of a single shard. */
-    private const val MAX_TEST_COUNT_PER_SHARD = 20
+    private const val GENERIC_TEST_BUCKET_NAME = "generic"
   }
 
   fun main(args: Array<String>) {
@@ -98,10 +84,15 @@ private class ComputeAffectedTests {
     println("Affected test targets:")
     println(filteredTestTargets.joinToString(separator = "\n") { "- $it" })
 
+    // Bucket the targets & then shuffle them so that shards are run in different orders each time
+    // (to avoid situations where the longest/most expensive tests are run last).
     val affectedTestBuckets = bucketTargets(filteredTestTargets)
-    val encodedTestBuckets = affectedTestBuckets.map { it.toCompressedBase64() }
+    val encodedTestBucketEntries =
+      affectedTestBuckets.associateBy { it.toCompressedBase64() }.entries.shuffled()
     File(pathToOutputFile).printWriter().use { writer ->
-      encodedTestBuckets.forEach(writer::println)
+      encodedTestBucketEntries.forEachIndexed { index, (encoded, bucket) ->
+        writer.println("${bucket.cacheBucketName}-shard$index;$encoded")
+      }
     }
   }
 
@@ -156,11 +147,56 @@ private class ComputeAffectedTests {
   }
 
   private fun bucketTargets(testTargets: List<String>): List<AffectedTestsBucket> {
-    val targetBuckets = testTargets.groupBy { retrieveBucketName(it) }
-    val shardedBuckets = targetBuckets.mapValues { (_, targets) ->
-      // Use randomization to encourage cache breadth & potentially improve workflow performance.
-      targets.shuffled().chunked(MAX_TEST_COUNT_PER_SHARD)
-    }
+    // Group first by the bucket, then by the grouping strategy. Here's what's happening here:
+    // 1. Create: Map<TestBucket, List<String>>
+    // 2. Convert to: Iterable<Pair<TestBucket, List<String>>>
+    // 3. Convert to: Map<GroupingStrategy, List<Pair<TestBucket, List<String>>>>
+    // 4. Convert to: Map<GroupingStrategy, Map<TestBucket, List<String>>>
+    val groupedBuckets: Map<GroupingStrategy, Map<TestBucket, List<String>>> =
+      testTargets.groupBy { TestBucket.retrieveCorrespondingTestBucket(it) }
+        .entries.groupBy(
+          keySelector = { checkNotNull(it.key).groupingStrategy },
+          valueTransform = { checkNotNull(it.key) to it.value }
+        ).mapValues { (_, bucketLists) -> bucketLists.toMap() }
+
+    // Next, properly segment buckets by splitting out individual ones and collecting like one:
+    // 5. Convert to: Map<String, Map<TestBucket, List<String>>>
+    val partitionedBuckets: Map<String, Map<TestBucket, List<String>>> =
+      groupedBuckets.entries.flatMap { (strategy, buckets) ->
+        return@flatMap when (strategy) {
+          GroupingStrategy.BUCKET_SEPARATELY -> {
+            // Each entry in the combined map should be a separate entry in the segmented map:
+            // 1. Start with: Map<TestBucket, List<String>>
+            // 2. Convert to: Map<TestBucket, Map<TestBucket, List<String>>>
+            // 3. Convert to: Map<String, Map<TestBucket, List<String>>>
+            // 4. Convert to: Iterable<Pair<String, Map<TestBucket, List<String>>>>
+            buckets.mapValues { (testBucket, targets) -> mapOf(testBucket to targets) }
+              .mapKeys { (testBucket, _) -> testBucket.cacheBucketName }
+              .entries.map { (cacheName, bucket) -> cacheName to bucket }
+          }
+          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
+        }
+      }.toMap()
+
+    // Next, collapse the test bucket lists & partition them based on the common sharding strategy
+    // for each group:
+    // 6. Convert to: Map<String, List<List<String>>>
+    val shardedBuckets: Map<String, List<List<String>>> =
+      partitionedBuckets.mapValues { (_, bucketMap) ->
+        val shardingStrategies = bucketMap.keys.map { it.shardingStrategy }.toSet()
+        check(shardingStrategies.size == 1) {
+          "Error: expected all buckets in the same partition to share a sharding strategy:" +
+            " ${bucketMap.keys} (strategies: $shardingStrategies)"
+        }
+        val maxTestCountPerShard = shardingStrategies.first().maxTestCountPerShard
+        val allPartitionTargets = bucketMap.values.flatten()
+
+        // Use randomization to encourage cache breadth & potentially improve workflow performance.
+        allPartitionTargets.shuffled().chunked(maxTestCountPerShard)
+      }
+
+    // Finally, compile into a list of protos:
+    // 7. Convert to List<AffectedTestsBucket>
     return shardedBuckets.entries.flatMap { (bucketName, shardedTargets) ->
       shardedTargets.map { targets ->
         AffectedTestsBucket.newBuilder().apply {
@@ -171,16 +207,6 @@ private class ComputeAffectedTests {
     }
   }
 
-  private fun retrieveBucketName(target: String): String {
-    return EXTRACT_BUCKET_REGEX.matchEntire(target)?.groupValues?.maybeSecond()?.also {
-      check(it in VALID_TEST_BUCKET_NAMES) {
-        "Invalid bucket name: $it (expected one of: $VALID_TEST_BUCKET_NAMES)"
-      }
-    } ?: error("Invalid target: $target (could not extract bucket name)")
-  }
-
-  private fun <E> List<E>.maybeSecond(): E? = if (size >= 2) this[1] else null
-
   // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
   private fun String.toBooleanStrictOrNull(): Boolean? {
     return when (toLowerCase(Locale.getDefault())) {
@@ -188,5 +214,97 @@ private class ComputeAffectedTests {
       "true" -> true
       else -> null
     }
+  }
+
+  private enum class TestBucket(
+    val cacheBucketName: String,
+    val groupingStrategy: GroupingStrategy,
+    val shardingStrategy: ShardingStrategy
+  ) {
+    APP(
+      cacheBucketName = "app",
+      groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
+      shardingStrategy = ShardingStrategy.SMALL_PARTITIONS
+    ),
+    DATA(
+      cacheBucketName = "data",
+      groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+    ),
+    DOMAIN(
+      cacheBucketName = "domain",
+      groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+    ),
+    INSTRUMENTATION(
+      cacheBucketName = "instrumentation",
+      groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+    ),
+    SCRIPTS(
+      cacheBucketName = "scripts",
+      groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
+      shardingStrategy = ShardingStrategy.MEDIUM_PARTITIONS
+    ),
+    TESTING(
+      cacheBucketName = "testing",
+      groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+    ),
+    UTILITY(
+      cacheBucketName = "utility",
+      groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+    );
+
+    companion object {
+      private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
+
+      fun retrieveCorrespondingTestBucket(targetName: String): TestBucket? {
+        return EXTRACT_BUCKET_REGEX.matchEntire(targetName)
+          ?.groupValues
+          ?.maybeSecond()
+          ?.let { bucket ->
+            values().find { it.cacheBucketName == bucket }
+              ?: error(
+                "Invalid bucket name: $bucket (expected one of:" +
+                  " ${values().map { it.cacheBucketName }})"
+              )
+          } ?: error("Invalid target: $targetName (could not extract bucket name)")
+      }
+
+      private fun <E> List<E>.maybeSecond(): E? = if (size >= 2) this[1] else null
+    }
+  }
+
+  private enum class GroupingStrategy {
+    /** Indicates that a particular test bucket should be sharded by itself. */
+    BUCKET_SEPARATELY,
+
+    /**
+     * Indicates that a particular test bucket should be combined with all other generically grouped
+     * buckets.
+     */
+    BUCKET_GENERICALLY
+  }
+
+  private enum class ShardingStrategy(val maxTestCountPerShard: Int) {
+    /**
+     * Indicates that the tests for a test bucket run very quickly and don't need as much
+     * parallelization.
+     */
+    LARGE_PARTITIONS(maxTestCountPerShard = 50),
+
+    /**
+     * Indicates that the tests for a test bucket are somewhere between [LARGE_PARTITIONS] and
+     * [SMALL_PARTITIONS].
+     */
+    MEDIUM_PARTITIONS(maxTestCountPerShard = 25),
+
+    /**
+     * Indicates that the tests for a test bucket run slowly and require more parallelization for
+     * faster CI runs.
+     */
+    SMALL_PARTITIONS(maxTestCountPerShard = 15)
   }
 }
