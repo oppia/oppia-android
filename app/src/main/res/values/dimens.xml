@@ -458,10 +458,31 @@
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
+  <!-- Completed Story Item -->
+  <dimen name="completed_story_item_topic_container_margin_start">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_end">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_top">12dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_bottom">12dp</dimen>
+
+  <!-- Completed Story list Fragment -->
+  <dimen name="completed_story_list_fragment_recyclerview_padding_start">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_top">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_end">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">144dp</dimen>
+
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">16dp</dimen>
   <dimen name="app_version_text_view_padding_end">16dp</dimen>
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">304dp</dimen>
+  <dimen name="add_profile_main_padding_top">48dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">64dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
+
+  <dimen name="home_fragment_padding_top">36dp</dimen>
+  <dimen name="home_fragment_padding_bottom">148dp</dimen>
 </resources>
