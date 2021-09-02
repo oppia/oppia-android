@@ -10,7 +10,7 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root [Application] of the Oppia app. */
-class OppiaKikatApplication :
+class OppiaKitkatApplication :
   MultiDexApplication(),
   ActivityComponentFactory,
   Configuration.Provider {
