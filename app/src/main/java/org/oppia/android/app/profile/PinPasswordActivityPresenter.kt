@@ -161,10 +161,11 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   private fun showAdminForgotPin() {
+    val appName = activity.resources.getString(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
     alertDialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
-      .setMessage(R.string.pin_password_forgot_message)
+      .setMessage(activity.resources.getString(R.string.pin_password_forgot_message, appName))
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()

@@ -309,7 +309,7 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.forgot_pin)).perform(click())
-      onView(withText(context.getString(R.string.pin_password_forgot_message)))
+      onView(withText(getPinPasswordForgotMessage()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -613,7 +613,7 @@ class PinPasswordActivityTest {
       closeSoftKeyboard()
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_forgot_message)))
+      onView(withText(getPinPasswordForgotMessage()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1055,6 +1055,11 @@ class PinPasswordActivityTest {
         .check(matches(withInputType(inputType)))
     }
   }
+
+  private fun getAppName(): String = context.resources.getString(R.string.app_name)
+
+  private fun getPinPasswordForgotMessage(): String =
+    context.resources.getString(R.string.pin_password_forgot_message, getAppName())
 
   private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
