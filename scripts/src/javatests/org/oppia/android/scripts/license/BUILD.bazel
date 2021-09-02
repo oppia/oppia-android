@@ -16,7 +16,7 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
-    name = "MavenDependenciesListCheckTMavenDependenciesListCheckTestest",
+    name = "MavenDependenciesListCheckTest",
     size = "large",
     srcs = ["MavenDependenciesListCheckTest.kt"],
     deps = [
