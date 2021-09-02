@@ -138,7 +138,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    */
   fun createLibrary(dependencyName: String): Pair<String, Iterable<File>> {
     val libTargetName = "${dependencyName}_lib"
-    check(libTargetName !in libraryFileMap) { "Library '$dependencyName' already exists" }
+    check("//:$libTargetName" !in libraryFileMap) { "Library '$dependencyName' already exists" }
     val prereqFiles = ensureWorkspaceIsConfiguredForKotlin()
     prepareBuildFileForLibraries(rootBuildFile)
 
