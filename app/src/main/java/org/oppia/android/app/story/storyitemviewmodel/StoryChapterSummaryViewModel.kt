@@ -15,6 +15,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
   val index: Int,
+  val totalChapters: Int,
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,

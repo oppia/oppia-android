@@ -471,6 +471,10 @@
   <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
   <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
 
+  <!-- Story Chapter View Tablet -->
+  <dimen name="story_chapter_view_tablet_margin_top_first_item">20dp</dimen>
+  <dimen name="vertical_dashed_line_view_max_height">4dp</dimen>
+
   <dimen name="home_fragment_padding_top">36dp</dimen>
   <dimen name="home_fragment_padding_bottom">148dp</dimen>
 </resources>

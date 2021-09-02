@@ -305,6 +305,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt",
+    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ] + [
     "update_" + view_models_with_resource_imports[0:-3]

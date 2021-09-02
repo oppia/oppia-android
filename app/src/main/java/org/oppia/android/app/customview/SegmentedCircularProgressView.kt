@@ -19,7 +19,7 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  * CustomView to represent story progress in Topic-Play-Tab.
  * Without chaptersFinished and totalChapters values this custom-view cannot be created.
  *
- * Reference: // https://stackoverflow.com/a/39210676
+ * Reference: https://stackoverflow.com/a/39210676
  */
 class SegmentedCircularProgressView : View {
   private var sweepAngle = 0f
