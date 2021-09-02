@@ -143,7 +143,7 @@ jobs:
           # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
           # user-friendly shard prefix from the matrix value.
           AFFECTED_TESTS_BUCKET_BASE64=$(echo "$AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
-          bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
+          bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64 $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
           TEST_CATEGORY=$(cat ./test_bucket_name)
           BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
           echo "Test category: $TEST_CATEGORY"
