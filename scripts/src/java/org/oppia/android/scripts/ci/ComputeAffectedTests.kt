@@ -8,60 +8,96 @@ import java.io.File
 import java.util.Locale
 import kotlin.system.exitProcess
 
+private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
+private const val MAX_TEST_COUNT_PER_LARGE_SHARD = 50
+private const val MAX_TEST_COUNT_PER_MEDIUM_SHARD = 25
+private const val MAX_TEST_COUNT_PER_SMALL_SHARD = 15
+
 /**
  * The main entrypoint for computing the list of affected test targets based on changes in the local
  * Oppia Android Git repository.
  *
  * Usage:
  *   bazel run //scripts:compute_affected_tests -- \\
- *     <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference>
+ *     <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference> \\
+ *     <compute_all_tests=true/false>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  * - path_to_output_file: path to the file in which the affected test targets will be printed.
  * - base_develop_branch_reference: the reference to the local develop branch that should be use.
  *     Generally, this is 'origin/develop'.
+ * - compute_all_tests: whether to compute a list of all tests to run.
  *
  * Example:
  *   bazel run //scripts:compute_affected_tests -- $(pwd) /tmp/affected_test_buckets.proto64 \\
  *     origin/develop compute_all_tests=false
  */
 fun main(args: Array<String>) {
-  ComputeAffectedTests().main(args)
+  if (args.size < 4) {
+    println(
+      "Usage: bazel run //scripts:compute_affected_tests --" +
+        " <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference>" +
+        " <compute_all_tests=true/false>"
+    )
+    exitProcess(1)
+  }
+
+  val pathToRoot = args[0]
+  val pathToOutputFile = args[1]
+  val baseDevelopBranchReference = args[2]
+  val computeAllTestsSetting = args[3].let {
+    check(it.startsWith(COMPUTE_ALL_TESTS_PREFIX)) {
+      "Expected last argument to start with '$COMPUTE_ALL_TESTS_PREFIX'"
+    }
+    val computeAllTestsValue = it.removePrefix(COMPUTE_ALL_TESTS_PREFIX)
+    return@let computeAllTestsValue.toBooleanStrictOrNull()
+      ?: error(
+        "Expected last argument to have 'true' or 'false' passed to it, not:" +
+          " '$computeAllTestsValue'"
+      )
+  }
+  ComputeAffectedTests().compute(
+    pathToRoot, pathToOutputFile, baseDevelopBranchReference, computeAllTestsSetting
+  )
 }
 
-private class ComputeAffectedTests {
-  companion object {
-    private const val COMPUTE_ALL_TESTS_PREFIX = "compute_all_tests="
+// Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
+private fun String.toBooleanStrictOrNull(): Boolean? {
+  return when (toLowerCase(Locale.getDefault())) {
+    "false" -> false
+    "true" -> true
+    else -> null
+  }
+}
+
+/** Utility used to compute affected test targets. */
+class ComputeAffectedTests(
+  val maxTestCountPerLargeShard: Int = MAX_TEST_COUNT_PER_LARGE_SHARD,
+  val maxTestCountPerMediumShard: Int = MAX_TEST_COUNT_PER_MEDIUM_SHARD,
+  val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD
+) {
+  private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
   }
 
-  fun main(args: Array<String>) {
-    if (args.size < 4) {
-      println(
-        "Usage: bazel run //scripts:compute_affected_tests --" +
-          " <path_to_directory_root> <path_to_output_file> <base_develop_branch_reference>" +
-          " <compute_all_tests=true/false>"
-      )
-      exitProcess(1)
-    }
-
-    val pathToRoot = args[0]
-    val pathToOutputFile = args[1]
-    val baseDevelopBranchReference = args[2]
-    val computeAllTestsSetting = args[3].let {
-      check(it.startsWith(COMPUTE_ALL_TESTS_PREFIX)) {
-        "Expected last argument to start with '$COMPUTE_ALL_TESTS_PREFIX'"
-      }
-      val computeAllTestsValue = it.removePrefix(COMPUTE_ALL_TESTS_PREFIX)
-      return@let computeAllTestsValue.toBooleanStrictOrNull()
-        ?: error(
-          "Expected last argument to have 'true' or 'false' passed to it, not:" +
-            " '$computeAllTestsValue'"
-        )
-    }
+  /**
+   * Computes a list of tests to run.
+   *
+   * @param pathToRoot the absolute path to the working root directory
+   * @param pathToOutputFile the absolute path to the file in which the encoded Base64 test bucket
+   *     protos should be printed
+   * @param baseDevelopBranchReference see [GitClient]
+   * @param computeAllTestsSetting whether all tests should be outputted versus only the ones which
+   *     are affected by local changes in the repository
+   */
+  fun compute(
+    pathToRoot: String,
+    pathToOutputFile: String,
+    baseDevelopBranchReference: String,
+    computeAllTestsSetting: Boolean
+  ) {
     val rootDirectory = File(pathToRoot).absoluteFile
-
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
     check(rootDirectory.list().contains("WORKSPACE")) {
       "Expected script to be run from the workspace's root directory"
@@ -188,7 +224,11 @@ private class ComputeAffectedTests {
           "Error: expected all buckets in the same partition to share a sharding strategy:" +
             " ${bucketMap.keys} (strategies: $shardingStrategies)"
         }
-        val maxTestCountPerShard = shardingStrategies.first().maxTestCountPerShard
+        val maxTestCountPerShard = when (shardingStrategies.first()) {
+          ShardingStrategy.LARGE_PARTITIONS -> maxTestCountPerLargeShard
+          ShardingStrategy.MEDIUM_PARTITIONS -> maxTestCountPerMediumShard
+          ShardingStrategy.SMALL_PARTITIONS -> maxTestCountPerSmallShard
+        }
         val allPartitionTargets = bucketMap.values.flatten()
 
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
@@ -207,50 +247,54 @@ private class ComputeAffectedTests {
     }
   }
 
-  // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
-  private fun String.toBooleanStrictOrNull(): Boolean? {
-    return when (toLowerCase(Locale.getDefault())) {
-      "false" -> false
-      "true" -> true
-      else -> null
-    }
-  }
-
   private enum class TestBucket(
     val cacheBucketName: String,
     val groupingStrategy: GroupingStrategy,
     val shardingStrategy: ShardingStrategy
   ) {
+    /** Corresponds to app layer tests. */
     APP(
       cacheBucketName = "app",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
       shardingStrategy = ShardingStrategy.SMALL_PARTITIONS
     ),
+
+    /** Corresponds to data layer tests. */
     DATA(
       cacheBucketName = "data",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
       shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
     ),
+
+    /** Corresponds to domain layer tests. */
     DOMAIN(
       cacheBucketName = "domain",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
       shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
     ),
+
+    /** Corresponds to instrumentation tests. */
     INSTRUMENTATION(
       cacheBucketName = "instrumentation",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
       shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
     ),
+
+    /** Corresponds to scripts tests. */
     SCRIPTS(
       cacheBucketName = "scripts",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
       shardingStrategy = ShardingStrategy.MEDIUM_PARTITIONS
     ),
+
+    /** Corresponds to testing utility tests. */
     TESTING(
       cacheBucketName = "testing",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
       shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
     ),
+
+    /** Corresponds to production utility tests. */
     UTILITY(
       cacheBucketName = "utility",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
@@ -260,8 +304,9 @@ private class ComputeAffectedTests {
     companion object {
       private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
 
-      fun retrieveCorrespondingTestBucket(targetName: String): TestBucket? {
-        return EXTRACT_BUCKET_REGEX.matchEntire(targetName)
+      /** Returns the [TestBucket] that corresponds to the specific [testTarget]. */
+      fun retrieveCorrespondingTestBucket(testTarget: String): TestBucket? {
+        return EXTRACT_BUCKET_REGEX.matchEntire(testTarget)
           ?.groupValues
           ?.maybeSecond()
           ?.let { bucket ->
@@ -270,7 +315,7 @@ private class ComputeAffectedTests {
                 "Invalid bucket name: $bucket (expected one of:" +
                   " ${values().map { it.cacheBucketName }})"
               )
-          } ?: error("Invalid target: $targetName (could not extract bucket name)")
+          } ?: error("Invalid target: $testTarget (could not extract bucket name)")
       }
 
       private fun <E> List<E>.maybeSecond(): E? = if (size >= 2) this[1] else null
@@ -288,23 +333,23 @@ private class ComputeAffectedTests {
     BUCKET_GENERICALLY
   }
 
-  private enum class ShardingStrategy(val maxTestCountPerShard: Int) {
+  private enum class ShardingStrategy {
     /**
      * Indicates that the tests for a test bucket run very quickly and don't need as much
      * parallelization.
      */
-    LARGE_PARTITIONS(maxTestCountPerShard = 50),
+    LARGE_PARTITIONS,
 
     /**
      * Indicates that the tests for a test bucket are somewhere between [LARGE_PARTITIONS] and
      * [SMALL_PARTITIONS].
      */
-    MEDIUM_PARTITIONS(maxTestCountPerShard = 25),
+    MEDIUM_PARTITIONS,
 
     /**
      * Indicates that the tests for a test bucket run slowly and require more parallelization for
      * faster CI runs.
      */
-    SMALL_PARTITIONS(maxTestCountPerShard = 15)
+    SMALL_PARTITIONS
   }
 }

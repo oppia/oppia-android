@@ -70,15 +70,18 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
         temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
       }
-      val newBuildFile = temporaryRootFolder.newFile("${subpackage.replace(".", "/")}/BUILD.bazel")
-      newBuildFile
+      val newBuildFileRelativePath = "${subpackage.replace(".", "/")}/BUILD.bazel"
+      val newBuildFile = File(temporaryRootFolder.root, newBuildFileRelativePath)
+      if (newBuildFile.exists()) {
+        newBuildFile
+      } else temporaryRootFolder.newFile(newBuildFileRelativePath)
     } else rootBuildFile
     prepareBuildFileForTests(buildFile)
 
     testFileMap[testName] = testFile
     val generatedDependencyExpression = if (withGeneratedDependency) {
       testDependencyNameMap[testName] = dependencyTargetName ?: error("Something went wrong.")
-      "\":$dependencyTargetName\","
+      "\"$dependencyTargetName\","
     } else ""
     val extraDependencyExpression = withExtraDependency?.let { "\"$it\"," } ?: ""
     buildFile.appendText(
@@ -140,7 +143,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     prepareBuildFileForLibraries(rootBuildFile)
 
     val depFile = temporaryRootFolder.newFile("$dependencyName.kt")
-    libraryFileMap[libTargetName] = depFile
+    libraryFileMap["//:$libTargetName"] = depFile
     rootBuildFile.appendText(
       """
       kt_jvm_library(
@@ -150,7 +153,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       """.trimIndent() + "\n"
     )
 
-    return libTargetName to (setOf(depFile, rootBuildFile) + prereqFiles)
+    return "//:$libTargetName" to (setOf(depFile, rootBuildFile) + prereqFiles)
   }
 
   /**

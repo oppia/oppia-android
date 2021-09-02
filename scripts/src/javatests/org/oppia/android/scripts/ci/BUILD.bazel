@@ -9,8 +9,21 @@ kt_jvm_test(
     srcs = ["ComputeAffectedTestsTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_git_repository",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
+
+kt_jvm_test(
+    name = "RetrieveAffectedTestsTest",
+    srcs = ["RetrieveAffectedTestsTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/ci:retrieve_affected_tests_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
