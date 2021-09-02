@@ -18,7 +18,6 @@ on:
 jobs:
   robolectric_tests:
     name: Non-app Module Robolectric Tests
-    if: ${{ false }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -96,7 +95,6 @@ jobs:
 
   app_tests:
     name: App Module Robolectric Tests
-    if: ${{ false }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

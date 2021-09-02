@@ -13,7 +13,6 @@ on:
 jobs:
   bazel_build_app:
     name: Build Binary with Bazel
-    if: ${{ false }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

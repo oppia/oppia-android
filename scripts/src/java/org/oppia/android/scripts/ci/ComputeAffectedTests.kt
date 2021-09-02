@@ -47,7 +47,7 @@ private class ComputeAffectedTests {
     private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
 
     /** Corresponds to the maximum number of tests that can be part of a single shard. */
-    private const val MAX_TEST_COUNT_PER_SHARD = 10
+    private const val MAX_TEST_COUNT_PER_SHARD = 20
   }
 
   fun main(args: Array<String>) {
@@ -98,9 +98,7 @@ private class ComputeAffectedTests {
     println("Affected test targets:")
     println(filteredTestTargets.joinToString(separator = "\n") { "- $it" })
 
-    // TODO: take more than 3 buckets once CI is stable.
-    // TODO: add randomization.
-    val affectedTestBuckets = bucketTargets(filteredTestTargets).take(3)
+    val affectedTestBuckets = bucketTargets(filteredTestTargets)
     val encodedTestBuckets = affectedTestBuckets.map { it.toCompressedBase64() }
     File(pathToOutputFile).printWriter().use { writer ->
       encodedTestBuckets.forEach(writer::println)
@@ -160,7 +158,8 @@ private class ComputeAffectedTests {
   private fun bucketTargets(testTargets: List<String>): List<AffectedTestsBucket> {
     val targetBuckets = testTargets.groupBy { retrieveBucketName(it) }
     val shardedBuckets = targetBuckets.mapValues { (_, targets) ->
-      targets.chunked(MAX_TEST_COUNT_PER_SHARD)
+      // Use randomization to encourage cache breadth & potentially improve workflow performance.
+      targets.shuffled().chunked(MAX_TEST_COUNT_PER_SHARD)
     }
     return shardedBuckets.entries.flatMap { (bucketName, shardedTargets) ->
       shardedTargets.map { targets ->
