@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -91,6 +92,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -244,14 +246,49 @@ class TopicPracticeFragmentTest {
 
   @Test
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
-    testCoroutineDispatchers.unregisterIdlingResource()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
-    clickPracticeTab()
-    clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
-    scrollToPosition(position = 5)
-    clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
-    intended(hasComponent(QuestionPlayerActivity::class.java.name))
-    intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
+//    testCoroutineDispatchers.unregisterIdlingResource()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+//      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withText(TopicTab.getTabForPosition(position = 2, enablePracticeTab).name),
+          isDescendantOfA(withId(R.id.topic_tabs_container))
+        )
+      ).perform(click())
+      onView(
+      atPositionOnView(
+        recyclerViewId = R.id.topic_practice_skill_list,
+        position = 1,
+        targetViewId = R.id.subtopic_check_box
+      )
+    ).perform(click())
+      onView(withId(R.id.topic_practice_skill_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          5
+        )
+      )
+      onView(
+      atPositionOnView(
+        recyclerViewId = R.id.topic_practice_skill_list,
+        position = 5,
+        targetViewId = R.id.topic_practice_start_button
+      )
+    ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(QuestionPlayerActivity::class.java.name))
+      intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
+
+      /*clickPracticeTab()
+      testCoroutineDispatchers.runCurrent()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 5)
+      testCoroutineDispatchers.runCurrent()
+      clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(QuestionPlayerActivity::class.java.name))
+      intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))*/
+    }
   }
 
   @Test
