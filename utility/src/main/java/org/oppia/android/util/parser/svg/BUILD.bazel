@@ -1,0 +1,42 @@
+"""
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "drawable",
+    srcs = [
+        "BlockPictureDrawable.kt",
+        "BlockSvgDrawableTranscoder.kt",
+        "SvgPictureDrawable.kt",
+        "TextSvgDrawableTranscoder.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "vector",
+    srcs = [
+        ".kt",
+        "ScalableVectorGraphic.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "vector",
+    srcs = [
+        ".kt",
+        "ScalableVectorGraphic.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
