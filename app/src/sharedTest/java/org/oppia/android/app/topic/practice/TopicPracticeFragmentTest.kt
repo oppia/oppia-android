@@ -256,24 +256,24 @@ class TopicPracticeFragmentTest {
         )
       ).perform(click())
       onView(
-      atPositionOnView(
-        recyclerViewId = R.id.topic_practice_skill_list,
-        position = 1,
-        targetViewId = R.id.subtopic_check_box
-      )
-    ).perform(click())
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
+        )
+      ).perform(click())
       onView(withId(R.id.topic_practice_skill_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           5
         )
       )
       onView(
-      atPositionOnView(
-        recyclerViewId = R.id.topic_practice_skill_list,
-        position = 5,
-        targetViewId = R.id.topic_practice_start_button
-      )
-    ).perform(click())
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 5,
+          targetViewId = R.id.topic_practice_start_button
+        )
+      ).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
       intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
