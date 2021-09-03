@@ -1,18 +1,15 @@
 package org.oppia.android.app.help.faq.faqItemViewModel
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ObservableField
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 
 /** Content view model for the recycler view in [FAQFragment]. */
 class FAQContentViewModel(
   private val activity: AppCompatActivity,
   val question: String,
-  val answer: String
+  val answer: String,
+  val showDivider: Boolean
 ) : FAQItemViewModel() {
-
-  /** Used to control visibility of divider. */
-  val showDivider = ObservableField(true)
 
   fun clickOnFAQQuestion() {
     val routeToFAQSingleListener = activity as RouteToFAQSingleListener
