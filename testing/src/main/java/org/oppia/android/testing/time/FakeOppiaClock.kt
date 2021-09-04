@@ -32,12 +32,6 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
     }
   }
 
-  override fun getCurrentCalendar(): Calendar {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = getCurrentTimeMs()
-    return calendar
-  }
-
   /**
    * Sets the current wall-clock time in milliseconds since the Unix epoch, in UTC.
    *

@@ -1,0 +1,28 @@
+"""
+Domain definitions for managing translations.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "oppia_locale",
+    srcs = [
+        "TranslationController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
+        "//domain/src/main/java/org/oppia/android/domain/locale:oppia_locale",
+        "//model:languages_java_proto_lite",
+        "//model:profile_java_proto_lite",
+        "//model:subtitled_html_java_proto_lite",
+        "//model:subtitled_unicode_java_proto_lite",
+        "//model:translation_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+dagger_rules()

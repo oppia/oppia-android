@@ -1,0 +1,35 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+This package contains configuration libraries for defining & tweaking app-wide behavior.
+"""
+
+load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
+
+_SUPPORTED_LANGUAGES_CONFIG_ASSETS = generate_proto_binary_assets(
+    name = "supported_languages_config_assets",
+    asset_dir = "languages",
+    name_prefix = "supported_languages_config_assets",
+    names = ["supported_languages"],
+    proto_dep_bazel_target_prefix = "//model",
+    proto_dep_name = "languages",
+    proto_package = "model",
+    proto_type_name = "SupportedLanguages",
+)
+
+_SUPPORTED_REGIONS_CONFIG_ASSETS = generate_proto_binary_assets(
+    name = "supported_regions_config_assets",
+    asset_dir = "languages",
+    name_prefix = "supported_regions_config_assets",
+    names = ["supported_regions"],
+    proto_dep_bazel_target_prefix = "//model",
+    proto_dep_name = "languages",
+    proto_package = "model",
+    proto_type_name = "SupportedRegions",
+)
+
+android_library(
+    name = "languages_config",
+    assets = _SUPPORTED_LANGUAGES_CONFIG_ASSETS + _SUPPORTED_REGIONS_CONFIG_ASSETS,
+    assets_dir = "languages/",
+    manifest = "AndroidManifest.xml",
+)

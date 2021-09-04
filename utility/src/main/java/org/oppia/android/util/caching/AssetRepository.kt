@@ -31,7 +31,7 @@ class AssetRepository @Inject constructor(
   private val textFileAssets = mutableMapOf<String, String>()
 
   /** Map of asset names to file contents for proto file assets. */
-  private val protoFileAssets = mutableMapOf<String, ByteArray>()
+  private val protoFileAssets = mutableMapOf<String, ByteArray?>()
 
   /** Returns the whole text contents of the file corresponding to the specified asset name. */
   fun loadTextFileFromLocalAssets(assetName: String): String {
@@ -61,18 +61,35 @@ class AssetRepository @Inject constructor(
    * callers are recommended to use [T]'s default instance for this purpose).
    */
   fun <T : MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T {
-    @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.
-    return baseMessage.newBuilderForType()
-      .mergeFrom(loadProtoBlobFromLocalAssets(assetName))
-      .build() as T
+    return maybeProtoFromLocalAssetsOrFail(assetName, baseMessage)
+      ?: error("Asset doesn't exist: $assetName")
   }
 
-  /** Returns the size of the specified proto asset. */
+  /**
+   * A version of [loadProtoFromLocalAssets] which will return the specified default message if the
+   * asset doesn't exist locally (rather than throwing an exception).
+   */
+  fun <T : MessageLite> tryLoadProtoFromLocalAssets(assetName: String, defaultMessage: T): T {
+    return maybeProtoFromLocalAssetsOrFail(assetName, defaultMessage) ?: defaultMessage
+  }
+
+  /** Returns the size of the specified proto asset, or -1 if the asset doesn't exist. */
   fun getLocalAssetProtoSize(assetName: String): Int {
-    return loadProtoBlobFromLocalAssets(assetName).size
+    return loadProtoBlobFromLocalAssets(assetName)?.size ?: -1
   }
 
-  private fun loadProtoBlobFromLocalAssets(assetName: String): ByteArray {
+  private fun <T : MessageLite> maybeProtoFromLocalAssetsOrFail(
+    assetName: String, baseMessage: T
+  ): T? {
+    return loadProtoBlobFromLocalAssets(assetName)?.let { serializedProto ->
+      @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.
+      return baseMessage.newBuilderForType()
+        .mergeFrom(serializedProto)
+        .build() as T
+    }
+  }
+
+  private fun loadProtoBlobFromLocalAssets(assetName: String): ByteArray? {
     primeProtoBlobFromLocalAssets(assetName)
     return protoFileAssets.getValue(assetName)
   }
@@ -80,7 +97,10 @@ class AssetRepository @Inject constructor(
   private fun primeProtoBlobFromLocalAssets(assetName: String) {
     repositoryLock.withLock {
       if (assetName !in protoFileAssets) {
-        protoFileAssets[assetName] = context.assets.open("$assetName.pb").use { it.readBytes() }
+        val files = context.assets.list(/* path= */ ".")?.toList() ?: listOf()
+        protoFileAssets[assetName] = if (assetName in files) {
+          context.assets.open("$assetName.pb").use { it.readBytes() }
+        } else null
       }
     }
   }

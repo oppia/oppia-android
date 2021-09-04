@@ -1,0 +1,109 @@
+language_definitions {
+  language: ARABIC
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+    android_resources_language_id {
+      language_code: "ar"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "ar"
+    }
+  }
+}
+language_definitions {
+  language: ENGLISH
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+    android_resources_language_id {
+      language_code: "en"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "en"
+    }
+  }
+}
+language_definitions {
+  language: HINDI
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+    android_resources_language_id {
+      language_code: "hi"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi"
+    }
+  }
+}
+language_definitions {
+  language: HINGLISH
+  fallback_macro_language: ENGLISH
+  min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi-en"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "hi-en"
+    }
+  }
+}
+language_definitions {
+  language: PORTUGUESE
+  min_android_sdk_version: 1
+}
+language_definitions {
+  language: BRAZILIAN_PORTUGUESE
+  fallback_macro_language: PORTUGUESE
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+    android_resources_language_id {
+      language_code: "pt"
+      region_code: "BR"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt-BR"
+    }
+  }
+}
