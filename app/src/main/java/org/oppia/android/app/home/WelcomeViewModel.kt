@@ -2,7 +2,7 @@ package org.oppia.android.app.home
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import org.oppia.android.util.datetime.DateTimeUtil
+import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.util.system.OppiaClock
 import java.util.Objects
 
