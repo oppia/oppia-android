@@ -2,6 +2,7 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -137,7 +138,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_0_title)))
+      ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
 
@@ -220,7 +221,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_0_title)))
+      ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
 
@@ -327,7 +328,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_0_title)))
+      ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
 
@@ -504,7 +505,7 @@ class OnboardingFragmentTest {
           withId(R.id.slide_title_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.onboarding_slide_0_title)))
+      ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
 
@@ -626,6 +627,14 @@ class OnboardingFragmentTest {
       )
     }
   }
+
+  private fun getResources(): Resources =
+    ApplicationProvider.getApplicationContext<Context>().resources
+
+  private fun getAppName(): String = getResources().getString(R.string.app_name)
+
+  private fun getOnboardingSlide0Title(): String =
+    getResources().getString(R.string.onboarding_slide_0_title, getAppName())
 
   private fun scrollToPosition(position: Int): ViewAction {
     return object : ViewAction {

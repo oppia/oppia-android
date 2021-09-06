@@ -14,7 +14,7 @@ message FileContentChecks {
 // Check to ensure if any prohibited file content is used in the codebase.
 message FileContentCheck {
   // Matches to filename in which to do the content check.
-  string filename_regex = 1;
+  string file_path_regex = 1;
 
   // Regex which should not be contained in the file.
   string prohibited_content_regex = 2;
