@@ -3,7 +3,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 """
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -22,14 +22,6 @@ http_archive(
     strip_prefix = "rules_jvm_external-%s" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % HTTP_DEPENDENCY_VERSIONS["rules_jvm"]["version"],
 )
-
-http_archive(
-    name = "rules_android",
-    urls = ["https://github.com/bazelbuild/rules_android/archive/5c8bdd44193894594fa01fd527c5cf3af17e7652.zip"],
-    strip_prefix = "rules_android-5c8bdd44193894594fa01fd527c5cf3af17e7652",
-)
-load("@rules_android//:defs.bzl", "rules_android_workspace")
-rules_android_workspace("rules_android")
 
 # Add support for Kotlin: https://github.com/bazelbuild/rules_kotlin.
 http_archive(
@@ -164,6 +156,13 @@ http_archive(
 load("@android_test_support//:repo.bzl", "android_test_repositories")
 
 android_test_repositories()
+
+# Android bundle tool.
+http_jar(
+    name = "android_bundletool",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["sha"],
+    url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
+)
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(

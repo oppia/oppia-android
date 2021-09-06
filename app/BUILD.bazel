@@ -451,13 +451,6 @@ BINDING_ADAPTERS = [
 # keep sorted
 SNAP_HELPER = ["src/main/java/org/oppia/android/app/recyclerview/StartSnapHelper.kt"]
 
-EXCLUDE_OPPIA_APPLICTATION = [
-    "src/main/java/org/oppia/android/app/application/OppiaApplication.kt",
-    "src/main/java/org/oppia/android/app/application/ApplicationInjector.kt",
-    "src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt",
-    "src/main/java/org/oppia/android/app/application/ApplicationComponent.kt"
-]
-
 # Files to be excluded from the source list for the app library. This list includes all the files
 # built by the following libraries:
 # - view_models
@@ -465,6 +458,13 @@ EXCLUDE_OPPIA_APPLICTATION = [
 # - listeners
 # - annotations
 # - binding_adapters
+
+EXCLUDE_OPPIA_APPLICTATION = [
+    "src/main/java/org/oppia/android/app/application/OppiaApplication.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationInjector.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt",
+    "src/main/java/org/oppia/android/app/application/ApplicationComponent.kt"
+]
 
 EXCLUDED_APP_LIB_FILES = VIEW_MODELS + VIEW_MODELS_WITH_RESOURCE_IMPORTS + VIEWS + VIEWS_WITH_RESOURCE_IMPORTS + BINDING_ADAPTERS + BINDING_ADAPTERS_WITH_RESOURCE_IMPORTS + LISTENERS + ANNOTATIONS + SNAP_HELPER + MIGRATED_SOURCE_FILES + EXCLUDE_OPPIA_APPLICTATION
 

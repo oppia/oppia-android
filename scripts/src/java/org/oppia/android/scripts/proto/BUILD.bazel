@@ -10,6 +10,17 @@ load("@rules_java//java:defs.bzl", "java_lite_proto_library", "java_proto_librar
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(
+    name = "affected_tests_proto",
+    srcs = ["affected_tests.proto"],
+)
+
+java_lite_proto_library(
+    name = "affected_tests_java_proto_lite",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":affected_tests_proto"],
+)
+
+proto_library(
     name = "filename_pattern_validation_checks_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

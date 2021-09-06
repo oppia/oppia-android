@@ -10,10 +10,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
+import retrofit2.Response
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */

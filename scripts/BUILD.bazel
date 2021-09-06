@@ -3,6 +3,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
+load("@rules_java//java:defs.bzl", "java_binary")
 load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
@@ -46,6 +47,13 @@ kt_jvm_binary(
     testonly = True,
     main_class = "org.oppia.android.scripts.ci.ComputeAffectedTestsKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:compute_affected_tests_lib"],
+)
+
+kt_jvm_binary(
+    name = "retrieve_affected_tests",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.ci.RetrieveAffectedTestsKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_affected_tests_lib"],
 )
 
 # TODO(#3428): Refactor textproto assets to subpackage level.
@@ -202,5 +210,19 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.todo.TodoIssueCommentCheckKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
+    ],
+)
+
+# Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
+# this apparently needs to be a java_binary to set up runfiles correctly when executed within a
+# Starlark rule as a tool.
+java_binary(
+    name = "transform_android_manifest",
+    main_class = "org.oppia.android.scripts.build.TransformAndroidManifestKt",
+    visibility = [
+        "//:oppia_binary_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:transform_android_manifest_lib",
     ],
 )
