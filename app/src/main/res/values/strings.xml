@@ -277,7 +277,7 @@
   <string name="password_shown_icon">Password shown icon</string>
   <string name="password_hidden_icon">Password hidden icon</string>
   <string name="enter_your_pin">Enter your PIN</string>
-  <string name="pin_password_toolbar">Enter PIN</string>
+  <string name="pin_password_toolbar_title">Enter PIN</string>
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
