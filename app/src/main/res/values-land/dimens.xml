@@ -297,4 +297,8 @@
 
   <dimen name="home_fragment_padding_top">40dp</dimen>
   <dimen name="home_fragment_padding_bottom">96dp</dimen>
+
+  <!-- Recently Played -->
+  <dimen name="recently_played_fragment_padding_top">8dp</dimen>
+  <dimen name="recently_played_fragment_padding_bottom">108dp</dimen>
 </resources>
