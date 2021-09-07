@@ -1,4 +1,5 @@
 """
+bazel build file for parser/svg
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
@@ -14,29 +15,23 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
     ],
 )
 
 kt_android_library(
     name = "vector",
     srcs = [
-        ".kt",
         "ScalableVectorGraphic.kt",
+        "SvgBlurTransformation.kt",
+        "SvgDecoder.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        "//third_party:com_caverock_androidsvg",
         "//third_party:glide_compiler",
-    ],
-)
-
-kt_android_library(
-    name = "vector",
-    srcs = [
-        ".kt",
-        "ScalableVectorGraphic.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
     ],
 )
