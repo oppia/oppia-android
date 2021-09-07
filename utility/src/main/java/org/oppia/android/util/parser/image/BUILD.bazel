@@ -35,7 +35,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:vector",
     ],
 )
@@ -67,7 +67,7 @@ kt_android_library(
         "//third_party:glide_compiler",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:vector",
     ],
 )
@@ -85,7 +85,7 @@ kt_android_library(
         "//third_party:glide_compiler",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:parser",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/html:parser",
         "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handler",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:drawable",
     ],

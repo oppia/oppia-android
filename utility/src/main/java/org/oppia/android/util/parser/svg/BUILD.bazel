@@ -16,8 +16,8 @@ kt_android_library(
     deps = [
         "//third_party:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:drawable",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/image:drawable",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
     ],
 )
 
@@ -32,6 +32,6 @@ kt_android_library(
     deps = [
         "//third_party:com_caverock_androidsvg",
         "//third_party:glide_compiler",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
+        #        "//utility/src/main/java/org/oppia/android/util/parser/image:loader",
     ],
 )
