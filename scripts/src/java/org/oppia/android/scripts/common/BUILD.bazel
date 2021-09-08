@@ -41,6 +41,16 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "proto_string_encoder",
+    testonly = True,
+    srcs = ["ProtoStringEncoder.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+kt_jvm_library(
     name = "repository_file",
     testonly = True,
     srcs = ["RepositoryFile.kt"],
