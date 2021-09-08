@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.ClickableAreasImage
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG = "image_region_selection_test_fragment"
 
@@ -20,7 +21,7 @@ class ImageRegionSelectionTestFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

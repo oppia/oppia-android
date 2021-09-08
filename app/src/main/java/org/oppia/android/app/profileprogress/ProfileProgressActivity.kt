@@ -9,6 +9,7 @@ import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
@@ -24,7 +25,7 @@ class ProfileProgressActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }

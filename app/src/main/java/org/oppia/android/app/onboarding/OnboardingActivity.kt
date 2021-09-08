@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListListener {
@@ -21,7 +22,7 @@ class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListList
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     onboardingActivityPresenter.handleOnCreate()
   }
 

@@ -3,29 +3,30 @@ package org.oppia.android.app.fragment
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.shim.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponent
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentBuilderInjector
 
 /**
  * A fragment that facilitates field injection to children. This fragment can only be used with
- * [InjectableAppCompatActivity] contexts.
+ * [org.oppia.android.app.activity.InjectableAppCompatActivity] contexts.
  */
 abstract class InjectableFragment : Fragment(), ViewComponentFactory {
   /**
-   * The [FragmentComponent] corresponding to this fragment. This cannot be used before [onAttach] is called, and can be
-   * used to inject lateinit fields in child fragments during fragment attachment (which is recommended to be done in an
-   * override of [onAttach]).
+   * The [FragmentComponent] corresponding to this fragment. This cannot be used before [onAttach]
+   * is called, and can be used to inject lateinit fields in child fragments during fragment
+   * attachment (which is recommended to be done in an override of [onAttach]).
    */
   lateinit var fragmentComponent: FragmentComponent
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     fragmentComponent =
-      (requireActivity() as InjectableAppCompatActivity).createFragmentComponent(this)
+      (requireActivity() as FragmentComponentFactory).createFragmentComponent(this)
   }
 
   override fun createViewComponent(view: View): ViewComponent {
-    return fragmentComponent.getViewComponentBuilderProvider().get().setView(view).build()
+    val builderInjector = fragmentComponent as ViewComponentBuilderInjector
+    return builderInjector.getViewComponentBuilderProvider().get().setView(view).build()
   }
 }

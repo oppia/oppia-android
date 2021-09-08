@@ -12,6 +12,7 @@ import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "TopicLessonsFragment.current_expanded_list_index"
@@ -50,7 +51,7 @@ class TopicLessonsFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

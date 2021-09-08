@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that displays text of a copyright license of a third-party dependency. */
 class LicenseTextViewerFragment : InjectableFragment() {
@@ -32,7 +33,7 @@ class LicenseTextViewerFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

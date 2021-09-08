@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity for forcing the network mode for the app. */
 class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
@@ -14,7 +15,7 @@ class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     forceNetworkTypeActivityPresenter.handleOnCreate()
     title = getString(R.string.force_network_type_activity_title)
   }

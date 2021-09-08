@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
@@ -17,6 +17,7 @@ import org.oppia.android.util.parser.image.ImageTransformation
 import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
+import org.oppia.android.app.view.ViewComponentImpl
 
 /** A custom [AppCompatImageView] used to show lesson thumbnails. */
 class LessonThumbnailImageView @JvmOverloads constructor(
@@ -124,8 +125,11 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     try {
       super.onAttachedToWindow()
-      (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-        .createViewComponent(this).inject(this)
+
+      val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+
       checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::oppiaLogger.isInitialized)

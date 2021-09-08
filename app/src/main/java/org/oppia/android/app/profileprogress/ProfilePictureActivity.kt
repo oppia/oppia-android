@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity to display profile picture. */
 class ProfilePictureActivity : InjectableAppCompatActivity() {
@@ -14,7 +15,7 @@ class ProfilePictureActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val internalProfileId = intent.getIntExtra(
       PROFILE_PICTURE_ACTIVITY_PROFILE_ID_KEY, -1
     )

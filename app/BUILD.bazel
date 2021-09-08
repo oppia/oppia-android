@@ -21,6 +21,14 @@ package(default_visibility = ["//utility:__subpackages__"])
 
 exports_files(["src/main/AndroidManifest.xml"])
 
+# Corresponds to being accessible to all app layer targets.
+package_group(
+    name = "app_visibility",
+    packages = [
+        "//app/...",
+    ],
+)
+
 # Source files for the migrated source files library. The files inside the migrated source files
 # library are dependencies in app module that have their own libraries.
 # Place your files here if:
@@ -29,6 +37,8 @@ exports_files(["src/main/AndroidManifest.xml"])
 # of EXCLUDED_APP_LIB_FILES.
 # keep sorted
 MIGRATED_SOURCE_FILES = glob([
+    "src/main/java/org/oppia/android/app/activity/*.kt",
+    "src/main/java/org/oppia/android/app/fragment/*.kt",
     "src/main/java/org/oppia/android/app/utility/datetime/*.kt",
 ]) + [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
@@ -43,10 +53,10 @@ MIGRATED_SOURCE_FILES = glob([
 #  - It is not considered a listener
 #  - It does not depend on any other file not included in this list
 
+# TODO: see if this can be removed & folded into the main app module since it's not an annotation
+# (and maybe inline the annotations lib).
 # keep sorted
 ANNOTATIONS = [
-    "src/main/java/org/oppia/android/app/activity/ActivityScope.kt",
-    "src/main/java/org/oppia/android/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
 ]
 
@@ -276,7 +286,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/settings/profile/ProfileListViewModel.kt",
     "src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt",
     "src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt",
-    "src/main/java/org/oppia/android/app/shim/IntentFactoryShim.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/story/StoryFragmentScroller.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
@@ -355,8 +364,6 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
-    "src/main/java/org/oppia/android/app/application/ApplicationInjector.kt",
-    "src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
@@ -366,10 +373,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/android/app/shim/ViewBindingShim.kt",
-    "src/main/java/org/oppia/android/app/shim/ViewComponentFactory.kt",
-    "src/main/java/org/oppia/android/app/view/ViewComponent.kt",
-    "src/main/java/org/oppia/android/app/view/ViewScope.kt",
+    "//app/src/main/java/org/oppia/android/app/view:ViewComponentImpl.kt",
 ] + [
     "update_" + views_with_resource_imports[0:-3]
     for views_with_resource_imports in VIEWS_WITH_RESOURCE_IMPORTS
@@ -517,6 +521,9 @@ android_library(
     exports_manifest = True,
     manifest = "src/main/DatabindingResourcesManifest.xml",
     resource_files = glob(DATABINDING_LAYOUTS),
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+    ],
     deps = [
         ":annotations",
         ":binding_adapters",
@@ -571,6 +578,9 @@ kt_android_library(
         ":resources",
         ":snap_helper",
         ":view_models",
+        "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_scope",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-common",
@@ -590,6 +600,8 @@ kt_android_library(
     custom_package = "org.oppia.android.app",
     deps = [
         ":dagger",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
     ],
 )
 
@@ -600,11 +612,15 @@ kt_android_library(
     custom_package = "org.oppia.android.app.view.models",
     enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+    ],
     deps = [
         ":annotations",
         ":dagger",
         ":listeners",
         ":resources",
+        "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
@@ -657,7 +673,15 @@ android_library(
 # Library containing all activity, fragment, and view-based UI flows in the app.
 kt_android_library(
     name = "app",
-    srcs = APP_FILES,
+    srcs = APP_FILES + [
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityComponentImpl.kt",
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityIntentFactoriesModule.kt",
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityModule.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentBuilderModule.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentImpl.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentModule.kt",
+        "//app/src/main/java/org/oppia/android/app/view:ViewComponentBuilderModule.kt",
+    ],
     custom_package = "org.oppia.android.app.ui",
     enable_data_binding = 1,
     manifest = "src/main/AppAndroidManifest.xml",
@@ -669,6 +693,11 @@ kt_android_library(
         ":resources",
         ":view_models",
         ":views",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//model:arguments_java_proto_lite",

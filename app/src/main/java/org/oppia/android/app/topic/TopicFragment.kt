@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
@@ -16,7 +17,7 @@ class TopicFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

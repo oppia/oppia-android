@@ -10,6 +10,7 @@ import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that card for topic revision. */
 class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
@@ -32,7 +33,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

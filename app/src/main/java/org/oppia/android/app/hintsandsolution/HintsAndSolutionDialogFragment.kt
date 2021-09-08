@@ -12,6 +12,7 @@ import org.oppia.android.app.model.State
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
@@ -68,7 +69,7 @@ class HintsAndSolutionDialogFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

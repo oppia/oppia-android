@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.R
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 
@@ -37,7 +38,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

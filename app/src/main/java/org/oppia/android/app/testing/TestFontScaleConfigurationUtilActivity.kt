@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Test activity used for testing font scale. */
 class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
@@ -14,7 +15,7 @@ class TestFontScaleConfigurationUtilActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val readingTextSize = intent.getStringExtra(FONT_SCALE_EXTRA_KEY)
     configUtilActivityPresenter.handleOnCreate(readingTextSize)
   }

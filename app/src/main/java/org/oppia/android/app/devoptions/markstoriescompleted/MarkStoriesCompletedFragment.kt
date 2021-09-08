@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment to display all stories and provide functionality to mark them completed. */
 class MarkStoriesCompletedFragment : InjectableFragment() {
@@ -31,7 +32,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

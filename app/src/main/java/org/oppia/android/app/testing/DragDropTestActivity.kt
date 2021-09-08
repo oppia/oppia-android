@@ -6,6 +6,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Test Activity used for testing [DragAndDropItemFacilitator] functionality */
 class DragDropTestActivity :
@@ -18,7 +19,7 @@ class DragDropTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     dragDropTestActivityPresenter.handleOnCreate()
   }
 

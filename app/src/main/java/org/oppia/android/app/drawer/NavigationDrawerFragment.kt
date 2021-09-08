@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** [NavigationDrawerFragment] to show navigation drawer. */
 class NavigationDrawerFragment :
@@ -21,7 +22,7 @@ class NavigationDrawerFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

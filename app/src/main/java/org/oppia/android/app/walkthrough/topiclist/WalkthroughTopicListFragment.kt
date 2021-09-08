@@ -9,6 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicSummary
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** The second slide for [WalkthroughActivity]. */
 class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickListener {
@@ -17,7 +18,7 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

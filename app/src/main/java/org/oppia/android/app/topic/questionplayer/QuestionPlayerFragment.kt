@@ -18,6 +18,7 @@ import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButton
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -37,7 +38,7 @@ class QuestionPlayerFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** The activity that will show the license text of a copyright license. */
 class LicenseTextViewerActivity : InjectableAppCompatActivity() {
@@ -14,7 +15,7 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val dependencyIndex = intent.getIntExtra(LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX, 0)
     val licenseIndex = intent.getIntExtra(LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX, 0)
     licenseTextViewerActivityPresenter.handleOnCreate(dependencyIndex, licenseIndex)

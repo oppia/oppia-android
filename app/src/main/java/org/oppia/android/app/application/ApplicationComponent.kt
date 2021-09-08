@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
-import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -101,7 +101,7 @@ interface ApplicationComponent : ApplicationInjector {
     fun build(): ApplicationComponent
   }
 
-  fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
+  fun getActivityComponentBuilderProvider(): Provider<ActivityComponentImpl.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
 

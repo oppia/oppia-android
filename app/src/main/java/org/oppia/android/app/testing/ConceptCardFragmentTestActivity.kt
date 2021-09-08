@@ -5,6 +5,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Test Activity used for testing ConceptCardFragment */
 class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCardListener {
@@ -14,7 +15,7 @@ class ConceptCardFragmentTestActivity : InjectableAppCompatActivity(), ConceptCa
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     conceptCardFragmentTestActivityController.handleOnCreate()
   }
 

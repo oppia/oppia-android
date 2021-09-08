@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
 
@@ -28,7 +29,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

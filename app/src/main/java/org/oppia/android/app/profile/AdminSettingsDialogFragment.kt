@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 const val ADMIN_SETTINGS_PIN_ARGUMENT_KEY = "AdminSettingsDialogFragment.admin_settings_pin"
 
@@ -25,7 +26,7 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

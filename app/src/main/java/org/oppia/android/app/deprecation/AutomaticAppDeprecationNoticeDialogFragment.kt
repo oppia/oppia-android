@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /**
  * Dialog fragment to be shown when the pre-release version of the app should no longer be playable
@@ -27,7 +28,7 @@ class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

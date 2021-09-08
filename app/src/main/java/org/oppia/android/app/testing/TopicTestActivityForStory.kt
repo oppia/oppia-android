@@ -18,6 +18,7 @@ import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** The test activity for [TopicFragment] to test displaying story by storyId. */
 class TopicTestActivityForStory :
@@ -33,7 +34,7 @@ class TopicTestActivityForStory :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,

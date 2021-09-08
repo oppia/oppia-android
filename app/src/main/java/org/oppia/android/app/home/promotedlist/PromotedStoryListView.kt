@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
+import org.oppia.android.app.view.ViewComponentImpl
 
 private const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
 
@@ -34,8 +35,9 @@ class PromotedStoryListView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
 
     // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
     // the item is completely visible in [HomeFragment] as soon as learner lifts the finger

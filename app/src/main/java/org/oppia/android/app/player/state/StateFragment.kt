@@ -19,6 +19,7 @@ import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButton
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -64,7 +65,7 @@ class StateFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

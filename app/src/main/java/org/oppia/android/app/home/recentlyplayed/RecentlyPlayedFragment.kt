@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.PromotedStory
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val RECENTLY_PLAYED_FRAGMENT_INTERNAL_PROFILE_ID_KEY =
   "RecentlyPlayedFragment.internal_profile_id"
@@ -32,7 +33,7 @@ class RecentlyPlayedFragment : InjectableFragment(), OngoingStoryClickListener {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(

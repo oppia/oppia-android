@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
+import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
@@ -58,7 +59,7 @@ class ExplorationFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
     val readingTextSize =
       arguments!!.getString(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
     checkNotNull(readingTextSize) { "ExplorationFragment must be created with a reading text size" }

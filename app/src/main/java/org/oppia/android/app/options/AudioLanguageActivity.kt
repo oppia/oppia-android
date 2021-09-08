@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** The activity to change the Default Audio language of the app. */
 class AudioLanguageActivity : InjectableAppCompatActivity() {
@@ -16,7 +17,7 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     prefKey = intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)
     prefSummaryValue = if (savedInstanceState != null) {
       savedInstanceState.get(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY) as String

@@ -12,6 +12,7 @@ import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 import kotlin.properties.Delegates
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
@@ -44,7 +45,7 @@ class HelpActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false

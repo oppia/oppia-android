@@ -6,6 +6,7 @@ import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Test Activity used for testing [TopicRevisionFragment] */
 class TopicRevisionTestActivity : InjectableAppCompatActivity(), RouteToRevisionCardListener {
@@ -15,7 +16,7 @@ class TopicRevisionTestActivity : InjectableAppCompatActivity(), RouteToRevision
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     topicRevisionTestActivityPresenter.handleOnCreate()
   }
 

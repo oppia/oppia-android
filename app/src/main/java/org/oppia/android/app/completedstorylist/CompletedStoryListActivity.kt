@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity for completed stories. */
 class CompletedStoryListActivity : InjectableAppCompatActivity() {
@@ -13,7 +14,7 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val internalProfileId: Int =
       intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)

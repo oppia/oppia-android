@@ -1,0 +1,86 @@
+"""
+UI utilities for for managing languages & locales.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "app_language_locale_handler",
+    srcs = [
+        "AppLanguageLocaleHandler.kt",
+    ],
+    #    visibility = ["//app:app_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
+    ],
+)
+
+kt_android_library(
+    name = "app_language_resource_handler",
+    srcs = [
+        "AppLanguageResourceHandler.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":app_language_locale_handler",
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/locale:oppia_locale",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "app_language_watcher_mixin",
+    srcs = [
+        "AppLanguageWatcherMixin.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":app_language_locale_handler",
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+    ],
+)
+
+kt_android_library(
+    name = "app_language_activity_injector",
+    srcs = [
+        "AppLanguageActivityInjector.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
+    deps = [
+        ":app_language_watcher_mixin",
+    ],
+)
+
+kt_android_library(
+    name = "app_language_application_injector",
+    srcs = [
+        "AppLanguageApplicationInjector.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
+    deps = [
+        ":app_language_locale_handler",
+    ],
+)
+
+kt_android_library(
+    name = "app_language_application_injector_provider",
+    srcs = [
+        "AppLanguageApplicationInjectorProvider.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
+    deps = [
+        ":app_language_application_injector",
+    ],
+)
+
+dagger_rules()

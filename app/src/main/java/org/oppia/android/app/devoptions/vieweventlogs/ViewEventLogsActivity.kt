@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity for View Event Logs. */
 class ViewEventLogsActivity : InjectableAppCompatActivity() {
@@ -14,7 +15,7 @@ class ViewEventLogsActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     viewEventLogsActivityPresenter.handleOnCreate()
     title = getString(R.string.view_event_logs_activity_title)
   }

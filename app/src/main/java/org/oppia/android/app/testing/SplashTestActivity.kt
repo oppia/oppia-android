@@ -5,6 +5,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /**
  * A test activity to verify the injection of [PlatformParameterValue] in the [SplashActivity].
@@ -17,7 +18,7 @@ class SplashTestActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     splashTestActivityPresenter.handleOnCreate()
   }
 

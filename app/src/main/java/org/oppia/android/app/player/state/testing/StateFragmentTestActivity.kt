@@ -17,6 +17,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_profile_id"
@@ -46,7 +47,7 @@ class StateFragmentTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 

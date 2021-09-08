@@ -3,6 +3,7 @@ package org.oppia.android.app.topic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -13,6 +14,9 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.ActivityIntentFactories
+import org.oppia.android.app.model.ProfileId
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -35,7 +39,7 @@ class TopicActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
@@ -121,6 +125,16 @@ class TopicActivity :
     finish()
   }
 
+  class TopicActivityIntentFactoryImpl @Inject constructor(
+    private val activity: AppCompatActivity
+  ): ActivityIntentFactories.TopicActivityIntentFactory {
+    override fun createIntent(profileId: ProfileId, topicId: String): Intent =
+      createTopicActivityIntent(activity, profileId.internalId, topicId)
+
+    override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
+      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+  }
+
   companion object {
 
     fun getProfileIdKey(): String {
@@ -141,10 +155,10 @@ class TopicActivity :
       internalProfileId: Int,
       topicId: String
     ): Intent {
-      val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      return intent
+      return Intent(context, TopicActivity::class.java).apply {
+        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      }
     }
 
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
@@ -154,11 +168,9 @@ class TopicActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      return intent
+      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
+        putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      }
     }
   }
 }

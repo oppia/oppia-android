@@ -7,6 +7,7 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity for Mark Stories Completed. */
 class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
@@ -17,7 +18,7 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(MARK_STORIES_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = getString(R.string.mark_stories_completed_activity_title)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
 class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextListener {
@@ -14,7 +15,7 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val dependencyIndex = intent.getIntExtra(THIRD_PARTY_DEPENDENCY_INDEX, 0)
     licenseListActivityPresenter.handleOnCreate(dependencyIndex, false)
   }
