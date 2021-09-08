@@ -32,4 +32,7 @@ android_library(
     assets = _SUPPORTED_LANGUAGES_CONFIG_ASSETS + _SUPPORTED_REGIONS_CONFIG_ASSETS,
     assets_dir = "languages/",
     manifest = "AndroidManifest.xml",
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/locale:__pkg__",
+    ],
 )
