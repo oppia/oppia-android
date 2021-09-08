@@ -1,11 +1,15 @@
 package org.oppia.android.domain.locale
 
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
+import android.text.BidiFormatter
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import java.text.DateFormat
 import java.util.Locale
+import java.util.Objects
+import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.RegionSupportDefinition
@@ -17,7 +21,8 @@ class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
   private val machineLocale: MachineLocale
 ): OppiaLocale.DisplayLocale(localeContext) {
-  private val formattingLocale by lazy { computeLocale() }
+  // TODO(#3766): Restrict to be 'internal'.
+  val formattingLocale: Locale by lazy { computeLocale() }
   private val dateFormat by lazy {
     DateFormat.getDateInstance(DATE_FORMAT_LENGTH, formattingLocale)
   }
@@ -27,6 +32,12 @@ class DisplayLocaleImpl(
   private val dateTimeFormat by lazy {
     DateFormat.getDateTimeInstance(DATE_FORMAT_LENGTH, TIME_FORMAT_LENGTH, formattingLocale)
   }
+  private val bidiFormatter by lazy { BidiFormatter.getInstance(formattingLocale) }
+
+  // TODO(#3766): Restrict to be 'internal'.
+  fun setAsDefault(configuration: Configuration) {
+    configuration.setLocale(formattingLocale)
+  }
 
   override fun getCurrentDateString(): String = dateFormat.format(oppiaClock.getCurrentDate())
 
@@ -35,7 +46,10 @@ class DisplayLocaleImpl(
   override fun getCurrentDateTimeString(): String =
     dateTimeFormat.format(oppiaClock.getCurrentDate())
 
-  override fun String.formatInLocale(vararg args: Any?): String = format(formattingLocale, *args)
+  override fun String.formatInLocale(vararg args: Any?): String =
+    format(formattingLocale, *args.map { arg ->
+      if (arg is CharSequence) bidiFormatter.unicodeWrap(arg) else arg
+    }.toTypedArray())
 
   override fun Resources.getStringInLocale(@StringRes id: Int): String = getString(id)
 
@@ -44,6 +58,16 @@ class DisplayLocaleImpl(
 
   override fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String> =
     getStringArray(id).toList()
+
+  override fun toString(): String = "DisplayLocaleImpl[context=$localeContext]"
+
+  override fun equals(other: Any?): Boolean {
+    return (other as? DisplayLocaleImpl)?.let { locale ->
+      localeContext == locale.localeContext && machineLocale == locale.machineLocale
+    } ?: false
+  }
+
+  override fun hashCode(): Int = Objects.hash(localeContext, machineLocale)
 
   private fun computeLocale(): Locale {
     // Locale is always computed based on the Android resource app string identifier if that's
@@ -65,25 +89,21 @@ class DisplayLocaleImpl(
     return Locale(selectedProfile.languageCode, selectedProfile.regionCode)
   }
 
-  private fun computePotentialLanguageProfiles(): List<AndroidLocaleProfile?> {
-    return if (localeContext.languageDefinition.minAndroidSdkVersion <= Build.VERSION.SDK_INT) {
-      listOf(
-        getLanguageId().computeLocaleProfileFromAndroidId(),
-        getLanguageId().computeLocaleProfileFromIetfDefinitions(localeContext.regionDefinition),
-        getLanguageId().computeLocaleProfileFromMacaronicLanguage()
-      )
-    } else listOf()
-  }
+  private fun computePotentialLanguageProfiles(): List<AndroidLocaleProfile?> =
+    computeLanguageProfiles(localeContext.languageDefinition, getLanguageId())
 
-  private fun computePotentialFallbackLanguageProfiles(): List<AndroidLocaleProfile?> {
-    val fallbackLanguageMinSdk = localeContext.fallbackLanguageDefinition.minAndroidSdkVersion
-    return if (fallbackLanguageMinSdk <= Build.VERSION.SDK_INT) {
+  private fun computePotentialFallbackLanguageProfiles(): List<AndroidLocaleProfile?> =
+    computeLanguageProfiles(localeContext.fallbackLanguageDefinition, getFallbackLanguageId())
+
+  private fun computeLanguageProfiles(
+    definition: LanguageSupportDefinition,
+    languageId: LanguageId
+  ): List<AndroidLocaleProfile?> {
+    return if (definition.minAndroidSdkVersion <= Build.VERSION.SDK_INT) {
       listOf(
-        getFallbackLanguageId().computeLocaleProfileFromAndroidId(),
-        getFallbackLanguageId().computeLocaleProfileFromIetfDefinitions(
-          localeContext.regionDefinition
-        ),
-        getFallbackLanguageId().computeLocaleProfileFromMacaronicLanguage()
+        languageId.computeLocaleProfileFromAndroidId(),
+        languageId.computeLocaleProfileFromIetfDefinitions(localeContext.regionDefinition),
+        languageId.computeLocaleProfileFromMacaronicLanguage()
       )
     } else listOf()
   }

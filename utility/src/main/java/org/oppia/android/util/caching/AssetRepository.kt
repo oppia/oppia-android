@@ -97,9 +97,10 @@ class AssetRepository @Inject constructor(
   private fun primeProtoBlobFromLocalAssets(assetName: String) {
     repositoryLock.withLock {
       if (assetName !in protoFileAssets) {
-        val files = context.assets.list(/* path= */ ".")?.toList() ?: listOf()
-        protoFileAssets[assetName] = if (assetName in files) {
-          context.assets.open("$assetName.pb").use { it.readBytes() }
+        val files = context.assets.list(/* path= */ "")?.toList() ?: listOf()
+        val assetNameFile = "$assetName.pb"
+        protoFileAssets[assetName] = if (assetNameFile in files) {
+          context.assets.open(assetNameFile).use { it.readBytes() }
         } else null
       }
     }

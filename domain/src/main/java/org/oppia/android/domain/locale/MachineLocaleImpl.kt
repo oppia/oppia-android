@@ -51,6 +51,16 @@ class MachineLocaleImpl(
     return parsedDate?.let { OppiaDateImpl(it, oppiaClock.getCurrentDate()) }
   }
 
+  override fun toString(): String = "MachineLocaleImpl[context=$machineLocaleContext]"
+
+  override fun equals(other: Any?): Boolean {
+    return (other as? MachineLocaleImpl)?.let { locale ->
+      localeContext == locale.localeContext
+    } ?: false
+  }
+
+  override fun hashCode(): Int = localeContext.hashCode()
+
   private class OppiaDateImpl(private val date: Date, private val today: Date): OppiaDate {
     override fun isBeforeToday(): Boolean = date.before(today)
   }

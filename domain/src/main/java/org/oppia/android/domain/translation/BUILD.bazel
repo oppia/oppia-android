@@ -6,7 +6,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "oppia_locale",
+    name = "translation_controller",
     srcs = [
         "TranslationController.kt",
     ],
