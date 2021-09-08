@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -26,7 +27,6 @@ import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -244,15 +244,16 @@ class TopicPracticeFragmentTest {
   }
 
   @Test
-  @Ignore("Flaky test") // TODO(#3413): Test is failing unexpectedly.
   fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)
-    clickPracticeTab()
-    clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
-    scrollToPosition(position = 5)
-    clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
-    intended(hasComponent(QuestionPlayerActivity::class.java.name))
-    intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
+    testCoroutineDispatchers.unregisterIdlingResource()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      clickPracticeTab()
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      scrollToPosition(position = 5)
+      clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
+      intended(hasComponent(QuestionPlayerActivity::class.java.name))
+      intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
+    }
   }
 
   @Test
