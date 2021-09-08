@@ -77,6 +77,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 
 /** Default value for float comparison. */
 private const val TOLERANCE = 1e-5f
@@ -84,7 +85,6 @@ private const val TOLERANCE = 1e-5f
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ImageViewBindingAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ImageViewBindingAdaptersTest {
 
   @Inject
@@ -101,152 +101,11 @@ class ImageViewBindingAdaptersTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
     Intents.init()
   }
 
   @After
   fun tearDown() {
     Intents.release()
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testViewBindingAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testViewBindingAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(0f)
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testViewBindingAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testViewBindingAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
-  }
-
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
-  }
-
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  @Singleton
-  @Component(
-    modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
-    ]
-  )
-  /** Create a TestApplicationComponent. */
-  interface TestApplicationComponent : ApplicationComponent {
-    /** Build the TestApplicationComponent. */
-    @Component.Builder
-    interface Builder : ApplicationComponent.Builder
-
-    /** Inject [ViewBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(ViewBindingAdaptersTest: ViewBindingAdaptersTest)
-  }
-
-  /**
-   * Class to override a dependency throughout the test application, instead of overriding the
-   * dependencies in every test class, we can just do it once by extending the Application class.
-   */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerViewBindingAdaptersTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
-    }
-
-    /** Inject [ViewBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(viewBindingAdapters: ViewBindingAdaptersTest) {
-      component.inject(viewBindingAdapters)
-    }
-
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
-
-    override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }
