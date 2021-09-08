@@ -29,15 +29,19 @@ import org.oppia.android.util.extensions.toLanguageCode
 import org.oppia.android.util.extensions.toLanguageCodeString
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 private const val FEEDBACK_REPORT_MANAGEMENT_CONTROLLER_TAG =
   "Feedback Report Management Controller"
 private const val FEEDBACK_REPORTS_DATABASE_NAME = "feedback_reports_database"
 private const val PLATFORM_ANDROID = "android"
+private const val CATEGORY_SUGGESTION = "suggestion"
+private const val CATEGORY_ISSUE = "issue"
+private const val CATEGORY_CRASH = "crash"
 
 /** Controller for uploading feedback reports to remote storage or saving them on disk. */
 @Singleton
@@ -87,7 +91,7 @@ class FeedbackReportManagementController @Inject constructor(
    *
    * @return a list of feedback reports to upload to remote storage
    */
-  suspend fun getCachedReportsList(): MutableList<FeedbackReport> {
+  suspend fun getCachedReportsList(): List<FeedbackReport> {
     return feedbackReportDataStore.readDataAsync().await().reportsList
   }
 
@@ -160,8 +164,8 @@ class FeedbackReportManagementController @Inject constructor(
       ReportTypeCase.SUGGESTION -> {
         val suggestion = userSuppliedFeedback.suggestion
         return GaeUserSuppliedFeedback(
-          reportType = reportType.name.toLowerCase(),
-          category = suggestion.suggestionCategory.name.toLowerCase(),
+          reportType = reportType.name.toLowerCase(Locale.US),
+          category = CATEGORY_SUGGESTION,
           userFeedbackSelectedItems = null,
           userFeedbackOtherTextInput = suggestion.userSubmittedSuggestion
         )
@@ -172,14 +176,14 @@ class FeedbackReportManagementController @Inject constructor(
       ReportTypeCase.CRASH -> {
         val crash = userSuppliedFeedback.crash
         return GaeUserSuppliedFeedback(
-          reportType = reportType.name.toLowerCase(),
-          category = crash.crashLocation.name.toLowerCase(),
+          reportType = reportType.name.toLowerCase(Locale.US),
+          category = CATEGORY_CRASH,
           userFeedbackSelectedItems = null,
           userFeedbackOtherTextInput = crash.crashExplanation
         )
       }
       else -> throw IllegalArgumentException(
-        "Encountered unexpected feedback report type: ${userSuppliedFeedback.reportTypeCase.name}"
+        "Encountered unexpected feedback report type: ${userSuppliedFeedback.reportTypeCase}"
       )
     }
   }
@@ -190,7 +194,7 @@ class FeedbackReportManagementController @Inject constructor(
     reportTypeName: String,
     issue: Issue
   ): GaeUserSuppliedFeedback {
-    var category = issue.issueCategoryCase.name
+    var category = CATEGORY_ISSUE
     var optionsList: List<String>? = null
     var userInput: String? = null
     when (issue.issueCategoryCase) {
@@ -220,7 +224,7 @@ class FeedbackReportManagementController @Inject constructor(
           }
           else -> throw IllegalArgumentException(
             "Encountered unexpected language issue type: " +
-              issue.languageIssue.languageIssueCategoryCase.name
+              issue.languageIssue.languageIssueCategoryCase
           )
         }
       }
@@ -236,12 +240,12 @@ class FeedbackReportManagementController @Inject constructor(
         userInput = issue.otherIssue.openUserInput
       }
       else -> throw IllegalArgumentException(
-        "Encountered unexpected issue category: ${issue.issueCategoryCase.name}"
+        "Encountered unexpected issue category: ${issue.issueCategoryCase}"
       )
     }
     return GaeUserSuppliedFeedback(
-      reportType = reportTypeName.toLowerCase(),
-      category = category.toLowerCase(),
+      reportType = reportTypeName.toLowerCase(Locale.US),
+      category = category.toLowerCase(Locale.US),
       userFeedbackSelectedItems = optionsList,
       userFeedbackOtherTextInput = userInput
     )
@@ -267,7 +271,7 @@ class FeedbackReportManagementController @Inject constructor(
       deviceModel = deviceContext.deviceModel,
       sdkVersion = deviceContext.sdkVersion,
       buildFingerprint = deviceContext.buildFingerprint,
-      networkType = deviceContext.networkType.name.toLowerCase()
+      networkType = deviceContext.networkType.name.toLowerCase(Locale.US)
     )
   }
 
@@ -277,7 +281,7 @@ class FeedbackReportManagementController @Inject constructor(
   ): GaeFeedbackReportingAppContext {
     return GaeFeedbackReportingAppContext(
       entryPoint = getEntryPointData(appContext),
-      textSize = appContext.textSize.name.toLowerCase(),
+      textSize = appContext.textSize.name.toLowerCase(Locale.US),
       textLanguageCode = appContext.textLanguage.toLanguageCode().toLanguageCodeString(),
       audioLanguageCode = appContext.audioLanguage.toLanguageCode().toLanguageCodeString(),
       downloadAndUpdateOnlyOnWifi = appContext.deviceSettings.allowDownloadAndUpdateOnlyOnWifi,
@@ -309,18 +313,15 @@ class FeedbackReportManagementController @Inject constructor(
         topicId = revisionCard.topicId
         subtopicId = revisionCard.subtopicId
       }
-      EntryPointCase.NAVIGATION_DRAWER -> {
-        // If entry point is not an exploration player or revision card, leave story values as null.
-      }
-      EntryPointCase.CRASH_DIALOG -> {
+      EntryPointCase.NAVIGATION_DRAWER, EntryPointCase.CRASH_DIALOG -> {
         // If entry point is not an exploration player or revision card, leave story values as null.
       }
       else -> throw IllegalArgumentException(
-        "Encountered unexpected entry point: ${appContext.entryPointCase.name}"
+        "Encountered unexpected entry point: ${appContext.entryPointCase}"
       )
     }
     return GaeFeedbackReportingEntryPoint(
-      entryPointName = appContext.entryPointCase.name.toLowerCase(),
+      entryPointName = appContext.entryPointCase.name.toLowerCase(Locale.US),
       topicId = topicId,
       storyId = storyId,
       explorationId = explorationId,

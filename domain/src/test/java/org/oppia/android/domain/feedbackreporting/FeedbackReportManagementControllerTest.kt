@@ -56,10 +56,11 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.CELLULAR
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.LOCAL
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -88,7 +89,7 @@ class FeedbackReportManagementControllerTest {
   lateinit var feedbackReportManagementController: FeedbackReportManagementController
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -143,7 +144,6 @@ class FeedbackReportManagementControllerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
     setUpApplicationForContext()
     setUpFakeLogcatFile()
@@ -484,7 +484,8 @@ class FeedbackReportManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class, TestNetworkModule::class,
-      FakeOppiaClockModule::class, FeedbackReportingModule::class
+      FakeOppiaClockModule::class, FeedbackReportingModule::class,
+      NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
