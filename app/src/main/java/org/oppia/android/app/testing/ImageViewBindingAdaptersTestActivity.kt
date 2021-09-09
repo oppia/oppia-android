@@ -1,7 +1,7 @@
 package org.oppia.android.app.testing
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 
 class ImageViewBindingAdaptersTestActivity : AppCompatActivity() {
