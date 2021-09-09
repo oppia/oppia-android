@@ -113,8 +113,9 @@ class ImageViewBindingAdaptersTest {
       ImageViewBindingAdapters.setImageDrawable(imageView, R.drawable.bg_blue_card)
       return@runWithActivity imageView
     }
-    assertThat(imageView.drawable.isVisible)
-    assertThat(imageView.drawable.isStateful)
+    assertThat(imageView.drawable).isEqualTo(R.drawable.bg_blue_card)
+//    assertThat(imageView.drawable.isStateful)
+//    assertThat(imageView)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
