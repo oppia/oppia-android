@@ -305,7 +305,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt",
-    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/walkthrough/welcome/WalkthroughWelcomeViewModel.kt",
 ] + [
     "update_" + view_models_with_resource_imports[0:-3]
@@ -343,6 +342,7 @@ VIEW_MODELS = [
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
