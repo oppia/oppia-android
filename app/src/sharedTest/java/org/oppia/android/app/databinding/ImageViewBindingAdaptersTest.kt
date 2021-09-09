@@ -6,17 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.databinding.adapters.ImageViewBindingAdapter
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import kotlinx.android.synthetic.main.activity_image_view_binding_adapters_test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,11 +30,10 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.ViewBindingAdapters.setRotationAnimation
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ViewBindingAdaptersTestActivity
+import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -66,7 +62,6 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.app.databinding.ImageViewBindingAdapters
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -80,8 +75,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.android.synthetic.main.activity_image_view_binding_adapters_test.*
-import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 
 /** Default value for float comparison. */
 private const val TOLERANCE = 1e-5f
@@ -138,7 +131,7 @@ class ImageViewBindingAdaptersTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }// TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  } // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
 
   @Singleton
   @Component(
