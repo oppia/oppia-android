@@ -171,13 +171,39 @@ class FAQListFragmentTest {
     }
   }
 
+  @Test
+  fun openFaqListActivity_selectQuestionWithOppiaInName_opensFaqSingleActivity() {
+    launch(FAQListActivity::class.java).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.faq_fragment_recycler_view,
+          position = 4
+        )
+      ).perform(click())
+      intended(
+        allOf(
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_QUESTION,
+            getResources().getString(R.string.faq_question_4, getAppName())
+          ),
+          hasExtra(
+            FAQSingleActivity.FAQ_SINGLE_ACTIVITY_ANSWER,
+            getResources().getString(R.string.faq_answer_4, getAppName())
+          ),
+          hasComponent(FAQSingleActivity::class.java.name)
+        )
+      )
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
+  private fun getResources(): Resources =
+    ApplicationProvider.getApplicationContext<Context>().resources
+
+  private fun getAppName(): String = getResources().getString(R.string.app_name)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
