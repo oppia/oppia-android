@@ -48,6 +48,7 @@ android {
           showStackTraces = true
           showStandardStreams = false
         }
+        useJUnitPlatform()
       }
     }
   }

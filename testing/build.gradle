@@ -41,6 +41,7 @@ android {
           showStackTraces = true
           showStandardStreams = false
         }
+        useJUnitPlatform()
       }
     }
   }
@@ -78,6 +79,7 @@ dependencies {
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       'org.mockito:mockito-core:2.19.0',
+      'org.junit.jupiter:junit-jupiter-engine:5.7.1',
       project(":domain"),
   )
   kapt(
