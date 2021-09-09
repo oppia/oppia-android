@@ -54,7 +54,6 @@ import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-
 import javax.inject.Singleton
 
 /** Tests for [ImageViewBindingAdapters]. */
@@ -107,9 +106,7 @@ class ImageViewBindingAdaptersTest {
   private fun verifyIfDrawableMatches(drawableResId: Int) {
     val drawable = imageView.drawable
     val expectedDrawable = ContextCompat.getDrawable(context, drawableResId)
-//    withTagValue(equalTo(R.drawable.your_drawable))
-    assertThat(imageView.tag).isEqualTo(drawableResId)
-//    assertThat(drawable.constantState).isEqualTo(expectedDrawable?.constantState)
+    assertThat(drawable.constantState).isEqualTo(expectedDrawable?.constantState)
   }
 
   @Singleton
