@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:layout_marginStart="8dp"
-      app:barrierDirection="end">
+      app:barrierDirection="right">
 
       <androidx.constraintlayout.widget.Barrier
         android:id="@+id/topic_practice_subtopic_barrier"
