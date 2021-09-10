@@ -1,10 +1,11 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -14,7 +15,7 @@ import org.oppia.android.util.system.OppiaClock
 
 // TODO: documentation. Explain that US locale is always used for machine-readable strings.
 // TODO(#3766): Restrict to be 'internal'.
-class MachineLocaleImpl(
+class MachineLocaleImpl @Inject constructor(
   private val oppiaClock: OppiaClock
 ): OppiaLocale.MachineLocale(machineLocaleContext) {
   private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", machineAndroidLocale) }
@@ -29,6 +30,9 @@ class MachineLocaleImpl(
   override fun String.capitalizeForMachines(): String = capitalize(machineAndroidLocale)
 
   override fun String.decapitalizeForMachines(): String = decapitalize(machineAndroidLocale)
+
+  override fun String.endsWithIgnoreCase(suffix: String): Boolean =
+    toMachineLowerCase().endsWith(suffix.toMachineLowerCase())
 
   override fun String?.equalsIgnoreCase(other: String?): Boolean =
     this?.toMachineLowerCase() == other?.toMachineLowerCase()

@@ -1,11 +1,9 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
-import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.annotation.ArrayRes
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-import java.util.Locale
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -40,7 +38,7 @@ sealed class OppiaLocale {
 
   fun getCurrentRegion(): OppiaRegion = localeContext.regionDefinition.region
 
-  // TODO: documentation (https://developer.android.com/reference/java/util/Locale).
+  // TODO: documentation (https://developer.android.com/reference/java/util/Locale). Document this is available everywhere in the app.
   abstract class MachineLocale(override val localeContext: OppiaLocaleContext): OppiaLocale() {
     abstract fun String.formatForMachines(vararg args: Any?): String
 
@@ -52,7 +50,8 @@ sealed class OppiaLocale {
 
     abstract fun String.decapitalizeForMachines(): String
 
-    // TODO: regex to block ignoreCase.
+    abstract fun String.endsWithIgnoreCase(suffix: String): Boolean
+
     abstract fun String?.equalsIgnoreCase(other: String?): Boolean
 
     // TODO: documentation. See below.
@@ -73,16 +72,19 @@ sealed class OppiaLocale {
     }
   }
 
+  // TODO: document that this is generally only available via the domain layer.
   abstract class DisplayLocale(override val localeContext: OppiaLocaleContext): OppiaLocale() {
-    abstract fun getCurrentDateString(): String
+    abstract fun computeDateString(timestampMillis: Long): String
 
-    abstract fun getCurrentTimeString(): String
+    abstract fun computeTimeString(timestampMillis: Long): String
 
-    abstract fun getCurrentDateTimeString(): String
+    abstract fun computeDateTimeString(timestampMillis: Long): String
 
     // TODO: mention bidi wrapping (only applied to strings) & machine readable args
     // TODO: document that receiver is the format (unlike String.format()).
     abstract fun String.formatInLocale(vararg args: Any?): String
+
+    abstract fun String.capitalizeForHumans(): String
 
     abstract fun Resources.getStringInLocale(@StringRes id: Int): String
 
@@ -91,6 +93,14 @@ sealed class OppiaLocale {
     // TODO: for this & others, document that they won't necessarily follow the locale of this object
     //  (they actually depend on the locale specified in Resources).
     abstract fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String>
+
+    abstract fun Resources.getQuantityStringInLocale(@PluralsRes id: Int, quantity: Int): String
+
+    abstract fun Resources.getQuantityStringInLocale(
+      @PluralsRes id: Int, quantity: Int, vararg formatArgs: Any?
+    ): String
+
+    abstract fun Resources.getQuantityTextInLocale(@PluralsRes id: Int, quantity: Int): CharSequence
   }
 
   data class ContentLocale(override val localeContext: OppiaLocaleContext): OppiaLocale()

@@ -11,7 +11,7 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.domain.locale.OppiaLocale
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult

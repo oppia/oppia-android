@@ -13,7 +13,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
-        "//domain/src/main/java/org/oppia/android/domain/locale:oppia_locale",
         "//model:languages_java_proto_lite",
         "//model:profile_java_proto_lite",
         "//model:subtitled_html_java_proto_lite",
@@ -22,6 +21,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
 
