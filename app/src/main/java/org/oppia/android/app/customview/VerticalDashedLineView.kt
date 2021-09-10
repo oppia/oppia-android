@@ -42,6 +42,7 @@ class VerticalDashedLineView @JvmOverloads constructor(
     paint.pathEffect = DashPathEffect(floatArrayOf(dashLength, dashGap), /* phase= */ 0F)
   }
 
+  /** Sets the color. */
   fun setColor(colorId: Int) {
     paint.color = colorId
     invalidate()
