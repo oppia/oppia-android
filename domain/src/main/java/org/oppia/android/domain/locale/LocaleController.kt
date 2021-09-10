@@ -22,13 +22,14 @@ import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TR
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.UNRECOGNIZED
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.USAGE_MODE_UNSPECIFIED
-import org.oppia.android.domain.locale.OppiaLocale.ContentLocale
-import org.oppia.android.domain.locale.OppiaLocale.DisplayLocale
-import org.oppia.android.domain.locale.OppiaLocale.MachineLocale
+import org.oppia.android.util.locale.OppiaLocale.ContentLocale
+import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
+import org.oppia.android.util.locale.OppiaLocale.MachineLocale
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
@@ -45,13 +46,12 @@ class LocaleController @Inject constructor(
   private val languageConfigRetriever: LanguageConfigRetriever,
   private val oppiaLogger: OppiaLogger,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val machineLocale: MachineLocale
 ) {
   private val definitionsLock = ReentrantLock()
   private lateinit var supportedLanguages: SupportedLanguages
   private lateinit var supportedRegions: SupportedRegions
-
-  private val machineLocaleImpl: MachineLocale by lazy { MachineLocaleImpl(oppiaClock) }
 
   // TODO: explain what this is & how/when to use it.
   fun getLikelyDefaultAppStringLocaleContext(): OppiaLocaleContext {
@@ -82,7 +82,7 @@ class LocaleController @Inject constructor(
 
   // TODO: this should also work in cases when the process dies.
   fun reconstituteDisplayLocale(oppiaLocaleContext: OppiaLocaleContext): DisplayLocale {
-    return DisplayLocaleImpl(oppiaClock, oppiaLocaleContext, machineLocaleImpl)
+    return DisplayLocaleImpl(oppiaLocaleContext, machineLocale)
   }
 
   // TODO: document
@@ -113,8 +113,6 @@ class LocaleController @Inject constructor(
       computeLocaleResult(language, systemLocaleProfile, AUDIO_TRANSLATIONS)
     }
   }
-
-  fun getMachineLocale(): MachineLocale = machineLocaleImpl
 
   // TODO: document only matches to app language definitions.
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
@@ -222,7 +220,7 @@ class LocaleController @Inject constructor(
     }
 
     return when (usageMode) {
-      APP_STRINGS -> DisplayLocaleImpl(oppiaClock, localeContext, machineLocaleImpl)
+      APP_STRINGS -> DisplayLocaleImpl(localeContext, machineLocale)
       CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocale(localeContext)
       USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
     }
@@ -281,7 +279,7 @@ class LocaleController @Inject constructor(
     // language. If a language is unknown, return a definition that attempts to be interoperable
     // with Android.
     return definitions.languageDefinitionsList.find {
-      machineLocaleImpl.run {
+      machineLocale.run {
         languageCode.equalsIgnoreCase(it.retrieveAppLanguageCode())
       }
     }
@@ -294,7 +292,7 @@ class LocaleController @Inject constructor(
     // 47 tag defined for this region. If a region doesn't match, return unknown & just use the
     // country code directly for the formatting locale.
     return definitions.regionDefinitionsList.find {
-      machineLocaleImpl.run {
+      machineLocale.run {
         it.regionId.ietfRegionTag.equalsIgnoreCase(countryCode)
       }
     } ?: RegionSupportDefinition.newBuilder().apply {

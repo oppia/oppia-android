@@ -7,17 +7,17 @@ import android.text.BidiFormatter
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import java.text.DateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.Objects
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.RegionSupportDefinition
-import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#3766): Restrict to be 'internal'.
 class DisplayLocaleImpl(
-  private val oppiaClock: OppiaClock,
   localeContext: OppiaLocaleContext,
   private val machineLocale: MachineLocale
 ): OppiaLocale.DisplayLocale(localeContext) {
@@ -39,17 +39,21 @@ class DisplayLocaleImpl(
     configuration.setLocale(formattingLocale)
   }
 
-  override fun getCurrentDateString(): String = dateFormat.format(oppiaClock.getCurrentDate())
+  override fun computeDateString(timestampMillis: Long): String =
+    dateFormat.format(Date(timestampMillis))
 
-  override fun getCurrentTimeString(): String = timeFormat.format(oppiaClock.getCurrentDate())
+  override fun computeTimeString(timestampMillis: Long): String =
+    timeFormat.format(Date(timestampMillis))
 
-  override fun getCurrentDateTimeString(): String =
-    dateTimeFormat.format(oppiaClock.getCurrentDate())
+  override fun computeDateTimeString(timestampMillis: Long): String =
+    dateTimeFormat.format(Date(timestampMillis))
 
   override fun String.formatInLocale(vararg args: Any?): String =
     format(formattingLocale, *args.map { arg ->
       if (arg is CharSequence) bidiFormatter.unicodeWrap(arg) else arg
     }.toTypedArray())
+
+  override fun String.capitalizeForHumans(): String = capitalize(formattingLocale)
 
   override fun Resources.getStringInLocale(@StringRes id: Int): String = getString(id)
 
@@ -58,6 +62,16 @@ class DisplayLocaleImpl(
 
   override fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String> =
     getStringArray(id).toList()
+
+  override fun Resources.getQuantityStringInLocale(id: Int, quantity: Int): String =
+    getQuantityTextInLocale(id, quantity).toString()
+
+  override fun Resources.getQuantityStringInLocale(
+    id: Int, quantity: Int, vararg formatArgs: Any?
+  ): String = getQuantityStringInLocale(id, quantity).formatInLocale(*formatArgs)
+
+  override fun Resources.getQuantityTextInLocale(id: Int, quantity: Int): CharSequence =
+    getQuantityText(id, quantity)
 
   override fun toString(): String = "DisplayLocaleImpl[context=$localeContext]"
 
