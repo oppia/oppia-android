@@ -17,6 +17,7 @@ import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.domain.util.getStringFromData
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker private constructor(
@@ -41,7 +42,7 @@ class LogUploadWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
-      when (inputData.getString(WORKER_CASE_KEY)) {
+      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
         EVENT_WORKER -> uploadEvents()
         EXCEPTION_WORKER -> uploadExceptions()
         else -> Result.failure()

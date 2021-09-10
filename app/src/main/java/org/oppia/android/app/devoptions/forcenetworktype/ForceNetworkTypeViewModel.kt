@@ -7,6 +7,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * [ViewModel] for [ForceNetworkTypeFragment]. It populates the recycler view with a list of
@@ -14,7 +15,7 @@ import javax.inject.Inject
  */
 @FragmentScope
 class ForceNetworkTypeViewModel @Inject constructor(
-  private val activity: AppCompatActivity
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   /**
@@ -29,19 +30,19 @@ class ForceNetworkTypeViewModel @Inject constructor(
     return listOf(
       NetworkTypeItemViewModel(
         NetworkConnectionDebugUtil.DebugConnectionStatus.DEFAULT,
-        activity.getString(R.string.force_network_type_default_network)
+        resourceHandler.getStringInLocale(R.string.force_network_type_default_network)
       ),
       NetworkTypeItemViewModel(
         NetworkConnectionUtil.ProdConnectionStatus.LOCAL,
-        activity.getString(R.string.force_network_type_wifi_network)
+        resourceHandler.getStringInLocale(R.string.force_network_type_wifi_network)
       ),
       NetworkTypeItemViewModel(
         NetworkConnectionUtil.ProdConnectionStatus.CELLULAR,
-        activity.getString(R.string.force_network_type_cellular_network)
+        resourceHandler.getStringInLocale(R.string.force_network_type_cellular_network)
       ),
       NetworkTypeItemViewModel(
         NetworkConnectionUtil.ProdConnectionStatus.NONE,
-        activity.getString(R.string.force_network_type_no_network)
+        resourceHandler.getStringInLocale(R.string.force_network_type_no_network)
       )
     )
   }

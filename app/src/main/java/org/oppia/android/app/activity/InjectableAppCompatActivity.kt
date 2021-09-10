@@ -10,13 +10,15 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
+import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
  */
-abstract class InjectableAppCompatActivity : AppCompatActivity(), FragmentComponentFactory {
+abstract class InjectableAppCompatActivity :
+  AppCompatActivity(), FragmentComponentFactory, AppLanguageActivityInjectorProvider {
   /**
    * The [ActivityComponent] corresponding to this activity. This cannot be used before
    * [attachBaseContext] is called, and can be used to inject lateinit fields in child activities
@@ -66,6 +68,8 @@ abstract class InjectableAppCompatActivity : AppCompatActivity(), FragmentCompon
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
     return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
   }
+
+  override fun getAppLanguageActivityInjector(): AppLanguageActivityInjector = activityComponent
 
   private fun initializeActivityComponent(applicationContext: Context) {
     val componentFactory = applicationContext as ActivityComponentFactory

@@ -2,6 +2,7 @@ package org.oppia.android.app.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
@@ -11,12 +12,14 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -32,8 +35,12 @@ class TopicViewModel @Inject constructor(
     Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
-  val topicNameLiveData: LiveData<String> by lazy {
-    Transformations.map(topicLiveData, Topic::getName)
+  private val topicNameLiveData by lazy { Transformations.map(topicLiveData, Topic::getName) }
+
+  val topicToolbarTitleLiveData: LiveData<String> by lazy {
+    Transformations.map(topicNameLiveData) { name ->
+      resourceHandler.getStringInLocale(R.string.topic_name, name)
+    }
   }
 
   fun setInternalProfileId(internalProfileId: Int) {

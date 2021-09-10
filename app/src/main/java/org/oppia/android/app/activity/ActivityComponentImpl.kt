@@ -77,6 +77,7 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentBuilderModule
+import org.oppia.android.app.testing.InputInteractionViewTestActivity
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each activity.
 
@@ -120,6 +121,7 @@ interface ActivityComponentImpl: ActivityComponent, FragmentComponentBuilderInje
   fun inject(homeTestActivity: HomeTestActivity)
   fun inject(htmlParserTestActivity: HtmlParserTestActivity)
   fun inject(imageRegionSelectionTestActivity: ImageRegionSelectionTestActivity)
+  fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)

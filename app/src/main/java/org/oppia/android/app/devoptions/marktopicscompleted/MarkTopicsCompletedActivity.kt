@@ -8,12 +8,17 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Activity for Mark Topics Completed. */
 class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var markTopicsCompletedActivityPresenter: MarkTopicsCompletedActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +26,7 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(MARK_TOPICS_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
-    title = getString(R.string.mark_topics_completed_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -9,11 +9,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /**
  * DialogFragment that indicates to the user they are on cellular when trying to play an audio voiceover.
  */
-class CellularAudioDialogFragment : DialogFragment() {
+class CellularAudioDialogFragment : InjectableDialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -23,6 +25,11 @@ class CellularAudioDialogFragment : DialogFragment() {
     fun newInstance(): CellularAudioDialogFragment {
       return CellularAudioDialogFragment()
     }
+  }
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -6,11 +6,13 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Text Size list view model for the recycler view in [ReadingTextSizeFragment]. */
 @FragmentScope
 class ReadingTextSizeSelectionViewModel @Inject constructor(
-  fragment: Fragment
+  fragment: Fragment,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val resourceBundle = fragment.requireContext().resources
@@ -22,25 +24,29 @@ class ReadingTextSizeSelectionViewModel @Inject constructor(
       resourceBundle,
       ReadingTextSize.SMALL_TEXT_SIZE,
       selectedTextSize,
-      textSizeRadioButtonListener
+      textSizeRadioButtonListener,
+      resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.MEDIUM_TEXT_SIZE,
       selectedTextSize,
-      textSizeRadioButtonListener
+      textSizeRadioButtonListener,
+      resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.LARGE_TEXT_SIZE,
       selectedTextSize,
-      textSizeRadioButtonListener
+      textSizeRadioButtonListener,
+      resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.EXTRA_LARGE_TEXT_SIZE,
       selectedTextSize,
-      textSizeRadioButtonListener
+      textSizeRadioButtonListener,
+      resourceHandler
     ),
   )
 

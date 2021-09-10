@@ -10,6 +10,7 @@ import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -49,7 +50,7 @@ class TopicPracticeFragment : InjectableFragment() {
         .getSerializable(SKILL_ID_LIST_ARGUMENT_KEY)!! as HashMap<Int, MutableList<String>>
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
     return topicPracticeFragmentPresenter.handleCreateView(

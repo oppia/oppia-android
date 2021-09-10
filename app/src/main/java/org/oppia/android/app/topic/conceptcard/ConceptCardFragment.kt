@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 
@@ -56,7 +57,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
       "Expected arguments to be passed to ConceptCardFragment"
     }
     val skillId =
-      checkNotNull(args.getString(SKILL_ID_ARGUMENT_KEY)) {
+      checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
         "Expected skillId to be passed to ConceptCardFragment"
       }
     return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId)

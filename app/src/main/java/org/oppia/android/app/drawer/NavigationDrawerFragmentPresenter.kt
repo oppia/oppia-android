@@ -187,9 +187,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToCompletedStoryListLiveData() {
     getCompletedStoryListCount().observe(
-      fragment,
-      Observer<CompletedStoryList> {
-        getHeaderViewModel().completedStoryCount.set(it.completedStoryCount)
+      fragment, {
+        getHeaderViewModel().setCompletedStoryProgress(it.completedStoryCount)
       }
     )
   }
@@ -216,9 +215,8 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToOngoingTopicListLiveData() {
     getOngoingTopicListCount().observe(
-      fragment,
-      Observer<OngoingTopicList> {
-        getHeaderViewModel().ongoingTopicCount.set(it.topicCount)
+      fragment, {
+        getHeaderViewModel().setOngoingTopicProgress(it.topicCount)
       }
     )
   }

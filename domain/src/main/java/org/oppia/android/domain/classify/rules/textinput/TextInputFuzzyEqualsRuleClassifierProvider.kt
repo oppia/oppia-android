@@ -7,6 +7,7 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
 import javax.inject.Inject
+import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * Provider for a classifier that determines whether two strings are fuzzily equal per the text
@@ -16,7 +17,8 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
+  private val classifierFactory: GenericRuleClassifier.Factory,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
 
@@ -34,8 +36,8 @@ class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
   }
 
   private fun hasEditDistanceEqualToOne(inputString: String, matchString: String): Boolean {
-    val lowerInput = inputString.normalizeWhitespace().toLowerCase()
-    val lowerMatch = matchString.normalizeWhitespace().toLowerCase()
+    val lowerInput = machineLocale.run { inputString.normalizeWhitespace().toMachineLowerCase() }
+    val lowerMatch = machineLocale.run { matchString.normalizeWhitespace().toMachineLowerCase() }
     if (lowerInput == lowerMatch) {
       return true
     }

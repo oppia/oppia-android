@@ -7,6 +7,7 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
+import org.oppia.android.domain.util.getStringFromObject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [RevisionCard] objects from the filesystem. */
@@ -38,14 +39,14 @@ class RevisionCardRetriever @Inject constructor(
       jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
         ?: return RevisionCard.getDefaultInstance()
     val subtopicData = subtopicJsonObject.getJSONObject("page_contents")!!
-    val subtopicTitle = subtopicJsonObject.getString("subtopic_title")!!
+    val subtopicTitle = subtopicJsonObject.getStringFromObject("subtopic_title")!!
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
         SubtitledHtml.newBuilder()
-          .setHtml(subtopicData.getJSONObject("subtitled_html").getString("html"))
+          .setHtml(subtopicData.getJSONObject("subtitled_html").getStringFromObject("html"))
           .setContentId(
-            subtopicData.getJSONObject("subtitled_html").getString(
+            subtopicData.getJSONObject("subtitled_html").getStringFromObject(
               "content_id"
             )
           )

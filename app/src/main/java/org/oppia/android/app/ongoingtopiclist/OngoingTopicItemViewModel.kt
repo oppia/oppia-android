@@ -2,9 +2,11 @@ package org.oppia.android.app.ongoingtopiclist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
+import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying topic item in [OngoingTopicListActivity]. */
@@ -13,13 +15,18 @@ class OngoingTopicItemViewModel(
   private val internalProfileId: Int,
   val topic: Topic,
   val entityType: String,
-  private val intentFactoryShim: IntentFactoryShim
-) :
-  ObservableViewModel(),
-  RouteToTopicListener {
+  private val intentFactoryShim: IntentFactoryShim,
+  private val resourceHandler: AppLanguageResourceHandler
+) : ObservableViewModel(), RouteToTopicListener {
 
   fun onTopicItemClicked() {
     routeToTopic(internalProfileId, topic.topicId)
+  }
+
+  fun computeStoryCountText(): String {
+    return resourceHandler.getQuantityStringInLocale(
+      R.plurals.lesson_count, topic.storyCount, topic.storyCount
+    )
   }
 
   override fun routeToTopic(internalProfileId: Int, topicId: String) {

@@ -9,6 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that contains tabs for Topic. */
 class TopicFragment : InjectableFragment() {
@@ -26,8 +27,8 @@ class TopicFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
-    val topicId = arguments?.getString(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
-    val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    val topicId = arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY) ?: TEST_TOPIC_ID_0
+    val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
 
     return topicFragmentPresenter.handleCreateView(
       inflater,

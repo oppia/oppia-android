@@ -86,6 +86,7 @@ import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -133,7 +134,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val interactionViewModelFactoryMap: Map<
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val hasConversationView: Boolean
+  private val hasConversationView: Boolean,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -336,7 +338,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
-          isSplitView.get()!!
+          isSplitView.get()!!,
+          resourceHandler
         ).let { viewModel ->
           pendingItemList += viewModel
           previousAnswerViewModels += viewModel
@@ -526,9 +529,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
         gcsEntityId,
         hasConversationView,
         isSplitView.get()!!,
-        playerFeatureSet.conceptCardSupport
+        playerFeatureSet.conceptCardSupport,
+        resourceHandler
       )
-    submittedAnswerViewModel.isCorrectAnswer.set(isAnswerCorrect)
+    submittedAnswerViewModel.setIsCorrectAnswer(isAnswerCorrect)
     submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
     return submittedAnswerViewModel
   }
@@ -847,7 +851,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val fragment: Fragment,
     private val context: Context,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
-    private val backgroundCoroutineDispatcher: CoroutineDispatcher
+    private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+    private val resourceHandler: AppLanguageResourceHandler
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
@@ -1023,10 +1028,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 imageCenterAlign = false,
                 customOppiaTagActionListener = customTagListener
               )
-              binding.submittedAnswer = htmlParser.parseOppiaHtml(
-                userAnswer.htmlAnswer,
-                binding.submittedAnswerTextView,
-                supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+              submittedAnswerViewModel.setSubmittedAnswer(
+                htmlParser.parseOppiaHtml(
+                  userAnswer.htmlAnswer,
+                  binding.submittedAnswerTextView,
+                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+                )
               )
             }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
@@ -1040,8 +1047,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
             }
             else -> {
               showSingleAnswer(binding)
-              binding.submittedAnswer = userAnswer.plainAnswer
-              binding.accessibleAnswer = userAnswer.contentDescription
+              submittedAnswerViewModel.setSubmittedAnswer(
+                userAnswer.plainAnswer, accessibleAnswer = userAnswer.contentDescription
+              )
             }
           }
         }
@@ -1305,7 +1313,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         audioUiManagerRetriever,
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
-        hasConversationView
+        hasConversationView,
+        resourceHandler
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1320,7 +1329,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val context: Context,
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
-      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+      private val resourceHandler: AppLanguageResourceHandler
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1334,7 +1344,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           fragment,
           context,
           interactionViewModelFactoryMap,
-          backgroundCoroutineDispatcher
+          backgroundCoroutineDispatcher,
+          resourceHandler
         )
       }
     }

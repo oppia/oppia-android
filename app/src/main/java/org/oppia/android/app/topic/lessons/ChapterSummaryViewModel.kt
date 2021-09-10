@@ -1,7 +1,9 @@
 package org.oppia.android.app.topic.lessons
 
 import androidx.lifecycle.ViewModel
+import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ViewModel] for displaying a chapter summary. */
@@ -10,11 +12,24 @@ class ChapterSummaryViewModel(
   val explorationId: String,
   val chapterName: String,
   val storyId: String,
-  val index: Int,
-  private val chapterSummarySelector: ChapterSummarySelector
+  private val index: Int,
+  private val chapterSummarySelector: ChapterSummarySelector,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   fun onClick(explorationId: String) {
     chapterSummarySelector.selectChapterSummary(storyId, explorationId, chapterPlayState)
+  }
+
+  fun computeChapterPlayStateIconContentDescription(): String {
+    return if (chapterPlayState == ChapterPlayState.COMPLETED) {
+      resourceHandler.getStringInLocale(R.string.chapter_completed, index + 1, chapterName)
+    } else {
+      resourceHandler.getStringInLocale(R.string.chapter_in_progress, index + 1, chapterName)
+    }
+  }
+
+  fun computePlayChapterIndexText(): String {
+    return resourceHandler.getStringInLocale(R.string.topic_play_chapter_index, index + 1)
   }
 }

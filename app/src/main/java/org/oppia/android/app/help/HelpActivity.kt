@@ -13,6 +13,8 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import javax.inject.Inject
 import kotlin.properties.Delegates
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getStringFromBundle
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
@@ -38,6 +40,9 @@ class HelpActivity :
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private lateinit var selectedFragment: String
   private lateinit var selectedHelpOptionsTitle: String
   private var selectedDependencyIndex by Delegates.notNull<Int>()
@@ -51,12 +56,12 @@ class HelpActivity :
       /* defaultValue= */ false
     )
     selectedFragment =
-      savedInstanceState?.getString(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
+      savedInstanceState?.getStringFromBundle(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
     selectedDependencyIndex =
       savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
     selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
-    selectedHelpOptionsTitle = savedInstanceState?.getString(HELP_OPTIONS_TITLE_SAVED_KEY)
-      ?: getString(R.string.faq_activity_title)
+    selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
+      ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
       isFromNavigationDrawer,
@@ -64,7 +69,7 @@ class HelpActivity :
       selectedDependencyIndex,
       selectedLicenseIndex
     )
-    title = getString(R.string.menu_help)
+    title = resourceHandler.getStringInLocale(R.string.menu_help)
   }
 
   companion object {

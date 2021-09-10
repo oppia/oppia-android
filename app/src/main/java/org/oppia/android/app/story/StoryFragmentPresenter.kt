@@ -40,6 +40,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
@@ -50,7 +51,8 @@ class StoryFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @TopicHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -175,7 +177,7 @@ class StoryFragmentPresenter @Inject constructor(
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
-            val missingPrerequisiteSummary = fragment.getString(
+            val missingPrerequisiteSummary = resourceHandler.getStringInLocale(
               R.string.chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
               storyItemViewModel.missingPrerequisiteChapter.name

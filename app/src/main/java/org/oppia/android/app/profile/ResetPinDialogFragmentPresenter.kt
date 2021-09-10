@@ -17,6 +17,7 @@ import org.oppia.android.databinding.ResetPinDialogBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [ResetPinDialogFragment]. */
 @FragmentScope
@@ -24,7 +25,8 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ResetPinViewModel>
+  private val viewModelProvider: ViewModelProvider<ResetPinViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val resetViewModel by lazy {
     getResetPinViewModel()
@@ -45,7 +47,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
       viewModel = resetViewModel
     }
-    resetViewModel.name.set(name)
+    resetViewModel.setName(name)
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
@@ -100,7 +102,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
             )
         } else {
           resetViewModel.errorMessage.set(
-            fragment.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_pin_length
             )
           )

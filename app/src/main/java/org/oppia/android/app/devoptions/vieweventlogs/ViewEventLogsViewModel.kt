@@ -3,8 +3,9 @@ package org.oppia.android.app.devoptions.vieweventlogs
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.logging.firebase.DebugEventLogger
-import org.oppia.android.util.system.OppiaDateTimeFormatter
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * [ViewModel] for [ViewEventLogsFragment]. It populates the recyclerview with a list of
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @FragmentScope
 class ViewEventLogsViewModel @Inject constructor(
   debugEventLogger: DebugEventLogger,
-  private val oppiaDateTimeFormatter: OppiaDateTimeFormatter
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val eventList = debugEventLogger.getEventList()
@@ -28,7 +30,7 @@ class ViewEventLogsViewModel @Inject constructor(
 
   private fun processEventLogsList(): List<EventLogItemViewModel> {
     return eventList.map {
-      EventLogItemViewModel(it, oppiaDateTimeFormatter)
+      EventLogItemViewModel(it, machineLocale, resourceHandler)
     }.reversed()
   }
 }

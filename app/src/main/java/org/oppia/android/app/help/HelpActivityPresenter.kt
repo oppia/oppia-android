@@ -18,10 +18,14 @@ import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 import javax.inject.Inject
 import kotlin.properties.Delegates
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
-class HelpActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class HelpActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
+) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var toolbar: Toolbar
 
@@ -195,7 +199,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun selectFAQListFragment() {
-    setMultipaneContainerTitle(activity.getString(R.string.faq_activity_title))
+    setMultipaneContainerTitle(resourceHandler.getStringInLocale(R.string.faq_activity_title))
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = FAQ_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
@@ -203,7 +207,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   private fun selectThirdPartyDependencyListFragment() {
     setMultipaneContainerTitle(
-      activity.getString(R.string.third_party_dependency_list_activity_title)
+      resourceHandler.getStringInLocale(R.string.third_party_dependency_list_activity_title)
     )
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
@@ -211,7 +215,9 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun selectLicenseListFragment(dependencyIndex: Int) {
-    setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
+    setMultipaneContainerTitle(
+      resourceHandler.getStringInLocale(R.string.license_list_activity_title)
+    )
     setMultipaneBackButtonVisibility(View.VISIBLE)
     setHelpBackButtonContentDescription(LICENSE_LIST_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_LIST_FRAGMENT_TAG
@@ -237,7 +243,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       dependencyIndex,
       /* defValue= */ 0
     )
-    val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
+    val licenseNamesArray = resourceHandler.getStringArrayInLocale(licenseNamesArrayId)
     thirdPartyDependencyLicenseNamesArray.recycle()
     return licenseNamesArray[licenseIndex]
   }
@@ -251,21 +257,21 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun setHelpBackButtonContentDescription(fragmentTag: String) {
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
-        val thirdPartyDependenciesList = activity.getString(
+        val thirdPartyDependenciesList = resourceHandler.getStringInLocale(
           R.string.help_activity_third_party_dependencies_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = activity.getString(
+          .contentDescription = resourceHandler.getStringInLocale(
           R.string.help_activity_back_arrow_description,
           thirdPartyDependenciesList
         )
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
-        val copyrightLicensesList = activity.getString(
+        val copyrightLicensesList = resourceHandler.getStringInLocale(
           R.string.help_activity_copyright_licenses_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = activity.getString(
+          .contentDescription = resourceHandler.getStringInLocale(
           R.string.help_activity_back_arrow_description,
           copyrightLicensesList
         )

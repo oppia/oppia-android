@@ -14,13 +14,15 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The ObservableViewModel for [WalkthroughTopicListFragment]. */
 class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
-  @TopicHtmlParserEntityType private val topicEntityType: String
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -57,7 +59,8 @@ class WalkthroughTopicViewModel @Inject constructor(
         WalkthroughTopicSummaryViewModel(
           topicEntityType,
           topic,
-          fragment as TopicSummaryClickListener
+          fragment as TopicSummaryClickListener,
+          resourceHandler
         )
       }
     )

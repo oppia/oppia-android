@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.android.R
 import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.util.normalizeWhitespace
 import org.oppia.android.domain.util.removeWhitespace
 
@@ -19,11 +20,11 @@ class StringToRatioParser {
 
   /**
    * Returns a [RatioParsingError] for the specified text input if it's an invalid ratio, or
-   * [RatioParsingError.VALID] if no issues are found. Note that a valid ratio returned by this method is guaranteed
-   * to be parsed correctly by [parseRatioOrNull].
+   * [RatioParsingError.VALID] if no issues are found. Note that a valid ratio returned by this
+   * method is guaranteed to be parsed correctly by [parseRatioOrNull].
    *
-   * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
-   * using [getRealTimeAnswerError], instead.
+   * This method should only be used when a user tries submitting an answer. Real-time error
+   * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
     val normalized = text.normalizeWhitespace()
@@ -39,12 +40,12 @@ class StringToRatioParser {
   }
 
   /**
-   * Returns a [RatioParsingError] for obvious incorrect ratio formatting issues for the specified raw text, or
-   * [RatioParsingError.VALID] if not such issues are found.
+   * Returns a [RatioParsingError] for obvious incorrect ratio formatting issues for the specified
+   * raw text, or [RatioParsingError.VALID] if not such issues are found.
    *
    * Note that this method returning a valid result does not guarantee the text is a valid ratio--
-   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
-   * general validity, not for definite correctness.
+   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a
+   * quick sanity check for general validity, not for definite correctness.
    */
   fun getRealTimeAnswerError(text: String): RatioParsingError {
     return when {
@@ -79,9 +80,10 @@ class StringToRatioParser {
     INVALID_SIZE(error = R.string.ratio_error_invalid_size),
     INCLUDES_ZERO(error = R.string.ratio_error_includes_zero);
 
-    /** Returns the string corresponding to this error's string resources, or null if there is none. */
-    fun getErrorMessageFromStringRes(context: Context): String? {
-      return error?.let(context::getString)
-    }
+    /**
+     * Returns the string corresponding to this error's string resources, or null if there is none.
+     */
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
   }
 }

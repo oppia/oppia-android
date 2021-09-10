@@ -20,6 +20,7 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import org.oppia.android.domain.util.getStringFromData
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
@@ -54,7 +55,7 @@ class PlatformParameterSyncUpWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
-      when (inputData.getString(WORKER_TYPE_KEY)) {
+      when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }

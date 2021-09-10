@@ -11,12 +11,14 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.LicenseItemBinding
 import org.oppia.android.databinding.LicenseListFragmentBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [LicenseListFragment]. */
 @FragmentScope
 class LicenseListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: LicenseListFragmentBinding
 
@@ -27,7 +29,7 @@ class LicenseListFragmentPresenter @Inject constructor(
     dependencyIndex: Int,
     isMultipane: Boolean
   ): View? {
-    val viewModel = LicenseListViewModel(activity, dependencyIndex)
+    val viewModel = LicenseListViewModel(activity, dependencyIndex, resourceHandler)
     viewModel.isMultipane.set(isMultipane)
 
     binding = LicenseListFragmentBinding.inflate(

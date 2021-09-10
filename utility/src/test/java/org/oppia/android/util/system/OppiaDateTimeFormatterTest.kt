@@ -30,6 +30,8 @@ private const val TIMESTAMP_IN_SECONDS = 1586774460L
 @Config(manifest = Config.NONE)
 class OppiaDateTimeFormatterTest {
 
+  // TODO: convert to tests for TextViewBindingAdapters?
+
   @Inject
   lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
 

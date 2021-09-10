@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.locale.LocaleController
-import org.oppia.android.domain.locale.OppiaLocale
+import org.oppia.android.util.locale.OppiaLocale
 
 @Singleton
 class AppLanguageLocaleHandler @Inject constructor(

@@ -9,6 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {
@@ -61,7 +62,7 @@ class ExplorationFragment : InjectableFragment() {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
     val readingTextSize =
-      arguments!!.getString(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
+      arguments!!.getStringFromBundle(STORY_DEFAULT_FONT_SIZE_ARGUMENT_KEY)
     checkNotNull(readingTextSize) { "ExplorationFragment must be created with a reading text size" }
     fontScaleConfigurationUtil.adjustFontScale(context, readingTextSize)
   }
@@ -74,13 +75,13 @@ class ExplorationFragment : InjectableFragment() {
     val profileId =
       arguments!!.getInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     val topicId =
-      arguments!!.getString(TOPIC_ID_ARGUMENT_KEY)
+      arguments!!.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)
     checkNotNull(topicId) { "StateFragment must be created with an topic ID" }
     val storyId =
-      arguments!!.getString(STORY_ID_ARGUMENT_KEY)
+      arguments!!.getStringFromBundle(STORY_ID_ARGUMENT_KEY)
     checkNotNull(storyId) { "StateFragment must be created with an story ID" }
     val explorationId =
-      arguments!!.getString(EXPLORATION_ID_ARGUMENT_KEY)
+      arguments!!.getStringFromBundle(EXPLORATION_ID_ARGUMENT_KEY)
     checkNotNull(explorationId) { "StateFragment must be created with an exploration ID" }
     return explorationFragmentPresenter.handleCreateView(
       inflater,

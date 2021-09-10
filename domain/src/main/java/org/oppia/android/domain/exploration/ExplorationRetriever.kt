@@ -8,6 +8,7 @@ import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
+import org.oppia.android.domain.util.getStringFromObject
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -37,11 +38,11 @@ class ExplorationRetriever @Inject constructor(
   private fun loadExplorationFromAsset(explorationObject: JSONObject): Exploration {
     val innerExplorationObject = explorationObject.getJSONObject("exploration")
     return Exploration.newBuilder()
-      .setId(explorationObject.getString("exploration_id"))
-      .setTitle(innerExplorationObject.getString("title"))
-      .setLanguageCode(innerExplorationObject.getString("language_code"))
-      .setInitStateName(innerExplorationObject.getString("init_state_name"))
-      .setObjective(innerExplorationObject.getString("objective"))
+      .setId(explorationObject.getStringFromObject("exploration_id"))
+      .setTitle(innerExplorationObject.getStringFromObject("title"))
+      .setLanguageCode(innerExplorationObject.getStringFromObject("language_code"))
+      .setInitStateName(innerExplorationObject.getStringFromObject("init_state_name"))
+      .setObjective(innerExplorationObject.getStringFromObject("objective"))
       .putAllStates(createStatesFromJsonObject(innerExplorationObject.getJSONObject("states")))
       .setVersion(explorationObject.getInt("version"))
       .build()

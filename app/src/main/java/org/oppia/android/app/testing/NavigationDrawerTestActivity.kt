@@ -14,6 +14,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 class NavigationDrawerTestActivity :
   InjectableAppCompatActivity(),
@@ -22,6 +23,10 @@ class NavigationDrawerTestActivity :
   RouteToRecentlyPlayedListener {
   @Inject
   lateinit var homeActivityPresenter: HomeActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId: Int = -1
 
   companion object {
@@ -37,7 +42,7 @@ class NavigationDrawerTestActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate()
-    title = getString(R.string.menu_home)
+    title = resourceHandler.getStringInLocale(R.string.menu_home)
   }
 
   override fun onRestart() {

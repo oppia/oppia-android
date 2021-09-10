@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
+import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
@@ -13,6 +14,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
+import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
@@ -20,6 +22,7 @@ import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
+import org.oppia.android.app.hintsandsolution.RevealSolutionDialogFragment
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.mydownloads.DownloadsTabFragment
@@ -32,16 +35,23 @@ import org.oppia.android.app.options.AudioLanguageFragment
 import org.oppia.android.app.options.OptionsFragment
 import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.player.audio.AudioFragment
+import org.oppia.android.app.player.audio.CellularAudioDialogFragment
+import org.oppia.android.app.player.audio.LanguageDialogFragment
 import org.oppia.android.app.player.exploration.ExplorationFragment
 import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
+import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
+import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
+import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
+import org.oppia.android.app.profileprogress.ProfilePictureEditDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
 import org.oppia.android.app.resumelesson.ResumeLessonFragment
+import org.oppia.android.app.settings.profile.ProfileEditDeletionDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -75,7 +85,7 @@ import org.oppia.android.app.view.ViewComponentBuilderModule
 @FragmentScope
 interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector {
   @Subcomponent.Builder
-  interface Builder: FragmentComponent.Builder {
+  interface Builder : FragmentComponent.Builder {
     @BindsInstance
     override fun setFragment(fragment: Fragment): Builder
 
@@ -89,10 +99,12 @@ interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
+  fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
   fun inject(downloadsTabFragment: DownloadsTabFragment)
+  fun inject(exitProfileDialogFragment: ExitProfileDialogFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(faqListFragment: FAQListFragment)
@@ -103,8 +115,10 @@ interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
   fun inject(homeFragment: HomeFragment)
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
+  fun inject(languageDialogFragment: LanguageDialogFragment)
   fun inject(licenseListFragment: LicenseListFragment)
   fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
+  fun inject(logoutDialogFragment: LogoutDialogFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
@@ -114,16 +128,21 @@ interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
+  fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
   fun inject(profileEditFragment: ProfileEditFragment)
   fun inject(profileListFragment: ProfileListFragment)
+  fun inject(profilePictureEditDialogFragment: ProfilePictureEditDialogFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
+  fun inject(progressDatabaseFullDialogFragment: ProgressDatabaseFullDialogFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
   fun inject(resumeLessonFragment: ResumeLessonFragment)
+  fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
   fun inject(stateFragment: StateFragment)
+  fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
@@ -131,6 +150,7 @@ interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector
   fun inject(topicLessonsFragment: TopicLessonsFragment)
   fun inject(topicPracticeFragment: TopicPracticeFragment)
   fun inject(topicReviewFragment: TopicRevisionFragment)
+  fun inject(unsavedExplorationDialogFragment: UnsavedExplorationDialogFragment)
   fun inject(updatesTabFragment: UpdatesTabFragment)
   fun inject(viewEventLogsFragment: ViewEventLogsFragment)
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)

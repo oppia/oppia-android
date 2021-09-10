@@ -9,6 +9,8 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import java.util.Locale
 import kotlin.collections.ArrayList
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
 private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
@@ -16,7 +18,7 @@ private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected
 /**
  * DialogFragment that controls language selection in audio and written translations.
  */
-class LanguageDialogFragment : DialogFragment() {
+class LanguageDialogFragment : InjectableDialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -39,8 +41,12 @@ class LanguageDialogFragment : DialogFragment() {
     }
   }
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
+  }
+  
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
     val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
     var selectedIndex = args.getInt(SELECTED_INDEX_ARGUMENT_KEY, 0)

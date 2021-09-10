@@ -7,13 +7,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /**
  * DialogFragment that is visible to the user when they exit a partially complete exploration
  * if the exploration has saved progress and the checkpoint database has not exceeded the allocated
  * limit.
  */
-class StopExplorationDialogFragment : DialogFragment() {
+class StopExplorationDialogFragment : InjectableDialogFragment() {
   companion object {
     /**
      * Responsible for displaying content in DialogFragment.
@@ -23,6 +25,11 @@ class StopExplorationDialogFragment : DialogFragment() {
     fun newInstance(): StopExplorationDialogFragment {
       return StopExplorationDialogFragment()
     }
+  }
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

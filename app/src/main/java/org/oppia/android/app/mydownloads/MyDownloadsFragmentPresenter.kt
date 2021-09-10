@@ -11,10 +11,14 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.MyDownloadsFragmentBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope
-class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fragment) {
+class MyDownloadsFragmentPresenter @Inject constructor(
+  private val fragment: Fragment,
+  private val resourceHandler: AppLanguageResourceHandler
+) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = MyDownloadsFragmentBinding.inflate(
       inflater,
@@ -42,8 +46,8 @@ class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fra
 
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       when (position) {
-        0 -> tab.text = fragment.getString(R.string.tab_downloads)
-        1 -> tab.text = fragment.getString(R.string.tab_updates)
+        0 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_downloads)
+        1 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_updates)
       }
     }.attach()
   }

@@ -13,13 +13,15 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -65,7 +67,8 @@ class TopicLessonViewModel @Inject constructor(
           StorySummaryViewModel(
             storySummary,
             fragment as StorySummarySelector,
-            fragment as ChapterSummarySelector
+            fragment as ChapterSummarySelector,
+            resourceHandler
           )
         )
       }

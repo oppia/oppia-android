@@ -18,6 +18,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The ViewModel for StoryFragment. */
 @FragmentScope
@@ -26,7 +27,8 @@ class StoryViewModel @Inject constructor(
   private val topicController: TopicController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   private val oppiaLogger: OppiaLogger,
-  @StoryHtmlParserEntityType val entityType: String
+  @StoryHtmlParserEntityType val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -93,7 +95,7 @@ class StoryViewModel @Inject constructor(
 
     // List with only the header
     val itemViewModelList: MutableList<StoryItemViewModel> = mutableListOf(
-      StoryHeaderViewModel(completedCount, chapterList.size) as StoryItemViewModel
+      StoryHeaderViewModel(completedCount, chapterList.size, resourceHandler) as StoryItemViewModel
     )
 
     // Add the rest of the list
@@ -108,7 +110,8 @@ class StoryViewModel @Inject constructor(
           topicId,
           storyId,
           chapter,
-          entityType
+          entityType,
+          resourceHandler
         )
       }
     )

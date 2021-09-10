@@ -10,6 +10,7 @@ import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {
@@ -39,7 +40,7 @@ class TopicInfoFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
     return topicInfoFragmentPresenter.handleCreateView(

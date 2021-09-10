@@ -7,17 +7,21 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Activity for forcing the network mode for the app. */
 class ForceNetworkTypeActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var forceNetworkTypeActivityPresenter: ForceNetworkTypeActivityPresenter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     forceNetworkTypeActivityPresenter.handleOnCreate()
-    title = getString(R.string.force_network_type_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.force_network_type_activity_title)
   }
 
   companion object {

@@ -38,6 +38,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.util.getStringFromObject
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -465,8 +466,8 @@ class TopicController @Inject constructor(
     }
     return Topic.newBuilder()
       .setTopicId(topicId)
-      .setName(topicData.getString("topic_name"))
-      .setDescription(topicData.getString("topic_description"))
+      .setName(topicData.getStringFromObject("topic_name"))
+      .setDescription(topicData.getStringFromObject("topic_description"))
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
@@ -642,12 +643,12 @@ class TopicController @Inject constructor(
 
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
-      val explorationId = chapter.getString("exploration_id")
+      val explorationId = chapter.getStringFromObject("exploration_id")
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
-          .setName(chapter.getString("title"))
-          .setSummary(chapter.getString("outline"))
+          .setName(chapter.getStringFromObject("title"))
+          .setSummary(chapter.getStringFromObject("outline"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()

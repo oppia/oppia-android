@@ -33,6 +33,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 
@@ -41,7 +42,8 @@ const val GALLERY_INTENT_RESULT_CODE = 1
 class AddProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<AddProfileViewModel>
+  private val viewModelProvider: ViewModelProvider<AddProfileViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var uploadImageView: ImageView
   private val profileViewModel by lazy {
@@ -79,7 +81,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.title = activity.getString(R.string.add_profile_title)
+    activity.supportActionBar?.title = resourceHandler.getStringInLocale(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
     activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
@@ -254,7 +256,7 @@ class AddProfileActivityPresenter @Inject constructor(
     var failed = false
     if (name.isEmpty()) {
       profileViewModel.nameErrorMsg.set(
-        activity.resources.getString(
+        resourceHandler.getStringInLocale(
           R.string.add_profile_error_name_empty
         )
       )
@@ -262,7 +264,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     if (pin.isNotEmpty() && pin.length < 3) {
       profileViewModel.pinErrorMsg.set(
-        activity.resources.getString(
+        resourceHandler.getStringInLocale(
           R.string.add_profile_error_pin_length
         )
       )
@@ -270,7 +272,7 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     if (pin != confirmPin) {
       profileViewModel.confirmPinErrorMsg.set(
-        activity.resources.getString(
+        resourceHandler.getStringInLocale(
           R.string.add_profile_error_pin_confirm_wrong
         )
       )
@@ -291,13 +293,13 @@ class AddProfileActivityPresenter @Inject constructor(
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
           profileViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_not_unique
             )
           )
         is ProfileManagementController.ProfileNameOnlyLettersException ->
           profileViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_only_letters
             )
           )

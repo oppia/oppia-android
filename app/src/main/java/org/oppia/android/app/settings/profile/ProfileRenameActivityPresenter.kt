@@ -18,13 +18,15 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [ProfileRenameActivity]. */
 @ActivityScope
 class ProfileRenameActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>
+  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val renameViewModel: ProfileRenameViewModel by lazy {
     getProfileRenameViewModel()
@@ -59,7 +61,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
       val name = binding.profileRenameInputEditText.text.toString()
       if (name.isEmpty()) {
         renameViewModel.nameErrorMsg.set(
-          activity.resources.getString(
+          resourceHandler.getStringInLocale(
             R.string.add_profile_error_name_empty
           )
         )
@@ -109,13 +111,13 @@ class ProfileRenameActivityPresenter @Inject constructor(
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
           renameViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_not_unique
             )
           )
         is ProfileManagementController.ProfileNameOnlyLettersException ->
           renameViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_only_letters
             )
           )

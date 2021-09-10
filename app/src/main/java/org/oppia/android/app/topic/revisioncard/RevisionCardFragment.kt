@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /* Fragment that displays revision card */
 class RevisionCardFragment : InjectableDialogFragment() {
@@ -44,7 +45,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
       "Expected arguments to be passed to StoryFragment"
     }
     val topicId =
-      checkNotNull(args.getString(TOPIC_ID_ARGUMENT_KEY)) {
+      checkNotNull(args.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
         "Expected topicId to be passed to RevisionCardFragment"
       }
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)

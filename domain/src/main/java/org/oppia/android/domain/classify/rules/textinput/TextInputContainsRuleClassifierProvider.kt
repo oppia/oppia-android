@@ -6,8 +6,8 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
-import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * Provider for a classifier that determines whether an answer contains the rule's input per the
@@ -17,7 +17,8 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class TextInputContainsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
+  private val classifierFactory: GenericRuleClassifier.Factory,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
 
@@ -31,9 +32,9 @@ class TextInputContainsRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
-    val normalizedAnswer = answer.normalizeWhitespace().toLowerCase(Locale.getDefault())
+    val normalizedAnswer = machineLocale.run { answer.normalizeWhitespace().toMachineLowerCase() }
     return input.normalizedStringsList.any {
-      normalizedAnswer.contains(it.normalizeWhitespace().toLowerCase(Locale.getDefault()))
+      normalizedAnswer.contains(machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() })
     }
   }
 }

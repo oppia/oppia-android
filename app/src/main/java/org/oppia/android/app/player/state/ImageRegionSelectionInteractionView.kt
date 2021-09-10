@@ -22,6 +22,7 @@ import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
 import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with
@@ -66,6 +67,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var bindingInterface: ViewBindingShim
 
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
   private lateinit var entityId: String
   private lateinit var overlayView: FrameLayout
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
@@ -78,11 +82,13 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     loadImage()
   }
 
-  /** loads an image using Glide from [urlString]. */
+  /** Initiates the asynchronous loading process for the interaction's image region. */
   private fun loadImage() {
-    val imageName = String.format(imageDownloadUrlTemplate, entityType, entityId, imageUrl)
+    val imageName = machineLocale.run {
+      imageDownloadUrlTemplate.formatForMachines(entityType, entityId, imageUrl)
+    }
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
-    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+    if (machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }) {
       imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this))
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this))

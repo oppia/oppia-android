@@ -10,12 +10,14 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.PromotedActivityList
 import java.util.Objects
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   val promotedStoryList: List<PromotedStoryViewModel>,
-  private val promotedActivityList: PromotedActivityList
+  private val promotedActivityList: PromotedActivityList,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
   private val promotedStoryListLimit = activity.resources.getInteger(
@@ -33,15 +35,15 @@ class PromotedStoryListViewModel(
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {
-            activity.getString(R.string.recommended_stories)
+            resourceHandler.getStringInLocale(R.string.recommended_stories)
           } else
-            activity.getString(R.string.stories_for_you)
+            resourceHandler.getStringInLocale(R.string.stories_for_you)
         }
         recentlyPlayedStoryList.isNotEmpty() -> {
-          activity.getString(R.string.recently_played_stories)
+          resourceHandler.getStringInLocale(R.string.recently_played_stories)
         }
         else -> {
-          activity.getString(R.string.last_played_stories)
+          resourceHandler.getStringInLocale(R.string.last_played_stories)
         }
       }
     }

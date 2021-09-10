@@ -9,14 +9,15 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.util.locale.OppiaLocale
 
 /** The ViewModel for [ProfileListActivity]. */
 @ActivityScope
 class ProfileListViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
   val profiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
@@ -35,7 +36,7 @@ class ProfileListViewModel @Inject constructor(
     val profileList = profilesResult.getOrDefault(emptyList())
 
     val sortedProfileList = profileList.sortedBy {
-      it.name.toLowerCase(Locale.getDefault())
+      machineLocale.run { it.name.toMachineLowerCase() }
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.isAdmin }

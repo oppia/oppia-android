@@ -57,7 +57,7 @@
       android:gravity="center_vertical"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
-      android:text="@{@string/previous_responses_header(viewModel.previousAnswerCount)}"
+      android:text="@{viewModel.computePreviousResponsesHeaderText()}"
       android:textAllCaps="true"
       android:textColor="@color/mid_grey"
       android:textSize="14sp"

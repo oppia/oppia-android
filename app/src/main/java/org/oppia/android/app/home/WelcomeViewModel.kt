@@ -1,23 +1,24 @@
 package org.oppia.android.app.home
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import org.oppia.android.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
-import org.oppia.android.util.system.OppiaClock
 import java.util.Objects
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel(
-  fragment: Fragment,
-  oppiaClock: OppiaClock,
-  val profileName: String
+  private val profileName: String,
+  private val resourceHandler: AppLanguageResourceHandler,
+  dateTimeUtil: DateTimeUtil
 ) : HomeItemViewModel() {
 
   /** Text [String] to greet the learner and display on-screen when launching the home activity. */
-  val greeting: String = DateTimeUtil(
-    fragment.requireContext(),
-    oppiaClock
-  ).getGreetingMessage()
+  val greeting: String = dateTimeUtil.getGreetingMessage()
+
+  fun computeProfileNameText(): String {
+    return resourceHandler.getStringInLocale(R.string.welcome_profile_name, profileName)
+  }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel

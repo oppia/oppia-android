@@ -16,6 +16,7 @@ import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
@@ -23,7 +24,8 @@ class AdminPinActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<AdminPinViewModel>
+  private val viewModelProvider: ViewModelProvider<AdminPinViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var inputtedPin = false
@@ -87,7 +89,7 @@ class AdminPinActivityPresenter @Inject constructor(
       var failed = false
       if (inputPin.length < 5) {
         adminViewModel.pinErrorMsg.set(
-          activity.getString(
+          resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_length
           )
         )
@@ -95,7 +97,7 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       if (inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
-          activity.getString(
+          resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )

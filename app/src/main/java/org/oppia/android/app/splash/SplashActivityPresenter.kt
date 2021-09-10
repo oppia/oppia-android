@@ -14,7 +14,7 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.domain.locale.LocaleController
-import org.oppia.android.domain.locale.OppiaLocale
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.PrimeTopicAssetsController

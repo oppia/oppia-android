@@ -152,7 +152,12 @@ private fun checkProhibitedContent(
 
   val matchedFiles = searchFiles.filter { file ->
     val fileRelativePath = file.toRelativeString(repoRoot)
-    val isExempted = fileRelativePath in fileContentCheck.exemptedFileNameList
+    val isFileExactExemption = fileRelativePath in fileContentCheck.exemptedFileNameList
+    val isFileMatchedExemption = fileContentCheck.exemptedFilePatternsList.any { pattern ->
+      pattern.toRegex().matches(fileRelativePath)
+    }
+    // TODO: add tests.
+    val isExempted = isFileExactExemption || isFileMatchedExemption
     return@filter if (!isExempted && filePathRegex.matches(fileRelativePath)) {
       file.useLines { lines ->
         lines.foldIndexed(initial = false) { lineIndex, isFailing, lineContent ->

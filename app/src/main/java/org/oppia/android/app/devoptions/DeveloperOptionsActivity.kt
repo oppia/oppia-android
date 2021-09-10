@@ -13,6 +13,7 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -27,6 +28,9 @@ class DeveloperOptionsActivity :
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +38,7 @@ class DeveloperOptionsActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)
     developerOptionsActivityPresenter.handleOnCreate()
-    title = getString(R.string.developer_options_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.developer_options_activity_title)
   }
 
   override fun routeToMarkChaptersCompleted() {

@@ -35,6 +35,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
     ],

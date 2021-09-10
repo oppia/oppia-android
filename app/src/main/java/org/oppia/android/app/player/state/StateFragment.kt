@@ -20,6 +20,7 @@ import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -74,9 +75,10 @@ class StateFragment :
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
-    val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    val topicId = arguments!!.getStringFromBundle(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
+    val explorationId =
+      arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,

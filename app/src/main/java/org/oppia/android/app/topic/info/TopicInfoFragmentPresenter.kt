@@ -74,9 +74,8 @@ class TopicInfoFragmentPresenter @Inject constructor(
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(
-      fragment,
-      Observer<Topic> { topic ->
-        topicInfoViewModel.topic.set(topic)
+      fragment, { topic ->
+        topicInfoViewModel.setTopic(topic)
         topicInfoViewModel.topicDescription.set(topic.description)
         topicInfoViewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()

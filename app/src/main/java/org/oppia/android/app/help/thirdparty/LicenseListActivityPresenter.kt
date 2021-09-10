@@ -6,11 +6,13 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.LicenseListActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [LicenseListActivity]. */
 @ActivityScope
 class LicenseListActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   /** Handles onCreate() method of the [LicenseListActivity]. */
@@ -26,7 +28,8 @@ class LicenseListActivityPresenter @Inject constructor(
 
     val licenseListActivityToolbar = binding.licenseListActivityToolbar
     activity.setSupportActionBar(licenseListActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.license_list_activity_title)
+    activity.supportActionBar!!.title =
+      resourceHandler.getStringInLocale(R.string.license_list_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

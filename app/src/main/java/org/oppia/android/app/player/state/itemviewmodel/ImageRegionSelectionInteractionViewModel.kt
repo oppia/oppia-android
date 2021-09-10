@@ -11,6 +11,7 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -23,7 +24,7 @@ class ImageRegionSelectionInteractionViewModel(
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
-  val context: Context
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
@@ -71,7 +72,7 @@ class ImageRegionSelectionInteractionViewModel(
     val answerTextString = answerText.toString()
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = context.getString(
+    userAnswerBuilder.plainAnswer = resourceHandler.getStringInLocale(
       R.string.image_interaction_answer_text,
       answerTextString
     )

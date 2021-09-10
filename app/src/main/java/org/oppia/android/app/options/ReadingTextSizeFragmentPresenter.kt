@@ -10,13 +10,15 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.databinding.TextSizeItemsBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel
+  private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel,
+  resourceHandler: AppLanguageResourceHandler
 ) {
-  private var fontSize: String = fragment.requireContext().resources.getString(
+  private var fontSize: String = resourceHandler.getStringInLocale(
     R.string.reading_text_size_medium
   )
 

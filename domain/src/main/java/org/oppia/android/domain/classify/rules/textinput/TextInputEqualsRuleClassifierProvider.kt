@@ -7,6 +7,7 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
 import javax.inject.Inject
+import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * Provider for a classifier that determines whether two strings are equal per the text input
@@ -16,7 +17,8 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class TextInputEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
+  private val classifierFactory: GenericRuleClassifier.Factory,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
 
@@ -32,7 +34,7 @@ class TextInputEqualsRuleClassifierProvider @Inject constructor(
   override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
     val normalizedAnswer = answer.normalizeWhitespace()
     return input.normalizedStringsList.any {
-      it.normalizeWhitespace().equals(normalizedAnswer, ignoreCase = true)
+      machineLocale.run { it.normalizeWhitespace().equalsIgnoreCase(normalizedAnswer) }
     }
   }
 }

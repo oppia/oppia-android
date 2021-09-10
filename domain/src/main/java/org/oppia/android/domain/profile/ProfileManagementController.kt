@@ -28,9 +28,9 @@ import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.OppiaLocale
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -67,7 +67,8 @@ class ProfileManagementController @Inject constructor(
   private val context: Context,
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -681,9 +682,9 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun isNameUnique(newName: String, profileDatabase: ProfileDatabase): Boolean {
-    val lowerCaseNewName = newName.toLowerCase(Locale.getDefault())
+    val lowerCaseNewName = machineLocale.run { newName.toMachineLowerCase() }
     profileDatabase.profilesMap.values.forEach {
-      if (it.name.toLowerCase(Locale.getDefault()) == lowerCaseNewName) {
+      if (machineLocale.run { it.name.toMachineLowerCase() } == lowerCaseNewName) {
         return false
       }
     }

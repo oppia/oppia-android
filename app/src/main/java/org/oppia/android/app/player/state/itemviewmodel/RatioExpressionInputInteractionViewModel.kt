@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
@@ -13,16 +12,17 @@ import org.oppia.android.app.parser.StringToRatioParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel(
   interaction: Interaction,
-  private val context: Context,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -56,7 +56,7 @@ class RatioExpressionInputInteractionViewModel(
         .setRatioExpression(ratioAnswer)
         .build()
       userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
-      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(context)
+      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
     }
     return userAnswerBuilder.build()
   }
@@ -68,17 +68,13 @@ class RatioExpressionInputInteractionViewModel(
         AnswerErrorCategory.REAL_TIME ->
           pendingAnswerError =
             stringToRatioParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(
-                context
-              )
+              .getErrorMessageFromStringRes(resourceHandler)
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
             stringToRatioParser.getSubmitTimeError(
               answerText.toString(),
               numberOfTerms = numberOfTerms
-            ).getErrorMessageFromStringRes(
-              context
-            )
+            ).getErrorMessageFromStringRes(resourceHandler)
       }
       errorMessage.set(pendingAnswerError)
     }
@@ -109,7 +105,7 @@ class RatioExpressionInputInteractionViewModel(
       interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
     return when {
       placeholder.isNotEmpty() -> placeholder
-      else -> context.getString(R.string.ratio_default_hint_text)
+      else -> resourceHandler.getStringInLocale(R.string.ratio_default_hint_text)
     }
   }
 }

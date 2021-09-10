@@ -11,6 +11,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 /** Fragment that allows the user to resume a saved exploration. */
 class ResumeLessonFragment : InjectableFragment() {
@@ -74,15 +75,15 @@ class ResumeLessonFragment : InjectableFragment() {
         "Expected profile ID to be included in arguments for ResumeLessonFragment."
       }
     val topicId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY)) {
         "Expected topic ID to be included in arguments for ResumeLessonFragment."
       }
     val storyId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_STORY_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_STORY_ID_KEY)) {
         "Expected story ID to be included in arguments for ResumeLessonFragment."
       }
     val explorationId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY)) {
         "Expected exploration ID to be included in arguments for ResumeLessonFragment."
       }
     val backflowScreen = arguments?.getInt(RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY, -1)

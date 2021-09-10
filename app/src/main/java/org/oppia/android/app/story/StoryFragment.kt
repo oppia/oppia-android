@@ -9,6 +9,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationCheckpoint
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 private const val INTERNAL_PROFILE_ID_ARGUMENT_KEY = "StoryFragment.internal_profile_id"
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
@@ -47,11 +48,11 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     }
     val internalProfileId = args.getInt(INTERNAL_PROFILE_ID_ARGUMENT_KEY, -1)
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
+      checkNotNull(args.getStringFromBundle(KEY_TOPIC_ID_ARGUMENT)) {
         "Expected topicId to be passed to StoryFragment"
       }
     val storyId =
-      checkNotNull(args.getString(KEY_STORY_ID_ARGUMENT)) {
+      checkNotNull(args.getStringFromBundle(KEY_STORY_ID_ARGUMENT)) {
         "Expected storyId to be passed to StoryFragment"
       }
     return storyFragmentPresenter.handleCreateView(

@@ -29,6 +29,8 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.datetime.DateTimeUtil
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -40,7 +42,9 @@ class HomeFragmentPresenter @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String
+  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val dateTimeUtil: DateTimeUtil
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private lateinit var binding: HomeFragmentBinding
@@ -57,13 +61,14 @@ class HomeFragmentPresenter @Inject constructor(
     val homeViewModel = HomeViewModel(
       activity,
       fragment,
-      oppiaClock,
       oppiaLogger,
       internalProfileId,
       profileManagementController,
       topicListController,
       topicEntityType,
-      storyEntityType
+      storyEntityType,
+      resourceHandler,
+      dateTimeUtil
     )
 
     val homeAdapter = createRecyclerViewAdapter()

@@ -180,7 +180,7 @@ class HomeActivityTest {
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
-        targetViewId = R.id.profile_name_textview,
+        targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin!"
       )
     }
@@ -194,7 +194,7 @@ class HomeActivityTest {
       scrollToPosition(position = 0)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
-        targetViewId = R.id.profile_name_textview,
+        targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin!"
       )
     }
@@ -887,7 +887,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_textview
+          R.id.profile_name_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -906,7 +906,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_textview
+          R.id.profile_name_text_view
         )
       ).check(matches(not(isEllipsized())))
     }
@@ -924,7 +924,7 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.profile_name_textview
+          R.id.profile_name_text_view
         )
       ).check(matches(not(isEllipsized())))
     }

@@ -1,12 +1,12 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * Module to provide interaction view model-specific dependencies for interactions that should be
@@ -24,7 +24,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
-    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton, isSplitView -> // ktlint-disable max-line-length
+    return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton,
+             isSplitView ->
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
@@ -39,7 +40,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
+             interactionAnswerErrorReceiver, _, isSplitView ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -55,7 +57,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
+             interactionAnswerErrorReceiver, _, isSplitView ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -70,14 +73,17 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("FractionInput")
-  fun provideFractionInputViewModelFactory(context: Context): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+  fun provideFractionInputViewModelFactory(
+    resourceHandler: AppLanguageResourceHandler
+  ): InteractionViewModelFactory {
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
+             isSplitView ->
       FractionInteractionViewModel(
         interaction,
-        context,
         hasConversationView,
         isSplitView,
-        interactionAnswerErrorReceiver
+        interactionAnswerErrorReceiver,
+        resourceHandler
       )
     }
   }
@@ -85,13 +91,15 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("NumericInput")
-  fun provideNumericInputViewModelFactory(context: Context): InteractionViewModelFactory {
+  fun provideNumericInputViewModelFactory(
+    resourceHandler: AppLanguageResourceHandler
+  ): InteractionViewModelFactory {
     return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView ->
       NumericInputViewModel(
-        context,
         hasConversationView,
         interactionAnswerErrorReceiver,
-        isSplitView
+        isSplitView,
+        resourceHandler
       )
     }
   }
@@ -100,7 +108,8 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+    return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
+             isSplitView ->
       TextInputViewModel(
         interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView
       )
@@ -110,10 +119,14 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("DragAndDropSortInput")
-  fun provideDragAndDropSortInputViewModelFactory(): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _, isSplitView -> // ktlint-disable max-line-length
+  fun provideDragAndDropSortInputViewModelFactory(
+    resourceHandler: AppLanguageResourceHandler
+  ): InteractionViewModelFactory {
+    return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
+             isSplitView ->
       DragAndDropSortInteractionViewModel(
-        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView
+        entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView,
+        resourceHandler
       )
     }
   }
@@ -121,7 +134,9 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("ImageClickInput")
-  fun provideImageClickInputViewModelFactory(context: Context): InteractionViewModelFactory {
+  fun provideImageClickInputViewModelFactory(
+    resourceHandler: AppLanguageResourceHandler
+  ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
       ImageRegionSelectionInteractionViewModel(
         entityId,
@@ -129,7 +144,7 @@ class InteractionViewModelModule {
         interaction,
         answerErrorReceiver,
         isSplitView,
-        context
+        resourceHandler
       )
     }
   }
@@ -137,14 +152,16 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("RatioExpressionInput")
-  fun provideRatioExpressionInputViewModelFactory(context: Context): InteractionViewModelFactory {
+  fun provideRatioExpressionInputViewModelFactory(
+    resourceHandler: AppLanguageResourceHandler
+  ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
       RatioExpressionInputInteractionViewModel(
         interaction,
-        context,
         hasConversationView,
         isSplitView,
-        answerErrorReceiver
+        answerErrorReceiver,
+        resourceHandler
       )
     }
   }

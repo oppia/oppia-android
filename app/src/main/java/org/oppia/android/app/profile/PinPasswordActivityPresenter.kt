@@ -21,6 +21,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -30,7 +31,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>
+  private val viewModelProvider: ViewModelProvider<PinPasswordViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val pinViewModel by lazy {
     getPinPasswordViewModel()
@@ -148,11 +150,11 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   private fun showAdminForgotPin() {
-    val appName = activity.resources.getString(R.string.app_name)
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
     alertDialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
-      .setMessage(activity.resources.getString(R.string.pin_password_forgot_message, appName))
+      .setMessage(resourceHandler.getStringInLocale(R.string.pin_password_forgot_message, appName))
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()

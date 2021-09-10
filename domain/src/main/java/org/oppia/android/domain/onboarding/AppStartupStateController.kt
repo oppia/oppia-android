@@ -13,6 +13,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.getStringFromBundle
 
 private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -86,7 +87,7 @@ class AppStartupStateController @Inject constructor(
         "automatic_app_expiration_enabled", /* defaultValue= */ true
       ) ?: true
     return if (isAppExpirationEnabled) {
-      val expirationDateString = applicationMetadata?.getString("expiration_date")
+      val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
       val expirationDate = expirationDateString?.let { parseDate(it) }
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.before(Date()) ?: true

@@ -42,3 +42,5 @@ fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
     }
   } ?: defaultValue
 }
+
+fun Bundle.getStringFromBundle(key: String): String? = getString(key)

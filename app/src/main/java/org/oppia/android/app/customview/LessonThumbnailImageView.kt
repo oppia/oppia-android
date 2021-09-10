@@ -18,6 +18,7 @@ import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
 import javax.inject.Inject
 import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.util.locale.OppiaLocale
 
 /** A custom [AppCompatImageView] used to show lesson thumbnails. */
 class LessonThumbnailImageView @JvmOverloads constructor(
@@ -51,6 +52,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
@@ -108,14 +112,15 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   /** Loads an image using Glide from [filename]. */
   private fun loadImage(filename: String, transformations: List<ImageTransformation>) {
-    val imageName = String.format(
-      thumbnailDownloadUrlTemplate,
-      entityType,
-      entityId,
-      filename
-    )
+    val imageName = machineLocale.run {
+      thumbnailDownloadUrlTemplate.formatForMachines(
+        entityType,
+        entityId,
+        filename
+      )
+    }
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
-    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+    if (machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }) {
       imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)

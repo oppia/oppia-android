@@ -7,17 +7,21 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Activity for View Event Logs. */
 class ViewEventLogsActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var viewEventLogsActivityPresenter: ViewEventLogsActivityPresenter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     viewEventLogsActivityPresenter.handleOnCreate()
-    title = getString(R.string.view_event_logs_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.view_event_logs_activity_title)
   }
 
   companion object {

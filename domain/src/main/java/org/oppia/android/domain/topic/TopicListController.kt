@@ -36,6 +36,7 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.util.getStringFromObject
 
 private const val ONE_WEEK_IN_DAYS = 7
 
@@ -224,7 +225,7 @@ class TopicListController @Inject constructor(
     }
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
-      .setName(jsonObject.getString("topic_name"))
+      .setName(jsonObject.getStringFromObject("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -251,7 +252,7 @@ class TopicListController @Inject constructor(
     }
 
     return UpcomingTopic.newBuilder().setTopicId(topicId)
-      .setName(jsonObject.getString("topic_name"))
+      .setName(jsonObject.getStringFromObject("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
       .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))

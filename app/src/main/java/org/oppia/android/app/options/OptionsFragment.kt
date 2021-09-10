@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 const val MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY = "OptionsFragment.message_reading_text_size"
 const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
@@ -55,7 +56,7 @@ class OptionsFragment : InjectableFragment() {
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
     val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA)
     val isFirstOpen = args.getBoolean(IS_FIRST_OPEN_EXTRA)
-    val selectedFragment = checkNotNull(args.getString(SELECTED_FRAGMENT_EXTRA))
+    val selectedFragment = checkNotNull(args.getStringFromBundle(SELECTED_FRAGMENT_EXTRA))
     return optionsFragmentPresenter.handleCreateView(
       inflater,
       container,

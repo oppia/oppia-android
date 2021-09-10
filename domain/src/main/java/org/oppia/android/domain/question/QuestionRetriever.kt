@@ -6,6 +6,8 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
+import org.oppia.android.domain.util.getStringFromArray
+import org.oppia.android.domain.util.getStringFromObject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [Question] objects from the filesystem. */
@@ -33,7 +35,7 @@ class QuestionRetriever @Inject constructor(
           questionJsonObject.optJSONArray("linked_skill_ids")
         val linkedSkillIdList = mutableListOf<String>()
         for (j in 0 until questionLinkedSkillsJsonArray.length()) {
-          linkedSkillIdList.add(questionLinkedSkillsJsonArray.getString(j))
+          linkedSkillIdList.add(questionLinkedSkillsJsonArray.getStringFromArray(j))
         }
         if (linkedSkillIdList.contains(skillId)) {
           questionsList.add(createQuestionFromJsonObject(questionJsonObject))
@@ -45,7 +47,7 @@ class QuestionRetriever @Inject constructor(
 
   private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {
     return Question.newBuilder()
-      .setQuestionId(questionJson.getString("id"))
+      .setQuestionId(questionJson.getStringFromObject("id"))
       .setQuestionState(
         stateRetriever.createStateFromJson(
           "question", questionJson.getJSONObject("question_state_data")

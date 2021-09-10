@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 private const val AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY =
   "AudioLanguageFragment.audio_language_preference_title"
@@ -47,9 +48,9 @@ class AudioLanguageFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to AudioLanguageFragment" }
-    val prefsKey = args.getString(AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY)
+    val prefsKey = args.getStringFromBundle(AUDIO_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY)
     val audioLanguageDefaultSummary = checkNotNull(
-      args.getString(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY)
+      args.getStringFromBundle(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY)
     )
     val prefsSummaryValue = if (savedInstanceState == null) {
       audioLanguageDefaultSummary

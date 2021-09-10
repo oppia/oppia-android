@@ -13,13 +13,15 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminSettingsDialogBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [AdminSettingsDialogFragment]. */
 @FragmentScope
 class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>
+  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val adminViewModel by lazy {
     getAdminSettingsViewModel()
@@ -79,7 +81,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
         if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
           adminViewModel.errorMessage.set(
-            fragment.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.admin_auth_null
             )
           )
@@ -89,7 +91,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
           routeDialogInterface.routeToResetPinDialog()
         } else {
           adminViewModel.errorMessage.set(
-            fragment.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.admin_settings_incorrect
             )
           )

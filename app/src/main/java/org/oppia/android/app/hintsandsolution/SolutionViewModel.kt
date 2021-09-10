@@ -2,6 +2,7 @@ package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for Solution in [HintsAndSolutionDialogFragment]. */
 class SolutionViewModel : HintsAndSolutionItemViewModel() {

@@ -5,6 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
 import java.util.Objects
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
@@ -12,10 +13,10 @@ class TopicSummaryViewModel(
   val topicSummary: TopicSummary,
   val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener,
-  private val position: Int
+  private val position: Int,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : HomeItemViewModel() {
   val name: String = topicSummary.name
-  val totalChapterCount: Int = topicSummary.totalChapterCount
 
   private val outerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_outer_margin)
@@ -98,6 +99,12 @@ class TopicSummaryViewModel(
       }
       else -> 0
     }
+  }
+
+  fun computeLessonCountText(): String {
+    return resourceHandler.getQuantityStringInLocale(
+      R.plurals.lesson_count, topicSummary.totalChapterCount, topicSummary.totalChapterCount
+    )
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel

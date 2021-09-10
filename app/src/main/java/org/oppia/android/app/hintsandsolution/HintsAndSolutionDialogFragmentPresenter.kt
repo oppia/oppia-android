@@ -24,6 +24,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
 import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 
@@ -34,7 +35,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @ExplorationHtmlParserEntityType private val entityType: String
+  @ExplorationHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
@@ -217,8 +219,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ")
-      .capitalize(Locale.getDefault())
+    binding.hintTitle.text =
+      resourceHandler.capitalizeForHumans(hintsViewModel.title.get()!!.replace("_", " "))
     binding.hintsAndSolutionSummary.text =
       htmlParserFactory.create(
         resourceBucketName,
@@ -300,11 +302,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize(Locale.getDefault())
+    binding.solutionTitle.text =
+      resourceHandler.capitalizeForHumans(solutionViewModel.title.get()!!)
     // TODO(#1050): Update to display answers for any answer type.
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
-        fragment.requireContext().resources.getString(
+        resourceHandler.getStringInLocale(
           R.string.hints_android_solution_correct_answer,
           solutionViewModel.numerator.get().toString(),
           solutionViewModel.denominator.get().toString()

@@ -13,6 +13,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.util.extensions.getStringFromBundle
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
@@ -101,7 +102,7 @@ class HintsAndSolutionDialogFragment :
       ) { "Expected arguments to be passed to HintsAndSolutionDialogFragment" }
     val id =
       checkNotNull(
-        args.getString(ID_ARGUMENT_KEY)
+        args.getStringFromBundle(ID_ARGUMENT_KEY)
       ) { "Expected id to be passed to HintsAndSolutionDialogFragment" }
 
     val state = args.getProto(STATE_KEY, State.getDefaultInstance())

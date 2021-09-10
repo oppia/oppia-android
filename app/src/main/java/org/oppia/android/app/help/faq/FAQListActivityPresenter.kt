@@ -7,11 +7,13 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.FaqListActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [FAQListActivity]. */
 @ActivityScope
 class FAQListActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var faqListActivityToolbar: Toolbar
 
@@ -24,7 +26,7 @@ class FAQListActivityPresenter @Inject constructor(
 
     faqListActivityToolbar = binding.faqListActivityToolbar
     activity.setSupportActionBar(faqListActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.FAQs)
+    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(R.string.FAQs)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
