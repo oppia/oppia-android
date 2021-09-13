@@ -86,24 +86,6 @@ android_binary(
     ],
 )
 
-android_binary(
-    name = "oppia_kitkat",
-    custom_package = "org.oppia.android",
-    enable_data_binding = True,
-    manifest = "//app:src/main/AndroidManifest.xml",
-    manifest_values = {
-        "applicationId": "org.oppia.android",
-        "minSdkVersion": "19",
-        "targetSdkVersion": "29",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
-    },
-    multidex = "native",
-    deps = [
-        "//app:app_kitkat",
-    ],
-)
-
 # Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be
 # be installed on a local device or emulator using a 'bazel run' command like so:
 #  bazel run //:install_oppia_dev

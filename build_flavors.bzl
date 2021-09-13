@@ -22,7 +22,7 @@ _FLAVOR_METADATA = {
         "multidex": "native",  # Legacy multidex not needed for dev builds.
         "proguard_specs": [],  # Developer builds are not optimized.
         "deps": [
-            "//app:app_kitkat",
+            "//app",
         ],
     },
     "alpha": {
