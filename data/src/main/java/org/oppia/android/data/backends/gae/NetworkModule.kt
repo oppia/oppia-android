@@ -1,5 +1,7 @@
 package org.oppia.android.data.backends.gae
 
+import android.os.Build
+import androidx.annotation.Nullable
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -26,21 +28,27 @@ class NetworkModule {
   @OppiaRetrofit
   @Provides
   @Singleton
+  @Nullable
   fun provideRetrofitInstance(
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     @BaseUrl baseUrl: String
-  ): Retrofit {
-    val client = OkHttpClient.Builder()
-      .addInterceptor(jsonPrefixNetworkInterceptor)
-      .addInterceptor(remoteAuthNetworkInterceptor)
-      .build()
+  ): Retrofit? {
 
-    return Retrofit.Builder()
-      .baseUrl(baseUrl)
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      val client = OkHttpClient.Builder()
+        .addInterceptor(jsonPrefixNetworkInterceptor)
+        .addInterceptor(remoteAuthNetworkInterceptor)
+        .build()
+
+      Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
+    } else {
+      null
+    }
   }
 
   /**
@@ -50,8 +58,8 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun provideTopicService(@OppiaRetrofit retrofit: Retrofit): TopicService {
-    return retrofit.create(TopicService::class.java)
+  fun provideTopicService(@Nullable @OppiaRetrofit retrofit: Retrofit?): TopicService? {
+    return retrofit?.create(TopicService::class.java)
   }
 
   /**
@@ -61,15 +69,15 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
-    return retrofit.create(ClassroomService::class.java)
+  fun provideClassroomService(@Nullable @OppiaRetrofit retrofit: Retrofit?): ClassroomService? {
+    return retrofit?.create(ClassroomService::class.java)
   }
 
   // Provides the Feedback Reporting service implementation.
   @Provides
   @Singleton
-  fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
-    return retrofit.create(FeedbackReportingService::class.java)
+  fun provideFeedbackReportingService(@Nullable @OppiaRetrofit retrofit: Retrofit?): FeedbackReportingService? {
+    return retrofit?.create(FeedbackReportingService::class.java)
   }
 
   /**
@@ -80,8 +88,8 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService {
-    return retrofit.create(PlatformParameterService::class.java)
+  fun providePlatformParameterService(@Nullable @OppiaRetrofit retrofit: Retrofit?): PlatformParameterService? {
+    return retrofit?.create(PlatformParameterService::class.java)
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be

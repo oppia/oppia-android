@@ -1,6 +1,7 @@
 package org.oppia.android.domain.platformparameter.syncup
 
 import android.content.Context
+import androidx.annotation.Nullable
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
@@ -24,7 +25,7 @@ class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val platformParameterController: PlatformParameterController,
-  private val platformParameterService: PlatformParameterService,
+  private val platformParameterService: PlatformParameterService?,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -88,28 +89,31 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   /** Synchronously executes the network request to get platform parameters from the Oppia backend */
-  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
-    return platformParameterService.getPlatformParametersByVersion(
+  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>>? {
+    return platformParameterService?.getPlatformParametersByVersion(
       applicationContext.getVersionName()
-    ).execute()
+    )?.execute()
   }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
       val response = makeNetworkCallForPlatformParameters()
-      val responseBody = checkNotNull(response.body())
-      val platformParameterList = parseNetworkResponse(responseBody)
-      if (platformParameterList.isEmpty()) {
-        throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
+      response?.body()?.let { responseBody ->
+        val platformParameterList = parseNetworkResponse(responseBody)
+        if (platformParameterList.isEmpty()) {
+          throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
+        }
+        val cachingResult = platformParameterController
+          .updatePlatformParameterDatabase(platformParameterList)
+          .retrieveData()
+        if (cachingResult.isFailure()) {
+          throw IllegalStateException(cachingResult.getErrorOrNull())
+        }
+        Result.success()
+      } ?: kotlin.run {
+        Result.failure()
       }
-      val cachingResult = platformParameterController
-        .updatePlatformParameterDatabase(platformParameterList)
-        .retrieveData()
-      if (cachingResult.isFailure()) {
-        throw IllegalStateException(cachingResult.getErrorOrNull())
-      }
-      Result.success()
     } catch (e: Exception) {
       oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
       exceptionsController.logNonFatalException(e)
@@ -120,7 +124,7 @@ class PlatformParameterSyncUpWorker private constructor(
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
-    private val platformParameterService: PlatformParameterService,
+    @Nullable private val platformParameterService: PlatformParameterService?,
     private val oppiaLogger: OppiaLogger,
     private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
