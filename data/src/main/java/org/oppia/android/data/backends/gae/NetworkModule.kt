@@ -76,7 +76,9 @@ class NetworkModule {
   // Provides the Feedback Reporting service implementation.
   @Provides
   @Singleton
-  fun provideFeedbackReportingService(@Nullable @OppiaRetrofit retrofit: Retrofit?): FeedbackReportingService? {
+  fun provideFeedbackReportingService(
+    @Nullable @OppiaRetrofit retrofit: Retrofit?
+  ): FeedbackReportingService? {
     return retrofit?.create(FeedbackReportingService::class.java)
   }
 
@@ -88,7 +90,9 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun providePlatformParameterService(@Nullable @OppiaRetrofit retrofit: Retrofit?): PlatformParameterService? {
+  fun providePlatformParameterService(
+    @Nullable @OppiaRetrofit retrofit: Retrofit?
+  ): PlatformParameterService? {
     return retrofit?.create(PlatformParameterService::class.java)
   }
 
