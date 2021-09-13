@@ -4,14 +4,23 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.view.View
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.android.synthetic.main.activity_image_view_binding_adapters_test.*
 import org.junit.After
@@ -75,9 +84,10 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
-/** Default value for float comparison. */
-private const val TOLERANCE = 1e-5f
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -98,12 +108,37 @@ class ImageViewBindingAdaptersTest {
 
   @Before
   fun setUp() {
+//    setUpTestApplicationComponent()
     Intents.init()
   }
 
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  fun drawableIsCorrect(@DrawableRes drawableResId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("with drawable from resource id: ")
+        description.appendValue(drawableResId)
+      }
+
+      override fun matchesSafely(target: View?): Boolean {
+        if (target !is ImageView) {
+          return false
+        }
+        if (drawableResId < 0) {
+          return target.drawable == null
+        }
+        val expectedDrawable = ContextCompat.getDrawable(target.context, drawableResId)
+          ?: return false
+
+        val bitmap = (target.drawable as BitmapDrawable).bitmap
+        val otherBitmap = (expectedDrawable as BitmapDrawable).bitmap
+        return bitmap.sameAs(otherBitmap)
+      }
+    }
   }
 
   @Test
@@ -113,9 +148,9 @@ class ImageViewBindingAdaptersTest {
       ImageViewBindingAdapters.setImageDrawable(imageView, R.drawable.bg_blue_card)
       return@runWithActivity imageView
     }
-    assertThat(imageView.drawable).isEqualTo(R.drawable.bg_blue_card)
-//    assertThat(imageView.drawable.isStateful)
-//    assertThat(imageView)
+//    assertThat().isEqualTo(R.drawable.bg_blue_card)
+    onView(withId(R.id.imageView))
+      .check(matches(drawableIsCorrect(R.drawable.bg_blue_card)))
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
