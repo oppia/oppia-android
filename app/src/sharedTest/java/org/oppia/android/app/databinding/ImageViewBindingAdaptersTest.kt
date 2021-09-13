@@ -20,6 +20,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import kotlinx.android.synthetic.main.activity_image_view_binding_adapters_test.*
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -81,10 +84,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
-
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
